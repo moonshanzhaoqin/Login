@@ -15,4 +15,16 @@ public class ServerConsts {
 	 */
 	public static final int RET_CODE_PARM_ERROR = -1;
 	
+	
+	//1
+	//2
+	//3
+	//4	
+	
+	
+	
+	
+	
+	
+	
 }
