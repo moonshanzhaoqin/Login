@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.yuyutechnology.exchange.server.controller.request.GetRegistrationCodeRequest;
 import com.yuyutechnology.exchange.server.controller.request.LoginRequest;
 import com.yuyutechnology.exchange.server.controller.request.RegisterRequest;
+import com.yuyutechnology.exchange.server.controller.response.GetRegistrationCodeResponse;
 import com.yuyutechnology.exchange.server.controller.response.LoginResponse;
 import com.yuyutechnology.exchange.server.controller.response.RegisterResponse;
 
@@ -48,9 +50,9 @@ public class UserController {
 	
 	//Get registration code 获取注册验证码
 	@ResponseBody
-	@ApiOperation(value = "注册", httpMethod = "POST", notes = "")
+	@ApiOperation(value = "获取注册验证码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/get_registration_code", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public RegisterResponse getRegistrationCode(@RequestBody RegisterRequest registerRequest, HttpServletRequest request,
+	public GetRegistrationCodeResponse getRegistrationCode(@RequestBody GetRegistrationCodeRequest getRegistrationCodeRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 				
 		
