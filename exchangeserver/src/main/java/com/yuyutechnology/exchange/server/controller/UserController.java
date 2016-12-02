@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.server.controller.request.LoginRequest;
+import com.yuyutechnology.exchange.server.controller.request.RegisterRequest;
 import com.yuyutechnology.exchange.server.controller.response.LoginResponse;
+import com.yuyutechnology.exchange.server.controller.response.RegisterResponse;
 
 /**
  * @author silent.sun
@@ -27,13 +29,31 @@ public class UserController {
 	@ResponseBody
 	@ApiOperation(value = "登录", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public void login(@RequestBody LoginRequest pushToAll, HttpServletRequest request,
+	public LoginResponse login(@RequestBody LoginRequest loginRequest, HttpServletRequest request,
 			HttpServletResponse response) {
+				
 		
+		return null;
 	}
 	//register 注册
-	
+	@ResponseBody
+	@ApiOperation(value = "注册", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/register", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public RegisterResponse register(@RequestBody RegisterRequest registerRequest, HttpServletRequest request,
+			HttpServletResponse response) {
+				
+		
+		return null;
+	}
 	
 	//Get registration code 获取注册验证码
-	
+	@ResponseBody
+	@ApiOperation(value = "注册", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/get_registration_code", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public RegisterResponse getRegistrationCode(@RequestBody RegisterRequest registerRequest, HttpServletRequest request,
+			HttpServletResponse response) {
+				
+		
+		return null;
+	}
 }
