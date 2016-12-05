@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -14,6 +15,8 @@ import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.utils.HttpTookit;
+import com.yuyutechnology.exchange.utils.ResourceUtiles;
 
 @Service
 public class ExchangeManagerImpl implements ExchangeManager {
@@ -48,23 +51,5 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		}
 
 	}
-	
-	public void updateExchangeRate(){
-		List<Currency> currencies = currencyDAO.getCurrencys();
-		if(currencies.isEmpty()){
-			return ;
-		}
-		
-		
-	}
-	
-	public String urlMaker(String base,List<Currency> currencies){
-		
-		String urlStr = "http://api.fixer.io/latest?base={$base}?symbols={$symbols}";
-		
-		return null;
-		
-	}
-	
 
 }

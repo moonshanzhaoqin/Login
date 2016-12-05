@@ -10,7 +10,5 @@ public interface ExchangeManager {
 	public List<Wallet> getWalletsByUserId(int userId);
 	
 	public void exchangeCalculation(int userId,String currencyOut,String currencyIn,BigDecimal amountOut);
-	
-	
 
 }
