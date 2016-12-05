@@ -1,8 +1,8 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-public class LoginRequest {
+public class TestCodeRequest {
 	private String userPhone;
-	private String userPassword;
+	private String VerificationCode;
 
 	public String getUserPhone() {
 		return userPhone;
@@ -12,11 +12,12 @@ public class LoginRequest {
 		this.userPhone = userPhone;
 	}
 
-	public String getUserPassword() {
-		return userPassword;
+	public String getVerificationCode() {
+		return VerificationCode;
 	}
 
-	public void setUserPassword(String userPassword) {
-		this.userPassword = userPassword;
+	public void setVerificationCode(String verificationCode) {
+		VerificationCode = verificationCode;
 	}
+
 }
