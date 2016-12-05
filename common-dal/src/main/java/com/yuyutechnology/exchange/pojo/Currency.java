@@ -2,6 +2,7 @@ package com.yuyutechnology.exchange.pojo;
 // Generated Dec 2, 2016 4:27:04 PM by Hibernate Tools 4.0.0
 
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
