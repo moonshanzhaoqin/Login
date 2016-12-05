@@ -12,6 +12,7 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
+import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Wallet;
 
 @Service
@@ -45,9 +46,25 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		}else{
 			logger.warn("The amount of the conversion is less than the minimum transaction amount");
 		}
-		
+
+	}
+	
+	public void updateExchangeRate(){
+		List<Currency> currencies = currencyDAO.getCurrencys();
+		if(currencies.isEmpty()){
+			return ;
+		}
 		
 		
 	}
+	
+	public String urlMaker(String base,List<Currency> currencies){
+		
+		String urlStr = "http://api.fixer.io/latest?base={$base}?symbols={$symbols}";
+		
+		return null;
+		
+	}
+	
 
 }
