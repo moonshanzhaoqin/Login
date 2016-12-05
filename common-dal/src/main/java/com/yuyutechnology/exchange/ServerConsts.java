@@ -20,8 +20,8 @@ public class ServerConsts {
 	//2
 	//3
 	//4	
-	
-	
+	//币种
+	public static final String CURRENCY_OF_GOLDPAY = "goldpay";
 	
 	
 	
