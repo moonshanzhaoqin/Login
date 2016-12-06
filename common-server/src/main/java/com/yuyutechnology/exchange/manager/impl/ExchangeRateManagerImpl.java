@@ -16,6 +16,7 @@ import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.utils.HttpTookit;
+import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.ResourceUtiles;
 import com.yuyutechnology.exchange.utils.exchangerate.ExchangeRate;
 
@@ -45,8 +46,8 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 			logger.info("result : {}",result);
 			map.put(currency.getCurrency(), result);
 		}
-		
-		redisDAO.saveData("redis_exchangeRate", new Gson().toJson(map), 5);
+//		redisDAO.saveData("redis_exchangeRate", new Gson().toJson(map), 5);
+		redisDAO.saveData("redis_exchangeRate",JsonBinder.getInstance().toJson(map), 5);
 	}
 
 	@SuppressWarnings("unchecked")
