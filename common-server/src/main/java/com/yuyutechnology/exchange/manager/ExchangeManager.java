@@ -26,7 +26,8 @@ public interface ExchangeManager {
 	 * @param amountOut
 	 * @return
 	 */
-	public String exchangeCalculation(int userId,String currencyOut,String currencyIn,BigDecimal amountOut);
+	public String exchangeCalculation(int userId,String currencyOut,
+			String currencyIn,BigDecimal amountOut);
 	
 	/**
 	 * @Descrition : TODO
@@ -39,6 +40,7 @@ public interface ExchangeManager {
 	 * @param amountIn
 	 * @return
 	 */
-	public String exchangeConfirm(int userId,String currencyOut,String currencyIn,BigDecimal amountOut,BigDecimal amountIn);
+	public String exchangeConfirm(int userId,String currencyOut,
+			String currencyIn,BigDecimal amountOut,BigDecimal amountIn);
 
 }
