@@ -20,7 +20,8 @@ import javax.persistence.TemporalType;
 public class Unregistered implements java.io.Serializable {
 
 	private Integer unregisteredId;
-	private byte[] phone;
+	private String areaCode;
+	private String phone;
 	private String currency;
 	private BigDecimal amount;
 	private Date createTime;
@@ -29,7 +30,8 @@ public class Unregistered implements java.io.Serializable {
 	public Unregistered() {
 	}
 
-	public Unregistered(byte[] phone, String currency, BigDecimal amount, Date createTime, int unregisteredStatus) {
+	public Unregistered(String areaCode,String phone, String currency, BigDecimal amount, Date createTime, int unregisteredStatus) {
+		this.setAreaCode(areaCode);
 		this.phone = phone;
 		this.currency = currency;
 		this.amount = amount;
@@ -49,12 +51,21 @@ public class Unregistered implements java.io.Serializable {
 		this.unregisteredId = unregisteredId;
 	}
 
+	@Column(name = "area_code", nullable = false)
+	public String getAreaCode() {
+		return areaCode;
+	}
+
+	public void setAreaCode(String areaCode) {
+		this.areaCode = areaCode;
+	}
+
 	@Column(name = "phone", nullable = false)
-	public byte[] getPhone() {
+	public String getPhone() {
 		return this.phone;
 	}
 
-	public void setPhone(byte[] phone) {
+	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 
