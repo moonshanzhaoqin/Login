@@ -70,10 +70,23 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		if(result.contains("_")){
 			return result;
 		}else{
+			//用户账户
 			//扣款
 			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut, amountOut, "-");
 			//加款
 			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, amountIn, "+");
+			
+			//系统账户
+			int systemUserId = 0; 
+			//扣款
+			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyOut, amountOut, "+");
+			//加款
+			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, amountIn, "-");
+			
+			//添加seq记录
+			
+			
+			
 			//添加Exchange记录
 			Exchange exchange = new Exchange();
 			exchange.setUserId(userId);
@@ -86,6 +99,10 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		}
 		
 		return ServerConsts.RET_CODE_SUCCESS;
+	}
+	
+	public void addWalletSeq(){
+		
 	}
 	
 
