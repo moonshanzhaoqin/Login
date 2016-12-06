@@ -15,12 +15,14 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
+import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.form.UserInfo;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Currency;
+import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.sms.SmsManager;
@@ -28,6 +30,7 @@ import com.yuyutechnology.exchange.utils.MathUtils;
 
 @Service
 public class UserManagerImpl implements UserManager {
+	public static Logger logger = LoggerFactory.getLogger(UserManagerImpl.class);
 	@Autowired
 	UserDAO userDAO;
 	@Autowired
@@ -39,17 +42,9 @@ public class UserManagerImpl implements UserManager {
 	@Autowired
 	RedisDAO redisDAO;
 	@Autowired
+	UnregisteredDAO unregisteredDAO;
+	@Autowired
 	SmsManager smsManager;
-	public static Logger logger = LoggerFactory.getLogger(UserManagerImpl.class);
-
-	@Override
-	public boolean isUser(String areaCode, String userPhone) {
-		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
-		if (user == null) {
-			return false;
-		}
-		return true;
-	}
 
 	@Override
 	public void getPinCode(String areaCode, String userPhone) {
@@ -61,39 +56,6 @@ public class UserManagerImpl implements UserManager {
 		redisDAO.saveData(areaCode + userPhone, md5random, 10);
 		// 发送验证码
 		smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random);
-	}
-
-	@Override
-	public boolean testPinCode(String areaCode, String userPhone, String verificationCode) {
-		// 查redis userPhone: verificationCode
-		if (StringUtils.equals(verificationCode, redisDAO.getValueByKey(areaCode + userPhone))) {
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public Integer register(String areaCode, String userPhone, String userName, String userPassword) {
-		// 添加用户
-		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName,
-				DigestUtils.md5Hex(DigestUtils.md5Hex(userPassword) + DigestUtils.md5Hex(userPhone)), new Date(),
-				ServerConsts.USER_TYPE_OF_CUSTOMER));
-		// 添加钱包信息
-		List<Currency> currencies = currencyDAO.getCurrencys();
-		for (Currency currency : currencies) {
-			walletDAO.addwallet(new Wallet(userId, currency.getCurrency(), new BigDecimal(0)));
-		}
-		return userId;
-	}
-
-	@Override
-	public Integer login(String areaCode, String userPhone, String userPassword) {
-		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
-		if (user != null && StringUtils.equals(user.getUserPassword(),
-				DigestUtils.md5Hex(DigestUtils.md5Hex(userPassword) + DigestUtils.md5Hex(userPhone)))) {
-			return user.getUserId();
-		}
-		return null;
 	}
 
 	@Override
@@ -122,6 +84,44 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
+	public boolean isUser(String areaCode, String userPhone) {
+		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
+		if (user == null) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public Integer login(String areaCode, String userPhone, String userPassword) {
+		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
+		if (user != null && StringUtils.equals(user.getUserPassword(),
+				DigestUtils.md5Hex(DigestUtils.md5Hex(userPassword) + DigestUtils.md5Hex(userPhone)))) {
+			return user.getUserId();
+		}
+		return null;
+	}
+
+	@Override
+	public Integer register(String areaCode, String userPhone, String userName, String userPassword) {
+		// 添加用户
+		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName,
+				DigestUtils.md5Hex(DigestUtils.md5Hex(userPassword) + DigestUtils.md5Hex(userPhone)), new Date(),
+				ServerConsts.USER_TYPE_OF_CUSTOMER));
+		// 添加钱包信息
+		List<Currency> currencies = currencyDAO.getCurrencys();
+		for (Currency currency : currencies) {
+			walletDAO.addwallet(new Wallet(userId, currency.getCurrency(), new BigDecimal(0)));
+		}
+		//TODO 根据UNregister 获取转账信息更新钱包
+		List<Unregistered> unregistereds=unregisteredDAO.getUnregisteredByUserPhone(areaCode, userPhone);
+		for (Unregistered unregistered : unregistereds) {
+			//TODO
+		}
+		return userId;
+	}
+
+	@Override
 	public Integer resetPassword(String areaCode, String userPhone, String newPassword) {
 		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
 		if (user != null) {
@@ -130,6 +130,15 @@ public class UserManagerImpl implements UserManager {
 		return user.getUserId();
 		}
 		return null;
+	}
+
+	@Override
+	public boolean testPinCode(String areaCode, String userPhone, String verificationCode) {
+		// 查redis userPhone: verificationCode
+		if (StringUtils.equals(verificationCode, redisDAO.getValueByKey(areaCode + userPhone))) {
+			return true;
+		}
+		return false;
 	}
 
 }
