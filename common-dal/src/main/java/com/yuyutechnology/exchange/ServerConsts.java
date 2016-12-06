@@ -45,4 +45,26 @@ public class ServerConsts {
 	
 
 	
+	
+	
+	
+	
+	/**
+	 * 手机号已注册
+	 */
+	public static final String PHONE_IS_REGISTERED = "01_001";
+	/**
+	 * 手机号不存在
+	 */
+	public static final String PHONE_NOT_EXIST = "01_002";
+	/**
+	 * 手机号与验证码不匹配
+	 */
+	public static final String PHONE_AND_CODE_NOT_MATCH = "01_003";
+	
+	
+	
+	
+	
+	
 }

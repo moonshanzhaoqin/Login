@@ -1,4 +1,4 @@
-package com.yuyutechnology.exchange.server.controller.response;
+package com.yuyutechnology.exchange.form;
 
 public class UserInfo {
 	private String Phone;

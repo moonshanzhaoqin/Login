@@ -61,4 +61,10 @@ public class WalletDAOImpl implements WalletDAO {
 		});
 		
 	}
+
+	@Override
+	public void addwallet(Wallet wallet) {
+		// TODO Auto-generated method stub
+		
+	}
 }
