@@ -32,4 +32,10 @@ public class WalletDAOImpl implements WalletDAO {
 		}
 		return wallet;
 	}
+
+	@Override
+	public void addwallet(Wallet wallet) {
+		// TODO Auto-generated method stub
+		
+	}
 }

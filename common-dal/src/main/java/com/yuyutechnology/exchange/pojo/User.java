@@ -23,7 +23,7 @@ public class User implements java.io.Serializable {
 	private String userName;
 	private String userPassword;
 	private String userPayPwd;
-	private String createTime;
+	private Date createTime;
 	private Date loginTime;
 	private String loginIp;
 	private int userType;
@@ -31,13 +31,15 @@ public class User implements java.io.Serializable {
 	public User() {
 	}
 
-	public User(String userPhone, String createTime, int userType) {
+	public User(String userPhone,String userName, String userPassword, Date createTime, int userType) {
 		this.userPhone = userPhone;
+		this.userName = userName;
+		this.userPassword = userPassword;
 		this.createTime = createTime;
 		this.userType = userType;
 	}
 
-	public User(String userPhone, String userName, String userPassword, String userPayPwd, String createTime,
+	public User(String userPhone, String userName, String userPassword, String userPayPwd, Date createTime,
 			Date loginTime, String loginIp, int userType) {
 		this.userPhone = userPhone;
 		this.userName = userName;
@@ -98,11 +100,11 @@ public class User implements java.io.Serializable {
 	}
 
 	@Column(name = "create_time", nullable = false)
-	public String getCreateTime() {
+	public Date getCreateTime() {
 		return this.createTime;
 	}
 
-	public void setCreateTime(String createTime) {
+	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 
