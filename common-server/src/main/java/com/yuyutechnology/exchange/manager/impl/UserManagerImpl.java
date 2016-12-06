@@ -97,13 +97,12 @@ public class UserManagerImpl implements UserManager {
 			}
 
 			// 判断是否绑定goldpay
-			Bind bind = bindDAO.getBind(userId);
-			if (bind == null) {
+			List<Bind> binds = bindDAO.getBindByUserId(userId);
+			if (binds.isEmpty()) {
 				userInfo.setPayPwd(false);
 			} else {
 				userInfo.setPayPwd(true);
 			}
-
 		}
 		return userInfo;
 	}

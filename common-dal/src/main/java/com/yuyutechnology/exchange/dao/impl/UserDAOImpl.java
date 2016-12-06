@@ -16,6 +16,11 @@ public class UserDAOImpl implements UserDAO {
 	HibernateTemplate hibernateTemplate;
 
 	@Override
+	public User getUser(Integer userId) {
+		return hibernateTemplate.get(User.class, userId);
+	}
+
+	@Override
 	public User getUserByUserPhone(String userPhone) {
 		List<?> list = hibernateTemplate.find("from User where userPhone = ?", userPhone);
 		if (!list.isEmpty()) {
@@ -25,15 +30,8 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public User getUser(Integer userId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Integer addUser(User user) {
-		// TODO Auto-generated method stub
-		return null;
+		Integer userId=	(Integer) hibernateTemplate.save(user);
+		return userId;
 	}
-
 }
