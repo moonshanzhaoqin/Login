@@ -16,7 +16,7 @@ import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.JsonBinder;
-import com.yuyutechnology.exchange.utils.ResourceUtiles;
+import com.yuyutechnology.exchange.utils.ResourceUtils;
 import com.yuyutechnology.exchange.utils.exchangerate.ExchangeRate;
 
 @Service
@@ -32,7 +32,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 	@Override
 	public void updateExchangeRate(){
 		
-		String exchangeRateUrl = ResourceUtiles.getBundleValue("exchange.rate.url");
+		String exchangeRateUrl = ResourceUtils.getBundleValue("exchange.rate.url");
 		List<Currency> currencies = currencyDAO.getCurrencys();
 		if(currencies.isEmpty()){
 			return ;
