@@ -1,8 +1,17 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
 public class TestCodeRequest {
+	private String areaCode;
 	private String userPhone;
 	private String VerificationCode;
+
+	public String getAreaCode() {
+		return areaCode;
+	}
+
+	public void setAreaCode(String areaCode) {
+		this.areaCode = areaCode;
+	}
 
 	public String getUserPhone() {
 		return userPhone;

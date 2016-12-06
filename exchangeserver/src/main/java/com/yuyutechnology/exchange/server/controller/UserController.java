@@ -51,43 +51,137 @@ public class UserController {
 	@Autowired
 	SessionManager sessionManager;
 
-	// sign in 登录
+	/**
+	 * forget password 忘记密码
+	 * @param forgetPasswordRequest
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@ResponseBody
-	@ApiOperation(value = "登录", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public LoginResponse login(@RequestBody LoginRequest loginRequest, HttpServletRequest request,
-			HttpServletResponse response) {
-		
+	@ApiOperation(value = "忘记密码", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/forgetPassword", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public BaseResponse forgetPassword(@RequestBody ForgetPasswordRequest forgetPasswordRequest,
+			HttpServletRequest request, HttpServletResponse response) {
+		BaseResponse rep = new BaseResponse();
+		if (userManager.testPinCode(forgetPasswordRequest.getAreaCode(), forgetPasswordRequest.getUserPhone(),
+				forgetPasswordRequest.getVerificationCode())) {
+			// 修改密码
+			Integer userId =userManager.resetPassword(forgetPasswordRequest.getAreaCode(), forgetPasswordRequest.getUserPhone(),
+					forgetPasswordRequest.getNewPassword());
+			if (userId==null) {
+				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
+				rep.setMessage("");
+			}else{
+				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+				rep.setMessage("");
+			}
+		} else {
+			rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
+			rep.setMessage("");
+		}
+		return null;
+	}
 
-		LoginResponse rep = new LoginResponse();
-		Integer userId = userManager.login(loginRequest.getUserPhone(), loginRequest.getUserPassword());
-		if (userId == null) {
-			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
+	/**
+	 * Get registration code 获取注册验证码
+	 * @param getRegistrationCodeRequest
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@ApiOperation(value = "获取注册验证码", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/getRegistrationCode", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public BaseResponse getRegistrationCode(@RequestBody GetRegistrationCodeRequest getRegistrationCodeRequest,
+			HttpServletRequest request, HttpServletResponse response) {
+		BaseResponse rep = new BaseResponse();
+		// 检验手机号是否已注册
+		if (userManager.isUser(getRegistrationCodeRequest.getAreaCode(), getRegistrationCodeRequest.getUserPhone())) {
+			rep.setRetCode(ServerConsts.PHONE_IS_REGISTERED);
 			rep.setMessage("");
 		} else {
-			//生成session  Token
-			SessionData sessionData = SessionDataHolder.getSessionData();
-			sessionData.setUserId(userId);
-			sessionData.setBrowserLanguage(request.getParameter("language"));
-			sessionData.setLogin(true);
-			sessionManager.saveSessionData(sessionData);
-			rep.setToken(sessionData.getSessionId());
-			
-			//获取用户信息
-			UserInfo user = userManager.getUserInfo(userId);
-			rep.setUser(user);
-			
-			//获取钱包信息
-			List<Wallet> wallets = exchangeManager.getWalletsByUserId(userId);
-			rep.setWallets(wallets);
-			
+			userManager.getPinCode(getRegistrationCodeRequest.getAreaCode(), getRegistrationCodeRequest.getUserPhone());
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 			rep.setMessage("");
 		}
 		return rep;
 	}
 
-	// register 注册
+	/**
+	 * Get Verification code 获取验证码(针对已注册用户)
+	 * @param getVerificationCodeRequest
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@ApiOperation(value = "获取验证码(针对已注册用户)", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/getVerificationCode", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public BaseResponse getVerificationCode(@RequestBody GetVerificationCodeRequest getVerificationCodeRequest,
+			HttpServletRequest request, HttpServletResponse response) {
+		BaseResponse rep = new BaseResponse();
+		// 检验手机号是否存在
+		if (userManager.isUser(getVerificationCodeRequest.getAreaCode(), getVerificationCodeRequest.getUserPhone())) {
+			userManager.getPinCode(getVerificationCodeRequest.getAreaCode(), getVerificationCodeRequest.getUserPhone());
+			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setMessage("");
+		} else {
+			rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
+			rep.setMessage("");
+		}
+		return rep;
+	}
+
+	/**
+	 * sign in 登录
+	 * @param loginRequest
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@ApiOperation(value = "登录", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public LoginResponse login(@RequestBody LoginRequest loginRequest, HttpServletRequest request,
+			HttpServletResponse response) {
+		LoginResponse rep = new LoginResponse();
+		Integer userId = userManager.login(loginRequest.getAreaCode(), loginRequest.getUserPhone(),
+				loginRequest.getUserPassword());
+		if (userId == null) {
+			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
+			rep.setMessage("");
+		} else {
+			// 生成session Token
+			SessionData sessionData = SessionDataHolder.getSessionData();
+			sessionData.setUserId(userId);
+			sessionData.setBrowserLanguage(request.getParameter("language"));
+			sessionData.setLogin(true);
+			sessionManager.saveSessionData(sessionData);
+			rep.setToken(sessionData.getSessionId());
+
+			// 获取用户信息
+			UserInfo user = userManager.getUserInfo(userId);
+			rep.setUser(user);
+
+			// 获取钱包信息
+			List<Wallet> wallets = exchangeManager.getWalletsByUserId(userId);
+			rep.setWallets(wallets);
+
+			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setMessage("");
+		}
+		return rep;
+	}
+
+	/**
+	 * register 注册
+	 * 
+	 * @param registerRequest
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@ResponseBody
 	@ApiOperation(value = "注册", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/register", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
@@ -95,14 +189,15 @@ public class UserController {
 			HttpServletResponse response) {
 		LoginResponse rep = new LoginResponse();
 		// 校验验证码
-		if (userManager.testPinCode(registerRequest.getUserPhone(), registerRequest.getRegistrationCode())) {
-			Integer userId = userManager.register(registerRequest.getUserPhone(), registerRequest.getUserName(),
-					registerRequest.getUserPassword());
+		if (userManager.testPinCode(registerRequest.getAreaCode(), registerRequest.getUserPhone(),
+				registerRequest.getRegistrationCode())) {
+			Integer userId = userManager.register(registerRequest.getAreaCode(), registerRequest.getUserPhone(),
+					registerRequest.getUserName(), registerRequest.getUserPassword());
 			if (userId == null) {
 				rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
 				rep.setMessage("");
 			} else {
-				//生成session  Token
+				// 生成session Token
 				SessionData sessionData = SessionDataHolder.getSessionData();
 				sessionData.setUserId(userId);
 				sessionData.setBrowserLanguage(request.getParameter("language"));
@@ -110,14 +205,14 @@ public class UserController {
 				sessionManager.saveSessionData(sessionData);
 				rep.setToken(sessionData.getSessionId());
 
-				//获取用户信息
+				// 获取用户信息
 				UserInfo user = userManager.getUserInfo(userId);
 				rep.setUser(user);
-				
-				//获取钱包信息
+
+				// 获取钱包信息
 				List<Wallet> wallets = exchangeManager.getWalletsByUserId(userId);
 				rep.setWallets(wallets);
-				
+
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 				rep.setMessage("");
 			}
@@ -128,52 +223,21 @@ public class UserController {
 		return rep;
 	}
 
-	// Get registration code 获取注册验证码
-	@ResponseBody
-	@ApiOperation(value = "获取注册验证码", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/getRegistrationCode", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse getRegistrationCode(@RequestBody GetRegistrationCodeRequest getRegistrationCodeRequest,
-			HttpServletRequest request, HttpServletResponse response) {
-		BaseResponse rep = new BaseResponse();
-		// 检验手机号是否已注册
-		if (userManager.isUser(getRegistrationCodeRequest.getUserPhone())) {
-			rep.setRetCode(ServerConsts.PHONE_IS_REGISTERED);
-			rep.setMessage("");
-		} else {
-			userManager.getPinCode(getRegistrationCodeRequest.getUserPhone());
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-			rep.setMessage("");
-		}
-		return rep;
-	}
-
-	// Get Verification code 获取验证码(针对已注册用户)
-	@ResponseBody
-	@ApiOperation(value = "获取验证码(针对已注册用户)", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/getVerificationCode", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse getVerificationCode(@RequestBody GetVerificationCodeRequest getVerificationCodeRequest,
-			HttpServletRequest request, HttpServletResponse response) {
-		BaseResponse rep = new BaseResponse();
-		// 检验手机号是否存在
-		if (userManager.isUser(getVerificationCodeRequest.getUserPhone())) {
-			userManager.getPinCode(getVerificationCodeRequest.getUserPhone());
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-			rep.setMessage("");
-		} else {
-			rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
-			rep.setMessage("");
-		}
-		return rep;
-	}
-
-	// test code 测试验证码
+	/**
+	 * test code 测试验证码
+	 * @param testRequest
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@ResponseBody
 	@ApiOperation(value = "测试验证码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/testCode", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse testCode(@RequestBody TestCodeRequest testRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
-		if (userManager.testPinCode(testRequest.getUserPhone(), testRequest.getVerificationCode())) {
+		if (userManager.testPinCode(testRequest.getAreaCode(), testRequest.getUserPhone(),
+				testRequest.getVerificationCode())) {
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 			rep.setMessage("");
 		} else {
@@ -181,24 +245,5 @@ public class UserController {
 			rep.setMessage("");
 		}
 		return rep;
-	}
-
-	// forget password 忘记密码
-	@ResponseBody
-	@ApiOperation(value = "忘记密码", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/forgetPassword", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse forgetPassword(@RequestBody ForgetPasswordRequest forgetPasswordRequest,
-			HttpServletRequest request, HttpServletResponse response) {
-		BaseResponse rep = new BaseResponse();
-		if (userManager.testPinCode(forgetPasswordRequest.getUserPhone(), forgetPasswordRequest.getVerificationCode())) {
-			// 修改密码
-			userManager.resetPassword(forgetPasswordRequest.getUserPhone(),forgetPasswordRequest.getNewPassword());
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-			rep.setMessage("");
-		} else {
-			rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
-			rep.setMessage("");
-		}
-		return null;
 	}
 }

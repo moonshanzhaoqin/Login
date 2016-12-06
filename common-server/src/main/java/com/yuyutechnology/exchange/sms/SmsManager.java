@@ -58,7 +58,7 @@ public class SmsManager {
 	public void sendSMS4PhoneVerify(String areaCode, String userPhone, String code) {
 		String phoneVerifyContent = templateChoose("phoneVerify", areaCode);
 		String content = phoneVerifyContent.replace(SMS_REPLACE_PIN, code);
-		sendSMS(userPhone, content);
+		sendSMS(areaCode+userPhone, content);
 	}
 
 	/**
@@ -68,8 +68,7 @@ public class SmsManager {
 	 * @param areaCode
 	 * @return
 	 */
-
-	public String templateChoose(String func, String areaCode) {
+	private String templateChoose(String func, String areaCode) {
 		String content;
 		switch (func) {
 		case "phoneVerify":
@@ -87,7 +86,7 @@ public class SmsManager {
 		return content;
 	}
 	@Async
-	public void sendSMS(String phoneNum, String Content) {
+	private void sendSMS(String phoneNum, String Content) {
 		SendMessageRequest sendMessageRequest = new SendMessageRequest();
 		sendMessageRequest.setTo(phoneNum);
 		sendMessageRequest.setContent(Content);

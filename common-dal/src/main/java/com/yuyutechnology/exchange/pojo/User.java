@@ -19,6 +19,7 @@ import javax.persistence.TemporalType;
 public class User implements java.io.Serializable {
 
 	private Integer userId;
+	private String areaCode;
 	private String userPhone;
 	private String userName;
 	private String userPassword;
@@ -31,7 +32,8 @@ public class User implements java.io.Serializable {
 	public User() {
 	}
 
-	public User(String userPhone,String userName, String userPassword, Date createTime, int userType) {
+	public User(String areaCode,String userPhone,String userName, String userPassword, Date createTime, int userType) {
+		this.areaCode = areaCode;
 		this.userPhone = userPhone;
 		this.userName = userName;
 		this.userPassword = userPassword;
@@ -39,8 +41,9 @@ public class User implements java.io.Serializable {
 		this.userType = userType;
 	}
 
-	public User(String userPhone, String userName, String userPassword, String userPayPwd, Date createTime,
+	public User(String areaCode,String userPhone, String userName, String userPassword, String userPayPwd, Date createTime,
 			Date loginTime, String loginIp, int userType) {
+		this.areaCode = areaCode;
 		this.userPhone = userPhone;
 		this.userName = userName;
 		this.userPassword = userPassword;
@@ -61,6 +64,15 @@ public class User implements java.io.Serializable {
 
 	public void setUserId(Integer userId) {
 		this.userId = userId;
+	}
+
+	@Column(name = "area_code", nullable = false)
+	public String getAreaCode() {
+		return areaCode;
+	}
+
+	public void setAreaCode(String areaCode) {
+		this.areaCode = areaCode;
 	}
 
 	@Column(name = "user_phone", nullable = false)

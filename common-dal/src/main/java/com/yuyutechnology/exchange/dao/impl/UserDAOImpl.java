@@ -31,8 +31,8 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public User getUserByUserPhone(String userPhone) {
-		List<?> list = hibernateTemplate.find("from User where userPhone = ?", userPhone);
+	public User getUserByUserPhone(String areaCode,String userPhone) {
+		List<?> list = hibernateTemplate.find("from User where areaCode = ? and userPhone = ?",areaCode, userPhone);
 		if (!list.isEmpty()) {
 			return (User) list.get(0);
 		}
@@ -43,6 +43,12 @@ public class UserDAOImpl implements UserDAO {
 	public Integer addUser(User user) {
 		Integer userId=	(Integer) hibernateTemplate.save(user);
 		return userId;
+	}
+
+	@Override
+	public void updateUserPassword(User user) {
+		hibernateTemplate.saveOrUpdate(user);
+		
 	}
 
 

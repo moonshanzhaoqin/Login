@@ -23,6 +23,7 @@ import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.sms.SmsManager;
 import com.yuyutechnology.exchange.utils.MathUtils;
 
 @Service
@@ -37,11 +38,13 @@ public class UserManagerImpl implements UserManager {
 	BindDAO bindDAO;
 	@Autowired
 	RedisDAO redisDAO;
+	@Autowired
+	SmsManager smsManager;
 	public static Logger logger = LoggerFactory.getLogger(UserManagerImpl.class);
 
 	@Override
-	public boolean isUser(String userPhone) {
-		User user = userDAO.getUserByUserPhone(userPhone);
+	public boolean isUser(String areaCode, String userPhone) {
+		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
 		if (user == null) {
 			return false;
 		}
@@ -49,32 +52,32 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public void getPinCode(String userPhone) {
+	public void getPinCode(String areaCode, String userPhone) {
 		// 随机生成六位数
 		final String random = MathUtils.randomFixedLengthStr(6);
 		final String md5random = DigestUtils.md5Hex(random);
 		// 存入redis userPhone:md5random
 		// TODO 有效时间可配，单位：min
-		redisDAO.saveData(userPhone, md5random, 10);
-		// TODO 发送验证码 (userPhone,random)
-
+		redisDAO.saveData(areaCode + userPhone, md5random, 10);
+		// 发送验证码
+		smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random);
 	}
 
 	@Override
-	public boolean testPinCode(String userPhone, String verificationCode) {
+	public boolean testPinCode(String areaCode, String userPhone, String verificationCode) {
 		// 查redis userPhone: verificationCode
-		if (StringUtils.equals(verificationCode, redisDAO.getValueByKey(userPhone))) {
+		if (StringUtils.equals(verificationCode, redisDAO.getValueByKey(areaCode + userPhone))) {
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public Integer register(String userPhone, String userName, String userPassword) {
+	public Integer register(String areaCode, String userPhone, String userName, String userPassword) {
 		// 添加用户
-		Integer userId = userDAO.addUser(new User(userPhone, userName,
-				DigestUtils.md5Hex(DigestUtils.md5Hex(userPassword) + DigestUtils.md5Hex(userPhone)),
-				new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER));
+		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName,
+				DigestUtils.md5Hex(DigestUtils.md5Hex(userPassword) + DigestUtils.md5Hex(userPhone)), new Date(),
+				ServerConsts.USER_TYPE_OF_CUSTOMER));
 		// 添加钱包信息
 		List<Currency> currencies = currencyDAO.getCurrencys();
 		for (Currency currency : currencies) {
@@ -84,8 +87,8 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public Integer login(String userPhone, String userPassword) {
-		User user = userDAO.getUserByUserPhone(userPhone);
+	public Integer login(String areaCode, String userPhone, String userPassword) {
+		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
 		if (user != null && StringUtils.equals(user.getUserPassword(),
 				DigestUtils.md5Hex(DigestUtils.md5Hex(userPassword) + DigestUtils.md5Hex(userPhone)))) {
 			return user.getUserId();
@@ -99,6 +102,7 @@ public class UserManagerImpl implements UserManager {
 		UserInfo userInfo = null;
 		if (user != null) {
 			userInfo = new UserInfo();
+			userInfo.setAreaCode(user.getAreaCode());
 			userInfo.setPhone(user.getUserPhone());
 			userInfo.setName(user.getUserName());
 			if (StringUtils.isBlank(user.getUserPayPwd())) {
@@ -118,9 +122,14 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public void resetPassword(String userPhone, String newPassword) {
-		// TODO Auto-generated method stub
-		
+	public Integer resetPassword(String areaCode, String userPhone, String newPassword) {
+		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
+		if (user != null) {
+			user.setUserPassword(DigestUtils.md5Hex(DigestUtils.md5Hex(newPassword) + DigestUtils.md5Hex(areaCode + userPhone)));
+			userDAO.updateUserPassword(user);
+		return user.getUserId();
+		}
+		return null;
 	}
 
 }
