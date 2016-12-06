@@ -11,19 +11,30 @@ import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
+import com.yuyutechnology.exchange.dao.ExchangeDAO;
+import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
+import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.pojo.Exchange;
 import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.pojo.WalletSeq;
 
 @Service
 public class ExchangeManagerImpl implements ExchangeManager {
 	
 	@Autowired
+	UserDAO userDAO;
+	@Autowired
 	WalletDAO walletDAO;
 	@Autowired
 	CurrencyDAO currencyDAO;
+	@Autowired
+	ExchangeDAO exchangeDAO;
+	@Autowired
+	WalletSeqDAO walletSeqDAO;
+
 	
 	@Autowired
 	ExchangeRateManager exchangeRateManager;
@@ -64,8 +75,8 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	}
 
 	@Override
-	public String exchangeConfirm(int userId, String currencyOut, String currencyIn, BigDecimal amountOut,
-			BigDecimal amountIn) {
+	public String exchangeConfirm(int userId, String currencyOut, String currencyIn,
+			BigDecimal amountOut,BigDecimal amountIn) {
 		String result = exchangeCalculation(userId,currencyOut,currencyIn,amountOut);
 		if(result.contains("_")){
 			return result;
@@ -77,18 +88,16 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, amountIn, "+");
 			
 			//系统账户
-			int systemUserId = 0; 
-			//扣款
-			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyOut, amountOut, "+");
+			int systemUserId = userDAO.getSystemUser().getUserId(); 
 			//加款
+			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyOut, amountOut, "+");
+			//扣款
 			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, amountIn, "-");
 			
-			//添加seq记录
-			
-			
-			
+			String exchangeId = exchangeDAO.createExchangeId(ServerConsts.TRANSFER_TYPE_OF_EXCHANGE);
 			//添加Exchange记录
 			Exchange exchange = new Exchange();
+			exchange.setExchangeId(exchangeId);
 			exchange.setUserId(userId);
 			exchange.setCurrencyOut(currencyOut);
 			exchange.setAmountOut(amountOut);
@@ -96,13 +105,29 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			exchange.setAmountIn(amountIn);
 			exchange.setCreateTime(new Date());
 			exchange.setFinishTime(new Date());
+			
+			exchangeDAO.addExchange(exchange);
+			
+			//添加seq记录
+			addWalletSeq(userId, ServerConsts.TRANSFER_TYPE_OF_EXCHANGE, exchangeId, 
+					currencyOut, amountOut, currencyIn, amountIn);
+			addWalletSeq(systemUserId, ServerConsts.TRANSFER_TYPE_OF_EXCHANGE, exchangeId, 
+					currencyIn, amountIn, currencyOut, amountOut);
 		}
 		
 		return ServerConsts.RET_CODE_SUCCESS;
 	}
 	
-	public void addWalletSeq(){
+	@Override
+	public void addWalletSeq(int userId,int transferType,String transactionId,
+			String currencyOut,BigDecimal amountOut,String currencyIn,BigDecimal amountIn){
 		
+		WalletSeq inSeq = new WalletSeq(userId,transferType,currencyIn,amountIn,transactionId);
+		walletSeqDAO.addWalletSeq(inSeq);
+		//negate 取负数
+		WalletSeq outSeq = new WalletSeq(userId,transferType,currencyOut,amountOut.negate(),transactionId);
+		walletSeqDAO.addWalletSeq(outSeq);
+
 	}
 	
 

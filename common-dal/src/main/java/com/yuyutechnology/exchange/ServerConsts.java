@@ -1,11 +1,9 @@
 package com.yuyutechnology.exchange;
 
 public class ServerConsts {
-
+	//RetCode: 通用 00; 用户 01;兑换 02; 转账 03
+	
 	// 通用 00
-	// 用户 01
-	// 转账 03
-
 	/**
 	 * 成功
 	 */
@@ -18,20 +16,8 @@ public class ServerConsts {
 	 * Session过期
 	 */
 	public static final String SESSION_TIMEOUT = "00_002";
-	// 用户类型
-	/**
-	 * 普通用户
-	 */
-	public static final int USER_TYPE_OF_CUSTOMER = 0;
-	/**
-	 * 系统用户
-	 */
-	public static final int USER_TYPE_OF_SYSTEM = 1;
 
-	// 币种
-	public static final String CURRENCY_OF_GOLDPAY = "goldpay";
-	public static final String SALT = "anytime_exchange";
-
+	// 用户 01
 	/**
 	 * 手机号已注册
 	 */
@@ -58,5 +44,24 @@ public class ServerConsts {
 	 * 换算后金额低于最小限额
 	 */
 	public static final String EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT = "02_003";
+
+	// 用户类型
+	/**
+	 * 普通用户
+	 */
+	public static final int USER_TYPE_OF_CUSTOMER = 0;
+	/**
+	 * 系统用户
+	 */
+	public static final int USER_TYPE_OF_SYSTEM = 1;
+
+	// 币种
+	public static final String CURRENCY_OF_GOLDPAY = "goldpay";
+
+	// 交易类型
+	public static final int TRANSFER_TYPE_OF_TRANSACTION = 0;
+	public static final int TRANSFER_TYPE_OF_EXCHANGE = 1;
+	public static final int TRANSFER_TYPE_OF_GOLDPAYBUY = 2;
+	public static final int TRANSFER_TYPE_OF_GIFT = 3;
 
 }
