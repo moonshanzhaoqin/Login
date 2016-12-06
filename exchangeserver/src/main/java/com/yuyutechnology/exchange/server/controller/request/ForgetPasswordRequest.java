@@ -1,6 +1,6 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-public class ResetPasswordRequest {
+public class ForgetPasswordRequest {
 	private String userPhone;
 	private String VerificationCode;
 	private String newPassword;

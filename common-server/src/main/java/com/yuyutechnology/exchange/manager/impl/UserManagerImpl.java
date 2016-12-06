@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
+import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.form.UserInfo;
@@ -34,6 +35,8 @@ public class UserManagerImpl implements UserManager {
 	CurrencyDAO currencyDAO;
 	@Autowired
 	BindDAO bindDAO;
+	@Autowired
+	RedisDAO redisDAO;
 	public static Logger logger = LoggerFactory.getLogger(UserManagerImpl.class);
 
 	@Override
@@ -50,25 +53,28 @@ public class UserManagerImpl implements UserManager {
 		// 随机生成六位数
 		final String random = MathUtils.randomFixedLengthStr(6);
 		final String md5random = DigestUtils.md5Hex(random);
-		// TODO 存入redis userPhone:md5random
-
+		// 存入redis userPhone:md5random
+		// TODO 有效时间可配，单位：min
+		redisDAO.saveData(userPhone, md5random, 10);
 		// TODO 发送验证码 (userPhone,random)
 
 	}
 
 	@Override
 	public boolean testPinCode(String userPhone, String verificationCode) {
-
-		// TODO 查redis userPhone: verificationCode
-
+		// 查redis userPhone: verificationCode
+		if (StringUtils.equals(verificationCode, redisDAO.getValueByKey(userPhone))) {
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public Integer register(String userPhone, String userName, String userPassword) {
-		//添加用户
-
-		Integer userId = userDAO.addUser(new User(userPhone, userName, DigestUtils.md5Hex(userPassword), new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER));
+		// 添加用户
+		Integer userId = userDAO.addUser(new User(userPhone, userName,
+				DigestUtils.md5Hex(DigestUtils.md5Hex(userPassword) + DigestUtils.md5Hex(userPhone)),
+				new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER));
 		// 添加钱包信息
 		List<Currency> currencies = currencyDAO.getCurrencys();
 		for (Currency currency : currencies) {
@@ -79,7 +85,11 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public Integer login(String userPhone, String userPassword) {
-		// TODO Auto-generated method stub
+		User user = userDAO.getUserByUserPhone(userPhone);
+		if (user != null && StringUtils.equals(user.getUserPassword(),
+				DigestUtils.md5Hex(DigestUtils.md5Hex(userPassword) + DigestUtils.md5Hex(userPhone)))) {
+			return user.getUserId();
+		}
 		return null;
 	}
 
@@ -96,7 +106,6 @@ public class UserManagerImpl implements UserManager {
 			} else {
 				userInfo.setPayPwd(true);
 			}
-
 			// 判断是否绑定goldpay
 			List<Bind> binds = bindDAO.getBindByUserId(userId);
 			if (binds.isEmpty()) {
@@ -106,6 +115,12 @@ public class UserManagerImpl implements UserManager {
 			}
 		}
 		return userInfo;
+	}
+
+	@Override
+	public void resetPassword(String userPhone, String newPassword) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

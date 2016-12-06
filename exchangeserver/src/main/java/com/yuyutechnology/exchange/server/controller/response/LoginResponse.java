@@ -8,6 +8,8 @@ import com.yuyutechnology.exchange.pojo.Wallet;
 public class LoginResponse extends BaseResponse {
 	private UserInfo user;
 	private List<Wallet> wallets;
+	private String token;
+	
 	public UserInfo getUser() {
 		return user;
 	}
@@ -19,5 +21,11 @@ public class LoginResponse extends BaseResponse {
 	}
 	public void setWallets(List<Wallet> wallets) {
 		this.wallets = wallets;
+	}
+	public String getToken() {
+		return token;
+	}
+	public void setToken(String token) {
+		this.token = token;
 	}
 }

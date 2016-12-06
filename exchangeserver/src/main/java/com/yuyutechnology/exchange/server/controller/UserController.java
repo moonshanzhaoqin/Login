@@ -23,21 +23,24 @@ import com.yuyutechnology.exchange.form.UserInfo;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.server.controller.request.ForgetPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetRegistrationCodeRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetVerificationCodeRequest;
 import com.yuyutechnology.exchange.server.controller.request.LoginRequest;
 import com.yuyutechnology.exchange.server.controller.request.RegisterRequest;
-import com.yuyutechnology.exchange.server.controller.request.ResetPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.TestCodeRequest;
 import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
 import com.yuyutechnology.exchange.server.controller.response.LoginResponse;
+import com.yuyutechnology.exchange.session.SessionData;
+import com.yuyutechnology.exchange.session.SessionDataHolder;
+import com.yuyutechnology.exchange.session.SessionManager;
 
 /**
  * @author suzan.wu
  *
  */
 @Controller
-@RequestMapping(value = "/token/{token}/user")
+@RequestMapping
 public class UserController {
 	public static Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -45,6 +48,8 @@ public class UserController {
 	UserManager userManager;
 	@Autowired
 	ExchangeManager exchangeManager;
+	@Autowired
+	SessionManager sessionManager;
 
 	// sign in 登录
 	@ResponseBody
@@ -52,23 +57,32 @@ public class UserController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public LoginResponse login(@RequestBody LoginRequest loginRequest, HttpServletRequest request,
 			HttpServletResponse response) {
+		
+
 		LoginResponse rep = new LoginResponse();
 		Integer userId = userManager.login(loginRequest.getUserPhone(), loginRequest.getUserPassword());
 		if (userId == null) {
 			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
 			rep.setMessage("");
 		} else {
-			// TODO 生成 Token
-
-			UserInfo user = userManager.getUserInfo(userId);
-			List<Wallet> wallets = exchangeManager.getWalletsByUserId(userId);
+			//生成session  Token
+			SessionData sessionData = SessionDataHolder.getSessionData();
+			sessionData.setUserId(userId);
+			sessionData.setBrowserLanguage(request.getParameter("language"));
+			sessionData.setLogin(true);
+			sessionManager.saveSessionData(sessionData);
+			rep.setToken(sessionData.getSessionId());
 			
-			//TODO 处理添加了币种后的wallet
-
+			//获取用户信息
+			UserInfo user = userManager.getUserInfo(userId);
+			rep.setUser(user);
+			
+			//获取钱包信息
+			List<Wallet> wallets = exchangeManager.getWalletsByUserId(userId);
+			rep.setWallets(wallets);
+			
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 			rep.setMessage("");
-			rep.setUser(user);
-			rep.setWallets(wallets);
 		}
 		return rep;
 	}
@@ -88,14 +102,24 @@ public class UserController {
 				rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
 				rep.setMessage("");
 			} else {
-				// TODO 生成 Token
+				//生成session  Token
+				SessionData sessionData = SessionDataHolder.getSessionData();
+				sessionData.setUserId(userId);
+				sessionData.setBrowserLanguage(request.getParameter("language"));
+				sessionData.setLogin(true);
+				sessionManager.saveSessionData(sessionData);
+				rep.setToken(sessionData.getSessionId());
 
+				//获取用户信息
 				UserInfo user = userManager.getUserInfo(userId);
+				rep.setUser(user);
+				
+				//获取钱包信息
 				List<Wallet> wallets = exchangeManager.getWalletsByUserId(userId);
+				rep.setWallets(wallets);
+				
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 				rep.setMessage("");
-				rep.setUser(user);
-				rep.setWallets(wallets);
 			}
 		} else {
 			rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
@@ -159,23 +183,22 @@ public class UserController {
 		return rep;
 	}
 
-	// reset password 重置密码
+	// forget password 忘记密码
 	@ResponseBody
-	@ApiOperation(value = "重置密码", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/resetPassword", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest,
+	@ApiOperation(value = "忘记密码", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/forgetPassword", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public BaseResponse forgetPassword(@RequestBody ForgetPasswordRequest forgetPasswordRequest,
 			HttpServletRequest request, HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
-		if (userManager.testPinCode(resetPasswordRequest.getUserPhone(), resetPasswordRequest.getVerificationCode())) {
-			// TODO 修改密码
-
+		if (userManager.testPinCode(forgetPasswordRequest.getUserPhone(), forgetPasswordRequest.getVerificationCode())) {
+			// 修改密码
+			userManager.resetPassword(forgetPasswordRequest.getUserPhone(),forgetPasswordRequest.getNewPassword());
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 			rep.setMessage("");
 		} else {
 			rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
 			rep.setMessage("");
 		}
-
 		return null;
 	}
 }

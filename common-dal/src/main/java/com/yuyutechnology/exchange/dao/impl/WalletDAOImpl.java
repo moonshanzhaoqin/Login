@@ -59,12 +59,10 @@ public class WalletDAOImpl implements WalletDAO {
 				return query.executeUpdate();
 			}
 		});
-		
 	}
 
 	@Override
 	public void addwallet(Wallet wallet) {
-		// TODO Auto-generated method stub
-		
+		hibernateTemplate.saveOrUpdate(wallet);
 	}
 }
