@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
@@ -67,7 +68,7 @@ public class UserManagerImpl implements UserManager {
 	public Integer register(String userPhone, String userName, String userPassword) {
 		//添加用户
 
-		Integer userId = userDAO.addUser(new User(userPhone, userName, DigestUtils.md5Hex(userPassword), new Date(), 0));
+		Integer userId = userDAO.addUser(new User(userPhone, userName, DigestUtils.md5Hex(userPassword), new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER));
 		// 添加钱包信息
 		List<Currency> currencies = currencyDAO.getCurrencys();
 		for (Currency currency : currencies) {
