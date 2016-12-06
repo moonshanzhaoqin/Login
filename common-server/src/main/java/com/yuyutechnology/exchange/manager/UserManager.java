@@ -1,9 +1,6 @@
 package com.yuyutechnology.exchange.manager;
 
-import java.util.List;
-
 import com.yuyutechnology.exchange.form.UserInfo;
-import com.yuyutechnology.exchange.pojo.User;
 
 public interface UserManager {
 	// 判断手机号是否为注册用户

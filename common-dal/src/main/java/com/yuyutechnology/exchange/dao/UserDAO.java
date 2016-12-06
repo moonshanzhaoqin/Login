@@ -10,6 +10,8 @@ import com.yuyutechnology.exchange.pojo.User;
  *
  */
 public interface UserDAO {
+	
+	public User getSystemUser();
 
 	public User getUser(Integer userId);
 	

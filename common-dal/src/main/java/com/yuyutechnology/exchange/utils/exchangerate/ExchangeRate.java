@@ -1,10 +1,12 @@
 package com.yuyutechnology.exchange.utils.exchangerate;
 
+import java.util.Map;
+
 public class ExchangeRate {
 	
 	private String base;
 	private String date;
-	private Rate rates;
+	private Map<String, Double> rates;
 	
 	public String getBase() {
 		return base;
@@ -18,11 +20,11 @@ public class ExchangeRate {
 	public void setDate(String date) {
 		this.date = date;
 	}
-	public Rate getRates() {
+	public Map<String, Double> getRates() {
 		return rates;
 	}
-	public void setRates(Rate rates) {
+	public void setRates(Map<String, Double> rates) {
 		this.rates = rates;
 	}
-
+	
 }

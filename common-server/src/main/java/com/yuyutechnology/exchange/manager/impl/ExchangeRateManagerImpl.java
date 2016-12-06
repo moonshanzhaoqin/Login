@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.google.gson.Gson;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
@@ -46,7 +45,6 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 			logger.info("result : {}",result);
 			map.put(currency.getCurrency(), result);
 		}
-//		redisDAO.saveData("redis_exchangeRate", new Gson().toJson(map), 5);
 		redisDAO.saveData("redis_exchangeRate",JsonBinder.getInstance().toJson(map), 5);
 	}
 
@@ -58,37 +56,15 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		String result = redisDAO.getValueByKey("redis_exchangeRate");
 		if(StringUtils.isNotBlank(result)){
 //			logger.info("result : {}",result);
-			map = new Gson().fromJson(result, map.getClass());
+			map = JsonBinder.getInstance().fromJson(result, HashMap.class);
 			String value = map.get(base);
 			logger.info("value : {}",value);
-			ExchangeRate exchangeRate = new Gson().fromJson(value, ExchangeRate.class);
+			ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().fromJson(value, ExchangeRate.class);
 			
 			if(base.equals(ServerConsts.CURRENCY_OF_GOLDPAY) || outCurrency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 				//当兑换中有goldpay时，需要特殊处理
 			}else{
-				switch (outCurrency) {
-				case "CNY"://人民币
-					out = exchangeRate.getRates().getCNY();
-					break;
-				case "USD"://美元
-					out = exchangeRate.getRates().getUSD();
-					break;
-				case "HKD"://港币
-					out = exchangeRate.getRates().getHKD();
-					break;
-				case "EUR"://欧元
-					out = exchangeRate.getRates().getEUR();
-					break;
-				case "GBP"://英镑
-					out = exchangeRate.getRates().getGBP();
-					break;
-				case "JPY"://日元
-					out = exchangeRate.getRates().getJPY();
-					break;
-
-				default:
-					break;
-				}
+				out = exchangeRate.getRates().get(outCurrency);
 			}
 		}
 		
@@ -96,10 +72,5 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		
 		return out;
 	}
-	
-	
-	
-	
-
 
 }
