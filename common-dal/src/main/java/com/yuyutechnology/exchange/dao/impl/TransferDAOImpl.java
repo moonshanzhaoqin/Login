@@ -61,4 +61,15 @@ public class TransferDAOImpl implements TransferDAO {
 		hibernateTemplate.saveOrUpdate(transfer);
 	}
 
+	@Override
+	public void updateTransferStatusAndUserTo(String transferId, int transferStatus, Integer userTo) {
+		Transfer transfer = hibernateTemplate.get(Transfer.class, transferId);
+		transfer.setTransferStatus(transferStatus);
+		transfer.setUserTo(userTo);
+		if(transferStatus == ServerConsts.TRANSFER_STATUS_OF_COMPLETED){
+			transfer.setFinishTime(new Date());
+		}
+		hibernateTemplate.saveOrUpdate(transfer);
+	}
+
 }

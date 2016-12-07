@@ -64,8 +64,11 @@ public class UserController {
 	@RequestMapping(value = "/forgetPassword", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse forgetPassword(@RequestBody ForgetPasswordRequest forgetPasswordRequest,
 			HttpServletRequest request, HttpServletResponse response) {
+		logger.info("========forgetPassword****{}============",
+				forgetPasswordRequest.getAreaCode() + forgetPasswordRequest.getUserPhone());
 		BaseResponse rep = new BaseResponse();
 		if (forgetPasswordRequest.isEmpty()) {
+			logger.info("PARAMETER_IS_EMPTY");
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage("");
 		} else {
@@ -75,13 +78,16 @@ public class UserController {
 				Integer userId = userManager.resetPassword(forgetPasswordRequest.getAreaCode(),
 						forgetPasswordRequest.getUserPhone(), forgetPasswordRequest.getNewPassword());
 				if (userId == null) {
+					logger.info("PHONE_NOT_EXIST");
 					rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
 					rep.setMessage("");
 				} else {
+					logger.info("********Operation succeeded********");
 					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 					rep.setMessage("");
 				}
 			} else {
+				logger.info("PHONE_AND_CODE_NOT_MATCH");
 				rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
 				rep.setMessage("");
 			}
@@ -102,8 +108,11 @@ public class UserController {
 	@RequestMapping(value = "/getRegistrationCode", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse getRegistrationCode(@RequestBody GetRegistrationCodeRequest getRegistrationCodeRequest,
 			HttpServletRequest request, HttpServletResponse response) {
+		logger.info("========getRegistrationCode****{}============",
+				getRegistrationCodeRequest.getAreaCode() + getRegistrationCodeRequest.getUserPhone());
 		BaseResponse rep = new BaseResponse();
 		if (getRegistrationCodeRequest.isEmpty()) {
+			logger.info("PARAMETER_IS_EMPTY");
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage("");
 		} else {
@@ -115,6 +124,7 @@ public class UserController {
 			} else {
 				userManager.getPinCode(getRegistrationCodeRequest.getAreaCode(),
 						getRegistrationCodeRequest.getUserPhone());
+				logger.info("********Operation succeeded********");
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 				rep.setMessage("");
 			}
@@ -135,8 +145,11 @@ public class UserController {
 	@RequestMapping(value = "/getVerificationCode", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse getVerificationCode(@RequestBody GetVerificationCodeRequest getVerificationCodeRequest,
 			HttpServletRequest request, HttpServletResponse response) {
+		logger.info("========getVerificationCode****{}============",
+				getVerificationCodeRequest.getAreaCode() + getVerificationCodeRequest.getUserPhone());
 		BaseResponse rep = new BaseResponse();
 		if (getVerificationCodeRequest.isEmpty()) {
+			logger.info("PARAMETER_IS_EMPTY");
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage("");
 		} else {
@@ -145,9 +158,11 @@ public class UserController {
 					getVerificationCodeRequest.getUserPhone())) {
 				userManager.getPinCode(getVerificationCodeRequest.getAreaCode(),
 						getVerificationCodeRequest.getUserPhone());
+				logger.info("********Operation succeeded********");
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 				rep.setMessage("");
 			} else {
+				logger.info("PHONE_NOT_EXIST");
 				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
 				rep.setMessage("");
 			}
@@ -168,8 +183,10 @@ public class UserController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public LoginResponse login(@RequestBody LoginRequest loginRequest, HttpServletRequest request,
 			HttpServletResponse response) {
+		logger.info("========login****{}============", loginRequest.getAreaCode() + loginRequest.getUserPhone());
 		LoginResponse rep = new LoginResponse();
 		if (loginRequest.isEmpty()) {
+			logger.info("PARAMETER_IS_EMPTY");
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage("");
 		} else {
@@ -182,7 +199,6 @@ public class UserController {
 				// 生成session Token
 				SessionData sessionData = SessionDataHolder.getSessionData();
 				sessionData.setUserId(userId);
-				sessionData.setBrowserLanguage(request.getParameter("language"));
 				sessionData.setLogin(true);
 				sessionManager.saveSessionData(sessionData);
 				rep.setToken(sessionData.getSessionId());
@@ -195,6 +211,7 @@ public class UserController {
 				List<Wallet> wallets = exchangeManager.getWalletsByUserId(userId);
 				rep.setWallets(wallets);
 
+				logger.info("********Operation succeeded********");
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 				rep.setMessage("");
 			}
@@ -215,8 +232,11 @@ public class UserController {
 	@RequestMapping(value = "/register", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public LoginResponse register(@RequestBody RegisterRequest registerRequest, HttpServletRequest request,
 			HttpServletResponse response) {
+		logger.info("========register****{}============",
+				registerRequest.getAreaCode() + registerRequest.getUserPhone());
 		LoginResponse rep = new LoginResponse();
 		if (registerRequest.isEmpty()) {
+			logger.info("PARAMETER_IS_EMPTY");
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage("");
 		} else {
@@ -232,7 +252,6 @@ public class UserController {
 					// 生成session Token
 					SessionData sessionData = SessionDataHolder.getSessionData();
 					sessionData.setUserId(userId);
-					sessionData.setBrowserLanguage(request.getParameter("language"));
 					sessionData.setLogin(true);
 					sessionManager.saveSessionData(sessionData);
 					rep.setToken(sessionData.getSessionId());
@@ -245,10 +264,12 @@ public class UserController {
 					List<Wallet> wallets = exchangeManager.getWalletsByUserId(userId);
 					rep.setWallets(wallets);
 
+					logger.info("********Operation succeeded********");
 					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 					rep.setMessage("");
 				}
 			} else {
+				logger.info("PHONE_AND_CODE_NOT_MATCH");
 				rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
 				rep.setMessage("");
 			}
@@ -269,17 +290,21 @@ public class UserController {
 	@RequestMapping(value = "/testCode", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse testCode(@RequestBody TestCodeRequest testRequest, HttpServletRequest request,
 			HttpServletResponse response) {
+		logger.info("========testCode****{}============", testRequest.getAreaCode() + testRequest.getUserPhone());
 		BaseResponse rep = new BaseResponse();
 		if (testRequest.isEmpty()) {
+			logger.info("PARAMETER_IS_EMPTY");
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage("");
 		} else {
 			// 校验验证码
 			if (userManager.testPinCode(testRequest.getAreaCode(), testRequest.getUserPhone(),
 					testRequest.getVerificationCode())) {
+				logger.info("********Operation succeeded********");
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 				rep.setMessage("");
 			} else {
+				logger.info("PHONE_AND_CODE_NOT_MATCH");
 				rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
 				rep.setMessage("");
 			}

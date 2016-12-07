@@ -15,9 +15,11 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
+import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
+import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.form.UserInfo;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Bind;
@@ -36,6 +38,10 @@ public class UserManagerImpl implements UserManager {
 	@Autowired
 	WalletDAO walletDAO;
 	@Autowired
+	TransferDAO transferDAO;
+	@Autowired
+	WalletSeqDAO walletSeqDAO;
+	@Autowired
 	CurrencyDAO currencyDAO;
 	@Autowired
 	BindDAO bindDAO;
@@ -50,6 +56,7 @@ public class UserManagerImpl implements UserManager {
 	public void getPinCode(String areaCode, String userPhone) {
 		// 随机生成六位数
 		final String random = MathUtils.randomFixedLengthStr(6);
+		logger.info("{}");
 		final String md5random = DigestUtils.md5Hex(random);
 		// 存入redis userPhone:md5random
 		// TODO 有效时间可配，单位：min
@@ -113,12 +120,25 @@ public class UserManagerImpl implements UserManager {
 		for (Currency currency : currencies) {
 			walletDAO.addwallet(new Wallet(userId, currency.getCurrency(), new BigDecimal(0)));
 		}
-		//TODO 根据UNregister 获取转账信息更新钱包
-		List<Unregistered> unregistereds=unregisteredDAO.getUnregisteredByUserPhone(areaCode, userPhone);
+		// 根据UNregistered 将资金从系统帐户划给新用户
+		Integer systemUserId = userDAO.getSystemUser().getUserId();
+		List<Unregistered> unregistereds = unregisteredDAO.getUnregisteredByUserPhone(areaCode, userPhone);
 		for (Unregistered unregistered : unregistereds) {
-			//TODO 系统账户    扣款   加流水
-			//TODO 用户账户  加款  流水 
-			//TODO 更新转账记录
+			// 系统账号扣款
+			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, unregistered.getCurrency(),
+					unregistered.getAmount(), "-");
+			// 用户加款
+			walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(), unregistered.getAmount(),
+					"+");
+			// 增加seq记录
+			walletSeqDAO.addWalletSeq4Transaction(systemUserId, userId, ServerConsts.TRANSFER_TYPE_OF_TRANSACTION,
+					unregistered.getTransferId(), unregistered.getCurrency(), unregistered.getAmount());
+			// 更改Transfer状态
+			transferDAO.updateTransferStatusAndUserTo(unregistered.getTransferId(),
+					ServerConsts.TRANSFER_STATUS_OF_COMPLETED, userId);
+			// 更改unregistered状态
+			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
+			unregisteredDAO.updateUnregistered(unregistered);
 		}
 		return userId;
 	}
@@ -127,9 +147,10 @@ public class UserManagerImpl implements UserManager {
 	public Integer resetPassword(String areaCode, String userPhone, String newPassword) {
 		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
 		if (user != null) {
-			user.setUserPassword(DigestUtils.md5Hex(DigestUtils.md5Hex(newPassword) + DigestUtils.md5Hex(areaCode + userPhone)));
+			user.setUserPassword(
+					DigestUtils.md5Hex(DigestUtils.md5Hex(newPassword) + DigestUtils.md5Hex(areaCode + userPhone)));
 			userDAO.updateUserPassword(user);
-		return user.getUserId();
+			return user.getUserId();
 		}
 		return null;
 	}

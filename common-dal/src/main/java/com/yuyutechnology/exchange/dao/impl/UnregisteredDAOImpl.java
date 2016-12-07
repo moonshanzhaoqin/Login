@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.pojo.Unregistered;
 
@@ -18,8 +19,14 @@ public class UnregisteredDAOImpl implements UnregisteredDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Unregistered> getUnregisteredByUserPhone(String areaCode, String userPhone) {
-		List<?> list = hibernateTemplate.find("from Unregistered where areaCode = ? and userPhone = ?", areaCode,
-				userPhone);
+		List<?> list = hibernateTemplate.find("from Unregistered where areaCode = ? and userPhone = ? and unregisteredStatus = ?", areaCode,
+				userPhone,ServerConsts.UNREGISTERED_STATUS_OF_PENDING);
 		return (List<Unregistered>) list;
+	}
+
+	@Override
+	public void updateUnregistered(Unregistered unregistered) {
+		hibernateTemplate.saveOrUpdate(unregistered);
+		
 	}
 }

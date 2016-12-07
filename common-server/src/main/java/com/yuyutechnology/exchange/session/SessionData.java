@@ -6,7 +6,6 @@ public class SessionData implements Serializable {
 	private static final long serialVersionUID = 1367760874322776220L;
 	private Integer userId;
 	private String sessionId;
-	private String browserLanguage;
 	private boolean login;
 
 	public Integer getUserId() {
@@ -23,14 +22,6 @@ public class SessionData implements Serializable {
 
 	public void setSessionId(String sessionId) {
 		this.sessionId = sessionId;
-	}
-
-	public String getBrowserLanguage() {
-		return browserLanguage;
-	}
-
-	public void setBrowserLanguage(String browserLanguage) {
-		this.browserLanguage = browserLanguage;
 	}
 
 	public boolean isLogin() {

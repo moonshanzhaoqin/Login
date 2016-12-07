@@ -78,12 +78,18 @@ public class ServerConsts {
 	public static final String CURRENCY_OF_GOLDPAY = "goldpay";
 
 	// 交易类型
+	/**
+	 * 转账
+	 */
 	public static final int TRANSFER_TYPE_OF_TRANSACTION = 0;
+	/**
+	 * 兑换
+	 */
 	public static final int TRANSFER_TYPE_OF_EXCHANGE = 1;
 	public static final int TRANSFER_TYPE_OF_GOLDPAYBUY = 2;
 	public static final int TRANSFER_TYPE_OF_GIFT = 3;
-	
-	//交易状态
+
+	// 交易状态
 	/**
 	 * 交易初始化
 	 */
@@ -96,6 +102,20 @@ public class ServerConsts {
 	 * 交易已完成
 	 */
 	public static final int TRANSFER_STATUS_OF_COMPLETED = 2;
+
+	// unregistered状态
+	/**
+	 * 用户未注册，资金在系统账户
+	 */
+	public static final int UNREGISTERED_STATUS_OF_PENDING = 0;
+	/**
+	 * 超时 已退回原账户
+	 */
+	public static final int UNREGISTERED_STATUS_OF_BACK = 1;
+	/**
+	 * 用户已注册并取回资金
+	 */
+	public static final int UNREGISTERED_STATUS_OF_COMPLETED = 2;
 
 	// configKey
 	/**
