@@ -116,7 +116,9 @@ public class UserManagerImpl implements UserManager {
 		//TODO 根据UNregister 获取转账信息更新钱包
 		List<Unregistered> unregistereds=unregisteredDAO.getUnregisteredByUserPhone(areaCode, userPhone);
 		for (Unregistered unregistered : unregistereds) {
-			//TODO
+			//TODO 系统账户    扣款   加流水
+			//TODO 用户账户  加款  流水 
+			//TODO 更新转账记录
 		}
 		return userId;
 	}
@@ -135,7 +137,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public boolean testPinCode(String areaCode, String userPhone, String verificationCode) {
 		// 查redis userPhone: verificationCode
-		if (StringUtils.equals(verificationCode, redisDAO.getValueByKey(areaCode + userPhone))) {
+		if (StringUtils.equals(DigestUtils.md5Hex(verificationCode), redisDAO.getValueByKey(areaCode + userPhone))) {
 			return true;
 		}
 		return false;

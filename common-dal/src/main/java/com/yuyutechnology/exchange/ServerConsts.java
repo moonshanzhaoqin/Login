@@ -1,8 +1,8 @@
 package com.yuyutechnology.exchange;
 
 public class ServerConsts {
-	//RetCode: 通用 00; 用户 01;兑换 02; 转账 03
-	
+	// RetCode: 通用 00; 用户 01;兑换 02; 转账 03
+
 	// 通用 00
 	/**
 	 * 成功
@@ -12,10 +12,15 @@ public class ServerConsts {
 	 * 失败
 	 */
 	public static final String RET_CODE_FAILUE = "00_001";
+
 	/**
 	 * Session过期
 	 */
 	public static final String SESSION_TIMEOUT = "00_002";
+	/**
+	 * 参数为空
+	 */
+	public static final String PARAMETER_IS_EMPTY = "00_003";
 
 	// 用户 01
 	/**
@@ -44,8 +49,7 @@ public class ServerConsts {
 	 * 换算后金额低于最小限额
 	 */
 	public static final String EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT = "02_003";
-	
-	
+
 	// 交易03
 	/**
 	 * 余额不足
@@ -92,5 +96,11 @@ public class ServerConsts {
 	 * 交易已完成
 	 */
 	public static final int TRANSFER_STATUS_OF_COMPLETED = 2;
+
+	// configKey
+	/**
+	 * 本位货币，主币(结算单位)
+	 */
+	public static final String STANDARD_CURRENCY = "standard_currency";
 
 }
