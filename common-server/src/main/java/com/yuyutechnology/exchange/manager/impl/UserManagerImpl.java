@@ -66,6 +66,15 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
+	public Integer getUserId(String areaCode, String userPhone) {
+		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
+		if (user != null) {
+			return user.getUserId();
+		}
+		return null;
+	}
+
+	@Override
 	public UserInfo getUserInfo(Integer userId) {
 		User user = userDAO.getUser(userId);
 		UserInfo userInfo = null;
@@ -88,15 +97,6 @@ public class UserManagerImpl implements UserManager {
 			}
 		}
 		return userInfo;
-	}
-
-	@Override
-	public boolean isUser(String areaCode, String userPhone) {
-		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
-		if (user == null) {
-			return false;
-		}
-		return true;
 	}
 
 	@Override
@@ -147,26 +147,32 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public Integer resetPassword(String areaCode, String userPhone, String newPassword) {
-		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
-		if (user != null) {
-			// 随机生成盐值
-			String passwordSalt = DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(6));
-			user.setUserPassword(DigestUtils.md5Hex(DigestUtils.md5Hex(newPassword) + passwordSalt));
-			user.setPasswordSalt(passwordSalt);
-			userDAO.updateUserPassword(user);
-			return user.getUserId();
-		}
-		return null;
-	}
-
-	@Override
 	public boolean testPinCode(String areaCode, String userPhone, String verificationCode) {
 		// 查redis userPhone: verificationCode
 		if (StringUtils.equals(DigestUtils.md5Hex(verificationCode), redisDAO.getValueByKey(areaCode + userPhone))) {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void updatePassword(Integer userId, String newPassword) {
+		User user = userDAO.getUser(userId);
+		user.setUserPassword(DigestUtils.md5Hex(DigestUtils.md5Hex(newPassword) + user.getPasswordSalt()));
+		userDAO.updateUserPassword(user);
+	}
+
+	@Override
+	public void updateUserPayPwd(Integer userId, String userPayPwd) {
+		User user = userDAO.getUser(userId);
+		user.setUserPayPwd(userPayPwd);
+		userDAO.updateUserPassword(user);
+	}
+
+	@Override
+	public void checkUserPayPwd(Integer userId, String userPayPwd) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

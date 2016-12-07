@@ -22,6 +22,7 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.form.UserInfo;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
+import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.server.controller.request.ForgetPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetRegistrationCodeRequest;
@@ -72,18 +73,20 @@ public class UserController {
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage("");
 		} else {
+			// 验证码校验
 			if (userManager.testPinCode(forgetPasswordRequest.getAreaCode(), forgetPasswordRequest.getUserPhone(),
 					forgetPasswordRequest.getVerificationCode())) {
-				// 修改密码
-				Integer userId = userManager.resetPassword(forgetPasswordRequest.getAreaCode(),
-						forgetPasswordRequest.getUserPhone(), forgetPasswordRequest.getNewPassword());
-				if (userId == null) {
-					logger.info("PHONE_NOT_EXIST");
-					rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
-					rep.setMessage("");
-				} else {
+				Integer userId = userManager.getUserId(forgetPasswordRequest.getAreaCode(),
+						forgetPasswordRequest.getUserPhone());
+				if (userId != null) {
+					// 修改密码
+					userManager.updatePassword(userId, forgetPasswordRequest.getNewPassword());
 					logger.info("********Operation succeeded********");
 					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+					rep.setMessage("");
+				} else {
+					logger.info("PHONE_NOT_EXIST");
+					rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
 					rep.setMessage("");
 				}
 			} else {
@@ -117,8 +120,9 @@ public class UserController {
 			rep.setMessage("");
 		} else {
 			// 检验手机号是否已注册
-			if (userManager.isUser(getRegistrationCodeRequest.getAreaCode(),
-					getRegistrationCodeRequest.getUserPhone())) {
+			if (userManager.getUserId(getRegistrationCodeRequest.getAreaCode(),
+					getRegistrationCodeRequest.getUserPhone()) != null) {
+				logger.info("PHONE_IS_REGISTERED");
 				rep.setRetCode(ServerConsts.PHONE_IS_REGISTERED);
 				rep.setMessage("");
 			} else {
@@ -154,8 +158,8 @@ public class UserController {
 			rep.setMessage("");
 		} else {
 			// 检验手机号是否存在
-			if (userManager.isUser(getVerificationCodeRequest.getAreaCode(),
-					getVerificationCodeRequest.getUserPhone())) {
+			if (userManager.getUserId(getVerificationCodeRequest.getAreaCode(),
+					getVerificationCodeRequest.getUserPhone()) != null) {
 				userManager.getPinCode(getVerificationCodeRequest.getAreaCode(),
 						getVerificationCodeRequest.getUserPhone());
 				logger.info("********Operation succeeded********");

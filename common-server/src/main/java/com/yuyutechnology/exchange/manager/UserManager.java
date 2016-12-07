@@ -12,21 +12,21 @@ public interface UserManager {
 	public void getPinCode(String areaCode, String userPhone);
 
 	/**
+	 * 根据手机号码获取userID(用作判断是否为注册用户)
+	 * 
+	 * @param areaCode
+	 * @param userPhone
+	 * @return
+	 */
+	public Integer getUserId(String areaCode, String userPhone);
+
+	/**
 	 * 获取用户基本信息
 	 * 
 	 * @param userId
 	 * @return
 	 */
 	public UserInfo getUserInfo(Integer userId);
-
-	/**
-	 * 判断手机号是否为注册用户
-	 * 
-	 * @param areaCode
-	 * @param userPhone
-	 * @return
-	 */
-	public boolean isUser(String areaCode, String userPhone);
 
 	/**
 	 * 登录
@@ -50,16 +50,6 @@ public interface UserManager {
 	public Integer register(String areaCode, String userPhone, String userName, String userPassword);
 
 	/**
-	 * 重置密码
-	 * 
-	 * @param areaCode
-	 * @param userPhone
-	 * @param newPassword
-	 * @return 
-	 */
-	public Integer resetPassword(String areaCode, String userPhone, String newPassword);
-
-	/**
 	 * 验证手机号与验证码是否匹配
 	 * 
 	 * @param areaCode
@@ -69,4 +59,28 @@ public interface UserManager {
 	 */
 	public boolean testPinCode(String areaCode, String userPhone, String verificationCode);
 
+	/**
+	 * 更改密码
+	 * 
+	 * @param userId
+	 * @param newPassword
+	 * @return
+	 */
+	public void updatePassword(Integer userId, String newPassword);
+
+	/**
+	 * 更改支付密码
+	 * 
+	 * @param userId
+	 * @param userPayPwd
+	 */
+	public void updateUserPayPwd(Integer userId, String userPayPwd);
+
+	/**
+	 * 校验支付密码
+	 * 
+	 * @param userId
+	 * @param userPayPwd
+	 */
+	public void checkUserPayPwd(Integer userId, String userPayPwd);
 }
