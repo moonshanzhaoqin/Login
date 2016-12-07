@@ -19,7 +19,6 @@ import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.pojo.Exchange;
 import com.yuyutechnology.exchange.pojo.Wallet;
-import com.yuyutechnology.exchange.pojo.WalletSeq;
 
 @Service
 public class ExchangeManagerImpl implements ExchangeManager {
@@ -113,9 +112,9 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			exchangeDAO.addExchange(exchange);
 			
 			//添加seq记录
-			walletSeqDAO.addWalletSeq(userId, ServerConsts.TRANSFER_TYPE_OF_EXCHANGE, exchangeId, 
+			walletSeqDAO.addWalletSeq4Exchange(userId, ServerConsts.TRANSFER_TYPE_OF_EXCHANGE, exchangeId, 
 					currencyOut, amountOut, currencyIn, amountIn);
-			walletSeqDAO.addWalletSeq(systemUserId, ServerConsts.TRANSFER_TYPE_OF_EXCHANGE, exchangeId, 
+			walletSeqDAO.addWalletSeq4Exchange(systemUserId, ServerConsts.TRANSFER_TYPE_OF_EXCHANGE, exchangeId, 
 					currencyIn, amountIn, currencyOut, amountOut);
 		}
 		

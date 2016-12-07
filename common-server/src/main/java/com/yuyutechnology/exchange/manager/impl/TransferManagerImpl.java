@@ -12,6 +12,7 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
+import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
@@ -26,6 +27,8 @@ public class TransferManagerImpl implements TransferManager{
 	WalletDAO walletDAO;
 	@Autowired
 	TransferDAO transferDAO;
+	@Autowired
+	WalletSeqDAO walletSeqDAO;
 	
 	public static Logger logger = LoggerFactory.getLogger(TransferManagerImpl.class);
 
@@ -59,7 +62,7 @@ public class TransferManagerImpl implements TransferManager{
 		transfer.setCurrency(currency);
 		transfer.setTransferAmount(amount);
 		transfer.setTransferComment(transferComment);
-		transfer.setTransferStatus(1);
+		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_OF_TRANSACTION);
 		transfer.setUserFrom(userId);
 		//判断接收人是否是已注册账号
@@ -74,6 +77,70 @@ public class TransferManagerImpl implements TransferManager{
 		transferDAO.addTransfer(transfer);
 		
 		return transferId;
+	}
+
+	@Override
+	public String payPwdConfirm(int userId, String transferId, String userPayPwd) {
+		
+		User user = userDAO.getUser(userId);
+		
+		//验证交易密码
+		if(user.getUserPayPwd().equals(userPayPwd)){
+			transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_PROCESSING);
+			
+			//发送验证码
+			
+			//
+			return ServerConsts.RET_CODE_SUCCESS;
+		}
+		
+		return ServerConsts.TRANSFER_PAYMENTPWD_INCORRECT;
+	}
+
+	@Override
+	public void transferConfirm(String transferId) {
+		Transfer transfer = transferDAO.getTransferById(transferId);
+		
+		if(transfer.getUserTo() == 0){  	//交易对象没有注册账号
+			
+			//获取系统账号
+			User systemUser = userDAO.getSystemUser();
+			//扣款
+			walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), 
+					transfer.getCurrency(), transfer.getTransferAmount(), "-");
+			//加款
+			walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), 
+					transfer.getCurrency(), transfer.getTransferAmount(), "+");
+			//添加gift记录
+			
+			//更改用户的当日累计金额
+			
+			
+			
+			//增加seq记录
+			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), systemUser.getUserId(), 
+					ServerConsts.TRANSFER_TYPE_OF_TRANSACTION, transfer.getTransferId(), 
+					transfer.getCurrency(), transfer.getTransferAmount());
+			
+		}else{								//交易对象注册账号,交易正常进行，无需经过系统账户
+			
+			//扣款
+			walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), 
+					transfer.getCurrency(), transfer.getTransferAmount(), "-");
+			//加款
+			walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserTo(), 
+					transfer.getCurrency(), transfer.getTransferAmount(), "+");
+			//更改Transfer状态
+			transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+			
+			//更改用户的当日累计金额
+			
+			//添加seq记录
+			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), transfer.getUserTo(), 
+					ServerConsts.TRANSFER_TYPE_OF_TRANSACTION, transfer.getTransferId(), 
+					transfer.getCurrency(), transfer.getTransferAmount());
+				
+		}
 	}
 
 }

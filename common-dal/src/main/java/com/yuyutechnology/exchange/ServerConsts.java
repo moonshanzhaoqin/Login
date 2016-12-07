@@ -55,6 +55,10 @@ public class ServerConsts {
 	 * 超过当日最大限额
 	 */
 	public static final String TRANSFER_EXCEEDED_TRANSACTION_LIMIT = "03_002";
+	/**
+	 * 支付密码不正确
+	 */
+	public static final String TRANSFER_PAYMENTPWD_INCORRECT = "03_003";
 
 	// 用户类型
 	/**
@@ -74,5 +78,19 @@ public class ServerConsts {
 	public static final int TRANSFER_TYPE_OF_EXCHANGE = 1;
 	public static final int TRANSFER_TYPE_OF_GOLDPAYBUY = 2;
 	public static final int TRANSFER_TYPE_OF_GIFT = 3;
+	
+	//交易状态
+	/**
+	 * 交易初始化
+	 */
+	public static final int TRANSFER_STATUS_OF_INITIALIZATION = 0;
+	/**
+	 * 交易进行中
+	 */
+	public static final int TRANSFER_STATUS_OF_PROCESSING = 1;
+	/**
+	 * 交易已完成
+	 */
+	public static final int TRANSFER_STATUS_OF_COMPLETED = 2;
 
 }

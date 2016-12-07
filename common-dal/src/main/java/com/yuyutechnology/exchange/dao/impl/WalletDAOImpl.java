@@ -47,10 +47,10 @@ public class WalletDAOImpl implements WalletDAO {
 				Query query;
 				if(capitalFlows.equals("+")){
 					query = session.createQuery("update Wallet set updateTime = ? ,balance = balance+"
-							+amount+"where userId = ? and currency = ?");
+							+amount+" where userId = ? and currency = ?");
 				}else{
 					query = session.createQuery("update Wallet set updateTime = ? ,balance = balance-"
-							+amount+"where userId = ? and currency = ?");
+							+amount+" where userId = ? and currency = ?");
 				}
 				query.setTimestamp(0, new Date());
 				query.setInteger(1, userId);
