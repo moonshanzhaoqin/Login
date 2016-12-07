@@ -16,17 +16,23 @@ public class UnregisteredDAOImpl implements UnregisteredDAO {
 	@Resource
 	HibernateTemplate hibernateTemplate;
 
+	@Override
+	public void addUnregistered(Unregistered unregistered) {
+		hibernateTemplate.save(unregistered);
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Unregistered> getUnregisteredByUserPhone(String areaCode, String userPhone) {
-		List<?> list = hibernateTemplate.find("from Unregistered where areaCode = ? and userPhone = ? and unregisteredStatus = ?", areaCode,
-				userPhone,ServerConsts.UNREGISTERED_STATUS_OF_PENDING);
+		List<?> list = hibernateTemplate.find(
+				"from Unregistered where areaCode = ? and userPhone = ? and unregisteredStatus = ?", areaCode,
+				userPhone, ServerConsts.UNREGISTERED_STATUS_OF_PENDING);
 		return (List<Unregistered>) list;
 	}
 
 	@Override
 	public void updateUnregistered(Unregistered unregistered) {
 		hibernateTemplate.saveOrUpdate(unregistered);
-		
+
 	}
 }

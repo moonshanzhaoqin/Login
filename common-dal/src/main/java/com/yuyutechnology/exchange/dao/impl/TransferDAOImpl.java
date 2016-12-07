@@ -1,9 +1,11 @@
 package com.yuyutechnology.exchange.dao.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.orm.hibernate4.HibernateTemplate;
@@ -22,6 +24,8 @@ public class TransferDAOImpl implements TransferDAO {
 	RedisTemplate<String, String> commonRedisTemplate;
 	
 	private final String anytime_exechange_assign_transid = "anytimeExechangeAssignTransid";
+	//用户累加交易金额
+	private final String accumulated_amount_key = "accumulated_amount_[key]";
 
 	@Override
 	public String createTransId(int transferType) {
@@ -70,6 +74,21 @@ public class TransferDAOImpl implements TransferDAO {
 			transfer.setFinishTime(new Date());
 		}
 		hibernateTemplate.saveOrUpdate(transfer);
+	}
+
+	@Override
+	public void updateAccumulatedAmount(String key,BigDecimal amoumt) {
+		commonRedisTemplate.opsForValue().increment(accumulated_amount_key.replace("[key]", key),amoumt.longValue() );
+	}
+
+	@Override
+	public BigDecimal getAccumulatedAmount(String key) {
+		String result = commonRedisTemplate.opsForValue().get(accumulated_amount_key.replace("[key]", key));
+		if (StringUtils.isEmpty(result)){
+			return new BigDecimal(0);
+		}else{
+			return new BigDecimal(result);
+		}
 	}
 
 }

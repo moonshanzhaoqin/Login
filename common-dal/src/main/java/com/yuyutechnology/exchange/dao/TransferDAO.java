@@ -1,5 +1,7 @@
 package com.yuyutechnology.exchange.dao;
 
+import java.math.BigDecimal;
+
 import com.yuyutechnology.exchange.pojo.Transfer;
 
 public interface TransferDAO {
@@ -10,15 +12,11 @@ public interface TransferDAO {
 
 	public Transfer getTransferById(String transferId);
 
-	public void updateTransferStatus(String transferId, int transferStatus);
+	public void updateAccumulatedAmount(String key, BigDecimal amoumt);
 
-	/**
-	 * 更改转账状态和转入账户
-	 * 
-	 * @param transferId
-	 * @param transferStatus
-	 * @param userTo
-	 */
+	public BigDecimal getAccumulatedAmount(String key);
+
+	public void updateTransferStatus(String transferId, int transferStatus);
 
 	public void updateTransferStatusAndUserTo(String transferId, int transferStatus, Integer userTo);
 
