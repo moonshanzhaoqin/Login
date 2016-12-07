@@ -1,5 +1,7 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
+import org.apache.commons.lang.StringUtils;
+
 public class RegisterRequest {
 	private String areaCode;
 	private String userPhone;
@@ -45,6 +47,30 @@ public class RegisterRequest {
 
 	public void setRegistrationCode(String registrationCode) {
 		this.registrationCode = registrationCode;
+	}
+
+	/**
+	 * 判断参数是否为空
+	 * 
+	 * @return
+	 */
+	public boolean isEmpty() {
+		if (StringUtils.isEmpty(this.areaCode)) {
+			return true;
+		}
+		if (StringUtils.isEmpty(this.userPhone)) {
+			return true;
+		}
+		if (StringUtils.isEmpty(this.UserName)) {
+			return true;
+		}
+		if (StringUtils.isEmpty(this.registrationCode)) {
+			return true;
+		}
+		if (StringUtils.isEmpty(this.userPassword)) {
+			return true;
+		}
+		return false;
 	}
 
 }
