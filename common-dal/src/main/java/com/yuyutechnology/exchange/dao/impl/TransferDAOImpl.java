@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.pojo.Transfer;
 
@@ -42,6 +43,22 @@ public class TransferDAOImpl implements TransferDAO {
 	@Override
 	public void addTransfer(Transfer transfer) {
 		hibernateTemplate.save(transfer);
+	}
+
+	@Override
+	public Transfer getTransferById(String transferId) {
+		Transfer transfer = hibernateTemplate.get(Transfer.class, transferId);
+		return transfer;
+	}
+
+	@Override
+	public void updateTransferStatus(String transferId, int transferStatus) {
+		Transfer transfer = hibernateTemplate.get(Transfer.class, transferId);
+		transfer.setTransferStatus(transferStatus);
+		if(transferStatus == ServerConsts.TRANSFER_STATUS_OF_COMPLETED){
+			transfer.setFinishTime(new Date());
+		}
+		hibernateTemplate.saveOrUpdate(transfer);
 	}
 
 }

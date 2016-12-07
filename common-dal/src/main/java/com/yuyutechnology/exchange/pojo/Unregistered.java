@@ -26,18 +26,20 @@ public class Unregistered implements java.io.Serializable {
 	private BigDecimal amount;
 	private Date createTime;
 	private int unregisteredStatus;
+	private String transferId;
 
 	public Unregistered() {
 	}
 
 	public Unregistered(String areaCode, String userPhone, String currency, BigDecimal amount, Date createTime,
-			int unregisteredStatus) {
-		this.setAreaCode(areaCode);
-		this.setUserPhone(userPhone);
+			int unregisteredStatus, String transferId) {
+		this.areaCode = areaCode;
+		this.userPhone = userPhone;
 		this.currency = currency;
 		this.amount = amount;
 		this.createTime = createTime;
 		this.unregisteredStatus = unregisteredStatus;
+		this.transferId = transferId;
 	}
 
 	@Id
@@ -105,6 +107,15 @@ public class Unregistered implements java.io.Serializable {
 
 	public void setUnregisteredStatus(int unregisteredStatus) {
 		this.unregisteredStatus = unregisteredStatus;
+	}
+
+	@Column(name = "transfer_id", nullable = false)
+	public String getTransferId() {
+		return transferId;
+	}
+
+	public void setTransferId(String transferId) {
+		this.transferId = transferId;
 	}
 
 }
