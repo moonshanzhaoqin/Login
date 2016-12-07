@@ -36,7 +36,7 @@ public class ExchangeController {
 	public @ResponseBody
 	GetWalletInfoResponse getCurrentBalance(@PathVariable String token){
 		//从Session中获取Id
-		int userId = 0;
+		int userId = 2;
 		GetWalletInfoResponse rep = new GetWalletInfoResponse();
 		List<Wallet> wallets = exchangeManager.getWalletsByUserId(userId);
 		if(wallets.isEmpty()){
@@ -55,7 +55,7 @@ public class ExchangeController {
 	public @ResponseBody
 	ExchangeCalculationResponse exchangeCalculation(@PathVariable String token,@RequestBody ExchangeCalculationRequest reqMsg){
 		//从Session中获取Id
-		int userId = 0;
+		int userId = 2;
 		ExchangeCalculationResponse rep = new ExchangeCalculationResponse();
 		String exchangeAmount = exchangeManager.exchangeCalculation(userId, 
 				reqMsg.getCurrencyOut(), reqMsg.getCurrencyIn(), new BigDecimal(reqMsg.getAmountOut()));
@@ -82,7 +82,7 @@ public class ExchangeController {
 	public @ResponseBody
 	ExchangeConfirmResponse exchangeConfirm(@PathVariable String token,@RequestBody ExchangeConfirmRequest reqMsg){
 		//从Session中获取Id
-		int userId = 0;
+		int userId = 2;
 		ExchangeConfirmResponse rep = new ExchangeConfirmResponse();
 		String retCode = exchangeManager.exchangeConfirm(userId, 
 				reqMsg.getCurrencyOut(), reqMsg.getCurrencyIn(), 

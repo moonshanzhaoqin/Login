@@ -6,13 +6,17 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.dao.TransferDAO;
+import com.yuyutechnology.exchange.pojo.Transfer;
 
 @Repository
 public class TransferDAOImpl implements TransferDAO {
 	
+	@Resource
+	HibernateTemplate hibernateTemplate;
 	@Resource
 	RedisTemplate<String, String> commonRedisTemplate;
 	
@@ -33,6 +37,11 @@ public class TransferDAOImpl implements TransferDAO {
 		}
 		sb.append(idStr);
 		return sb.toString();
+	}
+
+	@Override
+	public void addTransfer(Transfer transfer) {
+		hibernateTemplate.save(transfer);
 	}
 
 }

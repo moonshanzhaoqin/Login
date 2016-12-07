@@ -44,6 +44,17 @@ public class ServerConsts {
 	 * 换算后金额低于最小限额
 	 */
 	public static final String EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT = "02_003";
+	
+	
+	// 交易03
+	/**
+	 * 余额不足
+	 */
+	public static final String TRANSFER_CURRENT_BALANCE_INSUFFICIENT = "03_001";
+	/**
+	 * 超过当日最大限额
+	 */
+	public static final String TRANSFER_EXCEEDED_TRANSACTION_LIMIT = "03_002";
 
 	// 用户类型
 	/**

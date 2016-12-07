@@ -85,14 +85,16 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			//扣款
 			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut, amountOut, "-");
 			//加款
-			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, amountIn, "+");
+//			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, amountIn, "+");
+			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, new BigDecimal(result), "+");
 			
 			//系统账户
 			int systemUserId = userDAO.getSystemUser().getUserId(); 
 			//加款
 			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyOut, amountOut, "+");
 			//扣款
-			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, amountIn, "-");
+//			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, amountIn, "-");
+			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new BigDecimal(result), "-");
 			
 			String exchangeId = exchangeDAO.createExchangeId(ServerConsts.TRANSFER_TYPE_OF_EXCHANGE);
 			//添加Exchange记录
@@ -102,35 +104,22 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			exchange.setCurrencyOut(currencyOut);
 			exchange.setAmountOut(amountOut);
 			exchange.setCurrencyIn(currencyIn);
-			exchange.setAmountIn(amountIn);
+//			exchange.setAmountIn(amountIn);
+			exchange.setAmountIn(new BigDecimal(result));
 			exchange.setCreateTime(new Date());
 			exchange.setFinishTime(new Date());
+			exchange.setExchangeRate(new BigDecimal(exchangeRateManager.getExchangeRate(currencyOut, currencyIn)));
 			
 			exchangeDAO.addExchange(exchange);
 			
 			//添加seq记录
-			addWalletSeq(userId, ServerConsts.TRANSFER_TYPE_OF_EXCHANGE, exchangeId, 
+			walletSeqDAO.addWalletSeq(userId, ServerConsts.TRANSFER_TYPE_OF_EXCHANGE, exchangeId, 
 					currencyOut, amountOut, currencyIn, amountIn);
-			addWalletSeq(systemUserId, ServerConsts.TRANSFER_TYPE_OF_EXCHANGE, exchangeId, 
+			walletSeqDAO.addWalletSeq(systemUserId, ServerConsts.TRANSFER_TYPE_OF_EXCHANGE, exchangeId, 
 					currencyIn, amountIn, currencyOut, amountOut);
 		}
 		
 		return ServerConsts.RET_CODE_SUCCESS;
 	}
-	
-	@Override
-	public void addWalletSeq(int userId,int transferType,String transactionId,
-			String currencyOut,BigDecimal amountOut,String currencyIn,BigDecimal amountIn){
-		
-		WalletSeq inSeq = new WalletSeq(userId,transferType,currencyIn,amountIn,transactionId);
-		walletSeqDAO.addWalletSeq(inSeq);
-		//negate 取负数
-		WalletSeq outSeq = new WalletSeq(userId,transferType,currencyOut,amountOut.negate(),transactionId);
-		walletSeqDAO.addWalletSeq(outSeq);
-
-	}
-	
-
-	
 
 }
