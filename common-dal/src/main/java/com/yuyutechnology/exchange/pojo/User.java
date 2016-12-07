@@ -28,30 +28,19 @@ public class User implements java.io.Serializable {
 	private Date loginTime;
 	private String loginIp;
 	private int userType;
+	private String passwordSalt;
 
 	public User() {
 	}
 
-	public User(String areaCode,String userPhone,String userName, String userPassword, Date createTime, int userType) {
+	public User(String areaCode,String userPhone,String userName, String userPassword, Date createTime, int userType,String passwordSalt) {
 		this.areaCode = areaCode;
 		this.userPhone = userPhone;
 		this.userName = userName;
 		this.userPassword = userPassword;
 		this.createTime = createTime;
 		this.userType = userType;
-	}
-
-	public User(String areaCode,String userPhone, String userName, String userPassword, String userPayPwd, Date createTime,
-			Date loginTime, String loginIp, int userType) {
-		this.areaCode = areaCode;
-		this.userPhone = userPhone;
-		this.userName = userName;
-		this.userPassword = userPassword;
-		this.userPayPwd = userPayPwd;
-		this.createTime = createTime;
-		this.loginTime = loginTime;
-		this.loginIp = loginIp;
-		this.userType = userType;
+		this.passwordSalt = passwordSalt;
 	}
 
 	@Id
@@ -146,6 +135,15 @@ public class User implements java.io.Serializable {
 
 	public void setUserType(int userType) {
 		this.userType = userType;
+	}
+
+	@Column(name = "password_salt")
+	public String getPasswordSalt() {
+		return passwordSalt;
+	}
+
+	public void setPasswordSalt(String passwordSalt) {
+		this.passwordSalt = passwordSalt;
 	}
 
 }

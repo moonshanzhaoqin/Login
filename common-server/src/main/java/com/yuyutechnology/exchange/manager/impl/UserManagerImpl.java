@@ -103,7 +103,7 @@ public class UserManagerImpl implements UserManager {
 	public Integer login(String areaCode, String userPhone, String userPassword) {
 		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
 		if (user != null && StringUtils.equals(user.getUserPassword(),
-				DigestUtils.md5Hex(DigestUtils.md5Hex(userPassword) + DigestUtils.md5Hex(userPhone)))) {
+				DigestUtils.md5Hex(DigestUtils.md5Hex(userPassword) + user.getPasswordSalt()))) {
 			return user.getUserId();
 		}
 		return null;
@@ -112,9 +112,12 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public Integer register(String areaCode, String userPhone, String userName, String userPassword) {
 		// 添加用户
+		// 随机生成盐值
+		String passwordSalt = DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(6));
+		// 加密算法：md5(md5(userPassword)+passwordSalt)
 		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName,
-				DigestUtils.md5Hex(DigestUtils.md5Hex(userPassword) + DigestUtils.md5Hex(userPhone)), new Date(),
-				ServerConsts.USER_TYPE_OF_CUSTOMER));
+				DigestUtils.md5Hex(DigestUtils.md5Hex(userPassword) + passwordSalt), new Date(),
+				ServerConsts.USER_TYPE_OF_CUSTOMER, passwordSalt));
 		// 添加钱包信息
 		List<Currency> currencies = currencyDAO.getCurrencys();
 		for (Currency currency : currencies) {
@@ -147,8 +150,10 @@ public class UserManagerImpl implements UserManager {
 	public Integer resetPassword(String areaCode, String userPhone, String newPassword) {
 		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
 		if (user != null) {
-			user.setUserPassword(
-					DigestUtils.md5Hex(DigestUtils.md5Hex(newPassword) + DigestUtils.md5Hex(areaCode + userPhone)));
+			// 随机生成盐值
+			String passwordSalt = DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(6));
+			user.setUserPassword(DigestUtils.md5Hex(DigestUtils.md5Hex(newPassword) + passwordSalt));
+			user.setPasswordSalt(passwordSalt);
 			userDAO.updateUserPassword(user);
 			return user.getUserId();
 		}
