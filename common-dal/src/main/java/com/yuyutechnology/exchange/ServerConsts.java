@@ -12,10 +12,15 @@ public class ServerConsts {
 	 * 失败
 	 */
 	public static final String RET_CODE_FAILUE = "00_001";
+	
 	/**
 	 * Session过期
 	 */
 	public static final String SESSION_TIMEOUT = "00_002";
+	/**
+	 * 参数为空
+	 */
+	public static final String PARAMETER_IS_EMPTY="00_003";
 
 	// 用户 01
 	/**

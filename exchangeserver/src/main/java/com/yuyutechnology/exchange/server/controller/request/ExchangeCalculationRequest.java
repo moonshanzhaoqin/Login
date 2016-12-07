@@ -24,5 +24,4 @@ public class ExchangeCalculationRequest {
 	public void setAmountOut(Long amountOut) {
 		this.amountOut = amountOut;
 	}
-
 }
