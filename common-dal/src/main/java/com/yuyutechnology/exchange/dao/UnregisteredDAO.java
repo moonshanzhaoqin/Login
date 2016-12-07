@@ -8,4 +8,6 @@ public interface UnregisteredDAO {
 
 	public List<Unregistered> getUnregisteredByUserPhone(String areaCode, String userPhone);
 
+	public void addUnregistered(Unregistered unregistered);
+	
 }

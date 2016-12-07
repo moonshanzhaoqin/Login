@@ -10,11 +10,13 @@ import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.TransferDAO;
+import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.pojo.Transfer;
+import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 
@@ -29,6 +31,8 @@ public class TransferManagerImpl implements TransferManager{
 	TransferDAO transferDAO;
 	@Autowired
 	WalletSeqDAO walletSeqDAO;
+	@Autowired
+	UnregisteredDAO unregisteredDAO;
 	
 	public static Logger logger = LoggerFactory.getLogger(TransferManagerImpl.class);
 
@@ -42,11 +46,11 @@ public class TransferManagerImpl implements TransferManager{
 			return ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT;
 		}
 		//当日累加金额
-		BigDecimal dayCumulativeAmount =  new BigDecimal(20000);
-		//当日最大金额
+		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount(userId+"");
+		//当日最大金额===================================================================
 		BigDecimal dayMaxAmount =  new BigDecimal(20000);
 		//判断是否超过当日累加金额
-		if(dayCumulativeAmount.add(amount).compareTo(dayMaxAmount) == 1){
+		if(accumulatedAmount.add(amount).compareTo(dayMaxAmount) == 1){
 			logger.warn("Exceeded the day's transaction limit");
 			return ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT;
 		}
@@ -83,18 +87,36 @@ public class TransferManagerImpl implements TransferManager{
 	public String payPwdConfirm(int userId, String transferId, String userPayPwd) {
 		
 		User user = userDAO.getUser(userId);
+		Transfer transfer = transferDAO.getTransferById(transferId);
 		
-		//验证交易密码
-		if(user.getUserPayPwd().equals(userPayPwd)){
-			transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_PROCESSING);
+		if(!userPayPwd.equals(user.getUserPayPwd())){
+			return ServerConsts.TRANSFER_PAYMENTPWD_INCORRECT;
+		}
+
+		//总账大于设置安全基数，弹出需要短信验证框===============================================
+		BigDecimal totalBalance =  new BigDecimal(20000);
+		BigDecimal totalBalanceMax =  new BigDecimal(30000);
+		//当天累计转出总金额大于设置安全基数，弹出需要短信验证框======================================
+		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount(userId+"");
+		BigDecimal accumulatedAmountMax =  new BigDecimal(30000);
+		//单笔转出金额大于设置安全基数，弹出需要短信验证框==========================================
+		BigDecimal AmountofSingleTransfer =  new BigDecimal(30000);
+		
+		if(totalBalance.compareTo(totalBalanceMax) == 1 || 
+				( accumulatedAmount.compareTo(accumulatedAmountMax) == 1 || 
+				transfer.getTransferAmount().compareTo(AmountofSingleTransfer) == 1)){
+			logger.warn("The transaction amount exceeds the limit");
+			//发送pinCode
 			
-			//发送验证码
 			
-			//
-			return ServerConsts.RET_CODE_SUCCESS;
+			
+			return ServerConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION;
+			
+		}else{
+			transferConfirm(transferId);
 		}
 		
-		return ServerConsts.TRANSFER_PAYMENTPWD_INCORRECT;
+		return ServerConsts.RET_CODE_SUCCESS;
 	}
 
 	@Override
@@ -112,11 +134,19 @@ public class TransferManagerImpl implements TransferManager{
 			walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), 
 					transfer.getCurrency(), transfer.getTransferAmount(), "+");
 			//添加gift记录
+			Unregistered unregistered = new Unregistered();
+			//手机号有问题
+			unregistered.setAreaCode(transfer.getUserToPhone().substring(3));
+			unregistered.setUserPhone(transfer.getUserToPhone().
+					substring(3, transfer.getUserToPhone().length()));
+			unregistered.setCurrency(transfer.getCurrency());
+			unregistered.setAmount(transfer.getTransferAmount());
+			unregistered.setCreateTime(new Date());
+			unregistered.setUnregisteredStatus(ServerConsts.TRANSFER_STATUS_OF_PROCESSING);
 			
+			unregisteredDAO.addUnregistered(unregistered);
 			//更改用户的当日累计金额
-			
-			
-			
+			transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", transfer.getTransferAmount());
 			//增加seq记录
 			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), systemUser.getUserId(), 
 					ServerConsts.TRANSFER_TYPE_OF_TRANSACTION, transfer.getTransferId(), 
@@ -134,7 +164,7 @@ public class TransferManagerImpl implements TransferManager{
 			transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 			
 			//更改用户的当日累计金额
-			
+			transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", transfer.getTransferAmount());
 			//添加seq记录
 			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), transfer.getUserTo(), 
 					ServerConsts.TRANSFER_TYPE_OF_TRANSACTION, transfer.getTransferId(), 

@@ -67,6 +67,8 @@ public class TransferController {
 		
 		if(result.equals(ServerConsts.RET_CODE_SUCCESS)){
 			rep.setMessage("ok");
+		}else if(result.equals(ServerConsts.RET_CODE_SUCCESS)){
+			
 		}else{
 			rep.setMessage("The payment password is incorrect");
 		}
@@ -80,7 +82,7 @@ public class TransferController {
 		
 		//判断PinCode是否正确
 		if(true){
-			
+			transferManager.transferConfirm(reqMsg.getTransferId());
 		}
 		
 		

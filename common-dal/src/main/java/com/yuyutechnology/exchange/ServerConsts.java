@@ -63,6 +63,8 @@ public class ServerConsts {
 	 * 支付密码不正确
 	 */
 	public static final String TRANSFER_PAYMENTPWD_INCORRECT = "03_003";
+	
+	public static final String TRANSFER_REQUIRES_PHONE_VERIFICATION = "03_004";
 
 	// 用户类型
 	/**

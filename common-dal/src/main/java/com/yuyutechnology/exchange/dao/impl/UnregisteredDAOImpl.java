@@ -22,4 +22,9 @@ public class UnregisteredDAOImpl implements UnregisteredDAO {
 				userPhone);
 		return (List<Unregistered>) list;
 	}
+
+	@Override
+	public void addUnregistered(Unregistered unregistered) {
+		hibernateTemplate.save(unregistered);
+	}
 }
