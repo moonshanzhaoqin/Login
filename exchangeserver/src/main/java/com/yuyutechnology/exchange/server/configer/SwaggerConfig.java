@@ -16,6 +16,7 @@ import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
 import com.mangofactory.swagger.models.dto.ApiInfo;
 import com.mangofactory.swagger.plugin.EnableSwagger;
 import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
+import com.yuyutechnology.exchange.utils.ResourceUtils;
 
 /**
  * Class description goes here.
@@ -47,7 +48,12 @@ public class SwaggerConfig
 	    @Bean
 	    public SwaggerSpringMvcPlugin customImplementation()
 	    {
-	        return new SwaggerSpringMvcPlugin(this.springSwaggerConfig).apiInfo(apiInfo()).includePatterns(
+	    	boolean enable = false;
+	    	try {
+				enable = Boolean.valueOf(ResourceUtils.getBundleValue("swagger.enable"));
+			} catch (Exception e) {
+			}
+	        return new SwaggerSpringMvcPlugin(this.springSwaggerConfig).apiInfo(apiInfo()).enable(enable).includePatterns(
 	                ".*?");
 	    }
 
