@@ -1,0 +1,24 @@
+package com.yuyutechnology.exchange.dao.impl;
+
+import javax.annotation.Resource;
+
+import org.springframework.orm.hibernate4.HibernateTemplate;
+
+import com.yuyutechnology.exchange.dao.ConfigDAO;
+import com.yuyutechnology.exchange.pojo.Config;
+
+public class ConfigDAOImpl implements ConfigDAO {
+	@Resource
+	HibernateTemplate hibernateTemplate;
+
+	@Override
+	public String getConfigValue(String configKey) {
+		return hibernateTemplate.get(Config.class, configKey).getConfigValue();
+	}
+
+	@Override
+	public void saveOrUpdateConfig(String configKey, String configValue) {
+		hibernateTemplate.saveOrUpdate(new Config(configKey, configValue));
+	}
+
+}

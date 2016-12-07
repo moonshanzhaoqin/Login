@@ -117,7 +117,8 @@ public class UserManagerImpl implements UserManager {
 		List<Unregistered> unregistereds=unregisteredDAO.getUnregisteredByUserPhone(areaCode, userPhone);
 		for (Unregistered unregistered : unregistereds) {
 			//TODO 系统账户    扣款   加流水
-			//TODO 
+			//TODO 用户账户  加款  流水 
+			//TODO 更新转账记录
 		}
 		return userId;
 	}
