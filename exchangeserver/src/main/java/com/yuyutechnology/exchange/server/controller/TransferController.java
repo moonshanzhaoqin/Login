@@ -80,7 +80,7 @@ public class TransferController {
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transferConfirm")
 	public void transferConfirm(@PathVariable String token,@RequestBody TransferConfirmRequest reqMsg){
 		
-		//判断PinCode是否正确
+		//判断PinCode是否正确/////////////////////////////////////////////////////
 		if(true){
 			transferManager.transferConfirm(reqMsg.getTransferId());
 		}

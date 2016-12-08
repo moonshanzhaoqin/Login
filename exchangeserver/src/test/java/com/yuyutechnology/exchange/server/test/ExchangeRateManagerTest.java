@@ -20,7 +20,7 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4{
 	
 	@Test	
 	public void testUpdateRate(){
-		exchangeRateManager.updateExchangeRate();
+		exchangeRateManager.updateExchangeRateNoGoldq();
 		exchangeRateManager.getExchangeRate("CNY", "USD");
 	}
 }
