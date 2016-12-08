@@ -29,6 +29,7 @@ import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.sms.SmsManager;
 import com.yuyutechnology.exchange.utils.MathUtils;
+import com.yuyutechnology.exchange.utils.PasswordUtils;
 
 @Service
 public class UserManagerImpl implements UserManager {
@@ -102,8 +103,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public Integer login(String areaCode, String userPhone, String userPassword) {
 		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
-		if (user != null && StringUtils.equals(user.getUserPassword(),
-				DigestUtils.md5Hex(DigestUtils.md5Hex(userPassword) + user.getPasswordSalt()))) {
+		if (user != null && PasswordUtils.check(userPassword, user.getPasswordSalt(), user.getPasswordSalt())) {
 			return user.getUserId();
 		}
 		return null;
@@ -116,12 +116,12 @@ public class UserManagerImpl implements UserManager {
 		String passwordSalt = DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(6));
 		// 加密算法：md5(md5(userPassword)+passwordSalt)
 		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName,
-				DigestUtils.md5Hex(DigestUtils.md5Hex(userPassword) + passwordSalt), new Date(),
+				PasswordUtils.encrypt(userPassword, passwordSalt), new Date(),
 				ServerConsts.USER_TYPE_OF_CUSTOMER, passwordSalt));
 		// 添加钱包信息
 		List<Currency> currencies = currencyDAO.getCurrencys();
 		for (Currency currency : currencies) {
-			walletDAO.addwallet(new Wallet(userId, currency.getCurrency(), new BigDecimal(0)));
+			walletDAO.addwallet(new Wallet(userId, currency.getCurrency(), new BigDecimal(0),new Date()));
 		}
 		// 根据UNregistered 将资金从系统帐户划给新用户
 		Integer systemUserId = userDAO.getSystemUser().getUserId();
@@ -158,14 +158,14 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public void updatePassword(Integer userId, String newPassword) {
 		User user = userDAO.getUser(userId);
-		user.setUserPassword(DigestUtils.md5Hex(DigestUtils.md5Hex(newPassword) + user.getPasswordSalt()));
+		user.setUserPassword(PasswordUtils.encrypt(newPassword, user.getPasswordSalt()));
 		userDAO.updateUserPassword(user);
 	}
 
 	@Override
 	public void updateUserPayPwd(Integer userId, String userPayPwd) {
 		User user = userDAO.getUser(userId);
-		user.setUserPayPwd(DigestUtils.md5Hex(DigestUtils.md5Hex(userPayPwd) + user.getPasswordSalt()));
+		user.setUserPayPwd(PasswordUtils.encrypt(userPayPwd, user.getPasswordSalt()));
 		userDAO.updateUserPassword(user);
 	}
 
@@ -173,7 +173,7 @@ public class UserManagerImpl implements UserManager {
 	public boolean checkUserPayPwd(Integer userId, String userPayPwd) {
 		// TODO Auto-generated method stub
 		User user = userDAO.getUser(userId);
-		if(StringUtils.equals(user.getUserPayPwd(),DigestUtils.md5Hex(DigestUtils.md5Hex(userPayPwd) + user.getPasswordSalt()))){
+		if(PasswordUtils.check(userPayPwd,user.getUserPayPwd(),user.getUserPassword())){
 			return true;
 		}
 		return false;

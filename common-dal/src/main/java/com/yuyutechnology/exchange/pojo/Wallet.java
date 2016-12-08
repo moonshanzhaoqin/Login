@@ -28,12 +28,6 @@ public class Wallet implements java.io.Serializable {
 	public Wallet() {
 	}
 
-	public Wallet(int userId, String currency, BigDecimal balance) {
-		this.userId = userId;
-		this.currency = currency;
-		this.balance = balance;
-	}
-
 	public Wallet(int userId, String currency, BigDecimal balance, Date updateTime) {
 		this.userId = userId;
 		this.currency = currency;
