@@ -5,11 +5,12 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
-
+@Service
 public class GoldpayManage {
 	public static Logger logger = LoggerFactory.getLogger(GoldpayManage.class);
 	

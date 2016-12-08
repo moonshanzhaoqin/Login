@@ -6,6 +6,7 @@ package com.yuyutechnology.exchange.server.test;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 
 /**
@@ -21,6 +22,9 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4{
 	@Test	
 	public void testUpdateRate(){
 		exchangeRateManager.updateExchangeRateNoGoldq();
+		exchangeRateManager.updateGoldpayExchangeRate();
 		exchangeRateManager.getExchangeRate("CNY", "USD");
+//		exchangeRateManager.getExchangeRate(ServerConsts.CURRENCY_OF_GOLDPAY, "USD");
+		
 	}
 }
