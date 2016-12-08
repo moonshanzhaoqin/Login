@@ -11,7 +11,7 @@ public class MessageConsts {
 	/**
 	 * 失败
 	 */
-	public static final String RET_CODE_FAILUE = "operation failed";
+	public static final String RET_CODE_FAILUE = "Operation failed";
 
 	/**
 	 * Session过期
@@ -35,7 +35,15 @@ public class MessageConsts {
 	 * 手机号与验证码不匹配
 	 */
 	public static final String PHONE_AND_CODE_NOT_MATCH = "PHONE_AND_CODE_NOT_MATCH";
-
+	/**
+	 * goldpay没有绑定手机
+	 */
+	public static final String GOLDPAY_PHONE_IS_NOT_EXIST = "GOLDPAY_PHONE_IS_NOT_EXIST";
+	/**
+	 * goldpay手机号与注册手机号不匹配
+	 */
+	public static final String GOLDPAY_PHONE_NOT_MATCH = "GOLDPAY_PHONE_NOT_MATCH";
+	
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息
