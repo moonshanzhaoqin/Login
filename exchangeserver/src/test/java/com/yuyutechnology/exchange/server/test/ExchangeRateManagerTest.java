@@ -23,8 +23,11 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4{
 	public void testUpdateRate(){
 		exchangeRateManager.updateExchangeRateNoGoldq();
 		exchangeRateManager.updateGoldpayExchangeRate();
-		exchangeRateManager.getExchangeRate("CNY", "USD");
-//		exchangeRateManager.getExchangeRate(ServerConsts.CURRENCY_OF_GOLDPAY, "USD");
+		
+		double oneUSD = exchangeRateManager.getExchangeRate("USD", ServerConsts.CURRENCY_OF_GOLDPAY);
+		System.out.println("1 usd for "+oneUSD+" gdp");
+		double oneCNY = exchangeRateManager.getExchangeRate("CNY", ServerConsts.CURRENCY_OF_GOLDPAY);
+		System.out.println("1 cny for "+oneCNY+" gdp");
 		
 	}
 }

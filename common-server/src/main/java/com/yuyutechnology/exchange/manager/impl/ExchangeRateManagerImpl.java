@@ -65,7 +65,8 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		}
 		
 		Element title = doc.getElementById("sp-bid");
-		String spBid = title.text();
+		logger.info("cunrrent bid gold price is {}",title.text());
+		String spBid = title.text().trim().replace(",","");
 //		title = doc.getElementById("sp-ask");
 //		String spAsk = title.text();
 
@@ -95,14 +96,20 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 			for(Map.Entry<String, Double> entry : exchangeRate.getRates().entrySet()){
 				gdp4Others.put(entry.getKey(), entry.getValue()/USD4GdpExchangeRate);
 			}
+			logger.info("gdp4Others Map : {}",gdp4Others.toString());
+			
 			//others4Gdp 表示 1其他币种兑换多少gdp
 			Map<String,Double> others4Gdp = new HashMap<String,Double>();
 			others4Gdp.put("USD", USD4GdpExchangeRate);
 			List<Currency> list = currencyDAO.getCurrencys();
 			for (Currency index : list) {
-				others4Gdp.put(index.getCurrency(), getExchangeRateNoGoldq
-						(index.getCurrency(),"USD")/gdp4USDExchangeRate);
+				if(!index.getCurrency().equals("USD")){
+					others4Gdp.put(index.getCurrency(), getExchangeRateNoGoldq
+							(index.getCurrency(),"USD")/gdp4USDExchangeRate);
+				}
 			}
+			
+			logger.info("others4Gdp Map : {}",others4Gdp.toString());
 			
 			goldpayExchangeRate.setGdp4Others(gdp4Others);
 			goldpayExchangeRate.setOthers4Gdp(others4Gdp);
@@ -130,7 +137,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 			}else{
 				HashMap<String, Double> others4Gdp = (HashMap<String, Double>) 
 						goldpayExchangeRate.getOthers4Gdp();
-				out = others4Gdp.get(outCurrency);
+				out = others4Gdp.get(base);
 			}
 			
 		}else{
