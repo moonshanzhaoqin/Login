@@ -116,8 +116,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		// 判断是否需要拦截或者是否登录
 		if (validURL(requestURI) || sessionData.getUserId() != null) {
 			logger.info("===================success=================");
-//			logger.info("===================Language=================" + request.getParameter("language"));
-//			sessionData.setBrowserLanguage(request.getParameter("language"));
 			return true;
 		} else {
 			response.setStatus(500);
