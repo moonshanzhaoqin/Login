@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.form.UserInfo;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
@@ -195,15 +196,14 @@ public class UserController {
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage("");
 		} else {
-			Integer userId = userManager.login(loginRequest.getAreaCode(), loginRequest.getUserPhone(),
-					loginRequest.getUserPassword());
-			logger.info("userId==={}",userId);
+			Integer userId = userManager.getUserId(loginRequest.getAreaCode(), loginRequest.getUserPhone());
 			if (userId == null) {
-				rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
-				rep.setMessage("");
-			} else {
+				logger.info(MessageConsts.PHONE_NOT_EXIST);
+				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
+				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
+			} else if (userManager.checkUserPassword(userId, loginRequest.getUserPassword())) {
 				// 生成session Token
-				SessionData sessionData = new SessionData(userId,UidUtils.genUid());
+				SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 				sessionManager.saveSessionData(sessionData);
 				rep.setToken(sessionData.getSessionId());
 
@@ -218,6 +218,10 @@ public class UserController {
 				logger.info("********Operation succeeded********");
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 				rep.setMessage("");
+			} else {
+				logger.info(MessageConsts.PHONE_AND_PASSWORD_NOT_MATCH);
+				rep.setRetCode(ServerConsts.PHONE_AND_PASSWORD_NOT_MATCH);
+				rep.setMessage(MessageConsts.PHONE_AND_PASSWORD_NOT_MATCH);
 			}
 		}
 		return rep;
@@ -249,13 +253,13 @@ public class UserController {
 					registerRequest.getRegistrationCode())) {
 				Integer userId = userManager.register(registerRequest.getAreaCode(), registerRequest.getUserPhone(),
 						registerRequest.getUserName(), registerRequest.getUserPassword());
-				logger.info("userId==={}",userId);
+				logger.info("userId==={}", userId);
 				if (userId == null) {
 					rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
 					rep.setMessage("");
 				} else {
 					// 生成session Token
-					SessionData sessionData = new SessionData(userId,UidUtils.genUid());
+					SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 					sessionManager.saveSessionData(sessionData);
 					rep.setToken(sessionData.getSessionId());
 

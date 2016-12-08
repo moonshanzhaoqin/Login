@@ -1,6 +1,12 @@
 package com.yuyutechnology.exchange.form;
 
 public class UserInfo {
+	@Override
+	public String toString() {
+		return "UserInfo [areaCode=" + areaCode + ", Phone=" + Phone + ", Name=" + Name + ", isGoldpay=" + isGoldpay
+				+ ", isPayPwd=" + isPayPwd + "]";
+	}
+
 	private String areaCode;
 	private String Phone;
 	private String Name;

@@ -43,6 +43,14 @@ public class MessageConsts {
 	 * goldpay手机号与注册手机号不匹配
 	 */
 	public static final String GOLDPAY_PHONE_NOT_MATCH = "GOLDPAY_PHONE_NOT_MATCH";
+	/**
+	 * 支付密码不是6位数字
+	 */
+	public static final String PAY_PASSWORD_IS_ILLEGAL = "01_006";
+	/**
+	 * 手机号与密码不匹配
+	 */
+	public static final String PHONE_AND_PASSWORD_NOT_MATCH = "PHONE_AND_PASSWORD_NOT_MATCH";
 	
 	// 兑换 02
 	/**
