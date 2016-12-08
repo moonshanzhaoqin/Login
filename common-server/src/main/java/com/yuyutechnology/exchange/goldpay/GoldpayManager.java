@@ -10,10 +10,11 @@ import org.springframework.stereotype.Service;
 import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
+
 @Service
-public class GoldpayManage {
-	public static Logger logger = LoggerFactory.getLogger(GoldpayManage.class);
-	
+public class GoldpayManager {
+	public static Logger logger = LoggerFactory.getLogger(GoldpayManager.class);
+
 	private String bindGoldpayURL = "";
 
 	@PostConstruct
@@ -23,7 +24,7 @@ public class GoldpayManage {
 
 	public GoldpayUser getGoldpayInfo(String accessToken) {
 		String result = HttpTookit.sendPost(bindGoldpayURL + "?access_token=" + accessToken, null);
-		logger.info("result==={}",result);
+		logger.info("result==={}", result);
 		if (StringUtils.isNotEmpty(result)) {
 			GoldpayInfo goldpayInfo = JsonBinder.getInstance().fromJson(result, GoldpayInfo.class);
 			if (goldpayInfo.getRetCode() == 1) {// 成功

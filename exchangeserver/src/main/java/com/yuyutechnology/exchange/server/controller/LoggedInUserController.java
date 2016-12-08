@@ -19,6 +19,7 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.BindGoldpayRequest;
+import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.SetUserPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
 import com.yuyutechnology.exchange.session.SessionData;
@@ -38,9 +39,28 @@ public class LoggedInUserController {
 	@Autowired
 	SessionManager sessionManager;
 
-	// TODO 修改密码
-
-	// TODO 设置支付密码
+	// TODO Modify password 修改用户密码
+	@ResponseBody
+	@ApiOperation(value = "修改用户密码", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/modifyPassword", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public BaseResponse modifyPassword(@PathVariable String token,
+			@RequestBody ModifyPasswordRequest modifyPasswordRequest) {
+		logger.info("========setUserPayPwd : {}============", token);
+		BaseResponse rep = new BaseResponse();
+		if (modifyPasswordRequest.isEmpty()) {
+			logger.info("PARAMETER_IS_EMPTY");
+			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage("");
+		} else {
+			SessionData sessionData = sessionManager.get(token);
+			userManager.updatePassword(sessionData.getUserId(), modifyPasswordRequest.getNewPassword());
+			logger.info("********Operation succeeded********");
+			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setMessage("");
+		}
+		return rep;
+	}
+	
 
 	/**
 	 * 设置支付密码
@@ -62,7 +82,6 @@ public class LoggedInUserController {
 			rep.setMessage("");
 		} else {
 			SessionData sessionData = sessionManager.get(token);
-			// 检验手机号是否存在
 			userManager.updateUserPayPwd(sessionData.getUserId(), setUserPayPwdRequest.getUserPayPwd());
 			logger.info("********Operation succeeded********");
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
@@ -71,12 +90,17 @@ public class LoggedInUserController {
 		return rep;
 	}
 
-	// TODO 绑定goldpay
+	/**
+	 * 绑定goldpay
+	 * 
+	 * @param token
+	 * @param bindGoldpayRequest
+	 * @return
+	 */
 	@ResponseBody
 	@ApiOperation(value = "绑定goldpay", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/bindGoldpay", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse bindGoldpay(@PathVariable String token,
-			@RequestBody BindGoldpayRequest bindGoldpayRequest) {
+	public BaseResponse bindGoldpay(@PathVariable String token, @RequestBody BindGoldpayRequest bindGoldpayRequest) {
 		logger.info("========bindGoldpay : {}============", token);
 		BaseResponse rep = new BaseResponse();
 		if (bindGoldpayRequest.isEmpty()) {
@@ -85,7 +109,7 @@ public class LoggedInUserController {
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = sessionManager.get(token);
-			String retCode=userManager.bindGoldpay(sessionData.getUserId(), bindGoldpayRequest.getGoldpayToken());
+			String retCode = userManager.bindGoldpay(sessionData.getUserId(), bindGoldpayRequest.getGoldpayToken());
 			switch (retCode) {
 			case ServerConsts.RET_CODE_SUCCESS:
 				logger.info("********Operation succeeded********");

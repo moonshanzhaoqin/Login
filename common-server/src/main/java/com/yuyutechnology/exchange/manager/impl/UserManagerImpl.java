@@ -21,7 +21,7 @@ import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.form.UserInfo;
-import com.yuyutechnology.exchange.goldpay.GoldpayManage;
+import com.yuyutechnology.exchange.goldpay.GoldpayManager;
 import com.yuyutechnology.exchange.goldpay.GoldpayUser;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Bind;
@@ -57,7 +57,7 @@ public class UserManagerImpl implements UserManager {
 	@Autowired
 	SmsManager smsManager;
 	@Autowired
-	GoldpayManage goldpayManage;
+	GoldpayManager goldpayManager;
 
 	@Override
 	public void getPinCode(String areaCode, String userPhone) {
@@ -188,7 +188,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public String bindGoldpay(Integer userId, String goldpayToken) {
 		// TODO Auto-generated method stub
-		GoldpayUser goldpayUser = goldpayManage.getGoldpayInfo(goldpayToken);
+		GoldpayUser goldpayUser = goldpayManager.getGoldpayInfo(goldpayToken);
 		if (goldpayUser == null) {
 			return ServerConsts.RET_CODE_FAILUE;
 		} else {
