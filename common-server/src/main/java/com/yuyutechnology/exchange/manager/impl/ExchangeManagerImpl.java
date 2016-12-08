@@ -84,7 +84,6 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			//扣款
 			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut, amountOut, "-");
 			//加款
-//			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, amountIn, "+");
 			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, new BigDecimal(result), "+");
 			
 			//系统账户
@@ -92,7 +91,6 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			//加款
 			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyOut, amountOut, "+");
 			//扣款
-//			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, amountIn, "-");
 			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new BigDecimal(result), "-");
 			
 			String exchangeId = exchangeDAO.createExchangeId(ServerConsts.TRANSFER_TYPE_OF_EXCHANGE);
@@ -103,7 +101,6 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			exchange.setCurrencyOut(currencyOut);
 			exchange.setAmountOut(amountOut);
 			exchange.setCurrencyIn(currencyIn);
-//			exchange.setAmountIn(amountIn);
 			exchange.setAmountIn(new BigDecimal(result));
 			exchange.setCreateTime(new Date());
 			exchange.setFinishTime(new Date());

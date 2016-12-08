@@ -63,6 +63,11 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 			
 			if(base.equals(ServerConsts.CURRENCY_OF_GOLDPAY) || outCurrency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 				//当兑换中有goldpay时，需要特殊处理
+				
+				
+				
+				
+				
 			}else{
 				out = exchangeRate.getRates().get(outCurrency);
 			}

@@ -2,13 +2,17 @@ package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dao.ConfigDAO;
+import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
@@ -19,12 +23,18 @@ import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.utils.JsonBinder;
+import com.yuyutechnology.exchange.utils.exchangerate.ExchangeRate;
 
 @Service
 public class TransferManagerImpl implements TransferManager{
 	
 	@Autowired
 	UserDAO userDAO;
+	@Autowired
+	RedisDAO redisDAO;
+	@Autowired
+	ConfigDAO configDAO;
 	@Autowired
 	WalletDAO walletDAO;
 	@Autowired
@@ -106,7 +116,7 @@ public class TransferManagerImpl implements TransferManager{
 				( accumulatedAmount.compareTo(accumulatedAmountMax) == 1 || 
 				transfer.getTransferAmount().compareTo(AmountofSingleTransfer) == 1)){
 			logger.warn("The transaction amount exceeds the limit");
-			//发送pinCode
+			//发送pinCode///////////////////////////////////////////////////////////////
 			
 			
 			
@@ -146,7 +156,7 @@ public class TransferManagerImpl implements TransferManager{
 			
 			unregisteredDAO.addUnregistered(unregistered);
 			//更改用户的当日累计金额
-			transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", transfer.getTransferAmount());
+//			transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", exchangeResult);
 			//增加seq记录
 			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), systemUser.getUserId(), 
 					ServerConsts.TRANSFER_TYPE_OF_TRANSACTION, transfer.getTransferId(), 
@@ -164,13 +174,72 @@ public class TransferManagerImpl implements TransferManager{
 			transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 			
 			//更改用户的当日累计金额
-			transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", transfer.getTransferAmount());
+//			transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", exchangeResult);
+			
 			//添加seq记录
 			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), transfer.getUserTo(), 
 					ServerConsts.TRANSFER_TYPE_OF_TRANSACTION, transfer.getTransferId(), 
-					transfer.getCurrency(), transfer.getTransferAmount());
-				
+					transfer.getCurrency(), transfer.getTransferAmount());		
 		}
+		
+		//转换金额
+		BigDecimal exchangeResult = getExchangeResult(transfer.getCurrency(),transfer.getTransferAmount());
+		transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", exchangeResult);
 	}
-
+	
+	
+	
+	///////////////////////////////////////////方法内部调用//////////////////////////////////////////////
+	/**
+	 * @Descrition : 将交易金额兑换为默认币种
+	 * @author : nicholas.chi
+	 * @time : 2016年12月7日 下午5:24:08
+	 * @param transCurrency 交易币种
+	 * @param transAmount   默认币种
+	 * @return
+	 */
+	private BigDecimal getExchangeResult(String transCurrency,BigDecimal transAmount){
+		BigDecimal result = null;
+		//默认币种
+		String standardCurrency = configDAO.getConfigValue(ServerConsts.STANDARD_CURRENCY);
+		if(transCurrency.equals(standardCurrency)){
+			result = transAmount;
+		}else{
+			double exchangeRate = getExchangeRate(transCurrency, standardCurrency);
+			result = transAmount.multiply(new BigDecimal(exchangeRate));
+		}
+		return result;
+	}
+	
+	/**
+	 * @Descrition : 获取汇率
+	 * @author : nicholas.chi
+	 * @time : 2016年12月7日 下午5:29:14
+	 * @param base
+	 * @param outCurrency
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private double getExchangeRate(String base, String outCurrency) {
+		double out = 0;
+		HashMap<String, String> map = new HashMap<String, String>();
+		String result = redisDAO.getValueByKey("redis_exchangeRate");
+		if(StringUtils.isNotBlank(result)){
+//			logger.info("result : {}",result);
+			map = JsonBinder.getInstance().fromJson(result, HashMap.class);
+			String value = map.get(base);
+			logger.info("value : {}",value);
+			ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().fromJson(value, ExchangeRate.class);
+			
+			if(base.equals(ServerConsts.CURRENCY_OF_GOLDPAY) || outCurrency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
+				//当兑换中有goldpay时，需要特殊处理//////////////////////////////////////////////
+			}else{
+				out = exchangeRate.getRates().get(outCurrency);
+			}
+		}
+		
+		logger.info("base : {},out : {}",base,out);
+		
+		return out;
+	}
 }

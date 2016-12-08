@@ -67,8 +67,8 @@ public class TransferController {
 		
 		if(result.equals(ServerConsts.RET_CODE_SUCCESS)){
 			rep.setMessage("ok");
-		}else if(result.equals(ServerConsts.RET_CODE_SUCCESS)){
-			
+		}else if(result.equals(ServerConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION)){
+			rep.setMessage("");
 		}else{
 			rep.setMessage("The payment password is incorrect");
 		}
@@ -77,7 +77,7 @@ public class TransferController {
 	}
 	
 	@ApiOperation(value = "pinCode 验证及交易确认")
-	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transPwdConfirm")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transferConfirm")
 	public void transferConfirm(@PathVariable String token,@RequestBody TransferConfirmRequest reqMsg){
 		
 		//判断PinCode是否正确
