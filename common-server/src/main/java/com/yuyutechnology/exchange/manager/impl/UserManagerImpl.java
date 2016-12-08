@@ -165,14 +165,18 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public void updateUserPayPwd(Integer userId, String userPayPwd) {
 		User user = userDAO.getUser(userId);
-		user.setUserPayPwd(userPayPwd);
+		user.setUserPayPwd(DigestUtils.md5Hex(DigestUtils.md5Hex(userPayPwd) + user.getPasswordSalt()));
 		userDAO.updateUserPassword(user);
 	}
 
 	@Override
-	public void checkUserPayPwd(Integer userId, String userPayPwd) {
+	public boolean checkUserPayPwd(Integer userId, String userPayPwd) {
 		// TODO Auto-generated method stub
-		
+		User user = userDAO.getUser(userId);
+		if(StringUtils.equals(user.getUserPayPwd(),DigestUtils.md5Hex(DigestUtils.md5Hex(userPayPwd) + user.getPasswordSalt()))){
+			return true;
+		}
+		return false;
 	}
 
 }
