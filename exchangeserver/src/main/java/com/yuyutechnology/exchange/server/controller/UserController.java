@@ -35,6 +35,7 @@ import com.yuyutechnology.exchange.server.controller.response.LoginResponse;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
 import com.yuyutechnology.exchange.session.SessionManager;
+import com.yuyutechnology.exchange.utils.UidUtils;
 
 /**
  * @author suzan.wu
@@ -65,7 +66,7 @@ public class UserController {
 	@RequestMapping(value = "/forgetPassword", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse forgetPassword(@RequestBody ForgetPasswordRequest forgetPasswordRequest,
 			HttpServletRequest request, HttpServletResponse response) {
-		logger.info("========forgetPassword****{}============",
+		logger.info("========forgetPassword : {}============",
 				forgetPasswordRequest.getAreaCode() + forgetPasswordRequest.getUserPhone());
 		BaseResponse rep = new BaseResponse();
 		if (forgetPasswordRequest.isEmpty()) {
@@ -111,7 +112,7 @@ public class UserController {
 	@RequestMapping(value = "/getRegistrationCode", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse getRegistrationCode(@RequestBody GetRegistrationCodeRequest getRegistrationCodeRequest,
 			HttpServletRequest request, HttpServletResponse response) {
-		logger.info("========getRegistrationCode****{}============",
+		logger.info("========getRegistrationCode : {}============",
 				getRegistrationCodeRequest.getAreaCode() + getRegistrationCodeRequest.getUserPhone());
 		BaseResponse rep = new BaseResponse();
 		if (getRegistrationCodeRequest.isEmpty()) {
@@ -149,7 +150,7 @@ public class UserController {
 	@RequestMapping(value = "/getVerificationCode", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse getVerificationCode(@RequestBody GetVerificationCodeRequest getVerificationCodeRequest,
 			HttpServletRequest request, HttpServletResponse response) {
-		logger.info("========getVerificationCode****{}============",
+		logger.info("========getVerificationCode : {}============",
 				getVerificationCodeRequest.getAreaCode() + getVerificationCodeRequest.getUserPhone());
 		BaseResponse rep = new BaseResponse();
 		if (getVerificationCodeRequest.isEmpty()) {
@@ -187,7 +188,7 @@ public class UserController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public LoginResponse login(@RequestBody LoginRequest loginRequest, HttpServletRequest request,
 			HttpServletResponse response) {
-		logger.info("========login****{}============", loginRequest.getAreaCode() + loginRequest.getUserPhone());
+		logger.info("========login : {}============", loginRequest.getAreaCode() + loginRequest.getUserPhone());
 		LoginResponse rep = new LoginResponse();
 		if (loginRequest.isEmpty()) {
 			logger.info("PARAMETER_IS_EMPTY");
@@ -196,14 +197,13 @@ public class UserController {
 		} else {
 			Integer userId = userManager.login(loginRequest.getAreaCode(), loginRequest.getUserPhone(),
 					loginRequest.getUserPassword());
+			logger.info("userId==={}",userId);
 			if (userId == null) {
 				rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
 				rep.setMessage("");
 			} else {
 				// 生成session Token
-				SessionData sessionData = SessionDataHolder.getSessionData();
-				sessionData.setUserId(userId);
-				sessionData.setLogin(true);
+				SessionData sessionData = new SessionData(userId,UidUtils.genUid());
 				sessionManager.saveSessionData(sessionData);
 				rep.setToken(sessionData.getSessionId());
 
@@ -236,7 +236,7 @@ public class UserController {
 	@RequestMapping(value = "/register", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public LoginResponse register(@RequestBody RegisterRequest registerRequest, HttpServletRequest request,
 			HttpServletResponse response) {
-		logger.info("========register****{}============",
+		logger.info("========register : {}============",
 				registerRequest.getAreaCode() + registerRequest.getUserPhone());
 		LoginResponse rep = new LoginResponse();
 		if (registerRequest.isEmpty()) {
@@ -249,14 +249,13 @@ public class UserController {
 					registerRequest.getRegistrationCode())) {
 				Integer userId = userManager.register(registerRequest.getAreaCode(), registerRequest.getUserPhone(),
 						registerRequest.getUserName(), registerRequest.getUserPassword());
+				logger.info("userId==={}",userId);
 				if (userId == null) {
 					rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
 					rep.setMessage("");
 				} else {
 					// 生成session Token
-					SessionData sessionData = SessionDataHolder.getSessionData();
-					sessionData.setUserId(userId);
-					sessionData.setLogin(true);
+					SessionData sessionData = new SessionData(userId,UidUtils.genUid());
 					sessionManager.saveSessionData(sessionData);
 					rep.setToken(sessionData.getSessionId());
 
@@ -294,7 +293,7 @@ public class UserController {
 	@RequestMapping(value = "/testCode", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse testCode(@RequestBody TestCodeRequest testRequest, HttpServletRequest request,
 			HttpServletResponse response) {
-		logger.info("========testCode****{}============", testRequest.getAreaCode() + testRequest.getUserPhone());
+		logger.info("========testCode : {}============", testRequest.getAreaCode() + testRequest.getUserPhone());
 		BaseResponse rep = new BaseResponse();
 		if (testRequest.isEmpty()) {
 			logger.info("PARAMETER_IS_EMPTY");

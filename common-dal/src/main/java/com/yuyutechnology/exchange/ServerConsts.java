@@ -35,7 +35,14 @@ public class ServerConsts {
 	 * 手机号与验证码不匹配
 	 */
 	public static final String PHONE_AND_CODE_NOT_MATCH = "01_003";
-
+	/**
+	 * goldpay没有绑定手机
+	 */
+	public static final String GOLDPAY_PHONE_IS_NOT_EXIST = "01_004";
+	/**
+	 * goldpay手机号与注册手机号不匹配
+	 */
+	public static final String GOLDPAY_PHONE_NOT_MATCH = "01_005";
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息
@@ -63,7 +70,7 @@ public class ServerConsts {
 	 * 支付密码不正确
 	 */
 	public static final String TRANSFER_PAYMENTPWD_INCORRECT = "03_003";
-	
+
 	public static final String TRANSFER_REQUIRES_PHONE_VERIFICATION = "03_004";
 
 	// 用户类型

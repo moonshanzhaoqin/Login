@@ -81,6 +81,16 @@ public interface UserManager {
 	 * 
 	 * @param userId
 	 * @param userPayPwd
+	 * @return
 	 */
-	public void checkUserPayPwd(Integer userId, String userPayPwd);
+	public boolean checkUserPayPwd(Integer userId, String userPayPwd);
+
+	/**
+	 * 绑定goldpay
+	 * 
+	 * @param userId
+	 * @param goldpayToken
+	 * @return 
+	 */
+	public String bindGoldpay(Integer userId, String goldpayToken);
 }

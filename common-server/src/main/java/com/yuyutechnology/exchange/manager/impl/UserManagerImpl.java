@@ -21,6 +21,8 @@ import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.form.UserInfo;
+import com.yuyutechnology.exchange.goldpay.GoldpayManage;
+import com.yuyutechnology.exchange.goldpay.GoldpayUser;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Currency;
@@ -28,7 +30,10 @@ import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.sms.SmsManager;
+import com.yuyutechnology.exchange.utils.HttpTookit;
+import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.MathUtils;
+import com.yuyutechnology.exchange.utils.PasswordUtils;
 
 @Service
 public class UserManagerImpl implements UserManager {
@@ -51,6 +56,8 @@ public class UserManagerImpl implements UserManager {
 	UnregisteredDAO unregisteredDAO;
 	@Autowired
 	SmsManager smsManager;
+	@Autowired
+	GoldpayManage goldpayManage;
 
 	@Override
 	public void getPinCode(String areaCode, String userPhone) {
@@ -102,8 +109,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public Integer login(String areaCode, String userPhone, String userPassword) {
 		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
-		if (user != null && StringUtils.equals(user.getUserPassword(),
-				DigestUtils.md5Hex(DigestUtils.md5Hex(userPassword) + user.getPasswordSalt()))) {
+		if (user != null && PasswordUtils.check(userPassword, user.getPasswordSalt(), user.getPasswordSalt())) {
 			return user.getUserId();
 		}
 		return null;
@@ -115,13 +121,13 @@ public class UserManagerImpl implements UserManager {
 		// 随机生成盐值
 		String passwordSalt = DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(6));
 		// 加密算法：md5(md5(userPassword)+passwordSalt)
-		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName,
-				DigestUtils.md5Hex(DigestUtils.md5Hex(userPassword) + passwordSalt), new Date(),
-				ServerConsts.USER_TYPE_OF_CUSTOMER, passwordSalt));
+		Integer userId = userDAO
+				.addUser(new User(areaCode, userPhone, userName, PasswordUtils.encrypt(userPassword, passwordSalt),
+						new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER, passwordSalt));
 		// 添加钱包信息
 		List<Currency> currencies = currencyDAO.getCurrencys();
 		for (Currency currency : currencies) {
-			walletDAO.addwallet(new Wallet(userId, currency.getCurrency(), new BigDecimal(0)));
+			walletDAO.addwallet(new Wallet(userId, currency.getCurrency(), new BigDecimal(0), new Date()));
 		}
 		// 根据UNregistered 将资金从系统帐户划给新用户
 		Integer systemUserId = userDAO.getSystemUser().getUserId();
@@ -158,21 +164,48 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public void updatePassword(Integer userId, String newPassword) {
 		User user = userDAO.getUser(userId);
-		user.setUserPassword(DigestUtils.md5Hex(DigestUtils.md5Hex(newPassword) + user.getPasswordSalt()));
+		user.setUserPassword(PasswordUtils.encrypt(newPassword, user.getPasswordSalt()));
 		userDAO.updateUserPassword(user);
 	}
 
 	@Override
 	public void updateUserPayPwd(Integer userId, String userPayPwd) {
 		User user = userDAO.getUser(userId);
-		user.setUserPayPwd(userPayPwd);
+		user.setUserPayPwd(PasswordUtils.encrypt(userPayPwd, user.getPasswordSalt()));
 		userDAO.updateUserPassword(user);
 	}
 
 	@Override
-	public void checkUserPayPwd(Integer userId, String userPayPwd) {
+	public boolean checkUserPayPwd(Integer userId, String userPayPwd) {
 		// TODO Auto-generated method stub
-		
+		User user = userDAO.getUser(userId);
+		if (PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getUserPassword())) {
+			return true;
+		}
+		return false;
 	}
 
+	@Override
+	public String bindGoldpay(Integer userId, String goldpayToken) {
+		// TODO Auto-generated method stub
+		GoldpayUser goldpayUser = goldpayManage.getGoldpayInfo(goldpayToken);
+		if (goldpayUser == null) {
+			return ServerConsts.RET_CODE_FAILUE;
+		} else {
+			if (StringUtils.isBlank(goldpayUser.getAreaCode()) || StringUtils.isBlank(goldpayUser.getAreaCode())) {
+				return ServerConsts.GOLDPAY_PHONE_IS_NOT_EXIST;
+			} else {
+				User user = userDAO.getUser(userId);
+				if (StringUtils.equals(goldpayUser.getAreaCode(), user.getAreaCode())
+						&& StringUtils.equals(goldpayUser.getMobile(), user.getUserPhone())) {
+					Bind bind = new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(),
+							goldpayUser.getAccountNum(), goldpayToken);
+					bindDAO.saveBind(bind);
+					return ServerConsts.RET_CODE_SUCCESS;
+				} else {
+					return ServerConsts.GOLDPAY_PHONE_NOT_MATCH;
+				}
+			}
+		}
+	}
 }

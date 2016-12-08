@@ -22,4 +22,9 @@ public class BindDAOImpl implements BindDAO {
 		List<?> list = hibernateTemplate.find("from Bind where userId = ?", userId);
 		return (List<Bind>) list;
 	}
+
+	@Override
+	public void saveBind(Bind bind) {
+		hibernateTemplate.saveOrUpdate(bind);
+	}
 }
