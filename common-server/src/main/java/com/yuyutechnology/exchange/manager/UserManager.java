@@ -36,7 +36,7 @@ public interface UserManager {
 	 * @param userPassword
 	 * @return
 	 */
-	public Integer login(String areaCode, String userPhone, String userPassword);
+//	public Integer login(String areaCode, String userPhone, String userPassword);
 
 	/**
 	 * 添加新用户
@@ -90,7 +90,15 @@ public interface UserManager {
 	 * 
 	 * @param userId
 	 * @param goldpayToken
-	 * @return 
+	 * @return
 	 */
 	public String bindGoldpay(Integer userId, String goldpayToken);
+
+	/**
+	 * 校验用户密码
+	 * 
+	 * @param userId
+	 * @param oldPassword
+	 */
+	public boolean checkUserPassword(Integer userId, String oldPassword);
 }

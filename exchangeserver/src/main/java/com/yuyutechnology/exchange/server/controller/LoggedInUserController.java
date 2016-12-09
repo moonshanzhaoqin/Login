@@ -3,6 +3,7 @@
  */
 package com.yuyutechnology.exchange.server.controller;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,7 @@ public class LoggedInUserController {
 			rep.setMessage("");
 		} else {
 			SessionData sessionData = sessionManager.get(token);
+			userManager.checkUserPassword(sessionData.getUserId(), modifyPasswordRequest.getOldPassword());
 			userManager.updatePassword(sessionData.getUserId(), modifyPasswordRequest.getNewPassword());
 			logger.info("********Operation succeeded********");
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
@@ -60,7 +62,6 @@ public class LoggedInUserController {
 		}
 		return rep;
 	}
-	
 
 	/**
 	 * 设置支付密码
@@ -82,10 +83,18 @@ public class LoggedInUserController {
 			rep.setMessage("");
 		} else {
 			SessionData sessionData = sessionManager.get(token);
-			userManager.updateUserPayPwd(sessionData.getUserId(), setUserPayPwdRequest.getUserPayPwd());
-			logger.info("********Operation succeeded********");
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-			rep.setMessage("");
+			// PayPwd 6位数字
+			if (setUserPayPwdRequest.getUserPayPwd().length() == 6
+					&& StringUtils.isNumeric(setUserPayPwdRequest.getUserPayPwd())) {
+				userManager.updateUserPayPwd(sessionData.getUserId(), setUserPayPwdRequest.getUserPayPwd());
+				logger.info("********Operation succeeded********");
+				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+			} else {
+				logger.info(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
+				rep.setRetCode(ServerConsts.PAY_PASSWORD_IS_ILLEGAL);
+				rep.setMessage(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
+			}
 		}
 		return rep;
 	}

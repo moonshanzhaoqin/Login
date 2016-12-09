@@ -1,6 +1,11 @@
 package com.yuyutechnology.exchange.goldpay;
 
 public class GoldpayUser {
+	@Override
+	public String toString() {
+		return "GoldpayUser [id=" + id + ", username=" + username + ", email=" + email + ", accountNum=" + accountNum
+				+ ", areaCode=" + areaCode + ", mobile=" + mobile + "]";
+	}
 	private String id;
 	private String username;
 	private String email;
