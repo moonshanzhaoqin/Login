@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.aspectj.weaver.patterns.IfPointcut.IfFalsePointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -219,7 +220,9 @@ public class TransferManagerImpl implements TransferManager{
 		
 		//获取所有未完成的订单
 		List<Unregistered> list = unregisteredDAO.getAllUnfinishedTransaction();
-		
+		if(list.isEmpty()){
+			return;
+		}
 		for (Unregistered unregistered : list) {
 			//判断是否超过期限////////////////////////////////////////////////////////
 			long deadline = 15*24*60*60*1000;
