@@ -106,6 +106,10 @@ public class ServerConsts {
 	public static final int TRANSFER_TYPE_OF_EXCHANGE = 1;
 	public static final int TRANSFER_TYPE_OF_GOLDPAYBUY = 2;
 	public static final int TRANSFER_TYPE_OF_GIFT = 3;
+	/**
+	 * 系统退款
+	 */
+	public static final int TRANSFER_TYPE_OF_SYSTEM_REFUND = 4;
 
 	// 交易状态
 	/**

@@ -3,6 +3,7 @@ package com.yuyutechnology.exchange.manager.impl;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.exchangerate.ExchangeRate;
+import com.yuyutechnology.exchange.utils.exchangerate.GoldpayExchangeRate;
 
 @Service
 public class TransferManagerImpl implements TransferManager{
@@ -187,6 +189,46 @@ public class TransferManagerImpl implements TransferManager{
 		transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", exchangeResult);
 	}
 	
+
+	@Override
+	public void systemRefund(Unregistered unregistered) {
+		
+		Transfer transfer = transferDAO.getTransferById(unregistered.getTransferId());
+		User systemUser = userDAO.getSystemUser();
+		
+		//系统扣款
+		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), 
+				transfer.getCurrency(), transfer.getTransferAmount(), "-");
+		//用户加款
+		walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), 
+				transfer.getCurrency(), transfer.getTransferAmount(), "+");
+		//添加Seq记录
+		walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), transfer.getUserFrom(), 
+				ServerConsts.TRANSFER_TYPE_OF_SYSTEM_REFUND, unregistered.getTransferId(), 
+				transfer.getCurrency(), transfer.getTransferAmount());
+		//修改Transfer记录
+		transferDAO.updateTransferStatus(transfer.getTransferId(), ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+
+		//修改gift记录
+		unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_BACK);
+		unregisteredDAO.updateUnregistered(unregistered);
+	}
+	
+	@Override
+	public void systemRefundBatch() {
+		
+		//获取所有未完成的订单
+		List<Unregistered> list = unregisteredDAO.getAllUnfinishedTransaction();
+		
+		for (Unregistered unregistered : list) {
+			//判断是否超过期限////////////////////////////////////////////////////////
+			long deadline = 15*24*60*60*1000;
+			if(new Date().getTime() - unregistered.getCreateTime().getTime() >= deadline){
+				systemRefund(unregistered);
+			}
+		}
+	}
+	
 	
 	
 	///////////////////////////////////////////方法内部调用//////////////////////////////////////////////
@@ -211,47 +253,53 @@ public class TransferManagerImpl implements TransferManager{
 		return result;
 	}
 	
-	/**
-	 * @Descrition : 获取汇率
-	 * @author : nicholas.chi
-	 * @time : 2016年12月7日 下午5:29:14
-	 * @param base
-	 * @param outCurrency
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	private double getExchangeRate(String base, String outCurrency) {
+	public double getExchangeRate(String base, String outCurrency) {
 		double out = 0;
-		HashMap<String, String> map = new HashMap<String, String>();
-		String result = redisDAO.getValueByKey("redis_exchangeRate");
-		if(StringUtils.isNotBlank(result)){
-//			logger.info("result : {}",result);
-			map = JsonBinder.getInstance().fromJson(result, HashMap.class);
-			String value = map.get(base);
-			logger.info("value : {}",value);
-			ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().fromJson(value, ExchangeRate.class);
+		if(base.equals(ServerConsts.CURRENCY_OF_GOLDPAY) || 
+				outCurrency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
+			//当兑换中有goldpay时，需要特殊处理
+			String goldpayER = redisDAO.getValueByKey("redis_goldpay_exchangerate");
+			GoldpayExchangeRate goldpayExchangeRate = JsonBinder.getInstance().
+					fromJson(goldpayER, GoldpayExchangeRate.class);
 			
-			if(base.equals(ServerConsts.CURRENCY_OF_GOLDPAY) || outCurrency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
-				//当兑换中有goldpay时，需要特殊处理//////////////////////////////////////////////
-				
-				
-				
-				
-				
-				
-				
+			if(base.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
+				HashMap<String, Double> gdp4Others = (HashMap<String, Double>) 
+						goldpayExchangeRate.getGdp4Others();
+				out = gdp4Others.get(outCurrency);
 			}else{
-				out = exchangeRate.getRates().get(outCurrency);
+				HashMap<String, Double> others4Gdp = (HashMap<String, Double>) 
+						goldpayExchangeRate.getOthers4Gdp();
+				out = others4Gdp.get(base);
 			}
+			
+		}else{
+			out = getExchangeRateNoGoldq(base,outCurrency);
 		}
 		
 		logger.info("base : {},out : {}",base,out);
 		
 		return out;
 	}
+
 	
-	
-	
-	
-	
+	@SuppressWarnings("unchecked")
+	private double getExchangeRateNoGoldq(String base, String outCurrency) {
+		double out = 0;
+		HashMap<String, String> map = new HashMap<String, String>();
+		String result = redisDAO.getValueByKey("redis_exchangeRate");
+		if(StringUtils.isNotBlank(result)){
+			//logger.info("result : {}",result);
+			map = JsonBinder.getInstance().fromJson(result, HashMap.class);
+			String value = map.get(base);
+			logger.info("value : {}",value);
+			ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().
+			fromJson(value, ExchangeRate.class);
+			out = exchangeRate.getRates().get(outCurrency);
+		}
+		
+		logger.info("base : {},out : {}",base,out);
+		
+		return out;
+	}
+
 }
