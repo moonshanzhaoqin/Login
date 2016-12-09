@@ -24,6 +24,7 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.form.UserInfo;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
+import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.server.controller.request.ForgetPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetRegistrationCodeRequest;
@@ -67,35 +68,34 @@ public class UserController {
 	@RequestMapping(value = "/forgetPassword", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse forgetPassword(@RequestBody ForgetPasswordRequest forgetPasswordRequest,
 			HttpServletRequest request, HttpServletResponse response) {
-		logger.info("========forgetPassword : {}============",
-				forgetPasswordRequest.getAreaCode() + forgetPasswordRequest.getUserPhone());
+		logger.info("forgetPassword : {}", forgetPasswordRequest.getAreaCode() + forgetPasswordRequest.getUserPhone());
 		BaseResponse rep = new BaseResponse();
 		if (forgetPasswordRequest.isEmpty()) {
-			logger.info("PARAMETER_IS_EMPTY");
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage("");
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			// 验证码校验
-			if (userManager.testPinCode(forgetPasswordRequest.getAreaCode(), forgetPasswordRequest.getUserPhone(),
-					forgetPasswordRequest.getVerificationCode())) {
+			if (userManager.testPinCode(ServerConsts.PIN_FUNC_FORGETPASSWORD, forgetPasswordRequest.getAreaCode(),
+					forgetPasswordRequest.getUserPhone(), forgetPasswordRequest.getVerificationCode())) {
 				Integer userId = userManager.getUserId(forgetPasswordRequest.getAreaCode(),
 						forgetPasswordRequest.getUserPhone());
 				if (userId != null) {
 					// 修改密码
 					userManager.updatePassword(userId, forgetPasswordRequest.getNewPassword());
 					sessionManager.delLoginToken(userId);
-					logger.info("********Operation succeeded********");
+					logger.info(MessageConsts.RET_CODE_SUCCESS);
 					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-					rep.setMessage("");
+					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 				} else {
-					logger.info("PHONE_NOT_EXIST");
+					logger.info(MessageConsts.PHONE_NOT_EXIST);
 					rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
-					rep.setMessage("");
+					rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
 				}
 			} else {
-				logger.info("PHONE_AND_CODE_NOT_MATCH");
+				logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 				rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
-				rep.setMessage("");
+				rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 			}
 		}
 		return rep;
@@ -109,38 +109,41 @@ public class UserController {
 	 * @param response
 	 * @return
 	 */
-	@ResponseBody
-	@ApiOperation(value = "获取注册验证码", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/getRegistrationCode", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse getRegistrationCode(@RequestBody GetRegistrationCodeRequest getRegistrationCodeRequest,
-			HttpServletRequest request, HttpServletResponse response) {
-		logger.info("========getRegistrationCode : {}============",
-				getRegistrationCodeRequest.getAreaCode() + getRegistrationCodeRequest.getUserPhone());
-		BaseResponse rep = new BaseResponse();
-		if (getRegistrationCodeRequest.isEmpty()) {
-			logger.info("PARAMETER_IS_EMPTY");
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage("");
-		} else {
-			// 检验手机号是否已注册
-			if (userManager.getUserId(getRegistrationCodeRequest.getAreaCode(),
-					getRegistrationCodeRequest.getUserPhone()) != null) {
-				logger.info("PHONE_IS_REGISTERED");
-				rep.setRetCode(ServerConsts.PHONE_IS_REGISTERED);
-				rep.setMessage("");
-			} else {
-				userManager.getPinCode(getRegistrationCodeRequest.getAreaCode(),
-						getRegistrationCodeRequest.getUserPhone());
-				logger.info("********Operation succeeded********");
-				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-				rep.setMessage("");
-			}
-		}
-		return rep;
-	}
+	// @ResponseBody
+	// @ApiOperation(value = "获取注册验证码", httpMethod = "POST", notes = "")
+	// @RequestMapping(value = "/getRegistrationCode", method =
+	// RequestMethod.POST, produces = "application/json; charset=utf-8")
+	// public BaseResponse getRegistrationCode(@RequestBody
+	// GetRegistrationCodeRequest getRegistrationCodeRequest,
+	// HttpServletRequest request, HttpServletResponse response) {
+	// logger.info("========getRegistrationCode : {}============",
+	// getRegistrationCodeRequest.getAreaCode() +
+	// getRegistrationCodeRequest.getUserPhone());
+	// BaseResponse rep = new BaseResponse();
+	// if (getRegistrationCodeRequest.isEmpty()) {
+	// logger.info("PARAMETER_IS_EMPTY");
+	// rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+	// rep.setMessage("");
+	// } else {
+	// // 检验手机号是否已注册
+	// if (userManager.getUserId(getRegistrationCodeRequest.getAreaCode(),
+	// getRegistrationCodeRequest.getUserPhone()) != null) {
+	// logger.info("PHONE_IS_REGISTERED");
+	// rep.setRetCode(ServerConsts.PHONE_IS_REGISTERED);
+	// rep.setMessage("");
+	// } else {
+	// userManager.getPinCode(getRegistrationCodeRequest.getAreaCode(),
+	// getRegistrationCodeRequest.getUserPhone());
+	// logger.info("********Operation succeeded********");
+	// rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+	// rep.setMessage("");
+	// }
+	// }
+	// return rep;
+	// }
 
 	/**
-	 * Get Verification code 获取验证码(针对已注册用户)
+	 * Get Verification code 获取验证码
 	 * 
 	 * @param getVerificationCodeRequest
 	 * @param request
@@ -148,30 +151,44 @@ public class UserController {
 	 * @return
 	 */
 	@ResponseBody
-	@ApiOperation(value = "获取验证码(针对已注册用户)", httpMethod = "POST", notes = "")
+	@ApiOperation(value = "获取验证码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/getVerificationCode", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse getVerificationCode(@RequestBody GetVerificationCodeRequest getVerificationCodeRequest,
 			HttpServletRequest request, HttpServletResponse response) {
-		logger.info("========getVerificationCode : {}============",
-				getVerificationCodeRequest.getAreaCode() + getVerificationCodeRequest.getUserPhone());
+		logger.info("getVerificationCode : {}", getVerificationCodeRequest.toString());
 		BaseResponse rep = new BaseResponse();
 		if (getVerificationCodeRequest.isEmpty()) {
-			logger.info("PARAMETER_IS_EMPTY");
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage("");
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			// 检验手机号是否存在
-			if (userManager.getUserId(getVerificationCodeRequest.getAreaCode(),
-					getVerificationCodeRequest.getUserPhone()) != null) {
-				userManager.getPinCode(getVerificationCodeRequest.getAreaCode(),
-						getVerificationCodeRequest.getUserPhone());
-				logger.info("********Operation succeeded********");
-				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-				rep.setMessage("");
+			Integer userId = userManager.getUserId(getVerificationCodeRequest.getAreaCode(),
+					getVerificationCodeRequest.getUserPhone());
+			if (getVerificationCodeRequest.getPurpose().equals(ServerConsts.PIN_FUNC_REGISTER)) {
+				if (userId != null) {
+					logger.info(MessageConsts.PHONE_IS_REGISTERED);
+					rep.setRetCode(ServerConsts.PHONE_IS_REGISTERED);
+					rep.setMessage(MessageConsts.PHONE_IS_REGISTERED);
+				} else {
+					userManager.getPinCode(getVerificationCodeRequest.getPurpose(),
+							getVerificationCodeRequest.getAreaCode(), getVerificationCodeRequest.getUserPhone());
+					logger.info(MessageConsts.RET_CODE_SUCCESS);
+					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+				}
 			} else {
-				logger.info("PHONE_NOT_EXIST");
-				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
-				rep.setMessage("");
+				if (userId != null) {
+					userManager.getPinCode(getVerificationCodeRequest.getPurpose(),
+							getVerificationCodeRequest.getAreaCode(), getVerificationCodeRequest.getUserPhone());
+					logger.info(MessageConsts.RET_CODE_SUCCESS);
+					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+				} else {
+					logger.info(MessageConsts.PHONE_NOT_EXIST);
+					rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
+					rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
+				}
 			}
 		}
 		return rep;
@@ -190,20 +207,20 @@ public class UserController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public LoginResponse login(@RequestBody LoginRequest loginRequest, HttpServletRequest request,
 			HttpServletResponse response) {
-		logger.info("========login : {}============", loginRequest.getAreaCode() + loginRequest.getUserPhone());
+		logger.info("login : {}", loginRequest.getAreaCode() + loginRequest.getUserPhone());
 		LoginResponse rep = new LoginResponse();
 		if (loginRequest.isEmpty()) {
-			logger.info("PARAMETER_IS_EMPTY");
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage("");
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			Integer userId = userManager.getUserId(loginRequest.getAreaCode(), loginRequest.getUserPhone());
 			if (userId == null) {
 				logger.info(MessageConsts.PHONE_NOT_EXIST);
 				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
 				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
-			//有logintoken则跳过password验证
-			} else if (sessionManager.validateLoginToken(userId, loginRequest.getLoginToken()) 
+				// 有logintoken则跳过password验证
+			} else if (sessionManager.validateLoginToken(userId, loginRequest.getLoginToken())
 					|| userManager.checkUserPassword(userId, loginRequest.getUserPassword())) {
 				// 生成session Token
 				SessionData sessionData = new SessionData(userId, UidUtils.genUid());
@@ -218,9 +235,9 @@ public class UserController {
 				List<Wallet> wallets = exchangeManager.getWalletsByUserId(userId);
 				rep.setWallets(wallets);
 
-				logger.info("********Operation succeeded********");
+				logger.info(MessageConsts.RET_CODE_SUCCESS);
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-				rep.setMessage("");
+				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			}
 		}
 		return rep;
@@ -239,23 +256,23 @@ public class UserController {
 	@RequestMapping(value = "/register", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public LoginResponse register(@RequestBody RegisterRequest registerRequest, HttpServletRequest request,
 			HttpServletResponse response) {
-		logger.info("========register : {}============",
-				registerRequest.getAreaCode() + registerRequest.getUserPhone());
+		logger.info("register : {}", registerRequest.getAreaCode() + registerRequest.getUserPhone());
 		LoginResponse rep = new LoginResponse();
 		if (registerRequest.isEmpty()) {
-			logger.info("PARAMETER_IS_EMPTY");
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage("");
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			// 校验验证码
-			if (userManager.testPinCode(registerRequest.getAreaCode(), registerRequest.getUserPhone(),
-					registerRequest.getRegistrationCode())) {
+			if (userManager.testPinCode(ServerConsts.PIN_FUNC_REGISTER, registerRequest.getAreaCode(),
+					registerRequest.getUserPhone(), registerRequest.getRegistrationCode())) {
 				Integer userId = userManager.register(registerRequest.getAreaCode(), registerRequest.getUserPhone(),
 						registerRequest.getUserName(), registerRequest.getUserPassword());
 				logger.info("userId==={}", userId);
 				if (userId == null) {
+					logger.info(MessageConsts.RET_CODE_FAILUE);
 					rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
-					rep.setMessage("");
+					rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 				} else {
 					// 生成session Token
 					SessionData sessionData = new SessionData(userId, UidUtils.genUid());
@@ -270,14 +287,14 @@ public class UserController {
 					List<Wallet> wallets = exchangeManager.getWalletsByUserId(userId);
 					rep.setWallets(wallets);
 
-					logger.info("********Operation succeeded********");
+					logger.info(MessageConsts.RET_CODE_SUCCESS);
 					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-					rep.setMessage("");
+					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 				}
 			} else {
-				logger.info("PHONE_AND_CODE_NOT_MATCH");
+				logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 				rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
-				rep.setMessage("");
+				rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 			}
 		}
 		return rep;
@@ -296,23 +313,23 @@ public class UserController {
 	@RequestMapping(value = "/testCode", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse testCode(@RequestBody TestCodeRequest testRequest, HttpServletRequest request,
 			HttpServletResponse response) {
-		logger.info("========testCode : {}============", testRequest.getAreaCode() + testRequest.getUserPhone());
+		logger.info("testCode : {}", testRequest.getAreaCode() + testRequest.getUserPhone());
 		BaseResponse rep = new BaseResponse();
 		if (testRequest.isEmpty()) {
-			logger.info("PARAMETER_IS_EMPTY");
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage("");
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			// 校验验证码
-			if (userManager.testPinCode(testRequest.getAreaCode(), testRequest.getUserPhone(),
+			if (userManager.testPinCode(testRequest.getPurpose(), testRequest.getAreaCode(), testRequest.getUserPhone(),
 					testRequest.getVerificationCode())) {
-				logger.info("********Operation succeeded********");
+				logger.info(MessageConsts.RET_CODE_SUCCESS);
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-				rep.setMessage("");
+				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			} else {
-				logger.info("PHONE_AND_CODE_NOT_MATCH");
+				logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 				rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
-				rep.setMessage("");
+				rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 			}
 		}
 		return rep;

@@ -9,7 +9,7 @@ public interface UserManager {
 	 * @param areaCode
 	 * @param userPhone
 	 */
-	public void getPinCode(String areaCode, String userPhone);
+	public void getPinCode(String func, String areaCode, String userPhone);
 
 	/**
 	 * 根据手机号码获取userID(用作判断是否为注册用户)
@@ -34,7 +34,7 @@ public interface UserManager {
 	 * @param areaCode
 	 * @param userPhone
 	 * @param userPassword
-	 * @param ip 
+	 * @param ip
 	 * @return
 	 */
 	public Integer login(String areaCode, String userPhone, String userPassword, String ip);
@@ -58,7 +58,7 @@ public interface UserManager {
 	 * @param verificationCode
 	 * @return
 	 */
-	public boolean testPinCode(String areaCode, String userPhone, String verificationCode);
+	public boolean testPinCode(String func,String areaCode, String userPhone, String verificationCode);
 
 	/**
 	 * 更改密码
@@ -102,4 +102,5 @@ public interface UserManager {
 	 * @param oldPassword
 	 */
 	public boolean checkUserPassword(Integer userId, String oldPassword);
+
 }

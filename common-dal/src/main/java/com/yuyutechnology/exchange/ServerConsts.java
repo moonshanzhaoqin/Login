@@ -144,6 +144,19 @@ public class ServerConsts {
 	 * 本位货币，主币(结算单位)
 	 */
 	public static final String STANDARD_CURRENCY = "standard_currency";
+	//短信验证码功能
+	/**
+	 * 短信验证码功能——注册
+	 */
+	public static final String PIN_FUNC_REGISTER= "REGISTER";
+	/**
+	 * 短信验证码功能——登录
+	 */
+	public static final String PIN_FUNC_LOGIN= "LOGIN";
+	/**
+	 * 短信验证码功能——忘记密码
+	 */
+	public static final String PIN_FUNC_FORGETPASSWORD = "FORGETPASSWORD";
 	
 
 }

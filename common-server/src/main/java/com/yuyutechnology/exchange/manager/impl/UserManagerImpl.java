@@ -124,7 +124,7 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public void getPinCode(String areaCode, String userPhone) {
+	public void getPinCode(String func,String areaCode, String userPhone) {
 		logger.info("getPinCode===phone={}", areaCode + userPhone);
 		// 随机生成六位数
 		final String random = MathUtils.randomFixedLengthStr(6);
@@ -132,7 +132,7 @@ public class UserManagerImpl implements UserManager {
 		final String md5random = DigestUtils.md5Hex(random);
 		// 存入redis userPhone:md5random
 		// TODO 有效时间可配，单位：min
-		redisDAO.saveData(areaCode + userPhone, md5random, 10);
+		redisDAO.saveData(func+areaCode + userPhone, md5random, 10);
 		// 发送验证码
 		smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random);
 	}
@@ -197,9 +197,9 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public boolean testPinCode(String areaCode, String userPhone, String verificationCode) {
+	public boolean testPinCode(String func,String areaCode, String userPhone, String verificationCode) {
 		logger.info("校验手机号 {}与验证码{}", areaCode + userPhone, verificationCode);
-		if (StringUtils.equals(DigestUtils.md5Hex(verificationCode), redisDAO.getValueByKey(areaCode + userPhone))) {
+		if (StringUtils.equals(DigestUtils.md5Hex(verificationCode), redisDAO.getValueByKey(func+areaCode + userPhone))) {
 			logger.info("***匹配***");
 			return true;
 		}
