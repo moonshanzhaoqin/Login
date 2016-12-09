@@ -25,6 +25,7 @@ import com.yuyutechnology.exchange.server.controller.request.SetUserPayPwdReques
 import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
+import com.yuyutechnology.exchange.session.SessionManager;
 
 /**
  * @author suzan.wu
@@ -37,7 +38,8 @@ public class LoggedInUserController {
 	UserManager userManager;
 	@Autowired
 	ExchangeManager exchangeManager;
-
+	@Autowired
+	SessionManager sessionManager;
 	// TODO Modify password 修改用户密码
 	@ResponseBody
 	@ApiOperation(value = "修改用户密码", httpMethod = "POST", notes = "")
@@ -54,6 +56,7 @@ public class LoggedInUserController {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			userManager.checkUserPassword(sessionData.getUserId(), modifyPasswordRequest.getOldPassword());
 			userManager.updatePassword(sessionData.getUserId(), modifyPasswordRequest.getNewPassword());
+			sessionManager.delLoginToken(sessionData.getUserId());
 			logger.info("********Operation succeeded********");
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 			rep.setMessage("");

@@ -4,17 +4,36 @@ import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.yuyutechnology.exchange.manager.ExchangeRateManager;
+import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.startup.Bootstrap;
 /**
  * Hello world!
  * 
  */
-public class StartTask
-{
+public class StartTask{
+	
+	@Autowired
+	ExchangeRateManager exchangeRateManager;
+	@Autowired
+	TransferManager transferManager;
+	
 	public static Logger logger = LoggerFactory.getLogger(StartTask.class);
-	public static void main(String[] args)
-	{
+
+	public void autoUpdateExchangeRateTask(){
+		logger.info("=============autoUpdateExchangeRateTask Start==================");
+		exchangeRateManager.updateExchangeRateNoGoldq();
+		exchangeRateManager.updateGoldpayExchangeRate();
+		logger.info("=============End at {}==================",new Date());
+	}
+	
+	public void autoSystemRefundBatch(){
+		transferManager.systemRefundBatch();
+	}
+	
+	public static void main(String[] args){
 		String home = System.getProperty("task.home");
 		if (StringUtils.isEmpty(home))
 		{

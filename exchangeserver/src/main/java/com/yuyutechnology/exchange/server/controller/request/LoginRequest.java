@@ -6,6 +6,7 @@ public class LoginRequest {
 	private String areaCode;
 	private String userPhone;
 	private String userPassword;
+	private String loginToken;
 
 	public String getAreaCode() {
 		return areaCode;
@@ -31,6 +32,14 @@ public class LoginRequest {
 		this.userPassword = userPassword;
 	}
 
+	public String getLoginToken() {
+		return loginToken;
+	}
+
+	public void setLoginToken(String loginToken) {
+		this.loginToken = loginToken;
+	}
+
 	/**
 	 * 判断参数是否为空
 	 * 
@@ -43,9 +52,9 @@ public class LoginRequest {
 		if (StringUtils.isEmpty(this.userPhone)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.userPassword)) {
-			return true;
-		}
+//		if (StringUtils.isEmpty(this.userPassword)) {
+//			return true;
+//		}
 		return false;
 	}
 }
