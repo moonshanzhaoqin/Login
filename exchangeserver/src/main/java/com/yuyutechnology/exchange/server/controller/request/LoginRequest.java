@@ -52,9 +52,9 @@ public class LoginRequest {
 		if (StringUtils.isEmpty(this.userPhone)) {
 			return true;
 		}
-//		if (StringUtils.isEmpty(this.userPassword)) {
-//			return true;
-//		}
+		if (StringUtils.isEmpty(this.userPassword)&&StringUtils.isEmpty(this.loginToken)) {
+			return true;
+		}
 		return false;
 	}
 }

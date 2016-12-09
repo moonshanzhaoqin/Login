@@ -197,7 +197,7 @@ public class UserController {
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage("");
 		} else {
-			Integer userId = userManager.login(loginRequest.getAreaCode(), loginRequest.getUserPhone(),loginRequest.getUserPassword(),HttpTookit.getIp(request));
+			Integer userId = userManager.getUserId(loginRequest.getAreaCode(), loginRequest.getUserPhone());
 			if (userId == null) {
 				logger.info(MessageConsts.PHONE_NOT_EXIST);
 				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
