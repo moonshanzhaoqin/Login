@@ -13,6 +13,7 @@ import com.yuyutechnology.exchange.pojo.Unregistered;
 
 @Repository
 public class UnregisteredDAOImpl implements UnregisteredDAO {
+	
 	@Resource
 	HibernateTemplate hibernateTemplate;
 
@@ -34,5 +35,13 @@ public class UnregisteredDAOImpl implements UnregisteredDAO {
 	public void updateUnregistered(Unregistered unregistered) {
 		hibernateTemplate.saveOrUpdate(unregistered);
 
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Unregistered> getAllUnfinishedTransaction() {
+		List<?> list = hibernateTemplate.find("from Unregistered wehre unregisteredStatus = ?", 
+				ServerConsts.UNREGISTERED_STATUS_OF_PENDING);
+		return (List<Unregistered>) list;
 	}
 }

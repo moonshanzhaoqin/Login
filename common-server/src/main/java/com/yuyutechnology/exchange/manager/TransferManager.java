@@ -2,6 +2,8 @@ package com.yuyutechnology.exchange.manager;
 
 import java.math.BigDecimal;
 
+import com.yuyutechnology.exchange.pojo.Unregistered;
+
 public interface TransferManager {
 	
 	/**
@@ -37,6 +39,21 @@ public interface TransferManager {
 	 * @param transferId
 	 */
 	public void transferConfirm(String transferId);
+	
+	/**
+	 * @Descrition : 系统退款
+	 * @author : nicholas.chi
+	 * @time : 2016年12月8日 下午6:03:32
+	 * @param unregistered
+	 */
+	public void systemRefund(Unregistered unregistered);
+	
+	/**
+	 * @Descrition : 批量系统退款
+	 * @author : nicholas.chi
+	 * @time : 2016年12月8日 下午5:25:58
+	 */
+	public void systemRefundBatch();
 	
 
 }
