@@ -16,7 +16,7 @@
 ##
 
 #set JAVA_HOME
-#JAVA_HOME=/usr/lib/jvm/java-oracle
+JAVA_HOME=/usr/lib/jvm/java-oracle
 
 #check JAVA_HOME & java
 noJavaHome=false
