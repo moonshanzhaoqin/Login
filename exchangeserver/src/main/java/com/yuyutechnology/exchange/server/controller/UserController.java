@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,6 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.form.UserInfo;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
-import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.server.controller.request.ForgetPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetRegistrationCodeRequest;
@@ -34,7 +34,6 @@ import com.yuyutechnology.exchange.server.controller.request.TestCodeRequest;
 import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
 import com.yuyutechnology.exchange.server.controller.response.LoginResponse;
 import com.yuyutechnology.exchange.session.SessionData;
-import com.yuyutechnology.exchange.session.SessionDataHolder;
 import com.yuyutechnology.exchange.session.SessionManager;
 import com.yuyutechnology.exchange.utils.UidUtils;
 
@@ -83,6 +82,7 @@ public class UserController {
 				if (userId != null) {
 					// 修改密码
 					userManager.updatePassword(userId, forgetPasswordRequest.getNewPassword());
+					sessionManager.delLoginToken(userId);
 					logger.info("********Operation succeeded********");
 					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 					rep.setMessage("");
@@ -201,12 +201,14 @@ public class UserController {
 				logger.info(MessageConsts.PHONE_NOT_EXIST);
 				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
 				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
-			} else if (userManager.checkUserPassword(userId, loginRequest.getUserPassword())) {
+			//有logintoken则跳过password验证
+			} else if (sessionManager.validateLoginToken(userId, loginRequest.getLoginToken()) 
+					|| userManager.checkUserPassword(userId, loginRequest.getUserPassword())) {
 				// 生成session Token
 				SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 				sessionManager.saveSessionData(sessionData);
-				rep.setToken(sessionData.getSessionId());
-
+				rep.setSessionToken(sessionData.getSessionId());
+				rep.setLoginToken(sessionManager.createLoginToken(userId));
 				// 获取用户信息
 				UserInfo user = userManager.getUserInfo(userId);
 				rep.setUser(user);
@@ -261,8 +263,8 @@ public class UserController {
 					// 生成session Token
 					SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 					sessionManager.saveSessionData(sessionData);
-					rep.setToken(sessionData.getSessionId());
-
+					rep.setSessionToken(sessionData.getSessionId());
+					rep.setLoginToken(sessionManager.createLoginToken(userId));
 					// 获取用户信息
 					UserInfo user = userManager.getUserInfo(userId);
 					rep.setUser(user);

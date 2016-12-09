@@ -2,11 +2,14 @@ package com.yuyutechnology.exchange.session;
 
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
+
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import com.yuyutechnology.exchange.utils.JsonBinder;
+import com.yuyutechnology.exchange.utils.UidUtils;
 
 /**
  * 
@@ -19,6 +22,7 @@ public class SessionManager {
 	RedisTemplate<String, String> sessionRedisTemplate;
 	public static String SESSION_DATA_KEY = "session_data[sessionid]";
 	public static String SESSION_DATA_KEY_USERID = "session_data[userid]";
+	public static String LOGIN_TOKEN_KEY = "loginToken[userid]";
 
 	/**
 	 * 
@@ -100,6 +104,28 @@ public class SessionManager {
 	
 	public void logoutUserid(String userId) {
 		String key = StringUtils.replace(SESSION_DATA_KEY_USERID, "userid", userId);
+		sessionRedisTemplate.delete(key);
+	}
+	
+	public String createLoginToken(int userId) {
+		String key = StringUtils.replace(LOGIN_TOKEN_KEY, "userid", userId+"");
+		String loginToken = UidUtils.genUid();
+		sessionRedisTemplate.opsForValue().set(key, DigestUtils.md5Hex(loginToken));
+		sessionRedisTemplate.expire(key, 7, TimeUnit.DAYS);
+		return loginToken;
+	}
+	
+	public boolean validateLoginToken(int userId, String loginToken) {
+		String key = StringUtils.replace(LOGIN_TOKEN_KEY, "userid", userId+"");
+		String tokenMD5 = sessionRedisTemplate.opsForValue().get(key);
+		if (StringUtils.isNotBlank(loginToken) && StringUtils.isNotBlank(tokenMD5) && DigestUtils.md5Hex(loginToken).equals(tokenMD5)) {
+			return true;
+		}
+		return false;
+	}
+	
+	public void delLoginToken(int userId) {
+		String key = StringUtils.replace(LOGIN_TOKEN_KEY, "userid", userId+"");
 		sessionRedisTemplate.delete(key);
 	}
 }
