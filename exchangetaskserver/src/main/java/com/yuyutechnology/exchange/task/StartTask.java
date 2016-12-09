@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
@@ -29,8 +30,11 @@ public class StartTask{
 		logger.info("=============End at {}==================",new Date());
 	}
 	
+	@Async
 	public void autoSystemRefundBatch(){
+		logger.info("=============autoSystemRefundBatch Start==================");
 		transferManager.systemRefundBatch();
+		logger.info("=============End at {}==================",new Date());
 	}
 	
 	public static void main(String[] args){

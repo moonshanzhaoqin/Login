@@ -37,11 +37,16 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 	<task:scheduler id="taskServerScheduler" pool-size="10"/>
 	
 	<task:scheduled-tasks scheduler="taskServerScheduler">
+	    
 	    <task:scheduled 
-	    ref="com.yuyutechnology.exchange.task.AutoUpdateExchangeRateTask"
+	    ref="com.yuyutechnology.exchange.task.StartTask"
 	    method="autoUpdateExchangeRateTask" 
 	    fixed-delay="5000" initial-delay="1000"/> <!-- 程序启动后1s调用autoUpdateExchangeRateTask方法，然后每个5s执行一次 -->
-<!-- 	    <task:scheduled ref="beanB" method="methodB" fixed-rate="5000"/> -->
+	    
+	    <task:scheduled 
+	    ref="com.yuyutechnology.exchange.task.StartTask" 
+	    method="autoSystemRefundBatch" 
+	    fixed-rate="5000"/>
 <!-- 	    <task:scheduled ref="beanC" method="methodC" cron="*/5 * * * * MON-FRI"/> -->
 	</task:scheduled-tasks>
 
