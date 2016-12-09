@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import javax.sound.midi.MidiDevice.Info;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -112,16 +110,18 @@ public class UserManagerImpl implements UserManager {
 		return false;
 	}
 
-	// @Override
-	// public Integer login(String areaCode, String userPhone, String
-	// userPassword) {
-	// User user = userDAO.getUserByUserPhone(areaCode, userPhone);
-	// if (user != null && PasswordUtils.check(userPassword,
-	// user.getPasswordSalt(), user.getPasswordSalt())) {
-	// return user.getUserId();
-	// }
-	// return null;
-	// }
+	@Override
+	public Integer login(String areaCode, String userPhone, String userPassword, String ip) {
+		logger.info("login=======");
+		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
+		if (user != null && PasswordUtils.check(userPassword, user.getUserPassword(), user.getPasswordSalt())) {
+			user.setLoginTime(new Date());
+			user.setLoginIp(ip);
+			userDAO.updateUser(user);
+			return user.getUserId();
+		}
+		return null;
+	}
 
 	@Override
 	public void getPinCode(String areaCode, String userPhone) {
@@ -159,7 +159,7 @@ public class UserManagerImpl implements UserManager {
 			userInfo.setAreaCode(user.getAreaCode());
 			userInfo.setPhone(user.getUserPhone());
 			userInfo.setName(user.getUserName());
-			//判断是否设置过支付密码
+			// 判断是否设置过支付密码
 			if (StringUtils.isBlank(user.getUserPayPwd())) {
 				userInfo.setPayPwd(false);
 			} else {
@@ -184,7 +184,7 @@ public class UserManagerImpl implements UserManager {
 		// 添加用户
 		// 随机生成盐值
 		String passwordSalt = DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(6));
-		logger.info("随机生成盐值===salt={}",passwordSalt);
+		logger.info("随机生成盐值===salt={}", passwordSalt);
 		logger.info("添加用户");
 		Integer userId = userDAO
 				.addUser(new User(areaCode, userPhone, userName, PasswordUtils.encrypt(userPassword, passwordSalt),
@@ -212,7 +212,7 @@ public class UserManagerImpl implements UserManager {
 		logger.info("更新用户{}的密码{}", userId, newPassword);
 		User user = userDAO.getUser(userId);
 		user.setUserPassword(PasswordUtils.encrypt(newPassword, user.getPasswordSalt()));
-		userDAO.updateUserPassword(user);
+		userDAO.updateUser(user);
 	}
 
 	@Override
@@ -220,7 +220,7 @@ public class UserManagerImpl implements UserManager {
 		logger.info("更新用户{}的支付密码{}", userId, userPayPwd);
 		User user = userDAO.getUser(userId);
 		user.setUserPayPwd(PasswordUtils.encrypt(userPayPwd, user.getPasswordSalt()));
-		userDAO.updateUserPassword(user);
+		userDAO.updateUser(user);
 	}
 
 	private void createWallets4NewUser(Integer userId) {
@@ -236,7 +236,7 @@ public class UserManagerImpl implements UserManager {
 		Integer systemUserId = userDAO.getSystemUser().getUserId();
 		List<Unregistered> unregistereds = unregisteredDAO.getUnregisteredByUserPhone(areaCode, userPhone);
 		for (Unregistered unregistered : unregistereds) {
-			logger.info("+ {} : {}",unregistered.getCurrency(), unregistered.getAmount());
+			logger.info("+ {} : {}", unregistered.getCurrency(), unregistered.getAmount());
 			// 系统账号扣款
 			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, unregistered.getCurrency(),
 					unregistered.getAmount(), "-");

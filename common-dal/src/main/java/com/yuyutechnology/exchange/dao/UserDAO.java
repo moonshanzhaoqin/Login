@@ -19,6 +19,6 @@ public interface UserDAO {
 
 	public Integer addUser(User user);
 
-	public void updateUserPassword(User user);
+	public void updateUser(User user);
 
 }

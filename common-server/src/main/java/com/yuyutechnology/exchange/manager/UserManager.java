@@ -34,9 +34,10 @@ public interface UserManager {
 	 * @param areaCode
 	 * @param userPhone
 	 * @param userPassword
+	 * @param ip 
 	 * @return
 	 */
-//	public Integer login(String areaCode, String userPhone, String userPassword);
+	public Integer login(String areaCode, String userPhone, String userPassword, String ip);
 
 	/**
 	 * 添加新用户

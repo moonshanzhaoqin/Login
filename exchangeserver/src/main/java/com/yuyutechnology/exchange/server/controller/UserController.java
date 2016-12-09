@@ -36,6 +36,7 @@ import com.yuyutechnology.exchange.server.controller.response.LoginResponse;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
 import com.yuyutechnology.exchange.session.SessionManager;
+import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.UidUtils;
 
 /**
@@ -196,12 +197,12 @@ public class UserController {
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage("");
 		} else {
-			Integer userId = userManager.getUserId(loginRequest.getAreaCode(), loginRequest.getUserPhone());
+			Integer userId = userManager.login(loginRequest.getAreaCode(), loginRequest.getUserPhone(),loginRequest.getUserPassword(),HttpTookit.getIp(request));
 			if (userId == null) {
-				logger.info(MessageConsts.PHONE_NOT_EXIST);
-				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
-				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
-			} else if (userManager.checkUserPassword(userId, loginRequest.getUserPassword())) {
+				logger.info(MessageConsts.PHONE_AND_PASSWORD_NOT_MATCH);
+				rep.setRetCode(ServerConsts.PHONE_AND_PASSWORD_NOT_MATCH);
+				rep.setMessage(MessageConsts.PHONE_AND_PASSWORD_NOT_MATCH);
+			} else   {
 				// 生成session Token
 				SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 				sessionManager.saveSessionData(sessionData);
@@ -218,10 +219,6 @@ public class UserController {
 				logger.info("********Operation succeeded********");
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 				rep.setMessage("");
-			} else {
-				logger.info(MessageConsts.PHONE_AND_PASSWORD_NOT_MATCH);
-				rep.setRetCode(ServerConsts.PHONE_AND_PASSWORD_NOT_MATCH);
-				rep.setMessage(MessageConsts.PHONE_AND_PASSWORD_NOT_MATCH);
 			}
 		}
 		return rep;
