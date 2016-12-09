@@ -24,7 +24,7 @@ import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordReque
 import com.yuyutechnology.exchange.server.controller.request.SetUserPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
 import com.yuyutechnology.exchange.session.SessionData;
-import com.yuyutechnology.exchange.session.SessionManager;
+import com.yuyutechnology.exchange.session.SessionDataHolder;
 
 /**
  * @author suzan.wu
@@ -37,8 +37,6 @@ public class LoggedInUserController {
 	UserManager userManager;
 	@Autowired
 	ExchangeManager exchangeManager;
-	@Autowired
-	SessionManager sessionManager;
 
 	// TODO Modify password 修改用户密码
 	@ResponseBody
@@ -53,7 +51,7 @@ public class LoggedInUserController {
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage("");
 		} else {
-			SessionData sessionData = sessionManager.get(token);
+			SessionData sessionData = SessionDataHolder.getSessionData();
 			userManager.checkUserPassword(sessionData.getUserId(), modifyPasswordRequest.getOldPassword());
 			userManager.updatePassword(sessionData.getUserId(), modifyPasswordRequest.getNewPassword());
 			logger.info("********Operation succeeded********");
@@ -82,7 +80,7 @@ public class LoggedInUserController {
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage("");
 		} else {
-			SessionData sessionData = sessionManager.get(token);
+			SessionData sessionData = SessionDataHolder.getSessionData();
 			// PayPwd 6位数字
 			if (setUserPayPwdRequest.getUserPayPwd().length() == 6
 					&& StringUtils.isNumeric(setUserPayPwdRequest.getUserPayPwd())) {
@@ -117,7 +115,7 @@ public class LoggedInUserController {
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
-			SessionData sessionData = sessionManager.get(token);
+			SessionData sessionData = SessionDataHolder.getSessionData();
 			String retCode = userManager.bindGoldpay(sessionData.getUserId(), bindGoldpayRequest.getGoldpayToken());
 			switch (retCode) {
 			case ServerConsts.RET_CODE_SUCCESS:

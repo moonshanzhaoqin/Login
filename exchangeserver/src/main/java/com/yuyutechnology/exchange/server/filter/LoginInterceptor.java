@@ -14,6 +14,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.session.SessionData;
+import com.yuyutechnology.exchange.session.SessionDataHolder;
 import com.yuyutechnology.exchange.session.SessionManager;
 import com.yuyutechnology.exchange.startup.ServerContext;
 
@@ -110,12 +111,12 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		String requestURI = request.getRequestURI();
 		String sessionId = getToeknFromURI(request.getRequestURI());
 		logger.info("request URI:" + requestURI + " session : " + sessionId);
-
 		SessionData sessionData = sessionManager.get(sessionId);
-
 		// 判断是否需要拦截或者是否登录
 		if (validURL(requestURI) || sessionData.getUserId() != null) {
 			logger.info("===================success=================");
+			sessionManager.refreshSessionDataExpireTime(sessionId);
+			SessionDataHolder.setSessionData(sessionData);
 			return true;
 		} else {
 			response.setStatus(500);

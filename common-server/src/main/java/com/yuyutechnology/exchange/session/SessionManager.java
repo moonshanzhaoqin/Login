@@ -33,6 +33,15 @@ public class SessionManager {
 			saveSessionDataToUserId(sessionData);
 		}
 	}
+	
+	/**
+	 * 
+	 * @param sessionData
+	 */
+	public void refreshSessionDataExpireTime(String sessionId) {
+		String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", sessionId);
+		sessionRedisTemplate.expire(key, 30, TimeUnit.MINUTES);
+	}
 
 	/**
 	 * 
