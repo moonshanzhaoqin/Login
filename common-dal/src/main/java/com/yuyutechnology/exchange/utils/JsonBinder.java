@@ -12,7 +12,10 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
@@ -27,6 +30,8 @@ import org.codehaus.jackson.map.ser.impl.SimpleFilterProvider;
 import org.codehaus.jackson.type.JavaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.yuyutechnology.exchange.pojo.Bind;
 
 /**
  * Class description goes here.
@@ -236,5 +241,12 @@ public class JsonBinder
 			public void setFilterId(Object filterId) {
 				this.filterId = filterId;
 			}
-	} 
+	}
+	
+	public static void main(String[] args) {
+		Map<String, Bind> map = new HashMap<String, Bind>();
+		map.put("aa", new Bind(1));
+		System.out.println(JsonBinder.getInstance().getInstance().toJson(map));
+		
+	}
 }

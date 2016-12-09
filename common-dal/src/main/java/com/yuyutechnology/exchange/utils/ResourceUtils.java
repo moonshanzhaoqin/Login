@@ -2,7 +2,7 @@ package com.yuyutechnology.exchange.utils;
 
 import java.util.ResourceBundle;
 
-public class ResourceUtiles {
+public class ResourceUtils {
 	public static String getBundleValue(String key) {
 		ResourceBundle resource = ResourceBundle.getBundle("server-conf");
 		return resource.getString(key);
