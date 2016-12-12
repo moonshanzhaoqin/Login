@@ -8,7 +8,7 @@ public class TestCodeRequest {
 	private String purpose;
 	private String areaCode;
 	private String userPhone;
-	private String VerificationCode;
+	private String verificationCode;
 
 	@ApiModelProperty(allowableValues = "REGISTER,FORGETPASSWORD,CHANGEPHONE")
 	public String getPurpose() {
@@ -35,12 +35,13 @@ public class TestCodeRequest {
 		this.userPhone = userPhone;
 	}
 
+
 	public String getVerificationCode() {
-		return VerificationCode;
+		return verificationCode;
 	}
 
 	public void setVerificationCode(String verificationCode) {
-		VerificationCode = verificationCode;
+		this.verificationCode = verificationCode;
 	}
 
 	/**
@@ -58,7 +59,7 @@ public class TestCodeRequest {
 		if (StringUtils.isEmpty(this.userPhone)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.VerificationCode)) {
+		if (StringUtils.isEmpty(this.verificationCode)) {
 			return true;
 		}
 		return false;

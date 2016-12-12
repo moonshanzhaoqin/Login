@@ -3,7 +3,7 @@ package com.yuyutechnology.exchange.server.controller.request;
 public class ChangePhoneRequest {
 	private String areaCode;
 	private String userPhone;
-	private String VerificationCode;
+	private String verificationCode;
 
 	public String getAreaCode() {
 		return areaCode;
@@ -22,10 +22,11 @@ public class ChangePhoneRequest {
 	}
 
 	public String getVerificationCode() {
-		return VerificationCode;
+		return verificationCode;
 	}
 
 	public void setVerificationCode(String verificationCode) {
-		VerificationCode = verificationCode;
+		this.verificationCode = verificationCode;
 	}
+
 }
