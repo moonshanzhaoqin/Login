@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.form.UserInfo;
 import com.yuyutechnology.exchange.manager.TransferManager;
+import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.TransPwdConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransferConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransferInitiateRequest;
 import com.yuyutechnology.exchange.server.controller.response.TransPwdConfirmResponse;
+import com.yuyutechnology.exchange.server.controller.response.TransferConfirmResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransferInitiateResponse;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
@@ -26,6 +29,8 @@ import com.yuyutechnology.exchange.session.SessionDataHolder;
 @Controller
 public class TransferController {
 	
+	@Autowired
+	UserManager userManager;
 	@Autowired
 	TransferManager transferManager;
 	
@@ -72,7 +77,10 @@ public class TransferController {
 		if(result.equals(ServerConsts.RET_CODE_SUCCESS)){
 			rep.setMessage("ok");
 		}else if(result.equals(ServerConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION)){
-			rep.setMessage("");
+			//发PIN码
+			UserInfo user = userManager.getUserInfo(sessionData.getUserId());
+			userManager.getPinCode(reqMsg.getTransferId(),user.getAreaCode(), user.getPhone());
+			rep.setMessage("Need to send pin code verification");
 		}else{
 			rep.setMessage("The payment password is incorrect");
 		}
@@ -82,15 +90,21 @@ public class TransferController {
 	
 	@ApiOperation(value = "pinCode 验证及交易确认")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transferConfirm")
-	public void transferConfirm(@PathVariable String token,@RequestBody TransferConfirmRequest reqMsg){
+	public TransferConfirmResponse transferConfirm(@PathVariable String token,@RequestBody TransferConfirmRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		int userId = sessionData.getUserId();
-		//判断PinCode是否正确/////////////////////////////////////////////////////
-		if(true){
+		UserInfo user = userManager.getUserInfo(sessionData.getUserId());
+		TransferConfirmResponse rep = new TransferConfirmResponse();
+		//判断PinCode是否正确
+		if(userManager.testPinCode(reqMsg.getTransferId(), user.getAreaCode(), user.getPhone(),reqMsg.getPinCode())){
 			transferManager.transferConfirm(reqMsg.getTransferId());
+			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setMessage("ok");
+		}else{
+			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setMessage("The pin code is incorrect");
 		}
-
+		return rep;
 	}
 	
 	

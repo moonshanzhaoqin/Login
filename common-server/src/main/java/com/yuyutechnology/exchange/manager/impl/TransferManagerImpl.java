@@ -119,12 +119,6 @@ public class TransferManagerImpl implements TransferManager{
 				( accumulatedAmount.compareTo(accumulatedAmountMax) == 1 || 
 				transfer.getTransferAmount().compareTo(AmountofSingleTransfer) == 1)){
 			logger.warn("The transaction amount exceeds the limit");
-			//发送pinCode///////////////////////////////////////////////////////////////
-			
-			
-			
-			
-			
 			return ServerConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION;
 			
 		}else{
