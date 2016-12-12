@@ -6,7 +6,7 @@ public class RegisterRequest {
 	private String areaCode;
 	private String userPhone;
 	private String registrationCode;
-	private String UserName;
+	private String userName;
 	private String userPassword;
 
 	public String getAreaCode() {
@@ -17,13 +17,6 @@ public class RegisterRequest {
 		this.areaCode = areaCode;
 	}
 
-	public String getUserName() {
-		return UserName;
-	}
-
-	public void setUserName(String userName) {
-		UserName = userName;
-	}
 
 	public String getUserPassword() {
 		return userPassword;
@@ -31,6 +24,14 @@ public class RegisterRequest {
 
 	public void setUserPassword(String userPassword) {
 		this.userPassword = userPassword;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	public String getUserPhone() {
@@ -61,7 +62,7 @@ public class RegisterRequest {
 		if (StringUtils.isEmpty(this.userPhone)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.UserName)) {
+		if (StringUtils.isEmpty(this.userName)) {
 			return true;
 		}
 		if (StringUtils.isEmpty(this.registrationCode)) {

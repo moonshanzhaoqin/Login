@@ -2,12 +2,15 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 public class TestCodeRequest {
 	private String purpose;
 	private String areaCode;
 	private String userPhone;
 	private String VerificationCode;
 
+	@ApiModelProperty(allowableValues = "REGISTER,FORGETPASSWORD,CHANGEPHONE")
 	public String getPurpose() {
 		return purpose;
 	}

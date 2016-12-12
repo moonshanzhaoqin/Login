@@ -8,7 +8,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,18 +23,12 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.form.UserInfo;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
-import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
-import com.yuyutechnology.exchange.server.controller.request.ForgetPasswordRequest;
-import com.yuyutechnology.exchange.server.controller.request.GetVerificationCodeRequest;
-import com.yuyutechnology.exchange.server.controller.request.LoginRequest;
-import com.yuyutechnology.exchange.server.controller.request.RegisterRequest;
-import com.yuyutechnology.exchange.server.controller.request.TestCodeRequest;
+import com.yuyutechnology.exchange.server.controller.request.*;
 import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
 import com.yuyutechnology.exchange.server.controller.response.LoginResponse;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionManager;
-import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.UidUtils;
 
 /**
@@ -48,11 +41,11 @@ public class UserController {
 	public static Logger logger = LoggerFactory.getLogger(UserController.class);
 
 	@Autowired
-	UserManager userManager;
-	@Autowired
 	ExchangeManager exchangeManager;
 	@Autowired
 	SessionManager sessionManager;
+	@Autowired
+	UserManager userManager;
 
 	/**
 	 * forget password 忘记密码
@@ -123,7 +116,8 @@ public class UserController {
 			// 检验手机号是否存在
 			Integer userId = userManager.getUserId(getVerificationCodeRequest.getAreaCode(),
 					getVerificationCodeRequest.getUserPhone());
-			if (getVerificationCodeRequest.getPurpose().equals(ServerConsts.PIN_FUNC_REGISTER)||getVerificationCodeRequest.getPurpose().equals(ServerConsts.PIN_FUNC_CHANGEPHONE)) {
+			if (getVerificationCodeRequest.getPurpose().equals(ServerConsts.PIN_FUNC_REGISTER)
+					|| getVerificationCodeRequest.getPurpose().equals(ServerConsts.PIN_FUNC_CHANGEPHONE)) {
 				if (userId != null) {
 					logger.info(MessageConsts.PHONE_IS_REGISTERED);
 					rep.setRetCode(ServerConsts.PHONE_IS_REGISTERED);

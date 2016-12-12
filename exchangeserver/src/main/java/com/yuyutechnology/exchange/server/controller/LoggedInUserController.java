@@ -24,6 +24,7 @@ import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.AddFriendRequest;
 import com.yuyutechnology.exchange.server.controller.request.BindGoldpayRequest;
 import com.yuyutechnology.exchange.server.controller.request.ChangePhoneRequest;
+import com.yuyutechnology.exchange.server.controller.request.CheckPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.SetUserPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
@@ -221,7 +222,13 @@ public class LoggedInUserController {
 		return rep;
 	}
 
-	// TODO changePhone 换绑手机
+	/**
+	 * changePhone 换绑手机
+	 * 
+	 * @param token
+	 * @param changePhoneRequest
+	 * @return
+	 */
 	@ResponseBody
 	@ApiOperation(value = "换绑手机", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/changePhone", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
@@ -246,4 +253,31 @@ public class LoggedInUserController {
 
 		return rep;
 	}
+
+	/**
+	 * 校验登录密码
+	 * 
+	 * @param token
+	 * @param checkPasswordRequest
+	 * @return
+	 */
+	@ResponseBody
+	@ApiOperation(value = "换绑手机-校验登录密码", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/checkPassword", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public BaseResponse checkPassword(@PathVariable String token, CheckPasswordRequest checkPasswordRequest) {
+		logger.info("========checkPassword : {}============", token);
+		BaseResponse rep = new BaseResponse();
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		if (userManager.checkUserPassword(sessionData.getUserId(), checkPasswordRequest.getUserPassword())) {
+			logger.info("********Operation succeeded********");
+			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		} else {
+			logger.info(MessageConsts.RET_CODE_FAILUE);
+			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
+			rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+		}
+		return rep;
+	}
+
 }
