@@ -110,7 +110,7 @@ public interface UserManager {
 	 * 获取好友列表
 	 * 
 	 * @param userId
-	 * @return 
+	 * @return
 	 */
 	public List<Friend> getFriends(Integer userId);
 
@@ -121,8 +121,17 @@ public interface UserManager {
 	 * @param friendId
 	 * @param areaCode
 	 * @param userPhone
-	 * @return 
+	 * @return
 	 */
-	public String addfriend(Integer userId,String areaCode, String userPhone);
+	public String addfriend(Integer userId, String areaCode, String userPhone);
+
+	/**
+	 * 换绑手机
+	 * 
+	 * @param userId
+	 * @param areaCode
+	 * @param userPhone
+	 */
+	public void changePhone(Integer userId, String areaCode, String userPhone);
 
 }

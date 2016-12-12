@@ -2,6 +2,8 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 public class GetVerificationCodeRequest {
 	@Override
 	public String toString() {
@@ -13,6 +15,7 @@ public class GetVerificationCodeRequest {
 	private String areaCode;
 	private String userPhone;
 
+	@ApiModelProperty(allowableValues = "REGISTER,FORGETPASSWORD,CHANGEPHONE")
 	public String getPurpose() {
 		return purpose;
 	}

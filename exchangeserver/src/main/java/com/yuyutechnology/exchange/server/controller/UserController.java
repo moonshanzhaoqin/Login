@@ -27,7 +27,6 @@ import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.server.controller.request.ForgetPasswordRequest;
-import com.yuyutechnology.exchange.server.controller.request.GetRegistrationCodeRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetVerificationCodeRequest;
 import com.yuyutechnology.exchange.server.controller.request.LoginRequest;
 import com.yuyutechnology.exchange.server.controller.request.RegisterRequest;
@@ -102,47 +101,6 @@ public class UserController {
 	}
 
 	/**
-	 * Get registration code 获取注册验证码
-	 * 
-	 * @param getRegistrationCodeRequest
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	// @ResponseBody
-	// @ApiOperation(value = "获取注册验证码", httpMethod = "POST", notes = "")
-	// @RequestMapping(value = "/getRegistrationCode", method =
-	// RequestMethod.POST, produces = "application/json; charset=utf-8")
-	// public BaseResponse getRegistrationCode(@RequestBody
-	// GetRegistrationCodeRequest getRegistrationCodeRequest,
-	// HttpServletRequest request, HttpServletResponse response) {
-	// logger.info("========getRegistrationCode : {}============",
-	// getRegistrationCodeRequest.getAreaCode() +
-	// getRegistrationCodeRequest.getUserPhone());
-	// BaseResponse rep = new BaseResponse();
-	// if (getRegistrationCodeRequest.isEmpty()) {
-	// logger.info("PARAMETER_IS_EMPTY");
-	// rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
-	// rep.setMessage("");
-	// } else {
-	// // 检验手机号是否已注册
-	// if (userManager.getUserId(getRegistrationCodeRequest.getAreaCode(),
-	// getRegistrationCodeRequest.getUserPhone()) != null) {
-	// logger.info("PHONE_IS_REGISTERED");
-	// rep.setRetCode(ServerConsts.PHONE_IS_REGISTERED);
-	// rep.setMessage("");
-	// } else {
-	// userManager.getPinCode(getRegistrationCodeRequest.getAreaCode(),
-	// getRegistrationCodeRequest.getUserPhone());
-	// logger.info("********Operation succeeded********");
-	// rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-	// rep.setMessage("");
-	// }
-	// }
-	// return rep;
-	// }
-
-	/**
 	 * Get Verification code 获取验证码
 	 * 
 	 * @param getVerificationCodeRequest
@@ -165,7 +123,7 @@ public class UserController {
 			// 检验手机号是否存在
 			Integer userId = userManager.getUserId(getVerificationCodeRequest.getAreaCode(),
 					getVerificationCodeRequest.getUserPhone());
-			if (getVerificationCodeRequest.getPurpose().equals(ServerConsts.PIN_FUNC_REGISTER)) {
+			if (getVerificationCodeRequest.getPurpose().equals(ServerConsts.PIN_FUNC_REGISTER)||getVerificationCodeRequest.getPurpose().equals(ServerConsts.PIN_FUNC_CHANGEPHONE)) {
 				if (userId != null) {
 					logger.info(MessageConsts.PHONE_IS_REGISTERED);
 					rep.setRetCode(ServerConsts.PHONE_IS_REGISTERED);

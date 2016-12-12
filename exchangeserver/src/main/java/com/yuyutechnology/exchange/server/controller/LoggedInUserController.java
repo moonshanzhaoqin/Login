@@ -23,6 +23,7 @@ import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.AddFriendRequest;
 import com.yuyutechnology.exchange.server.controller.request.BindGoldpayRequest;
+import com.yuyutechnology.exchange.server.controller.request.ChangePhoneRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.SetUserPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
@@ -45,13 +46,19 @@ public class LoggedInUserController {
 	@Autowired
 	SessionManager sessionManager;
 
-	// TODO Modify password 修改用户密码
+	/**
+	 * Modify password 修改用户密码
+	 * 
+	 * @param token
+	 * @param modifyPasswordRequest
+	 * @return
+	 */
 	@ResponseBody
 	@ApiOperation(value = "修改用户密码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/modifyPassword", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse modifyPassword(@PathVariable String token,
 			@RequestBody ModifyPasswordRequest modifyPasswordRequest) {
-		logger.info("========setUserPayPwd : {}============", token);
+		logger.info("========modifyPassword : {}============", token);
 		BaseResponse rep = new BaseResponse();
 		if (modifyPasswordRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
@@ -203,6 +210,7 @@ public class LoggedInUserController {
 	@ApiOperation(value = "好友列表", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/friendsList", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public FriendsListResponse friendsList(@PathVariable String token) {
+		// TODO 分页
 		logger.info("========friendsList : {}============", token);
 		FriendsListResponse rep = new FriendsListResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
@@ -213,4 +221,29 @@ public class LoggedInUserController {
 		return rep;
 	}
 
+	// TODO changePhone 换绑手机
+	@ResponseBody
+	@ApiOperation(value = "换绑手机", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/changePhone", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public BaseResponse changePhone(@PathVariable String token, ChangePhoneRequest changePhoneRequest) {
+		logger.info("========changePhone : {}============", token);
+		BaseResponse rep = new BaseResponse();
+		SessionData sessionData = SessionDataHolder.getSessionData();
+
+		// 校验验证码
+		if (userManager.testPinCode(ServerConsts.PIN_FUNC_CHANGEPHONE, changePhoneRequest.getAreaCode(),
+				changePhoneRequest.getUserPhone(), changePhoneRequest.getVerificationCode())) {
+			userManager.changePhone(sessionData.getUserId(), changePhoneRequest.getAreaCode(),
+					changePhoneRequest.getUserPhone());
+			logger.info("********Operation succeeded********");
+			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		} else {
+			logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
+			rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
+			rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
+		}
+
+		return rep;
+	}
 }
