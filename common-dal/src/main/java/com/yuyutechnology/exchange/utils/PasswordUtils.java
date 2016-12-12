@@ -18,8 +18,8 @@ public class PasswordUtils {
 	/**
 	 * 校验
 	 * 
-	 * @param plaintext
-	 * @param ciphertext
+	 * @param plaintext 明文
+	 * @param ciphertext 
 	 * @param passwordSalt
 	 * @return
 	 */
