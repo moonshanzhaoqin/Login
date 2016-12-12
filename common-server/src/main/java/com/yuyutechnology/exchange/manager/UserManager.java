@@ -1,6 +1,9 @@
 package com.yuyutechnology.exchange.manager;
 
+import java.util.List;
+
 import com.yuyutechnology.exchange.form.UserInfo;
+import com.yuyutechnology.exchange.pojo.Friend;
 
 public interface UserManager {
 	/**
@@ -58,7 +61,7 @@ public interface UserManager {
 	 * @param verificationCode
 	 * @return
 	 */
-	public boolean testPinCode(String func,String areaCode, String userPhone, String verificationCode);
+	public boolean testPinCode(String func, String areaCode, String userPhone, String verificationCode);
 
 	/**
 	 * 更改密码
@@ -102,5 +105,24 @@ public interface UserManager {
 	 * @param oldPassword
 	 */
 	public boolean checkUserPassword(Integer userId, String oldPassword);
+
+	/**
+	 * 获取好友列表
+	 * 
+	 * @param userId
+	 * @return 
+	 */
+	public List<Friend> getFriends(Integer userId);
+
+	/**
+	 * 添加好友
+	 * 
+	 * @param userId
+	 * @param friendId
+	 * @param areaCode
+	 * @param userPhone
+	 * @return 
+	 */
+	public String addfriend(Integer userId,String areaCode, String userPhone);
 
 }

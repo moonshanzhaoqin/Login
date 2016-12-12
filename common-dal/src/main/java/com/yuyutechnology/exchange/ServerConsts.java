@@ -152,7 +152,7 @@ public class ServerConsts {
 	/**
 	 * 短信验证码功能——登录
 	 */
-	public static final String PIN_FUNC_LOGIN= "LOGIN";
+//	public static final String PIN_FUNC_LOGIN= "LOGIN";
 	/**
 	 * 短信验证码功能——忘记密码
 	 */

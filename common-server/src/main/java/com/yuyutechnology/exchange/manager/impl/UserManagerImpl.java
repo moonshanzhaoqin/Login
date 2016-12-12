@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
+import com.yuyutechnology.exchange.dao.FriendDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UnregisteredDAO;
@@ -26,6 +27,7 @@ import com.yuyutechnology.exchange.goldpay.GoldpayUser;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Currency;
+import com.yuyutechnology.exchange.pojo.Friend;
 import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
@@ -52,6 +54,8 @@ public class UserManagerImpl implements UserManager {
 	RedisDAO redisDAO;
 	@Autowired
 	UnregisteredDAO unregisteredDAO;
+	@Autowired
+	FriendDAO friendDAO;
 	@Autowired
 	SmsManager smsManager;
 	@Autowired
@@ -253,5 +257,25 @@ public class UserManagerImpl implements UserManager {
 			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
 			unregisteredDAO.updateUnregistered(unregistered);
 		}
+	}
+
+	@Override
+	public List<Friend> getFriends(Integer userId) {
+		// TODO Auto-generated method stub
+		List<Friend> friends=friendDAO.getFriendsByUserId(userId);
+		return friends;
+	}
+
+	@Override
+	public String addfriend(Integer userId,String areaCode, String userPhone) {
+		// TODO Auto-generated method stub
+		User friend=userDAO.getUserByUserPhone(areaCode, userPhone);
+		if (friend!=null) {
+			friendDAO.addfriend(new Friend(userId, friend.getUserId(), friend.getAreaCode(), friend.getUserPhone(), friend.getUserName()));
+			return ServerConsts.RET_CODE_SUCCESS;
+		} else {
+			return ServerConsts.PHONE_NOT_EXIST;
+		}
+		
 	}
 }

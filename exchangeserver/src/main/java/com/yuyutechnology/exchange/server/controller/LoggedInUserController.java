@@ -3,6 +3,8 @@
  */
 package com.yuyutechnology.exchange.server.controller;
 
+import javax.persistence.criteria.CriteriaBuilder.In;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +21,12 @@ import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
+import com.yuyutechnology.exchange.server.controller.request.AddFriendRequest;
 import com.yuyutechnology.exchange.server.controller.request.BindGoldpayRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.SetUserPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
+import com.yuyutechnology.exchange.server.controller.response.FriendsListResponse;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
 import com.yuyutechnology.exchange.session.SessionManager;
@@ -40,6 +44,7 @@ public class LoggedInUserController {
 	ExchangeManager exchangeManager;
 	@Autowired
 	SessionManager sessionManager;
+
 	// TODO Modify password 修改用户密码
 	@ResponseBody
 	@ApiOperation(value = "修改用户密码", httpMethod = "POST", notes = "")
@@ -49,9 +54,9 @@ public class LoggedInUserController {
 		logger.info("========setUserPayPwd : {}============", token);
 		BaseResponse rep = new BaseResponse();
 		if (modifyPasswordRequest.isEmpty()) {
-			logger.info("PARAMETER_IS_EMPTY");
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage("");
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			userManager.checkUserPassword(sessionData.getUserId(), modifyPasswordRequest.getOldPassword());
@@ -59,7 +64,7 @@ public class LoggedInUserController {
 			sessionManager.delLoginToken(sessionData.getUserId());
 			logger.info("********Operation succeeded********");
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-			rep.setMessage("");
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		}
 		return rep;
 	}
@@ -79,9 +84,9 @@ public class LoggedInUserController {
 		logger.info("========setUserPayPwd : {}============", token);
 		BaseResponse rep = new BaseResponse();
 		if (setUserPayPwdRequest.isEmpty()) {
-			logger.info("PARAMETER_IS_EMPTY");
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage("");
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			// PayPwd 6位数字
@@ -114,7 +119,7 @@ public class LoggedInUserController {
 		logger.info("========bindGoldpay : {}============", token);
 		BaseResponse rep = new BaseResponse();
 		if (bindGoldpayRequest.isEmpty()) {
-			logger.info("PARAMETER_IS_EMPTY");
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
@@ -143,6 +148,68 @@ public class LoggedInUserController {
 				break;
 			}
 		}
+		return rep;
+	}
+
+	/**
+	 * addFriend 添加好友
+	 * 
+	 * @param token
+	 * @param addFriendRequest
+	 * @return
+	 */
+	@ResponseBody
+	@ApiOperation(value = "添加好友", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/addFriend", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public BaseResponse addFriend(@PathVariable String token, @RequestBody AddFriendRequest addFriendRequest) {
+		logger.info("========addFriend : {}============", token);
+		BaseResponse rep = new BaseResponse();
+		if (addFriendRequest.isEmpty()) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+		} else {
+			SessionData sessionData = SessionDataHolder.getSessionData();
+			String retCode = userManager.addfriend(sessionData.getUserId(), addFriendRequest.getAreaCode(),
+					addFriendRequest.getUserPhone());
+			switch (retCode) {
+			case ServerConsts.RET_CODE_SUCCESS:
+				logger.info("********Operation succeeded********");
+				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+				break;
+			case ServerConsts.PHONE_NOT_EXIST:
+				logger.info(MessageConsts.PHONE_NOT_EXIST);
+				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
+				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
+				break;
+			default:
+				logger.info(MessageConsts.RET_CODE_FAILUE);
+				rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
+				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+				break;
+			}
+		}
+		return rep;
+	}
+
+	/**
+	 * friendsList好友列表
+	 * 
+	 * @param token
+	 * @return
+	 */
+	@ResponseBody
+	@ApiOperation(value = "好友列表", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/friendsList", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public FriendsListResponse friendsList(@PathVariable String token) {
+		logger.info("========friendsList : {}============", token);
+		FriendsListResponse rep = new FriendsListResponse();
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		rep.setFriends(userManager.getFriends(sessionData.getUserId()));
+		logger.info("********Operation succeeded********");
+		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
 
