@@ -142,11 +142,6 @@ public class LoggedInUserController {
 				rep.setRetCode(ServerConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
 				rep.setMessage(MessageConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
 				break;
-			case ServerConsts.GOLDPAY_PHONE_NOT_MATCH:
-				logger.info(MessageConsts.GOLDPAY_PHONE_NOT_MATCH);
-				rep.setRetCode(ServerConsts.GOLDPAY_PHONE_NOT_MATCH);
-				rep.setMessage(MessageConsts.GOLDPAY_PHONE_NOT_MATCH);
-				break;
 			default:
 				logger.info(MessageConsts.RET_CODE_FAILUE);
 				rep.setRetCode(ServerConsts.RET_CODE_FAILUE);

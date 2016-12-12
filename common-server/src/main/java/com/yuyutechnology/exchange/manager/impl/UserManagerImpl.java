@@ -62,6 +62,20 @@ public class UserManagerImpl implements UserManager {
 	GoldpayManager goldpayManager;
 
 	@Override
+	public String addfriend(Integer userId, String areaCode, String userPhone) {
+		// TODO Auto-generated method stub
+		User friend = userDAO.getUserByUserPhone(areaCode, userPhone);
+		if (friend != null) {
+			friendDAO.addfriend(new Friend(userId, friend.getUserId(), friend.getAreaCode(), friend.getUserPhone(),
+					friend.getUserName()));
+			return ServerConsts.RET_CODE_SUCCESS;
+		} else {
+			return ServerConsts.PHONE_NOT_EXIST;
+		}
+
+	}
+
+	@Override
 	public String bindGoldpay(Integer userId, String goldpayToken) {
 		logger.info("绑定goldpay账户====");
 		GoldpayUser goldpayUser = goldpayManager.getGoldpayInfo(goldpayToken);
@@ -74,20 +88,20 @@ public class UserManagerImpl implements UserManager {
 				logger.info("goldpay账户没有绑定手机号");
 				return ServerConsts.GOLDPAY_PHONE_IS_NOT_EXIST;
 			} else {
-				User user = userDAO.getUser(userId);
-				if (StringUtils.equals(goldpayUser.getAreaCode(), user.getAreaCode())
-						&& StringUtils.equals(goldpayUser.getMobile(), user.getUserPhone())) {
-					logger.info("绑定goldpay账户");
-					Bind bind = new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(),
-							goldpayUser.getAccountNum(), goldpayToken);
-					bindDAO.saveBind(bind);
-					return ServerConsts.RET_CODE_SUCCESS;
-				} else {
-					logger.info("goldpay账户的手机号与注册手机号不一致");
-					return ServerConsts.GOLDPAY_PHONE_NOT_MATCH;
-				}
+				Bind bind = new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(),
+						goldpayUser.getAccountNum(), goldpayToken);
+				bindDAO.saveBind(bind);
+				return ServerConsts.RET_CODE_SUCCESS;
 			}
 		}
+	}
+
+	@Override
+	public void changePhone(Integer userId, String areaCode, String userPhone) {
+		User user = userDAO.getUser(userId);
+		user.setAreaCode(areaCode);
+		user.setUserPhone(userPhone);
+		userDAO.updateUser(user);
 	}
 
 	@Override
@@ -115,16 +129,10 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public Integer login(String areaCode, String userPhone, String userPassword, String ip) {
-		logger.info("login=======");
-		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
-		if (user != null && PasswordUtils.check(userPassword, user.getUserPassword(), user.getPasswordSalt())) {
-			user.setLoginTime(new Date());
-			user.setLoginIp(ip);
-			userDAO.updateUser(user);
-			return user.getUserId();
-		}
-		return null;
+	public List<Friend> getFriends(Integer userId) {
+		// TODO Auto-generated method stub
+		List<Friend> friends = friendDAO.getFriendsByUserId(userId);
+		return friends;
 	}
 
 	@Override
@@ -184,6 +192,19 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
+	public Integer login(String areaCode, String userPhone, String userPassword, String ip) {
+		logger.info("login=======");
+		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
+		if (user != null && PasswordUtils.check(userPassword, user.getUserPassword(), user.getPasswordSalt())) {
+			user.setLoginTime(new Date());
+			user.setLoginIp(ip);
+			userDAO.updateUser(user);
+			return user.getUserId();
+		}
+		return null;
+	}
+
+	@Override
 	public Integer register(String areaCode, String userPhone, String userName, String userPassword) {
 		// 添加用户
 		// 随机生成盐值
@@ -229,19 +250,6 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	/**
-	 * 为新用户新建钱包
-	 * 
-	 * @param userId
-	 */
-	private void createWallets4NewUser(Integer userId) {
-		logger.info("为新用户新建钱包");
-		List<Currency> currencies = currencyDAO.getCurrencys();
-		for (Currency currency : currencies) {
-			walletDAO.addwallet(new Wallet(userId, currency.getCurrency(), new BigDecimal(0), new Date()));
-		}
-	}
-
-	/**
 	 * 根据UNregistered 更新新用户钱包 将资金从系统帐户划给新用户
 	 * 
 	 * @param userId
@@ -272,32 +280,17 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
-	@Override
-	public List<Friend> getFriends(Integer userId) {
-		// TODO Auto-generated method stub
-		List<Friend> friends = friendDAO.getFriendsByUserId(userId);
-		return friends;
-	}
-
-	@Override
-	public String addfriend(Integer userId, String areaCode, String userPhone) {
-		// TODO Auto-generated method stub
-		User friend = userDAO.getUserByUserPhone(areaCode, userPhone);
-		if (friend != null) {
-			friendDAO.addfriend(new Friend(userId, friend.getUserId(), friend.getAreaCode(), friend.getUserPhone(),
-					friend.getUserName()));
-			return ServerConsts.RET_CODE_SUCCESS;
-		} else {
-			return ServerConsts.PHONE_NOT_EXIST;
+	/**
+	 * 为新用户新建钱包
+	 * 
+	 * @param userId
+	 */
+	private void createWallets4NewUser(Integer userId) {
+		logger.info("为新用户新建钱包");
+		List<Currency> currencies = currencyDAO.getCurrencys();
+		for (Currency currency : currencies) {
+			walletDAO.addwallet(new Wallet(userId, currency.getCurrency(), new BigDecimal(0), new Date()));
 		}
-
 	}
 
-	@Override
-	public void changePhone(Integer userId, String areaCode, String userPhone) {
-		User user = userDAO.getUser(userId);
-		user.setAreaCode(areaCode);
-		user.setUserPhone(userPhone);
-		userDAO.updateUser(user);
-	}
 }

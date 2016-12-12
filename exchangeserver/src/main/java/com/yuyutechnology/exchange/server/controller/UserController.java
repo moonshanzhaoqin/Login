@@ -155,7 +155,7 @@ public class UserController {
 	 * @return
 	 */
 	@ResponseBody
-	@ApiOperation(value = "登录", httpMethod = "POST", notes = "")
+	@ApiOperation(value = "登录", httpMethod = "POST", notes = "userPassword  loginToken  二选一")
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public LoginResponse login(@RequestBody LoginRequest loginRequest, HttpServletRequest request,
 			HttpServletResponse response) {
