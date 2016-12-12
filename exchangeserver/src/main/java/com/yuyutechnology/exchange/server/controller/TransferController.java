@@ -20,12 +20,15 @@ import com.yuyutechnology.exchange.server.controller.request.TransferConfirmRequ
 import com.yuyutechnology.exchange.server.controller.request.TransferInitiateRequest;
 import com.yuyutechnology.exchange.server.controller.response.TransPwdConfirmResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransferInitiateResponse;
+import com.yuyutechnology.exchange.session.SessionData;
+import com.yuyutechnology.exchange.session.SessionDataHolder;
 
 @Controller
 public class TransferController {
 	
 	@Autowired
 	TransferManager transferManager;
+	
 	
 	public static Logger logger = LoggerFactory.getLogger(TransferController.class);
 
@@ -35,21 +38,22 @@ public class TransferController {
 	TransferInitiateResponse transferInitiate(@PathVariable String token,
 			@RequestBody TransferInitiateRequest reqMsg){
 		//从Session中获取Id
-		int userId = 2;
+		SessionData sessionData = SessionDataHolder.getSessionData();
 		TransferInitiateResponse rep = new TransferInitiateResponse();
-		String result = transferManager.transferInitiate(userId, reqMsg.getAreaCode(), reqMsg.getUserPhone(),
-				reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()), reqMsg.getTransferComment());
+		String result = transferManager.transferInitiate(sessionData.getUserId(), reqMsg.getAreaCode(),
+				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()), 
+				reqMsg.getTransferComment());
 		
-		if(!result.contains("_")){
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-			rep.setMessage("");
-			rep.setTransferId(result);
-		}else if(result.equals(ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT)){
+		if(result.equals(ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT)){
 			rep.setRetCode(ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
 			rep.setMessage("");
 		}else if(result.equals(ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT)){
 			rep.setRetCode(ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT);
 			rep.setMessage("");
+		}else{
+			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setMessage("");
+			rep.setTransferId(result);
 		}
 
 		return rep;
@@ -61,9 +65,9 @@ public class TransferController {
 	public @ResponseBody
 	TransPwdConfirmResponse transPwdConfirm(@PathVariable String token,@RequestBody TransPwdConfirmRequest reqMsg){
 		//从Session中获取Id
-		int userId = 2;
+		SessionData sessionData = SessionDataHolder.getSessionData();
 		TransPwdConfirmResponse rep = new TransPwdConfirmResponse();
-		String result = transferManager.payPwdConfirm(userId, reqMsg.getTransferId(), reqMsg.getUserPayPwd());
+		String result = transferManager.payPwdConfirm(sessionData.getUserId(), reqMsg.getTransferId(), reqMsg.getUserPayPwd());
 		
 		if(result.equals(ServerConsts.RET_CODE_SUCCESS)){
 			rep.setMessage("ok");
@@ -79,13 +83,14 @@ public class TransferController {
 	@ApiOperation(value = "pinCode 验证及交易确认")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transferConfirm")
 	public void transferConfirm(@PathVariable String token,@RequestBody TransferConfirmRequest reqMsg){
-		
+		//从Session中获取Id
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		int userId = sessionData.getUserId();
 		//判断PinCode是否正确/////////////////////////////////////////////////////
 		if(true){
 			transferManager.transferConfirm(reqMsg.getTransferId());
 		}
-		
-		
+
 	}
 	
 	

@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.aspectj.weaver.patterns.IfPointcut.IfFalsePointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +25,7 @@ import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.utils.JsonBinder;
+import com.yuyutechnology.exchange.utils.PasswordUtils;
 import com.yuyutechnology.exchange.utils.exchangerate.ExchangeRate;
 import com.yuyutechnology.exchange.utils.exchangerate.GoldpayExchangeRate;
 
@@ -102,7 +102,7 @@ public class TransferManagerImpl implements TransferManager{
 		User user = userDAO.getUser(userId);
 		Transfer transfer = transferDAO.getTransferById(transferId);
 		
-		if(!userPayPwd.equals(user.getUserPayPwd())){
+		if(!PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getUserPassword())){
 			return ServerConsts.TRANSFER_PAYMENTPWD_INCORRECT;
 		}
 
@@ -120,6 +120,8 @@ public class TransferManagerImpl implements TransferManager{
 				transfer.getTransferAmount().compareTo(AmountofSingleTransfer) == 1)){
 			logger.warn("The transaction amount exceeds the limit");
 			//发送pinCode///////////////////////////////////////////////////////////////
+			
+			
 			
 			
 			

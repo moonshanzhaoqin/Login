@@ -50,7 +50,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 			logger.info("result : {}",result);
 			map.put(currency.getCurrency(), result);
 		}
-		redisDAO.saveData("redis_exchangeRate",JsonBinder.getInstance().toJson(map), 5);
+		redisDAO.saveData("redis_exchangeRate",JsonBinder.getInstance().toJson(map), 35);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -64,6 +64,9 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 			e.printStackTrace();
 		}
 		
+		if(doc == null ){
+			updateGoldpayExchangeRate();
+		}
 		Element title = doc.getElementById("sp-bid");
 		logger.info("cunrrent bid gold price is {}",title.text());
 		String spBid = title.text().trim().replace(",","");
@@ -116,7 +119,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		}
 		
 		redisDAO.saveData("redis_goldpay_exchangerate",JsonBinder.getInstance().
-				toJson(goldpayExchangeRate), 5);
+				toJson(goldpayExchangeRate), 35);
 
 	}
 	
