@@ -72,6 +72,7 @@ public class LoggedInUserController {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			userManager.checkUserPassword(sessionData.getUserId(), modifyPasswordRequest.getOldPassword());
 			userManager.updatePassword(sessionData.getUserId(), modifyPasswordRequest.getNewPassword());
+			sessionManager.logout(sessionData.getSessionId());
 			sessionManager.delLoginToken(sessionData.getUserId());
 			logger.info("********Operation succeeded********");
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
@@ -250,6 +251,7 @@ public class LoggedInUserController {
 				changePhoneRequest.getUserPhone(), changePhoneRequest.getVerificationCode())) {
 			userManager.changePhone(sessionData.getUserId(), changePhoneRequest.getAreaCode(),
 					changePhoneRequest.getUserPhone());
+			sessionManager.logout(sessionData.getSessionId());
 			sessionManager.delLoginToken(sessionData.getUserId());
 			logger.info("********Operation succeeded********");
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
