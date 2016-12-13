@@ -130,5 +130,9 @@ public class TransferController {
 		}
 
 	}
+	
+	public void getTransactionRecordByPage(){
+		
+	}
 
 }
