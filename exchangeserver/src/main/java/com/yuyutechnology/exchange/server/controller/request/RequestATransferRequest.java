@@ -1,12 +1,12 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-public class TransferInitiateRequest {
+public class RequestATransferRequest {
 	
 	private String areaCode;
 	private String userPhone;
 	private String currency;
 	private double amount;
-	private String transferComment;
+	private int noticeId;
 	
 	public String getAreaCode() {
 		return areaCode;
@@ -32,10 +32,12 @@ public class TransferInitiateRequest {
 	public void setAmount(double amount) {
 		this.amount = amount;
 	}
-	public String getTransferComment() {
-		return transferComment;
+	public int getNoticeId() {
+		return noticeId;
 	}
-	public void setTransferComment(String transferComment) {
-		this.transferComment = transferComment;
+	public void setNoticeId(int noticeId) {
+		this.noticeId = noticeId;
 	}
+	
+
 }
