@@ -51,7 +51,7 @@ public class TransferManagerImpl implements TransferManager{
 
 	@Override
 	public String transferInitiate(int userId,String areaCode,String userPhone, String currency, 
-			BigDecimal amount, String transferComment) {
+			BigDecimal amount, String transferComment,int noticeId) {
 		//判断余额是否足够支付
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
 		if(wallet == null || wallet.getBalance().compareTo(amount) == -1){
@@ -89,6 +89,7 @@ public class TransferManagerImpl implements TransferManager{
 			transfer.setUserTo(0);
 		}
 		transfer.setUserToPhone(areaCode+userPhone);
+		transfer.setNoticeId(noticeId);
 		
 		//保存
 		transferDAO.addTransfer(transfer);
@@ -161,6 +162,12 @@ public class TransferManagerImpl implements TransferManager{
 					ServerConsts.TRANSFER_TYPE_OF_TRANSACTION, transfer.getTransferId(), 
 					transfer.getCurrency(), transfer.getTransferAmount());
 			
+			//如果是请求转账还需要更改消息通知中的状态//////////////////////////////////////////////////
+			if(transfer.getNoticeId() != 0){
+				
+			}
+			
+		
 		}else{								//交易对象注册账号,交易正常进行，无需经过系统账户
 			
 			//扣款
