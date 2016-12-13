@@ -240,7 +240,7 @@ public class LoggedInUserController {
 	@ResponseBody
 	@ApiOperation(value = "换绑手机", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/changePhone", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse changePhone(@PathVariable String token, ChangePhoneRequest changePhoneRequest) {
+	public BaseResponse changePhone(@PathVariable String token, @RequestBody ChangePhoneRequest changePhoneRequest) {
 		logger.info("========changePhone : {}============", token);
 		BaseResponse rep = new BaseResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
@@ -250,6 +250,7 @@ public class LoggedInUserController {
 				changePhoneRequest.getUserPhone(), changePhoneRequest.getVerificationCode())) {
 			userManager.changePhone(sessionData.getUserId(), changePhoneRequest.getAreaCode(),
 					changePhoneRequest.getUserPhone());
+			sessionManager.delLoginToken(sessionData.getUserId());
 			logger.info("********Operation succeeded********");
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
@@ -272,7 +273,7 @@ public class LoggedInUserController {
 	@ResponseBody
 	@ApiOperation(value = "换绑手机-校验登录密码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/checkPassword", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse checkPassword(@PathVariable String token, CheckPasswordRequest checkPasswordRequest) {
+	public BaseResponse checkPassword(@PathVariable String token,@RequestBody CheckPasswordRequest checkPasswordRequest) {
 		logger.info("========checkPassword : {}============", token);
 		BaseResponse rep = new BaseResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
@@ -281,9 +282,9 @@ public class LoggedInUserController {
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		} else {
-			logger.info(MessageConsts.RET_CODE_FAILUE);
-			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
-			rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+			logger.info(MessageConsts.PASSWORD_NOT_MATCH);
+			rep.setRetCode(ServerConsts.PASSWORD_NOT_MATCH);
+			rep.setMessage(MessageConsts.PASSWORD_NOT_MATCH);
 		}
 		return rep;
 	}
