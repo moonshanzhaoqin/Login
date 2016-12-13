@@ -17,6 +17,7 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.form.UserInfo;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
+import com.yuyutechnology.exchange.server.controller.request.GetTransactionRecordRequest;
 import com.yuyutechnology.exchange.server.controller.request.RequestATransferRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransPwdConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransferConfirmRequest;
@@ -89,9 +90,10 @@ public class TransferController {
 		return rep;
 	}
 	
-	@ApiOperation(value = "pinCode 验证及交易确认")
+	@ApiOperation(value = "交易确认")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transferConfirm")
-	public TransferConfirmResponse transferConfirm(@PathVariable String token,@RequestBody TransferConfirmRequest reqMsg){
+	public  @ResponseBody
+	TransferConfirmResponse transferConfirm(@PathVariable String token,@RequestBody TransferConfirmRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		UserInfo user = userManager.getUserInfo(sessionData.getUserId());
@@ -108,8 +110,10 @@ public class TransferController {
 		return rep;
 	}
 	
-	
-	public void requestATransfer(RequestATransferRequest reqMsg){
+	@ApiOperation(value = "请求转账")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/requestATransfer")
+	public 
+	void requestATransfer(RequestATransferRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		TransferInitiateResponse rep = new TransferInitiateResponse();
@@ -131,7 +135,9 @@ public class TransferController {
 
 	}
 	
-	public void getTransactionRecordByPage(){
+	@ApiOperation(value = "获取交易明细")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransactionRecord")
+	public void getTransactionRecord(GetTransactionRecordRequest reqMsq){
 		
 	}
 
