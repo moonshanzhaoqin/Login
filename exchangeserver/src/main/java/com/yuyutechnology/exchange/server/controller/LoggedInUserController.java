@@ -184,6 +184,11 @@ public class LoggedInUserController {
 				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
 				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
 				break;
+			case ServerConsts.ADD_FRIEND_OWEN:
+				logger.info(MessageConsts.ADD_FRIEND_OWEN);
+				rep.setRetCode(ServerConsts.ADD_FRIEND_OWEN);
+				rep.setMessage(MessageConsts.ADD_FRIEND_OWEN);
+				break;	
 			default:
 				logger.info(MessageConsts.RET_CODE_FAILUE);
 				rep.setRetCode(ServerConsts.RET_CODE_FAILUE);

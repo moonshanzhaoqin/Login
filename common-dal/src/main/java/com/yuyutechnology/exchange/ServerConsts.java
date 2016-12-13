@@ -50,7 +50,11 @@ public class ServerConsts {
 	/**
 	 * 手机号与密码不匹配
 	 */
-	public static final String PHONE_AND_PASSWORD_NOT_MATCH = "01006";
+	public static final String PHONE_AND_PASSWORD_NOT_MATCH = "01007";
+	/**
+	 * 不能添加自己为好友
+	 */
+	public static final String ADD_FRIEND_OWEN = "01008";
 
 	// 兑换 02
 	/**
@@ -144,15 +148,15 @@ public class ServerConsts {
 	 * 本位货币，主币(结算单位)
 	 */
 	public static final String STANDARD_CURRENCY = "standard_currency";
-	//短信验证码功能
+	// 短信验证码功能
 	/**
 	 * 短信验证码功能——注册
 	 */
-	public static final String PIN_FUNC_REGISTER= "REGISTER";
+	public static final String PIN_FUNC_REGISTER = "REGISTER";
 	/**
 	 * 短信验证码功能——登录
 	 */
-//	public static final String PIN_FUNC_LOGIN= "LOGIN";
+	// public static final String PIN_FUNC_LOGIN= "LOGIN";
 	/**
 	 * 短信验证码功能——忘记密码
 	 */
@@ -161,6 +165,5 @@ public class ServerConsts {
 	 * 短信验证码功能——换绑手机
 	 */
 	public static final String PIN_FUNC_CHANGEPHONE = "CHANGEPHONE";
-	
 
 }

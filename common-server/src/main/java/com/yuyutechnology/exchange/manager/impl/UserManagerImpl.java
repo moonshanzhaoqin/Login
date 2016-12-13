@@ -64,13 +64,14 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
 		User friend = userDAO.getUserByUserPhone(areaCode, userPhone);
-		if (friend != null) {
+		if (friend == null) {
+			return ServerConsts.PHONE_NOT_EXIST;
+		} else if(friend.getUserId() == userId) {
+			return ServerConsts.ADD_FRIEND_OWEN;
+		} else {
 			friendDAO.addfriend(new Friend(friend, userId));
 			return ServerConsts.RET_CODE_SUCCESS;
-		} else {
-			return ServerConsts.PHONE_NOT_EXIST;
 		}
-
 	}
 
 	@Override

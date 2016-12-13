@@ -1,5 +1,5 @@
 package pojo;
-// Generated Dec 2, 2016 4:27:04 PM by Hibernate Tools 4.0.0
+// Generated Dec 13, 2016 10:47:38 AM by Hibernate Tools 4.0.0
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -20,21 +20,26 @@ import javax.persistence.TemporalType;
 public class Unregistered implements java.io.Serializable {
 
 	private Integer unregisteredId;
-	private byte[] phone;
+	private String areaCode;
+	private String userPhone;
 	private String currency;
 	private BigDecimal amount;
 	private Date createTime;
 	private int unregisteredStatus;
+	private String transferId;
 
 	public Unregistered() {
 	}
 
-	public Unregistered(byte[] phone, String currency, BigDecimal amount, Date createTime, int unregisteredStatus) {
-		this.phone = phone;
+	public Unregistered(String areaCode, String userPhone, String currency, BigDecimal amount, Date createTime,
+			int unregisteredStatus, String transferId) {
+		this.areaCode = areaCode;
+		this.userPhone = userPhone;
 		this.currency = currency;
 		this.amount = amount;
 		this.createTime = createTime;
 		this.unregisteredStatus = unregisteredStatus;
+		this.transferId = transferId;
 	}
 
 	@Id
@@ -49,13 +54,22 @@ public class Unregistered implements java.io.Serializable {
 		this.unregisteredId = unregisteredId;
 	}
 
-	@Column(name = "phone", nullable = false)
-	public byte[] getPhone() {
-		return this.phone;
+	@Column(name = "area_code", nullable = false, length = 5)
+	public String getAreaCode() {
+		return this.areaCode;
 	}
 
-	public void setPhone(byte[] phone) {
-		this.phone = phone;
+	public void setAreaCode(String areaCode) {
+		this.areaCode = areaCode;
+	}
+
+	@Column(name = "user_phone", nullable = false)
+	public String getUserPhone() {
+		return this.userPhone;
+	}
+
+	public void setUserPhone(String userPhone) {
+		this.userPhone = userPhone;
 	}
 
 	@Column(name = "currency", nullable = false, length = 3)
@@ -93,6 +107,15 @@ public class Unregistered implements java.io.Serializable {
 
 	public void setUnregisteredStatus(int unregisteredStatus) {
 		this.unregisteredStatus = unregisteredStatus;
+	}
+
+	@Column(name = "transfer_id", nullable = false)
+	public String getTransferId() {
+		return this.transferId;
+	}
+
+	public void setTransferId(String transferId) {
+		this.transferId = transferId;
 	}
 
 }
