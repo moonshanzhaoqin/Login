@@ -21,7 +21,7 @@ import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
-import com.yuyutechnology.exchange.form.UserInfo;
+import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.goldpay.GoldpayManager;
 import com.yuyutechnology.exchange.goldpay.GoldpayUser;
 import com.yuyutechnology.exchange.manager.UserManager;
@@ -69,7 +69,7 @@ public class UserManagerImpl implements UserManager {
 		} else if(friend.getUserId() == userId) {
 			return ServerConsts.ADD_FRIEND_OWEN;
 		} else {
-			friendDAO.addfriend(new Friend(friend, userId));
+			friendDAO.addfriend(new Friend(friend, userId, new Date()));
 			return ServerConsts.RET_CODE_SUCCESS;
 		}
 	}
@@ -129,7 +129,6 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public List<Friend> getFriends(Integer userId) {
-		// TODO Auto-generated method stub
 		List<Friend> friends = friendDAO.getFriendsByUserId(userId);
 		return friends;
 	}

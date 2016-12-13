@@ -1,15 +1,10 @@
-package com.yuyutechnology.exchange.form;
+package com.yuyutechnology.exchange.dto;
 
 public class UserInfo {
-	@Override
-	public String toString() {
-		return "UserInfo [areaCode=" + areaCode + ", Phone=" + Phone + ", Name=" + Name + ", isGoldpay=" + isGoldpay
-				+ ", isPayPwd=" + isPayPwd + "]";
-	}
 
 	private String areaCode;
-	private String Phone;
-	private String Name;
+	private String phone;
+	private String name;
 	private boolean isGoldpay;
 	private boolean isPayPwd;
 
@@ -20,21 +15,20 @@ public class UserInfo {
 	public void setAreaCode(String areaCode) {
 		this.areaCode = areaCode;
 	}
-
 	public String getPhone() {
-		return Phone;
+		return phone;
 	}
 
 	public void setPhone(String phone) {
-		Phone = phone;
+		this.phone = phone;
 	}
 
 	public String getName() {
-		return Name;
+		return name;
 	}
 
 	public void setName(String name) {
-		Name = name;
+		this.name = name;
 	}
 
 	public boolean isGoldpay() {
