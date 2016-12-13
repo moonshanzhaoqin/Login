@@ -63,11 +63,9 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
-		// TODO Auto-generated method stub
 		User friend = userDAO.getUserByUserPhone(areaCode, userPhone);
 		if (friend != null) {
-			friendDAO.addfriend(new Friend(userId, friend.getUserId(), friend.getAreaCode(), friend.getUserPhone(),
-					friend.getUserName()));
+			friendDAO.addfriend(new Friend(friend, userId));
 			return ServerConsts.RET_CODE_SUCCESS;
 		} else {
 			return ServerConsts.PHONE_NOT_EXIST;
