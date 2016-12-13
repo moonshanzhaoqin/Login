@@ -28,12 +28,13 @@ public class Transfer implements java.io.Serializable {
 	private Date finishTime;
 	private int transferStatus;
 	private int transferType;
+	private int noticeId;
 
 	public Transfer() {
 	}
 
 	public Transfer(String transferId, int userFrom, int userTo, String userToPhone, String currency,
-			BigDecimal transferAmount, int transferStatus, int transferType) {
+			BigDecimal transferAmount, int transferStatus, int transferType,int noticeId) {
 		this.transferId = transferId;
 		this.userFrom = userFrom;
 		this.userTo = userTo;
@@ -42,11 +43,12 @@ public class Transfer implements java.io.Serializable {
 		this.transferAmount = transferAmount;
 		this.transferStatus = transferStatus;
 		this.transferType = transferType;
+		this.noticeId = noticeId;
 	}
 
 	public Transfer(String transferId, int userFrom, int userTo, String userToPhone, String currency,
 			BigDecimal transferAmount, String transferComment, Date createTime, Date finishTime, int transferStatus,
-			int transferType) {
+			int transferType,int noticeId) {
 		this.transferId = transferId;
 		this.userFrom = userFrom;
 		this.userTo = userTo;
@@ -58,6 +60,7 @@ public class Transfer implements java.io.Serializable {
 		this.finishTime = finishTime;
 		this.transferStatus = transferStatus;
 		this.transferType = transferType;
+		this.noticeId = noticeId;
 	}
 
 	@Id
@@ -161,6 +164,15 @@ public class Transfer implements java.io.Serializable {
 
 	public void setTransferType(int transferType) {
 		this.transferType = transferType;
+	}
+
+	@Column(name = "notice_id")
+	public int getNoticeId() {
+		return noticeId;
+	}
+
+	public void setNoticeId(int noticeId) {
+		this.noticeId = noticeId;
 	}
 
 }

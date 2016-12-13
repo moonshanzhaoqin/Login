@@ -19,7 +19,7 @@ public interface TransferManager {
 	 * @return
 	 */
 	public String transferInitiate(int userId,String areaCode,
-			String userPhone,String currency,BigDecimal amount,String transferComment);
+			String userPhone,String currency,BigDecimal amount,String transferComment,int noticeId);
 	
 	/**
 	 * @Descrition : 支付密码验证
