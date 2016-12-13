@@ -1,4 +1,4 @@
-package com.yuyutechnology.exchange.pojo;
+package pojo;
 // Generated Dec 13, 2016 11:40:33 AM by Hibernate Tools 4.0.0
 
 import java.util.Date;
@@ -47,7 +47,7 @@ public class Friend implements java.io.Serializable {
 		this.ufId = ufId;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "friend_Id", nullable = false)
 	public User getFriendUser() {
 		return this.friendUser;

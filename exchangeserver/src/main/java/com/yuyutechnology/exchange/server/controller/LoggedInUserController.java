@@ -3,6 +3,9 @@
  */
 package com.yuyutechnology.exchange.server.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +22,8 @@ import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
+import com.yuyutechnology.exchange.pojo.Friend;
+import com.yuyutechnology.exchange.server.controller.dto.FriendInfo;
 import com.yuyutechnology.exchange.server.controller.request.AddFriendRequest;
 import com.yuyutechnology.exchange.server.controller.request.BindGoldpayRequest;
 import com.yuyutechnology.exchange.server.controller.request.ChangePhoneRequest;
@@ -184,6 +189,11 @@ public class LoggedInUserController {
 				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
 				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
 				break;
+			case ServerConsts.ADD_FRIEND_OWEN:
+				logger.info(MessageConsts.ADD_FRIEND_OWEN);
+				rep.setRetCode(ServerConsts.ADD_FRIEND_OWEN);
+				rep.setMessage(MessageConsts.ADD_FRIEND_OWEN);
+				break;	
 			default:
 				logger.info(MessageConsts.RET_CODE_FAILUE);
 				rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
@@ -208,7 +218,12 @@ public class LoggedInUserController {
 		logger.info("========friendsList : {}============", token);
 		FriendsListResponse rep = new FriendsListResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		rep.setFriends(userManager.getFriends(sessionData.getUserId()));
+		List<FriendInfo> friendInfos = new ArrayList<FriendInfo>();
+		List<Friend> friends = userManager.getFriends(sessionData.getUserId());
+		for (Friend friend : friends) {
+			friendInfos.add(new FriendInfo(friend.getFriendUser().getAreaCode(), friend.getFriendUser().getUserPhone(), friend.getFriendUser().getUserName()));
+		}
+		rep.setFriends(friendInfos);
 		logger.info("********Operation succeeded********");
 		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);

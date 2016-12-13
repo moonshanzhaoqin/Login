@@ -46,11 +46,15 @@ public class MessageConsts {
 	/**
 	 * 支付密码不是6位数字
 	 */
-	public static final String PAY_PASSWORD_IS_ILLEGAL = "01_006";
+	public static final String PAY_PASSWORD_IS_ILLEGAL = "PAY_PASSWORD_IS_ILLEGAL";
 	/**
 	 * 手机号与密码不匹配
 	 */
 	public static final String PHONE_AND_PASSWORD_NOT_MATCH = "PHONE_AND_PASSWORD_NOT_MATCH";
+	/**
+	 * 不能添加自己为好友
+	 */
+	public static final String ADD_FRIEND_OWEN = "COULD_NOT_ADD_OWEN";
 	
 	// 兑换 02
 	/**

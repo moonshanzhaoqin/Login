@@ -18,7 +18,7 @@ public class FriendDAOImpl implements FriendDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Friend> getFriendsByUserId(Integer userId) {
-		List<?> list = hibernateTemplate.find("from Friend where userId = ? ", userId);
+		List<?> list = hibernateTemplate.find("from Friend where userId = ? order by createTime desc", userId);
 		return (List<Friend>) list;
 	}
 

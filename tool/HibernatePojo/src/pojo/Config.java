@@ -1,5 +1,5 @@
 package pojo;
-// Generated Dec 2, 2016 4:27:04 PM by Hibernate Tools 4.0.0
+// Generated Dec 13, 2016 11:40:33 AM by Hibernate Tools 4.0.0
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,17 +13,17 @@ import javax.persistence.Table;
 @Table(name = "config", catalog = "anytime_exchange")
 public class Config implements java.io.Serializable {
 
-	private int configKey;
+	private String configKey;
 	private String configValue;
 
 	public Config() {
 	}
 
-	public Config(int configKey) {
+	public Config(String configKey) {
 		this.configKey = configKey;
 	}
 
-	public Config(int configKey, String configValue) {
+	public Config(String configKey, String configValue) {
 		this.configKey = configKey;
 		this.configValue = configValue;
 	}
@@ -31,11 +31,11 @@ public class Config implements java.io.Serializable {
 	@Id
 
 	@Column(name = "config_key", unique = true, nullable = false)
-	public int getConfigKey() {
+	public String getConfigKey() {
 		return this.configKey;
 	}
 
-	public void setConfigKey(int configKey) {
+	public void setConfigKey(String configKey) {
 		this.configKey = configKey;
 	}
 

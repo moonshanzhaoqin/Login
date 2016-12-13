@@ -7,6 +7,8 @@ public class LoginRequest {
 	private String userPhone;
 	private String userPassword;
 	private String loginToken;
+	private String language;
+	private String pushId;
 
 	public String getAreaCode() {
 		return areaCode;
@@ -38,6 +40,22 @@ public class LoginRequest {
 
 	public void setLoginToken(String loginToken) {
 		this.loginToken = loginToken;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public String getPushId() {
+		return pushId;
+	}
+
+	public void setPushId(String pushId) {
+		this.pushId = pushId;
 	}
 
 	/**
