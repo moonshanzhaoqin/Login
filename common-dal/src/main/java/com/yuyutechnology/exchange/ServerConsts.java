@@ -40,9 +40,9 @@ public class ServerConsts {
 	 */
 	public static final String GOLDPAY_PHONE_IS_NOT_EXIST = "01004";
 	/**
-	 * goldpay手机号与注册手机号不匹配
+	 * 登录失败密码错误或TOKEN失效
 	 */
-	public static final String GOLDPAY_PHONE_NOT_MATCH = "01005";
+	public static final String PASSWORD_NOT_MATCH = "01005";
 	/**
 	 * 支付密码不是6位数字
 	 */

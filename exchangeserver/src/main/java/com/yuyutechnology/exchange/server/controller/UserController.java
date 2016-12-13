@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,36 +162,39 @@ public class UserController {
 			HttpServletResponse response) {
 		logger.info("login : {}", loginRequest.getAreaCode() + loginRequest.getUserPhone());
 		LoginResponse rep = new LoginResponse();
-		if (loginRequest.isEmpty()) {
-			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
-		} else {
-			Integer userId = userManager.getUserId(loginRequest.getAreaCode(), loginRequest.getUserPhone());
-			if (userId == null) {
-				logger.info(MessageConsts.PHONE_NOT_EXIST);
-				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
-				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
-				// 有logintoken则跳过password验证
-			} else if (sessionManager.validateLoginToken(userId, loginRequest.getLoginToken())
-					|| userManager.checkUserPassword(userId, loginRequest.getUserPassword())) {
-				// 生成session Token
-				SessionData sessionData = new SessionData(userId, UidUtils.genUid());
-				sessionManager.saveSessionData(sessionData);
-				rep.setSessionToken(sessionData.getSessionId());
-				rep.setLoginToken(sessionManager.createLoginToken(userId));
-				// 获取用户信息
-				UserInfo user = userManager.getUserInfo(userId);
-				rep.setUser(user);
+		rep.setRetCode(ServerConsts.PASSWORD_NOT_MATCH);
+		rep.setMessage(MessageConsts.PASSWORD_NOT_MATCH);
+		Integer userId = 0;
+		boolean tokenLogin = false;
+		if (StringUtils.isNotBlank(loginRequest.getLoginToken()) 
+				&& (userId = sessionManager.validateLoginToken(loginRequest.getLoginToken())) != 0) {
+			tokenLogin = true;
+		} 
+		if (!tokenLogin && StringUtils.isNotBlank(loginRequest.getAreaCode()) && StringUtils.isNotBlank(loginRequest.getUserPhone())) {
+			userId = userManager.getUserId(loginRequest.getAreaCode(), loginRequest.getUserPhone());
+		}
+		if (userId == null || userId == 0) {
+			logger.info(MessageConsts.PHONE_NOT_EXIST);
+			rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
+			rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
+			// 有logintoken则跳过password验证
+		} else if (tokenLogin || userManager.checkUserPassword(userId, loginRequest.getUserPassword())) {
+			// 生成session Token
+			SessionData sessionData = new SessionData(userId, UidUtils.genUid());
+			sessionManager.saveSessionData(sessionData);
+			rep.setSessionToken(sessionData.getSessionId());
+			rep.setLoginToken(sessionManager.createLoginToken(userId));
+			// 获取用户信息
+			UserInfo user = userManager.getUserInfo(userId);
+			rep.setUser(user);
 
-				// 获取钱包信息
-				List<Wallet> wallets = exchangeManager.getWalletsByUserId(userId);
-				rep.setWallets(wallets);
+			// 获取钱包信息
+			List<Wallet> wallets = exchangeManager.getWalletsByUserId(userId);
+			rep.setWallets(wallets);
 
-				logger.info(MessageConsts.RET_CODE_SUCCESS);
-				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-			}
+			logger.info(MessageConsts.RET_CODE_SUCCESS);
+			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		}
 		return rep;
 	}
