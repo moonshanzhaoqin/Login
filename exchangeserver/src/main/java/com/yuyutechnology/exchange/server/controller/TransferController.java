@@ -14,12 +14,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.ServerConsts;
-import com.yuyutechnology.exchange.form.UserInfo;
+import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
+import com.yuyutechnology.exchange.server.controller.request.GetTransactionRecordRequest;
+import com.yuyutechnology.exchange.server.controller.request.RequestATransferRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransPwdConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransferConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransferInitiateRequest;
+import com.yuyutechnology.exchange.server.controller.response.RequestATransferResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransPwdConfirmResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransferConfirmResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransferInitiateResponse;
@@ -47,7 +50,7 @@ public class TransferController {
 		TransferInitiateResponse rep = new TransferInitiateResponse();
 		String result = transferManager.transferInitiate(sessionData.getUserId(), reqMsg.getAreaCode(),
 				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()), 
-				reqMsg.getTransferComment());
+				reqMsg.getTransferComment(),0);
 		
 		if(result.equals(ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT)){
 			rep.setRetCode(ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
@@ -88,9 +91,10 @@ public class TransferController {
 		return rep;
 	}
 	
-	@ApiOperation(value = "pinCode 验证及交易确认")
+	@ApiOperation(value = "交易确认")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transferConfirm")
-	public TransferConfirmResponse transferConfirm(@PathVariable String token,@RequestBody TransferConfirmRequest reqMsg){
+	public  @ResponseBody
+	TransferConfirmResponse transferConfirm(@PathVariable String token,@RequestBody TransferConfirmRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		UserInfo user = userManager.getUserInfo(sessionData.getUserId());
@@ -107,7 +111,35 @@ public class TransferController {
 		return rep;
 	}
 	
+	@ApiOperation(value = "请求转账")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/requestATransfer")
+	public @ResponseBody
+	RequestATransferResponse requestATransfer(RequestATransferRequest reqMsg){
+		//从Session中获取Id
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		RequestATransferResponse rep = new RequestATransferResponse();
+		String result = transferManager.transferInitiate(sessionData.getUserId(), reqMsg.getAreaCode(),
+				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()), 
+				null,reqMsg.getNoticeId());
+		
+		if(result.equals(ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT)){
+			rep.setRetCode(ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+			rep.setMessage("");
+		}else if(result.equals(ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT)){
+			rep.setRetCode(ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT);
+			rep.setMessage("");
+		}else{
+			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setMessage("");
+			rep.setTransferId(result);
+		}
+		return rep;
+	}
 	
-	
+	@ApiOperation(value = "获取交易明细")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransactionRecord")
+	public void getTransactionRecord(GetTransactionRecordRequest reqMsq){
+		
+	}
 
 }

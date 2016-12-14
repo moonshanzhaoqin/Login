@@ -1,5 +1,5 @@
 package pojo;
-// Generated Dec 2, 2016 4:27:04 PM by Hibernate Tools 4.0.0
+// Generated Dec 13, 2016 11:40:33 AM by Hibernate Tools 4.0.0
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -20,6 +20,7 @@ public class Transfer implements java.io.Serializable {
 	private String transferId;
 	private int userFrom;
 	private int userTo;
+	private String userToPhone;
 	private String currency;
 	private BigDecimal transferAmount;
 	private String transferComment;
@@ -27,6 +28,7 @@ public class Transfer implements java.io.Serializable {
 	private Date finishTime;
 	private int transferStatus;
 	private int transferType;
+	private Integer noticeId;
 
 	public Transfer() {
 	}
@@ -42,11 +44,13 @@ public class Transfer implements java.io.Serializable {
 		this.transferType = transferType;
 	}
 
-	public Transfer(String transferId, int userFrom, int userTo, String currency, BigDecimal transferAmount,
-			String transferComment, Date createTime, Date finishTime, int transferStatus, int transferType) {
+	public Transfer(String transferId, int userFrom, int userTo, String userToPhone, String currency,
+			BigDecimal transferAmount, String transferComment, Date createTime, Date finishTime, int transferStatus,
+			int transferType, Integer noticeId) {
 		this.transferId = transferId;
 		this.userFrom = userFrom;
 		this.userTo = userTo;
+		this.userToPhone = userToPhone;
 		this.currency = currency;
 		this.transferAmount = transferAmount;
 		this.transferComment = transferComment;
@@ -54,6 +58,7 @@ public class Transfer implements java.io.Serializable {
 		this.finishTime = finishTime;
 		this.transferStatus = transferStatus;
 		this.transferType = transferType;
+		this.noticeId = noticeId;
 	}
 
 	@Id
@@ -83,6 +88,15 @@ public class Transfer implements java.io.Serializable {
 
 	public void setUserTo(int userTo) {
 		this.userTo = userTo;
+	}
+
+	@Column(name = "user_to_phone")
+	public String getUserToPhone() {
+		return this.userToPhone;
+	}
+
+	public void setUserToPhone(String userToPhone) {
+		this.userToPhone = userToPhone;
 	}
 
 	@Column(name = "currency", nullable = false, length = 3)
@@ -148,6 +162,15 @@ public class Transfer implements java.io.Serializable {
 
 	public void setTransferType(int transferType) {
 		this.transferType = transferType;
+	}
+
+	@Column(name = "notice_id")
+	public Integer getNoticeId() {
+		return this.noticeId;
+	}
+
+	public void setNoticeId(Integer noticeId) {
+		this.noticeId = noticeId;
 	}
 
 }

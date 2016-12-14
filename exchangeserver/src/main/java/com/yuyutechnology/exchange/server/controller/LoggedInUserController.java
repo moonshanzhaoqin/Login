@@ -3,6 +3,9 @@
  */
 package com.yuyutechnology.exchange.server.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +22,8 @@ import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
+import com.yuyutechnology.exchange.pojo.Friend;
+import com.yuyutechnology.exchange.server.controller.dto.FriendInfo;
 import com.yuyutechnology.exchange.server.controller.request.AddFriendRequest;
 import com.yuyutechnology.exchange.server.controller.request.BindGoldpayRequest;
 import com.yuyutechnology.exchange.server.controller.request.ChangePhoneRequest;
@@ -67,6 +72,7 @@ public class LoggedInUserController {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			userManager.checkUserPassword(sessionData.getUserId(), modifyPasswordRequest.getOldPassword());
 			userManager.updatePassword(sessionData.getUserId(), modifyPasswordRequest.getNewPassword());
+			sessionManager.logout(sessionData.getSessionId());
 			sessionManager.delLoginToken(sessionData.getUserId());
 			logger.info("********Operation succeeded********");
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
@@ -184,6 +190,11 @@ public class LoggedInUserController {
 				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
 				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
 				break;
+			case ServerConsts.ADD_FRIEND_OWEN:
+				logger.info(MessageConsts.ADD_FRIEND_OWEN);
+				rep.setRetCode(ServerConsts.ADD_FRIEND_OWEN);
+				rep.setMessage(MessageConsts.ADD_FRIEND_OWEN);
+				break;	
 			default:
 				logger.info(MessageConsts.RET_CODE_FAILUE);
 				rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
@@ -208,7 +219,12 @@ public class LoggedInUserController {
 		logger.info("========friendsList : {}============", token);
 		FriendsListResponse rep = new FriendsListResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		rep.setFriends(userManager.getFriends(sessionData.getUserId()));
+		List<FriendInfo> friendInfos = new ArrayList<FriendInfo>();
+		List<Friend> friends = userManager.getFriends(sessionData.getUserId());
+		for (Friend friend : friends) {
+			friendInfos.add(new FriendInfo(friend.getFriendUser().getAreaCode(), friend.getFriendUser().getUserPhone(), friend.getFriendUser().getUserName()));
+		}
+		rep.setFriends(friendInfos);
 		logger.info("********Operation succeeded********");
 		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
@@ -225,7 +241,7 @@ public class LoggedInUserController {
 	@ResponseBody
 	@ApiOperation(value = "换绑手机", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/changePhone", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse changePhone(@PathVariable String token, ChangePhoneRequest changePhoneRequest) {
+	public BaseResponse changePhone(@PathVariable String token, @RequestBody ChangePhoneRequest changePhoneRequest) {
 		logger.info("========changePhone : {}============", token);
 		BaseResponse rep = new BaseResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
@@ -235,6 +251,8 @@ public class LoggedInUserController {
 				changePhoneRequest.getUserPhone(), changePhoneRequest.getVerificationCode())) {
 			userManager.changePhone(sessionData.getUserId(), changePhoneRequest.getAreaCode(),
 					changePhoneRequest.getUserPhone());
+			sessionManager.logout(sessionData.getSessionId());
+			sessionManager.delLoginToken(sessionData.getUserId());
 			logger.info("********Operation succeeded********");
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
@@ -257,7 +275,7 @@ public class LoggedInUserController {
 	@ResponseBody
 	@ApiOperation(value = "换绑手机-校验登录密码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/checkPassword", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse checkPassword(@PathVariable String token, CheckPasswordRequest checkPasswordRequest) {
+	public BaseResponse checkPassword(@PathVariable String token,@RequestBody CheckPasswordRequest checkPasswordRequest) {
 		logger.info("========checkPassword : {}============", token);
 		BaseResponse rep = new BaseResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
@@ -266,9 +284,9 @@ public class LoggedInUserController {
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		} else {
-			logger.info(MessageConsts.RET_CODE_FAILUE);
-			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
-			rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+			logger.info(MessageConsts.PASSWORD_NOT_MATCH);
+			rep.setRetCode(ServerConsts.PASSWORD_NOT_MATCH);
+			rep.setMessage(MessageConsts.PASSWORD_NOT_MATCH);
 		}
 		return rep;
 	}

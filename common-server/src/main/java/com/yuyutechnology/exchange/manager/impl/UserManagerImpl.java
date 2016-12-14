@@ -21,7 +21,7 @@ import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
-import com.yuyutechnology.exchange.form.UserInfo;
+import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.goldpay.GoldpayManager;
 import com.yuyutechnology.exchange.goldpay.GoldpayUser;
 import com.yuyutechnology.exchange.manager.UserManager;
@@ -63,16 +63,15 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
-		// TODO Auto-generated method stub
 		User friend = userDAO.getUserByUserPhone(areaCode, userPhone);
-		if (friend != null) {
-			friendDAO.addfriend(new Friend(userId, friend.getUserId(), friend.getAreaCode(), friend.getUserPhone(),
-					friend.getUserName()));
-			return ServerConsts.RET_CODE_SUCCESS;
-		} else {
+		if (friend == null) {
 			return ServerConsts.PHONE_NOT_EXIST;
+		} else if(friend.getUserId() == userId) {
+			return ServerConsts.ADD_FRIEND_OWEN;
+		} else {
+			friendDAO.addfriend(new Friend(friend, userId, new Date()));
+			return ServerConsts.RET_CODE_SUCCESS;
 		}
-
 	}
 
 	@Override
@@ -260,22 +259,22 @@ public class UserManagerImpl implements UserManager {
 		Integer systemUserId = userDAO.getSystemUser().getUserId();
 		List<Unregistered> unregistereds = unregisteredDAO.getUnregisteredByUserPhone(areaCode, userPhone);
 		for (Unregistered unregistered : unregistereds) {
-			logger.info("+ {} : {}", unregistered.getCurrency(), unregistered.getAmount());
-			// 系统账号扣款
-			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, unregistered.getCurrency(),
-					unregistered.getAmount(), "-");
-			// 用户加款
-			walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(), unregistered.getAmount(),
-					"+");
-			// 增加seq记录
-			walletSeqDAO.addWalletSeq4Transaction(systemUserId, userId, ServerConsts.TRANSFER_TYPE_OF_TRANSACTION,
-					unregistered.getTransferId(), unregistered.getCurrency(), unregistered.getAmount());
-			// 更改Transfer状态
-			transferDAO.updateTransferStatusAndUserTo(unregistered.getTransferId(),
-					ServerConsts.TRANSFER_STATUS_OF_COMPLETED, userId);
-			// 更改unregistered状态
-			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
-			unregisteredDAO.updateUnregistered(unregistered);
+//			logger.info("+ {} : {}", unregistered.getCurrency(), unregistered.getAmount());
+//			// 系统账号扣款
+//			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, unregistered.getCurrency(),
+//					unregistered.getAmount(), "-");
+//			// 用户加款
+//			walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(), unregistered.getAmount(),
+//					"+");
+//			// 增加seq记录
+//			walletSeqDAO.addWalletSeq4Transaction(systemUserId, userId, ServerConsts.TRANSFER_TYPE_OF_TRANSACTION,
+//					unregistered.getTransferId(), unregistered.getCurrency(), unregistered.getAmount());
+//			// 更改Transfer状态
+//			transferDAO.updateTransferStatusAndUserTo(unregistered.getTransferId(),
+//					ServerConsts.TRANSFER_STATUS_OF_COMPLETED, userId);
+//			// 更改unregistered状态
+//			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
+//			unregisteredDAO.updateUnregistered(unregistered);
 		}
 	}
 

@@ -8,7 +8,9 @@ public class RegisterRequest {
 	private String registrationCode;
 	private String userName;
 	private String userPassword;
-
+	private String language;
+	private String pushId;
+	
 	public String getAreaCode() {
 		return areaCode;
 	}
@@ -48,6 +50,22 @@ public class RegisterRequest {
 
 	public void setRegistrationCode(String registrationCode) {
 		this.registrationCode = registrationCode;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public String getPushId() {
+		return pushId;
+	}
+
+	public void setPushId(String pushId) {
+		this.pushId = pushId;
 	}
 
 	/**

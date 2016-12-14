@@ -2,7 +2,7 @@ package com.yuyutechnology.exchange.manager;
 
 import java.util.List;
 
-import com.yuyutechnology.exchange.form.UserInfo;
+import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.pojo.Friend;
 
 public interface UserManager {

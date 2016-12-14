@@ -1,12 +1,12 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-import org.apache.commons.lang.StringUtils;
-
 public class LoginRequest {
 	private String areaCode;
 	private String userPhone;
 	private String userPassword;
 	private String loginToken;
+	private String language;
+	private String pushId;
 
 	public String getAreaCode() {
 		return areaCode;
@@ -40,21 +40,20 @@ public class LoginRequest {
 		this.loginToken = loginToken;
 	}
 
-	/**
-	 * 判断参数是否为空
-	 * 
-	 * @return
-	 */
-	public boolean isEmpty() {
-		if (StringUtils.isEmpty(this.areaCode)) {
-			return true;
-		}
-		if (StringUtils.isEmpty(this.userPhone)) {
-			return true;
-		}
-		if (StringUtils.isEmpty(this.userPassword)&&StringUtils.isEmpty(this.loginToken)) {
-			return true;
-		}
-		return false;
+	public String getLanguage() {
+		return language;
 	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public String getPushId() {
+		return pushId;
+	}
+
+	public void setPushId(String pushId) {
+		this.pushId = pushId;
+	}
+
 }

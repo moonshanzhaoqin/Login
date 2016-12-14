@@ -1,12 +1,13 @@
 package com.yuyutechnology.exchange.pojo;
 // Generated Dec 2, 2016 4:27:04 PM by Hibernate Tools 4.0.0
 
-import java.math.BigDecimal;
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -20,10 +21,6 @@ import javax.persistence.TemporalType;
 public class Unregistered implements java.io.Serializable {
 
 	private Integer unregisteredId;
-	private String areaCode;
-	private String userPhone;
-	private String currency;
-	private BigDecimal amount;
 	private Date createTime;
 	private int unregisteredStatus;
 	private String transferId;
@@ -31,12 +28,7 @@ public class Unregistered implements java.io.Serializable {
 	public Unregistered() {
 	}
 
-	public Unregistered(String areaCode, String userPhone, String currency, BigDecimal amount, Date createTime,
-			int unregisteredStatus, String transferId) {
-		this.areaCode = areaCode;
-		this.userPhone = userPhone;
-		this.currency = currency;
-		this.amount = amount;
+	public Unregistered(Date createTime,int unregisteredStatus, String transferId) {
 		this.createTime = createTime;
 		this.unregisteredStatus = unregisteredStatus;
 		this.transferId = transferId;
@@ -52,42 +44,6 @@ public class Unregistered implements java.io.Serializable {
 
 	public void setUnregisteredId(Integer unregisteredId) {
 		this.unregisteredId = unregisteredId;
-	}
-
-	@Column(name = "area_code", nullable = false)
-	public String getAreaCode() {
-		return areaCode;
-	}
-
-	public void setAreaCode(String areaCode) {
-		this.areaCode = areaCode;
-	}
-
-	@Column(name = "user_phone", nullable = false)
-	public String getUserPhone() {
-		return userPhone;
-	}
-
-	public void setUserPhone(String userPhone) {
-		this.userPhone = userPhone;
-	}
-
-	@Column(name = "currency", nullable = false, length = 3)
-	public String getCurrency() {
-		return this.currency;
-	}
-
-	public void setCurrency(String currency) {
-		this.currency = currency;
-	}
-
-	@Column(name = "amount", nullable = false, precision = 10)
-	public BigDecimal getAmount() {
-		return this.amount;
-	}
-
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
