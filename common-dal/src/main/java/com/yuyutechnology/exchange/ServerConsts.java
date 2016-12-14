@@ -109,7 +109,8 @@ public class ServerConsts {
 	 */
 	public static final int TRANSFER_TYPE_OF_EXCHANGE = 1;
 	public static final int TRANSFER_TYPE_OF_GOLDPAYBUY = 2;
-	public static final int TRANSFER_TYPE_OF_GIFT = 3;
+	public static final int TRANSFER_TYPE_OF_GIFT_IN = 3;
+	public static final int TRANSFER_TYPE_OF_GIFT_OUT = 4;
 	/**
 	 * 系统退款
 	 */

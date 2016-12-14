@@ -1,7 +1,5 @@
 package com.yuyutechnology.exchange.dao.impl;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -11,9 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.UserDAO;
-import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.User;
-import com.yuyutechnology.exchange.pojo.Wallet;
 
 @Repository
 public class UserDAOImpl implements UserDAO {

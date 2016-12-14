@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.yuyutechnology.exchange.pojo.Wallet;
 
-public class GetWalletInfoResponse extends BaseResponse{
+public class GetCurrentBalanceResponse extends BaseResponse{
 	private List<Wallet> wallets;
 
 	public List<Wallet> getWallets() {

@@ -80,17 +80,18 @@ public class TransferManagerImpl implements TransferManager{
 		transfer.setTransferAmount(amount);
 		transfer.setTransferComment(transferComment);
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
-		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_OF_TRANSACTION);
 		transfer.setUserFrom(userId);
+		transfer.setAreaCode(areaCode);
+		transfer.setPhone(userPhone);
 		//判断接收人是否是已注册账号
 		if(receiver != null){
 			transfer.setUserTo(receiver.getUserId());
+			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_OF_TRANSACTION);
 		}else{
 			transfer.setUserTo(0);
+			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_OF_GIFT_OUT);
 		}
-//		transfer.setUserToPhone(areaCode+userPhone);
 		transfer.setNoticeId(noticeId);
-		
 		//保存
 		transferDAO.addTransfer(transfer);
 		
@@ -103,7 +104,7 @@ public class TransferManagerImpl implements TransferManager{
 		User user = userDAO.getUser(userId);
 		Transfer transfer = transferDAO.getTransferById(transferId);
 		
-		if(!PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getUserPassword())){
+		if(!PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())){
 			return ServerConsts.TRANSFER_PAYMENTPWD_INCORRECT;
 		}
 
@@ -146,17 +147,23 @@ public class TransferManagerImpl implements TransferManager{
 			//添加gift记录
 			Unregistered unregistered = new Unregistered();
 			unregistered.setCreateTime(new Date());
-			unregistered.setUnregisteredStatus(ServerConsts.TRANSFER_STATUS_OF_PROCESSING);
+			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_PENDING);
 			unregistered.setTransferId(transfer.getTransferId());
+			unregistered.setAreaCode(transfer.getAreaCode());
+			unregistered.setUserPhone(transfer.getPhone());
+			unregistered.setCurrency(transfer.getCurrency());
+			unregistered.setAmount(transfer.getTransferAmount());
+			
 			unregisteredDAO.addUnregistered(unregistered);
-			//更改用户的当日累计金额
-//			transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", exchangeResult);
 			//增加seq记录
 			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), systemUser.getUserId(), 
-					ServerConsts.TRANSFER_TYPE_OF_TRANSACTION, transfer.getTransferId(), 
+					ServerConsts.TRANSFER_TYPE_OF_GIFT_OUT, transfer.getTransferId(), 
 					transfer.getCurrency(), transfer.getTransferAmount());
+			
+			//更改Transfer状态
+			transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		
-		}else{								//交易对象注册账号,交易正常进行，无需经过系统账户
+		}else{	//交易对象注册账号,交易正常进行，无需经过系统账户							
 			
 			//扣款
 			walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), 
@@ -164,11 +171,6 @@ public class TransferManagerImpl implements TransferManager{
 			//加款
 			walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserTo(), 
 					transfer.getCurrency(), transfer.getTransferAmount(), "+");
-			//更改Transfer状态
-			transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-			
-			//更改用户的当日累计金额
-//			transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", exchangeResult);
 			
 			//添加seq记录
 			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), transfer.getUserTo(), 
@@ -180,7 +182,9 @@ public class TransferManagerImpl implements TransferManager{
 				
 			}
 		}
-		
+		//更改Transfer状态
+		transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+
 		//转换金额
 		BigDecimal exchangeResult = getExchangeResult(transfer.getCurrency(),transfer.getTransferAmount());
 		transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", exchangeResult);
@@ -203,9 +207,26 @@ public class TransferManagerImpl implements TransferManager{
 		walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), transfer.getUserFrom(), 
 				ServerConsts.TRANSFER_TYPE_OF_SYSTEM_REFUND, unregistered.getTransferId(), 
 				transfer.getCurrency(), transfer.getTransferAmount());
-		//修改Transfer记录
-		transferDAO.updateTransferStatus(transfer.getTransferId(), ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-
+		///////////////////////////生成transfer系统退款订单////////////////////////////
+		Transfer transfer2 = new Transfer();
+		//生成TransId
+		String transferId2 = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_OF_TRANSACTION);
+		transfer2.setTransferId(transferId2);
+		transfer2.setUserFrom(systemUser.getUserId());
+		transfer2.setUserTo(transfer.getUserFrom());
+		transfer2.setAreaCode(unregistered.getAreaCode());
+		transfer2.setPhone(unregistered.getUserPhone());
+		transfer2.setCurrency(transfer.getCurrency());
+		transfer2.setTransferAmount(transfer.getTransferAmount());
+		transfer2.setTransferComment(unregistered.getUserPhone()+"对方逾期未注册,系统退款");
+		transfer2.setTransferType(ServerConsts.TRANSFER_TYPE_OF_SYSTEM_REFUND);
+		transfer2.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		transfer2.setCreateTime(new Date());
+		transfer2.setFinishTime(new Date());
+		transfer2.setNoticeId(0);
+		
+		transferDAO.addTransfer(transfer2);
+		///////////////////////////end////////////////////////////
 		//修改gift记录
 		unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_BACK);
 		unregisteredDAO.updateUnregistered(unregistered);

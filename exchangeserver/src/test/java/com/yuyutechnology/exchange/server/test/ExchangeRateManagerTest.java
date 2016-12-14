@@ -3,15 +3,16 @@
  */
 package com.yuyutechnology.exchange.server.test;
 
-import java.math.BigDecimal;
-
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
+import com.yuyutechnology.exchange.manager.TransferManager;
+import com.yuyutechnology.exchange.server.controller.TransferController;
 
 /**
  * @author silent.sun
@@ -26,6 +27,10 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4{
 	ExchangeManager exchangeManager;
 	@Autowired
 	ExchangeRateManager exchangeRateManager;
+	@Autowired
+	TransferManager transferManager;
+	
+	public static Logger logger = LoggerFactory.getLogger(TransferController.class);
 	
 	
 	@Test	
@@ -33,14 +38,12 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4{
 		
 		exchangeRateManager.updateExchangeRateNoGoldq();
 		exchangeRateManager.updateGoldpayExchangeRate();
-//
-//		exchangeManager.exchangeCalculation("USD","CNY",new BigDecimal(1),0);
-//		
-//		exchangeManager.exchangeCalculation("USD","CNY",new BigDecimal(2),0);
-		
-		exchangeManager.exchangeCalculation(ServerConsts.CURRENCY_OF_GOLDPAY,"USD",new BigDecimal(324),0);
-		
-		exchangeManager.exchangeCalculation("USD",ServerConsts.CURRENCY_OF_GOLDPAY,new BigDecimal(324),0);
-		
+
+//		String result = transferManager.transferInitiate(2, "+86","12312312336",
+//				"CNY", new BigDecimal(100),"test",0);
+//		logger.info("testResult : {}",result);
+//		String result = transferManager.payPwdConfirm(2, "201612140T000002", "123456");
+//		logger.info("testResult : {}",result);
+		transferManager.systemRefundBatch();
 	}
 }
