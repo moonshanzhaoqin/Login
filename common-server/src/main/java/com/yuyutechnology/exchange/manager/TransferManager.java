@@ -2,6 +2,8 @@ package com.yuyutechnology.exchange.manager;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang.Validate;
+
 import com.yuyutechnology.exchange.pojo.Unregistered;
 
 public interface TransferManager {
@@ -54,6 +56,9 @@ public interface TransferManager {
 	 * @time : 2016年12月8日 下午5:25:58
 	 */
 	public void systemRefundBatch();
+	
+	
+	public void getTransactionRecordByPage(String period,int status);
 	
 
 }

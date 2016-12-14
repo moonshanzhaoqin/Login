@@ -73,7 +73,7 @@ public class TransferManagerImpl implements TransferManager{
 		//生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_OF_TRANSACTION);
 		
-		Transfer transfer = new Transfer();
+		Transfer transfer = new Transfer(); 
 		transfer.setTransferId(transferId);
 		transfer.setCreateTime(new Date());
 		transfer.setCurrency(currency);
@@ -88,7 +88,7 @@ public class TransferManagerImpl implements TransferManager{
 		}else{
 			transfer.setUserTo(0);
 		}
-		transfer.setUserToPhone(areaCode+userPhone);
+//		transfer.setUserToPhone(areaCode+userPhone);
 		transfer.setNoticeId(noticeId);
 		
 		//保存
@@ -145,15 +145,9 @@ public class TransferManagerImpl implements TransferManager{
 					transfer.getCurrency(), transfer.getTransferAmount(), "+");
 			//添加gift记录
 			Unregistered unregistered = new Unregistered();
-			//手机号有问题
-			unregistered.setAreaCode(transfer.getUserToPhone().substring(3));
-			unregistered.setUserPhone(transfer.getUserToPhone().
-					substring(3, transfer.getUserToPhone().length()));
-			unregistered.setCurrency(transfer.getCurrency());
-			unregistered.setAmount(transfer.getTransferAmount());
 			unregistered.setCreateTime(new Date());
 			unregistered.setUnregisteredStatus(ServerConsts.TRANSFER_STATUS_OF_PROCESSING);
-			
+			unregistered.setTransferId(transfer.getTransferId());
 			unregisteredDAO.addUnregistered(unregistered);
 			//更改用户的当日累计金额
 //			transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", exchangeResult);
@@ -161,12 +155,6 @@ public class TransferManagerImpl implements TransferManager{
 			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), systemUser.getUserId(), 
 					ServerConsts.TRANSFER_TYPE_OF_TRANSACTION, transfer.getTransferId(), 
 					transfer.getCurrency(), transfer.getTransferAmount());
-			
-			//如果是请求转账还需要更改消息通知中的状态//////////////////////////////////////////////////
-			if(transfer.getNoticeId() != 0){
-				
-			}
-			
 		
 		}else{								//交易对象注册账号,交易正常进行，无需经过系统账户
 			
@@ -185,7 +173,12 @@ public class TransferManagerImpl implements TransferManager{
 			//添加seq记录
 			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), transfer.getUserTo(), 
 					ServerConsts.TRANSFER_TYPE_OF_TRANSACTION, transfer.getTransferId(), 
-					transfer.getCurrency(), transfer.getTransferAmount());		
+					transfer.getCurrency(), transfer.getTransferAmount());	
+			
+			//如果是请求转账还需要更改消息通知中的状态//////////////////////////////////////////////////
+			if(transfer.getNoticeId() != 0){
+				
+			}
 		}
 		
 		//转换金额
@@ -231,10 +224,15 @@ public class TransferManagerImpl implements TransferManager{
 			long deadline = 15*24*60*60*1000;
 			if(new Date().getTime() - unregistered.getCreateTime().getTime() >= deadline){
 				systemRefund(unregistered);
-			}
+			} 
 		}
 	}
 	
+	@Override
+	public void getTransactionRecordByPage(String period, int status) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 	///////////////////////////////////////////方法内部调用//////////////////////////////////////////////
@@ -307,5 +305,6 @@ public class TransferManagerImpl implements TransferManager{
 		
 		return out;
 	}
+
 
 }

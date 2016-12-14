@@ -22,6 +22,7 @@ import com.yuyutechnology.exchange.server.controller.request.RequestATransferReq
 import com.yuyutechnology.exchange.server.controller.request.TransPwdConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransferConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransferInitiateRequest;
+import com.yuyutechnology.exchange.server.controller.response.RequestATransferResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransPwdConfirmResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransferConfirmResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransferInitiateResponse;
@@ -112,11 +113,11 @@ public class TransferController {
 	
 	@ApiOperation(value = "请求转账")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/requestATransfer")
-	public 
-	void requestATransfer(RequestATransferRequest reqMsg){
+	public @ResponseBody
+	RequestATransferResponse requestATransfer(RequestATransferRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		TransferInitiateResponse rep = new TransferInitiateResponse();
+		RequestATransferResponse rep = new RequestATransferResponse();
 		String result = transferManager.transferInitiate(sessionData.getUserId(), reqMsg.getAreaCode(),
 				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()), 
 				null,reqMsg.getNoticeId());
@@ -132,7 +133,7 @@ public class TransferController {
 			rep.setMessage("");
 			rep.setTransferId(result);
 		}
-
+		return rep;
 	}
 	
 	@ApiOperation(value = "获取交易明细")
