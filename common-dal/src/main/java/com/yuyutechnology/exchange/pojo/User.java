@@ -24,6 +24,14 @@ public class User implements java.io.Serializable {
 	private String userName;
 	private String userPassword;
 	private String userPayPwd;
+	@Override
+	public String toString() {
+		return "User [userId=" + userId + ", areaCode=" + areaCode + ", userPhone=" + userPhone + ", userName="
+				+ userName + ", userPassword=" + userPassword + ", userPayPwd=" + userPayPwd + ", createTime="
+				+ createTime + ", loginTime=" + loginTime + ", loginIp=" + loginIp + ", userType=" + userType
+				+ ", passwordSalt=" + passwordSalt + "]";
+	}
+
 	private Date createTime;
 	private Date loginTime;
 	private String loginIp;

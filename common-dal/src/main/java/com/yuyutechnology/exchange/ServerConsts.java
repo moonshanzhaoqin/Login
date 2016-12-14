@@ -40,7 +40,7 @@ public class ServerConsts {
 	 */
 	public static final String GOLDPAY_PHONE_IS_NOT_EXIST = "01004";
 	/**
-	 * 登录失败密码错误或TOKEN失效
+	 * 登录失败密码错误
 	 */
 	public static final String PASSWORD_NOT_MATCH = "01005";
 	/**
@@ -55,6 +55,14 @@ public class ServerConsts {
 	 * 不能添加自己为好友
 	 */
 	public static final String ADD_FRIEND_OWEN = "01008";
+	/**
+	 * 账号冻结
+	 */
+	public static final String USER_BLOCKED= "01009";
+	/**
+	 * 账号冻结
+	 */
+	public static final String TOKEN_NOT_MATCH= "01010";
 
 	// 兑换 02
 	/**
@@ -166,5 +174,6 @@ public class ServerConsts {
 	 * 短信验证码功能——换绑手机
 	 */
 	public static final String PIN_FUNC_CHANGEPHONE = "CHANGEPHONE";
+
 
 }

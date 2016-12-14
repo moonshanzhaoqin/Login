@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +15,7 @@ import com.yuyutechnology.exchange.pojo.User;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
+	public static Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
 	@Resource
 	HibernateTemplate hibernateTemplate;
 
@@ -33,6 +36,7 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public User getUserByUserPhone(String areaCode, String userPhone) {
 		List<?> list = hibernateTemplate.find("from User where areaCode = ? and userPhone = ?", areaCode, userPhone);
+		logger.info("{}",list);
 		if (!list.isEmpty()) {
 			return (User) list.get(0);
 		}

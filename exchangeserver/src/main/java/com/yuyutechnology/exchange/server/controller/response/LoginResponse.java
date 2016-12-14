@@ -34,4 +34,9 @@ public class LoginResponse extends BaseResponse {
 	public void setLoginToken(String loginToken) {
 		this.loginToken = loginToken;
 	}
+	
+	public static void main(String[] args) {
+		LoginResponse aa = new LoginResponse();
+		System.out.println(aa.getApiName());
+	}
 }
