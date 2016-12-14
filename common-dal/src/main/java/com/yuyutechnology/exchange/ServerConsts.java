@@ -60,7 +60,7 @@ public class ServerConsts {
 	 */
 	public static final String USER_BLOCKED= "01009";
 	/**
-	 * 账号冻结
+	 * 登录token失效
 	 */
 	public static final String TOKEN_NOT_MATCH= "01010";
 
