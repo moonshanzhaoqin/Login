@@ -58,4 +58,26 @@ public class LoginRequest {
 		this.pushId = pushId;
 	}
 
+	
+	/**
+	 * 判断参数是否为空
+	 * 以及走那个流程
+	 * 
+	 * @return
+	 */
+	public int isEmpty() {
+		if (StringUtils.isNotBlank(this.loginToken)) {
+			return 1;
+		}
+		if (StringUtils.isBlank(this.userPassword)) {
+			return 0;
+		}
+		if (StringUtils.isBlank(this.areaCode)) {
+			return 0;
+		}
+		if (StringUtils.isBlank(this.userPhone)) {
+			return 0;
+		}
+		return 2;
+	}
 }

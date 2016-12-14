@@ -1,12 +1,14 @@
 package com.yuyutechnology.exchange.pojo;
 // Generated Dec 2, 2016 4:27:04 PM by Hibernate Tools 4.0.0
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.math.BigDecimal;
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -31,12 +33,7 @@ public class Unregistered implements java.io.Serializable {
 	public Unregistered() {
 	}
 
-	public Unregistered(String areaCode, String userPhone, String currency, BigDecimal amount, Date createTime,
-			int unregisteredStatus, String transferId) {
-		this.areaCode = areaCode;
-		this.userPhone = userPhone;
-		this.currency = currency;
-		this.amount = amount;
+	public Unregistered(Date createTime, int unregisteredStatus, String transferId) {
 		this.createTime = createTime;
 		this.unregisteredStatus = unregisteredStatus;
 		this.transferId = transferId;
@@ -74,7 +71,7 @@ public class Unregistered implements java.io.Serializable {
 
 	@Column(name = "currency", nullable = false, length = 3)
 	public String getCurrency() {
-		return this.currency;
+		return currency;
 	}
 
 	public void setCurrency(String currency) {
@@ -83,7 +80,7 @@ public class Unregistered implements java.io.Serializable {
 
 	@Column(name = "amount", nullable = false, precision = 10)
 	public BigDecimal getAmount() {
-		return this.amount;
+		return amount;
 	}
 
 	public void setAmount(BigDecimal amount) {

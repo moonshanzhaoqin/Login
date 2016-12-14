@@ -64,6 +64,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
 		User friend = userDAO.getUserByUserPhone(areaCode, userPhone);
+		logger.info("friend:{}",friend);
 		if (friend == null) {
 			return ServerConsts.PHONE_NOT_EXIST;
 		} else if(friend.getUserId() == userId) {
