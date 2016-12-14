@@ -3,6 +3,7 @@ package com.yuyutechnology.exchange.pojo;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -21,6 +22,10 @@ import javax.persistence.TemporalType;
 public class Unregistered implements java.io.Serializable {
 
 	private Integer unregisteredId;
+	private String areaCode;
+	private String userPhone;
+	private String currency;
+	private BigDecimal amount;
 	private Date createTime;
 	private int unregisteredStatus;
 	private String transferId;
@@ -28,7 +33,7 @@ public class Unregistered implements java.io.Serializable {
 	public Unregistered() {
 	}
 
-	public Unregistered(Date createTime,int unregisteredStatus, String transferId) {
+	public Unregistered(Date createTime, int unregisteredStatus, String transferId) {
 		this.createTime = createTime;
 		this.unregisteredStatus = unregisteredStatus;
 		this.transferId = transferId;
@@ -44,6 +49,42 @@ public class Unregistered implements java.io.Serializable {
 
 	public void setUnregisteredId(Integer unregisteredId) {
 		this.unregisteredId = unregisteredId;
+	}
+
+	@Column(name = "area_code", nullable = false)
+	public String getAreaCode() {
+		return areaCode;
+	}
+
+	public void setAreaCode(String areaCode) {
+		this.areaCode = areaCode;
+	}
+
+	@Column(name = "user_phone", nullable = false)
+	public String getUserPhone() {
+		return userPhone;
+	}
+
+	public void setUserPhone(String userPhone) {
+		this.userPhone = userPhone;
+	}
+
+	@Column(name = "currency", nullable = false, length = 3)
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+
+	@Column(name = "amount", nullable = false, precision = 10)
+	public BigDecimal getAmount() {
+		return amount;
+	}
+
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)

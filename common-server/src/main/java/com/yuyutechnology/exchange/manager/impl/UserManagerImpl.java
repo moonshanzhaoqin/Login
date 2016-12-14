@@ -259,22 +259,22 @@ public class UserManagerImpl implements UserManager {
 		Integer systemUserId = userDAO.getSystemUser().getUserId();
 		List<Unregistered> unregistereds = unregisteredDAO.getUnregisteredByUserPhone(areaCode, userPhone);
 		for (Unregistered unregistered : unregistereds) {
-//			logger.info("+ {} : {}", unregistered.getCurrency(), unregistered.getAmount());
-//			// 系统账号扣款
-//			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, unregistered.getCurrency(),
-//					unregistered.getAmount(), "-");
-//			// 用户加款
-//			walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(), unregistered.getAmount(),
-//					"+");
-//			// 增加seq记录
-//			walletSeqDAO.addWalletSeq4Transaction(systemUserId, userId, ServerConsts.TRANSFER_TYPE_OF_TRANSACTION,
-//					unregistered.getTransferId(), unregistered.getCurrency(), unregistered.getAmount());
-//			// 更改Transfer状态
-//			transferDAO.updateTransferStatusAndUserTo(unregistered.getTransferId(),
-//					ServerConsts.TRANSFER_STATUS_OF_COMPLETED, userId);
-//			// 更改unregistered状态
-//			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
-//			unregisteredDAO.updateUnregistered(unregistered);
+			logger.info("+ {} : {}", unregistered.getCurrency(), unregistered.getAmount());
+			// 系统账号扣款
+			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, unregistered.getCurrency(),
+					unregistered.getAmount(), "-");
+			// 用户加款
+			walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(), unregistered.getAmount(),
+					"+");
+			// 增加seq记录
+			walletSeqDAO.addWalletSeq4Transaction(systemUserId, userId, ServerConsts.TRANSFER_TYPE_OF_TRANSACTION,
+					unregistered.getTransferId(), unregistered.getCurrency(), unregistered.getAmount());
+			// 更改Transfer状态
+			transferDAO.updateTransferStatusAndUserTo(unregistered.getTransferId(),
+					ServerConsts.TRANSFER_STATUS_OF_COMPLETED, userId);
+			// 更改unregistered状态
+			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
+			unregisteredDAO.updateUnregistered(unregistered);
 		}
 	}
 

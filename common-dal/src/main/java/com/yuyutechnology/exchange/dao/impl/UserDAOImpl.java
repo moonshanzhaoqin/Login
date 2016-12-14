@@ -1,5 +1,7 @@
 package com.yuyutechnology.exchange.dao.impl;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -9,13 +11,15 @@ import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.UserDAO;
+import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.User;
+import com.yuyutechnology.exchange.pojo.Wallet;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
 	@Resource
 	HibernateTemplate hibernateTemplate;
-	
+
 	@Override
 	public User getSystemUser() {
 		List<?> list = hibernateTemplate.find("from User where userType = ?", ServerConsts.USER_TYPE_OF_SYSTEM);
@@ -31,25 +35,29 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public User getUserByUserPhone(String areaCode,String userPhone) {
-		List<?> list = hibernateTemplate.find("from User where areaCode = ? and userPhone = ?",areaCode, userPhone);
+	public User getUserByUserPhone(String areaCode, String userPhone) {
+		List<?> list = hibernateTemplate.find("from User where areaCode = ? and userPhone = ?", areaCode, userPhone);
 		if (!list.isEmpty()) {
 			return (User) list.get(0);
 		}
 		return null;
 	}
 
+//	@SuppressWarnings("unchecked")
 	@Override
 	public Integer addUser(User user) {
-		Integer userId=	(Integer) hibernateTemplate.save(user);
+		Integer userId = (Integer) hibernateTemplate.save(user);
+//		List<Currency> currencies = (List<Currency>) hibernateTemplate.find("from Currency");
+//		for (Currency currency : currencies) {
+//			hibernateTemplate.saveOrUpdate(new Wallet(userId, currency.getCurrency(), new BigDecimal(0), new Date()));
+//		}
 		return userId;
 	}
 
 	@Override
 	public void updateUser(User user) {
 		hibernateTemplate.saveOrUpdate(user);
-		
-	}
 
+	}
 
 }
