@@ -222,7 +222,7 @@ public class LoggedInUserController {
 		List<FriendInfo> friendInfos = new ArrayList<FriendInfo>();
 		List<Friend> friends = userManager.getFriends(sessionData.getUserId());
 		for (Friend friend : friends) {
-			friendInfos.add(new FriendInfo(friend.getFriendUser().getAreaCode(), friend.getFriendUser().getUserPhone(), friend.getFriendUser().getUserName()));
+			friendInfos.add(new FriendInfo(friend.getUser().getAreaCode(), friend.getUser().getUserPhone(), friend.getUser().getUserName()));
 		}
 		rep.setFriends(friendInfos);
 		logger.info("********Operation succeeded********");

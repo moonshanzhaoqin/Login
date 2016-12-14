@@ -28,6 +28,7 @@ import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Friend;
+import com.yuyutechnology.exchange.pojo.FriendId;
 import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
@@ -70,7 +71,7 @@ public class UserManagerImpl implements UserManager {
 		} else if(friend.getUserId() == userId) {
 			return ServerConsts.ADD_FRIEND_OWEN;
 		} else {
-			friendDAO.addfriend(new Friend(friend, userId, new Date()));
+			friendDAO.addfriend(new Friend(new FriendId(userId, friend.getUserId()), friend, new Date()));
 			return ServerConsts.RET_CODE_SUCCESS;
 		}
 	}

@@ -1,5 +1,5 @@
 package pojo;
-// Generated Dec 13, 2016 11:40:33 AM by Hibernate Tools 4.0.0
+// Generated Dec 14, 2016 6:26:12 PM by Hibernate Tools 4.0.0
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -20,7 +20,8 @@ public class Transfer implements java.io.Serializable {
 	private String transferId;
 	private int userFrom;
 	private int userTo;
-	private String userToPhone;
+	private String areacode;
+	private String phone;
 	private String currency;
 	private BigDecimal transferAmount;
 	private String transferComment;
@@ -44,13 +45,14 @@ public class Transfer implements java.io.Serializable {
 		this.transferType = transferType;
 	}
 
-	public Transfer(String transferId, int userFrom, int userTo, String userToPhone, String currency,
+	public Transfer(String transferId, int userFrom, int userTo, String areacode, String phone, String currency,
 			BigDecimal transferAmount, String transferComment, Date createTime, Date finishTime, int transferStatus,
 			int transferType, Integer noticeId) {
 		this.transferId = transferId;
 		this.userFrom = userFrom;
 		this.userTo = userTo;
-		this.userToPhone = userToPhone;
+		this.areacode = areacode;
+		this.phone = phone;
 		this.currency = currency;
 		this.transferAmount = transferAmount;
 		this.transferComment = transferComment;
@@ -90,13 +92,22 @@ public class Transfer implements java.io.Serializable {
 		this.userTo = userTo;
 	}
 
-	@Column(name = "user_to_phone")
-	public String getUserToPhone() {
-		return this.userToPhone;
+	@Column(name = "areacode")
+	public String getAreacode() {
+		return this.areacode;
 	}
 
-	public void setUserToPhone(String userToPhone) {
-		this.userToPhone = userToPhone;
+	public void setAreacode(String areacode) {
+		this.areacode = areacode;
+	}
+
+	@Column(name = "phone")
+	public String getPhone() {
+		return this.phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	@Column(name = "currency", nullable = false, length = 3)

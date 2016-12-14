@@ -1,13 +1,13 @@
 package pojo;
-// Generated Dec 13, 2016 11:40:33 AM by Hibernate Tools 4.0.0
+// Generated Dec 14, 2016 6:26:12 PM by Hibernate Tools 4.0.0
 
 import java.util.Date;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -21,49 +21,39 @@ import javax.persistence.TemporalType;
 @Table(name = "friend", catalog = "anytime_exchange")
 public class Friend implements java.io.Serializable {
 
-	private Integer ufId;
-	private User friendUser;
-	private int userId;
+	private FriendId id;
+	private User user;
 	private Date createTime;
 
 	public Friend() {
 	}
 
-	public Friend(User friendUser, int userId, Date createTime) {
-		this.friendUser = friendUser;
-		this.userId = userId;
+	public Friend(FriendId id, User user, Date createTime) {
+		this.id = id;
+		this.user = user;
 		this.createTime = createTime;
 	}
 
-	@Id
-	@GeneratedValue(strategy = IDENTITY)
+	@EmbeddedId
 
-	@Column(name = "uf_Id", unique = true, nullable = false)
-	public Integer getUfId() {
-		return this.ufId;
+	@AttributeOverrides({ @AttributeOverride(name = "userId", column = @Column(name = "user_id", nullable = false)),
+			@AttributeOverride(name = "friendId", column = @Column(name = "friend_Id", nullable = false)) })
+	public FriendId getId() {
+		return this.id;
 	}
 
-	public void setUfId(Integer ufId) {
-		this.ufId = ufId;
+	public void setId(FriendId id) {
+		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "friend_Id", nullable = false)
-	public User getFriendUser() {
-		return this.friendUser;
+	@JoinColumn(name = "friend_Id", nullable = false, insertable = false, updatable = false)
+	public User getUser() {
+		return this.user;
 	}
 
-	public void setFriendUser(User friendUser) {
-		this.friendUser = friendUser;
-	}
-
-	@Column(name = "user_id", nullable = false)
-	public int getUserId() {
-		return this.userId;
-	}
-
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
