@@ -21,6 +21,7 @@ public class Transfer implements java.io.Serializable {
 	private String transferId;
 	private int userFrom;
 	private int userTo;
+	private String phone;
 	private String currency;
 	private BigDecimal transferAmount;
 	private String transferComment;
@@ -33,11 +34,12 @@ public class Transfer implements java.io.Serializable {
 	public Transfer() {
 	}
 
-	public Transfer(String transferId, int userFrom, int userTo, String currency,
+	public Transfer(String transferId, int userFrom, int userTo,String phone, String currency,
 			BigDecimal transferAmount, int transferStatus, int transferType,int noticeId) {
 		this.transferId = transferId;
 		this.userFrom = userFrom;
 		this.userTo = userTo;
+		this.phone = phone;
 		this.currency = currency;
 		this.transferAmount = transferAmount;
 		this.transferStatus = transferStatus;
@@ -45,12 +47,13 @@ public class Transfer implements java.io.Serializable {
 		this.noticeId = noticeId;
 	}
 
-	public Transfer(String transferId, int userFrom, int userTo, String currency,
+	public Transfer(String transferId, int userFrom, int userTo,String phone, String currency,
 			BigDecimal transferAmount, String transferComment, Date createTime, Date finishTime, int transferStatus,
 			int transferType,int noticeId) {
 		this.transferId = transferId;
 		this.userFrom = userFrom;
 		this.userTo = userTo;
+		this.phone = phone;
 		this.currency = currency;
 		this.transferAmount = transferAmount;
 		this.transferComment = transferComment;
@@ -90,14 +93,14 @@ public class Transfer implements java.io.Serializable {
 		this.userTo = userTo;
 	}
 
-//	@Column(name = "user_to_phone")
-//	public String getUserToPhone() {
-//		return userToPhone;
-//	}
-//
-//	public void setUserToPhone(String userToPhone) {
-//		this.userToPhone = userToPhone;
-//	}
+	@Column(name = "phone")
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 
 	@Column(name = "currency", nullable = false, length = 3)
 	public String getCurrency() {
