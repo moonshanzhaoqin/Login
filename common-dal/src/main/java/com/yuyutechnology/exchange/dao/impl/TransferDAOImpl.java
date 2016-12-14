@@ -95,7 +95,7 @@ public class TransferDAOImpl implements TransferDAO {
 	public void getTransactionRecordByPage(String period, int status) {
 		// TODO Auto-generated method stub
 		
-		String hql = "select t1.amount,t1.currency  from WalletSeq t1,Transfer t2 where t1.transactionId = t2.transferId and t2.userFrom = ? or t2.userTo=？";
+		String hql = "select t1.amount,t1.currency  from WalletSeq t1,Transfer t2 where t1.transactionId = t2.transferId and t2.userFrom = ? or t2.userTo=?";
 		
 		
 		

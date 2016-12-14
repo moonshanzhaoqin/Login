@@ -167,9 +167,9 @@ public class UserController {
 			// loginToken
 			Integer userId = sessionManager.validateLoginToken(loginRequest.getLoginToken());
 			if (userId == 0) {
-				logger.info(MessageConsts.PASSWORD_NOT_MATCH);
-				rep.setRetCode(ServerConsts.PASSWORD_NOT_MATCH);
-				rep.setMessage(MessageConsts.PASSWORD_NOT_MATCH);
+				logger.info(MessageConsts.TOKEN_NOT_MATCH);
+				rep.setRetCode(ServerConsts.TOKEN_NOT_MATCH);
+				rep.setMessage(MessageConsts.TOKEN_NOT_MATCH);
 			} else {
 				// 生成session Token
 				SessionData sessionData = new SessionData(userId, UidUtils.genUid());

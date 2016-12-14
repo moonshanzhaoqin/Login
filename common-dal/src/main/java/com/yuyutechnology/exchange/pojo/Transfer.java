@@ -21,6 +21,7 @@ public class Transfer implements java.io.Serializable {
 	private String transferId;
 	private int userFrom;
 	private int userTo;
+	private String areaCode;
 	private String phone;
 	private String currency;
 	private BigDecimal transferAmount;
@@ -34,11 +35,12 @@ public class Transfer implements java.io.Serializable {
 	public Transfer() {
 	}
 
-	public Transfer(String transferId, int userFrom, int userTo,String phone, String currency,
+	public Transfer(String transferId, int userFrom, int userTo,String phone,String areaCode, String currency,
 			BigDecimal transferAmount, int transferStatus, int transferType,int noticeId) {
 		this.transferId = transferId;
 		this.userFrom = userFrom;
 		this.userTo = userTo;
+		this.areaCode = areaCode;
 		this.phone = phone;
 		this.currency = currency;
 		this.transferAmount = transferAmount;
@@ -47,12 +49,13 @@ public class Transfer implements java.io.Serializable {
 		this.noticeId = noticeId;
 	}
 
-	public Transfer(String transferId, int userFrom, int userTo,String phone, String currency,
+	public Transfer(String transferId, int userFrom, int userTo,String areaCode,String phone, String currency,
 			BigDecimal transferAmount, String transferComment, Date createTime, Date finishTime, int transferStatus,
 			int transferType,int noticeId) {
 		this.transferId = transferId;
 		this.userFrom = userFrom;
 		this.userTo = userTo;
+		this.areaCode = areaCode;
 		this.phone = phone;
 		this.currency = currency;
 		this.transferAmount = transferAmount;
@@ -91,6 +94,14 @@ public class Transfer implements java.io.Serializable {
 
 	public void setUserTo(int userTo) {
 		this.userTo = userTo;
+	}
+	@Column(name = "areacode")
+	public String getAreaCode() {
+		return areaCode;
+	}
+
+	public void setAreaCode(String areaCode) {
+		this.areaCode = areaCode;
 	}
 
 	@Column(name = "phone")

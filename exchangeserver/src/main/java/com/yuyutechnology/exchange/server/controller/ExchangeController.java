@@ -22,7 +22,7 @@ import com.yuyutechnology.exchange.server.controller.request.ExchangeCalculation
 import com.yuyutechnology.exchange.server.controller.request.ExchangeConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.response.ExchangeCalculationResponse;
 import com.yuyutechnology.exchange.server.controller.response.ExchangeConfirmResponse;
-import com.yuyutechnology.exchange.server.controller.response.GetWalletInfoResponse;
+import com.yuyutechnology.exchange.server.controller.response.GetCurrentBalanceResponse;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
 
@@ -37,10 +37,10 @@ public class ExchangeController {
 	@ApiOperation(value = "获取当前余额")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/getCurrentBalance")
 	public @ResponseBody
-	GetWalletInfoResponse getCurrentBalance(@PathVariable String token){
+	GetCurrentBalanceResponse getCurrentBalance(@PathVariable String token){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		GetWalletInfoResponse rep = new GetWalletInfoResponse();
+		GetCurrentBalanceResponse rep = new GetCurrentBalanceResponse();
 		List<Wallet> wallets = exchangeManager.getWalletsByUserId(sessionData.getUserId());
 		if(wallets.isEmpty()){
 			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);

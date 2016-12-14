@@ -55,6 +55,10 @@ public class MessageConsts {
 	 * 不能添加自己为好友
 	 */
 	public static final String ADD_FRIEND_OWEN = "COULD_NOT_ADD_OWEN";
+	/**
+	 * 登录token失效
+	 */
+	public static final String TOKEN_NOT_MATCH = "TOKEN_NOT_MATCH";
 	
 	// 兑换 02
 	/**
@@ -85,6 +89,7 @@ public class MessageConsts {
 	public static final String TRANSFER_PAYMENTPWD_INCORRECT = "TRANSFER_PAYMENTPWD_INCORRECT";
 	
 	public static final String TRANSFER_REQUIRES_PHONE_VERIFICATION = "TRANSFER_REQUIRES_PHONE_VERIFICATION";
+
 
 
 }
