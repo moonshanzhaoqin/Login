@@ -130,7 +130,6 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public List<Friend> getFriends(Integer userId) {
-		// TODO Auto-generated method stub
 		List<Friend> friends = friendDAO.getFriendsByUserId(userId);
 		return friends;
 	}
