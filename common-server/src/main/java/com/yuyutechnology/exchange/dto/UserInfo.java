@@ -2,6 +2,12 @@ package com.yuyutechnology.exchange.dto;
 
 public class UserInfo {
 
+	@Override
+	public String toString() {
+		return "UserInfo [areaCode=" + areaCode + ", phone=" + phone + ", name=" + name + ", isGoldpay=" + isGoldpay
+				+ ", isPayPwd=" + isPayPwd + "]";
+	}
+
 	private String areaCode;
 	private String phone;
 	private String name;

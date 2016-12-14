@@ -166,4 +166,5 @@ public class ServerConsts {
 	 */
 	public static final String PIN_FUNC_CHANGEPHONE = "CHANGEPHONE";
 
+
 }
