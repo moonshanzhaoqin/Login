@@ -20,7 +20,7 @@ public class Currency implements java.io.Serializable {
 	private String nameCn;
 	private String nameHk;
 	private String currencyImage;
-
+	private String currencyStatus;
 	private BigDecimal transferMax;
 	private BigDecimal transferLarge;
 	private BigDecimal assetThreshold;
@@ -72,14 +72,24 @@ public class Currency implements java.io.Serializable {
 	public void setNameHk(String nameHk) {
 		this.nameHk = nameHk;
 	}
-	@Column(name = "name_image")
+	@Column(name = "currency_image")
 	public String getCurrencyImage() {
 		return currencyImage;
 	}
-
+	
 	public void setCurrencyImage(String currencyImage) {
 		this.currencyImage = currencyImage;
 	}
+	
+	@Column(name = "currency_status")
+	public String getCurrencyStatus() {
+		return currencyStatus;
+	}
+
+	public void setCurrencyStatus(String currencyStatus) {
+		this.currencyStatus = currencyStatus;
+	}
+
 	@Column(name = "asset_threshold", precision = 10)
 	public BigDecimal getAssetThreshold() {
 		return assetThreshold;
