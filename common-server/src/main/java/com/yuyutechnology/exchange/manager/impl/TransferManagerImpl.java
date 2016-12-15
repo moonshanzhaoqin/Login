@@ -131,7 +131,7 @@ public class TransferManagerImpl implements TransferManager{
 	}
 
 	@Override
-	public void transferConfirm(String transferId) {
+	public String transferConfirm(String transferId) {
 		Transfer transfer = transferDAO.getTransferById(transferId);
 		
 		if(transfer.getUserTo() == 0){  	//交易对象没有注册账号
@@ -139,8 +139,13 @@ public class TransferManagerImpl implements TransferManager{
 			//获取系统账号
 			User systemUser = userDAO.getSystemUser();
 			//扣款
-			walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), 
+			Integer updateCount = walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), 
 					transfer.getCurrency(), transfer.getTransferAmount(), "-");
+			
+			if(updateCount == 0){
+				return ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT;
+			}
+			
 			//加款
 			walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), 
 					transfer.getCurrency(), transfer.getTransferAmount(), "+");
@@ -166,8 +171,13 @@ public class TransferManagerImpl implements TransferManager{
 		}else{	//交易对象注册账号,交易正常进行，无需经过系统账户							
 			
 			//扣款
-			walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), 
+			Integer updateCount = walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), 
 					transfer.getCurrency(), transfer.getTransferAmount(), "-");
+			
+			if(updateCount == 0){
+				return ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT;
+			}
+			
 			//加款
 			walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserTo(), 
 					transfer.getCurrency(), transfer.getTransferAmount(), "+");
@@ -188,6 +198,8 @@ public class TransferManagerImpl implements TransferManager{
 		//转换金额
 		BigDecimal exchangeResult = getExchangeResult(transfer.getCurrency(),transfer.getTransferAmount());
 		transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", exchangeResult);
+		
+		return ServerConsts.RET_CODE_SUCCESS;
 	}
 	
 

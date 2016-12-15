@@ -101,11 +101,18 @@ public class TransferController {
 		TransferConfirmResponse rep = new TransferConfirmResponse();
 		//判断PinCode是否正确
 		if(userManager.testPinCode(reqMsg.getTransferId(), user.getAreaCode(), user.getPhone(),reqMsg.getPinCode())){
-			transferManager.transferConfirm(reqMsg.getTransferId());
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-			rep.setMessage("ok");
+			String result = transferManager.transferConfirm(reqMsg.getTransferId());
+			
+			if(result.equals(ServerConsts.RET_CODE_SUCCESS)){
+				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+				rep.setMessage("ok");
+			}else{
+				rep.setRetCode(result);
+				rep.setMessage("Current balance is insufficient");
+			}
+
 		}else{
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setRetCode(ServerConsts.PIN_CODE_INCORRECT);
 			rep.setMessage("The pin code is incorrect");
 		}
 		return rep;

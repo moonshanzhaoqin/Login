@@ -54,8 +54,8 @@ public class WalletDAOImpl implements WalletDAO {
 	}
 
 	@Override
-	public void updateWalletByUserIdAndCurrency(final int userId,final String currency, final BigDecimal amount, final String capitalFlows) {
-		hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
+	public Integer updateWalletByUserIdAndCurrency(final int userId,final String currency, final BigDecimal amount, final String capitalFlows) {
+		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
 			@Override
 			public Integer doInHibernate(Session session) throws HibernateException {
 				Query query;

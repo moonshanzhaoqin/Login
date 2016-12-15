@@ -40,7 +40,7 @@ public interface TransferManager {
 	 * @time : 2016年12月7日 下午3:17:25
 	 * @param transferId
 	 */
-	public void transferConfirm(String transferId);
+	public String transferConfirm(String transferId);
 	
 	/**
 	 * @Descrition : 系统退款
