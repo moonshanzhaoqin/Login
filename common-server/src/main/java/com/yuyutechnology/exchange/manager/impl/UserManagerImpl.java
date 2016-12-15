@@ -299,7 +299,7 @@ public class UserManagerImpl implements UserManager {
 		logger.info("为新用户新建钱包");
 		List<Currency> currencies = currencyDAO.getCurrencys();
 		for (Currency currency : currencies) {
-			walletDAO.addwallet(new Wallet(userId, currency.getCurrency(), new BigDecimal(0), new Date()));
+			walletDAO.addwallet(new Wallet(currency,userId, new BigDecimal(0), new Date()));
 		}
 	}
 

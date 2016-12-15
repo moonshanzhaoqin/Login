@@ -2,16 +2,16 @@ package com.yuyutechnology.exchange.server.controller.response;
 
 import java.util.List;
 
-import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.dto.WalletInfo;
 
 public class GetCurrentBalanceResponse extends BaseResponse{
-	private List<Wallet> wallets;
+	private List<WalletInfo> wallets;
 
-	public List<Wallet> getWallets() {
+	public List<WalletInfo> getWallets() {
 		return wallets;
 	}
 
-	public void setWallets(List<Wallet> wallets) {
+	public void setWallets(List<WalletInfo> wallets) {
 		this.wallets = wallets;
 	}
 }

@@ -21,6 +21,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.UserInfo;
+import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.AppVersion;
@@ -191,11 +192,9 @@ public class UserController {
 				rep.setSessionToken(sessionData.getSessionId());
 				rep.setLoginToken(sessionManager.createLoginToken(userId));
 				// 获取用户信息
-				UserInfo user = userManager.getUserInfo(userId);
-				rep.setUser(user);
+				rep.setUser(userManager.getUserInfo(userId));
 				// 获取钱包信息
-				List<Wallet> wallets = exchangeManager.getWalletsByUserId(userId);
-				rep.setWallets(wallets);
+				rep.setWallets(exchangeManager.getWalletsByUserId(userId));
 
 				logger.info(MessageConsts.RET_CODE_SUCCESS);
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
@@ -220,11 +219,9 @@ public class UserController {
 				rep.setSessionToken(sessionData.getSessionId());
 				rep.setLoginToken(sessionManager.createLoginToken(userId));
 				// 获取用户信息
-				UserInfo user = userManager.getUserInfo(userId);
-				rep.setUser(user);
+				rep.setUser(userManager.getUserInfo(userId));
 				// 获取钱包信息
-				List<Wallet> wallets = exchangeManager.getWalletsByUserId(userId);
-				rep.setWallets(wallets);
+				rep.setWallets(exchangeManager.getWalletsByUserId(userId));
 
 				logger.info(MessageConsts.RET_CODE_SUCCESS);
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
@@ -281,12 +278,9 @@ public class UserController {
 					rep.setSessionToken(sessionData.getSessionId());
 					rep.setLoginToken(sessionManager.createLoginToken(userId));
 					// 获取用户信息
-					UserInfo user = userManager.getUserInfo(userId);
-					rep.setUser(user);
-
+					rep.setUser(userManager.getUserInfo(userId));
 					// 获取钱包信息
-					List<Wallet> wallets = exchangeManager.getWalletsByUserId(userId);
-					rep.setWallets(wallets);
+					rep.setWallets(exchangeManager.getWalletsByUserId(userId));
 
 					logger.info(MessageConsts.RET_CODE_SUCCESS);
 					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);

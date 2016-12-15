@@ -3,11 +3,12 @@ package com.yuyutechnology.exchange.server.controller.response;
 import java.util.List;
 
 import com.yuyutechnology.exchange.dto.UserInfo;
+import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.pojo.Wallet;
 
 public class RegisterResponse extends BaseResponse {
 	private UserInfo user;
-	private List<Wallet> wallets;
+	private List<WalletInfo> wallets;
 	private String sessionToken;
 	private String loginToken;
 	public UserInfo getUser() {
@@ -16,7 +17,7 @@ public class RegisterResponse extends BaseResponse {
 	public void setUser(UserInfo user) {
 		this.user = user;
 	}
-	public List<Wallet> getWallets() {
+	public List<WalletInfo> getWallets() {
 		return wallets;
 	}
 	public String getSessionToken() {
@@ -25,7 +26,7 @@ public class RegisterResponse extends BaseResponse {
 	public void setSessionToken(String sessionToken) {
 		this.sessionToken = sessionToken;
 	}
-	public void setWallets(List<Wallet> wallets) {
+	public void setWallets(List<WalletInfo> wallets) {
 		this.wallets = wallets;
 	}
 	public String getLoginToken() {

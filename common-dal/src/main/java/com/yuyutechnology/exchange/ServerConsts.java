@@ -190,7 +190,8 @@ public class ServerConsts {
 	 * 短信验证码功能——换绑手机
 	 */
 	public static final String PIN_FUNC_CHANGEPHONE = "CHANGEPHONE";
-	
+	public static final int CURRENCY_AVAILABLE = 1;
+	public static final int CURRENCY_UNAVAILABLE = 0;
 	
 
 

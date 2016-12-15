@@ -28,4 +28,10 @@ public class CurrencyDAOImpl implements CurrencyDAO {
 		return (List<Currency>) list;
 	}
 
+	@Override
+	public List<Currency> getCurrentCurrency() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
