@@ -41,11 +41,12 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		
 		noMappingSet.add("/login");
 		noMappingSet.add("/register");
-		noMappingSet.add("/getRegistrationCode");
 		noMappingSet.add("/getVerificationCode");
 		noMappingSet.add("/testCode");
 		noMappingSet.add("/forgetPassword");
-
+		noMappingSet.add("/getCurrency");
+		noMappingSet.add("/appVersion");
+		
 		// swagger
 		noMappingSetUrl.add("api-docs");
 		noMappingSetUrl.add("swagger");

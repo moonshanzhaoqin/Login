@@ -56,10 +56,17 @@ public class MessageConsts {
 	 */
 	public static final String ADD_FRIEND_OWEN = "COULD_NOT_ADD_OWEN";
 	/**
+	 * 账号冻结
+	 */
+	public static final String USER_BLOCKED= "USER_BLOCKED";
+	/**
 	 * 登录token失效
 	 */
 	public static final String TOKEN_NOT_MATCH = "TOKEN_NOT_MATCH";
-	
+	/**
+	 * 版本号已是最新
+	 */
+	public static final String VERSION_NUM_IS_LATEST = "VERSION_NUM_IS_LATEST";
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息

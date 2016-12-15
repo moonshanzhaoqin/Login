@@ -151,6 +151,9 @@ public class JsonBinder
 			return null;
 		}
 	}
+	
+	
+	
 	/**
 	 * 如果对象为Null,返回"null". 如果集合为空集合,返回"[]".
 	 */
