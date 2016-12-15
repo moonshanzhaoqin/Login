@@ -2,6 +2,8 @@ package com.yuyutechnology.exchange.dao.impl;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.pojo.Transfer;
+import com.yuyutechnology.exchange.utils.page.PageUtils;
 
 @Repository
 public class TransferDAOImpl implements TransferDAO {
@@ -92,12 +95,25 @@ public class TransferDAOImpl implements TransferDAO {
 	}
 
 	@Override
-	public void getTransactionRecordByPage(String period, int status) {
-		// TODO Auto-generated method stub
+	public HashMap<String, Object> getTransactionRecordByPage(String sql,String countSql,List<Object> values,int currentPage, int pageSize) {
 		
-		String hql = "select t1.amount,t1.currency  from WalletSeq t1,Transfer t2 where t1.transactionId = t2.transferId and t2.userFrom = ? or t2.userTo=?";
+		int firstResult = (currentPage -1)*pageSize;
+		int masResult = pageSize;
 		
+		List<?> list = PageUtils.getListByPage4MySql(hibernateTemplate, sql, values, firstResult, masResult);
 		
+		long total = PageUtils.getTotal4MySql(hibernateTemplate, countSql, values);
+		int pageTotal = PageUtils.getPageTotal(total, pageSize);
+		
+		HashMap<String, Object> map = new HashMap<>();
+		
+		map.put("currentPage",currentPage);
+		map.put("pageSize",pageSize);
+		map.put("total",total);
+		map.put("pageTotal",pageTotal);
+		map.put("list",list);
+		
+		return map;
 		
 	}
 

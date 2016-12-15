@@ -31,7 +31,6 @@ import com.yuyutechnology.exchange.server.controller.request.CheckPasswordReques
 import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.SetUserPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.response.AddFriendResponse;
-import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
 import com.yuyutechnology.exchange.server.controller.response.BindGoldpayResponse;
 import com.yuyutechnology.exchange.server.controller.response.ChangePhoneResponse;
 import com.yuyutechnology.exchange.server.controller.response.CheckPasswordResponse;

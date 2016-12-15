@@ -71,6 +71,7 @@ public class DateFormatUtils {
 		Date startTime = null;
 		try {
 			startTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startStr);
+			System.out.println("startTime :"+startTime);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -141,5 +142,27 @@ public class DateFormatUtils {
 			list.add(sdf.format(cal.getTime()));
 		}
 		return list;
+	}
+	
+	public static Date getpreMonth(int count){
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + count);
+		calendar.set(Calendar.DATE, 1);
+		return calendar.getTime();
+	}
+	
+	public static Date getpreDays(int count){
+		Date date = new Date();
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.DATE,count);
+		return calendar.getTime();
+	}
+	
+	
+	public static void main(String[] args){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date today = getStartTime(sdf.format(new Date()));
+		System.out.println("today :"+today);
 	}
 }
