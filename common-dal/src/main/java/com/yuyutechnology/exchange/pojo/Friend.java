@@ -46,7 +46,7 @@ public class Friend implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "friend_Id", nullable = false, insertable = false, updatable = false)
 	public User getUser() {
 		return this.user;
