@@ -10,11 +10,11 @@ import com.yuyutechnology.exchange.startup.Bootstrap;
  * Hello world!
  * 
  */
-public class StartTask
-{
+public class StartTask{
+	
 	public static Logger logger = LoggerFactory.getLogger(StartTask.class);
-	public static void main(String[] args)
-	{
+	
+	public static void main(String[] args){
 		String home = System.getProperty("task.home");
 		if (StringUtils.isEmpty(home))
 		{

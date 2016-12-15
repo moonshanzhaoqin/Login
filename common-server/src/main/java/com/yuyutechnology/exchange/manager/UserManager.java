@@ -1,6 +1,9 @@
 package com.yuyutechnology.exchange.manager;
 
-import com.yuyutechnology.exchange.form.UserInfo;
+import java.util.List;
+
+import com.yuyutechnology.exchange.dto.UserInfo;
+import com.yuyutechnology.exchange.pojo.Friend;
 
 public interface UserManager {
 	/**
@@ -9,7 +12,7 @@ public interface UserManager {
 	 * @param areaCode
 	 * @param userPhone
 	 */
-	public void getPinCode(String areaCode, String userPhone);
+	public void getPinCode(String func, String areaCode, String userPhone);
 
 	/**
 	 * 根据手机号码获取userID(用作判断是否为注册用户)
@@ -34,9 +37,10 @@ public interface UserManager {
 	 * @param areaCode
 	 * @param userPhone
 	 * @param userPassword
+	 * @param ip
 	 * @return
 	 */
-//	public Integer login(String areaCode, String userPhone, String userPassword);
+	public Integer login(String areaCode, String userPhone, String userPassword, String ip);
 
 	/**
 	 * 添加新用户
@@ -57,7 +61,7 @@ public interface UserManager {
 	 * @param verificationCode
 	 * @return
 	 */
-	public boolean testPinCode(String areaCode, String userPhone, String verificationCode);
+	public boolean testPinCode(String func, String areaCode, String userPhone, String verificationCode);
 
 	/**
 	 * 更改密码
@@ -101,4 +105,33 @@ public interface UserManager {
 	 * @param oldPassword
 	 */
 	public boolean checkUserPassword(Integer userId, String oldPassword);
+
+	/**
+	 * 获取好友列表
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public List<Friend> getFriends(Integer userId);
+
+	/**
+	 * 添加好友
+	 * 
+	 * @param userId
+	 * @param friendId
+	 * @param areaCode
+	 * @param userPhone
+	 * @return
+	 */
+	public String addfriend(Integer userId, String areaCode, String userPhone);
+
+	/**
+	 * 换绑手机
+	 * 
+	 * @param userId
+	 * @param areaCode
+	 * @param userPhone
+	 */
+	public void changePhone(Integer userId, String areaCode, String userPhone);
+
 }

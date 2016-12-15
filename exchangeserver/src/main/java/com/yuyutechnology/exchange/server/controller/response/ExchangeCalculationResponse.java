@@ -1,15 +1,20 @@
 package com.yuyutechnology.exchange.server.controller.response;
 
 public class ExchangeCalculationResponse extends BaseResponse{
+
+	private Double amountOut;
+	private Double amountIn;
 	
-	private double convertedAmount;
-
-	public double getConvertedAmount() {
-		return convertedAmount;
+	public Double getAmountOut() {
+		return amountOut;
 	}
-
-	public void setConvertedAmount(double convertedAmount) {
-		this.convertedAmount = convertedAmount;
+	public void setAmountOut(Double amountOut) {
+		this.amountOut = amountOut;
 	}
-
+	public Double getAmountIn() {
+		return amountIn;
+	}
+	public void setAmountIn(Double amountIn) {
+		this.amountIn = amountIn;
+	}
 }

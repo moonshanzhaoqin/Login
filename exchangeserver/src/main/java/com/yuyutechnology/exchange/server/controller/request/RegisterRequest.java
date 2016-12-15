@@ -6,9 +6,11 @@ public class RegisterRequest {
 	private String areaCode;
 	private String userPhone;
 	private String registrationCode;
-	private String UserName;
+	private String userName;
 	private String userPassword;
-
+	private String language;
+	private String pushId;
+	
 	public String getAreaCode() {
 		return areaCode;
 	}
@@ -17,13 +19,6 @@ public class RegisterRequest {
 		this.areaCode = areaCode;
 	}
 
-	public String getUserName() {
-		return UserName;
-	}
-
-	public void setUserName(String userName) {
-		UserName = userName;
-	}
 
 	public String getUserPassword() {
 		return userPassword;
@@ -31,6 +26,14 @@ public class RegisterRequest {
 
 	public void setUserPassword(String userPassword) {
 		this.userPassword = userPassword;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	public String getUserPhone() {
@@ -49,6 +52,22 @@ public class RegisterRequest {
 		this.registrationCode = registrationCode;
 	}
 
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public String getPushId() {
+		return pushId;
+	}
+
+	public void setPushId(String pushId) {
+		this.pushId = pushId;
+	}
+
 	/**
 	 * 判断参数是否为空
 	 * 
@@ -61,7 +80,7 @@ public class RegisterRequest {
 		if (StringUtils.isEmpty(this.userPhone)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.UserName)) {
+		if (StringUtils.isEmpty(this.userName)) {
 			return true;
 		}
 		if (StringUtils.isEmpty(this.registrationCode)) {

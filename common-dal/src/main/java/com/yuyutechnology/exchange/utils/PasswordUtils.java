@@ -18,8 +18,8 @@ public class PasswordUtils {
 	/**
 	 * 校验
 	 * 
-	 * @param plaintext
-	 * @param ciphertext
+	 * @param plaintext 明文
+	 * @param ciphertext 
 	 * @param passwordSalt
 	 * @return
 	 */
@@ -28,5 +28,10 @@ public class PasswordUtils {
 			return true;
 		}
 		return false;
+	}
+	
+	public static void main(String[] args){
+		String str = encrypt("123456", "dffd2d6600e0c4436809b3839de2d8cd");
+		System.out.println(str);
 	}
 }

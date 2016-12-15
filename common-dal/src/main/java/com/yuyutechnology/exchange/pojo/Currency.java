@@ -16,8 +16,14 @@ import javax.persistence.Table;
 public class Currency implements java.io.Serializable {
 
 	private String currency;
+	private String nameEn;
+	private String nameCn;
+	private String nameHk;
+	private String currencyImage;
+	private String currencyStatus;
 	private BigDecimal transferMax;
 	private BigDecimal transferLarge;
+	private BigDecimal assetThreshold;
 
 	public Currency() {
 	}
@@ -33,7 +39,6 @@ public class Currency implements java.io.Serializable {
 	}
 
 	@Id
-
 	@Column(name = "currency", unique = true, nullable = false, length = 3)
 	public String getCurrency() {
 		return this.currency;
@@ -41,6 +46,57 @@ public class Currency implements java.io.Serializable {
 
 	public void setCurrency(String currency) {
 		this.currency = currency;
+	}
+
+	@Column(name = "name_en")
+	public String getNameEn() {
+		return nameEn;
+	}
+
+	public void setNameEn(String nameEn) {
+		this.nameEn = nameEn;
+	}
+	@Column(name = "name_cn")
+	public String getNameCn() {
+		return nameCn;
+	}
+
+	public void setNameCn(String nameCn) {
+		this.nameCn = nameCn;
+	}
+	@Column(name = "name_hk")
+	public String getNameHk() {
+		return nameHk;
+	}
+
+	public void setNameHk(String nameHk) {
+		this.nameHk = nameHk;
+	}
+	@Column(name = "currency_image")
+	public String getCurrencyImage() {
+		return currencyImage;
+	}
+	
+	public void setCurrencyImage(String currencyImage) {
+		this.currencyImage = currencyImage;
+	}
+	
+	@Column(name = "currency_status")
+	public String getCurrencyStatus() {
+		return currencyStatus;
+	}
+
+	public void setCurrencyStatus(String currencyStatus) {
+		this.currencyStatus = currencyStatus;
+	}
+
+	@Column(name = "asset_threshold", precision = 10)
+	public BigDecimal getAssetThreshold() {
+		return assetThreshold;
+	}
+
+	public void setAssetThreshold(BigDecimal assetThreshold) {
+		this.assetThreshold = assetThreshold;
 	}
 
 	@Column(name = "transfer_max", precision = 10)

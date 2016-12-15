@@ -6,6 +6,9 @@ public class LoginRequest {
 	private String areaCode;
 	private String userPhone;
 	private String userPassword;
+	private String loginToken;
+	private String language;
+	private String pushId;
 
 	public String getAreaCode() {
 		return areaCode;
@@ -31,21 +34,50 @@ public class LoginRequest {
 		this.userPassword = userPassword;
 	}
 
+	public String getLoginToken() {
+		return loginToken;
+	}
+
+	public void setLoginToken(String loginToken) {
+		this.loginToken = loginToken;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public String getPushId() {
+		return pushId;
+	}
+
+	public void setPushId(String pushId) {
+		this.pushId = pushId;
+	}
+
+	
 	/**
 	 * 判断参数是否为空
+	 * 以及走那个流程
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty() {
-		if (StringUtils.isEmpty(this.areaCode)) {
-			return true;
+	public int isEmpty() {
+		if (StringUtils.isNotBlank(this.loginToken)) {
+			return 1;
 		}
-		if (StringUtils.isEmpty(this.userPhone)) {
-			return true;
+		if (StringUtils.isBlank(this.userPassword)) {
+			return 0;
 		}
-		if (StringUtils.isEmpty(this.userPassword)) {
-			return true;
+		if (StringUtils.isBlank(this.areaCode)) {
+			return 0;
 		}
-		return false;
+		if (StringUtils.isBlank(this.userPhone)) {
+			return 0;
+		}
+		return 2;
 	}
 }

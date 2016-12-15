@@ -40,17 +40,25 @@ public class MessageConsts {
 	 */
 	public static final String GOLDPAY_PHONE_IS_NOT_EXIST = "GOLDPAY_PHONE_IS_NOT_EXIST";
 	/**
-	 * goldpay手机号与注册手机号不匹配
+	 * 登录失败密码错误或TOKEN失效
 	 */
-	public static final String GOLDPAY_PHONE_NOT_MATCH = "GOLDPAY_PHONE_NOT_MATCH";
+	public static final String PASSWORD_NOT_MATCH = "PASSWORD_NOT_MATCH";
 	/**
 	 * 支付密码不是6位数字
 	 */
-	public static final String PAY_PASSWORD_IS_ILLEGAL = "01_006";
+	public static final String PAY_PASSWORD_IS_ILLEGAL = "PAY_PASSWORD_IS_ILLEGAL";
 	/**
 	 * 手机号与密码不匹配
 	 */
 	public static final String PHONE_AND_PASSWORD_NOT_MATCH = "PHONE_AND_PASSWORD_NOT_MATCH";
+	/**
+	 * 不能添加自己为好友
+	 */
+	public static final String ADD_FRIEND_OWEN = "COULD_NOT_ADD_OWEN";
+	/**
+	 * 登录token失效
+	 */
+	public static final String TOKEN_NOT_MATCH = "TOKEN_NOT_MATCH";
 	
 	// 兑换 02
 	/**
@@ -81,6 +89,7 @@ public class MessageConsts {
 	public static final String TRANSFER_PAYMENTPWD_INCORRECT = "TRANSFER_PAYMENTPWD_INCORRECT";
 	
 	public static final String TRANSFER_REQUIRES_PHONE_VERIFICATION = "TRANSFER_REQUIRES_PHONE_VERIFICATION";
+
 
 
 }

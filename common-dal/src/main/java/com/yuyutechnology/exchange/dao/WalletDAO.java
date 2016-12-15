@@ -18,7 +18,7 @@ public interface WalletDAO {
 	
 	public Wallet getWalletByUserIdAndCurrency(int userId,String currency);
 	
-	public void updateWalletByUserIdAndCurrency(int userId,String currency,BigDecimal amount,String capitalFlows);
+	public Integer updateWalletByUserIdAndCurrency(int userId,String currency,BigDecimal amount,String capitalFlows);
 
 	public void addwallet(Wallet wallet);
 

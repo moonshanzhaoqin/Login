@@ -19,5 +19,7 @@ public interface TransferDAO {
 	public void updateTransferStatus(String transferId, int transferStatus);
 
 	public void updateTransferStatusAndUserTo(String transferId, int transferStatus, Integer userTo);
+	
+	public void getTransactionRecordByPage(String period,int status);
 
 }

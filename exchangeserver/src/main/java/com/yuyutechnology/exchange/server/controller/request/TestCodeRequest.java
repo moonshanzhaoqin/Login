@@ -2,10 +2,22 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 public class TestCodeRequest {
+	private String purpose;
 	private String areaCode;
 	private String userPhone;
-	private String VerificationCode;
+	private String verificationCode;
+
+	@ApiModelProperty(allowableValues = "REGISTER,FORGETPASSWORD,CHANGEPHONE")
+	public String getPurpose() {
+		return purpose;
+	}
+
+	public void setPurpose(String purpose) {
+		this.purpose = purpose;
+	}
 
 	public String getAreaCode() {
 		return areaCode;
@@ -23,12 +35,13 @@ public class TestCodeRequest {
 		this.userPhone = userPhone;
 	}
 
+
 	public String getVerificationCode() {
-		return VerificationCode;
+		return verificationCode;
 	}
 
 	public void setVerificationCode(String verificationCode) {
-		VerificationCode = verificationCode;
+		this.verificationCode = verificationCode;
 	}
 
 	/**
@@ -37,13 +50,16 @@ public class TestCodeRequest {
 	 * @return
 	 */
 	public boolean isEmpty() {
+		if (StringUtils.isEmpty(this.purpose)) {
+			return true;
+		}
 		if (StringUtils.isEmpty(this.areaCode)) {
 			return true;
 		}
 		if (StringUtils.isEmpty(this.userPhone)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.VerificationCode)) {
+		if (StringUtils.isEmpty(this.verificationCode)) {
 			return true;
 		}
 		return false;

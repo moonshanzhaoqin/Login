@@ -19,13 +19,16 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 	</bean>
 	<bean id="commonJedisFactory"
 		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
-		<property name="hostName" value="${jedis.pool.host}" />
-		<property name="port" value="${jedis.pool.port}" />
+		<property name="hostName" value="${redis.pool.host}" />
+		<property name="port" value="${redis.pool.port}" />
 		<property name="poolConfig" ref="commonJedisPoolConfig" />
 	</bean>
 	<bean id="commonRedisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
 		<property name="connectionFactory" ref="commonJedisFactory" />
 		<property name="defaultSerializer" ref="stringRedisSerializer" />
+		
+		
+		
 	</bean>
 
 	<bean id="stringRedisSerializer" class="com.yuyutechnology.exchange.redis.StringRedisSerializer">

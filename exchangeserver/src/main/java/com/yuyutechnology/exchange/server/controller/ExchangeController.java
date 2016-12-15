@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.server.controller;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -21,7 +22,9 @@ import com.yuyutechnology.exchange.server.controller.request.ExchangeCalculation
 import com.yuyutechnology.exchange.server.controller.request.ExchangeConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.response.ExchangeCalculationResponse;
 import com.yuyutechnology.exchange.server.controller.response.ExchangeConfirmResponse;
-import com.yuyutechnology.exchange.server.controller.response.GetWalletInfoResponse;
+import com.yuyutechnology.exchange.server.controller.response.GetCurrentBalanceResponse;
+import com.yuyutechnology.exchange.session.SessionData;
+import com.yuyutechnology.exchange.session.SessionDataHolder;
 
 @Controller
 public class ExchangeController {
@@ -34,11 +37,11 @@ public class ExchangeController {
 	@ApiOperation(value = "获取当前余额")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/getCurrentBalance")
 	public @ResponseBody
-	GetWalletInfoResponse getCurrentBalance(@PathVariable String token){
+	GetCurrentBalanceResponse getCurrentBalance(@PathVariable String token){
 		//从Session中获取Id
-		int userId = 2;
-		GetWalletInfoResponse rep = new GetWalletInfoResponse();
-		List<Wallet> wallets = exchangeManager.getWalletsByUserId(userId);
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		GetCurrentBalanceResponse rep = new GetCurrentBalanceResponse();
+		List<Wallet> wallets = exchangeManager.getWalletsByUserId(sessionData.getUserId());
 		if(wallets.isEmpty()){
 			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
 			rep.setMessage("");
@@ -55,23 +58,18 @@ public class ExchangeController {
 	public @ResponseBody
 	ExchangeCalculationResponse exchangeCalculation(@PathVariable String token,@RequestBody ExchangeCalculationRequest reqMsg){
 		//从Session中获取Id
-		int userId = 2;
+		SessionData sessionData = SessionDataHolder.getSessionData();
 		ExchangeCalculationResponse rep = new ExchangeCalculationResponse();
-		String exchangeAmount = exchangeManager.exchangeCalculation(userId, 
+		
+		HashMap<String, String> result = exchangeManager.exchangeCalculation(sessionData.getUserId(), 
 				reqMsg.getCurrencyOut(), reqMsg.getCurrencyIn(), new BigDecimal(reqMsg.getAmountOut()));
-		if(!exchangeAmount.contains("_")){
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-			rep.setMessage("");
-			rep.setConvertedAmount(Double.parseDouble(exchangeAmount));
-		}else if(exchangeAmount.equals(ServerConsts.EXCHANGE_WALLET_CAN_NOT_BE_QUERIED)){
-			rep.setRetCode(ServerConsts.EXCHANGE_WALLET_CAN_NOT_BE_QUERIED);
-			rep.setMessage("");
-		}else if(exchangeAmount.equals(ServerConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE)){
-			rep.setRetCode(ServerConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
-			rep.setMessage("");
-		}else if(exchangeAmount.equals(ServerConsts.EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT)){
-			rep.setRetCode(ServerConsts.EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT);
-			rep.setMessage("");
+		
+		rep.setRetCode(result.get("retCode"));
+		rep.setMessage(result.get("msg"));
+		
+		if(result.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
+			rep.setAmountIn(Double.parseDouble(result.get("in")));
+			rep.setAmountOut(Double.parseDouble(result.get("out")));
 		}
 
 		return rep;
@@ -82,9 +80,9 @@ public class ExchangeController {
 	public @ResponseBody
 	ExchangeConfirmResponse exchangeConfirm(@PathVariable String token,@RequestBody ExchangeConfirmRequest reqMsg){
 		//从Session中获取Id
-		int userId = 2;
+		SessionData sessionData = SessionDataHolder.getSessionData();
 		ExchangeConfirmResponse rep = new ExchangeConfirmResponse();
-		String retCode = exchangeManager.exchangeConfirm(userId, 
+		String retCode = exchangeManager.exchangeConfirm(sessionData.getUserId(), 
 				reqMsg.getCurrencyOut(), reqMsg.getCurrencyIn(), 
 				new BigDecimal(reqMsg.getAmountOut()), new BigDecimal(reqMsg.getAmountIn()));
 		if(retCode.equals(ServerConsts.RET_CODE_SUCCESS)){

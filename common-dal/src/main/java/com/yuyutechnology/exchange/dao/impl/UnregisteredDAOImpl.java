@@ -40,7 +40,7 @@ public class UnregisteredDAOImpl implements UnregisteredDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Unregistered> getAllUnfinishedTransaction() {
-		List<?> list = hibernateTemplate.find("from Unregistered wehre unregisteredStatus = ?", 
+		List<?> list = hibernateTemplate.find("from Unregistered where unregisteredStatus = ?", 
 				ServerConsts.UNREGISTERED_STATUS_OF_PENDING);
 		return (List<Unregistered>) list;
 	}
