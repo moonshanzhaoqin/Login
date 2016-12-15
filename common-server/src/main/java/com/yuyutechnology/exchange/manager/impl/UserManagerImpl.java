@@ -37,6 +37,7 @@ import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.sms.SmsManager;
+import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.MathUtils;
 import com.yuyutechnology.exchange.utils.PasswordUtils;
 
@@ -307,15 +308,25 @@ public class UserManagerImpl implements UserManager {
 		return appVersionDAO.getAppVersionInfo(platformType, updateWay);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<CurrencyInfo> getCurrency() {
-		List<CurrencyInfo> list = new ArrayList<>();
-		List<Currency> currencies = currencyDAO.getCurrencys();
-		for (Currency currency : currencies) {
-			list.add(new CurrencyInfo(currency.getCurrency(), currency.getNameEn(),
-					currency.getNameCn(), currency.getNameHk(), currency.getCurrencyImage(),
-					currency.getCurrencyStatus()));
+		List<CurrencyInfo> list = null;
+		if (redisDAO.getValueByKey("getCurrency")==null) {
+			logger.info("getCurrency from db");
+			list = new ArrayList<>();
+			List<Currency> currencies = currencyDAO.getCurrencys();
+			for (Currency currency : currencies) {
+				list.add(new CurrencyInfo(currency.getCurrency(), currency.getNameEn(), currency.getNameCn(),
+						currency.getNameHk(), currency.getCurrencyImage(), currency.getCurrencyStatus()));
+			}
+			redisDAO.saveData("getCurrency", list, 3000000);
+		} else {
+			logger.info("getCurrency from redis:");
+			list = (List<CurrencyInfo>) JsonBinder.getInstance().fromJsonToList(redisDAO.getValueByKey("getCurrency"),
+					CurrencyInfo.class);
 		}
+//		logger.info("currency:{}",list);
 		return list;
 	}
 
