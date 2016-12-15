@@ -81,8 +81,11 @@
 								<copy todir="${basedir}/deploy/conf">
 									<fileset dir="src/main/resources/">
 										<include name="**/*.xml" />
+										<include name="**/*.template" />
 										<include name="**/*.properties" />
 									</fileset>
+								</copy>
+								<copy todir="${basedir}/deploy/conf">
 									<fileset dir="src/main/resources/${env}">
 										<include name="*.properties" />
 									</fileset>
