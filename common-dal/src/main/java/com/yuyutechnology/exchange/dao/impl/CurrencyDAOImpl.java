@@ -7,12 +7,13 @@ import javax.annotation.Resource;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.pojo.Currency;
 
 @Repository
 public class CurrencyDAOImpl implements CurrencyDAO {
-	
+
 	@Resource
 	HibernateTemplate hibernateTemplate;
 
@@ -28,10 +29,12 @@ public class CurrencyDAOImpl implements CurrencyDAO {
 		return (List<Currency>) list;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Currency> getCurrentCurrency() {
-		// TODO Auto-generated method stub
-		return null;
+		List<?> list = hibernateTemplate.find("from Currency where currencyStatus = ?",
+				ServerConsts.CURRENCY_AVAILABLE);
+		return (List<Currency>) list;
 	}
 
 }

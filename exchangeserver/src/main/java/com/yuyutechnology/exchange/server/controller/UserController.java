@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.hibernate.sql.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ import com.yuyutechnology.exchange.server.controller.response.RegisterResponse;
 import com.yuyutechnology.exchange.server.controller.response.TestCodeResponse;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionManager;
+import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.UidUtils;
 
 /**
@@ -192,6 +194,8 @@ public class UserController {
 				rep.setRetCode(ServerConsts.TOKEN_NOT_MATCH);
 				rep.setMessage(MessageConsts.TOKEN_NOT_MATCH);
 			} else {
+				//记录登录信息
+				userManager.updateUser(userId, HttpTookit.getIp(request),loginRequest.getPushId(),loginRequest.getLanguage());
 				// 生成session Token
 				SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 				sessionManager.saveSessionData(sessionData);
@@ -219,6 +223,8 @@ public class UserController {
 				rep.setRetCode(ServerConsts.USER_BLOCKED);
 				rep.setMessage(MessageConsts.USER_BLOCKED);
 			} else if (userManager.checkUserPassword(userId, loginRequest.getUserPassword())) {
+				//记录登录信息
+				userManager.updateUser(userId, HttpTookit.getIp(request),loginRequest.getPushId(),loginRequest.getLanguage());
 				// 生成session Token
 				SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 				sessionManager.saveSessionData(sessionData);
@@ -278,6 +284,8 @@ public class UserController {
 					rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
 					rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 				} else {
+					//记录登录信息
+					userManager.updateUser(userId, HttpTookit.getIp(request),registerRequest.getPushId(),registerRequest.getLanguage());
 					// 生成session Token
 					SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 					sessionManager.saveSessionData(sessionData);

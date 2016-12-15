@@ -1,5 +1,5 @@
 package com.yuyutechnology.exchange.pojo;
-// Generated Dec 15, 2016 7:25:59 PM by Hibernate Tools 5.1.0.Alpha1
+// Generated Dec 15, 2016 8:56:30 PM by Hibernate Tools 5.1.0.Alpha1
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -91,6 +91,7 @@ public class Transfer implements java.io.Serializable {
 	public void setUserTo(int userTo) {
 		this.userTo = userTo;
 	}
+
 	@Column(name = "area_code")
 	public String getAreaCode() {
 		return this.areaCode;
