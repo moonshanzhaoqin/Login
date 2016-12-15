@@ -30,8 +30,14 @@ import com.yuyutechnology.exchange.server.controller.request.ChangePhoneRequest;
 import com.yuyutechnology.exchange.server.controller.request.CheckPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.SetUserPayPwdRequest;
+import com.yuyutechnology.exchange.server.controller.response.AddFriendResponse;
 import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
+import com.yuyutechnology.exchange.server.controller.response.BindGoldpayResponse;
+import com.yuyutechnology.exchange.server.controller.response.ChangePhoneResponse;
+import com.yuyutechnology.exchange.server.controller.response.CheckPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.FriendsListResponse;
+import com.yuyutechnology.exchange.server.controller.response.ModifyPasswordResponse;
+import com.yuyutechnology.exchange.server.controller.response.SetUserPayPwdResponse;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
 import com.yuyutechnology.exchange.session.SessionManager;
@@ -60,10 +66,10 @@ public class LoggedInUserController {
 	@ResponseBody
 	@ApiOperation(value = "修改用户密码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/modifyPassword", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse modifyPassword(@PathVariable String token,
+	public ModifyPasswordResponse modifyPassword(@PathVariable String token,
 			@RequestBody ModifyPasswordRequest modifyPasswordRequest) {
 		logger.info("========modifyPassword : {}============", token);
-		BaseResponse rep = new BaseResponse();
+		ModifyPasswordResponse rep = new ModifyPasswordResponse();
 		if (modifyPasswordRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
@@ -91,10 +97,10 @@ public class LoggedInUserController {
 	@ResponseBody
 	@ApiOperation(value = "设置支付密码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/setUserPayPwd", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse setUserPayPwd(@PathVariable String token,
+	public SetUserPayPwdResponse setUserPayPwd(@PathVariable String token,
 			@RequestBody SetUserPayPwdRequest setUserPayPwdRequest) {
 		logger.info("========setUserPayPwd : {}============", token);
-		BaseResponse rep = new BaseResponse();
+		SetUserPayPwdResponse rep = new SetUserPayPwdResponse();
 		if (setUserPayPwdRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
@@ -127,9 +133,9 @@ public class LoggedInUserController {
 	@ResponseBody
 	@ApiOperation(value = "绑定goldpay", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/bindGoldpay", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse bindGoldpay(@PathVariable String token, @RequestBody BindGoldpayRequest bindGoldpayRequest) {
+	public BindGoldpayResponse bindGoldpay(@PathVariable String token, @RequestBody BindGoldpayRequest bindGoldpayRequest) {
 		logger.info("========bindGoldpay : {}============", token);
-		BaseResponse rep = new BaseResponse();
+		BindGoldpayResponse rep = new BindGoldpayResponse();
 		if (bindGoldpayRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
@@ -168,9 +174,9 @@ public class LoggedInUserController {
 	@ResponseBody
 	@ApiOperation(value = "添加好友", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/addFriend", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse addFriend(@PathVariable String token, @RequestBody AddFriendRequest addFriendRequest) {
+	public AddFriendResponse addFriend(@PathVariable String token, @RequestBody AddFriendRequest addFriendRequest) {
 		logger.info("========addFriend : {}============", token);
-		BaseResponse rep = new BaseResponse();
+		AddFriendResponse rep = new AddFriendResponse();
 		if (addFriendRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
@@ -241,9 +247,9 @@ public class LoggedInUserController {
 	@ResponseBody
 	@ApiOperation(value = "换绑手机", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/changePhone", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse changePhone(@PathVariable String token, @RequestBody ChangePhoneRequest changePhoneRequest) {
+	public ChangePhoneResponse changePhone(@PathVariable String token, @RequestBody ChangePhoneRequest changePhoneRequest) {
 		logger.info("========changePhone : {}============", token);
-		BaseResponse rep = new BaseResponse();
+		ChangePhoneResponse rep = new ChangePhoneResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
 
 		// 校验验证码
@@ -275,9 +281,9 @@ public class LoggedInUserController {
 	@ResponseBody
 	@ApiOperation(value = "换绑手机-校验登录密码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/checkPassword", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse checkPassword(@PathVariable String token,@RequestBody CheckPasswordRequest checkPasswordRequest) {
+	public CheckPasswordResponse checkPassword(@PathVariable String token,@RequestBody CheckPasswordRequest checkPasswordRequest) {
 		logger.info("========checkPassword : {}============", token);
-		BaseResponse rep = new BaseResponse();
+		CheckPasswordResponse rep = new CheckPasswordResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		if (userManager.checkUserPassword(sessionData.getUserId(), checkPasswordRequest.getUserPassword())) {
 			logger.info("********Operation succeeded********");

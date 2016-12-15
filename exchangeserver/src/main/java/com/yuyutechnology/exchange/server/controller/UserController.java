@@ -27,7 +27,11 @@ import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.server.controller.request.*;
 import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
+import com.yuyutechnology.exchange.server.controller.response.ForgetPasswordResponse;
+import com.yuyutechnology.exchange.server.controller.response.GetVerificationCodeResponse;
 import com.yuyutechnology.exchange.server.controller.response.LoginResponse;
+import com.yuyutechnology.exchange.server.controller.response.RegisterResponse;
+import com.yuyutechnology.exchange.server.controller.response.TestCodeResponse;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionManager;
 import com.yuyutechnology.exchange.utils.UidUtils;
@@ -59,10 +63,10 @@ public class UserController {
 	@ResponseBody
 	@ApiOperation(value = "忘记密码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/forgetPassword", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse forgetPassword(@RequestBody ForgetPasswordRequest forgetPasswordRequest,
+	public ForgetPasswordResponse forgetPassword(@RequestBody ForgetPasswordRequest forgetPasswordRequest,
 			HttpServletRequest request, HttpServletResponse response) {
 		logger.info("forgetPassword : {}", forgetPasswordRequest.getAreaCode() + forgetPasswordRequest.getUserPhone());
-		BaseResponse rep = new BaseResponse();
+		ForgetPasswordResponse rep = new ForgetPasswordResponse();
 		if (forgetPasswordRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
@@ -105,10 +109,10 @@ public class UserController {
 	@ResponseBody
 	@ApiOperation(value = "获取验证码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/getVerificationCode", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse getVerificationCode(@RequestBody GetVerificationCodeRequest getVerificationCodeRequest,
+	public GetVerificationCodeResponse getVerificationCode(@RequestBody GetVerificationCodeRequest getVerificationCodeRequest,
 			HttpServletRequest request, HttpServletResponse response) {
 		logger.info("getVerificationCode : {}", getVerificationCodeRequest.toString());
-		BaseResponse rep = new BaseResponse();
+		GetVerificationCodeResponse rep = new GetVerificationCodeResponse();
 		if (getVerificationCodeRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
@@ -236,10 +240,10 @@ public class UserController {
 	@ResponseBody
 	@ApiOperation(value = "注册", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/register", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public LoginResponse register(@RequestBody RegisterRequest registerRequest, HttpServletRequest request,
+	public RegisterResponse register(@RequestBody RegisterRequest registerRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		logger.info("register : {}", registerRequest.getAreaCode() + registerRequest.getUserPhone());
-		LoginResponse rep = new LoginResponse();
+		RegisterResponse rep = new RegisterResponse();
 		if (registerRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
@@ -293,10 +297,10 @@ public class UserController {
 	@ResponseBody
 	@ApiOperation(value = "测试验证码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/testCode", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse testCode(@RequestBody TestCodeRequest testRequest, HttpServletRequest request,
+	public TestCodeResponse testCode(@RequestBody TestCodeRequest testRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		logger.info("testCode : {}", testRequest.getAreaCode() + testRequest.getUserPhone());
-		BaseResponse rep = new BaseResponse();
+		TestCodeResponse rep = new TestCodeResponse();
 		if (testRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
