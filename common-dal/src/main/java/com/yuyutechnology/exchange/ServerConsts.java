@@ -101,6 +101,8 @@ public class ServerConsts {
 	 * 支付手机验证码错误
 	 */
 	public static final String PIN_CODE_INCORRECT = "03005";
+	
+	public static final String TRANSFER_HISTORY_NOT_ACQUIRED = "03006";
 
 	// 用户类型
 	/**
@@ -138,7 +140,7 @@ public class ServerConsts {
 	/**
 	 * 系统退款
 	 */
-	public static final int TRANSFER_TYPE_OF_SYSTEM_REFUND = 4;
+	public static final int TRANSFER_TYPE_OF_SYSTEM_REFUND = 5;
 
 	// 交易状态
 	/**

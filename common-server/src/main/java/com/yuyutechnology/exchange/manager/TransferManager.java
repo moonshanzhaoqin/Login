@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.manager;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 
 import org.apache.commons.lang.Validate;
 
@@ -58,7 +59,7 @@ public interface TransferManager {
 	public void systemRefundBatch();
 	
 	
-	public void getTransactionRecordByPage(String period,int status);
+	public HashMap<String, Object> getTransactionRecordByPage(String period,int userId,int currentPage, int pageSize);
 	
 
 }

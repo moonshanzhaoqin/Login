@@ -91,7 +91,6 @@ public class Transfer implements java.io.Serializable {
 	public void setUserTo(int userTo) {
 		this.userTo = userTo;
 	}
-
 	@Column(name = "area_code")
 	public String getAreaCode() {
 		return this.areaCode;

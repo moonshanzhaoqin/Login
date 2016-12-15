@@ -36,14 +36,16 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4{
 	@Test	
 	public void testUpdateRate(){
 		
-		exchangeRateManager.updateExchangeRateNoGoldq();
-		exchangeRateManager.updateGoldpayExchangeRate();
+//		exchangeRateManager.updateExchangeRateNoGoldq();
+//		exchangeRateManager.updateGoldpayExchangeRate();
 
 //		String result = transferManager.transferInitiate(2, "+86","12312312336",
 //				"CNY", new BigDecimal(100),"test",0);
 //		logger.info("testResult : {}",result);
 //		String result = transferManager.payPwdConfirm(2, "201612140T000002", "123456");
 //		logger.info("testResult : {}",result);
-		transferManager.systemRefundBatch();
+//		transferManager.systemRefundBatch();
+		
+		transferManager.getTransactionRecordByPage("today", 2, 1, 10);
 	}
 }

@@ -1,5 +1,6 @@
 package com.yuyutechnology.exchange.utils.page;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -82,6 +83,33 @@ public class PageUtils {
 		return list;
 	}
 	
+	public static List<?> getListByPage4MySql(HibernateTemplate hibernateTemplate,final String mySql, 
+			final List<?> values,final int firstResult, final int masResult) {
+		
+		List<?> list = hibernateTemplate.executeWithNativeSession(new HibernateCallback<List<?>>() {
+
+			@Override
+			public List<?> doInHibernate(Session session) throws HibernateException {
+				Query query = session.createSQLQuery(mySql);
+				//设置参数
+				if(values != null && !values.isEmpty()){
+					for (int i = 0; i < values.size(); i++)
+					{
+						query.setParameter(i, values.get(i));
+					}
+				}
+				//设置起点
+				query.setFirstResult(firstResult);
+				//设置每页显示多少个
+				query.setMaxResults(masResult);
+				
+				return query.list();
+			}
+		});
+
+		return list;
+	}
+	
 	/** 
 	* @Title: getTotal 
 	* @Description: 返回数据总条数 
@@ -126,6 +154,39 @@ public class PageUtils {
 		
 		return total;
 	}
+	
+	
+	public static long getTotal4MySql(HibernateTemplate hibernateTemplate,final String hql, final List<?> values){
+		//生成count sql
+		StringBuilder totalHqlSb = new StringBuilder();
+		totalHqlSb.append("select count(*) ").append(hql);
+		final String totalhql = totalHqlSb.toString(); 
+		log.info("生成Count语句 ： {} ",totalhql);
+		
+		Long total = hibernateTemplate.executeWithNativeSession(new HibernateCallback<Long>(){
+					@Override
+					public Long doInHibernate(Session session)
+							throws HibernateException
+					{
+						Query query = session.createSQLQuery(totalhql);
+						
+						if(values != null && !values.isEmpty()){
+							for (int i = 0; i < values.size(); i++)
+							{
+								query.setParameter(i, values.get(i));
+							}
+						}
+						BigInteger count=(BigInteger) query.uniqueResult();
+						return count.longValue();
+					}
+				});
+		
+		log.info("符合条件的数据总数  ： {} ",total);
+		
+		return total;
+	}
+	
+	
 	
 	/** 
 	* @Title: getPageTotal 

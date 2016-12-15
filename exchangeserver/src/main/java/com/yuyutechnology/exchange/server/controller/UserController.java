@@ -26,7 +26,12 @@ import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.AppVersion;
 import com.yuyutechnology.exchange.pojo.Wallet;
-import com.yuyutechnology.exchange.server.controller.request.*;
+import com.yuyutechnology.exchange.server.controller.request.AppVersionRequest;
+import com.yuyutechnology.exchange.server.controller.request.ForgetPasswordRequest;
+import com.yuyutechnology.exchange.server.controller.request.GetVerificationCodeRequest;
+import com.yuyutechnology.exchange.server.controller.request.LoginRequest;
+import com.yuyutechnology.exchange.server.controller.request.RegisterRequest;
+import com.yuyutechnology.exchange.server.controller.request.TestCodeRequest;
 import com.yuyutechnology.exchange.server.controller.response.AppVersionResponse;
 import com.yuyutechnology.exchange.server.controller.response.ForgetPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetCurrencyResponse;
@@ -74,6 +79,7 @@ public class UserController {
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
+			//验证码校验
 			// 验证码校验
 			if (userManager.testPinCode(ServerConsts.PIN_FUNC_FORGETPASSWORD, forgetPasswordRequest.getAreaCode(),
 					forgetPasswordRequest.getUserPhone(), forgetPasswordRequest.getVerificationCode())) {
