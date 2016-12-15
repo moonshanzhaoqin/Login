@@ -2,7 +2,9 @@ package com.yuyutechnology.exchange.manager;
 
 import java.util.List;
 
+import com.yuyutechnology.exchange.dto.CurrencyInfo;
 import com.yuyutechnology.exchange.dto.UserInfo;
+import com.yuyutechnology.exchange.pojo.AppVersion;
 import com.yuyutechnology.exchange.pojo.Friend;
 
 public interface UserManager {
@@ -133,5 +135,10 @@ public interface UserManager {
 	 * @param userPhone
 	 */
 	public void changePhone(Integer userId, String areaCode, String userPhone);
+
+
+	public AppVersion getAppVersion(String platformType, String updateWay);
+
+	public List<CurrencyInfo> getCurrency();
 
 }

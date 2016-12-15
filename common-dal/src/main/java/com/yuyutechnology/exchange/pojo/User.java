@@ -1,12 +1,16 @@
 package com.yuyutechnology.exchange.pojo;
-// Generated Dec 2, 2016 4:27:04 PM by Hibernate Tools 4.0.0
+// Generated Dec 15, 2016 12:20:57 PM by Hibernate Tools 5.1.0.Alpha1
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -24,31 +28,44 @@ public class User implements java.io.Serializable {
 	private String userName;
 	private String userPassword;
 	private String userPayPwd;
-	@Override
-	public String toString() {
-		return "User [userId=" + userId + ", areaCode=" + areaCode + ", userPhone=" + userPhone + ", userName="
-				+ userName + ", userPassword=" + userPassword + ", userPayPwd=" + userPayPwd + ", createTime="
-				+ createTime + ", loginTime=" + loginTime + ", loginIp=" + loginIp + ", userType=" + userType
-				+ ", passwordSalt=" + passwordSalt + "]";
-	}
-
 	private Date createTime;
 	private Date loginTime;
 	private String loginIp;
 	private int userType;
+	private int userAvailable;
 	private String passwordSalt;
+	private Set<Friend> friends = new HashSet<Friend>(0);
 
 	public User() {
 	}
 
-	public User(String areaCode,String userPhone,String userName, String userPassword, Date createTime, int userType,String passwordSalt) {
+	public User(String areaCode, String userPhone, String userName, String userPassword, Date createTime, int userType,
+			int userAvailable, String passwordSalt) {
 		this.areaCode = areaCode;
 		this.userPhone = userPhone;
 		this.userName = userName;
 		this.userPassword = userPassword;
 		this.createTime = createTime;
 		this.userType = userType;
+		this.userAvailable = userAvailable;
 		this.passwordSalt = passwordSalt;
+	}
+
+	public User(String areaCode, String userPhone, String userName, String userPassword, String userPayPwd,
+			Date createTime, Date loginTime, String loginIp, int userType, int userAvailable, String passwordSalt,
+			Set<Friend> friends) {
+		this.areaCode = areaCode;
+		this.userPhone = userPhone;
+		this.userName = userName;
+		this.userPassword = userPassword;
+		this.userPayPwd = userPayPwd;
+		this.createTime = createTime;
+		this.loginTime = loginTime;
+		this.loginIp = loginIp;
+		this.userType = userType;
+		this.userAvailable = userAvailable;
+		this.passwordSalt = passwordSalt;
+		this.friends = friends;
 	}
 
 	@Id
@@ -63,9 +80,9 @@ public class User implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-	@Column(name = "area_code", nullable = false)
+	@Column(name = "area_code", nullable = false, length = 5)
 	public String getAreaCode() {
-		return areaCode;
+		return this.areaCode;
 	}
 
 	public void setAreaCode(String areaCode) {
@@ -81,7 +98,7 @@ public class User implements java.io.Serializable {
 		this.userPhone = userPhone;
 	}
 
-	@Column(name = "user_name")
+	@Column(name = "user_name", nullable = false)
 	public String getUserName() {
 		return this.userName;
 	}
@@ -90,7 +107,7 @@ public class User implements java.io.Serializable {
 		this.userName = userName;
 	}
 
-	@Column(name = "user_password")
+	@Column(name = "user_password", nullable = false)
 	public String getUserPassword() {
 		return this.userPassword;
 	}
@@ -108,7 +125,8 @@ public class User implements java.io.Serializable {
 		this.userPayPwd = userPayPwd;
 	}
 
-	@Column(name = "create_time", nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "create_time", nullable = false, length = 19)
 	public Date getCreateTime() {
 		return this.createTime;
 	}
@@ -145,13 +163,31 @@ public class User implements java.io.Serializable {
 		this.userType = userType;
 	}
 
-	@Column(name = "password_salt")
+	@Column(name = "user_available", nullable = false)
+	public int getUserAvailable() {
+		return this.userAvailable;
+	}
+
+	public void setUserAvailable(int userAvailable) {
+		this.userAvailable = userAvailable;
+	}
+
+	@Column(name = "password_salt", nullable = false)
 	public String getPasswordSalt() {
-		return passwordSalt;
+		return this.passwordSalt;
 	}
 
 	public void setPasswordSalt(String passwordSalt) {
 		this.passwordSalt = passwordSalt;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	public Set<Friend> getFriends() {
+		return this.friends;
+	}
+
+	public void setFriends(Set<Friend> friends) {
+		this.friends = friends;
 	}
 
 }

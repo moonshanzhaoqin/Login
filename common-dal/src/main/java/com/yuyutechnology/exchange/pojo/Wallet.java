@@ -1,5 +1,5 @@
 package com.yuyutechnology.exchange.pojo;
-// Generated Dec 2, 2016 4:27:04 PM by Hibernate Tools 4.0.0
+// Generated Dec 15, 2016 12:20:57 PM by Hibernate Tools 5.1.0.Alpha1
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -26,6 +26,12 @@ public class Wallet implements java.io.Serializable {
 	private Date updateTime;
 
 	public Wallet() {
+	}
+
+	public Wallet(int userId, String currency, BigDecimal balance) {
+		this.userId = userId;
+		this.currency = currency;
+		this.balance = balance;
 	}
 
 	public Wallet(int userId, String currency, BigDecimal balance, Date updateTime) {
