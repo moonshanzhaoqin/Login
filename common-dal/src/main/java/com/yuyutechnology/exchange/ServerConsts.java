@@ -93,6 +93,10 @@ public class ServerConsts {
 	public static final String TRANSFER_PAYMENTPWD_INCORRECT = "03003";
 
 	public static final String TRANSFER_REQUIRES_PHONE_VERIFICATION = "03004";
+	/**
+	 * 支付手机验证码错误
+	 */
+	public static final String PIN_CODE_INCORRECT = "03005";
 
 	// 用户类型
 	/**
