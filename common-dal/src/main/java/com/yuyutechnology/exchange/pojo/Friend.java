@@ -1,5 +1,5 @@
 package com.yuyutechnology.exchange.pojo;
-// Generated Dec 14, 2016 6:26:12 PM by Hibernate Tools 4.0.0
+// Generated Dec 15, 2016 12:20:57 PM by Hibernate Tools 5.1.0.Alpha1
 
 import java.util.Date;
 import javax.persistence.AttributeOverride;
@@ -46,7 +46,7 @@ public class Friend implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "friend_Id", nullable = false, insertable = false, updatable = false)
 	public User getUser() {
 		return this.user;

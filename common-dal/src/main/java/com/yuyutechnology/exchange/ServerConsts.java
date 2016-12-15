@@ -63,6 +63,10 @@ public class ServerConsts {
 	 * 登录token失效
 	 */
 	public static final String TOKEN_NOT_MATCH= "01010";
+	/**
+	 * 版本号已是最新
+	 */
+	public static final String VERSION_NUM_IS_LATEST = "01011";
 
 	// 兑换 02
 	/**
@@ -107,6 +111,14 @@ public class ServerConsts {
 	 * 系统用户
 	 */
 	public static final int USER_TYPE_OF_SYSTEM = 1;
+	/**
+	 * 用户可用
+	 */
+	public static final int USER_AVAILABLE_OF_AVAILABLE = 1;
+	/**
+	 * 用户冻结
+	 */
+	public static final int USER_AVAILABLE_OF_UNAVAILABLE = 0;
 
 	// 币种
 	public static final String CURRENCY_OF_GOLDPAY = "goldpay";
@@ -178,6 +190,8 @@ public class ServerConsts {
 	 * 短信验证码功能——换绑手机
 	 */
 	public static final String PIN_FUNC_CHANGEPHONE = "CHANGEPHONE";
+	
+	
 
 
 }

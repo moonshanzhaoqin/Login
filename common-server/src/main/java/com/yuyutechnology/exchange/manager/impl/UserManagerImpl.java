@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dao.AppVersionDAO;
 import com.yuyutechnology.exchange.dao.BindDAO;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.FriendDAO;
@@ -21,10 +23,12 @@ import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
+import com.yuyutechnology.exchange.dto.CurrencyInfo;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.goldpay.GoldpayManager;
 import com.yuyutechnology.exchange.goldpay.GoldpayUser;
 import com.yuyutechnology.exchange.manager.UserManager;
+import com.yuyutechnology.exchange.pojo.AppVersion;
 import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Friend;
@@ -52,6 +56,8 @@ public class UserManagerImpl implements UserManager {
 	@Autowired
 	BindDAO bindDAO;
 	@Autowired
+	AppVersionDAO appVersionDAO;
+	@Autowired
 	RedisDAO redisDAO;
 	@Autowired
 	UnregisteredDAO unregisteredDAO;
@@ -65,10 +71,10 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
 		User friend = userDAO.getUserByUserPhone(areaCode, userPhone);
-		logger.info("friend:{}",friend);
+		logger.info("friend:{}", friend);
 		if (friend == null) {
 			return ServerConsts.PHONE_NOT_EXIST;
-		} else if(friend.getUserId() == userId) {
+		} else if (friend.getUserId() == userId) {
 			return ServerConsts.ADD_FRIEND_OWEN;
 		} else {
 			friendDAO.addfriend(new Friend(new FriendId(userId, friend.getUserId()), friend, new Date()));
@@ -154,8 +160,11 @@ public class UserManagerImpl implements UserManager {
 		logger.info("getUserId===phone={}", areaCode + userPhone);
 		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
 		if (user != null) {
-			logger.info("UserId={}", user.getUserId());
-			return user.getUserId();
+			if (user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_AVAILABLE) {
+				return user.getUserId();
+			} else {
+				return 0;
+			}
 		}
 		logger.info("No User!");
 		return null;
@@ -211,9 +220,9 @@ public class UserManagerImpl implements UserManager {
 		String passwordSalt = DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(6));
 		logger.info("随机生成盐值===salt={}", passwordSalt);
 		logger.info("添加用户");
-		Integer userId = userDAO
-				.addUser(new User(areaCode, userPhone, userName, PasswordUtils.encrypt(userPassword, passwordSalt),
-						new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER, passwordSalt));
+		Integer userId = userDAO.addUser(
+				new User(areaCode, userPhone, userName, PasswordUtils.encrypt(userPassword, passwordSalt), new Date(),
+						ServerConsts.USER_TYPE_OF_CUSTOMER, ServerConsts.USER_AVAILABLE_OF_AVAILABLE, passwordSalt));
 		// 添加钱包信息
 		createWallets4NewUser(userId);
 		// 根据UNregistered 更新新用户钱包 将资金从系统帐户划给新用户
@@ -291,6 +300,23 @@ public class UserManagerImpl implements UserManager {
 		for (Currency currency : currencies) {
 			walletDAO.addwallet(new Wallet(userId, currency.getCurrency(), new BigDecimal(0), new Date()));
 		}
+	}
+
+	@Override
+	public AppVersion getAppVersion(String platformType, String updateWay) {
+		return appVersionDAO.getAppVersionInfo(platformType, updateWay);
+	}
+
+	@Override
+	public List<CurrencyInfo> getCurrency() {
+		List<CurrencyInfo> list = new ArrayList<>();
+		List<Currency> currencies = currencyDAO.getCurrencys();
+		for (Currency currency : currencies) {
+			list.add(new CurrencyInfo(currency.getCurrency(), currency.getNameEn(),
+					currency.getNameCn(), currency.getNameHk(), currency.getCurrencyImage(),
+					currency.getCurrencyStatus()));
+		}
+		return list;
 	}
 
 }

@@ -1,9 +1,8 @@
 package com.yuyutechnology.exchange.pojo;
-// Generated Dec 2, 2016 4:27:04 PM by Hibernate Tools 4.0.0
+// Generated Dec 15, 2016 12:20:57 PM by Hibernate Tools 5.1.0.Alpha1
 
 import java.math.BigDecimal;
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -30,28 +29,25 @@ public class Transfer implements java.io.Serializable {
 	private Date finishTime;
 	private int transferStatus;
 	private int transferType;
-	private int noticeId;
+	private Integer noticeId;
 
 	public Transfer() {
 	}
 
-	public Transfer(String transferId, int userFrom, int userTo,String phone,String areaCode, String currency,
-			BigDecimal transferAmount, int transferStatus, int transferType,int noticeId) {
+	public Transfer(String transferId, int userFrom, int userTo, String currency, BigDecimal transferAmount,
+			int transferStatus, int transferType) {
 		this.transferId = transferId;
 		this.userFrom = userFrom;
 		this.userTo = userTo;
-		this.areaCode = areaCode;
-		this.phone = phone;
 		this.currency = currency;
 		this.transferAmount = transferAmount;
 		this.transferStatus = transferStatus;
 		this.transferType = transferType;
-		this.noticeId = noticeId;
 	}
 
-	public Transfer(String transferId, int userFrom, int userTo,String areaCode,String phone, String currency,
+	public Transfer(String transferId, int userFrom, int userTo, String areaCode, String phone, String currency,
 			BigDecimal transferAmount, String transferComment, Date createTime, Date finishTime, int transferStatus,
-			int transferType,int noticeId) {
+			int transferType, Integer noticeId) {
 		this.transferId = transferId;
 		this.userFrom = userFrom;
 		this.userTo = userTo;
@@ -95,9 +91,10 @@ public class Transfer implements java.io.Serializable {
 	public void setUserTo(int userTo) {
 		this.userTo = userTo;
 	}
-	@Column(name = "areacode")
+
+	@Column(name = "area_code")
 	public String getAreaCode() {
-		return areaCode;
+		return this.areaCode;
 	}
 
 	public void setAreaCode(String areaCode) {
@@ -106,7 +103,7 @@ public class Transfer implements java.io.Serializable {
 
 	@Column(name = "phone")
 	public String getPhone() {
-		return phone;
+		return this.phone;
 	}
 
 	public void setPhone(String phone) {
@@ -179,11 +176,11 @@ public class Transfer implements java.io.Serializable {
 	}
 
 	@Column(name = "notice_id")
-	public int getNoticeId() {
-		return noticeId;
+	public Integer getNoticeId() {
+		return this.noticeId;
 	}
 
-	public void setNoticeId(int noticeId) {
+	public void setNoticeId(Integer noticeId) {
 		this.noticeId = noticeId;
 	}
 
