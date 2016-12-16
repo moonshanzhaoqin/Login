@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 
+import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.pojo.Wallet;
 
 public interface ExchangeManager {
@@ -15,7 +16,7 @@ public interface ExchangeManager {
 	 * @param userId
 	 * @return
 	 */
-	public List<Wallet> getWalletsByUserId(int userId);
+	public List<WalletInfo> getWalletsByUserId(int userId);
 	
 	/**
 	 * @Descrition : 兑换金额计算

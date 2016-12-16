@@ -299,7 +299,7 @@ public class UserManagerImpl implements UserManager {
 		logger.info("为新用户新建钱包");
 		List<Currency> currencies = currencyDAO.getCurrencys();
 		for (Currency currency : currencies) {
-			walletDAO.addwallet(new Wallet(userId, currency.getCurrency(), new BigDecimal(0), new Date()));
+			walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date()));
 		}
 	}
 
@@ -312,7 +312,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public List<CurrencyInfo> getCurrency() {
 		List<CurrencyInfo> list = null;
-		if (redisDAO.getValueByKey("getCurrency")==null) {
+		if (redisDAO.getValueByKey("getCurrency") == null) {
 			logger.info("getCurrency from db");
 			list = new ArrayList<>();
 			List<Currency> currencies = currencyDAO.getCurrencys();
@@ -326,8 +326,18 @@ public class UserManagerImpl implements UserManager {
 			list = (List<CurrencyInfo>) JsonBinder.getInstance().fromJsonToList(redisDAO.getValueByKey("getCurrency"),
 					CurrencyInfo.class);
 		}
-//		logger.info("currency:{}",list);
+		// logger.info("currency:{}",list);
 		return list;
+	}
+
+	@Override
+	public void updateUser(Integer userId, String loginIp, String pushId, String pushTag) {
+		User user = userDAO.getUser(userId);
+		user.setLoginIp(loginIp);
+		user.setLoginTime(new Date());
+		user.setPushId(pushId);
+		user.setPushTag(pushTag);
+		userDAO.updateUser(user);
 	}
 
 }
