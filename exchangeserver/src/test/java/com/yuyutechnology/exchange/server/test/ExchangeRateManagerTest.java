@@ -46,6 +46,8 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4{
 //		logger.info("testResult : {}",result);
 //		transferManager.systemRefundBatch();
 		
-		transferManager.getTransactionRecordByPage("today", 2, 1, 10);
+//		transferManager.getTransactionRecordByPage("today", 2, 1, 10);
+		
+		exchangeManager.getExchangeRecordsByPage(2, "lastMonth", 1, 10);
 	}
 }

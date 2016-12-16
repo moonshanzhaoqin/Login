@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Exchange;
 import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.utils.DateFormatUtils;
 
 @Service
 public class ExchangeManagerImpl implements ExchangeManager {
@@ -157,6 +159,58 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		}
 
 		return result.get("retCode");
+	}
+	
+	@Override
+	public HashMap<String, Object> getExchangeRecordsByPage(int userId, String period, int currentPage, int pageSize) {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		StringBuilder sb = new StringBuilder("from Exchange where userId = ? and exchangeStatus = ? ");
+		
+		List<Object> values = new ArrayList<Object>();
+		values.add(userId);
+		/////////////////////////////////////////////////////////////
+		values.add(0);
+		
+		switch (period) {
+			case "today":
+				sb.append("and createTime > ?");
+				values.add(DateFormatUtils.getStartTime(sdf.format(new Date())));
+				break;
+				
+			case "lastMonth":
+				sb.append("and createTime > ?");
+				Date date = DateFormatUtils.getpreDays(-30);
+				values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+				break;
+			case "last3Month":
+				sb.append("and createTime > ?");
+				date = DateFormatUtils.getpreDays(-90);
+				values.add(DateFormatUtils.getStartTime(sdf.format(date)));		
+				break;
+			case "lastYear":
+				sb.append("and createTime > ?");
+				date = DateFormatUtils.getpreDays(-365);
+				values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+				break;
+			case "aYearAgo":
+				sb.append("and createTime  < ?");
+				date = DateFormatUtils.getpreDays(-365);
+				values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+				break;
+	
+			default:
+				break;
+		}
+		
+		sb.append(" order by createTime desc");
+		
+//		logger.info("生成SQL:{}",sb.toString());
+
+		HashMap<String, Object> map = exchangeDAO.getExchangeRecordsByPage(sb.toString(), values, currentPage, pageSize);
+		
+		return map;
 	}
 
 	@Override

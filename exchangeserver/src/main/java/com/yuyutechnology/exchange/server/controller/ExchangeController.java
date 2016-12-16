@@ -20,9 +20,11 @@ import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.server.controller.request.ExchangeCalculationRequest;
 import com.yuyutechnology.exchange.server.controller.request.ExchangeConfirmRequest;
+import com.yuyutechnology.exchange.server.controller.request.GetExchangeHistoryRequest;
 import com.yuyutechnology.exchange.server.controller.response.ExchangeCalculationResponse;
 import com.yuyutechnology.exchange.server.controller.response.ExchangeConfirmResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetCurrentBalanceResponse;
+import com.yuyutechnology.exchange.server.controller.response.GetExchangeHistoryResponse;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
 
@@ -97,5 +99,19 @@ public class ExchangeController {
 		rep.setRetCode(retCode);
 		return rep;
 	}
+	
+	
+	@ApiOperation(value = "获取兑换历史记录")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/getExchangeHistory")
+	public @ResponseBody
+	GetExchangeHistoryResponse getExchangeHistory(@PathVariable String token,@RequestBody GetExchangeHistoryRequest reqMsg){
+		
+		
+		
+		
+		return null;
+		
+	}
+	
 	
 }

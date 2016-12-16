@@ -56,6 +56,9 @@ public interface ExchangeManager {
 	 */
 	HashMap<String, BigDecimal> exchangeCalculation(String currencyOut, String currencyIn, BigDecimal outAmount,
 			int capitalFlows);
+	
+	
+	public HashMap<String, Object> getExchangeRecordsByPage(int userId,String period,int currentPage,int pageSize);
 
 
 
