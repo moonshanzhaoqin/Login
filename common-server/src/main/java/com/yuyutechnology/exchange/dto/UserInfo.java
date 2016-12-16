@@ -1,17 +1,19 @@
 package com.yuyutechnology.exchange.dto;
 
+import com.yuyutechnology.exchange.pojo.Bind;
+
 public class UserInfo {
 
 	@Override
 	public String toString() {
-		return "UserInfo [areaCode=" + areaCode + ", phone=" + phone + ", name=" + name + ", isGoldpay=" + isGoldpay
+		return "UserInfo [areaCode=" + areaCode + ", phone=" + phone + ", name=" + name + ", goldpay=" + goldpay
 				+ ", isPayPwd=" + isPayPwd + "]";
 	}
 
 	private String areaCode;
 	private String phone;
 	private String name;
-	private boolean isGoldpay;
+	private Bind goldpay;
 	private boolean isPayPwd;
 
 	public String getAreaCode() {
@@ -21,6 +23,7 @@ public class UserInfo {
 	public void setAreaCode(String areaCode) {
 		this.areaCode = areaCode;
 	}
+
 	public String getPhone() {
 		return phone;
 	}
@@ -37,12 +40,12 @@ public class UserInfo {
 		this.name = name;
 	}
 
-	public boolean isGoldpay() {
-		return isGoldpay;
+	public Bind getGoldpay() {
+		return goldpay;
 	}
 
-	public void setGoldpay(boolean isGoldpay) {
-		this.isGoldpay = isGoldpay;
+	public void setGoldpay(Bind goldpay) {
+		this.goldpay = goldpay;
 	}
 
 	public boolean isPayPwd() {

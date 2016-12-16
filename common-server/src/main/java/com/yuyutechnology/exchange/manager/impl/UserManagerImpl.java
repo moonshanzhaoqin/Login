@@ -186,13 +186,10 @@ public class UserManagerImpl implements UserManager {
 			} else {
 				userInfo.setPayPwd(true);
 			}
-			// 判断是否绑定goldpay
-			List<Bind> binds = bindDAO.getBindByUserId(userId);
-			if (binds.isEmpty()) {
-				userInfo.setGoldpay(false);
-			} else {
-				userInfo.setGoldpay(true);
-			}
+			//goldpay
+			Bind bind = bindDAO.getBindByUserId(userId);
+			userInfo.setGoldpay(bind);
+
 			logger.info("UserInfo={}", userInfo.toString());
 		} else {
 			logger.warn("Can not find the user!!!");
@@ -359,6 +356,7 @@ public class UserManagerImpl implements UserManager {
 			}
 		}
 	}
+
 	@Override
 	public void checkWallet(Integer userId, Currency currency) {
 		logger.info("校验 用户{} 是否拥有  {} 钱包", userId, currency.getCurrency());
