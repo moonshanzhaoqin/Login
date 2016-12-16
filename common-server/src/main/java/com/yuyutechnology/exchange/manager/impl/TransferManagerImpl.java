@@ -117,7 +117,7 @@ public class TransferManagerImpl implements TransferManager{
 
 		//总账大于设置安全基数，弹出需要短信验证框===============================================
 		BigDecimal totalBalance =  new BigDecimal(20000);
-		BigDecimal totalBalanceMax =  new BigDecimal(30000);
+		BigDecimal totalBalanceMax =  new BigDecimal(10000);
 		//当天累计转出总金额大于设置安全基数，弹出需要短信验证框======================================
 		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount(userId+"");
 		BigDecimal accumulatedAmountMax =  new BigDecimal(30000);
@@ -174,6 +174,9 @@ public class TransferManagerImpl implements TransferManager{
 			
 			//更改Transfer状态
 			transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+			
+			///////////////////////////向未注册用户发送短信/////////////////////////////
+			
 		
 		}else{	//交易对象注册账号,交易正常进行，无需经过系统账户							
 			
