@@ -38,8 +38,8 @@ public class pushManager {
 	// zh_HK
 	private String transfer_HK = "";
 
-	@PostConstruct
-	@Scheduled(cron = "0 1/10 * * * ?")
+//	@PostConstruct
+//	@Scheduled(cron = "0 1/10 * * * ?")
 	public void init() throws IOException {
 		appName = ResourceUtils.getBundleValue("appName");
 		pushToAllURL = ResourceUtils.getBundleValue("push.all.url");

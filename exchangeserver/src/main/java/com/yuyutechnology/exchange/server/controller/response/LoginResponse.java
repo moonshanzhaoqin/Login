@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.dto.WalletInfo;
-import com.yuyutechnology.exchange.pojo.Wallet;
 
 public class LoginResponse extends BaseResponse {
 	private UserInfo user;

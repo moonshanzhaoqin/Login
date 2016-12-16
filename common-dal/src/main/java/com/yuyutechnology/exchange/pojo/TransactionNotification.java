@@ -1,7 +1,9 @@
 package com.yuyutechnology.exchange.pojo;
 // Generated Dec 15, 2016 8:56:30 PM by Hibernate Tools 5.1.0.Alpha1
 
+import java.math.BigDecimal;
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -20,7 +22,7 @@ public class TransactionNotification implements java.io.Serializable {
 	private Integer sponsorId;
 	private Integer payerId;
 	private String currency;
-	private Long amount;
+	private BigDecimal amount;
 	private String remarks;
 	private Date createAt;
 	private Integer noticeStatus;
@@ -33,7 +35,7 @@ public class TransactionNotification implements java.io.Serializable {
 		this.noticeId = noticeId;
 	}
 
-	public TransactionNotification(int noticeId, Integer sponsorId, Integer payerId, String currency, Long amount,
+	public TransactionNotification(int noticeId, Integer sponsorId, Integer payerId, String currency, BigDecimal amount,
 			String remarks, Date createAt, Integer noticeStatus, Integer tradingStatus) {
 		this.noticeId = noticeId;
 		this.sponsorId = sponsorId;
@@ -85,11 +87,11 @@ public class TransactionNotification implements java.io.Serializable {
 	}
 
 	@Column(name = "amount", precision = 10, scale = 0)
-	public Long getAmount() {
+	public BigDecimal getAmount() {
 		return this.amount;
 	}
 
-	public void setAmount(Long amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 

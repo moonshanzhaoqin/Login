@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.ConfigDAO;
+import com.yuyutechnology.exchange.dao.NotificationDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UnregisteredDAO;
@@ -22,6 +23,7 @@ import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.manager.TransferManager;
+import com.yuyutechnology.exchange.pojo.TransactionNotification;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
@@ -49,6 +51,8 @@ public class TransferManagerImpl implements TransferManager{
 	WalletSeqDAO walletSeqDAO;
 	@Autowired
 	UnregisteredDAO unregisteredDAO;
+	@Autowired
+	NotificationDAO notificationDAO;
 	
 	public static Logger logger = LoggerFactory.getLogger(TransferManagerImpl.class);
 
@@ -266,10 +270,29 @@ public class TransferManagerImpl implements TransferManager{
 	
 
 	@Override
-	public void makeRequest(int userId, String payerAreaCode, String payerPhone, String currency, BigDecimal amount) {
-		//判断付款人是否存在
+	public String makeRequest(int userId, String payerAreaCode, String payerPhone, String currency, BigDecimal amount) {
 		
-		
+		User payer = userDAO.getUserByUserPhone(payerAreaCode, payerPhone);
+		if(payer != null){
+			TransactionNotification transactionNotification = new TransactionNotification();
+			transactionNotification.setSponsorId(userId);
+			transactionNotification.setPayerId(payer.getUserId());
+			transactionNotification.setCurrency(currency);
+			transactionNotification.setAmount(amount);
+			transactionNotification.setCreateAt(new Date());
+			transactionNotification.setRemarks("");
+			transactionNotification.setNoticeStatus(0);
+			transactionNotification.setTradingStatus(0);
+			
+			notificationDAO.addNotification(transactionNotification);
+			
+			//发送站内信////////////////////////////////
+			
+			
+			return ServerConsts.RET_CODE_SUCCESS;
+			
+		}
+		return ServerConsts.RET_CODE_FAILUE;
 	}
 
 

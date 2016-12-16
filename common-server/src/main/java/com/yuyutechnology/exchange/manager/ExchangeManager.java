@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.yuyutechnology.exchange.dto.WalletInfo;
-import com.yuyutechnology.exchange.pojo.Wallet;
 
 public interface ExchangeManager {
 	

@@ -126,6 +126,8 @@ public class TransferController {
 		
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
+		transferManager.makeRequest(sessionData.getUserId(), reqMsg.getAreaCode(), reqMsg.getPhone(),
+				reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()));
 		
 	}
 	

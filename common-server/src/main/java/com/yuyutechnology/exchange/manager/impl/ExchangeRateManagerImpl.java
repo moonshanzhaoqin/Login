@@ -108,7 +108,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 			others4Gdp.put("USD", USD4GdpExchangeRate);
 			List<Currency> list = currencyDAO.getCurrencys();
 			for (Currency index : list) {
-				if(!index.getCurrency().equals("USD")){
+				if(!index.getCurrency().equals("USD") && !index.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY) ){
 					others4Gdp.put(index.getCurrency(), getExchangeRateNoGoldq
 							(index.getCurrency(),"USD")/gdp4USDExchangeRate);
 				}
