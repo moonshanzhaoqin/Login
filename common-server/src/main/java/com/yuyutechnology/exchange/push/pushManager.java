@@ -32,12 +32,16 @@ public class pushManager {
 	private String pushToTagURL = "";
 	// en
 	private String transfer_en = "";
+	private String transfer_request_en = "";
 	// zh_CN
 	private String transfer_CN = "";
+	private String transfer_request_CN = "";
 	// zh_HK
 	private String transfer_HK = "";
+	private String transfer_request_HK = "";
 
 	private final String PUSH_REPLACE_FROM = "[FROM]";
+	private final String PUSH_REPLACE_TO = "[TO]";
 	private final String PUSH_REPLACE_CURRENCY = "[CURRENCY]";
 	private final String PUSH_REPLACE_AMOUNT = "[AMOUNT]";
 
@@ -50,6 +54,7 @@ public class pushManager {
 		pushToTagURL = ResourceUtils.getBundleValue("push.tag.url");
 
 		// 加载模板
+		// 到账提醒
 		Resource resource = new ClassPathResource("push/en_US/transfer.template");
 		transfer_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
@@ -58,14 +63,48 @@ public class pushManager {
 
 		resource = new ClassPathResource("push/zh_HK/transfer.template");
 		transfer_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+
+		// 请求转账
+		resource = new ClassPathResource("push/en_US/transfer_request.template");
+		transfer_request_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+
+		resource = new ClassPathResource("push/zh_CN/transfer_request.template");
+		transfer_request_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+
+		resource = new ClassPathResource("push/zh_HK/transfer_request.template");
+		transfer_request_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 	}
 
-	public void push(User userFrom, User userTo, Currency currency, BigDecimal amount) {
-		String title = "转账提醒";
+	/**
+	 * 到账通知
+	 * 
+	 * @param userFrom
+	 * @param userTo
+	 * @param currency
+	 * @param amount
+	 */
+	public void push4Transfer(User userFrom, User userTo, Currency currency, BigDecimal amount) {
+		String title = "到账通知";
 		String transferBody = templateChoose("transfer", userTo.getPushTag());
 		String body = transferBody.replace(PUSH_REPLACE_FROM, userFrom.getUserName())
 				.replace(PUSH_REPLACE_CURRENCY, currency.getCurrency()).replace(PUSH_REPLACE_AMOUNT, amount.toString());
 		pushToCustom(userTo.getUserId(), userTo.getPushId(), title, body);
+	}
+
+	/**
+	 * 转账请求通知
+	 * 
+	 * @param userFrom
+	 * @param userTo
+	 * @param currency
+	 * @param amount
+	 */
+	public void push4TransferRuquest(User userFrom, User userTo, Currency currency, BigDecimal amount) {
+		String title = "转账请求";
+		String transferBody = templateChoose("transfer_request", userFrom.getPushTag());
+		String body = transferBody.replace(PUSH_REPLACE_TO, userTo.getUserName())
+				.replace(PUSH_REPLACE_CURRENCY, currency.getCurrency()).replace(PUSH_REPLACE_AMOUNT, amount.toString());
+		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body);
 	}
 
 	private String templateChoose(String func, Language pushTag) {
@@ -84,6 +123,24 @@ public class pushManager {
 				break;
 			case zh_TW:
 				body = transfer_HK;
+				break;
+			default:
+				break;
+			}
+			break;
+		case "transfer_request":
+			switch (pushTag) {
+			case en_US:
+				body = transfer_request_en;
+				break;
+			case zh_CN:
+				body = transfer_request_CN;
+				break;
+			case zh_HK:
+				body = transfer_request_HK;
+				break;
+			case zh_TW:
+				body = transfer_request_HK;
 				break;
 			default:
 				break;

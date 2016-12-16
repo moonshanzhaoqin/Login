@@ -1,6 +1,8 @@
 package com.yuyutechnology.exchange.server.test;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.yuyutechnology.exchange.utils.LanguageUtils;
 
@@ -10,6 +12,7 @@ import com.yuyutechnology.exchange.utils.LanguageUtils;
  *
  */
 public class LanguageTest extends BaseSpringJunit4{
+	public static Logger logger = LoggerFactory.getLogger(LanguageTest.class);
 	@Test	
 	public void enumTEST(){
 		
@@ -21,6 +24,6 @@ public class LanguageTest extends BaseSpringJunit4{
 //		System.out.println(LanguageUtils.standard("ZH"));
 //		System.out.println(LanguageUtils.standard("ZH_CN"));
 //		System.out.println(LanguageUtils.standard("zh_CN"));
-		
+//		logger.info("{}",LanguageUtils.standard("zh_CN"));
 	}
 }
