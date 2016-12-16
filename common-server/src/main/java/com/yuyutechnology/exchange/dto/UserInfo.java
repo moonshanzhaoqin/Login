@@ -4,16 +4,19 @@ import com.yuyutechnology.exchange.pojo.Bind;
 
 public class UserInfo {
 
+
 	@Override
 	public String toString() {
-		return "UserInfo [areaCode=" + areaCode + ", phone=" + phone + ", name=" + name + ", goldpay=" + goldpay
-				+ ", isPayPwd=" + isPayPwd + "]";
+		return "UserInfo [areaCode=" + areaCode + ", phone=" + phone + ", name=" + name + ", goldpayId=" + goldpayId
+				+ ", goldpayName=" + goldpayName + ", goldpayAcount=" + goldpayAcount + ", isPayPwd=" + isPayPwd + "]";
 	}
 
 	private String areaCode;
 	private String phone;
 	private String name;
-	private Bind goldpay;
+	private String goldpayId;
+	private String goldpayName;
+	private String goldpayAcount;
 	private boolean isPayPwd;
 
 	public String getAreaCode() {
@@ -40,12 +43,28 @@ public class UserInfo {
 		this.name = name;
 	}
 
-	public Bind getGoldpay() {
-		return goldpay;
+	public String getGoldpayId() {
+		return goldpayId;
 	}
 
-	public void setGoldpay(Bind goldpay) {
-		this.goldpay = goldpay;
+	public void setGoldpayId(String goldpayId) {
+		this.goldpayId = goldpayId;
+	}
+
+	public String getGoldpayName() {
+		return goldpayName;
+	}
+
+	public void setGoldpayName(String goldpayName) {
+		this.goldpayName = goldpayName;
+	}
+
+	public String getGoldpayAcount() {
+		return goldpayAcount;
+	}
+
+	public void setGoldpayAcount(String goldpayAcount) {
+		this.goldpayAcount = goldpayAcount;
 	}
 
 	public boolean isPayPwd() {
