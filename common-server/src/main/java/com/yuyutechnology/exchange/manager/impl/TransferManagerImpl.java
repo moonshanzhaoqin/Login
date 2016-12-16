@@ -264,6 +264,16 @@ public class TransferManagerImpl implements TransferManager{
 		}
 	}
 	
+
+	@Override
+	public void makeRequest(int userId, String payerAreaCode, String payerPhone, String currency, BigDecimal amount) {
+		//判断付款人是否存在
+		
+		
+	}
+
+
+	
 	@Override
 	public HashMap<String, Object> getTransactionRecordByPage(String period, 
 			int userId,int currentPage, int pageSize) {
@@ -393,6 +403,5 @@ public class TransferManagerImpl implements TransferManager{
 		
 		return out;
 	}
-
 
 }
