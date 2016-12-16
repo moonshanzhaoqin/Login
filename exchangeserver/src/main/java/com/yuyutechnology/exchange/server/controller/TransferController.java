@@ -21,11 +21,14 @@ import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.GetTransactionRecordRequest;
 import com.yuyutechnology.exchange.server.controller.request.MakeRequestRequest;
+import com.yuyutechnology.exchange.server.controller.request.ResendTransferPinRequest;
 import com.yuyutechnology.exchange.server.controller.request.Respond2RequestRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransPwdConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransferConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransferInitiateRequest;
 import com.yuyutechnology.exchange.server.controller.response.GetTransactionRecordReponse;
+import com.yuyutechnology.exchange.server.controller.response.MakeRequestResponse;
+import com.yuyutechnology.exchange.server.controller.response.ResendTransferPinResponse;
 import com.yuyutechnology.exchange.server.controller.response.Respond2RequestResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransPwdConfirmResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransferConfirmResponse;
@@ -95,6 +98,29 @@ public class TransferController {
 		return rep;
 	}
 	
+	@ApiOperation(value = "重新发送pin")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/resendPhonePin")
+	public @ResponseBody
+	ResendTransferPinResponse resendTransferPin(@PathVariable String token,@RequestBody ResendTransferPinRequest reqMsg){
+		//从Session中获取Id
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		ResendTransferPinResponse rep = new ResendTransferPinResponse();
+		
+		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+		rep.setMessage("ok");
+		
+		try {
+			UserInfo user = userManager.getUserInfo(sessionData.getUserId());
+			userManager.getPinCode(reqMsg.getTransferId(),user.getAreaCode(), user.getPhone());
+		} catch (Exception e) {
+			e.printStackTrace();
+			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
+			rep.setMessage("Re-sending the phone pin failed");
+		}
+		return rep;
+	}
+	
+	
 	@ApiOperation(value = "交易确认")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transferConfirm")
 	public  @ResponseBody
@@ -122,12 +148,23 @@ public class TransferController {
 		return rep;
 	}
 	
-	public void makeRequest(@PathVariable String token,@RequestBody MakeRequestRequest reqMsg){
-		
+	@ApiOperation(value = "发起转账请求")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/makeRequest")
+	public  @ResponseBody
+	MakeRequestResponse makeRequest(@PathVariable String token,@RequestBody MakeRequestRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		transferManager.makeRequest(sessionData.getUserId(), reqMsg.getAreaCode(), reqMsg.getPhone(),
+		MakeRequestResponse rep = new MakeRequestResponse();
+		String result = transferManager.makeRequest(sessionData.getUserId(), reqMsg.getAreaCode(), reqMsg.getPhone(),
 				reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()));
+		if(result.equals(ServerConsts.RET_CODE_FAILUE)){
+			rep.setMessage("Sharing failed");
+		}else{
+			rep.setMessage("ok");
+		}
+		rep.setRetCode(result);
+		
+		return rep;
 		
 	}
 	
