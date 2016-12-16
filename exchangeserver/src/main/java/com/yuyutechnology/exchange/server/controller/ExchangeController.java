@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
-import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.server.controller.request.ExchangeCalculationRequest;
 import com.yuyutechnology.exchange.server.controller.request.ExchangeConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.response.ExchangeCalculationResponse;
@@ -41,7 +41,7 @@ public class ExchangeController {
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		GetCurrentBalanceResponse rep = new GetCurrentBalanceResponse();
-		List<Wallet> wallets = exchangeManager.getWalletsByUserId(sessionData.getUserId());
+		List<WalletInfo> wallets = exchangeManager.getWalletsByUserId(sessionData.getUserId());
 		if(wallets.isEmpty()){
 			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
 			rep.setMessage("");

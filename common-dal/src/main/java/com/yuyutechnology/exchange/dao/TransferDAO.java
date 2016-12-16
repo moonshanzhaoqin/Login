@@ -1,6 +1,8 @@
 package com.yuyutechnology.exchange.dao;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
 
 import com.yuyutechnology.exchange.pojo.Transfer;
 
@@ -20,6 +22,6 @@ public interface TransferDAO {
 
 	public void updateTransferStatusAndUserTo(String transferId, int transferStatus, Integer userTo);
 	
-	public void getTransactionRecordByPage(String period,int status);
+	public HashMap<String, Object> getTransactionRecordByPage(String sql,String countSql,List<Object> values,int currentPage, int pageSize);
 
 }

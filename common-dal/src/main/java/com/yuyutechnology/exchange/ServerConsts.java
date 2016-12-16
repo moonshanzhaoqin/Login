@@ -101,6 +101,8 @@ public class ServerConsts {
 	 * 支付手机验证码错误
 	 */
 	public static final String PIN_CODE_INCORRECT = "03005";
+	
+	public static final String TRANSFER_HISTORY_NOT_ACQUIRED = "03006";
 
 	// 用户类型
 	/**
@@ -121,7 +123,7 @@ public class ServerConsts {
 	public static final int USER_AVAILABLE_OF_UNAVAILABLE = 0;
 
 	// 币种
-	public static final String CURRENCY_OF_GOLDPAY = "goldpay";
+	public static final String CURRENCY_OF_GOLDPAY = "GDQ";
 
 	// 交易类型
 	/**
@@ -138,7 +140,7 @@ public class ServerConsts {
 	/**
 	 * 系统退款
 	 */
-	public static final int TRANSFER_TYPE_OF_SYSTEM_REFUND = 4;
+	public static final int TRANSFER_TYPE_OF_SYSTEM_REFUND = 5;
 
 	// 交易状态
 	/**
@@ -190,7 +192,8 @@ public class ServerConsts {
 	 * 短信验证码功能——换绑手机
 	 */
 	public static final String PIN_FUNC_CHANGEPHONE = "CHANGEPHONE";
-	
+	public static final int CURRENCY_AVAILABLE = 1;
+	public static final int CURRENCY_UNAVAILABLE = 0;
 	
 
 

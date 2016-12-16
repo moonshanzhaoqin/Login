@@ -1,6 +1,8 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +26,7 @@ import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.utils.DateFormatUtils;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.PasswordUtils;
 import com.yuyutechnology.exchange.utils.exchangerate.ExchangeRate;
@@ -261,10 +264,72 @@ public class TransferManagerImpl implements TransferManager{
 		}
 	}
 	
+
 	@Override
-	public void getTransactionRecordByPage(String period, int status) {
-		// TODO Auto-generated method stub
+	public void makeRequest(int userId, String payerAreaCode, String payerPhone, String currency, BigDecimal amount) {
+		//判断付款人是否存在
 		
+		
+	}
+
+
+	
+	@Override
+	public HashMap<String, Object> getTransactionRecordByPage(String period, 
+			int userId,int currentPage, int pageSize) {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String sql = "SELECT "+
+				"t1.user_from,t1.currency,t1.transfer_amount, "+
+				"CONCAT(t1.area_code,t1.phone), "+
+				"t1.transfer_comment,t1.finish_time,t1.transfer_type ";
+		StringBuilder sb = new StringBuilder(
+				"FROM `transfer` t1 LEFT JOIN `user` t2  "+
+				"ON  "+
+				"t1.user_from = t2.user_id  "+
+				"and t1.transfer_status=? "+
+				"and (t1.user_from = ? or t1.user_to = ?) ");
+		
+		List<Object> values = new ArrayList<Object>();
+		values.add(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		values.add(userId);
+		values.add(userId);
+		
+		switch (period) {
+			case "today":
+				sb.append("where t1.finish_time > ?");
+				values.add(DateFormatUtils.getStartTime(sdf.format(new Date())));
+				break;
+				
+			case "lastMonth":
+				sb.append("where t1.finish_time > ?");
+				Date date = DateFormatUtils.getpreDays(-30);
+				values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+				break;
+			case "last3Month":
+				sb.append("where t1.finish_time > ?");
+				date = DateFormatUtils.getpreDays(-90);
+				values.add(DateFormatUtils.getStartTime(sdf.format(date)));		
+				break;
+			case "lastYear":
+				sb.append("where t1.finish_time > ?");
+				date = DateFormatUtils.getpreDays(-365);
+				values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+				break;
+			case "aYearAgo":
+				sb.append("where t1.finish_time < ?");
+				date = DateFormatUtils.getpreDays(-365);
+				values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+				break;
+	
+			default:
+				break;
+		}
+		
+		sb.append(" order by t1.finish_time desc");
+
+		HashMap<String, Object> map = transferDAO.getTransactionRecordByPage(sql+sb.toString(),sb.toString(),values,currentPage, pageSize);
+		return map;
 	}
 	
 	
@@ -338,6 +403,5 @@ public class TransferManagerImpl implements TransferManager{
 		
 		return out;
 	}
-
 
 }

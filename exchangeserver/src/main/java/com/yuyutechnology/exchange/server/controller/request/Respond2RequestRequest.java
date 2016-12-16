@@ -1,6 +1,6 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-public class RequestATransferRequest {
+public class Respond2RequestRequest {
 	
 	private String areaCode;
 	private String userPhone;

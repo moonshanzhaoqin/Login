@@ -136,9 +136,18 @@ public interface UserManager {
 	 */
 	public void changePhone(Integer userId, String areaCode, String userPhone);
 
-
 	public AppVersion getAppVersion(String platformType, String updateWay);
 
 	public List<CurrencyInfo> getCurrency();
+
+	/**
+	 * 更新登录信息
+	 * 
+	 * @param userId
+	 * @param loginIp
+	 * @param pushId
+	 * @param pushTag
+	 */
+	public void updateUser(Integer userId, String loginIp, String pushId, String pushTag);
 
 }

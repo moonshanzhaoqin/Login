@@ -1,6 +1,6 @@
 package com.yuyutechnology.exchange.server.controller.response;
 
-public class RequestATransferResponse extends BaseResponse {
+public class Respond2RequestResponse extends BaseResponse {
 	private String transferId;
 
 	public String getTransferId() {
