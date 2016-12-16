@@ -4,10 +4,9 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiParam;
 
 @ApiModel("")
-public class GetTransactionRecordRequest {
+public class GetExchangeHistoryRequest {
 	
 	private String period;
-//	private int status;
 	private int currentPage;
 	private int pageSize;
 	
@@ -18,12 +17,6 @@ public class GetTransactionRecordRequest {
 	public void setPeriod(String period) {
 		this.period = period;
 	}
-//	public int getStatus() {
-//		return status;
-//	}
-//	public void setStatus(int status) {
-//		this.status = status;
-//	}
 	public int getCurrentPage() {
 		return currentPage;
 	}

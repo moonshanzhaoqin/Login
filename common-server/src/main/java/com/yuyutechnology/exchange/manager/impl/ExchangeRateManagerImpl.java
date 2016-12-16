@@ -153,6 +153,24 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		
 		return out;
 	}
+	
+	@Override
+	public HashMap<String, Double> getExchangeRate(String base) {
+		
+		 HashMap<String, Double> map = new HashMap<>();
+		
+		 List<Currency> list = currencyDAO.getCurrencys();
+		
+		for (Currency currency : list) {
+			
+			if(!currency.getCurrency().equals(base)){
+				Double value = getExchangeRate(base, currency.getCurrency());
+				map.put(currency.getCurrency(), value);
+			}
+		}
+		
+		return map;
+	}
 
 	/////////////////////////////////////////////////方法内调用//////////////////////////////////////////////////
 	
@@ -175,5 +193,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		
 		return out;
 	}
+
+
 	
 }

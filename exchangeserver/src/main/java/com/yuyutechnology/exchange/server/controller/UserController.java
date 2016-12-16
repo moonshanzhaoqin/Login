@@ -3,12 +3,9 @@
  */
 package com.yuyutechnology.exchange.server.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.hibernate.sql.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +18,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.ServerConsts;
-import com.yuyutechnology.exchange.dto.UserInfo;
-import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.AppVersion;
-import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.server.controller.request.AppVersionRequest;
 import com.yuyutechnology.exchange.server.controller.request.ForgetPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetVerificationCodeRequest;

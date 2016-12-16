@@ -65,6 +65,9 @@ public class TransferController {
 		}else if(result.equals(ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT)){
 			rep.setRetCode(ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT);
 			rep.setMessage("");
+		}else if(result.equals(ServerConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF)){
+			rep.setRetCode(ServerConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
+			rep.setMessage("");
 		}else{
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 			rep.setMessage("");
