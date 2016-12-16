@@ -59,6 +59,14 @@ public class TransferManagerImpl implements TransferManager{
 	@Override
 	public String transferInitiate(int userId,String areaCode,String userPhone, String currency, 
 			BigDecimal amount, String transferComment,int noticeId) {
+		
+		User receiver = userDAO.getUserByUserPhone(areaCode, userPhone);
+		
+		if(receiver!= null && userId == receiver.getUserId()){
+			logger.warn("Prohibit transfers to yourself");
+			return ServerConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF;
+		}
+
 		//判断余额是否足够支付
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
 		if(wallet == null || wallet.getBalance().compareTo(amount) == -1){
@@ -74,8 +82,6 @@ public class TransferManagerImpl implements TransferManager{
 			logger.warn("Exceeded the day's transaction limit");
 			return ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT;
 		}
-		
-		User receiver = userDAO.getUserByUserPhone(areaCode, userPhone);
 		
 		//生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_OF_TRANSACTION);
@@ -176,6 +182,7 @@ public class TransferManagerImpl implements TransferManager{
 			transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 			
 			///////////////////////////向未注册用户发送短信/////////////////////////////
+			//:TODO
 			
 		
 		}else{	//交易对象注册账号,交易正常进行，无需经过系统账户							
@@ -197,9 +204,11 @@ public class TransferManagerImpl implements TransferManager{
 					ServerConsts.TRANSFER_TYPE_OF_TRANSACTION, transfer.getTransferId(), 
 					transfer.getCurrency(), transfer.getTransferAmount());	
 			
-			//如果是请求转账还需要更改消息通知中的状态//////////////////////////////////////////////////
+			//如果是请求转账还需要更改消息通知中的状态
 			if(transfer.getNoticeId() != 0){
-				
+				TransactionNotification notification =  notificationDAO.getNotificationById(transfer.getNoticeId());
+				notification.setTradingStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+				notificationDAO.updateNotification(notification);
 			}
 		}
 		//更改Transfer状态

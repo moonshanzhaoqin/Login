@@ -188,10 +188,13 @@ public class UserManagerImpl implements UserManager {
 			}
 			// goldpay
 			Bind bind = bindDAO.getBindByUserId(userId);
-			userInfo.setGoldpayAcount(bind.getGoldpayAcount());
-			userInfo.setGoldpayId(bind.getGoldpayId());
-			userInfo.setGoldpayName(bind.getGoldpayName());
-			logger.info("UserInfo={}", userInfo.toString());
+			if(bind != null){
+				userInfo.setGoldpayAcount(bind.getGoldpayAcount());
+				userInfo.setGoldpayId(bind.getGoldpayId());
+				userInfo.setGoldpayName(bind.getGoldpayName());
+				logger.info("UserInfo={}", userInfo.toString());
+			}
+			
 		} else {
 			logger.warn("Can not find the user!!!");
 		}

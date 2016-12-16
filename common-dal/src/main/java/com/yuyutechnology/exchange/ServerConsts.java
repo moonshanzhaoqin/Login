@@ -102,7 +102,9 @@ public class ServerConsts {
 	 */
 	public static final String PIN_CODE_INCORRECT = "03005";
 	
-	public static final String TRANSFER_HISTORY_NOT_ACQUIRED = "03006";
+	public static final String TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF = "03006";
+	
+	public static final String TRANSFER_HISTORY_NOT_ACQUIRED = "03007";
 
 	// 用户类型
 	/**

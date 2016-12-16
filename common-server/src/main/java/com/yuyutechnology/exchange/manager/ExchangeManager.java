@@ -6,6 +6,10 @@ import java.util.List;
 
 import com.yuyutechnology.exchange.dto.WalletInfo;
 
+/**
+ * @author nicholas.chi
+ *
+ */
 public interface ExchangeManager {
 	
 	/**
@@ -30,10 +34,11 @@ public interface ExchangeManager {
 	public HashMap<String, String> exchangeCalculation(int userId,String currencyOut,
 			String currencyIn,BigDecimal amountOut);
 	
+
 	/**
-	 * @Descrition : 兑换交易确认
+	 * @Descrition : TODO
 	 * @author : nicholas.chi
-	 * @time : 2016年12月5日 下午5:20:43
+	 * @time : 2016年12月16日 下午4:19:38
 	 * @param userId
 	 * @param currencyOut
 	 * @param currencyIn
@@ -41,7 +46,7 @@ public interface ExchangeManager {
 	 * @param amountIn
 	 * @return
 	 */
-	public String exchangeConfirm(int userId,String currencyOut,
+	public HashMap<String, String> exchangeConfirm(int userId,String currencyOut,
 			String currencyIn,BigDecimal amountOut,BigDecimal amountIn);
 
 	/**

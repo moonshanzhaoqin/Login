@@ -18,13 +18,17 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
+import com.yuyutechnology.exchange.manager.ExchangeRateManager;
+import com.yuyutechnology.exchange.pojo.Exchange;
 import com.yuyutechnology.exchange.server.controller.request.ExchangeCalculationRequest;
 import com.yuyutechnology.exchange.server.controller.request.ExchangeConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetExchangeHistoryRequest;
+import com.yuyutechnology.exchange.server.controller.request.GetExchangeRateRequest;
 import com.yuyutechnology.exchange.server.controller.response.ExchangeCalculationResponse;
 import com.yuyutechnology.exchange.server.controller.response.ExchangeConfirmResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetCurrentBalanceResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetExchangeHistoryResponse;
+import com.yuyutechnology.exchange.server.controller.response.GetExchangeRateResponse;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
 
@@ -33,6 +37,8 @@ public class ExchangeController {
 	
 	@Autowired
 	ExchangeManager exchangeManager;
+	@Autowired
+	ExchangeRateManager exchangeRateManager;
 	
 	public static Logger logger = LoggerFactory.getLogger(ExchangeController.class);
 	
@@ -77,6 +83,29 @@ public class ExchangeController {
 		return rep;
 	}
 	
+	
+	@ApiOperation(value = "获取汇率")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/getExchangeRate")
+	public @ResponseBody
+	GetExchangeRateResponse getExchangeRate(@PathVariable String token,@RequestBody GetExchangeRateRequest reqMsg){
+		GetExchangeRateResponse rep = new GetExchangeRateResponse();
+		HashMap<String, Double> map = exchangeRateManager.getExchangeRate(reqMsg.getBase());
+		if(map.isEmpty()){
+			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
+			rep.setMessage("Failed to get exchange rate");
+			return rep;
+		}
+		
+		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+		rep.setMessage("OK");
+		rep.setBase(reqMsg.getBase());
+		rep.setExchangeRates(map);
+		
+		return rep;
+
+	}
+	
+	
 	@ApiOperation(value = "兑换确认")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/exchangeConfirm")
 	public @ResponseBody
@@ -84,19 +113,18 @@ public class ExchangeController {
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		ExchangeConfirmResponse rep = new ExchangeConfirmResponse();
-		String retCode = exchangeManager.exchangeConfirm(sessionData.getUserId(), 
+		HashMap<String, String> result = exchangeManager.exchangeConfirm(sessionData.getUserId(), 
 				reqMsg.getCurrencyOut(), reqMsg.getCurrencyIn(), 
 				new BigDecimal(reqMsg.getAmountOut()), new BigDecimal(reqMsg.getAmountIn()));
-		if(retCode.equals(ServerConsts.RET_CODE_SUCCESS)){
-			rep.setMessage("ok");
-		}else if(retCode.equals(ServerConsts.EXCHANGE_WALLET_CAN_NOT_BE_QUERIED)){
-			rep.setMessage("");
-		}else if(retCode.equals(ServerConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE)){
-			rep.setMessage("");
-		}else if(retCode.equals(ServerConsts.EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT)){
-			rep.setMessage("");
+		
+		rep.setRetCode(result.get("retCode"));
+		rep.setMessage(result.get("msg"));
+		
+		if(result.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
+			rep.setAmountIn(Double.parseDouble(result.get("in")));
+			rep.setAmountOut(Double.parseDouble(result.get("out")));
 		}
-		rep.setRetCode(retCode);
+
 		return rep;
 	}
 	
@@ -105,11 +133,28 @@ public class ExchangeController {
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/getExchangeHistory")
 	public @ResponseBody
 	GetExchangeHistoryResponse getExchangeHistory(@PathVariable String token,@RequestBody GetExchangeHistoryRequest reqMsg){
+		//从Session中获取Id
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		GetExchangeHistoryResponse rep = new GetExchangeHistoryResponse();
+		HashMap<String, Object> map = exchangeManager.getExchangeRecordsByPage(sessionData.getUserId(),
+				reqMsg.getPeriod(), reqMsg.getCurrentPage(), reqMsg.getPageSize());
+		@SuppressWarnings("unchecked")
+		List<Exchange> list = (List<Exchange>) map.get("list");
+		if(list.isEmpty()){
+			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
+			rep.setMessage("No data is available");
+			return rep;
+		}
 		
+		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+		rep.setMessage("ok");
+		rep.setCurrentPage((int) map.get("currentPage"));
+		rep.setPageSize((int) map.get("pageSize"));
+		rep.setPageTotal((int) map.get("pageTotal"));
+		rep.setTotal(Integer.parseInt(map.get("total")+""));
+		rep.setList(list);
 		
-		
-		
-		return null;
+		return rep;
 		
 	}
 	

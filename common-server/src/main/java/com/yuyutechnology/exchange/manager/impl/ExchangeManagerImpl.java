@@ -103,13 +103,18 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	}
 
 	@Override
-	public String exchangeConfirm(int userId, String currencyOut, String currencyIn, BigDecimal amountOut,
+	public HashMap<String, String> exchangeConfirm(int userId, String currencyOut, String currencyIn, BigDecimal amountOut,
 			BigDecimal amountIn) {
 		HashMap<String, String> result = exchangeCalculation(userId, currencyOut, currencyIn, amountOut);
 		if (result.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)) {
 			// 用户账户
 			// 扣款
-			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut, new BigDecimal(result.get("out")), "-");
+			int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut, new BigDecimal(result.get("out")), "-");
+			if(updateCount == 0){//余额不足
+				result.put("retCode", ServerConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
+				result.put("msg", "Insufficient balance");
+				return result;
+			}
 			// 加款
 			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, new BigDecimal(result.get("in")), "+");
 
@@ -120,6 +125,8 @@ public class ExchangeManagerImpl implements ExchangeManager {
 					"+");
 			// 扣款
 			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new BigDecimal(result.get("in")), "-");
+			
+
 
 			String exchangeId = exchangeDAO.createExchangeId(ServerConsts.TRANSFER_TYPE_OF_EXCHANGE);
 			// 添加Exchange记录
@@ -143,7 +150,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 					currencyIn, amountIn, currencyOut, amountOut);
 		}
 
-		return result.get("retCode");
+		return result;
 	}
 	
 	@Override

@@ -1,5 +1,7 @@
 package com.yuyutechnology.exchange.manager;
 
+import java.util.HashMap;
+
 public interface ExchangeRateManager {
 	
 	/**
@@ -25,5 +27,8 @@ public interface ExchangeRateManager {
 	 * @return
 	 */
 	public double getExchangeRate(String base,String outCurrency);
+	
+	
+	public HashMap<String, Double> getExchangeRate(String base);
 
 }

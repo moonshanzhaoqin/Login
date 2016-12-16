@@ -58,14 +58,19 @@ public class WalletDAOImpl implements WalletDAO {
 		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
 			@Override
 			public Integer doInHibernate(Session session) throws HibernateException {
-				Query query;
+				Query query = null;
 				if(capitalFlows.equals("+")){
 					query = session.createQuery("update Wallet set updateTime = ? ,balance = balance+"
 							+amount+" where userId = ? and currency.currency = ?");
 				}else{
-					query = session.createQuery("update Wallet set updateTime = ? ,balance = balance-"
-							+amount+" where userId = ? and currency.currency = ? and userId != ? and balance-"+amount+">0");
-					query.setInteger(3, systemUserId);
+					if(userId != systemUserId){
+						query = session.createQuery("update Wallet set updateTime = ? ,balance = balance-"
+								+amount+" where userId = ? and currency.currency = ? and balance-"+amount+">0");
+					}else{
+						query = session.createQuery("update Wallet set updateTime = ? ,balance = balance-"
+								+amount+" where userId = ? and currency.currency = ?");
+					}
+
 				}
 				query.setTimestamp(0, new Date());
 				query.setInteger(1, userId);
