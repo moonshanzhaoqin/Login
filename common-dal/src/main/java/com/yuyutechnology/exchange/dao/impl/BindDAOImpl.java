@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.dao.BindDAO;
 import com.yuyutechnology.exchange.pojo.Bind;
-import com.yuyutechnology.exchange.pojo.Wallet;
 
 
 @Repository
@@ -17,7 +16,6 @@ public class BindDAOImpl implements BindDAO {
 	@Resource
 	HibernateTemplate hibernateTemplate;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Bind getBindByUserId(Integer userId) {
 		List<?> list = hibernateTemplate.find("from Bind where userId = ?", userId);
