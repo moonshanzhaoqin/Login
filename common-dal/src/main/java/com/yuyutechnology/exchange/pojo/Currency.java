@@ -18,6 +18,14 @@ import javax.persistence.Table;
 @Table(name = "currency")
 public class Currency implements java.io.Serializable {
 
+	@Override
+	public String toString() {
+		return "Currency [currency=" + currency + ", nameEn=" + nameEn + ", nameCn=" + nameCn + ", nameHk=" + nameHk
+				+ ", currencyImage=" + currencyImage + ", currencyStatus=" + currencyStatus + ", transferMax="
+				+ transferMax + ", transferLarge=" + transferLarge + ", assetThreshold=" + assetThreshold + ", wallets="
+				+ wallets + "]";
+	}
+
 	private String currency;
 	private String nameEn;
 	private String nameCn;

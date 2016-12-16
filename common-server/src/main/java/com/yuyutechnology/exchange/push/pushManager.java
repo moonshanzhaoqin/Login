@@ -50,10 +50,10 @@ public class pushManager {
 		Resource resource = new ClassPathResource("push/en/transfer.template");
 		transfer_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		resource = new ClassPathResource("push/zh_CN/phoneVerify.template");
+		resource = new ClassPathResource("push/zh_CN/transfer.template");
 		transfer_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		resource = new ClassPathResource("push/zh_HK/phoneVerify.template");
+		resource = new ClassPathResource("push/zh_HK/transfer.template");
 		transfer_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 	}
 
