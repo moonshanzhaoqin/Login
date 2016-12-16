@@ -46,9 +46,11 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		}
 		HashMap<String, String> map = new HashMap<String, String>();
 		for (Currency currency : currencies) {
-			String result = HttpTookit.sendGet(exchangeRateUrl, "base="+currency.getCurrency());
-			logger.info("result : {}",result);
-			map.put(currency.getCurrency(), result);
+			if(!currency.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
+				String result = HttpTookit.sendGet(exchangeRateUrl, "base="+currency.getCurrency());
+				logger.info("result : {}",result);
+				map.put(currency.getCurrency(), result);
+			}
 		}
 		redisDAO.saveData("redis_exchangeRate",JsonBinder.getInstance().toJson(map), 35);
 	}

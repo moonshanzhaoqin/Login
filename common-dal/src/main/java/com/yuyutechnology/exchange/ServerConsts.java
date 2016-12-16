@@ -123,7 +123,7 @@ public class ServerConsts {
 	public static final int USER_AVAILABLE_OF_UNAVAILABLE = 0;
 
 	// 币种
-	public static final String CURRENCY_OF_GOLDPAY = "goldpay";
+	public static final String CURRENCY_OF_GOLDPAY = "GDQ";
 
 	// 交易类型
 	/**

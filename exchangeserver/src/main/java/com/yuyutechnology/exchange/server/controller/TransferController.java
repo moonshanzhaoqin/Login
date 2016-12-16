@@ -20,12 +20,13 @@ import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.GetTransactionRecordRequest;
-import com.yuyutechnology.exchange.server.controller.request.RequestATransferRequest;
+import com.yuyutechnology.exchange.server.controller.request.MakeRequestRequest;
+import com.yuyutechnology.exchange.server.controller.request.Respond2RequestRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransPwdConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransferConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransferInitiateRequest;
 import com.yuyutechnology.exchange.server.controller.response.GetTransactionRecordReponse;
-import com.yuyutechnology.exchange.server.controller.response.RequestATransferResponse;
+import com.yuyutechnology.exchange.server.controller.response.Respond2RequestResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransPwdConfirmResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransferConfirmResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransferInitiateResponse;
@@ -121,13 +122,20 @@ public class TransferController {
 		return rep;
 	}
 	
-	@ApiOperation(value = "请求转账")
-	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/requestATransfer")
-	public @ResponseBody
-	RequestATransferResponse requestATransfer(@PathVariable String token,@RequestBody RequestATransferRequest reqMsg){
+	public void makeRequest(@PathVariable String token,@RequestBody MakeRequestRequest reqMsg){
+		
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		RequestATransferResponse rep = new RequestATransferResponse();
+		
+	}
+	
+	@ApiOperation(value = "请求转账回应")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/requestATransfer")
+	public @ResponseBody
+	Respond2RequestResponse respond2Request(@PathVariable String token,@RequestBody Respond2RequestRequest reqMsg){
+		//从Session中获取Id
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		Respond2RequestResponse rep = new Respond2RequestResponse();
 		String result = transferManager.transferInitiate(sessionData.getUserId(), reqMsg.getAreaCode(),
 				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()), 
 				null,reqMsg.getNoticeId());

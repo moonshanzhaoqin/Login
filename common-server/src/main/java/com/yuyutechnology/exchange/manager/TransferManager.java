@@ -3,8 +3,6 @@ package com.yuyutechnology.exchange.manager;
 import java.math.BigDecimal;
 import java.util.HashMap;
 
-import org.apache.commons.lang.Validate;
-
 import com.yuyutechnology.exchange.pojo.Unregistered;
 
 public interface TransferManager {
@@ -59,7 +57,20 @@ public interface TransferManager {
 	public void systemRefundBatch();
 	
 	
+	/**
+	 * @Descrition : TODO
+	 * @author : nicholas.chi
+	 * @time : 2016年12月15日 下午6:09:28
+	 * @param period
+	 * @param userId
+	 * @param currentPage
+	 * @param pageSize
+	 * @return
+	 */
 	public HashMap<String, Object> getTransactionRecordByPage(String period,int userId,int currentPage, int pageSize);
+	
+	
+	public void makeRequest(int userId,String payerAreaCode,String payerPhone,String currency,BigDecimal amount);
 	
 
 }
