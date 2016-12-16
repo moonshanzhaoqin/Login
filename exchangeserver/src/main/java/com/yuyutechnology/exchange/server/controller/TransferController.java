@@ -101,7 +101,7 @@ public class TransferController {
 	@ApiOperation(value = "重新发送pin")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/resendPhonePin")
 	public @ResponseBody
-	ResendTransferPinResponse resendTransferPin(ResendTransferPinRequest reqMsg){
+	ResendTransferPinResponse resendTransferPin(@PathVariable String token,@RequestBody ResendTransferPinRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		ResendTransferPinResponse rep = new ResendTransferPinResponse();
