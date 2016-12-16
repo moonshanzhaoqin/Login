@@ -39,6 +39,7 @@ import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.sms.SmsManager;
 import com.yuyutechnology.exchange.utils.JsonBinder;
+import com.yuyutechnology.exchange.utils.LanguageUtils;
 import com.yuyutechnology.exchange.utils.MathUtils;
 import com.yuyutechnology.exchange.utils.PasswordUtils;
 
@@ -330,12 +331,16 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public void updateUser(Integer userId, String loginIp, String pushId, String pushTag) {
+	public void updateUser(Integer userId, String loginIp, String pushId, String language) {
 		User user = userDAO.getUser(userId);
 		user.setLoginIp(loginIp);
 		user.setLoginTime(new Date());
-		user.setPushId(pushId);
-		user.setPushTag(pushTag);
+		if (StringUtils.isNotBlank(pushId)) {
+			user.setPushId(pushId);
+		}
+		if (StringUtils.isNotBlank(language)) {
+			user.setPushTag(LanguageUtils.standard(language));
+		}
 		userDAO.updateUser(user);
 	}
 

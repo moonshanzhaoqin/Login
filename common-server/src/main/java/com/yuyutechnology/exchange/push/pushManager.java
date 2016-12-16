@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.push;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import javax.annotation.PostConstruct;
 
@@ -13,10 +14,12 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.sms.SmsManager;
 import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.JsonBinder;
+import com.yuyutechnology.exchange.utils.LanguageUtils.Language;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
 
 /**
@@ -38,8 +41,12 @@ public class pushManager {
 	// zh_HK
 	private String transfer_HK = "";
 
-//	@PostConstruct
-//	@Scheduled(cron = "0 1/10 * * * ?")
+	private final String PUSH_REPLACE_FROM = "[FROM]";
+	private final String PUSH_REPLACE_CURRENCY = "[CURRENCY]";
+	private final String PUSH_REPLACE_AMOUNT = "[AMOUNT]";
+
+	// @PostConstruct
+	// @Scheduled(cron = "0 1/10 * * * ?")
 	public void init() throws IOException {
 		appName = ResourceUtils.getBundleValue("appName");
 		pushToAllURL = ResourceUtils.getBundleValue("push.all.url");
@@ -47,7 +54,7 @@ public class pushManager {
 		pushToTagURL = ResourceUtils.getBundleValue("push.tag.url");
 
 		// 加载模板
-		Resource resource = new ClassPathResource("push/en/transfer.template");
+		Resource resource = new ClassPathResource("push/en_US/transfer.template");
 		transfer_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
 		resource = new ClassPathResource("push/zh_CN/transfer.template");
@@ -57,10 +64,39 @@ public class pushManager {
 		transfer_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 	}
 
-	public void push(User user) {
-		String title = "";
-		String body = "";
-		pushToCustom(user.getUserId(), user.getPushId(), title, body);
+	public void push(User userFrom, User userTo, Currency currency, BigDecimal amount) {
+		String title = "转账提醒";
+		String transferBody = templateChoose("transfer", userTo.getPushTag());
+		String body = transferBody.replace(PUSH_REPLACE_FROM, userFrom.getUserName())
+				.replace(PUSH_REPLACE_CURRENCY, currency.getCurrency()).replace(PUSH_REPLACE_AMOUNT, amount.toString());
+		pushToCustom(userTo.getUserId(), userTo.getPushId(), title, body);
+	}
+
+	private String templateChoose(String func, Language pushTag) {
+		String body = null;
+		switch (func) {
+		case "transfer":
+			switch (pushTag) {
+			case en_US:
+				body = transfer_en;
+				break;
+			case zh_CN:
+				body = transfer_CN;
+				break;
+			case zh_HK:
+				body = transfer_HK;
+				break;
+			case zh_TW:
+				body = transfer_HK;
+				break;
+			default:
+				break;
+			}
+			break;
+		default:
+			body = null;
+		}
+		return body;
 	}
 
 	@Async

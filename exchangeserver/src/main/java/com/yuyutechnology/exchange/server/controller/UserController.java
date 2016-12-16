@@ -81,7 +81,6 @@ public class UserController {
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
-			//验证码校验
 			// 验证码校验
 			if (userManager.testPinCode(ServerConsts.PIN_FUNC_FORGETPASSWORD, forgetPasswordRequest.getAreaCode(),
 					forgetPasswordRequest.getUserPhone(), forgetPasswordRequest.getVerificationCode())) {

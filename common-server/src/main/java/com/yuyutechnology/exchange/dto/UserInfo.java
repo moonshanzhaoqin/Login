@@ -1,7 +1,5 @@
 package com.yuyutechnology.exchange.dto;
 
-import com.yuyutechnology.exchange.pojo.Bind;
-
 public class UserInfo {
 
 
