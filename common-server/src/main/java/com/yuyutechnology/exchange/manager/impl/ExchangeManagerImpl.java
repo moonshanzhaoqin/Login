@@ -47,28 +47,13 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	public List<WalletInfo> getWalletsByUserId(int userId) {
 		List<WalletInfo> list = new ArrayList<>();
 		List<Wallet> wallets = walletDAO.getWalletsByUserId(userId);
-		List<Currency> currencies = currencyDAO.getCurrentCurrency();
-		for (Currency currency : currencies) {
-			boolean isNeedAdd = true;
-			for (Wallet wallet : wallets) {
-				if (wallet.getCurrency() == currency) {
-					isNeedAdd = false;
-					break;
-				}
-			}
-			if (isNeedAdd) {
-				walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date()));
-			}
-		}
-		wallets = walletDAO.getWalletsByUserId(userId);
 		for (Wallet wallet : wallets) {
 			if (wallet.getCurrency().getCurrencyStatus() == ServerConsts.CURRENCY_AVAILABLE
-					|| wallet.getBalance() == new BigDecimal(0)) {
-				WalletInfo walletInfo = new WalletInfo(wallet.getCurrency().getCurrency(),
+					|| wallet.getBalance().compareTo(BigDecimal.ZERO)!=0 ) {
+				list.add(new WalletInfo(wallet.getCurrency().getCurrency(),
 						wallet.getCurrency().getNameEn(), wallet.getCurrency().getNameCn(),
 						wallet.getCurrency().getNameHk(), wallet.getCurrency().getCurrencyStatus(),
-						wallet.getBalance());
-				list.add(walletInfo);
+						wallet.getBalance()));
 			}
 		}
 		return list;

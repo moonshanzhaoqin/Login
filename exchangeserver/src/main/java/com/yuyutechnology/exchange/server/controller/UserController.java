@@ -196,6 +196,8 @@ public class UserController {
 			} else {
 				//记录登录信息
 				userManager.updateUser(userId, HttpTookit.getIp(request),loginRequest.getPushId(),loginRequest.getLanguage());
+				//更新钱包
+				userManager.updateWallet(userId);
 				// 生成session Token
 				SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 				sessionManager.saveSessionData(sessionData);
@@ -225,6 +227,8 @@ public class UserController {
 			} else if (userManager.checkUserPassword(userId, loginRequest.getUserPassword())) {
 				//记录登录信息
 				userManager.updateUser(userId, HttpTookit.getIp(request),loginRequest.getPushId(),loginRequest.getLanguage());
+				//更新钱包
+				userManager.updateWallet(userId);
 				// 生成session Token
 				SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 				sessionManager.saveSessionData(sessionData);

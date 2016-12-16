@@ -5,6 +5,7 @@ import java.util.List;
 import com.yuyutechnology.exchange.dto.CurrencyInfo;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.pojo.AppVersion;
+import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Friend;
 
 public interface UserManager {
@@ -42,7 +43,8 @@ public interface UserManager {
 	 * @param ip
 	 * @return
 	 */
-	public Integer login(String areaCode, String userPhone, String userPassword, String ip);
+	// public Integer login(String areaCode, String userPhone, String
+	// userPassword, String ip);
 
 	/**
 	 * 添加新用户
@@ -149,5 +151,21 @@ public interface UserManager {
 	 * @param pushTag
 	 */
 	public void updateUser(Integer userId, String loginIp, String pushId, String pushTag);
+
+	/**
+	 * 更新钱包
+	 * 
+	 * @param userId
+	 */
+	public void updateWallet(Integer userId);
+
+	/**
+	 * 校验并增加用户钱包
+	 * 如果没有该currency的钱包，就新增一个，否则不做任何变化
+	 * 
+	 * @param userId
+	 * @param currency
+	 */
+	void checkWallet(Integer userId, Currency currency);
 
 }

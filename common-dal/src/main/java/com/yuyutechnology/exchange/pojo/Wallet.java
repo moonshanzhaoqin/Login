@@ -22,6 +22,12 @@ import javax.persistence.TemporalType;
 @Table(name = "wallet")
 public class Wallet implements java.io.Serializable {
 
+	@Override
+	public String toString() {
+		return "Wallet [walletId=" + walletId + ", currency=" + currency.getCurrency()+currency.getCurrencyStatus() + ", userId=" + userId + ", balance=" + balance
+				+ ", updateTime=" + updateTime + "]";
+	}
+
 	private Integer walletId;
 	private Currency currency;
 	private int userId;
