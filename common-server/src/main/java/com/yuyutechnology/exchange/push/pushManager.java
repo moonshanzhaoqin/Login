@@ -3,12 +3,15 @@ package com.yuyutechnology.exchange.push;
 import java.io.IOException;
 import java.math.BigDecimal;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.pojo.Currency;
@@ -30,28 +33,46 @@ public class pushManager {
 	private String pushToAllURL = "";
 	private String pushToCustomURL = "";
 	private String pushToTagURL = "";
+	private String day = "";
+
+	// 到账提醒
 	// en
 	private String transfer_en = "";
-	private String transfer_request_en = "";
 	// zh_CN
 	private String transfer_CN = "";
-	private String transfer_request_CN = "";
 	// zh_HK
 	private String transfer_HK = "";
+
+	// 请求转账
+	// en
+	private String transfer_request_en = "";
+	// zh_CN
+	private String transfer_request_CN = "";
+	// zh_HK
 	private String transfer_request_HK = "";
+
+	// 退款refund
+	// en
+	private String refund_en = "";
+	// zh_CN
+	private String refund_CN = "";
+	// zh_HK
+	private String refund_HK = "";
 
 	private final String PUSH_REPLACE_FROM = "[FROM]";
 	private final String PUSH_REPLACE_TO = "[TO]";
 	private final String PUSH_REPLACE_CURRENCY = "[CURRENCY]";
 	private final String PUSH_REPLACE_AMOUNT = "[AMOUNT]";
+	private final String PUSH_REPLACE_DAY = "[DAY]";
 
-	// @PostConstruct
-	// @Scheduled(cron = "0 1/10 * * * ?")
+	 @PostConstruct
+	 @Scheduled(cron = "0 1/10 * * * ?")
 	public void init() throws IOException {
 		appName = ResourceUtils.getBundleValue("appName");
 		pushToAllURL = ResourceUtils.getBundleValue("push.all.url");
 		pushToCustomURL = ResourceUtils.getBundleValue("push.custom.url");
 		pushToTagURL = ResourceUtils.getBundleValue("push.tag.url");
+		day = ResourceUtils.getBundleValue("refund.time");
 
 		// 加载模板
 		// 到账提醒
@@ -73,6 +94,16 @@ public class pushManager {
 
 		resource = new ClassPathResource("push/zh_HK/transfer_request.template");
 		transfer_request_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+
+		// 退款refund
+		resource = new ClassPathResource("push/en_US/refund.template");
+		refund_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+
+		resource = new ClassPathResource("push/zh_CN/refund.template");
+		refund_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+
+		resource = new ClassPathResource("push/zh_HK/refund.template");
+		refund_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 	}
 
 	/**
@@ -106,6 +137,31 @@ public class pushManager {
 				.replace(PUSH_REPLACE_CURRENCY, currency.getCurrency()).replace(PUSH_REPLACE_AMOUNT, amount.toString());
 		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body);
 	}
+
+	/**
+	 * 退款refund
+	 * 
+	 * @param userFrom
+	 * @param userTo
+	 * @param currency
+	 * @param amount
+	 */
+	public void push4Refund(User userFrom, String areaCode, String phone, Currency currency, BigDecimal amount) {
+		String title = "退款通知";
+		String refundBody = templateChoose("refund", userFrom.getPushTag());
+		String body = refundBody.replace(PUSH_REPLACE_TO, areaCode + phone)
+				.replace(PUSH_REPLACE_CURRENCY, currency.getCurrency()).replace(PUSH_REPLACE_AMOUNT, amount.toString())
+				.replace(PUSH_REPLACE_DAY, day);
+		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body);
+	}
+
+	/**
+	 * 根据功能和语言选择模板
+	 * 
+	 * @param func
+	 * @param pushTag
+	 * @return
+	 */
 
 	private String templateChoose(String func, Language pushTag) {
 		String body = null;
@@ -141,6 +197,24 @@ public class pushManager {
 				break;
 			case zh_TW:
 				body = transfer_request_HK;
+				break;
+			default:
+				break;
+			}
+			break;
+		case "refund":
+			switch (pushTag) {
+			case en_US:
+				body = refund_en;
+				break;
+			case zh_CN:
+				body = refund_CN;
+				break;
+			case zh_HK:
+				body = refund_HK;
+				break;
+			case zh_TW:
+				body = refund_HK;
 				break;
 			default:
 				break;
