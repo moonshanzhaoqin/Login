@@ -2,7 +2,7 @@ package com.yuyutechnology.exchange.server.controller.response;
 
 import java.util.List;
 
-public class GetTransactionRecordReponse extends BaseResponse {
+public class GetTransactionRecordResponse extends BaseResponse {
 
 	private int currentPage;
 	private int pageSize;

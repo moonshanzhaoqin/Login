@@ -26,7 +26,7 @@ import com.yuyutechnology.exchange.server.controller.request.Respond2RequestRequ
 import com.yuyutechnology.exchange.server.controller.request.TransPwdConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransferConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransferInitiateRequest;
-import com.yuyutechnology.exchange.server.controller.response.GetTransactionRecordReponse;
+import com.yuyutechnology.exchange.server.controller.response.GetTransactionRecordResponse;
 import com.yuyutechnology.exchange.server.controller.response.MakeRequestResponse;
 import com.yuyutechnology.exchange.server.controller.response.ResendTransferPinResponse;
 import com.yuyutechnology.exchange.server.controller.response.Respond2RequestResponse;
@@ -199,11 +199,11 @@ public class TransferController {
 	@ApiOperation(value = "获取交易明细")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransactionRecord")
 	public @ResponseBody
-	GetTransactionRecordReponse getTransactionRecord(@PathVariable String token,@RequestBody GetTransactionRecordRequest reqMsq){
+	GetTransactionRecordResponse getTransactionRecord(@PathVariable String token,@RequestBody GetTransactionRecordRequest reqMsq){
 		
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		GetTransactionRecordReponse rep = new GetTransactionRecordReponse();
+		GetTransactionRecordResponse rep = new GetTransactionRecordResponse();
 		HashMap<String,Object> map = transferManager.getTransactionRecordByPage(reqMsq.getPeriod(), sessionData.getUserId(),
 				reqMsq.getCurrentPage(), reqMsq.getPageSize());
 		
@@ -216,7 +216,7 @@ public class TransferController {
 			rep.setCurrentPage((int) map.get("currentPage"));
 			rep.setPageSize((int) map.get("pageSize"));
 			rep.setPageTotal((int) map.get("pageTotal"));
-			rep.setTotal((int) map.get("total"));
+			rep.setTotal(Integer.parseInt(map.get("total")+""));
 			rep.setList((ArrayList<?>)map.get("list"));
 		}
 		
