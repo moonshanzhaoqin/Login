@@ -185,8 +185,7 @@ public class TransferManagerImpl implements TransferManager{
 			//更改Transfer状态
 			transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 			
-			///////////////////////////向未注册用户发送短信/////////////////////////////
-			//:TODO
+			//向未注册用户发送短信
 			smsManager.sendSMS4Transfer(transfer.getAreaCode(), transfer.getPhone(), payer,
 					transfer.getCurrency(), transfer.getTransferAmount());
 			
@@ -289,7 +288,8 @@ public class TransferManagerImpl implements TransferManager{
 			return;
 		}
 		for (Unregistered unregistered : list) {
-			//判断是否超过期限////////////////////////////////////////////////////////
+			//:TODO
+			//判断是否超过期限
 			long deadline = 15*24*60*60*1000;
 			if(new Date().getTime() - unregistered.getCreateTime().getTime() >= deadline){
 				systemRefund(unregistered);
