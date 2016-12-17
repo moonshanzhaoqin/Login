@@ -1,5 +1,5 @@
 package com.yuyutechnology.exchange.pojo;
-// Generated Dec 15, 2016 8:56:30 PM by Hibernate Tools 5.1.0.Alpha1
+// Generated Dec 17, 2016 2:05:54 PM by Hibernate Tools 5.1.0.Alpha1
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -30,7 +30,7 @@ public class FriendId implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-	@Column(name = "friend_Id", nullable = false)
+	@Column(name = "friend_id", nullable = false)
 	public int getFriendId() {
 		return this.friendId;
 	}

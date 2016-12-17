@@ -37,6 +37,7 @@ import com.yuyutechnology.exchange.pojo.FriendId;
 import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.sms.SmsManager;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.LanguageUtils;
@@ -71,6 +72,8 @@ public class UserManagerImpl implements UserManager {
 	SmsManager smsManager;
 	@Autowired
 	GoldpayManager goldpayManager;
+	@Autowired
+	PushManager pushManager;
 
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
@@ -79,7 +82,7 @@ public class UserManagerImpl implements UserManager {
 			return ServerConsts.PHONE_NOT_EXIST;
 		} else if (friend.getUserId() == userId) {
 			return ServerConsts.ADD_FRIEND_OWEN;
-		} else if (friendDAO.getFriendByUserIdAndFrindId(userId,friend.getUserId()) != null) {
+		} else if (friendDAO.getFriendByUserIdAndFrindId(userId, friend.getUserId()) != null) {
 			return ServerConsts.FRIEND_HAS_ADDED;
 		} else {
 			friendDAO.addfriend(new Friend(new FriendId(userId, friend.getUserId()), friend, new Date()));
@@ -342,7 +345,12 @@ public class UserManagerImpl implements UserManager {
 		user.setLoginIp(loginIp);
 		user.setLoginTime(new Date());
 		if (StringUtils.isNotBlank(pushId)) {
-			user.setPushId(pushId);
+			if (user.getPushId() != pushId) {
+				// TODO 推送消息：设备已下线
+				pushManager.push4Offline(user);
+			} else {
+				user.setPushId(pushId);
+			}
 		}
 		if (StringUtils.isNotBlank(language)) {
 			user.setPushTag(LanguageUtils.standard(language));
