@@ -28,6 +28,7 @@ import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.push.PushManager;
+import com.yuyutechnology.exchange.sms.SmsManager;
 import com.yuyutechnology.exchange.utils.DateFormatUtils;
 import com.yuyutechnology.exchange.utils.PasswordUtils;
 
@@ -53,6 +54,8 @@ public class TransferManagerImpl implements TransferManager{
 	ExchangeRateManager exchangeRateManager;
 	@Autowired
 	PushManager pushManager;
+	@Autowired
+	SmsManager smsManager;
 	
 	public static Logger logger = LoggerFactory.getLogger(TransferManagerImpl.class);
 
@@ -146,6 +149,7 @@ public class TransferManagerImpl implements TransferManager{
 	@Override
 	public String transferConfirm(String transferId) {
 		Transfer transfer = transferDAO.getTransferById(transferId);
+		User payer = userDAO.getUser(transfer.getUserFrom());
 		
 		if(transfer.getUserTo() == 0){  	//交易对象没有注册账号
 			
@@ -183,6 +187,8 @@ public class TransferManagerImpl implements TransferManager{
 			
 			///////////////////////////向未注册用户发送短信/////////////////////////////
 			//:TODO
+			smsManager.sendSMS4Transfer(transfer.getAreaCode(), transfer.getPhone(), payer,
+					transfer.getCurrency(), transfer.getTransferAmount());
 			
 		
 		}else{	//交易对象注册账号,交易正常进行，无需经过系统账户							
@@ -210,6 +216,11 @@ public class TransferManagerImpl implements TransferManager{
 				notification.setTradingStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 				notificationDAO.updateNotification(notification);
 			}
+			//推送到账通知
+
+			User payee = userDAO.getUser(transfer.getUserTo());
+			pushManager.push4Transfer(payer, payee, transfer.getCurrency(), transfer.getTransferAmount());
+			
 		}
 		//更改Transfer状态
 		transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
@@ -304,7 +315,9 @@ public class TransferManagerImpl implements TransferManager{
 			
 			notificationDAO.addNotification(transactionNotification);
 			
-			//发送站内信////////////////////////////////
+			//推送请求付款
+			User payee = userDAO.getUser(userId);
+			pushManager.push4TransferRuquest(payee, payer, currency, amount);
 			
 			
 			return ServerConsts.RET_CODE_SUCCESS;

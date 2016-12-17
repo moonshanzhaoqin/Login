@@ -14,7 +14,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.JsonBinder;
@@ -132,11 +131,11 @@ public class PushManager {
 	 * @param currency
 	 * @param amount
 	 */
-	public void push4Transfer(User userFrom, User userTo, Currency currency, BigDecimal amount) {
+	public void push4Transfer(User userFrom, User userTo, String currency, BigDecimal amount) {
 		String title = "到账通知";
 		String transferBody = templateChoose("transfer", userTo.getPushTag());
 		String body = transferBody.replace(PUSH_REPLACE_FROM, userFrom.getUserName())
-				.replace(PUSH_REPLACE_CURRENCY, currency.getCurrency()).replace(PUSH_REPLACE_AMOUNT, amount.toString());
+				.replace(PUSH_REPLACE_CURRENCY, currency).replace(PUSH_REPLACE_AMOUNT, amount.toString());
 		pushToCustom(userTo.getUserId(), userTo.getPushId(), title, body);
 	}
 
@@ -148,11 +147,11 @@ public class PushManager {
 	 * @param currency
 	 * @param amount
 	 */
-	public void push4TransferRuquest(User userFrom, User userTo, Currency currency, BigDecimal amount) {
+	public void push4TransferRuquest(User userFrom, User userTo, String currency, BigDecimal amount) {
 		String title = "转账请求";
 		String transferBody = templateChoose("transfer_request", userFrom.getPushTag());
 		String body = transferBody.replace(PUSH_REPLACE_TO, userTo.getUserName())
-				.replace(PUSH_REPLACE_CURRENCY, currency.getCurrency()).replace(PUSH_REPLACE_AMOUNT, amount.toString());
+				.replace(PUSH_REPLACE_CURRENCY, currency).replace(PUSH_REPLACE_AMOUNT, amount.toString());
 		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body);
 	}
 

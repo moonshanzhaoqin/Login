@@ -102,10 +102,10 @@ public class SmsManager {
 	 * @param amount
 	 */
 	@Async
-	public void sendSMS4Transfer(String areaCode, String userPhone, User user, Currency currency, BigDecimal amount) {
+	public void sendSMS4Transfer(String areaCode, String userPhone, User user, String currency, BigDecimal amount) {
 		String transferContent = templateChoose("transfer", areaCode);
 		String content = transferContent.replace(SMS_REPLACE_FROM, user.getUserName())
-				.replace(SMS_REPLACE_CURRENCY, currency.getCurrency()).replace(SMS_REPLACE_AMOUNT, amount.toString());
+				.replace(SMS_REPLACE_CURRENCY, currency).replace(SMS_REPLACE_AMOUNT, amount.toString());
 		sendSMS(areaCode + userPhone, content);
 	}
 
