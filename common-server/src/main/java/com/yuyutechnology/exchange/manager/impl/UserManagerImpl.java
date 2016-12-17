@@ -346,16 +346,27 @@ public class UserManagerImpl implements UserManager {
 		user.setLoginTime(new Date());
 		if (StringUtils.isNotBlank(pushId)) {
 			if (user.getPushId() != pushId) {
-				// TODO 推送消息：设备已下线
+				// 推送消息：设备已下线
+				logger.info("推送消息：设备已下线");
 				pushManager.push4Offline(user);
-			} else {
-				user.setPushId(pushId);
 			}
+			user.setPushId(pushId);
 		}
 		if (StringUtils.isNotBlank(language)) {
+			if (!user.getPushTag().equals(LanguageUtils.standard(language))
+					&& StringUtils.isNotBlank(user.getPushId())) {
+				// 语言不一致，解绑Tag
+				logger.info("语言不一致，解绑Tag");
+				pushManager.unbindPushTag(user);
+			}
 			user.setPushTag(LanguageUtils.standard(language));
 		}
 		userDAO.updateUser(user);
+		if (StringUtils.isNotBlank(user.getPushId()) && user.getPushTag() != null) {
+			// 绑定Tag
+			logger.info("绑定Tag");
+			pushManager.bindPushTag(user);
+		}
 	}
 
 	@Override
