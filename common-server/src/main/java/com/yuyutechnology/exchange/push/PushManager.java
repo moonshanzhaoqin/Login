@@ -28,10 +28,17 @@ import com.yuyutechnology.exchange.utils.ResourceUtils;
 @Service
 public class PushManager {
 	public static Logger logger = LoggerFactory.getLogger(PushManager.class);
+
+	public enum Func {
+		bindTag, unbindTag
+	}
+
 	private String appName = "";
 	private String pushToAllURL = "";
 	private String pushToCustomURL = "";
 	private String pushToTagURL = "";
+	private String pushBindTagURL = "";
+	private String pushUnbindTagURL = "";
 	private String day = "";
 
 	// 到账提醒
@@ -79,6 +86,9 @@ public class PushManager {
 		pushToAllURL = ResourceUtils.getBundleValue("push.all.url");
 		pushToCustomURL = ResourceUtils.getBundleValue("push.custom.url");
 		pushToTagURL = ResourceUtils.getBundleValue("push.tag.url");
+		pushBindTagURL = ResourceUtils.getBundleValue("push.bind.tag.url");
+		pushUnbindTagURL = ResourceUtils.getBundleValue("push.unbind.tag.url");
+
 		day = ResourceUtils.getBundleValue("refund.time");
 
 		// 加载模板
@@ -166,9 +176,8 @@ public class PushManager {
 	public void push4Refund(User userFrom, String areaCode, String phone, String currency, BigDecimal amount) {
 		String title = "退款通知";
 		String refundBody = templateChoose("refund", userFrom.getPushTag());
-		String body = refundBody.replace(PUSH_REPLACE_TO, areaCode + phone)
-				.replace(PUSH_REPLACE_CURRENCY, currency).replace(PUSH_REPLACE_AMOUNT, amount.toString())
-				.replace(PUSH_REPLACE_DAY, day);
+		String body = refundBody.replace(PUSH_REPLACE_TO, areaCode + phone).replace(PUSH_REPLACE_CURRENCY, currency)
+				.replace(PUSH_REPLACE_AMOUNT, amount.toString()).replace(PUSH_REPLACE_DAY, day);
 		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body);
 	}
 
@@ -178,6 +187,22 @@ public class PushManager {
 		String offlineBody = templateChoose("offline", user.getPushTag());
 		String body = offlineBody;
 		pushToCustom(user.getUserId(), user.getPushId(), title, body);
+	}
+
+	/**
+	 * 绑定Tag
+	 */
+	public void bindPushTag(User user) {
+		tag(Func.bindTag, user.getPushId(), user.getPushTag().toString());
+	}
+
+	/**
+	 * 解绑 Tag
+	 * 
+	 * @param user
+	 */
+	public void unbindPushTag(User user) {
+		tag(Func.unbindTag, user.getPushId(), user.getPushTag().toString());
 	}
 
 	/**
@@ -280,6 +305,27 @@ public class PushManager {
 		String param = JsonBinder.getInstance().toJson(pushToCustom);
 		logger.info("pushRequest : {}", param);
 		HttpTookit.sendPost(pushToCustomURL, param);
+	}
+
+	@Async
+	private void tag(Func func, String deviceID, String pushTag) {
+		TagRequest tagRequest = new TagRequest();
+		tagRequest.setAppName(appName);
+		tagRequest.setDeviceIds(deviceID);
+		tagRequest.setTagName(pushTag);
+		String param = JsonBinder.getInstance().toJson(tagRequest);
+		logger.info("TagRequest : {}", param);
+		switch (func) {
+		case bindTag:
+			HttpTookit.sendPost(pushBindTagURL, param);
+			break;
+		case unbindTag:
+			HttpTookit.sendPost(pushUnbindTagURL, param);
+			break;
+		default:
+			break;
+		}
+
 	}
 
 	@Async
