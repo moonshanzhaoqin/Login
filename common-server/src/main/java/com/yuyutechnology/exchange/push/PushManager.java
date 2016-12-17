@@ -27,8 +27,8 @@ import com.yuyutechnology.exchange.utils.ResourceUtils;
  *
  */
 @Service
-public class pushManager {
-	public static Logger logger = LoggerFactory.getLogger(pushManager.class);
+public class PushManager {
+	public static Logger logger = LoggerFactory.getLogger(PushManager.class);
 	private String appName = "";
 	private String pushToAllURL = "";
 	private String pushToCustomURL = "";
@@ -58,6 +58,14 @@ public class pushManager {
 	private String refund_CN = "";
 	// zh_HK
 	private String refund_HK = "";
+
+	// 退款offline
+	// en
+	private String offline_en = "";
+	// zh_CN
+	private String offline_CN = "";
+	// zh_HK
+	private String offline_HK = "";
 
 	private final String PUSH_REPLACE_FROM = "[FROM]";
 	private final String PUSH_REPLACE_TO = "[TO]";
@@ -104,6 +112,16 @@ public class pushManager {
 
 		resource = new ClassPathResource("push/zh_HK/refund.template");
 		refund_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+
+		// 退款offline
+		resource = new ClassPathResource("push/en_US/offline.template");
+		offline_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+
+		resource = new ClassPathResource("push/zh_CN/offline.template");
+		offline_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+
+		resource = new ClassPathResource("push/zh_HK/offline.template");
+		offline_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 	}
 
 	/**
@@ -153,6 +171,14 @@ public class pushManager {
 				.replace(PUSH_REPLACE_CURRENCY, currency.getCurrency()).replace(PUSH_REPLACE_AMOUNT, amount.toString())
 				.replace(PUSH_REPLACE_DAY, day);
 		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body);
+	}
+
+	// Offline 下线消息
+	public void push4Offline(User user) {
+		String title = "下线消息";
+		String offlineBody = templateChoose("offline", user.getPushTag());
+		String body = offlineBody;
+		pushToCustom(user.getUserId(), user.getPushId(), title, body);
 	}
 
 	/**
@@ -215,6 +241,24 @@ public class pushManager {
 				break;
 			case zh_TW:
 				body = refund_HK;
+				break;
+			default:
+				break;
+			}
+			break;
+		case "offline":
+			switch (pushTag) {
+			case en_US:
+				body = offline_en;
+				break;
+			case zh_CN:
+				body = offline_CN;
+				break;
+			case zh_HK:
+				body = offline_HK;
+				break;
+			case zh_TW:
+				body = offline_HK;
 				break;
 			default:
 				break;
