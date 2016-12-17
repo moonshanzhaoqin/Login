@@ -334,7 +334,7 @@ public class UserManagerImpl implements UserManager {
 		List<CurrencyInfo> list = new ArrayList<>();
 		for (Currency currency : currencies) {
 			list.add(new CurrencyInfo(currency.getCurrency(), currency.getNameEn(), currency.getNameCn(),
-					currency.getNameHk(), currency.getCurrencyImage(), currency.getCurrencyStatus()));
+					currency.getNameHk(), currency.getCurrencyStatus()));
 		}
 		// logger.info("currency:{}",list);
 		return list;

@@ -11,14 +11,13 @@ public class CurrencyInfo {
 	public CurrencyInfo() {
 	}
 
-	public CurrencyInfo(String currency, String nameEn, String nameCn, String nameHk, String currencyImage,
+	public CurrencyInfo(String currency, String nameEn, String nameCn, String nameHk, 
 			int currencyStatus) {
 		super();
 		this.currency = currency;
 		this.nameEn = nameEn;
 		this.nameCn = nameCn;
 		this.nameHk = nameHk;
-		this.currencyImage = currencyImage;
 		this.currencyStatus = currencyStatus;
 	}
 

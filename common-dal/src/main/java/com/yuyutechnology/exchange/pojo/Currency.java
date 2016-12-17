@@ -22,7 +22,6 @@ public class Currency implements java.io.Serializable {
 	private String nameEn;
 	private String nameCn;
 	private String nameHk;
-	private String currencyImage;
 	private int currencyStatus;
 	private BigDecimal transferMax;
 	private BigDecimal transferLarge;
@@ -38,14 +37,13 @@ public class Currency implements java.io.Serializable {
 		this.currencyStatus = currencyStatus;
 	}
 
-	public Currency(String currency, String nameEn, String nameCn, String nameHk, String currencyImage,
-			int currencyStatus, BigDecimal transferMax, BigDecimal transferLarge, BigDecimal assetThreshold,
-			String currencyOrder, Set<Wallet> wallets) {
+	public Currency(String currency, String nameEn, String nameCn, String nameHk, int currencyStatus,
+			BigDecimal transferMax, BigDecimal transferLarge, BigDecimal assetThreshold, String currencyOrder,
+			Set<Wallet> wallets) {
 		this.currency = currency;
 		this.nameEn = nameEn;
 		this.nameCn = nameCn;
 		this.nameHk = nameHk;
-		this.currencyImage = currencyImage;
 		this.currencyStatus = currencyStatus;
 		this.transferMax = transferMax;
 		this.transferLarge = transferLarge;
@@ -92,15 +90,6 @@ public class Currency implements java.io.Serializable {
 		this.nameHk = nameHk;
 	}
 
-	@Column(name = "currency_image")
-	public String getCurrencyImage() {
-		return this.currencyImage;
-	}
-
-	public void setCurrencyImage(String currencyImage) {
-		this.currencyImage = currencyImage;
-	}
-
 	@Column(name = "currency_status", nullable = false)
 	public int getCurrencyStatus() {
 		return this.currencyStatus;
@@ -137,7 +126,7 @@ public class Currency implements java.io.Serializable {
 		this.assetThreshold = assetThreshold;
 	}
 
-	@Column(name = "currency_order")
+	@Column(name = "currency_order", unique = true)
 	public String getCurrencyOrder() {
 		return this.currencyOrder;
 	}
