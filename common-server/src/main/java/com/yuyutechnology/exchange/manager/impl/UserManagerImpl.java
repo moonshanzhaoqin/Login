@@ -46,6 +46,7 @@ import com.yuyutechnology.exchange.utils.PasswordUtils;
 @Service
 public class UserManagerImpl implements UserManager {
 	public static Logger logger = LoggerFactory.getLogger(UserManagerImpl.class);
+
 	@Autowired
 	UserDAO userDAO;
 	@Autowired
@@ -78,6 +79,8 @@ public class UserManagerImpl implements UserManager {
 			return ServerConsts.PHONE_NOT_EXIST;
 		} else if (friend.getUserId() == userId) {
 			return ServerConsts.ADD_FRIEND_OWEN;
+		} else if (friendDAO.getFriendByUserIdAndFrindId(userId,friend.getUserId()) != null) {
+			return ServerConsts.FRIEND_HAS_ADDED;
 		} else {
 			friendDAO.addfriend(new Friend(new FriendId(userId, friend.getUserId()), friend, new Date()));
 			return ServerConsts.RET_CODE_SUCCESS;
@@ -129,7 +132,7 @@ public class UserManagerImpl implements UserManager {
 	public boolean checkUserPayPwd(Integer userId, String userPayPwd) {
 		logger.info("校验用户{}的支付密码{}", userId, userPayPwd);
 		User user = userDAO.getUser(userId);
-		if (PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getUserPassword())) {
+		if (PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())) {
 			logger.info("***匹配***");
 			return true;
 		}
@@ -189,13 +192,13 @@ public class UserManagerImpl implements UserManager {
 			}
 			// goldpay
 			Bind bind = bindDAO.getBindByUserId(userId);
-			if(bind != null){
+			if (bind != null) {
 				userInfo.setGoldpayAcount(bind.getGoldpayAcount());
 				userInfo.setGoldpayId(bind.getGoldpayId());
 				userInfo.setGoldpayName(bind.getGoldpayName());
 				logger.info("UserInfo={}", userInfo.toString());
 			}
-			
+
 		} else {
 			logger.warn("Can not find the user!!!");
 		}
@@ -375,6 +378,13 @@ public class UserManagerImpl implements UserManager {
 			walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date()));
 			logger.info("新增 用户{} 的  {} 钱包  ", userId, currency.getCurrency());
 		}
+	}
+
+	@Override
+	public void updateUserName(Integer userId, String newUserName) {
+		User user = userDAO.getUser(userId);
+		user.setUserName(newUserName);
+		userDAO.updateUser(user);
 	}
 
 }

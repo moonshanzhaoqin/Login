@@ -40,7 +40,7 @@ public class ServerConsts {
 	 */
 	public static final String GOLDPAY_PHONE_IS_NOT_EXIST = "01004";
 	/**
-	 * 登录失败密码错误
+	 * 登录密码错误
 	 */
 	public static final String PASSWORD_NOT_MATCH = "01005";
 	/**
@@ -67,7 +67,15 @@ public class ServerConsts {
 	 * 版本号已是最新
 	 */
 	public static final String VERSION_NUM_IS_LATEST = "01011";
-
+	/**
+	 * 支付密码不正确
+	 */
+	public static final String PAY_PWD_NOT_MATCH = "01012";
+	/**
+	 * 好友已添加
+	 */
+	public static final String FRIEND_HAS_ADDED = "01013";
+	
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息
@@ -196,6 +204,8 @@ public class ServerConsts {
 	public static final String PIN_FUNC_CHANGEPHONE = "CHANGEPHONE";
 	public static final int CURRENCY_AVAILABLE = 1;
 	public static final int CURRENCY_UNAVAILABLE = 0;
+	
+	
 	
 
 

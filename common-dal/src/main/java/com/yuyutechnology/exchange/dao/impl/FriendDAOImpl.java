@@ -27,4 +27,13 @@ public class FriendDAOImpl implements FriendDAO {
 		hibernateTemplate.saveOrUpdate(friend);
 	}
 
+	@Override
+	public Friend getFriendByUserIdAndFrindId(Integer userId, Integer friendId) {
+		List<?> list = hibernateTemplate.find("from Friend where id.userId = ? and id.friendId = ?", userId, friendId);
+		if (!list.isEmpty()) {
+			return (Friend) list.get(0);
+		}
+		return null;
+	}
+
 }

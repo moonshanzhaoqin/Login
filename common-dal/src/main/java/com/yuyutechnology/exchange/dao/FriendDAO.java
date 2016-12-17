@@ -17,5 +17,6 @@ public interface FriendDAO {
 
 	public void addfriend(Friend friend);
 
+	public Friend getFriendByUserIdAndFrindId(Integer userId, Integer friendId);
 
 }

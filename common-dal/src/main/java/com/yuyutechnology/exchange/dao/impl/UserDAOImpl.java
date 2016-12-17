@@ -36,7 +36,7 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public User getUserByUserPhone(String areaCode, String userPhone) {
 		List<?> list = hibernateTemplate.find("from User where areaCode = ? and userPhone = ?", areaCode, userPhone);
-		logger.info("{}",list);
+//		logger.info("{}",list);
 		if (!list.isEmpty()) {
 			return (User) list.get(0);
 		}

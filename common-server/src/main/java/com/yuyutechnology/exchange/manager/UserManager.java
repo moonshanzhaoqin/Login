@@ -160,12 +160,19 @@ public interface UserManager {
 	public void updateWallet(Integer userId);
 
 	/**
-	 * 校验并增加用户钱包
-	 * 如果没有该currency的钱包，就新增一个，否则不做任何变化
+	 * 校验并增加用户钱包 如果没有该currency的钱包，就新增一个，否则不做任何变化
 	 * 
 	 * @param userId
 	 * @param currency
 	 */
 	void checkWallet(Integer userId, Currency currency);
+
+	/**
+	 * 更新用户名
+	 * 
+	 * @param userId
+	 * @param newUserName
+	 */
+	public void updateUserName(Integer userId, String newUserName);
 
 }

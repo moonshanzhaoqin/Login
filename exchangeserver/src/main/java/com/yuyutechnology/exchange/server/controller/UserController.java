@@ -362,7 +362,7 @@ public class UserController {
 	}
 
 	/**
-	 * TODO appVersion 版本获取
+	 * appVersion 版本获取
 	 * 
 	 * @param appVersionRequest
 	 * @param request
