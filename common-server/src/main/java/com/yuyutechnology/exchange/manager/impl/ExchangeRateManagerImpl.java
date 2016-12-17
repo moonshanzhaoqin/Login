@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dao.ConfigDAO;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
@@ -28,11 +30,13 @@ import com.yuyutechnology.exchange.utils.exchangerate.GoldpayExchangeRate;
 
 @Service
 public class ExchangeRateManagerImpl implements ExchangeRateManager {
-
-	@Autowired
-	CurrencyDAO currencyDAO;
+	
 	@Autowired
 	RedisDAO redisDAO;
+	@Autowired
+	ConfigDAO configDAO;
+	@Autowired
+	CurrencyDAO currencyDAO;
 	
 	public static Logger logger = LoggerFactory.getLogger(ExchangeRateManagerImpl.class);
 	
@@ -170,6 +174,20 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		}
 		
 		return map;
+	}
+
+	@Override
+	public BigDecimal getExchangeResult(String transCurrency,BigDecimal transAmount){
+		BigDecimal result = null;
+		//默认币种
+		String standardCurrency = configDAO.getConfigValue(ServerConsts.STANDARD_CURRENCY);
+		if(transCurrency.equals(standardCurrency)){
+			result = transAmount;
+		}else{
+			double exchangeRate = getExchangeRate(transCurrency, standardCurrency);
+			result = transAmount.multiply(new BigDecimal(exchangeRate));
+		}
+		return result;
 	}
 
 	/////////////////////////////////////////////////方法内调用//////////////////////////////////////////////////

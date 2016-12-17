@@ -146,11 +146,11 @@ public class pushManager {
 	 * @param currency
 	 * @param amount
 	 */
-	public void push4Refund(User userFrom, String areaCode, String phone, Currency currency, BigDecimal amount) {
+	public void push4Refund(User userFrom, String areaCode, String phone, String currency, BigDecimal amount) {
 		String title = "退款通知";
 		String refundBody = templateChoose("refund", userFrom.getPushTag());
 		String body = refundBody.replace(PUSH_REPLACE_TO, areaCode + phone)
-				.replace(PUSH_REPLACE_CURRENCY, currency.getCurrency()).replace(PUSH_REPLACE_AMOUNT, amount.toString())
+				.replace(PUSH_REPLACE_CURRENCY, currency).replace(PUSH_REPLACE_AMOUNT, amount.toString())
 				.replace(PUSH_REPLACE_DAY, day);
 		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body);
 	}

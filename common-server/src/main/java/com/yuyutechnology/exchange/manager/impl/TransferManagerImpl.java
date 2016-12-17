@@ -7,14 +7,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
-import com.yuyutechnology.exchange.dao.ConfigDAO;
 import com.yuyutechnology.exchange.dao.NotificationDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
@@ -22,17 +20,16 @@ import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
+import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.pojo.TransactionNotification;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.push.pushManager;
 import com.yuyutechnology.exchange.utils.DateFormatUtils;
-import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.PasswordUtils;
-import com.yuyutechnology.exchange.utils.exchangerate.ExchangeRate;
-import com.yuyutechnology.exchange.utils.exchangerate.GoldpayExchangeRate;
 
 @Service
 public class TransferManagerImpl implements TransferManager{
@@ -41,8 +38,6 @@ public class TransferManagerImpl implements TransferManager{
 	UserDAO userDAO;
 	@Autowired
 	RedisDAO redisDAO;
-	@Autowired
-	ConfigDAO configDAO;
 	@Autowired
 	WalletDAO walletDAO;
 	@Autowired
@@ -53,6 +48,11 @@ public class TransferManagerImpl implements TransferManager{
 	UnregisteredDAO unregisteredDAO;
 	@Autowired
 	NotificationDAO notificationDAO;
+	
+	@Autowired
+	ExchangeRateManager exchangeRateManager;
+	@Autowired
+	pushManager pushManager;
 	
 	public static Logger logger = LoggerFactory.getLogger(TransferManagerImpl.class);
 
@@ -215,7 +215,7 @@ public class TransferManagerImpl implements TransferManager{
 		transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 
 		//转换金额
-		BigDecimal exchangeResult = getExchangeResult(transfer.getCurrency(),transfer.getTransferAmount());
+		BigDecimal exchangeResult = exchangeRateManager.getExchangeResult(transfer.getCurrency(),transfer.getTransferAmount());
 		transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", exchangeResult);
 		
 		return ServerConsts.RET_CODE_SUCCESS;
@@ -261,6 +261,11 @@ public class TransferManagerImpl implements TransferManager{
 		//修改gift记录
 		unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_BACK);
 		unregisteredDAO.updateUnregistered(unregistered);
+		
+		//发送推送
+		User payee = userDAO.getUser(transfer.getUserFrom());
+		pushManager.push4Refund(payee, payee.getAreaCode(),transfer.getAreaCode(),transfer.getPhone(), transfer.getTransferAmount());
+		
 	}
 	
 	@Override
@@ -366,77 +371,4 @@ public class TransferManagerImpl implements TransferManager{
 		HashMap<String, Object> map = transferDAO.getTransactionRecordByPage(sql+sb.toString(),sb.toString(),values,currentPage, pageSize);
 		return map;
 	}
-	
-	
-	///////////////////////////////////////////方法内部调用//////////////////////////////////////////////
-	/**
-	 * @Descrition : 将交易金额兑换为默认币种
-	 * @author : nicholas.chi
-	 * @time : 2016年12月7日 下午5:24:08
-	 * @param transCurrency 交易币种
-	 * @param transAmount   默认币种
-	 * @return
-	 */
-	private BigDecimal getExchangeResult(String transCurrency,BigDecimal transAmount){
-		BigDecimal result = null;
-		//默认币种
-		String standardCurrency = configDAO.getConfigValue(ServerConsts.STANDARD_CURRENCY);
-		if(transCurrency.equals(standardCurrency)){
-			result = transAmount;
-		}else{
-			double exchangeRate = getExchangeRate(transCurrency, standardCurrency);
-			result = transAmount.multiply(new BigDecimal(exchangeRate));
-		}
-		return result;
-	}
-	
-	public double getExchangeRate(String base, String outCurrency) {
-		double out = 0;
-		if(base.equals(ServerConsts.CURRENCY_OF_GOLDPAY) || 
-				outCurrency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
-			//当兑换中有goldpay时，需要特殊处理
-			String goldpayER = redisDAO.getValueByKey("redis_goldpay_exchangerate");
-			GoldpayExchangeRate goldpayExchangeRate = JsonBinder.getInstance().
-					fromJson(goldpayER, GoldpayExchangeRate.class);
-			
-			if(base.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
-				HashMap<String, Double> gdp4Others = (HashMap<String, Double>) 
-						goldpayExchangeRate.getGdp4Others();
-				out = gdp4Others.get(outCurrency);
-			}else{
-				HashMap<String, Double> others4Gdp = (HashMap<String, Double>) 
-						goldpayExchangeRate.getOthers4Gdp();
-				out = others4Gdp.get(base);
-			}
-			
-		}else{
-			out = getExchangeRateNoGoldq(base,outCurrency);
-		}
-		
-		logger.info("base : {},out : {}",base,out);
-		
-		return out;
-	}
-
-	
-	@SuppressWarnings("unchecked")
-	private double getExchangeRateNoGoldq(String base, String outCurrency) {
-		double out = 0;
-		HashMap<String, String> map = new HashMap<String, String>();
-		String result = redisDAO.getValueByKey("redis_exchangeRate");
-		if(StringUtils.isNotBlank(result)){
-			//logger.info("result : {}",result);
-			map = JsonBinder.getInstance().fromJson(result, HashMap.class);
-			String value = map.get(base);
-			logger.info("value : {}",value);
-			ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().
-			fromJson(value, ExchangeRate.class);
-			out = exchangeRate.getRates().get(outCurrency);
-		}
-		
-		logger.info("base : {},out : {}",base,out);
-		
-		return out;
-	}
-
 }

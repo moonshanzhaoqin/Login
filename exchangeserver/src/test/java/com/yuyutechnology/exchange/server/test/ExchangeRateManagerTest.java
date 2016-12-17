@@ -12,6 +12,7 @@ import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
+import com.yuyutechnology.exchange.manager.WalletManager;
 import com.yuyutechnology.exchange.server.controller.TransferController;
 
 /**
@@ -28,14 +29,16 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 	ExchangeRateManager exchangeRateManager;
 	@Autowired
 	TransferManager transferManager;
+	@Autowired
+	WalletManager walletManager;
 
 	public static Logger logger = LoggerFactory.getLogger(TransferController.class);
 
 	@Test
 	public void testUpdateRate() {
 
-		// exchangeRateManager.updateExchangeRateNoGoldq();
-		// exchangeRateManager.updateGoldpayExchangeRate();
+//		 exchangeRateManager.updateExchangeRateNoGoldq();
+//		 exchangeRateManager.updateGoldpayExchangeRate();
 
 		// String result = transferManager.transferInitiate(2,
 		// "+86","12312312336",
@@ -48,7 +51,10 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 
 //		transferManager.getTransactionRecordByPage("today", 2, 1, 10);
 		
-		exchangeManager.getExchangeRecordsByPage(2, "lastMonth", 1, 10);
+//		exchangeManager.getExchangeRecordsByPage(2, "lastMonth", 1, 10);
+		
+		 walletManager.getTotalAmoutGold(2);
+		
 	}
 
 }
