@@ -20,8 +20,10 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.ConfigDAO;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
+import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.pojo.Currency;
+import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
@@ -35,6 +37,8 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 	RedisDAO redisDAO;
 	@Autowired
 	ConfigDAO configDAO;
+	@Autowired
+	WalletDAO walletDAO;
 	@Autowired
 	CurrencyDAO currencyDAO;
 	
@@ -188,6 +192,42 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 			result = transAmount.multiply(new BigDecimal(exchangeRate));
 		}
 		return result;
+	}
+	
+	@Override
+	public BigDecimal getTotalBalance(int userId){
+		String standardCurrency = configDAO.getConfigValue(ServerConsts.STANDARD_CURRENCY);
+		logger.info("The current default currency : {}" ,standardCurrency);
+		List<Wallet> list = walletDAO.getWalletsByUserId(userId);
+		double totalBalance = 0;
+		if(list.isEmpty()){
+			return new BigDecimal(0);
+		}
+		
+		for (Wallet wallet : list) {
+			
+			if(!wallet.getCurrency().getCurrency().equals(standardCurrency)){
+				
+				double exchangeRate = getExchangeRate(
+						wallet.getCurrency().getCurrency(), standardCurrency);
+				
+				totalBalance = totalBalance+wallet.getBalance().longValue()*exchangeRate;
+				
+			}else{
+				totalBalance = totalBalance+wallet.getBalance().longValue();
+			}
+		}
+		
+		BigDecimal out = null ;
+		if(standardCurrency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
+			out = new BigDecimal(totalBalance).setScale(0,BigDecimal.ROUND_FLOOR);
+		}else{
+			out = new BigDecimal(totalBalance).setScale(2,BigDecimal.ROUND_FLOOR);
+		}
+		
+		logger.info("Total assets of the current account : {}" ,out);
+		
+		return out;
 	}
 
 	/////////////////////////////////////////////////方法内调用//////////////////////////////////////////////////

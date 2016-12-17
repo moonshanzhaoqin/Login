@@ -69,6 +69,12 @@ public class ExchangeController {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		ExchangeCalculationResponse rep = new ExchangeCalculationResponse();
 		
+		if(reqMsg.getCurrencyIn().equals(reqMsg.getCurrencyOut())){
+			rep.setRetCode(ServerConsts.EXCHANGE_THE_SAME_CURRENCY_CAN_NOT_BE_EXCHANGED);
+			rep.setMessage("The same currency can not be exchanged");
+			return rep;
+		}
+		
 		HashMap<String, String> result = exchangeManager.exchangeCalculation(sessionData.getUserId(), 
 				reqMsg.getCurrencyOut(), reqMsg.getCurrencyIn(), new BigDecimal(reqMsg.getAmountOut()));
 		

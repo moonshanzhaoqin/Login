@@ -89,6 +89,8 @@ public class ServerConsts {
 	 * 换算后金额低于最小限额
 	 */
 	public static final String EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT = "02003";
+	
+	public static final String EXCHANGE_THE_SAME_CURRENCY_CAN_NOT_BE_EXCHANGED = "02004";
 
 	// 交易03
 	/**
