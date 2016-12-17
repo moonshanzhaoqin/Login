@@ -25,5 +25,6 @@ public class LanguageTest extends BaseSpringJunit4{
 //		System.out.println(LanguageUtils.standard("ZH_CN"));
 //		System.out.println(LanguageUtils.standard("zh_CN"));
 //		logger.info("{}",LanguageUtils.standard("zh_CN"));
+		logger.info("{}",LanguageUtils.standard("zh_CN"));
 	}
 }

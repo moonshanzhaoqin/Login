@@ -39,7 +39,7 @@ public class WalletDAOImpl implements WalletDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Wallet> getWalletsByUserId(int userId) {
-		List<?> list = hibernateTemplate.find("from Wallet where userId = ?", userId);
+		List<?> list = hibernateTemplate.find("from Wallet where userId = ? order by currency.currencyOrder", userId);
 		return (List<Wallet>) list;
 	}
 

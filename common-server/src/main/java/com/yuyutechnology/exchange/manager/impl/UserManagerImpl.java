@@ -79,7 +79,7 @@ public class UserManagerImpl implements UserManager {
 			return ServerConsts.PHONE_NOT_EXIST;
 		} else if (friend.getUserId() == userId) {
 			return ServerConsts.ADD_FRIEND_OWEN;
-		} else if (friendDAO.getFriendByUserIdAndFrindId(userId,friend.getUserId()) != null) {
+		} else if (friendDAO.getFriendByUserIdAndFrindId(userId, friend.getUserId()) != null) {
 			return ServerConsts.FRIEND_HAS_ADDED;
 		} else {
 			friendDAO.addfriend(new Friend(new FriendId(userId, friend.getUserId()), friend, new Date()));

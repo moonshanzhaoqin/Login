@@ -175,4 +175,5 @@ public interface UserManager {
 	 */
 	public void updateUserName(Integer userId, String newUserName);
 
+
 }
