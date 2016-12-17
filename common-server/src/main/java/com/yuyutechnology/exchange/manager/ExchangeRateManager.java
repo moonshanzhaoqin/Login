@@ -49,4 +49,13 @@ public interface ExchangeRateManager {
 	 */
 	public BigDecimal getExchangeResult(String transCurrency,BigDecimal transAmount);
 
+	/**
+	 * @Descrition : TODO
+	 * @author : nicholas.chi
+	 * @time : 2016年12月17日 下午5:21:10
+	 * @param userId
+	 * @return
+	 */
+	public BigDecimal getTotalBalance(int userId);
+
 }

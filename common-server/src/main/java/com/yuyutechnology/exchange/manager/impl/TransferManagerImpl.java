@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.NotificationDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
@@ -22,6 +23,7 @@ import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
+import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.TransactionNotification;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
@@ -41,6 +43,8 @@ public class TransferManagerImpl implements TransferManager{
 	RedisDAO redisDAO;
 	@Autowired
 	WalletDAO walletDAO;
+	@Autowired
+	CurrencyDAO currencyDAO;
 	@Autowired
 	TransferDAO transferDAO;
 	@Autowired
@@ -124,14 +128,16 @@ public class TransferManagerImpl implements TransferManager{
 			return ServerConsts.TRANSFER_PAYMENTPWD_INCORRECT;
 		}
 
+		Currency standardCurrency = currencyDAO.getStandardCurrency();
+		
 		//总账大于设置安全基数，弹出需要短信验证框===============================================
-		BigDecimal totalBalance =  new BigDecimal(20000);
-		BigDecimal totalBalanceMax =  new BigDecimal(10000);
-		//当天累计转出总金额大于设置安全基数，弹出需要短信验证框======================================
+		BigDecimal totalBalance =  exchangeRateManager.getTotalBalance(userId);
+		BigDecimal totalBalanceMax =  standardCurrency.getAssetThreshold();
+		//当天累计转出总金额大于设置安全基数，弹出需要短信验证框
 		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount(userId+"");
-		BigDecimal accumulatedAmountMax =  new BigDecimal(30000);
-		//单笔转出金额大于设置安全基数，弹出需要短信验证框==========================================
-		BigDecimal AmountofSingleTransfer =  new BigDecimal(30000);
+		BigDecimal accumulatedAmountMax =  standardCurrency.getTransferMax();
+		//单笔转出金额大于设置安全基数，弹出需要短信验证框
+		BigDecimal AmountofSingleTransfer =  standardCurrency.getTransferLarge();
 		
 		if(totalBalance.compareTo(totalBalanceMax) == 1 || 
 				( accumulatedAmount.compareTo(accumulatedAmountMax) == 1 || 

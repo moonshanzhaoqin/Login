@@ -37,8 +37,8 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 	@Test
 	public void testUpdateRate() {
 
-//		 exchangeRateManager.updateExchangeRateNoGoldq();
-//		 exchangeRateManager.updateGoldpayExchangeRate();
+		 exchangeRateManager.updateExchangeRateNoGoldq();
+		 exchangeRateManager.updateGoldpayExchangeRate();
 
 		// String result = transferManager.transferInitiate(2,
 		// "+86","12312312336",
@@ -53,7 +53,9 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 		
 //		exchangeManager.getExchangeRecordsByPage(2, "lastMonth", 1, 10);
 		
-		 walletManager.getTotalAmoutGold(2);
+//		 walletManager.getTotalAmoutGold(2);
+		 
+		 exchangeRateManager.getTotalBalance(2);
 		
 	}
 
