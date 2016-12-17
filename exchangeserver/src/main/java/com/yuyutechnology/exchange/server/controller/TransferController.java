@@ -19,7 +19,7 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
-import com.yuyutechnology.exchange.push.pushManager;
+import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.server.controller.request.GetTransactionRecordRequest;
 import com.yuyutechnology.exchange.server.controller.request.MakeRequestRequest;
 import com.yuyutechnology.exchange.server.controller.request.ResendTransferPinRequest;
@@ -45,7 +45,7 @@ public class TransferController {
 	@Autowired
 	TransferManager transferManager;
 	@Autowired
-	pushManager pushManager;
+	PushManager pushManager;
 	
 	
 	public static Logger logger = LoggerFactory.getLogger(TransferController.class);
