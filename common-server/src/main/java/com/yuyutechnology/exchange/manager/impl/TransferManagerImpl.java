@@ -27,7 +27,7 @@ import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
-import com.yuyutechnology.exchange.push.pushManager;
+import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.utils.DateFormatUtils;
 import com.yuyutechnology.exchange.utils.PasswordUtils;
 
@@ -52,7 +52,7 @@ public class TransferManagerImpl implements TransferManager{
 	@Autowired
 	ExchangeRateManager exchangeRateManager;
 	@Autowired
-	pushManager pushManager;
+	PushManager pushManager;
 	
 	public static Logger logger = LoggerFactory.getLogger(TransferManagerImpl.class);
 
@@ -264,7 +264,8 @@ public class TransferManagerImpl implements TransferManager{
 		
 		//发送推送
 		User payee = userDAO.getUser(transfer.getUserFrom());
-		pushManager.push4Refund(payee, payee.getAreaCode(),transfer.getAreaCode(),transfer.getPhone(), transfer.getTransferAmount());
+		pushManager.push4Refund(payee, payee.getAreaCode(),transfer.getAreaCode(),
+				transfer.getPhone(), transfer.getTransferAmount());
 		
 	}
 	
