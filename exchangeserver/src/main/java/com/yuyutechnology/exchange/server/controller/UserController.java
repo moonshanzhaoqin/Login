@@ -199,7 +199,7 @@ public class UserController {
 				// 获取用户信息
 				rep.setUser(userManager.getUserInfo(userId));
 				// 获取钱包信息
-				rep.setWallets(exchangeManager.getWalletsByUserId(userId));
+//				rep.setWallets(exchangeManager.getWalletsByUserId(userId));
 
 				logger.info(MessageConsts.RET_CODE_SUCCESS);
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
@@ -230,7 +230,7 @@ public class UserController {
 				// 获取用户信息
 				rep.setUser(userManager.getUserInfo(userId));
 				// 获取钱包信息
-				rep.setWallets(exchangeManager.getWalletsByUserId(userId));
+//				rep.setWallets(exchangeManager.getWalletsByUserId(userId));
 
 				logger.info(MessageConsts.RET_CODE_SUCCESS);
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
@@ -291,7 +291,7 @@ public class UserController {
 					// 获取用户信息
 					rep.setUser(userManager.getUserInfo(userId));
 					// 获取钱包信息
-					rep.setWallets(exchangeManager.getWalletsByUserId(userId));
+//					rep.setWallets(exchangeManager.getWalletsByUserId(userId));
 
 					logger.info(MessageConsts.RET_CODE_SUCCESS);
 					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
