@@ -30,8 +30,11 @@ import com.yuyutechnology.exchange.server.controller.request.ChangePhoneRequest;
 import com.yuyutechnology.exchange.server.controller.request.CheckPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.CheckPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
+import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByOldRequest;
+import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByPINRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyUserNameRequest;
 import com.yuyutechnology.exchange.server.controller.request.SetUserPayPwdRequest;
+import com.yuyutechnology.exchange.server.controller.request.SwitchLanguageRequest;
 import com.yuyutechnology.exchange.server.controller.response.AddFriendResponse;
 import com.yuyutechnology.exchange.server.controller.response.BindGoldpayResponse;
 import com.yuyutechnology.exchange.server.controller.response.ChangePhoneResponse;
@@ -39,8 +42,11 @@ import com.yuyutechnology.exchange.server.controller.response.CheckPasswordRespo
 import com.yuyutechnology.exchange.server.controller.response.CheckPayPwdResponse;
 import com.yuyutechnology.exchange.server.controller.response.FriendsListResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPasswordResponse;
+import com.yuyutechnology.exchange.server.controller.response.ModifyPayPwdByOldResponse;
+import com.yuyutechnology.exchange.server.controller.response.ModifyPayPwdByPINResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyUserNameResponse;
 import com.yuyutechnology.exchange.server.controller.response.SetUserPayPwdResponse;
+import com.yuyutechnology.exchange.server.controller.response.SwitchLanguageResponse;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
 import com.yuyutechnology.exchange.session.SessionManager;
@@ -72,6 +78,7 @@ public class LoggedInUserController {
 	public AddFriendResponse addFriend(@PathVariable String token, @RequestBody AddFriendRequest addFriendRequest) {
 		logger.info("========addFriend : {}============", token);
 		AddFriendResponse rep = new AddFriendResponse();
+
 		if (addFriendRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
@@ -125,6 +132,7 @@ public class LoggedInUserController {
 			@RequestBody BindGoldpayRequest bindGoldpayRequest) {
 		logger.info("========bindGoldpay : {}============", token);
 		BindGoldpayResponse rep = new BindGoldpayResponse();
+
 		if (bindGoldpayRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
@@ -167,24 +175,35 @@ public class LoggedInUserController {
 			@RequestBody ChangePhoneRequest changePhoneRequest) {
 		logger.info("========changePhone : {}============", token);
 		ChangePhoneResponse rep = new ChangePhoneResponse();
-		SessionData sessionData = SessionDataHolder.getSessionData();
-
-		// 校验验证码
-		if (userManager.testPinCode(ServerConsts.PIN_FUNC_CHANGEPHONE, changePhoneRequest.getAreaCode(),
-				changePhoneRequest.getUserPhone(), changePhoneRequest.getVerificationCode())) {
-			userManager.changePhone(sessionData.getUserId(), changePhoneRequest.getAreaCode(),
-					changePhoneRequest.getUserPhone());
-			sessionManager.logout(sessionData.getSessionId());
-			sessionManager.delLoginToken(sessionData.getUserId());
-			logger.info("********Operation succeeded********");
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		if (changePhoneRequest.isEmpty()) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
-			logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
-			rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
-			rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
+			SessionData sessionData = SessionDataHolder.getSessionData();
+			// 检验支付密码
+			if (userManager.checkUserPayPwd(sessionData.getUserId(), changePhoneRequest.getUserPayPwd())) {
+				// 校验手机验证码
+				if (userManager.testPinCode(ServerConsts.PIN_FUNC_CHANGEPHONE, changePhoneRequest.getAreaCode(),
+						changePhoneRequest.getUserPhone(), changePhoneRequest.getVerificationCode())) {
+					userManager.changePhone(sessionData.getUserId(), changePhoneRequest.getAreaCode(),
+							changePhoneRequest.getUserPhone());
+					sessionManager.logout(sessionData.getSessionId());
+					sessionManager.delLoginToken(sessionData.getUserId());
+					logger.info("********Operation succeeded********");
+					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+				} else {
+					logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
+					rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
+					rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
+				}
+			} else {
+				logger.info(MessageConsts.PASSWORD_NOT_MATCH);
+				rep.setRetCode(ServerConsts.PASSWORD_NOT_MATCH);
+				rep.setMessage(MessageConsts.PASSWORD_NOT_MATCH);
+			}
 		}
-
 		return rep;
 	}
 
@@ -196,7 +215,7 @@ public class LoggedInUserController {
 	 * @return
 	 */
 	@ResponseBody
-	@ApiOperation(value = "换绑手机-校验登录密码", httpMethod = "POST", notes = "")
+	@ApiOperation(value = "校验登录密码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/checkPassword", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public CheckPasswordResponse checkPassword(@PathVariable String token,
 			@RequestBody CheckPasswordRequest checkPasswordRequest) {
@@ -223,12 +242,13 @@ public class LoggedInUserController {
 	 * @return
 	 */
 	@ResponseBody
-	@ApiOperation(value = "更换支付密码-校验支付密码", httpMethod = "POST", notes = "")
+	@ApiOperation(value = "校验支付密码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/checkPayPwd", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public CheckPayPwdResponse checkPayPwd(@PathVariable String token,
 			@RequestBody CheckPayPwdRequest checkPayPwdRequest) {
 		logger.info("========checkPassword : {}============", token);
 		CheckPayPwdResponse rep = new CheckPayPwdResponse();
+
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		if (userManager.checkUserPayPwd(sessionData.getUserId(), checkPayPwdRequest.getUserPayPwd())) {
 			logger.info("********Operation succeeded********");
@@ -258,6 +278,7 @@ public class LoggedInUserController {
 		List<FriendInfo> friendInfos = new ArrayList<FriendInfo>();
 		List<Friend> friends = userManager.getFriends(sessionData.getUserId());
 		for (Friend friend : friends) {
+			logger.info("friend={}",friend.toString());
 			friendInfos.add(new FriendInfo(friend.getUser().getAreaCode(), friend.getUser().getUserPhone(),
 					friend.getUser().getUserName()));
 		}
@@ -282,19 +303,25 @@ public class LoggedInUserController {
 			@RequestBody ModifyPasswordRequest modifyPasswordRequest) {
 		logger.info("========modifyPassword : {}============", token);
 		ModifyPasswordResponse rep = new ModifyPasswordResponse();
+
 		if (modifyPasswordRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
-			userManager.checkUserPassword(sessionData.getUserId(), modifyPasswordRequest.getOldPassword());
-			userManager.updatePassword(sessionData.getUserId(), modifyPasswordRequest.getNewPassword());
-			sessionManager.logout(sessionData.getSessionId());
-			sessionManager.delLoginToken(sessionData.getUserId());
-			logger.info("********Operation succeeded********");
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+			if (userManager.checkUserPassword(sessionData.getUserId(), modifyPasswordRequest.getOldPassword())) {
+				userManager.updatePassword(sessionData.getUserId(), modifyPasswordRequest.getNewPassword());
+				sessionManager.logout(sessionData.getSessionId());
+				sessionManager.delLoginToken(sessionData.getUserId());
+				logger.info("********Operation succeeded********");
+				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+			} else {
+				logger.info(MessageConsts.PASSWORD_NOT_MATCH);
+				rep.setRetCode(ServerConsts.PASSWORD_NOT_MATCH);
+				rep.setMessage(MessageConsts.PASSWORD_NOT_MATCH);
+			}
 		}
 		return rep;
 	}
@@ -313,6 +340,7 @@ public class LoggedInUserController {
 			@RequestBody ModifyUserNameRequest modifyUserNameRequest) {
 		logger.info("========modifyUserName : {}============", token);
 		ModifyUserNameResponse rep = new ModifyUserNameResponse();
+
 		if (modifyUserNameRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
@@ -361,6 +389,125 @@ public class LoggedInUserController {
 			}
 		}
 		return rep;
+	}
+
+	/**
+	 * 通过原支付密码更换支付密码
+	 * 
+	 * @param token
+	 * @param modifyPayPwdByOldRequest
+	 * @return
+	 */
+	@ResponseBody
+	@ApiOperation(value = "通过原支付密码更换支付密码", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/modifyPayPwdByOld", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public ModifyPayPwdByOldResponse modifyPayPwdByOld(@PathVariable String token,
+			@RequestBody ModifyPayPwdByOldRequest modifyPayPwdByOldRequest) {
+		logger.info("========modifyPayPwdByOld : {}============", token);
+		ModifyPayPwdByOldResponse rep = new ModifyPayPwdByOldResponse();
+		if (modifyPayPwdByOldRequest.isEmpty()) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+		} else {
+			SessionData sessionData = SessionDataHolder.getSessionData();
+			if (userManager.checkUserPayPwd(sessionData.getUserId(), modifyPayPwdByOldRequest.getOldUserPayPwd())) {
+				// PayPwd 6位数字
+				if (modifyPayPwdByOldRequest.getNewUserPayPwd().length() == 6
+						&& StringUtils.isNumeric(modifyPayPwdByOldRequest.getNewUserPayPwd())) {
+					userManager.updateUserPayPwd(sessionData.getUserId(), modifyPayPwdByOldRequest.getNewUserPayPwd());
+					logger.info("********Operation succeeded********");
+					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+				} else {
+					logger.info(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
+					rep.setRetCode(ServerConsts.PAY_PASSWORD_IS_ILLEGAL);
+					rep.setMessage(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
+				}
+
+			} else {
+				logger.info(MessageConsts.PAY_PWD_NOT_MATCH);
+				rep.setRetCode(ServerConsts.PAY_PWD_NOT_MATCH);
+				rep.setMessage(MessageConsts.PAY_PWD_NOT_MATCH);
+			}
+
+		}
+		return rep;
+	}
+
+	/**
+	 * modifyPayPwdByPIN 通过手机验证码更换支付密码
+	 * 
+	 * @param token
+	 * @param modifyPayPwdByPINRequest
+	 * @return
+	 */
+
+	@ResponseBody
+	@ApiOperation(value = "通过手机验证码更换支付密码", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/modifyPayPwdByPIN", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public ModifyPayPwdByPINResponse modifyPayPwdByPIN(@PathVariable String token,
+			@RequestBody ModifyPayPwdByPINRequest modifyPayPwdByPINRequest) {
+		logger.info("========modifyPayPwdByOld : {}============", token);
+		ModifyPayPwdByPINResponse rep = new ModifyPayPwdByPINResponse();
+		if (modifyPayPwdByPINRequest.isEmpty()) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+		} else {
+			if (userManager.testPinCode(ServerConsts.PIN_FUNC_MODIFYPAYPWD, modifyPayPwdByPINRequest.getAreaCode(),
+					modifyPayPwdByPINRequest.getUserPhone(), modifyPayPwdByPINRequest.getVerificationCode())) {
+				SessionData sessionData = SessionDataHolder.getSessionData();
+				// PayPwd 6位数字
+				if (modifyPayPwdByPINRequest.getNewUserPayPwd().length() == 6
+						&& StringUtils.isNumeric(modifyPayPwdByPINRequest.getNewUserPayPwd())) {
+					userManager.updateUserPayPwd(sessionData.getUserId(), modifyPayPwdByPINRequest.getNewUserPayPwd());
+					logger.info("********Operation succeeded********");
+					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+				} else {
+					logger.info(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
+					rep.setRetCode(ServerConsts.PAY_PASSWORD_IS_ILLEGAL);
+					rep.setMessage(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
+				}
+			} else {
+				logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
+				rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
+				rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
+			}
+		}
+		return rep;
+	}
+
+	/**
+	 * switchLanguage切换语言
+	 * 
+	 * @param token
+	 * @param switchLanguageRequest
+	 * @return
+	 */
+	@ResponseBody
+	@ApiOperation(value = "切换语言", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/switchLanguage", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public SwitchLanguageResponse switchLanguage(@PathVariable String token,
+			@RequestBody SwitchLanguageRequest switchLanguageRequest) {
+		logger.info("========switchLanguage : {}============", token);
+		SwitchLanguageResponse rep = new SwitchLanguageResponse();
+
+		if (switchLanguageRequest.isEmpty()) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+		} else {
+			SessionData sessionData = SessionDataHolder.getSessionData();
+			userManager.switchLanguage(sessionData.getUserId(), switchLanguageRequest.getLanguage());
+			logger.info("********Operation succeeded********");
+			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		}
+
+		return rep;
+
 	}
 
 }

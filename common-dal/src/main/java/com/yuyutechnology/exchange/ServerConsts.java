@@ -206,8 +206,19 @@ public class ServerConsts {
 	 * 短信验证码功能——换绑手机
 	 */
 	public static final String PIN_FUNC_CHANGEPHONE = "CHANGEPHONE";
+	/**
+	 * 短信验证码功能——更换支付密码
+	 */
+	public static final String PIN_FUNC_MODIFYPAYPWD = "MODIFYPAYPWD";
+	/**
+	 * 币种状态——可用
+	 */
 	public static final int CURRENCY_AVAILABLE = 1;
+	/**
+	 * 币种状态——不可用
+	 */
 	public static final int CURRENCY_UNAVAILABLE = 0;
+	
 	
 	
 	
