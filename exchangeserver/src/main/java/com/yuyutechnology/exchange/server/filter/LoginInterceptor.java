@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
@@ -120,6 +121,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			SessionDataHolder.setSessionData(sessionData);
 			return true;
 		} else {
+			logger.info(MessageConsts.SESSION_TIMEOUT);
 			response.setStatus(500);
 			response.getOutputStream()
 					.print("{\"retCode\": " + ServerConsts.SESSION_TIMEOUT + " , \"msg\" : \"session timeout\"}");
