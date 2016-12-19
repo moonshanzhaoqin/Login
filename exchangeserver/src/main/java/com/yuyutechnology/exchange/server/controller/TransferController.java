@@ -280,11 +280,12 @@ public class TransferController {
 				NotificationDTO dto = new NotificationDTO();
 				
 				dto.setNoticeId((int) obj[0]);
-				dto.setSponsorPhone((String) obj[1]);
-				dto.setCurrency((String) obj[2]);
-				dto.setAmount((new BigDecimal(obj[3]+"")).doubleValue());
-				dto.setCreateAt((Date) obj[4]);
-				dto.setTradingStatus((int) obj[5]);
+				dto.setAreaCode((String) obj[1]);
+				dto.setSponsorPhone((String) obj[2]);
+				dto.setCurrency((String) obj[3]);
+				dto.setAmount((new BigDecimal(obj[4]+"")).doubleValue());
+				dto.setCreateAt((Date) obj[5]);
+				dto.setTradingStatus((int) obj[6]);
 				
 				dtos.add(dto);
 			}

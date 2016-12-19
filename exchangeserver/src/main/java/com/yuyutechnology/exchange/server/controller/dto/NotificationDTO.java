@@ -5,6 +5,7 @@ import java.util.Date;
 public class NotificationDTO {
 	
 	private int noticeId;
+	private String areaCode;
 	private String sponsorPhone;
 	private String currency;
 	private double amount;
@@ -16,6 +17,12 @@ public class NotificationDTO {
 	}
 	public void setNoticeId(int noticeId) {
 		this.noticeId = noticeId;
+	}
+	public String getAreaCode() {
+		return areaCode;
+	}
+	public void setAreaCode(String areaCode) {
+		this.areaCode = areaCode;
 	}
 	public String getSponsorPhone() {
 		return sponsorPhone;

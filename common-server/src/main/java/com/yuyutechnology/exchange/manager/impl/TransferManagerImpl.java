@@ -398,7 +398,7 @@ public class TransferManagerImpl implements TransferManager{
 
 	@Override
 	public HashMap<String, Object> getNotificationRecordsByPage(int userId, int currentPage, int pageSize) {
-		String sql = "SELECT t1.notice_id,CONCAT(t2.area_code,t2.user_phone),t1.currency,t1.amount,t1.create_at,t1.trading_status ";
+		String sql = "SELECT t1.notice_id,t2.area_code,t2.user_phone,t1.currency,t1.amount,t1.create_at,t1.trading_status ";
 		StringBuilder sb = new StringBuilder(
 				"FROM `transaction_notification` t1,`user` t2 "+ 
 				"where t1.sponsor_id = t2.user_id and t1.payer_id = ?");

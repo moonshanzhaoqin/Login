@@ -1,5 +1,8 @@
 package com.yuyutechnology.exchange.goldpay.transaction;
 
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
+
+@JsonPropertyOrder(alphabetic=true)
 public class ClientPayOrder {
 	
 	private String fromAccountNum;
