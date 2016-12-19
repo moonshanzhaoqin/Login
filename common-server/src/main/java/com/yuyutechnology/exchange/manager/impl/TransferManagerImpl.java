@@ -80,15 +80,15 @@ public class TransferManagerImpl implements TransferManager{
 			logger.warn("Current balance is insufficient");
 			return ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT;
 		}
-		//当日累加金额
-		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount(userId+"");
-		//当日最大金额===================================================================
-		BigDecimal dayMaxAmount =  new BigDecimal(20000);
-		//判断是否超过当日累加金额
-		if(accumulatedAmount.add(amount).compareTo(dayMaxAmount) == 1){
-			logger.warn("Exceeded the day's transaction limit");
-			return ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT;
-		}
+//		//当日累加金额
+//		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount(userId+"");
+//		//当日最大金额===================================================================
+//		BigDecimal dayMaxAmount =  new BigDecimal(20000);
+//		//判断是否超过当日累加金额
+//		if(accumulatedAmount.add(amount).compareTo(dayMaxAmount) == 1){
+//			logger.warn("Exceeded the day's transaction limit");
+//			return ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT;
+//		}
 		
 		//生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_OF_TRANSACTION);
