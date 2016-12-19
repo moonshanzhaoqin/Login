@@ -350,7 +350,7 @@ public class UserManagerImpl implements UserManager {
 			if (user.getPushId() != pushId) {
 				// 推送消息：设备已下线
 				logger.info("推送消息：设备已下线==>");
-				pushManager.push4Offline(user);
+//				pushManager.push4Offline(user);
 			}
 			user.setPushId(pushId);
 		}
@@ -359,7 +359,7 @@ public class UserManagerImpl implements UserManager {
 					&& StringUtils.isNotBlank(user.getPushId())) {
 				// 语言不一致，解绑Tag
 				logger.info("语言不一致，解绑Tag==>");
-				pushManager.unbindPushTag(user);
+//				pushManager.unbindPushTag(user);
 			}
 			user.setPushTag(LanguageUtils.standard(language));
 		}
@@ -367,7 +367,7 @@ public class UserManagerImpl implements UserManager {
 		if (StringUtils.isNotBlank(user.getPushId()) && user.getPushTag() != null) {
 			// 绑定Tag
 			logger.info("绑定Tag==>");
-			pushManager.bindPushTag(user);
+//			pushManager.bindPushTag(user);
 		}
 	}
 
