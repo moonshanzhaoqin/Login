@@ -1,16 +1,20 @@
 package com.yuyutechnology.exchange.manager.impl;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
@@ -43,6 +47,7 @@ import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.LanguageUtils;
 import com.yuyutechnology.exchange.utils.MathUtils;
 import com.yuyutechnology.exchange.utils.PasswordUtils;
+import com.yuyutechnology.exchange.utils.ResourceUtils;
 
 @Service
 public class UserManagerImpl implements UserManager {
@@ -74,6 +79,19 @@ public class UserManagerImpl implements UserManager {
 	GoldpayManager goldpayManager;
 	@Autowired
 	PushManager pushManager;
+
+	private boolean qaSwitch = false;
+	private int verifyTime = 10;
+	private String verifyCode = "123456";
+
+	@Override
+	public void init()
+	{
+		logger.info("=========init UserManager=========");
+		qaSwitch = Boolean.parseBoolean(ResourceUtils.getBundleValue("qa.switch"));
+		verifyTime = Integer.parseInt(ResourceUtils.getBundleValue("verify.time"));
+		verifyCode = ResourceUtils.getBundleValue("verify.code");
+	}
 
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
@@ -122,7 +140,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public boolean checkUserPassword(Integer userId, String userPassword) {
-		logger.info("校验用户 {} 的密码 {}==>", userId,userPassword);
+		logger.info("校验用户 {} 的密码 {}==>", userId, userPassword);
 		User user = userDAO.getUser(userId);
 		if (PasswordUtils.check(userPassword, user.getUserPassword(), user.getPasswordSalt())) {
 			logger.info("***匹配***");
@@ -204,12 +222,16 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public void getPinCode(String func, String areaCode, String userPhone) {
 		// 随机生成六位数
-		final String random = MathUtils.randomFixedLengthStr(6);
+		final String random;
+		if (qaSwitch) {
+			random = verifyCode;
+		} else {
+			random = MathUtils.randomFixedLengthStr(6);
+		}
 		logger.info("getPinCode : phone={}, pincode={}", areaCode + userPhone, random);
 		final String md5random = DigestUtils.md5Hex(random);
 		// 存入redis userPhone:md5random
-		// TODO 有效时间可配，单位：min
-		redisDAO.saveData(func + areaCode + userPhone, md5random, 10);
+		redisDAO.saveData(func + areaCode + userPhone, md5random, verifyTime);
 		// 发送验证码
 		smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random);
 	}

@@ -3,6 +3,7 @@ package com.yuyutechnology.exchange.server.controller.request;
 import org.apache.commons.lang.StringUtils;
 
 import com.wordnik.swagger.annotations.ApiModelProperty;
+import com.yuyutechnology.exchange.ServerConsts;
 
 public class TestCodeRequest {
 	private String purpose;
@@ -10,7 +11,7 @@ public class TestCodeRequest {
 	private String userPhone;
 	private String verificationCode;
 
-	@ApiModelProperty(allowableValues = "REGISTER,FORGETPASSWORD,CHANGEPHONE,MODIFYPAYPWD")
+	@ApiModelProperty(allowableValues = ServerConsts.PIN_FUNC_REGISTER+","+ServerConsts.PIN_FUNC_CHANGEPHONE+","+ServerConsts.PIN_FUNC_FORGETPASSWORD+","+ServerConsts.PIN_FUNC_MODIFYPAYPWD)
 	public String getPurpose() {
 		return purpose;
 	}

@@ -2,6 +2,10 @@ package com.yuyutechnology.exchange.manager;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.scheduling.annotation.Scheduled;
+
 import com.yuyutechnology.exchange.dto.CurrencyInfo;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.pojo.AppVersion;
@@ -9,6 +13,9 @@ import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Friend;
 
 public interface UserManager {
+	@PostConstruct
+	@Scheduled(cron = "0 1/10 * * * ?")
+	void init();
 	/**
 	 * 生成验证码并发送
 	 * 
@@ -182,5 +189,7 @@ public interface UserManager {
 	 * @param language
 	 */
 	public void switchLanguage(Integer userId, String language);
+
+	
 
 }
