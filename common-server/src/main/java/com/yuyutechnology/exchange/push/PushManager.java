@@ -225,9 +225,6 @@ public class PushManager {
 			case zh_CN:
 				body = transfer_CN;
 				break;
-			case zh_HK:
-				body = transfer_HK;
-				break;
 			case zh_TW:
 				body = transfer_HK;
 				break;
@@ -242,9 +239,6 @@ public class PushManager {
 				break;
 			case zh_CN:
 				body = transfer_request_CN;
-				break;
-			case zh_HK:
-				body = transfer_request_HK;
 				break;
 			case zh_TW:
 				body = transfer_request_HK;
@@ -261,9 +255,6 @@ public class PushManager {
 			case zh_CN:
 				body = refund_CN;
 				break;
-			case zh_HK:
-				body = refund_HK;
-				break;
 			case zh_TW:
 				body = refund_HK;
 				break;
@@ -278,9 +269,6 @@ public class PushManager {
 				break;
 			case zh_CN:
 				body = offline_CN;
-				break;
-			case zh_HK:
-				body = offline_HK;
 				break;
 			case zh_TW:
 				body = offline_HK;
