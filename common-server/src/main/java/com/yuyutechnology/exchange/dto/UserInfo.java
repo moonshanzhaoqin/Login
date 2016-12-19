@@ -2,16 +2,19 @@ package com.yuyutechnology.exchange.dto;
 
 public class UserInfo {
 
+
 	@Override
 	public String toString() {
-		return "UserInfo [areaCode=" + areaCode + ", phone=" + phone + ", name=" + name + ", isGoldpay=" + isGoldpay
-				+ ", isPayPwd=" + isPayPwd + "]";
+		return "UserInfo [areaCode=" + areaCode + ", phone=" + phone + ", name=" + name + ", goldpayId=" + goldpayId
+				+ ", goldpayName=" + goldpayName + ", goldpayAcount=" + goldpayAcount + ", isPayPwd=" + isPayPwd + "]";
 	}
 
 	private String areaCode;
 	private String phone;
 	private String name;
-	private boolean isGoldpay;
+	private String goldpayId;
+	private String goldpayName;
+	private String goldpayAcount;
 	private boolean isPayPwd;
 
 	public String getAreaCode() {
@@ -21,6 +24,7 @@ public class UserInfo {
 	public void setAreaCode(String areaCode) {
 		this.areaCode = areaCode;
 	}
+
 	public String getPhone() {
 		return phone;
 	}
@@ -37,12 +41,28 @@ public class UserInfo {
 		this.name = name;
 	}
 
-	public boolean isGoldpay() {
-		return isGoldpay;
+	public String getGoldpayId() {
+		return goldpayId;
 	}
 
-	public void setGoldpay(boolean isGoldpay) {
-		this.isGoldpay = isGoldpay;
+	public void setGoldpayId(String goldpayId) {
+		this.goldpayId = goldpayId;
+	}
+
+	public String getGoldpayName() {
+		return goldpayName;
+	}
+
+	public void setGoldpayName(String goldpayName) {
+		this.goldpayName = goldpayName;
+	}
+
+	public String getGoldpayAcount() {
+		return goldpayAcount;
+	}
+
+	public void setGoldpayAcount(String goldpayAcount) {
+		this.goldpayAcount = goldpayAcount;
 	}
 
 	public boolean isPayPwd() {

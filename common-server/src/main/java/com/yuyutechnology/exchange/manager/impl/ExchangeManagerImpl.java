@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,9 +21,9 @@ import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
-import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Exchange;
 import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.utils.DateFormatUtils;
 
 @Service
 public class ExchangeManagerImpl implements ExchangeManager {
@@ -47,28 +48,13 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	public List<WalletInfo> getWalletsByUserId(int userId) {
 		List<WalletInfo> list = new ArrayList<>();
 		List<Wallet> wallets = walletDAO.getWalletsByUserId(userId);
-		List<Currency> currencies = currencyDAO.getCurrentCurrency();
-		for (Currency currency : currencies) {
-			boolean isNeedAdd = true;
-			for (Wallet wallet : wallets) {
-				if (wallet.getCurrency() == currency) {
-					isNeedAdd = false;
-					break;
-				}
-			}
-			if (isNeedAdd) {
-				walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date()));
-			}
-		}
-		wallets = walletDAO.getWalletsByUserId(userId);
 		for (Wallet wallet : wallets) {
 			if (wallet.getCurrency().getCurrencyStatus() == ServerConsts.CURRENCY_AVAILABLE
-					|| wallet.getBalance() == new BigDecimal(0)) {
-				WalletInfo walletInfo = new WalletInfo(wallet.getCurrency().getCurrency(),
+					|| wallet.getBalance().compareTo(BigDecimal.ZERO)!=0 ) {
+				list.add(new WalletInfo(wallet.getCurrency().getCurrency(),
 						wallet.getCurrency().getNameEn(), wallet.getCurrency().getNameCn(),
 						wallet.getCurrency().getNameHk(), wallet.getCurrency().getCurrencyStatus(),
-						wallet.getBalance());
-				list.add(walletInfo);
+						wallet.getBalance()));
 			}
 		}
 		return list;
@@ -96,9 +82,9 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		double exchangeRate = exchangeRateManager.getExchangeRate(currencyOut, currencyIn);
 		BigDecimal result = amountOut.multiply(new BigDecimal(exchangeRate));
 		logger.info("out : " + amountOut + " exchangeRate : " + exchangeRate + "result : " + result);
-		if (currencyOut.equals(ServerConsts.CURRENCY_OF_GOLDPAY) && result.compareTo(new BigDecimal(1)) == 1) {
+		if (currencyIn.equals(ServerConsts.CURRENCY_OF_GOLDPAY) && result.compareTo(new BigDecimal(1)) == 1) {
 
-		} else if (!currencyOut.equals(ServerConsts.CURRENCY_OF_GOLDPAY)
+		} else if (!currencyIn.equals(ServerConsts.CURRENCY_OF_GOLDPAY)
 				&& result.compareTo(new BigDecimal(0.01)) == 1) {
 
 		} else {
@@ -116,13 +102,18 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	}
 
 	@Override
-	public String exchangeConfirm(int userId, String currencyOut, String currencyIn, BigDecimal amountOut,
+	public HashMap<String, String> exchangeConfirm(int userId, String currencyOut, String currencyIn, BigDecimal amountOut,
 			BigDecimal amountIn) {
 		HashMap<String, String> result = exchangeCalculation(userId, currencyOut, currencyIn, amountOut);
 		if (result.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)) {
 			// 用户账户
 			// 扣款
-			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut, new BigDecimal(result.get("out")), "-");
+			int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut, new BigDecimal(result.get("out")), "-");
+			if(updateCount == 0){//余额不足
+				result.put("retCode", ServerConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
+				result.put("msg", "Insufficient balance");
+				return result;
+			}
 			// 加款
 			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, new BigDecimal(result.get("in")), "+");
 
@@ -133,6 +124,8 @@ public class ExchangeManagerImpl implements ExchangeManager {
 					"+");
 			// 扣款
 			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new BigDecimal(result.get("in")), "-");
+			
+
 
 			String exchangeId = exchangeDAO.createExchangeId(ServerConsts.TRANSFER_TYPE_OF_EXCHANGE);
 			// 添加Exchange记录
@@ -156,7 +149,61 @@ public class ExchangeManagerImpl implements ExchangeManager {
 					currencyIn, amountIn, currencyOut, amountOut);
 		}
 
-		return result.get("retCode");
+		return result;
+	}
+	
+	@Override
+	public HashMap<String, Object> getExchangeRecordsByPage(int userId, String period, int currentPage, int pageSize) {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		StringBuilder sb = new StringBuilder("from Exchange where userId = ? and exchangeStatus = ? ");
+		
+		List<Object> values = new ArrayList<Object>();
+		values.add(userId);
+		/////////////////////////////////////////////////////////////
+		values.add(0);
+		
+		if(!period.equals("all")){
+			switch (period) {
+				case "today":
+					sb.append("and createTime > ?");
+					values.add(DateFormatUtils.getStartTime(sdf.format(new Date())));
+					break;
+					
+				case "lastMonth":
+					sb.append("and createTime > ?");
+					Date date = DateFormatUtils.getpreDays(-30);
+					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+					break;
+				case "last3Month":
+					sb.append("and createTime > ?");
+					date = DateFormatUtils.getpreDays(-90);
+					values.add(DateFormatUtils.getStartTime(sdf.format(date)));		
+					break;
+				case "lastYear":
+					sb.append("and createTime > ?");
+					date = DateFormatUtils.getpreDays(-365);
+					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+					break;
+				case "aYearAgo":
+					sb.append("and createTime  < ?");
+					date = DateFormatUtils.getpreDays(-365);
+					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+					break;
+		
+				default:
+					break;
+			}
+		}
+		
+		sb.append(" order by createTime desc");
+		
+//		logger.info("生成SQL:{}",sb.toString());
+
+		HashMap<String, Object> map = exchangeDAO.getExchangeRecordsByPage(sb.toString(), values, currentPage, pageSize);
+		
+		return map;
 	}
 
 	@Override

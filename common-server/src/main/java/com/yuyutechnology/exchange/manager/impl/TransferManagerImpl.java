@@ -7,30 +7,32 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
-import com.yuyutechnology.exchange.dao.ConfigDAO;
+import com.yuyutechnology.exchange.dao.CurrencyDAO;
+import com.yuyutechnology.exchange.dao.NotificationDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
+import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
+import com.yuyutechnology.exchange.pojo.Currency;
+import com.yuyutechnology.exchange.pojo.TransactionNotification;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.push.PushManager;
+import com.yuyutechnology.exchange.sms.SmsManager;
 import com.yuyutechnology.exchange.utils.DateFormatUtils;
-import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.PasswordUtils;
-import com.yuyutechnology.exchange.utils.exchangerate.ExchangeRate;
-import com.yuyutechnology.exchange.utils.exchangerate.GoldpayExchangeRate;
 
 @Service
 public class TransferManagerImpl implements TransferManager{
@@ -40,38 +42,53 @@ public class TransferManagerImpl implements TransferManager{
 	@Autowired
 	RedisDAO redisDAO;
 	@Autowired
-	ConfigDAO configDAO;
-	@Autowired
 	WalletDAO walletDAO;
+	@Autowired
+	CurrencyDAO currencyDAO;
 	@Autowired
 	TransferDAO transferDAO;
 	@Autowired
 	WalletSeqDAO walletSeqDAO;
 	@Autowired
 	UnregisteredDAO unregisteredDAO;
+	@Autowired
+	NotificationDAO notificationDAO;
+	
+	@Autowired
+	ExchangeRateManager exchangeRateManager;
+	@Autowired
+	PushManager pushManager;
+	@Autowired
+	SmsManager smsManager;
 	
 	public static Logger logger = LoggerFactory.getLogger(TransferManagerImpl.class);
 
 	@Override
 	public String transferInitiate(int userId,String areaCode,String userPhone, String currency, 
 			BigDecimal amount, String transferComment,int noticeId) {
+		
+		User receiver = userDAO.getUserByUserPhone(areaCode, userPhone);
+		
+		if(receiver!= null && userId == receiver.getUserId()){
+			logger.warn("Prohibit transfers to yourself");
+			return ServerConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF;
+		}
+
 		//判断余额是否足够支付
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
 		if(wallet == null || wallet.getBalance().compareTo(amount) == -1){
 			logger.warn("Current balance is insufficient");
 			return ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT;
 		}
-		//当日累加金额
-		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount(userId+"");
-		//当日最大金额===================================================================
-		BigDecimal dayMaxAmount =  new BigDecimal(20000);
-		//判断是否超过当日累加金额
-		if(accumulatedAmount.add(amount).compareTo(dayMaxAmount) == 1){
-			logger.warn("Exceeded the day's transaction limit");
-			return ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT;
-		}
-		
-		User receiver = userDAO.getUserByUserPhone(areaCode, userPhone);
+//		//当日累加金额
+//		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount(userId+"");
+//		//当日最大金额===================================================================
+//		BigDecimal dayMaxAmount =  new BigDecimal(20000);
+//		//判断是否超过当日累加金额
+//		if(accumulatedAmount.add(amount).compareTo(dayMaxAmount) == 1){
+//			logger.warn("Exceeded the day's transaction limit");
+//			return ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT;
+//		}
 		
 		//生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_OF_TRANSACTION);
@@ -111,14 +128,16 @@ public class TransferManagerImpl implements TransferManager{
 			return ServerConsts.TRANSFER_PAYMENTPWD_INCORRECT;
 		}
 
+		Currency standardCurrency = currencyDAO.getStandardCurrency();
+		
 		//总账大于设置安全基数，弹出需要短信验证框===============================================
-		BigDecimal totalBalance =  new BigDecimal(20000);
-		BigDecimal totalBalanceMax =  new BigDecimal(30000);
-		//当天累计转出总金额大于设置安全基数，弹出需要短信验证框======================================
+		BigDecimal totalBalance =  exchangeRateManager.getTotalBalance(userId);
+		BigDecimal totalBalanceMax =  standardCurrency.getAssetThreshold();
+		//当天累计转出总金额大于设置安全基数，弹出需要短信验证框
 		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount(userId+"");
-		BigDecimal accumulatedAmountMax =  new BigDecimal(30000);
-		//单笔转出金额大于设置安全基数，弹出需要短信验证框==========================================
-		BigDecimal AmountofSingleTransfer =  new BigDecimal(30000);
+		BigDecimal accumulatedAmountMax =  standardCurrency.getTransferMax();
+		//单笔转出金额大于设置安全基数，弹出需要短信验证框
+		BigDecimal AmountofSingleTransfer =  standardCurrency.getTransferLarge();
 		
 		if(totalBalance.compareTo(totalBalanceMax) == 1 || 
 				( accumulatedAmount.compareTo(accumulatedAmountMax) == 1 || 
@@ -136,6 +155,7 @@ public class TransferManagerImpl implements TransferManager{
 	@Override
 	public String transferConfirm(String transferId) {
 		Transfer transfer = transferDAO.getTransferById(transferId);
+		User payer = userDAO.getUser(transfer.getUserFrom());
 		
 		if(transfer.getUserTo() == 0){  	//交易对象没有注册账号
 			
@@ -170,6 +190,11 @@ public class TransferManagerImpl implements TransferManager{
 			
 			//更改Transfer状态
 			transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+			
+			//向未注册用户发送短信
+			smsManager.sendSMS4Transfer(transfer.getAreaCode(), transfer.getPhone(), payer,
+					transfer.getCurrency(), transfer.getTransferAmount());
+			
 		
 		}else{	//交易对象注册账号,交易正常进行，无需经过系统账户							
 			
@@ -190,16 +215,23 @@ public class TransferManagerImpl implements TransferManager{
 					ServerConsts.TRANSFER_TYPE_OF_TRANSACTION, transfer.getTransferId(), 
 					transfer.getCurrency(), transfer.getTransferAmount());	
 			
-			//如果是请求转账还需要更改消息通知中的状态//////////////////////////////////////////////////
+			//如果是请求转账还需要更改消息通知中的状态
 			if(transfer.getNoticeId() != 0){
-				
+				TransactionNotification notification =  notificationDAO.getNotificationById(transfer.getNoticeId());
+				notification.setTradingStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+				notificationDAO.updateNotification(notification);
 			}
+			//推送到账通知
+
+			User payee = userDAO.getUser(transfer.getUserTo());
+//			pushManager.push4Transfer(payer, payee, transfer.getCurrency(), transfer.getTransferAmount());
+			
 		}
 		//更改Transfer状态
 		transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 
 		//转换金额
-		BigDecimal exchangeResult = getExchangeResult(transfer.getCurrency(),transfer.getTransferAmount());
+		BigDecimal exchangeResult = exchangeRateManager.getExchangeResult(transfer.getCurrency(),transfer.getTransferAmount());
 		transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", exchangeResult);
 		
 		return ServerConsts.RET_CODE_SUCCESS;
@@ -245,6 +277,12 @@ public class TransferManagerImpl implements TransferManager{
 		//修改gift记录
 		unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_BACK);
 		unregisteredDAO.updateUnregistered(unregistered);
+		
+		//发送推送
+		User payee = userDAO.getUser(transfer.getUserFrom());
+//		pushManager.push4Refund(payee, payee.getAreaCode(),transfer.getAreaCode(),
+//				transfer.getPhone(), transfer.getTransferAmount());
+		
 	}
 	
 	@Override
@@ -256,7 +294,8 @@ public class TransferManagerImpl implements TransferManager{
 			return;
 		}
 		for (Unregistered unregistered : list) {
-			//判断是否超过期限////////////////////////////////////////////////////////
+			//:TODO
+			//判断是否超过期限
 			long deadline = 15*24*60*60*1000;
 			if(new Date().getTime() - unregistered.getCreateTime().getTime() >= deadline){
 				systemRefund(unregistered);
@@ -266,10 +305,31 @@ public class TransferManagerImpl implements TransferManager{
 	
 
 	@Override
-	public void makeRequest(int userId, String payerAreaCode, String payerPhone, String currency, BigDecimal amount) {
-		//判断付款人是否存在
+	public String makeRequest(int userId, String payerAreaCode, String payerPhone, String currency, BigDecimal amount) {
 		
-		
+		User payer = userDAO.getUserByUserPhone(payerAreaCode, payerPhone);
+		if(payer != null){
+			TransactionNotification transactionNotification = new TransactionNotification();
+			transactionNotification.setSponsorId(userId);
+			transactionNotification.setPayerId(payer.getUserId());
+			transactionNotification.setCurrency(currency);
+			transactionNotification.setAmount(amount);
+			transactionNotification.setCreateAt(new Date());
+			transactionNotification.setRemarks("");
+			transactionNotification.setNoticeStatus(0);
+			transactionNotification.setTradingStatus(0);
+			
+			notificationDAO.addNotification(transactionNotification);
+			
+			//推送请求付款
+			User payee = userDAO.getUser(userId);
+//			pushManager.push4TransferRuquest(payee, payer, currency, amount);
+			
+			
+			return ServerConsts.RET_CODE_SUCCESS;
+			
+		}
+		return ServerConsts.RET_CODE_FAILUE;
 	}
 
 
@@ -295,113 +355,43 @@ public class TransferManagerImpl implements TransferManager{
 		values.add(userId);
 		values.add(userId);
 		
-		switch (period) {
-			case "today":
-				sb.append("where t1.finish_time > ?");
-				values.add(DateFormatUtils.getStartTime(sdf.format(new Date())));
-				break;
-				
-			case "lastMonth":
-				sb.append("where t1.finish_time > ?");
-				Date date = DateFormatUtils.getpreDays(-30);
-				values.add(DateFormatUtils.getStartTime(sdf.format(date)));
-				break;
-			case "last3Month":
-				sb.append("where t1.finish_time > ?");
-				date = DateFormatUtils.getpreDays(-90);
-				values.add(DateFormatUtils.getStartTime(sdf.format(date)));		
-				break;
-			case "lastYear":
-				sb.append("where t1.finish_time > ?");
-				date = DateFormatUtils.getpreDays(-365);
-				values.add(DateFormatUtils.getStartTime(sdf.format(date)));
-				break;
-			case "aYearAgo":
-				sb.append("where t1.finish_time < ?");
-				date = DateFormatUtils.getpreDays(-365);
-				values.add(DateFormatUtils.getStartTime(sdf.format(date)));
-				break;
-	
-			default:
-				break;
+		if(!period.equals("all")){
+			switch (period) {
+				case "today":
+					sb.append("where t1.finish_time > ?");
+					values.add(DateFormatUtils.getStartTime(sdf.format(new Date())));
+					break;
+					
+				case "lastMonth":
+					sb.append("where t1.finish_time > ?");
+					Date date = DateFormatUtils.getpreDays(-30);
+					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+					break;
+				case "last3Month":
+					sb.append("where t1.finish_time > ?");
+					date = DateFormatUtils.getpreDays(-90);
+					values.add(DateFormatUtils.getStartTime(sdf.format(date)));		
+					break;
+				case "lastYear":
+					sb.append("where t1.finish_time > ?");
+					date = DateFormatUtils.getpreDays(-365);
+					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+					break;
+				case "aYearAgo":
+					sb.append("where t1.finish_time < ?");
+					date = DateFormatUtils.getpreDays(-365);
+					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+					break;
+		
+				default:
+					break;
+			}
 		}
+		
 		
 		sb.append(" order by t1.finish_time desc");
 
 		HashMap<String, Object> map = transferDAO.getTransactionRecordByPage(sql+sb.toString(),sb.toString(),values,currentPage, pageSize);
 		return map;
 	}
-	
-	
-	///////////////////////////////////////////方法内部调用//////////////////////////////////////////////
-	/**
-	 * @Descrition : 将交易金额兑换为默认币种
-	 * @author : nicholas.chi
-	 * @time : 2016年12月7日 下午5:24:08
-	 * @param transCurrency 交易币种
-	 * @param transAmount   默认币种
-	 * @return
-	 */
-	private BigDecimal getExchangeResult(String transCurrency,BigDecimal transAmount){
-		BigDecimal result = null;
-		//默认币种
-		String standardCurrency = configDAO.getConfigValue(ServerConsts.STANDARD_CURRENCY);
-		if(transCurrency.equals(standardCurrency)){
-			result = transAmount;
-		}else{
-			double exchangeRate = getExchangeRate(transCurrency, standardCurrency);
-			result = transAmount.multiply(new BigDecimal(exchangeRate));
-		}
-		return result;
-	}
-	
-	public double getExchangeRate(String base, String outCurrency) {
-		double out = 0;
-		if(base.equals(ServerConsts.CURRENCY_OF_GOLDPAY) || 
-				outCurrency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
-			//当兑换中有goldpay时，需要特殊处理
-			String goldpayER = redisDAO.getValueByKey("redis_goldpay_exchangerate");
-			GoldpayExchangeRate goldpayExchangeRate = JsonBinder.getInstance().
-					fromJson(goldpayER, GoldpayExchangeRate.class);
-			
-			if(base.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
-				HashMap<String, Double> gdp4Others = (HashMap<String, Double>) 
-						goldpayExchangeRate.getGdp4Others();
-				out = gdp4Others.get(outCurrency);
-			}else{
-				HashMap<String, Double> others4Gdp = (HashMap<String, Double>) 
-						goldpayExchangeRate.getOthers4Gdp();
-				out = others4Gdp.get(base);
-			}
-			
-		}else{
-			out = getExchangeRateNoGoldq(base,outCurrency);
-		}
-		
-		logger.info("base : {},out : {}",base,out);
-		
-		return out;
-	}
-
-	
-	@SuppressWarnings("unchecked")
-	private double getExchangeRateNoGoldq(String base, String outCurrency) {
-		double out = 0;
-		HashMap<String, String> map = new HashMap<String, String>();
-		String result = redisDAO.getValueByKey("redis_exchangeRate");
-		if(StringUtils.isNotBlank(result)){
-			//logger.info("result : {}",result);
-			map = JsonBinder.getInstance().fromJson(result, HashMap.class);
-			String value = map.get(base);
-			logger.info("value : {}",value);
-			ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().
-			fromJson(value, ExchangeRate.class);
-			out = exchangeRate.getRates().get(outCurrency);
-		}
-		
-		logger.info("base : {},out : {}",base,out);
-		
-		return out;
-	}
-
 }

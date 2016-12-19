@@ -16,12 +16,13 @@ public class BindDAOImpl implements BindDAO {
 	@Resource
 	HibernateTemplate hibernateTemplate;
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public List<Bind> getBindByUserId(Integer userId) {
+	public Bind getBindByUserId(Integer userId) {
 		List<?> list = hibernateTemplate.find("from Bind where userId = ?", userId);
-		return (List<Bind>) list;
-	}
+		if(!list.isEmpty()){
+			return (Bind) list.get(0);
+		}
+		return null;	}
 
 	@Override
 	public void saveBind(Bind bind) {

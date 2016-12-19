@@ -10,7 +10,7 @@ public class TestCodeRequest {
 	private String userPhone;
 	private String verificationCode;
 
-	@ApiModelProperty(allowableValues = "REGISTER,FORGETPASSWORD,CHANGEPHONE")
+	@ApiModelProperty(allowableValues = "REGISTER,FORGETPASSWORD,CHANGEPHONE,MODIFYPAYPWD")
 	public String getPurpose() {
 		return purpose;
 	}

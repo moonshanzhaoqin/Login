@@ -40,7 +40,7 @@ public class ServerConsts {
 	 */
 	public static final String GOLDPAY_PHONE_IS_NOT_EXIST = "01004";
 	/**
-	 * 登录失败密码错误
+	 * 登录密码错误
 	 */
 	public static final String PASSWORD_NOT_MATCH = "01005";
 	/**
@@ -67,7 +67,15 @@ public class ServerConsts {
 	 * 版本号已是最新
 	 */
 	public static final String VERSION_NUM_IS_LATEST = "01011";
-
+	/**
+	 * 支付密码不正确
+	 */
+	public static final String PAY_PWD_NOT_MATCH = "01012";
+	/**
+	 * 好友已添加
+	 */
+	public static final String FRIEND_HAS_ADDED = "01013";
+	
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息
@@ -81,6 +89,8 @@ public class ServerConsts {
 	 * 换算后金额低于最小限额
 	 */
 	public static final String EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT = "02003";
+	
+	public static final String EXCHANGE_THE_SAME_CURRENCY_CAN_NOT_BE_EXCHANGED = "02004";
 
 	// 交易03
 	/**
@@ -102,7 +112,9 @@ public class ServerConsts {
 	 */
 	public static final String PIN_CODE_INCORRECT = "03005";
 	
-	public static final String TRANSFER_HISTORY_NOT_ACQUIRED = "03006";
+	public static final String TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF = "03006";
+	
+	public static final String TRANSFER_HISTORY_NOT_ACQUIRED = "03007";
 
 	// 用户类型
 	/**
@@ -192,8 +204,21 @@ public class ServerConsts {
 	 * 短信验证码功能——换绑手机
 	 */
 	public static final String PIN_FUNC_CHANGEPHONE = "CHANGEPHONE";
+	/**
+	 * 短信验证码功能——更换支付密码
+	 */
+	public static final String PIN_FUNC_MODIFYPAYPWD = "MODIFYPAYPWD";
+	/**
+	 * 币种状态——可用
+	 */
 	public static final int CURRENCY_AVAILABLE = 1;
+	/**
+	 * 币种状态——不可用
+	 */
 	public static final int CURRENCY_UNAVAILABLE = 0;
+	
+	
+	
 	
 
 

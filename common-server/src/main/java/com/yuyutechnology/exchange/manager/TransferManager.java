@@ -70,7 +70,18 @@ public interface TransferManager {
 	public HashMap<String, Object> getTransactionRecordByPage(String period,int userId,int currentPage, int pageSize);
 	
 	
-	public void makeRequest(int userId,String payerAreaCode,String payerPhone,String currency,BigDecimal amount);
+	/**
+	 * @Descrition : TODO
+	 * @author : nicholas.chi
+	 * @time : 2016年12月16日 上午10:12:19
+	 * @param userId
+	 * @param payerAreaCode
+	 * @param payerPhone
+	 * @param currency
+	 * @param amount
+	 * @return
+	 */
+	public String makeRequest(int userId,String payerAreaCode,String payerPhone,String currency,BigDecimal amount);
 	
 
 }

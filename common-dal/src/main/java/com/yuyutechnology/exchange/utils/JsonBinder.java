@@ -88,6 +88,7 @@ public class JsonBinder
 		}
 		return jsonBinderNonNull;
 	}
+	@SuppressWarnings("deprecation")
 	protected JsonBinder(Inclusion inclusion)
 	{
 		mapper = new ObjectMapper();

@@ -1,6 +1,8 @@
 package com.yuyutechnology.exchange.dao.impl;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.dao.ExchangeDAO;
 import com.yuyutechnology.exchange.pojo.Exchange;
+import com.yuyutechnology.exchange.utils.page.PageUtils;
 
 @Repository
 public class ExchangeDAOImpl implements ExchangeDAO {
@@ -42,5 +45,27 @@ public class ExchangeDAOImpl implements ExchangeDAO {
 	@Override
 	public void addExchange(Exchange exchange) {
 		hibernateTemplate.save(exchange);
+	}
+
+	@Override
+	public HashMap<String, Object> getExchangeRecordsByPage(String sql, List<Object> values, int currentPage,
+			int pageSize) {
+		int firstResult = (currentPage -1)*pageSize;
+		int masResult = pageSize;
+		
+		List<?> list = PageUtils.getListByPage(hibernateTemplate, sql, values, firstResult, masResult);
+		
+		long total = PageUtils.getTotal(hibernateTemplate, sql,values);
+		int pageTotal = PageUtils.getPageTotal(total, pageSize);
+		
+		HashMap<String, Object> map = new HashMap<>();
+		
+		map.put("currentPage",currentPage);
+		map.put("pageSize",pageSize);
+		map.put("total",total);
+		map.put("pageTotal",pageTotal);
+		map.put("list",list);
+		
+		return map;
 	}
 }

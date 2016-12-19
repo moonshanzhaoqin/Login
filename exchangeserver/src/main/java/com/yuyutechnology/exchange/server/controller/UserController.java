@@ -3,12 +3,9 @@
  */
 package com.yuyutechnology.exchange.server.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.hibernate.sql.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +18,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.ServerConsts;
-import com.yuyutechnology.exchange.dto.UserInfo;
-import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.AppVersion;
-import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.server.controller.request.AppVersionRequest;
 import com.yuyutechnology.exchange.server.controller.request.ForgetPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetVerificationCodeRequest;
@@ -81,7 +75,6 @@ public class UserController {
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
-			//验证码校验
 			// 验证码校验
 			if (userManager.testPinCode(ServerConsts.PIN_FUNC_FORGETPASSWORD, forgetPasswordRequest.getAreaCode(),
 					forgetPasswordRequest.getUserPhone(), forgetPasswordRequest.getVerificationCode())) {
@@ -196,6 +189,8 @@ public class UserController {
 			} else {
 				//记录登录信息
 				userManager.updateUser(userId, HttpTookit.getIp(request),loginRequest.getPushId(),loginRequest.getLanguage());
+				//更新钱包
+				userManager.updateWallet(userId);
 				// 生成session Token
 				SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 				sessionManager.saveSessionData(sessionData);
@@ -204,7 +199,7 @@ public class UserController {
 				// 获取用户信息
 				rep.setUser(userManager.getUserInfo(userId));
 				// 获取钱包信息
-				rep.setWallets(exchangeManager.getWalletsByUserId(userId));
+//				rep.setWallets(exchangeManager.getWalletsByUserId(userId));
 
 				logger.info(MessageConsts.RET_CODE_SUCCESS);
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
@@ -225,6 +220,8 @@ public class UserController {
 			} else if (userManager.checkUserPassword(userId, loginRequest.getUserPassword())) {
 				//记录登录信息
 				userManager.updateUser(userId, HttpTookit.getIp(request),loginRequest.getPushId(),loginRequest.getLanguage());
+				//更新钱包
+				userManager.updateWallet(userId);
 				// 生成session Token
 				SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 				sessionManager.saveSessionData(sessionData);
@@ -233,7 +230,7 @@ public class UserController {
 				// 获取用户信息
 				rep.setUser(userManager.getUserInfo(userId));
 				// 获取钱包信息
-				rep.setWallets(exchangeManager.getWalletsByUserId(userId));
+//				rep.setWallets(exchangeManager.getWalletsByUserId(userId));
 
 				logger.info(MessageConsts.RET_CODE_SUCCESS);
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
@@ -294,7 +291,7 @@ public class UserController {
 					// 获取用户信息
 					rep.setUser(userManager.getUserInfo(userId));
 					// 获取钱包信息
-					rep.setWallets(exchangeManager.getWalletsByUserId(userId));
+//					rep.setWallets(exchangeManager.getWalletsByUserId(userId));
 
 					logger.info(MessageConsts.RET_CODE_SUCCESS);
 					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
@@ -365,7 +362,7 @@ public class UserController {
 	}
 
 	/**
-	 * TODO appVersion 版本获取
+	 * appVersion 版本获取
 	 * 
 	 * @param appVersionRequest
 	 * @param request

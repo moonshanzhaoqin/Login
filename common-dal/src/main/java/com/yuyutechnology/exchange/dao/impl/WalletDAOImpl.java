@@ -39,14 +39,14 @@ public class WalletDAOImpl implements WalletDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Wallet> getWalletsByUserId(int userId) {
-		List<?> list = hibernateTemplate.find("from Wallet where userId = ?", userId);
+		List<?> list = hibernateTemplate.find("from Wallet where userId = ? order by currency.currencyOrder", userId);
 		return (List<Wallet>) list;
 	}
 
 	@Override
 	public Wallet getWalletByUserIdAndCurrency(int userId, String currency) {
 		Wallet wallet = null;
-		List<?> list = hibernateTemplate.find("from Wallet where userId = ? and currency = ?", userId,currency);
+		List<?> list = hibernateTemplate.find("from Wallet where userId = ? and currency.currency = ?", userId,currency);
 		if(!list.isEmpty()){
 			wallet = (Wallet) list.get(0);
 		}
@@ -58,14 +58,19 @@ public class WalletDAOImpl implements WalletDAO {
 		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
 			@Override
 			public Integer doInHibernate(Session session) throws HibernateException {
-				Query query;
+				Query query = null;
 				if(capitalFlows.equals("+")){
 					query = session.createQuery("update Wallet set updateTime = ? ,balance = balance+"
-							+amount+" where userId = ? and currency = ?");
+							+amount+" where userId = ? and currency.currency = ?");
 				}else{
-					query = session.createQuery("update Wallet set updateTime = ? ,balance = balance-"
-							+amount+" where userId = ? and currency = ? and userId != ? and balance-"+amount+">0");
-					query.setInteger(3, systemUserId);
+					if(userId != systemUserId){
+						query = session.createQuery("update Wallet set updateTime = ? ,balance = balance-"
+								+amount+" where userId = ? and currency.currency = ? and balance-"+amount+">0");
+					}else{
+						query = session.createQuery("update Wallet set updateTime = ? ,balance = balance-"
+								+amount+" where userId = ? and currency.currency = ?");
+					}
+
 				}
 				query.setTimestamp(0, new Date());
 				query.setInteger(1, userId);

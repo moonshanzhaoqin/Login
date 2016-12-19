@@ -67,6 +67,14 @@ public class MessageConsts {
 	 * 版本号已是最新
 	 */
 	public static final String VERSION_NUM_IS_LATEST = "VERSION_NUM_IS_LATEST";
+	/**
+	 * 支付密码不正确
+	 */
+	public static final String PAY_PWD_NOT_MATCH = "PAY_PWD_NOT_MATCH";
+	/**
+	 * 好友已添加
+	 */
+	public static final String FRIEND_HAS_ADDED = "FRIEND_HAS_ADDED";
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息

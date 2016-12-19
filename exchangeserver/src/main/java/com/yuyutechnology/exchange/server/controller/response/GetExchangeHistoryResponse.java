@@ -2,13 +2,14 @@ package com.yuyutechnology.exchange.server.controller.response;
 
 import java.util.List;
 
-public class GetTransactionRecordReponse extends BaseResponse {
+import com.yuyutechnology.exchange.pojo.Exchange;
 
+public class GetExchangeHistoryResponse extends BaseResponse {
 	private int currentPage;
 	private int pageSize;
 	private int total;
 	private int pageTotal;
-	private List<?> list;
+	private List<Exchange> list;
 	
 	public int getCurrentPage() {
 		return currentPage;
@@ -34,12 +35,11 @@ public class GetTransactionRecordReponse extends BaseResponse {
 	public void setPageTotal(int pageTotal) {
 		this.pageTotal = pageTotal;
 	}
-	public List<?> getList() {
+	public List<Exchange> getList() {
 		return list;
 	}
-	public void setList(List<?> list) {
+	public void setList(List<Exchange> list) {
 		this.list = list;
 	}
-	
 	
 }

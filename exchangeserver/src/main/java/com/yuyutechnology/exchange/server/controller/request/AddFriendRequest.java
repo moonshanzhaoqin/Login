@@ -22,6 +22,11 @@ public class AddFriendRequest {
 		this.userPhone = userPhone;
 	}
 
+	/**
+	 * 判断参数是否为空
+	 * 
+	 * @return
+	 */
 	public boolean isEmpty() {
 		if (StringUtils.isEmpty(this.areaCode)) {
 			return true;
