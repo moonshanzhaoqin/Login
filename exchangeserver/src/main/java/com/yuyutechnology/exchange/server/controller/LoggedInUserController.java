@@ -278,6 +278,7 @@ public class LoggedInUserController {
 		List<FriendInfo> friendInfos = new ArrayList<FriendInfo>();
 		List<Friend> friends = userManager.getFriends(sessionData.getUserId());
 		for (Friend friend : friends) {
+			logger.info("friend={}",friend.toString());
 			friendInfos.add(new FriendInfo(friend.getUser().getAreaCode(), friend.getUser().getUserPhone(),
 					friend.getUser().getUserName()));
 		}
