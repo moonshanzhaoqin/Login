@@ -169,6 +169,12 @@ public class ServerConsts {
 	 * 交易已完成
 	 */
 	public static final int TRANSFER_STATUS_OF_COMPLETED = 2;
+	
+	//notification状态
+	
+	public static final int NOTIFICATION_STATUS_OF_PENDING = 0;
+	
+	public static final int NOTIFICATION_STATUS_OF_ALREADY_PAID = 1;
 
 	// unregistered状态
 	/**

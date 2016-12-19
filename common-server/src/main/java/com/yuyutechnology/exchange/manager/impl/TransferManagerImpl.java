@@ -218,7 +218,7 @@ public class TransferManagerImpl implements TransferManager{
 			//如果是请求转账还需要更改消息通知中的状态
 			if(transfer.getNoticeId() != 0){
 				TransactionNotification notification =  notificationDAO.getNotificationById(transfer.getNoticeId());
-				notification.setTradingStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+				notification.setTradingStatus(ServerConsts.NOTIFICATION_STATUS_OF_ALREADY_PAID);
 				notificationDAO.updateNotification(notification);
 			}
 			//推送到账通知
@@ -317,7 +317,7 @@ public class TransferManagerImpl implements TransferManager{
 			transactionNotification.setCreateAt(new Date());
 			transactionNotification.setRemarks("");
 			transactionNotification.setNoticeStatus(0);
-			transactionNotification.setTradingStatus(0);
+			transactionNotification.setTradingStatus(ServerConsts.NOTIFICATION_STATUS_OF_PENDING);
 			
 			notificationDAO.addNotification(transactionNotification);
 			
