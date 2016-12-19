@@ -2,7 +2,9 @@ package com.yuyutechnology.exchange.server.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dto.TransferDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
@@ -198,7 +201,7 @@ public class TransferController {
 		}
 		return rep;
 	}
-	
+
 	@ApiOperation(value = "获取交易明细")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransactionRecord")
 	public @ResponseBody
@@ -214,13 +217,38 @@ public class TransferController {
 			rep.setRetCode(ServerConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
 			rep.setMessage("Transaction history not acquired");
 		}else{
+			
+			List<?> list = (ArrayList<?>)map.get("list");
+			ArrayList<TransferDTO> dtos = new ArrayList<>();
+			for (Object object : list) {
+				Object[] obj = (Object[]) object;
+				
+				TransferDTO dto = new TransferDTO();
+//				dto.setUserId((int) obj[0]);
+				dto.setCurrency((String) obj[1]);
+				
+				if(sessionData.getUserId() == (int) obj[0]){
+					dto.setAmount(new BigDecimal("-"+obj[2]+"") );
+				}else{
+					dto.setAmount(new BigDecimal(obj[2]+"") );
+				}
+				
+
+				dto.setPhoneNum((String) obj[3]);
+				dto.setComments((String) obj[4]);
+				dto.setFinishAt((Date) obj[5]);
+				dto.setTransferType((int) obj[6]);
+				
+				dtos.add(dto);
+			}
+			
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 			rep.setMessage("ok");
 			rep.setCurrentPage((int) map.get("currentPage"));
 			rep.setPageSize((int) map.get("pageSize"));
 			rep.setPageTotal((int) map.get("pageTotal"));
 			rep.setTotal(Integer.parseInt(map.get("total")+""));
-			rep.setList((ArrayList<?>)map.get("list"));
+			rep.setList(dtos);
 		}
 		
 		return rep;

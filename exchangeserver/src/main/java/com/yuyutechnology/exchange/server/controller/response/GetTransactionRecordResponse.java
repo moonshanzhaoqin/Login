@@ -2,13 +2,15 @@ package com.yuyutechnology.exchange.server.controller.response;
 
 import java.util.List;
 
+import com.yuyutechnology.exchange.dto.TransferDTO;
+
 public class GetTransactionRecordResponse extends BaseResponse {
 
 	private int currentPage;
 	private int pageSize;
 	private int total;
 	private int pageTotal;
-	private List<?> list;
+	private List<TransferDTO> list;
 	
 	public int getCurrentPage() {
 		return currentPage;
@@ -34,10 +36,10 @@ public class GetTransactionRecordResponse extends BaseResponse {
 	public void setPageTotal(int pageTotal) {
 		this.pageTotal = pageTotal;
 	}
-	public List<?> getList() {
+	public List<TransferDTO> getList() {
 		return list;
 	}
-	public void setList(List<?> list) {
+	public void setList(List<TransferDTO> list) {
 		this.list = list;
 	}
 	

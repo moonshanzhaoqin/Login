@@ -82,9 +82,9 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		double exchangeRate = exchangeRateManager.getExchangeRate(currencyOut, currencyIn);
 		BigDecimal result = amountOut.multiply(new BigDecimal(exchangeRate));
 		logger.info("out : " + amountOut + " exchangeRate : " + exchangeRate + "result : " + result);
-		if (currencyOut.equals(ServerConsts.CURRENCY_OF_GOLDPAY) && result.compareTo(new BigDecimal(1)) == 1) {
+		if (currencyIn.equals(ServerConsts.CURRENCY_OF_GOLDPAY) && result.compareTo(new BigDecimal(1)) == 1) {
 
-		} else if (!currencyOut.equals(ServerConsts.CURRENCY_OF_GOLDPAY)
+		} else if (!currencyIn.equals(ServerConsts.CURRENCY_OF_GOLDPAY)
 				&& result.compareTo(new BigDecimal(0.01)) == 1) {
 
 		} else {
@@ -164,35 +164,37 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		/////////////////////////////////////////////////////////////
 		values.add(0);
 		
-		switch (period) {
-			case "today":
-				sb.append("and createTime > ?");
-				values.add(DateFormatUtils.getStartTime(sdf.format(new Date())));
-				break;
-				
-			case "lastMonth":
-				sb.append("and createTime > ?");
-				Date date = DateFormatUtils.getpreDays(-30);
-				values.add(DateFormatUtils.getStartTime(sdf.format(date)));
-				break;
-			case "last3Month":
-				sb.append("and createTime > ?");
-				date = DateFormatUtils.getpreDays(-90);
-				values.add(DateFormatUtils.getStartTime(sdf.format(date)));		
-				break;
-			case "lastYear":
-				sb.append("and createTime > ?");
-				date = DateFormatUtils.getpreDays(-365);
-				values.add(DateFormatUtils.getStartTime(sdf.format(date)));
-				break;
-			case "aYearAgo":
-				sb.append("and createTime  < ?");
-				date = DateFormatUtils.getpreDays(-365);
-				values.add(DateFormatUtils.getStartTime(sdf.format(date)));
-				break;
-	
-			default:
-				break;
+		if(!period.equals("all")){
+			switch (period) {
+				case "today":
+					sb.append("and createTime > ?");
+					values.add(DateFormatUtils.getStartTime(sdf.format(new Date())));
+					break;
+					
+				case "lastMonth":
+					sb.append("and createTime > ?");
+					Date date = DateFormatUtils.getpreDays(-30);
+					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+					break;
+				case "last3Month":
+					sb.append("and createTime > ?");
+					date = DateFormatUtils.getpreDays(-90);
+					values.add(DateFormatUtils.getStartTime(sdf.format(date)));		
+					break;
+				case "lastYear":
+					sb.append("and createTime > ?");
+					date = DateFormatUtils.getpreDays(-365);
+					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+					break;
+				case "aYearAgo":
+					sb.append("and createTime  < ?");
+					date = DateFormatUtils.getpreDays(-365);
+					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+					break;
+		
+				default:
+					break;
+			}
 		}
 		
 		sb.append(" order by createTime desc");

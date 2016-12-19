@@ -355,36 +355,39 @@ public class TransferManagerImpl implements TransferManager{
 		values.add(userId);
 		values.add(userId);
 		
-		switch (period) {
-			case "today":
-				sb.append("where t1.finish_time > ?");
-				values.add(DateFormatUtils.getStartTime(sdf.format(new Date())));
-				break;
-				
-			case "lastMonth":
-				sb.append("where t1.finish_time > ?");
-				Date date = DateFormatUtils.getpreDays(-30);
-				values.add(DateFormatUtils.getStartTime(sdf.format(date)));
-				break;
-			case "last3Month":
-				sb.append("where t1.finish_time > ?");
-				date = DateFormatUtils.getpreDays(-90);
-				values.add(DateFormatUtils.getStartTime(sdf.format(date)));		
-				break;
-			case "lastYear":
-				sb.append("where t1.finish_time > ?");
-				date = DateFormatUtils.getpreDays(-365);
-				values.add(DateFormatUtils.getStartTime(sdf.format(date)));
-				break;
-			case "aYearAgo":
-				sb.append("where t1.finish_time < ?");
-				date = DateFormatUtils.getpreDays(-365);
-				values.add(DateFormatUtils.getStartTime(sdf.format(date)));
-				break;
-	
-			default:
-				break;
+		if(!period.equals("all")){
+			switch (period) {
+				case "today":
+					sb.append("where t1.finish_time > ?");
+					values.add(DateFormatUtils.getStartTime(sdf.format(new Date())));
+					break;
+					
+				case "lastMonth":
+					sb.append("where t1.finish_time > ?");
+					Date date = DateFormatUtils.getpreDays(-30);
+					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+					break;
+				case "last3Month":
+					sb.append("where t1.finish_time > ?");
+					date = DateFormatUtils.getpreDays(-90);
+					values.add(DateFormatUtils.getStartTime(sdf.format(date)));		
+					break;
+				case "lastYear":
+					sb.append("where t1.finish_time > ?");
+					date = DateFormatUtils.getpreDays(-365);
+					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+					break;
+				case "aYearAgo":
+					sb.append("where t1.finish_time < ?");
+					date = DateFormatUtils.getpreDays(-365);
+					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+					break;
+		
+				default:
+					break;
+			}
 		}
+		
 		
 		sb.append(" order by t1.finish_time desc");
 
