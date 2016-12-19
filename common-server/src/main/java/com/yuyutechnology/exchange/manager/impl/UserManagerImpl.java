@@ -340,6 +340,7 @@ public class UserManagerImpl implements UserManager {
 		return list;
 	}
 
+	// TODO 逻辑需要改动
 	@Override
 	public void updateUser(Integer userId, String loginIp, String pushId, String language) {
 		logger.info("更新用户登录信息==>");
@@ -350,7 +351,7 @@ public class UserManagerImpl implements UserManager {
 			if (user.getPushId() != pushId) {
 				// 推送消息：设备已下线
 				logger.info("推送消息：设备已下线==>");
-//				pushManager.push4Offline(user);
+				// pushManager.push4Offline(user);
 			}
 			user.setPushId(pushId);
 		}
@@ -359,7 +360,7 @@ public class UserManagerImpl implements UserManager {
 					&& StringUtils.isNotBlank(user.getPushId())) {
 				// 语言不一致，解绑Tag
 				logger.info("语言不一致，解绑Tag==>");
-//				pushManager.unbindPushTag(user);
+				// pushManager.unbindPushTag(user);
 			}
 			user.setPushTag(LanguageUtils.standard(language));
 		}
@@ -367,7 +368,7 @@ public class UserManagerImpl implements UserManager {
 		if (StringUtils.isNotBlank(user.getPushId()) && user.getPushTag() != null) {
 			// 绑定Tag
 			logger.info("绑定Tag==>");
-//			pushManager.bindPushTag(user);
+			// pushManager.bindPushTag(user);
 		}
 	}
 
@@ -406,6 +407,24 @@ public class UserManagerImpl implements UserManager {
 		User user = userDAO.getUser(userId);
 		user.setUserName(newUserName);
 		userDAO.updateUser(user);
+	}
+
+	// TODO 逻辑需要改动
+	@Override
+	public void switchLanguage(Integer userId, String language) {
+		User user = userDAO.getUser(userId);
+		if (!user.getPushTag().equals(LanguageUtils.standard(language)) && StringUtils.isNotBlank(user.getPushId())) {
+			// 语言不一致，解绑Tag
+			logger.info("语言不一致，解绑Tag==>");
+			// pushManager.unbindPushTag(user);
+		}
+		user.setPushTag(LanguageUtils.standard(language));
+		userDAO.updateUser(user);
+		if (StringUtils.isNotBlank(user.getPushId()) && user.getPushTag() != null) {
+			// 绑定Tag
+			logger.info("绑定Tag==>");
+			// pushManager.bindPushTag(user);
+		}
 	}
 
 }

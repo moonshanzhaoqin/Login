@@ -34,7 +34,7 @@ import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByOldRe
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByPINRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyUserNameRequest;
 import com.yuyutechnology.exchange.server.controller.request.SetUserPayPwdRequest;
-import com.yuyutechnology.exchange.server.controller.request.SwitchLanguagePwdRequest;
+import com.yuyutechnology.exchange.server.controller.request.SwitchLanguageRequest;
 import com.yuyutechnology.exchange.server.controller.response.AddFriendResponse;
 import com.yuyutechnology.exchange.server.controller.response.BindGoldpayResponse;
 import com.yuyutechnology.exchange.server.controller.response.ChangePhoneResponse;
@@ -434,7 +434,14 @@ public class LoggedInUserController {
 		return rep;
 	}
 
-	// modifyPayPwdByPIN 通过手机验证码更换支付密码
+	/**
+	 * modifyPayPwdByPIN 通过手机验证码更换支付密码
+	 * 
+	 * @param token
+	 * @param modifyPayPwdByPINRequest
+	 * @return
+	 */
+
 	@ResponseBody
 	@ApiOperation(value = "通过手机验证码更换支付密码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/modifyPayPwdByPIN", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
@@ -467,22 +474,39 @@ public class LoggedInUserController {
 				rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
 				rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 			}
-
 		}
 		return rep;
 	}
 
-	// TODO switchLanguage切换语言
-	// @ResponseBody
-	// @ApiOperation(value = "切换语言", httpMethod = "POST", notes = "")
-	// @RequestMapping(value = "/token/{token}/user/switchLanguage", method =
-	// RequestMethod.POST, produces = "application/json; charset=utf-8")
-	// public SwitchLanguageResponse switchLanguage(@PathVariable String token,
-	// @RequestBody SwitchLanguagePwdRequest switchLanguageRequest) {
-	//
-	//
-	// return null;
-	//
-	// }
+	/**
+	 * switchLanguage切换语言
+	 * 
+	 * @param token
+	 * @param switchLanguageRequest
+	 * @return
+	 */
+	@ResponseBody
+	@ApiOperation(value = "切换语言", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/switchLanguage", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public SwitchLanguageResponse switchLanguage(@PathVariable String token,
+			@RequestBody SwitchLanguageRequest switchLanguageRequest) {
+		logger.info("========switchLanguage : {}============", token);
+		SwitchLanguageResponse rep = new SwitchLanguageResponse();
+
+		if (switchLanguageRequest.isEmpty()) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+		} else {
+			SessionData sessionData = SessionDataHolder.getSessionData();
+			userManager.switchLanguage(sessionData.getUserId(), switchLanguageRequest.getLanguage());
+			logger.info("********Operation succeeded********");
+			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		}
+
+		return rep;
+
+	}
 
 }

@@ -175,5 +175,12 @@ public interface UserManager {
 	 */
 	public void updateUserName(Integer userId, String newUserName);
 
+	/**
+	 * 切换语言
+	 * 
+	 * @param userId
+	 * @param language
+	 */
+	public void switchLanguage(Integer userId, String language);
 
 }
