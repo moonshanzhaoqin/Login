@@ -2,15 +2,15 @@ package com.yuyutechnology.exchange.server.controller.response;
 
 import java.util.List;
 
-import com.yuyutechnology.exchange.server.controller.dto.TransferDTO;
+import com.yuyutechnology.exchange.server.controller.dto.NotificationDTO;
 
-public class GetTransactionRecordResponse extends BaseResponse {
-
+public class GetNotificationRecordsResponse extends BaseResponse {
+	
 	private int currentPage;
 	private int pageSize;
 	private int total;
 	private int pageTotal;
-	private List<TransferDTO> list;
+	private List<NotificationDTO> list;
 	
 	public int getCurrentPage() {
 		return currentPage;
@@ -36,12 +36,10 @@ public class GetTransactionRecordResponse extends BaseResponse {
 	public void setPageTotal(int pageTotal) {
 		this.pageTotal = pageTotal;
 	}
-	public List<TransferDTO> getList() {
+	public List<NotificationDTO> getList() {
 		return list;
 	}
-	public void setList(List<TransferDTO> list) {
+	public void setList(List<NotificationDTO> list) {
 		this.list = list;
 	}
-	
-	
 }

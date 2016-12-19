@@ -83,5 +83,7 @@ public interface TransferManager {
 	 */
 	public String makeRequest(int userId,String payerAreaCode,String payerPhone,String currency,BigDecimal amount);
 	
+	public HashMap<String, Object> getNotificationRecordsByPage(int userId,int currentPage, int pageSize);
+	
 
 }

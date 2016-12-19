@@ -115,6 +115,8 @@ public class ServerConsts {
 	public static final String TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF = "03006";
 	
 	public static final String TRANSFER_HISTORY_NOT_ACQUIRED = "03007";
+	
+	public static final String TRANSFER_NOTIFICATION_NOT_ACQUIRED = "03008";
 
 	// 用户类型
 	/**

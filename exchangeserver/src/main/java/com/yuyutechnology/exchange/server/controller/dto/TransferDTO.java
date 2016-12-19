@@ -1,4 +1,4 @@
-package com.yuyutechnology.exchange.dto;
+package com.yuyutechnology.exchange.server.controller.dto;
 
 import java.math.BigDecimal;
 import java.util.Date;
