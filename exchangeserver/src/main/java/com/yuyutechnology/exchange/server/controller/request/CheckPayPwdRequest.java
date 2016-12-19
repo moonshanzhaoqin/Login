@@ -13,6 +13,7 @@ public class CheckPayPwdRequest {
 	public void setUserPayPwd(String userPayPwd) {
 		this.userPayPwd = userPayPwd;
 	}
+
 	/**
 	 * 判断参数是否为空
 	 * 

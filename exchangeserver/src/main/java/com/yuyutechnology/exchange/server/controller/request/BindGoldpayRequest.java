@@ -13,6 +13,11 @@ public class BindGoldpayRequest {
 		this.goldpayToken = goldpayToken;
 	}
 
+	/**
+	 * 判断参数是否为空
+	 * 
+	 * @return
+	 */
 	public boolean isEmpty() {
 		if (StringUtils.isEmpty(this.goldpayToken)) {
 			return true;
