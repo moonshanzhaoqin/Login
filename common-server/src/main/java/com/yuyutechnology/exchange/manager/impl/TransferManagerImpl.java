@@ -224,7 +224,7 @@ public class TransferManagerImpl implements TransferManager{
 			//推送到账通知
 
 			User payee = userDAO.getUser(transfer.getUserTo());
-			pushManager.push4Transfer(payer, payee, transfer.getCurrency(), transfer.getTransferAmount());
+//			pushManager.push4Transfer(payer, payee, transfer.getCurrency(), transfer.getTransferAmount());
 			
 		}
 		//更改Transfer状态
@@ -280,8 +280,8 @@ public class TransferManagerImpl implements TransferManager{
 		
 		//发送推送
 		User payee = userDAO.getUser(transfer.getUserFrom());
-		pushManager.push4Refund(payee, payee.getAreaCode(),transfer.getAreaCode(),
-				transfer.getPhone(), transfer.getTransferAmount());
+//		pushManager.push4Refund(payee, payee.getAreaCode(),transfer.getAreaCode(),
+//				transfer.getPhone(), transfer.getTransferAmount());
 		
 	}
 	
@@ -323,7 +323,7 @@ public class TransferManagerImpl implements TransferManager{
 			
 			//推送请求付款
 			User payee = userDAO.getUser(userId);
-			pushManager.push4TransferRuquest(payee, payer, currency, amount);
+//			pushManager.push4TransferRuquest(payee, payer, currency, amount);
 			
 			
 			return ServerConsts.RET_CODE_SUCCESS;
