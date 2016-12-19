@@ -1,5 +1,6 @@
 package com.yuyutechnology.exchange.dao.impl;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.dao.NotificationDAO;
 import com.yuyutechnology.exchange.pojo.TransactionNotification;
+import com.yuyutechnology.exchange.utils.page.PageUtils;
 
 @Repository
 public class NotificationDAOImpl implements NotificationDAO {
@@ -39,6 +41,30 @@ public class NotificationDAOImpl implements NotificationDAO {
 	@Override
 	public void updateNotification(TransactionNotification transactionNotification) {
 		hibernateTemplate.saveOrUpdate(transactionNotification);
+	}
+	
+	@Override
+	public HashMap<String, Object> getNotificationRecordsByPage(String sql,String countSql,
+			List<Object> values,int currentPage, int pageSize) {
+		
+		int firstResult = (currentPage -1)*pageSize;
+		int masResult = pageSize;
+		
+		List<?> list = PageUtils.getListByPage4MySql(hibernateTemplate, sql, values, firstResult, masResult);
+		
+		long total = PageUtils.getTotal4MySql(hibernateTemplate, countSql, values);
+		int pageTotal = PageUtils.getPageTotal(total, pageSize);
+		
+		HashMap<String, Object> map = new HashMap<>();
+		
+		map.put("currentPage",currentPage);
+		map.put("pageSize",pageSize);
+		map.put("total",total);
+		map.put("pageTotal",pageTotal);
+		map.put("list",list);
+		
+		return map;
+		
 	}
 
 }
