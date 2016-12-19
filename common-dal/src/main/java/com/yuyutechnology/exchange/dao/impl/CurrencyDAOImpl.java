@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +19,8 @@ public class CurrencyDAOImpl implements CurrencyDAO {
 
 	@Resource
 	HibernateTemplate hibernateTemplate;
+	
+	public static Logger logger = LoggerFactory.getLogger(CurrencyDAOImpl.class);
 
 	@Override
 	public Currency getCurrency(String currency) {
@@ -41,6 +45,7 @@ public class CurrencyDAOImpl implements CurrencyDAO {
 	@Override
 	public Currency getStandardCurrency() {
 		String standardCurrency = hibernateTemplate.get(Config.class, ServerConsts.STANDARD_CURRENCY).getConfigValue();
+		logger.info("current currency is {}",standardCurrency);
 		Currency currency = hibernateTemplate.get(Currency.class, standardCurrency);
 		return currency ;
 	}

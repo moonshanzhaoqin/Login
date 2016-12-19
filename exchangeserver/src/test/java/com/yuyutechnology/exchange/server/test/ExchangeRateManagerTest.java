@@ -9,10 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.yuyutechnology.exchange.dao.UnregisteredDAO;
+import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.WalletManager;
+import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.server.controller.TransferController;
 
 /**
@@ -31,6 +33,9 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 	TransferManager transferManager;
 	@Autowired
 	WalletManager walletManager;
+	
+	@Autowired
+	UserDAO userDAO;
 
 	public static Logger logger = LoggerFactory.getLogger(TransferController.class);
 
@@ -55,8 +60,11 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 		
 //		 walletManager.getTotalAmoutGold(2);
 		 
-		 exchangeRateManager.getTotalBalance(2);
-		
+//		 exchangeRateManager.getTotalBalance(2);
+		 
+		 
+		 User user = userDAO.getSystemUser();
+		 System.out.println("XXXXXXXXXX:"+user.getAreaCode());
 	}
 
 }
