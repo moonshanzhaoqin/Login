@@ -368,7 +368,7 @@ public class UserManagerImpl implements UserManager {
 		User user = userDAO.getUser(userId);
 		user.setLoginIp(loginIp);
 		user.setLoginTime(new Date());
-		if (!user.getPushId().equals(pushId)) {
+		if (pushId!=null && !pushId.equals(user.getPushId())) {
 			// 推送消息：设备已下线
 			logger.info("Push message: device offline==>");
 			pushManager.push4Offline(user);
@@ -380,13 +380,10 @@ public class UserManagerImpl implements UserManager {
 		}
 		user.setPushId(pushId);
 		user.setPushTag(LanguageUtils.standard(language));
-
 		userDAO.updateUser(user);
 		// 绑定Tag
 		logger.info("bind Tag==>");
-		 pushManager.bindPushTag(user);
-
-		userDAO.updateUser(user);
+		pushManager.bindPushTag(user);
 	}
 
 	@Override
