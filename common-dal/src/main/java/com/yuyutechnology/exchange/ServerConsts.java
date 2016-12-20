@@ -117,6 +117,9 @@ public class ServerConsts {
 	public static final String TRANSFER_HISTORY_NOT_ACQUIRED = "03007";
 	
 	public static final String TRANSFER_NOTIFICATION_NOT_ACQUIRED = "03008";
+	
+	public static final String TRANSFER_GOLDPATTRANS_ORDERID_NOT_EXIST = "03009";
+	public static final String TRANSFER_GOLDPATTRANS_CHECK_PIN_CODE_FAIL = "03010";
 
 	// 用户类型
 	/**
