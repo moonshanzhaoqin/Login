@@ -24,7 +24,8 @@ public class SessionManager {
 	public static String SESSION_DATA_KEY_USERID = "session_data[userid]";
 	public static String LOGIN_TOKEN_USERID_KEY = "loginTokenUserId[:userid]";
 	public static String LOGIN_TOKEN_TOKEN_KEY = "loginToken[:token]";
-
+	public static int SESSION_TIMEOUT_MINUATE = 15;
+	public static int LOGIN_TOKEN_TIMEOUT_DAY = 7;
 	/**
 	 * 
 	 * @param sessionData
@@ -33,7 +34,7 @@ public class SessionManager {
 		String json = JsonBinder.getInstance().toJson(sessionData);
 		String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", sessionData.getSessionId());
 		sessionRedisTemplate.opsForValue().set(key, json);
-		sessionRedisTemplate.expire(key, 30, TimeUnit.MINUTES);
+		sessionRedisTemplate.expire(key, SESSION_TIMEOUT_MINUATE, TimeUnit.MINUTES);
 		if (sessionData.getUserId() != null) {
 			saveSessionDataToUserId(sessionData);
 		}
@@ -45,7 +46,7 @@ public class SessionManager {
 	 */
 	public void refreshSessionDataExpireTime(String sessionId) {
 		String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", sessionId);
-		sessionRedisTemplate.expire(key, 30, TimeUnit.MINUTES);
+		sessionRedisTemplate.expire(key, SESSION_TIMEOUT_MINUATE, TimeUnit.MINUTES);
 	}
 
 	/**
@@ -56,7 +57,7 @@ public class SessionManager {
 		String json = JsonBinder.getInstance().toJson(sessionData);
 		String useridkey = StringUtils.replace(SESSION_DATA_KEY_USERID, "userid", sessionData.getUserId().toString());
 		sessionRedisTemplate.opsForValue().set(useridkey, json);
-		sessionRedisTemplate.expire(useridkey, 30, TimeUnit.MINUTES);
+		sessionRedisTemplate.expire(useridkey, SESSION_TIMEOUT_MINUATE, TimeUnit.MINUTES);
 	}
 
 	/**
@@ -104,8 +105,8 @@ public class SessionManager {
 		String key = StringUtils.replace(LOGIN_TOKEN_TOKEN_KEY, ":token", loginToken);
 		sessionRedisTemplate.opsForValue().set(userIdKey, loginToken);
 		sessionRedisTemplate.opsForValue().set(key, userId+"");
-		sessionRedisTemplate.expire(userIdKey, 7, TimeUnit.DAYS);
-		sessionRedisTemplate.expire(key, 7, TimeUnit.DAYS);
+		sessionRedisTemplate.expire(userIdKey, LOGIN_TOKEN_TIMEOUT_DAY, TimeUnit.DAYS);
+		sessionRedisTemplate.expire(key, LOGIN_TOKEN_TIMEOUT_DAY, TimeUnit.DAYS);
 		return loginToken;
 	}
 	

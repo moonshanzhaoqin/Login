@@ -1,8 +1,9 @@
 package com.yuyutechnology.exchange.goldpay;
 
 public class GoldpayInfo {
+
 	private int retCode;
-	private GoldpayUser goldpayUser;
+	private GoldpayUser oauthGoldqUser;
 
 	public int getRetCode() {
 		return retCode;
@@ -12,11 +13,11 @@ public class GoldpayInfo {
 		this.retCode = retCode;
 	}
 
-	public GoldpayUser getGoldpayUser() {
-		return goldpayUser;
+	public GoldpayUser getOauthGoldqUser() {
+		return oauthGoldqUser;
 	}
 
-	public void setGoldpayUser(GoldpayUser goldpayUser) {
-		this.goldpayUser = goldpayUser;
+	public void setOauthGoldqUser(GoldpayUser oauthGoldqUser) {
+		this.oauthGoldqUser = oauthGoldqUser;
 	}
 }

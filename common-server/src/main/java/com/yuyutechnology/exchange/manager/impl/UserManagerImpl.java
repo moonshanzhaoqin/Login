@@ -107,7 +107,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public String bindGoldpay(Integer userId, String goldpayToken) {
-		logger.info("绑定goldpay账户==>");
+		logger.info("bindGoldpay==>");
 		GoldpayUser goldpayUser = goldpayManager.getGoldpayInfo(goldpayToken);
 		if (goldpayUser == null) {
 			logger.warn("goldpay账户不存在");
