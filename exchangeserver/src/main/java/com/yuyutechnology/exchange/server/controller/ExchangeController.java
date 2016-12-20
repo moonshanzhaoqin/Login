@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
@@ -52,10 +53,10 @@ public class ExchangeController {
 		List<WalletInfo> wallets = exchangeManager.getWalletsByUserId(sessionData.getUserId());
 		if(wallets.isEmpty()){
 			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
-			rep.setMessage("");
+			rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 		}else{
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-			rep.setMessage("");
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			rep.setWallets(wallets);
 		}
 		return rep;
@@ -103,7 +104,7 @@ public class ExchangeController {
 		}
 		
 		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-		rep.setMessage("OK");
+		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		rep.setBase(reqMsg.getBase());
 		rep.setExchangeRates(map);
 		
@@ -153,7 +154,7 @@ public class ExchangeController {
 		}
 		
 		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-		rep.setMessage("ok");
+		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		rep.setCurrentPage((int) map.get("currentPage"));
 		rep.setPageSize((int) map.get("pageSize"));
 		rep.setPageTotal((int) map.get("pageTotal"));

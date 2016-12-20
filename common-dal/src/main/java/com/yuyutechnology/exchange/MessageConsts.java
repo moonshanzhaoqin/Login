@@ -58,7 +58,7 @@ public class MessageConsts {
 	/**
 	 * 账号冻结
 	 */
-	public static final String USER_BLOCKED= "USER_BLOCKED";
+	public static final String USER_BLOCKED = "USER_BLOCKED";
 	/**
 	 * 登录token失效
 	 */
@@ -88,7 +88,7 @@ public class MessageConsts {
 	 * 换算后金额低于最小限额
 	 */
 	public static final String EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT = "EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT";
-
+	public static final String EXCHANGE_THE_SAME_CURRENCY_CAN_NOT_BE_EXCHANGED = "EXCHANGE_THE_SAME_CURRENCY_CAN_NOT_BE_EXCHANGED";
 	// 交易03
 	/**
 	 * 余额不足
@@ -102,9 +102,11 @@ public class MessageConsts {
 	 * 支付密码不正确
 	 */
 	public static final String TRANSFER_PAYMENTPWD_INCORRECT = "TRANSFER_PAYMENTPWD_INCORRECT";
+
+	public static final String TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF = "TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF";
 	
-	public static final String TRANSFER_REQUIRES_PHONE_VERIFICATION = "TRANSFER_REQUIRES_PHONE_VERIFICATION";
+	public static final String TRANSFER_HISTORY_NOT_ACQUIRED = "TRANSFER_HISTORY_NOT_ACQUIRED";
 
-
+	public static final String TRANSFER_NOTIFICATION_NOT_ACQUIRED = "TRANSFER_NOTIFICATION_NOT_ACQUIRED";
 
 }
