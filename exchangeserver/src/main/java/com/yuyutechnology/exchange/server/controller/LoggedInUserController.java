@@ -313,12 +313,18 @@ public class LoggedInUserController {
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			if (userManager.checkUserPassword(sessionData.getUserId(), modifyPasswordRequest.getOldPassword())) {
-				userManager.updatePassword(sessionData.getUserId(), modifyPasswordRequest.getNewPassword());
-				sessionManager.logout(sessionData.getSessionId());
-				sessionManager.delLoginToken(sessionData.getUserId());
-				logger.info("********Operation succeeded********");
-				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+				if (modifyPasswordRequest.getOldPassword().equals(modifyPasswordRequest.getNewPassword())) {
+					logger.info(MessageConsts.NEW_PWD_EQUALS_OLD);
+					rep.setRetCode(ServerConsts.NEW_PWD_EQUALS_OLD);
+					rep.setMessage(MessageConsts.NEW_PWD_EQUALS_OLD);
+				} else {
+					userManager.updatePassword(sessionData.getUserId(), modifyPasswordRequest.getNewPassword());
+					sessionManager.logout(sessionData.getSessionId());
+					sessionManager.delLoginToken(sessionData.getUserId());
+					logger.info("********Operation succeeded********");
+					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+				}
 			} else {
 				logger.info(MessageConsts.PASSWORD_NOT_MATCH);
 				rep.setRetCode(ServerConsts.PASSWORD_NOT_MATCH);
@@ -417,10 +423,19 @@ public class LoggedInUserController {
 				// PayPwd 6位数字
 				if (modifyPayPwdByOldRequest.getNewUserPayPwd().length() == 6
 						&& StringUtils.isNumeric(modifyPayPwdByOldRequest.getNewUserPayPwd())) {
-					userManager.updateUserPayPwd(sessionData.getUserId(), modifyPayPwdByOldRequest.getNewUserPayPwd());
-					logger.info("********Operation succeeded********");
-					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+					if (modifyPayPwdByOldRequest.getNewUserPayPwd()
+							.equals(modifyPayPwdByOldRequest.getOldUserPayPwd())) {
+						logger.info(MessageConsts.NEW_PWD_EQUALS_OLD);
+						rep.setRetCode(ServerConsts.NEW_PWD_EQUALS_OLD);
+						rep.setMessage(MessageConsts.NEW_PWD_EQUALS_OLD);
+					} else {
+						userManager.updateUserPayPwd(sessionData.getUserId(),
+								modifyPayPwdByOldRequest.getNewUserPayPwd());
+						logger.info("********Operation succeeded********");
+						rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+					}
+
 				} else {
 					logger.info(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
 					rep.setRetCode(ServerConsts.PAY_PASSWORD_IS_ILLEGAL);
@@ -528,7 +543,7 @@ public class LoggedInUserController {
 		sessionManager.delLoginToken(sessionData.getUserId());
 		// TODO 清pushId
 		userManager.logout(sessionData.getUserId());
-		
+
 		logger.info("********Operation succeeded********");
 		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);

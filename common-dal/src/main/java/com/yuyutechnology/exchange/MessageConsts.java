@@ -75,6 +75,10 @@ public class MessageConsts {
 	 * 好友已添加
 	 */
 	public static final String FRIEND_HAS_ADDED = "FRIEND_HAS_ADDED";
+	/**
+	 * 新旧密码相同
+	 */
+	public static final String NEW_PWD_EQUALS_OLD = "NEW_PWD_EQUALS_OLD";
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息

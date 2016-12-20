@@ -81,6 +81,10 @@ public class ServerConsts {
 	 * 好友已添加
 	 */
 	public static final String FRIEND_HAS_ADDED = "01013";
+	/**
+	 * 新旧密码相同
+	 */
+	public static final String NEW_PWD_EQUALS_OLD = "01014";
 	
 	// 兑换 02
 	/**
@@ -242,6 +246,7 @@ public class ServerConsts {
 	 * 币种状态——不可用
 	 */
 	public static final int CURRENCY_UNAVAILABLE = 0;
+	
 	
 	static {
 		successCodeList.add(RET_CODE_SUCCESS);
