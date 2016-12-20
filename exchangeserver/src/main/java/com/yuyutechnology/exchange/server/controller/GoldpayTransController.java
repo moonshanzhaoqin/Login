@@ -20,8 +20,8 @@ import com.yuyutechnology.exchange.server.controller.request.GoldpayPurchaseRequ
 import com.yuyutechnology.exchange.server.controller.request.RequestPinRequest;
 import com.yuyutechnology.exchange.server.controller.response.GoldpayPurchaseResponse;
 import com.yuyutechnology.exchange.server.controller.response.RequestPinResponse;
-import com.yuyutechnology.exchange.session.SessionData;
-import com.yuyutechnology.exchange.session.SessionDataHolder;
+import com.yuyutechnology.exchange.server.session.SessionData;
+import com.yuyutechnology.exchange.server.session.SessionDataHolder;
 
 @Controller
 public class GoldpayTransController {
