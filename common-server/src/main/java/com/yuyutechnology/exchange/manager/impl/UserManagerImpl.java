@@ -439,7 +439,7 @@ public class UserManagerImpl implements UserManager {
 			walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(), unregistered.getAmount(),
 					"+");
 			// 增加seq记录
-			walletSeqDAO.addWalletSeq4Transaction(systemUserId, userId, ServerConsts.TRANSFER_TYPE_OF_TRANSACTION,
+			walletSeqDAO.addWalletSeq4Transaction(systemUserId, userId, ServerConsts.TRANSFER_TYPE_TRANSACTION,
 					unregistered.getTransferId(), unregistered.getCurrency(), unregistered.getAmount());
 			// 更改Transfer状态
 			transferDAO.updateTransferStatusAndUserTo(unregistered.getTransferId(),

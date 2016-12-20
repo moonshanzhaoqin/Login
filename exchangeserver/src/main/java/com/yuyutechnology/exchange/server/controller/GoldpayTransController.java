@@ -14,10 +14,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.server.controller.request.GoldpayPurchaseRequest;
-import com.yuyutechnology.exchange.server.session.SessionData;
-import com.yuyutechnology.exchange.server.session.SessionDataHolder;
+import com.yuyutechnology.exchange.server.controller.request.RequestPinRequest;
+import com.yuyutechnology.exchange.server.controller.response.GoldpayPurchaseResponse;
+import com.yuyutechnology.exchange.server.controller.response.RequestPinResponse;
+import com.yuyutechnology.exchange.session.SessionData;
+import com.yuyutechnology.exchange.session.SessionDataHolder;
 
 @Controller
 public class GoldpayTransController {
@@ -27,18 +31,49 @@ public class GoldpayTransController {
 	
 	public static Logger logger = LoggerFactory.getLogger(GoldpayTransController.class);
 	
-	@ApiOperation(value = "交易初始化")
+	@ApiOperation(value = "goldpay 买入")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/goldpayTrans/goldpayPurchase")
 	public @ResponseBody
-	void goldpayPurchase(@PathVariable String token,@RequestBody GoldpayPurchaseRequest reqMsg){
+	GoldpayPurchaseResponse goldpayPurchase(@PathVariable String token,@RequestBody GoldpayPurchaseRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
+		GoldpayPurchaseResponse rep = new GoldpayPurchaseResponse();
 		HashMap<String, String> map = goldpayTransManager.goldpayPurchase(sessionData.getUserId(), 
 				reqMsg.getGoldpayAccount(), new BigDecimal(reqMsg.getAmount()));
 		
-//		if()
+		if(map != null && map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
+			rep.setTransferId(map.get("transferId"));
+		}
+		
+		rep.setRetCode(map.get("retCode"));
+		rep.setMessage(map.get("msg"));
+		
+		return rep;
 		
 		
 	}
+	
+	@ApiOperation(value = "goldpay 重新发送Pin")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/goldpayTrans/requestPin")
+	public @ResponseBody
+	RequestPinResponse requestPin(@PathVariable String token,@RequestBody RequestPinRequest reqMsg){
+		
+		RequestPinResponse rep = new RequestPinResponse();
+		
+		HashMap<String, String> map = goldpayTransManager.requestPin(reqMsg.getTransferId());
+		if(map != null && map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
+			rep.setTransferId(map.get("transferId"));
+		}
+		
+		rep.setRetCode(map.get("retCode"));
+		rep.setMessage(map.get("msg"));
+		
+		return rep;
+	}
 
+	public void goldpayTransConfirm(String pin,String transferId){
+		
+	}
+	
+	
 }
