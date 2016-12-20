@@ -520,10 +520,10 @@ public class LoggedInUserController {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		// TODO 清session
 		sessionManager.logout(sessionData.getSessionId());
-		
 		// TODO 清logintoken
 		sessionManager.delLoginToken(sessionData.getUserId());
-		// TODO
+		// TODO 清pushId
+		userManager.logout(sessionData.getUserId());
 		
 		logger.info("********Operation succeeded********");
 		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);

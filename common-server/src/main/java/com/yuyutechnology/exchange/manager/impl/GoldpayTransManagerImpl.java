@@ -14,8 +14,12 @@ import org.springframework.util.StringUtils;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
+import com.yuyutechnology.exchange.dao.WalletDAO;
+import com.yuyutechnology.exchange.dao.WalletSeqDAO;
+import com.yuyutechnology.exchange.goldpay.transaction.ClientComfirmPay;
 import com.yuyutechnology.exchange.goldpay.transaction.ClientPayOrder;
 import com.yuyutechnology.exchange.goldpay.transaction.ClientPin;
+import com.yuyutechnology.exchange.goldpay.transaction.PayConfirm;
 import com.yuyutechnology.exchange.goldpay.transaction.PayModel;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.pojo.Transfer;
@@ -30,7 +34,11 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 	@Autowired
 	UserDAO userDAO;
 	@Autowired
+	WalletDAO walletDAO;
+	@Autowired
 	TransferDAO transferDAO;
+	@Autowired
+	WalletSeqDAO walletSeqDAO;
 	
 	public static Logger logger = LoggerFactory.getLogger(GoldpayTransManagerImpl.class);
 
@@ -160,12 +168,75 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 
 
 	@Override
-	public void goldpayTransConfirm(String pin, String transferId) {
-		// TODO Auto-generated method stub
+	public HashMap<String, String> goldpayTransConfirm(int userId,String pin, String transferId) {
 		
+		HashMap<String, String> map = new HashMap<>();
+		
+		Transfer transfer = transferDAO.getTransferById(transferId);
+		if(transfer == null){
+			map.put("retCode", ServerConsts.TRANSFER_GOLDPATTRANS_ORDERID_NOT_EXIST);
+			map.put("msg", "Order does not exist");
+			return map;
+		}
+		
+		ClientComfirmPay  clientComfirmPay  = new ClientComfirmPay();
+		clientComfirmPay.setClientId(ResourceUtils.getBundleValue("client.id"));
+		clientComfirmPay.setPin(pin);
+		clientComfirmPay.setPayOrderId(transfer.getTransferComment());
+		
+		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(clientComfirmPay)
+				+ResourceUtils.getBundleValue("client.key"));
+		
+		clientComfirmPay.setSign(sign);
+		
+		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue("tpps.url")+"clientComfirmPay.do",
+				JsonBinder.getInstance().toJson(clientComfirmPay));
+		
+		PayConfirm payConfirm;
+		
+		if(!StringUtils.isEmpty(result)){
+			
+			logger.info("goldpayTransConfirm tpps callback {} ",result);
+			
+			payConfirm = JsonBinder.getInstance().fromJson(result, PayConfirm.class);
+			
+			if(payConfirm == null || (payConfirm.getResultCode()==1 && payConfirm.getResultCode()==307)){
+				map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+				map.put("msg", "fail");
+				return map;
+			}else if(payConfirm.getResultCode()==307){
+				logger.warn("goldpayTransConfirm tpps callback  error ! {}  CHECK_PIN_CODE_FAIL");
+				map.put("retCode", ServerConsts.TRANSFER_GOLDPATTRANS_CHECK_PIN_CODE_FAIL);
+				map.put("msg", "CHECK_PIN_CODE_FAIL");
+				return map;
+			}
+			
+			//获取系统账号
+			User systemUser = userDAO.getSystemUser();
+			//系统扣款
+			walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), 
+					transfer.getCurrency(), transfer.getTransferAmount(), "-");
+			//用户加款
+			walletDAO.updateWalletByUserIdAndCurrency(userId, 
+					transfer.getCurrency(), transfer.getTransferAmount(), "+");
+			
+			//添加Seq记录
+			walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), userId, 
+					ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE, transferId, 
+					transfer.getCurrency(), transfer.getTransferAmount());
+			//更改订单状态
+			transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+			
+			map.put("retCode", ServerConsts.RET_CODE_SUCCESS);
+			map.put("msg", "ok");
+			return map;
+			
+		}else{
+			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("msg", "fail");
+			return map;
+		}
+	
 	}
-	
-
-	
 
 }
