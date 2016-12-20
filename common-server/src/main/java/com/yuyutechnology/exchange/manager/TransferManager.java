@@ -19,7 +19,7 @@ public interface TransferManager {
 	 * @param transferComment
 	 * @return
 	 */
-	public String transferInitiate(int userId,String areaCode,
+	public HashMap<String, String> transferInitiate(int userId,String areaCode,
 			String userPhone,String currency,BigDecimal amount,String transferComment,int noticeId);
 	
 	/**
@@ -39,7 +39,7 @@ public interface TransferManager {
 	 * @time : 2016年12月7日 下午3:17:25
 	 * @param transferId
 	 */
-	public String transferConfirm(String transferId);
+	public String transferConfirm(int userId,String transferId);
 	
 	/**
 	 * @Descrition : 系统退款

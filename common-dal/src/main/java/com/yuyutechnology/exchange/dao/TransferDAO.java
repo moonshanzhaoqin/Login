@@ -13,6 +13,8 @@ public interface TransferDAO {
 	public void addTransfer(Transfer transfer);
 
 	public Transfer getTransferById(String transferId);
+	
+	public Transfer getTransferByIdAndUserId(String transferId,int userId);
 
 	public void updateAccumulatedAmount(String key, BigDecimal amoumt);
 

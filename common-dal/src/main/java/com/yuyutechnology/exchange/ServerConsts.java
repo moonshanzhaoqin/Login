@@ -118,8 +118,15 @@ public class ServerConsts {
 	
 	public static final String TRANSFER_NOTIFICATION_NOT_ACQUIRED = "03008";
 	
-	public static final String TRANSFER_GOLDPATTRANS_ORDERID_NOT_EXIST = "03009";
-	public static final String TRANSFER_GOLDPATTRANS_CHECK_PIN_CODE_FAIL = "03010";
+	public static final String TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST = "03009";
+	
+	public static final String TRANSFER_GOLDPAYTRANS_CHECK_PIN_CODE_FAIL = "03010";
+	
+	public static final String TRANSFER_LESS_THAN_MINIMUM_AMOUNT = "03011";
+	
+	public static final String TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED = "03012";
+	
+	public static final String TRANSFER_TRANS_ORDERID_NOT_EXIST = "03013";
 
 	// 用户类型
 	/**

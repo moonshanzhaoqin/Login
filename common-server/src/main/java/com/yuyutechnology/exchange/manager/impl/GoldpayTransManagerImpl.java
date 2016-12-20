@@ -174,7 +174,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		
 		Transfer transfer = transferDAO.getTransferById(transferId);
 		if(transfer == null){
-			map.put("retCode", ServerConsts.TRANSFER_GOLDPATTRANS_ORDERID_NOT_EXIST);
+			map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST);
 			map.put("msg", "Order does not exist");
 			return map;
 		}
@@ -206,7 +206,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 				return map;
 			}else if(payConfirm.getResultCode()==307){
 				logger.warn("goldpayTransConfirm tpps callback  error ! {}  CHECK_PIN_CODE_FAIL");
-				map.put("retCode", ServerConsts.TRANSFER_GOLDPATTRANS_CHECK_PIN_CODE_FAIL);
+				map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_CHECK_PIN_CODE_FAIL);
 				map.put("msg", "CHECK_PIN_CODE_FAIL");
 				return map;
 			}
