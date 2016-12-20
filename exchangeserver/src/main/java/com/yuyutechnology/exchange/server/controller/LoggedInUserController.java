@@ -41,6 +41,7 @@ import com.yuyutechnology.exchange.server.controller.response.ChangePhoneRespons
 import com.yuyutechnology.exchange.server.controller.response.CheckPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.CheckPayPwdResponse;
 import com.yuyutechnology.exchange.server.controller.response.FriendsListResponse;
+import com.yuyutechnology.exchange.server.controller.response.LogoutResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPayPwdByOldResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPayPwdByPINResponse;
@@ -132,7 +133,6 @@ public class LoggedInUserController {
 			@RequestBody BindGoldpayRequest bindGoldpayRequest) {
 		logger.info("========bindGoldpay : {}============", token);
 		BindGoldpayResponse rep = new BindGoldpayResponse();
-
 		if (bindGoldpayRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
@@ -278,7 +278,7 @@ public class LoggedInUserController {
 		List<FriendInfo> friendInfos = new ArrayList<FriendInfo>();
 		List<Friend> friends = userManager.getFriends(sessionData.getUserId());
 		for (Friend friend : friends) {
-			logger.info("friend={}",friend.toString());
+			logger.info("friend={}", friend.toString());
 			friendInfos.add(new FriendInfo(friend.getUser().getAreaCode(), friend.getUser().getUserPhone(),
 					friend.getUser().getUserName()));
 		}
@@ -508,6 +508,27 @@ public class LoggedInUserController {
 
 		return rep;
 
+	}
+
+	// TODO 退出账号 Logout
+	@ResponseBody
+	@ApiOperation(value = "退出账号", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/logout", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public LogoutResponse logout(@PathVariable String token) {
+		logger.info("========logout : {}============", token);
+		LogoutResponse rep = new LogoutResponse();
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		// TODO 清session
+		sessionManager.logout(sessionData.getSessionId());
+		
+		// TODO 清logintoken
+		sessionManager.delLoginToken(sessionData.getUserId());
+		// TODO
+		
+		logger.info("********Operation succeeded********");
+		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		return rep;
 	}
 
 }
