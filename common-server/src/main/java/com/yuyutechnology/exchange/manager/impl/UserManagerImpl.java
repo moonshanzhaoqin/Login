@@ -280,11 +280,12 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public Integer register(String areaCode, String userPhone, String userName, String userPassword) {
-		// 添加用户
+		//清除验证码
+		redisDAO.deleteKey(ServerConsts.PIN_FUNC_REGISTER + areaCode + userPhone);
 		// 随机生成盐值
 		String passwordSalt = DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(6));
 		logger.info("Randomly generated salt values===salt={}", passwordSalt);
-		
+		// 添加用户
 		Integer userId = userDAO.addUser(
 				new User(areaCode, userPhone, userName, PasswordUtils.encrypt(userPassword, passwordSalt), new Date(),
 						ServerConsts.USER_TYPE_OF_CUSTOMER, ServerConsts.USER_AVAILABLE_OF_AVAILABLE, passwordSalt));
@@ -316,7 +317,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public boolean testPinCode(String func, String areaCode, String userPhone, String verificationCode) {
-		logger.info("Check phone number {} and verify code {} match", areaCode + userPhone, verificationCode);
+		logger.info("Check phone number {} and verify code {}", areaCode + userPhone, verificationCode);
 		if (StringUtils.equals(DigestUtils.md5Hex(verificationCode),
 				redisDAO.getValueByKey(func + areaCode + userPhone))) {
 			logger.info("***match***");
