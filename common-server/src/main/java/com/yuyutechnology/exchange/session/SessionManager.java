@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.session;
 
 import java.util.concurrent.TimeUnit;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -26,16 +27,28 @@ public class SessionManager {
 	public static String LOGIN_TOKEN_TOKEN_KEY = "loginToken[:token]";
 	public static int SESSION_TIMEOUT_MINUATE = 15;
 	public static int LOGIN_TOKEN_TIMEOUT_DAY = 7;
+	
 	/**
 	 * 
 	 * @param sessionData
 	 */
 	public void saveSessionData(SessionData sessionData) {
+		saveSessionData(sessionData, true);
+	}
+	
+	/**
+	 * 
+	 * @param sessionData
+	 */
+	public void saveSessionData(SessionData sessionData, boolean repeatLogin) {
 		String json = JsonBinder.getInstance().toJson(sessionData);
 		String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", sessionData.getSessionId());
 		sessionRedisTemplate.opsForValue().set(key, json);
 		sessionRedisTemplate.expire(key, SESSION_TIMEOUT_MINUATE, TimeUnit.MINUTES);
 		if (sessionData.getUserId() != null) {
+			if (repeatLogin) {
+				logout(sessionData.getUserId());
+			}
 			saveSessionDataToUserId(sessionData);
 		}
 	}
@@ -83,14 +96,26 @@ public class SessionManager {
 		String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", sessionId);
 		sessionRedisTemplate.delete(key);
 	}
+	
+	
+	/**
+	 * @param userId
+	 */
+	public void logout(int userId) {
+		SessionData session = getByUserid(userId);
+		if (session != null && StringUtils.isNotEmpty(session.getSessionId())) {
+			String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", session.getSessionId());
+			sessionRedisTemplate.delete(key);
+		}
+	}
 
 	/**
 	 * 
 	 * @param userId
 	 * @return
 	 */
-	public SessionData getByUserid(String userId) {
-		String key = StringUtils.replace(SESSION_DATA_KEY_USERID, "userid", userId);
+	public SessionData getByUserid(int userId) {
+		String key = StringUtils.replace(SESSION_DATA_KEY_USERID, "userid", userId+"");
 		String jsonContent = sessionRedisTemplate.opsForValue().get(key);
 		if (StringUtils.isEmpty(jsonContent)) {
 			return null;
