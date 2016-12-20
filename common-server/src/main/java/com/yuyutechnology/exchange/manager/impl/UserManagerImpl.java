@@ -91,7 +91,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
-		logger.info("查找Friend==>");
+		logger.info("Find friend==>");
 		User friend = userDAO.getUserByUserPhone(areaCode, userPhone);
 		if (friend == null) {
 			return ServerConsts.PHONE_NOT_EXIST;
@@ -110,12 +110,12 @@ public class UserManagerImpl implements UserManager {
 		logger.info("bindGoldpay==>");
 		GoldpayUser goldpayUser = goldpayManager.getGoldpayInfo(goldpayToken);
 		if (goldpayUser == null) {
-			logger.warn("goldpay账户不存在");
+			logger.warn("goldpay account does not exist.");
 			return ServerConsts.RET_CODE_FAILUE;
 		} else {
 			logger.info("goldpayUser=", goldpayUser.toString());
 			if (StringUtils.isBlank(goldpayUser.getAreaCode()) || StringUtils.isBlank(goldpayUser.getMobile())) {
-				logger.info("goldpay账户没有绑定手机号");
+				logger.info("Goldpay account does not bind phone number.");
 				return ServerConsts.GOLDPAY_PHONE_IS_NOT_EXIST;
 			} else {
 				bindDAO.saveBind(new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(),
@@ -127,7 +127,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void changePhone(Integer userId, String areaCode, String userPhone) {
-		logger.info("更换手机==>");
+		logger.info("changePhone==>");
 		User user = userDAO.getUser(userId);
 		user.setAreaCode(areaCode);
 		user.setUserPhone(userPhone);
@@ -136,31 +136,31 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public boolean checkUserPassword(Integer userId, String userPassword) {
-		logger.info("校验用户 {} 的密码 {}==>", userId, userPassword);
+		logger.info("Check {}  user's password{} ==>", userId, userPassword);
 		User user = userDAO.getUser(userId);
 		if (PasswordUtils.check(userPassword, user.getUserPassword(), user.getPasswordSalt())) {
-			logger.info("***匹配***");
+			logger.info("***match***");
 			return true;
 		}
-		logger.info("***不匹配***");
+		logger.info("***Does not match***");
 		return false;
 	}
 
 	@Override
 	public boolean checkUserPayPwd(Integer userId, String userPayPwd) {
-		logger.info("校验用户{}的支付密码{}==>", userId, userPayPwd);
+		logger.info("Check {}  user's PAY password{} ==>", userId, userPayPwd);
 		User user = userDAO.getUser(userId);
 		if (PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())) {
-			logger.info("***匹配***");
+			logger.info("***match***");
 			return true;
 		}
-		logger.info("***不匹配***");
+		logger.info("***Does not match***");
 		return false;
 	}
 
 	@Override
 	public void checkWallet(Integer userId, Currency currency) {
-		logger.info("校验 用户{} 是否拥有  {} 钱包==>", userId, currency.getCurrency());
+		logger.info("Check whether the user {} has a wallet of {}==>", userId, currency.getCurrency());
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency.getCurrency());
 		if (wallet == null) {
 			// 没有该货币的钱包，需要新增
@@ -175,7 +175,7 @@ public class UserManagerImpl implements UserManager {
 	 * @param userId
 	 */
 	private void createWallets4NewUser(Integer userId) {
-		logger.info("为新用户新建钱包==>");
+		logger.info("New wallet for newly registered users==>");
 		List<Currency> currencies = currencyDAO.getCurrencys();
 		for (Currency currency : currencies) {
 			walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date()));
@@ -283,11 +283,12 @@ public class UserManagerImpl implements UserManager {
 		// 添加用户
 		// 随机生成盐值
 		String passwordSalt = DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(6));
-		logger.info("随机生成盐值===salt={}", passwordSalt);
-		logger.info("添加用户");
+		logger.info("Randomly generated salt values===salt={}", passwordSalt);
+		
 		Integer userId = userDAO.addUser(
 				new User(areaCode, userPhone, userName, PasswordUtils.encrypt(userPassword, passwordSalt), new Date(),
 						ServerConsts.USER_TYPE_OF_CUSTOMER, ServerConsts.USER_AVAILABLE_OF_AVAILABLE, passwordSalt));
+		logger.info("Add user complete");
 		// 添加钱包信息
 		createWallets4NewUser(userId);
 		// 根据UNregistered 更新新用户钱包 将资金从系统帐户划给新用户
@@ -301,33 +302,33 @@ public class UserManagerImpl implements UserManager {
 		User user = userDAO.getUser(userId);
 		if (!user.getPushTag().equals(LanguageUtils.standard(language)) && StringUtils.isNotBlank(user.getPushId())) {
 			// 语言不一致，解绑Tag
-			logger.info("语言不一致，解绑Tag==>");
+			logger.info("Language inconsistency, unbind Tag==>,");
 			// pushManager.unbindPushTag(user);
 		}
 		user.setPushTag(LanguageUtils.standard(language));
 		userDAO.updateUser(user);
 		if (StringUtils.isNotBlank(user.getPushId()) && user.getPushTag() != null) {
 			// 绑定Tag
-			logger.info("绑定Tag==>");
+			logger.info("bind Tag==>");
 			// pushManager.bindPushTag(user);
 		}
 	}
 
 	@Override
 	public boolean testPinCode(String func, String areaCode, String userPhone, String verificationCode) {
-		logger.info("校验手机号 {}与验证码{}", areaCode + userPhone, verificationCode);
+		logger.info("Check phone number {} and verify code {} match", areaCode + userPhone, verificationCode);
 		if (StringUtils.equals(DigestUtils.md5Hex(verificationCode),
 				redisDAO.getValueByKey(func + areaCode + userPhone))) {
-			logger.info("***匹配***");
+			logger.info("***match***");
 			return true;
 		}
-		logger.info("***不匹配***");
+		logger.info("***Does not match***");
 		return false;
 	}
 
 	@Override
 	public void updatePassword(Integer userId, String newPassword) {
-		logger.info("更新用户{}的密码{}", userId, newPassword);
+		logger.info("Update user {} password {}", userId, newPassword);
 		User user = userDAO.getUser(userId);
 		user.setUserPassword(PasswordUtils.encrypt(newPassword, user.getPasswordSalt()));
 		userDAO.updateUser(user);
@@ -336,14 +337,14 @@ public class UserManagerImpl implements UserManager {
 	// TODO 逻辑需要改动
 	@Override
 	public void updateUser(Integer userId, String loginIp, String pushId, String language) {
-		logger.info("更新用户登录信息==>");
+		logger.info("Update user login information==>");
 		User user = userDAO.getUser(userId);
 		user.setLoginIp(loginIp);
 		user.setLoginTime(new Date());
 		if (StringUtils.isNotBlank(pushId)) {
 			if (user.getPushId() != pushId) {
 				// 推送消息：设备已下线
-				logger.info("推送消息：设备已下线==>");
+				logger.info("Push message: device offline==>");
 				// pushManager.push4Offline(user);
 			}
 			user.setPushId(pushId);
@@ -352,7 +353,7 @@ public class UserManagerImpl implements UserManager {
 			if (!user.getPushTag().equals(LanguageUtils.standard(language))
 					&& StringUtils.isNotBlank(user.getPushId())) {
 				// 语言不一致，解绑Tag
-				logger.info("语言不一致，解绑Tag==>");
+				logger.info("Language inconsistency, unbind Tag==>");
 				// pushManager.unbindPushTag(user);
 			}
 			user.setPushTag(LanguageUtils.standard(language));
@@ -360,7 +361,7 @@ public class UserManagerImpl implements UserManager {
 		userDAO.updateUser(user);
 		if (StringUtils.isNotBlank(user.getPushId()) && user.getPushTag() != null) {
 			// 绑定Tag
-			logger.info("绑定Tag==>");
+			logger.info("bind Tag==>");
 			// pushManager.bindPushTag(user);
 		}
 	}
@@ -374,7 +375,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void updateUserPayPwd(Integer userId, String userPayPwd) {
-		logger.info("更新用户{}的支付密码{}", userId, userPayPwd);
+		logger.info("Update user {} pay password {}", userId, userPayPwd);
 		User user = userDAO.getUser(userId);
 		user.setUserPayPwd(PasswordUtils.encrypt(userPayPwd, user.getPasswordSalt()));
 		userDAO.updateUser(user);
@@ -382,7 +383,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void updateWallet(Integer userId) {
-		logger.info("更新钱包==>");
+		logger.info("Update Wallet==>");
 		List<Wallet> wallets = walletDAO.getWalletsByUserId(userId);
 		HashMap<Currency, Wallet> mapwallet = new HashMap<Currency, Wallet>();
 		for (Wallet wallet : wallets) {
@@ -394,7 +395,7 @@ public class UserManagerImpl implements UserManager {
 			if (mapwallet.get(currency) == null) {
 				// 没有该货币的钱包，需要新增
 				walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date()));
-				logger.info("新增 用户{} 的 {} 钱包  ", userId, currency.getCurrency());
+				logger.info("Added {}wallet to user {}", currency.getCurrency(), userId);
 			}
 		}
 	}
@@ -407,7 +408,7 @@ public class UserManagerImpl implements UserManager {
 	 * @param userPhone
 	 */
 	private void updateWalletsFromUnregistered(Integer userId, String areaCode, String userPhone) {
-		logger.info("根据UNregistered 更新新用户钱包 将资金从系统帐户划给新用户==>");
+		logger.info("Update wallets according to Unregistered. Assign funds from system accounts to  newly registered user==>");
 		Integer systemUserId = userDAO.getSystemUser().getUserId();
 		List<Unregistered> unregistereds = unregisteredDAO.getUnregisteredByUserPhone(areaCode, userPhone);
 		for (Unregistered unregistered : unregistereds) {
