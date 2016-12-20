@@ -1,8 +1,14 @@
 package com.yuyutechnology.exchange;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ServerConsts {
 	// RetCode: 通用 00; 用户 01;兑换 02; 转账 03
 
+	public static List<String> successCodeList = new ArrayList<String>();
+	public static List<String> sessionCodeList = new ArrayList<String>();
+	
 	// 通用 00
 	/**
 	 * 成功
@@ -234,9 +240,13 @@ public class ServerConsts {
 	 */
 	public static final int CURRENCY_UNAVAILABLE = 0;
 	
-	
-	
-	
-
+	static {
+		successCodeList.add(RET_CODE_SUCCESS);
+		successCodeList.add(TRANSFER_EXCEEDED_TRANSACTION_LIMIT);
+		successCodeList.add(TRANSFER_HISTORY_NOT_ACQUIRED);
+		successCodeList.add(TRANSFER_NOTIFICATION_NOT_ACQUIRED);
+		
+		sessionCodeList.add(SESSION_TIMEOUT);
+	}
 
 }

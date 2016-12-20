@@ -1,9 +1,13 @@
 package com.yuyutechnology.exchange.server.controller.response;
 
+import com.yuyutechnology.exchange.ServerConsts;
+
 public class BaseResponse {
+	//success, failure, session
+	private String apiName;
+	private String retStatus = "failure";
 	private String retCode;
 	private String message;
-	private String apiName;
 
 	public BaseResponse() {
 		super();
@@ -19,6 +23,11 @@ public class BaseResponse {
 
 	public void setRetCode(String retCode) {
 		this.retCode = retCode;
+		if (ServerConsts.successCodeList.contains(retCode)) {
+			this.retStatus = "success";
+		}else if (ServerConsts.sessionCodeList.contains(retCode)) {
+			this.retStatus = "session";
+		}
 	}
 
 	public String getMessage() {
@@ -31,6 +40,18 @@ public class BaseResponse {
 
 	public String getApiName() {
 		return apiName;
+	}
+
+	public String getRetStatus() {
+		return retStatus;
+	}
+
+	public void setRetStatus(String retStatus) {
+		this.retStatus = retStatus;
+	}
+
+	public void setApiName(String apiName) {
+		this.apiName = apiName;
 	}
 }
 
