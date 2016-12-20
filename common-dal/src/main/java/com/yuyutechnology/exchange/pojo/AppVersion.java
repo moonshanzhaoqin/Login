@@ -1,11 +1,13 @@
 package com.yuyutechnology.exchange.pojo;
 // Generated Dec 17, 2016 2:05:54 PM by Hibernate Tools 5.1.0.Alpha1
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -18,6 +20,10 @@ import javax.persistence.TemporalType;
 @Table(name = "e_app_version")
 public class AppVersion implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2811143000479847852L;
 	private Long id;
 	private String appVersionNum;
 	private String platformType;

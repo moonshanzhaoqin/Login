@@ -1,12 +1,14 @@
 package com.yuyutechnology.exchange.pojo;
 // Generated Dec 17, 2016 2:05:54 PM by Hibernate Tools 5.1.0.Alpha1
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.math.BigDecimal;
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -19,6 +21,10 @@ import javax.persistence.TemporalType;
 @Table(name = "e_unregistered")
 public class Unregistered implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2614242773488727403L;
 	private Integer unregisteredId;
 	private String areaCode;
 	private String userPhone;

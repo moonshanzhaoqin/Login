@@ -3,6 +3,7 @@ package com.yuyutechnology.exchange.pojo;
 
 import java.math.BigDecimal;
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -17,6 +18,10 @@ import javax.persistence.TemporalType;
 @Table(name = "e_transfer")
 public class Transfer implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4768242422633741225L;
 	private String transferId;
 	private int userFrom;
 	private int userTo;

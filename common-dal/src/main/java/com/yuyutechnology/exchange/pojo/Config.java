@@ -13,6 +13,10 @@ import javax.persistence.Table;
 @Table(name = "e_config")
 public class Config implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3689008979108574924L;
 	private String configKey;
 	private String configValue;
 

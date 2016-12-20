@@ -1,10 +1,11 @@
 package com.yuyutechnology.exchange.pojo;
 // Generated Dec 17, 2016 2:05:54 PM by Hibernate Tools 5.1.0.Alpha1
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -15,6 +16,10 @@ import javax.persistence.Table;
 @Table(name = "e_bind")
 public class Bind implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -613686505426931292L;
 	private Integer bindId;
 	private int userId;
 	private String goldpayId;
