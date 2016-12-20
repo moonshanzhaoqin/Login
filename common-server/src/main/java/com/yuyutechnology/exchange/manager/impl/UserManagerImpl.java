@@ -401,14 +401,16 @@ public class UserManagerImpl implements UserManager {
 	public void updateWallet(Integer userId) {
 		logger.info("Update Wallet==>");
 		List<Wallet> wallets = walletDAO.getWalletsByUserId(userId);
-		HashMap<Currency, Wallet> mapwallet = new HashMap<Currency, Wallet>();
+		HashMap<String, Wallet> mapwallet = new HashMap<String, Wallet>();
 		for (Wallet wallet : wallets) {
-			mapwallet.put(wallet.getCurrency(), wallet);
+			mapwallet.put(wallet.getCurrency().getCurrency(), wallet);
 		}
+		logger.info("mapwallet",mapwallet);
 		// 获取当前可用的货币
 		List<Currency> currencies = getCurrentCurrency();
 		for (Currency currency : currencies) {
-			if (mapwallet.get(currency) == null) {
+			logger.info("{}",currency.getCurrency());
+			if (mapwallet.get(currency.getCurrency()) == null) {
 				// 没有该货币的钱包，需要新增
 				walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date()));
 				logger.info("Added {}wallet to user {}", currency.getCurrency(), userId);
