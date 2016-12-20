@@ -192,6 +192,7 @@ public class UserManagerImpl implements UserManager {
 		if (redisDAO.getValueByKey("getCurrentCurrency") == null) {
 			logger.info("getCurrentCurrency from db");
 			currencies = currencyDAO.getCurrentCurrency();
+			logger.info("currency={}",currencies);
 			redisDAO.saveData("getCurrentCurrency", currencies, 30);
 		} else {
 			logger.info("getCurrentCurrency from redis:");

@@ -27,7 +27,6 @@ public class Currency implements java.io.Serializable {
 	private BigDecimal transferLarge;
 	private BigDecimal assetThreshold;
 	private String currencyOrder;
-	private Set<Wallet> wallets = new HashSet<Wallet>(0);
 
 	public Currency() {
 	}
@@ -38,8 +37,7 @@ public class Currency implements java.io.Serializable {
 	}
 
 	public Currency(String currency, String nameEn, String nameCn, String nameHk, int currencyStatus,
-			BigDecimal transferMax, BigDecimal transferLarge, BigDecimal assetThreshold, String currencyOrder,
-			Set<Wallet> wallets) {
+			BigDecimal transferMax, BigDecimal transferLarge, BigDecimal assetThreshold, String currencyOrder) {
 		this.currency = currency;
 		this.nameEn = nameEn;
 		this.nameCn = nameCn;
@@ -49,7 +47,6 @@ public class Currency implements java.io.Serializable {
 		this.transferLarge = transferLarge;
 		this.assetThreshold = assetThreshold;
 		this.currencyOrder = currencyOrder;
-		this.wallets = wallets;
 	}
 
 	@Id
@@ -133,15 +130,6 @@ public class Currency implements java.io.Serializable {
 
 	public void setCurrencyOrder(String currencyOrder) {
 		this.currencyOrder = currencyOrder;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "currency")
-	public Set<Wallet> getWallets() {
-		return this.wallets;
-	}
-
-	public void setWallets(Set<Wallet> wallets) {
-		this.wallets = wallets;
 	}
 
 }

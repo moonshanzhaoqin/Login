@@ -56,7 +56,7 @@ public class Wallet implements java.io.Serializable {
 		this.walletId = walletId;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "currency", nullable = false)
 	public Currency getCurrency() {
 		return this.currency;
