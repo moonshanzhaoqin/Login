@@ -89,6 +89,9 @@ public class RegisterRequest {
 		if (StringUtils.isEmpty(this.userPassword)) {
 			return true;
 		}
+		if (StringUtils.isEmpty(this.language)) {
+			this.language = "zh_CN";
+		}
 		return false;
 	}
 

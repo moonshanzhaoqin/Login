@@ -272,7 +272,8 @@ public class UserController {
 				if (userManager.testPinCode(ServerConsts.PIN_FUNC_REGISTER, registerRequest.getAreaCode(),
 						registerRequest.getUserPhone(), registerRequest.getRegistrationCode())) {
 					Integer userId = userManager.register(registerRequest.getAreaCode(), registerRequest.getUserPhone(),
-							registerRequest.getUserName(), registerRequest.getUserPassword());
+							registerRequest.getUserName(), registerRequest.getUserPassword(), HttpTookit.getIp(request),registerRequest.getPushId(),registerRequest.getLanguage());
+					
 					logger.info("userId==={}", userId);
 					if (userId == null) {
 						logger.info(MessageConsts.RET_CODE_FAILUE);
@@ -280,7 +281,7 @@ public class UserController {
 						rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 					} else {
 						//记录登录信息
-						userManager.updateUser(userId, HttpTookit.getIp(request),registerRequest.getPushId(),registerRequest.getLanguage());
+//						userManager.updateUser(userId, HttpTookit.getIp(request),registerRequest.getPushId(),registerRequest.getLanguage());
 						// 生成session Token
 						SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 						sessionManager.saveSessionData(sessionData);

@@ -62,7 +62,7 @@ public interface UserManager {
 	 * @param userPassword
 	 * @return
 	 */
-	public Integer register(String areaCode, String userPhone, String userName, String userPassword);
+	public Integer register(String areaCode, String userPhone, String userName, String userPassword, String loginIp, String pushId, String language);
 
 	/**
 	 * 验证手机号与验证码是否匹配

@@ -43,7 +43,7 @@ public class User implements java.io.Serializable {
 	}
 
 	public User(String areaCode, String userPhone, String userName, String userPassword, Date createTime, int userType,
-			int userAvailable, String passwordSalt) {
+			int userAvailable, String passwordSalt,Language pushTag) {
 		this.areaCode = areaCode;
 		this.userPhone = userPhone;
 		this.userName = userName;
@@ -52,6 +52,7 @@ public class User implements java.io.Serializable {
 		this.userType = userType;
 		this.userAvailable = userAvailable;
 		this.passwordSalt = passwordSalt;
+		this.pushTag = pushTag;
 	}
 
 	public User(String areaCode, String userPhone, String userName, String userPassword, String userPayPwd,
@@ -194,7 +195,7 @@ public class User implements java.io.Serializable {
 		this.pushId = pushId;
 	}
 
-	@Column(name = "push_tag", length = 6)
+	@Column(name = "push_tag", length = 6, nullable = false)
 	public Language getPushTag() {
 		return this.pushTag;
 	}
