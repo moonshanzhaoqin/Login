@@ -81,8 +81,7 @@ public class UserManagerImpl implements UserManager {
 	private String verifyCode = "123456";
 
 	@Override
-	public void init()
-	{
+	public void init() {
 		logger.info("=========init UserManager=========");
 		qaSwitch = Boolean.parseBoolean(ResourceUtils.getBundleValue("qa.switch"));
 		verifyTime = Integer.parseInt(ResourceUtils.getBundleValue("verify.time"));
@@ -127,7 +126,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void changePhone(Integer userId, String areaCode, String userPhone) {
-		logger.info("changePhone {}==>",areaCode+userPhone);
+		logger.info("changePhone {}==>", areaCode + userPhone);
 		User user = userDAO.getUser(userId);
 		user.setAreaCode(areaCode);
 		user.setUserPhone(userPhone);
@@ -186,7 +185,7 @@ public class UserManagerImpl implements UserManager {
 	public AppVersion getAppVersion(String platformType, String updateWay) {
 		return appVersionDAO.getAppVersionInfo(platformType, updateWay);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private List<Currency> getCurrentCurrency() {
 		List<Currency> currencies;
@@ -196,8 +195,8 @@ public class UserManagerImpl implements UserManager {
 			redisDAO.saveData("getCurrentCurrency", currencies, 30);
 		} else {
 			logger.info("getCurrentCurrency from redis:");
-			currencies = (List<Currency>) JsonBinder.getInstance().fromJsonToList(redisDAO.getValueByKey("getCurrentCurrency"),
-					Currency.class);
+			currencies = (List<Currency>) JsonBinder.getInstance()
+					.fromJsonToList(redisDAO.getValueByKey("getCurrentCurrency"), Currency.class);
 		}
 		return currencies;
 	}
@@ -294,16 +293,17 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public Integer register(String areaCode, String userPhone, String userName, String userPassword) {
-		//清除验证码
+	public Integer register(String areaCode, String userPhone, String userName, String userPassword, String loginIp,
+			String pushId, String language) {
+		// 清除验证码
 		redisDAO.deleteKey(ServerConsts.PIN_FUNC_REGISTER + areaCode + userPhone);
 		// 随机生成盐值
 		String passwordSalt = DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(6));
 		logger.info("Randomly generated salt values===salt={}", passwordSalt);
 		// 添加用户
-		Integer userId = userDAO.addUser(
-				new User(areaCode, userPhone, userName, PasswordUtils.encrypt(userPassword, passwordSalt), new Date(),
-						ServerConsts.USER_TYPE_OF_CUSTOMER, ServerConsts.USER_AVAILABLE_OF_AVAILABLE, passwordSalt));
+		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName,
+				PasswordUtils.encrypt(userPassword, passwordSalt), new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER,
+				ServerConsts.USER_AVAILABLE_OF_AVAILABLE, passwordSalt, LanguageUtils.standard(language)));
 		logger.info("Add user complete");
 		// 添加钱包信息
 		createWallets4NewUser(userId);
@@ -365,15 +365,14 @@ public class UserManagerImpl implements UserManager {
 			}
 			user.setPushId(pushId);
 		}
-		if (StringUtils.isNotBlank(language)) {
-			if (!user.getPushTag().equals(LanguageUtils.standard(language))
-					&& StringUtils.isNotBlank(user.getPushId())) {
-				// 语言不一致，解绑Tag
-				logger.info("Language inconsistency, unbind Tag==>");
-				// pushManager.unbindPushTag(user);
-			}
-			user.setPushTag(LanguageUtils.standard(language));
+
+		if (!user.getPushTag().equals(LanguageUtils.standard(language)) && StringUtils.isNotBlank(user.getPushId())) {
+			// 语言不一致，解绑Tag
+			logger.info("Language inconsistency, unbind Tag==>");
+			// pushManager.unbindPushTag(user);
 		}
+		user.setPushTag(LanguageUtils.standard(language));
+
 		userDAO.updateUser(user);
 		if (StringUtils.isNotBlank(user.getPushId()) && user.getPushTag() != null) {
 			// 绑定Tag
@@ -424,7 +423,8 @@ public class UserManagerImpl implements UserManager {
 	 * @param userPhone
 	 */
 	private void updateWalletsFromUnregistered(Integer userId, String areaCode, String userPhone) {
-		logger.info("Update wallets according to Unregistered. Assign funds from system accounts to  newly registered user==>");
+		logger.info(
+				"Update wallets according to Unregistered. Assign funds from system accounts to  newly registered user==>");
 		Integer systemUserId = userDAO.getSystemUser().getUserId();
 		List<Unregistered> unregistereds = unregisteredDAO.getUnregisteredByUserPhone(areaCode, userPhone);
 		for (Unregistered unregistered : unregistereds) {
