@@ -1,11 +1,13 @@
 package com.yuyutechnology.exchange.pojo;
 // Generated Dec 17, 2016 2:05:54 PM by Hibernate Tools 5.1.0.Alpha1
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -16,6 +18,10 @@ import javax.persistence.Table;
 @Table(name = "e_wallet_seq")
 public class WalletSeq implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2720266287674220445L;
 	private Integer seqId;
 	private int userId;
 	private int transferType;

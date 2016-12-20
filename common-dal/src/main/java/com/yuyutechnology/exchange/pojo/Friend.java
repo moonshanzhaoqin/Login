@@ -2,6 +2,7 @@ package com.yuyutechnology.exchange.pojo;
 // Generated Dec 17, 2016 2:05:54 PM by Hibernate Tools 5.1.0.Alpha1
 
 import java.util.Date;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -21,6 +22,10 @@ import javax.persistence.TemporalType;
 @Table(name = "e_friend")
 public class Friend implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -364878144894342020L;
 	private FriendId id;
 	private User user;
 	private Date createTime;
