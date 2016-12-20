@@ -3,19 +3,10 @@ package com.yuyutechnology.exchange.server.controller.request;
 import org.apache.commons.lang.StringUtils;
 
 public class ModifyPayPwdByPINRequest {
-	private String purpose;
 	private String areaCode;
 	private String userPhone;
 	private String verificationCode;
 	private String newUserPayPwd;
-
-	public String getPurpose() {
-		return purpose;
-	}
-
-	public void setPurpose(String purpose) {
-		this.purpose = purpose;
-	}
 
 	public String getAreaCode() {
 		return areaCode;
@@ -55,9 +46,6 @@ public class ModifyPayPwdByPINRequest {
 	 * @return
 	 */
 	public boolean isEmpty() {
-		if (StringUtils.isEmpty(this.purpose)) {
-			return true;
-		}
 		if (StringUtils.isEmpty(this.areaCode)) {
 			return true;
 		}
