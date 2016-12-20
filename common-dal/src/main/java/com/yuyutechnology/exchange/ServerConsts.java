@@ -141,20 +141,28 @@ public class ServerConsts {
 
 	// 交易类型
 	/**
-	 * 转账
+	 * 交易
 	 */
-	public static final int TRANSFER_TYPE_OF_TRANSACTION = 0;
+	public static final int TRANSFER_TYPE_TRANSACTION = 0;
+	
+	public static final int TRANSFER_TYPE_EXCHANGE = 1;
 	/**
-	 * 兑换
+	 * 邀请
 	 */
-	public static final int TRANSFER_TYPE_OF_EXCHANGE = 1;
-	public static final int TRANSFER_TYPE_OF_GOLDPAYBUY = 2;
-	public static final int TRANSFER_TYPE_OF_GIFT_IN = 3;
-	public static final int TRANSFER_TYPE_OF_GIFT_OUT = 4;
+	public static final int TRANSFER_TYPE_IN_INVITE = 2;
 	/**
 	 * 系统退款
 	 */
-	public static final int TRANSFER_TYPE_OF_SYSTEM_REFUND = 5;
+	public static final int TRANSFER_TYPE_IN_SYSTEM_REFUND = 3;
+	/**
+	 * 金沛充值
+	 */
+	public static final int TRANSFER_TYPE_IN_GOLDPAY_RECHARGE = 4;
+	/**
+	 * 金沛体现
+	 */
+	public static final int TRANSFER_TYPE_IN_GOLDPAY_WITHDRAW = 5;
+	
 
 	// 交易状态
 	/**

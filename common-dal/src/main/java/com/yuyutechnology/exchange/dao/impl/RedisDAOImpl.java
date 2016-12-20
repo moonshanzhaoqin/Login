@@ -18,7 +18,7 @@ public class RedisDAOImpl implements RedisDAO{
 	RedisTemplate<String, String> commonRedisTemplate;
 	
 	public void saveData(String key,Object value, long timeout){
-		String json = null;
+		String json="";
 		
 		if(value instanceof String){
 			json = (String) value;
