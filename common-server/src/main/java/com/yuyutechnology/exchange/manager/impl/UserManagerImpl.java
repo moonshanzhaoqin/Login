@@ -457,6 +457,8 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public void logout(Integer userId) {
 		User user = userDAO.getUser(userId);
+		logger.info("unbind Tag==>");
+		pushManager.unbindPushTag(user);
 		user.setPushId(null);
 		userDAO.updateUser(user);
 	}

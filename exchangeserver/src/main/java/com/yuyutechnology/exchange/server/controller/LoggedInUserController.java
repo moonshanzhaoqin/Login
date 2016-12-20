@@ -520,7 +520,6 @@ public class LoggedInUserController {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		// TODO 清session
 		sessionManager.logout(sessionData.getSessionId());
-		
 		// TODO 清logintoken
 		sessionManager.delLoginToken(sessionData.getUserId());
 		// TODO 清pushId
