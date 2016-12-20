@@ -107,7 +107,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public String bindGoldpay(Integer userId, String goldpayToken) {
-		logger.info("bindGoldpay==>");
+		logger.info("getGoldpay==>");
 		GoldpayUser goldpayUser = goldpayManager.getGoldpayInfo(goldpayToken);
 		if (goldpayUser == null) {
 			logger.warn("goldpay account does not exist.");
@@ -127,7 +127,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void changePhone(Integer userId, String areaCode, String userPhone) {
-		logger.info("changePhone==>");
+		logger.info("changePhone {}==>",areaCode+userPhone);
 		User user = userDAO.getUser(userId);
 		user.setAreaCode(areaCode);
 		user.setUserPhone(userPhone);
@@ -136,7 +136,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public boolean checkUserPassword(Integer userId, String userPassword) {
-		logger.info("Check {}  user's password{} ==>", userId, userPassword);
+		logger.info("Check {}  user's password {} ==>", userId, userPassword);
 		User user = userDAO.getUser(userId);
 		if (PasswordUtils.check(userPassword, user.getUserPassword(), user.getPasswordSalt())) {
 			logger.info("***match***");
@@ -148,7 +148,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public boolean checkUserPayPwd(Integer userId, String userPayPwd) {
-		logger.info("Check {}  user's PAY password{} ==>", userId, userPayPwd);
+		logger.info("Check {}  user's PAY password {} ==>", userId, userPayPwd);
 		User user = userDAO.getUser(userId);
 		if (PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())) {
 			logger.info("***match***");
@@ -176,7 +176,7 @@ public class UserManagerImpl implements UserManager {
 	 */
 	private void createWallets4NewUser(Integer userId) {
 		logger.info("New wallet for newly registered users==>");
-		List<Currency> currencies = currencyDAO.getCurrencys();
+		List<Currency> currencies = getCurrentCurrency();
 		for (Currency currency : currencies) {
 			walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date()));
 		}
@@ -185,6 +185,21 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public AppVersion getAppVersion(String platformType, String updateWay) {
 		return appVersionDAO.getAppVersionInfo(platformType, updateWay);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private List<Currency> getCurrentCurrency() {
+		List<Currency> currencies;
+		if (redisDAO.getValueByKey("getCurrentCurrency") == null) {
+			logger.info("getCurrentCurrency from db");
+			currencies = currencyDAO.getCurrentCurrency();
+			redisDAO.saveData("getCurrentCurrency", currencies, 30);
+		} else {
+			logger.info("getCurrentCurrency from redis:");
+			currencies = (List<Currency>) JsonBinder.getInstance().fromJsonToList(redisDAO.getValueByKey("getCurrentCurrency"),
+					Currency.class);
+		}
+		return currencies;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -391,7 +406,7 @@ public class UserManagerImpl implements UserManager {
 			mapwallet.put(wallet.getCurrency(), wallet);
 		}
 		// 获取当前可用的货币
-		List<Currency> currencies = currencyDAO.getCurrentCurrency();
+		List<Currency> currencies = getCurrentCurrency();
 		for (Currency currency : currencies) {
 			if (mapwallet.get(currency) == null) {
 				// 没有该货币的钱包，需要新增
