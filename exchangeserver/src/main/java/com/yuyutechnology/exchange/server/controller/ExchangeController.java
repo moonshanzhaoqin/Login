@@ -29,8 +29,8 @@ import com.yuyutechnology.exchange.server.controller.response.ExchangeConfirmRes
 import com.yuyutechnology.exchange.server.controller.response.GetCurrentBalanceResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetExchangeHistoryResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetExchangeRateResponse;
-import com.yuyutechnology.exchange.session.SessionData;
-import com.yuyutechnology.exchange.session.SessionDataHolder;
+import com.yuyutechnology.exchange.server.session.SessionData;
+import com.yuyutechnology.exchange.server.session.SessionDataHolder;
 
 @Controller
 public class ExchangeController {

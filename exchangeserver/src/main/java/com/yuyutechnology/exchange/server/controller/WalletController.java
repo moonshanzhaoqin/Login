@@ -13,8 +13,8 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.manager.WalletManager;
 import com.yuyutechnology.exchange.server.controller.response.GetTotalAmontGoldResponse;
-import com.yuyutechnology.exchange.session.SessionData;
-import com.yuyutechnology.exchange.session.SessionDataHolder;
+import com.yuyutechnology.exchange.server.session.SessionData;
+import com.yuyutechnology.exchange.server.session.SessionDataHolder;
 
 @Controller
 public class WalletController {

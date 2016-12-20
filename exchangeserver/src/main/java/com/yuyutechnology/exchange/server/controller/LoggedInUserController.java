@@ -48,9 +48,9 @@ import com.yuyutechnology.exchange.server.controller.response.ModifyPayPwdByPINR
 import com.yuyutechnology.exchange.server.controller.response.ModifyUserNameResponse;
 import com.yuyutechnology.exchange.server.controller.response.SetUserPayPwdResponse;
 import com.yuyutechnology.exchange.server.controller.response.SwitchLanguageResponse;
-import com.yuyutechnology.exchange.session.SessionData;
-import com.yuyutechnology.exchange.session.SessionDataHolder;
-import com.yuyutechnology.exchange.session.SessionManager;
+import com.yuyutechnology.exchange.server.session.SessionData;
+import com.yuyutechnology.exchange.server.session.SessionDataHolder;
+import com.yuyutechnology.exchange.server.session.SessionManager;
 
 /**
  * @author suzan.wu
