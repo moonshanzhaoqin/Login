@@ -13,9 +13,8 @@ import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Friend;
 
 public interface UserManager {
-	@PostConstruct
-	@Scheduled(cron = "0 1/10 * * * ?")
-	void init();
+	public void getResource();
+	
 	/**
 	 * 生成验证码并发送
 	 * 

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.manager.TransferManager;
@@ -70,16 +71,16 @@ public class TransferController {
 		
 		if(result.equals(ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT)){
 			rep.setRetCode(ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-			rep.setMessage("");
+			rep.setMessage(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
 		}else if(result.equals(ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT)){
 			rep.setRetCode(ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT);
-			rep.setMessage("");
+			rep.setMessage(MessageConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT);
 		}else if(result.equals(ServerConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF)){
 			rep.setRetCode(ServerConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
-			rep.setMessage("");
+			rep.setMessage(MessageConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
 		}else{
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-			rep.setMessage("");
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			rep.setTransferId(result);
 		}
 
@@ -97,7 +98,7 @@ public class TransferController {
 		String result = transferManager.payPwdConfirm(sessionData.getUserId(), reqMsg.getTransferId(), reqMsg.getUserPayPwd());
 		
 		if(result.equals(ServerConsts.RET_CODE_SUCCESS)){
-			rep.setMessage("ok");
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		}else if(result.equals(ServerConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION)){
 			//发PIN码
 			UserInfo user = userManager.getUserInfo(sessionData.getUserId());
@@ -119,7 +120,7 @@ public class TransferController {
 		ResendTransferPinResponse rep = new ResendTransferPinResponse();
 		
 		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-		rep.setMessage("ok");
+		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		
 		try {
 			UserInfo user = userManager.getUserInfo(sessionData.getUserId());
@@ -147,7 +148,7 @@ public class TransferController {
 			
 			if(result.equals(ServerConsts.RET_CODE_SUCCESS)){
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-				rep.setMessage("ok");
+				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			}else{
 				rep.setRetCode(result);
 				rep.setMessage("Current balance is insufficient");
@@ -172,7 +173,7 @@ public class TransferController {
 		if(result.equals(ServerConsts.RET_CODE_FAILUE)){
 			rep.setMessage("Sharing failed");
 		}else{
-			rep.setMessage("ok");
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		}
 		rep.setRetCode(result);
 		
@@ -193,13 +194,13 @@ public class TransferController {
 		
 		if(result.equals(ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT)){
 			rep.setRetCode(ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-			rep.setMessage("");
+			rep.setMessage(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
 		}else if(result.equals(ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT)){
 			rep.setRetCode(ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT);
-			rep.setMessage("");
+			rep.setMessage(MessageConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT);
 		}else{
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-			rep.setMessage("");
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			rep.setTransferId(result);
 		}
 		return rep;
@@ -262,7 +263,7 @@ public class TransferController {
 			}
 			
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-			rep.setMessage("ok");
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			rep.setCurrentPage((int) map.get("currentPage"));
 			rep.setPageSize((int) map.get("pageSize"));
 			rep.setPageTotal((int) map.get("pageTotal"));
@@ -310,7 +311,7 @@ public class TransferController {
 			}
 			
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-			rep.setMessage("ok");
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			rep.setCurrentPage((int) map.get("currentPage"));
 			rep.setPageSize((int) map.get("pageSize"));
 			rep.setPageTotal((int) map.get("pageTotal"));
