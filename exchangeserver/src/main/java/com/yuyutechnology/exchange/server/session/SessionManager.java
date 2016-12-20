@@ -1,15 +1,19 @@
-package com.yuyutechnology.exchange.session;
+package com.yuyutechnology.exchange.server.session;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import com.yuyutechnology.exchange.utils.JsonBinder;
+import com.yuyutechnology.exchange.utils.ResourceUtils;
 import com.yuyutechnology.exchange.utils.UidUtils;
 
 /**
@@ -19,14 +23,26 @@ import com.yuyutechnology.exchange.utils.UidUtils;
  */
 @Component
 public class SessionManager {
+	public static Logger logger = LoggerFactory.getLogger(SessionManager.class);
+
 	@Resource
 	RedisTemplate<String, String> sessionRedisTemplate;
 	public static String SESSION_DATA_KEY = "session_data[sessionid]";
 	public static String SESSION_DATA_KEY_USERID = "session_data[userid]";
 	public static String LOGIN_TOKEN_USERID_KEY = "loginTokenUserId[:userid]";
 	public static String LOGIN_TOKEN_TOKEN_KEY = "loginToken[:token]";
-	public static int SESSION_TIMEOUT_MINUATE = 15;
-	public static int LOGIN_TOKEN_TIMEOUT_DAY = 7;
+	public int SESSION_TIMEOUT_MINUATE = 15;
+	public int LOGIN_TOKEN_TIMEOUT_DAY = 7;
+	
+	@PostConstruct
+	public void init () {
+		try {
+			SESSION_TIMEOUT_MINUATE = Integer.valueOf(ResourceUtils.getBundleValue("session.timeout.minuate"));
+			LOGIN_TOKEN_TIMEOUT_DAY = Integer.valueOf(ResourceUtils.getBundleValue("login.token.timeout.day"));
+		} catch (Exception e) {
+			logger.warn("get session time config error ! "+e.getMessage());
+		}
+	}
 	
 	/**
 	 * 

@@ -1,4 +1,4 @@
-package com.yuyutechnology.exchange.session;
+package com.yuyutechnology.exchange.server.session;
 /**
  * 
  * @author sunwei

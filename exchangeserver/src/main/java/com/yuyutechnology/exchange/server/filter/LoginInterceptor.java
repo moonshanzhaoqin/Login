@@ -14,9 +14,9 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.ServerConsts;
-import com.yuyutechnology.exchange.session.SessionData;
-import com.yuyutechnology.exchange.session.SessionDataHolder;
-import com.yuyutechnology.exchange.session.SessionManager;
+import com.yuyutechnology.exchange.server.session.SessionData;
+import com.yuyutechnology.exchange.server.session.SessionDataHolder;
+import com.yuyutechnology.exchange.server.session.SessionManager;
 import com.yuyutechnology.exchange.startup.ServerContext;
 
 /**
