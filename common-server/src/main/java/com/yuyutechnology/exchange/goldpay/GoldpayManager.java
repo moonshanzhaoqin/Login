@@ -23,7 +23,7 @@ public class GoldpayManager {
 	}
 
 	public GoldpayUser getGoldpayInfo(String accessToken) {
-		String result = HttpTookit.sendPost(bindGoldpayURL + "?access_token=" + accessToken, null);
+		String result = HttpTookit.sendGet(bindGoldpayURL + "?access_token=" + accessToken, null);
 		logger.info("result==={}", result);
 		if (StringUtils.isNotEmpty(result)) {
 			GoldpayInfo goldpayInfo = JsonBinder.getInstance().fromJson(result, GoldpayInfo.class);

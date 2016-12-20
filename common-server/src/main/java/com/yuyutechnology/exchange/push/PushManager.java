@@ -42,7 +42,7 @@ public class PushManager {
 	private String day = "";
 
 	// 到账提醒
-	// en
+	// en_US
 	private String transfer_en = "";
 	// zh_CN
 	private String transfer_CN = "";
@@ -50,7 +50,7 @@ public class PushManager {
 	private String transfer_HK = "";
 
 	// 请求转账
-	// en
+	// en_US
 	private String transfer_request_en = "";
 	// zh_CN
 	private String transfer_request_CN = "";
@@ -58,15 +58,15 @@ public class PushManager {
 	private String transfer_request_HK = "";
 
 	// 退款refund
-	// en
+	// en_US
 	private String refund_en = "";
 	// zh_CN
 	private String refund_CN = "";
 	// zh_HK
 	private String refund_HK = "";
 
-	// 退款offline
-	// en
+	// 下线offline
+	// en_US
 	private String offline_en = "";
 	// zh_CN
 	private String offline_CN = "";
@@ -82,6 +82,7 @@ public class PushManager {
 	@PostConstruct
 	@Scheduled(cron = "0 1/10 * * * ?")
 	public void init() throws IOException {
+		logger.info("==========init PushManager==========");
 		appName = ResourceUtils.getBundleValue("appName");
 		pushToAllURL = ResourceUtils.getBundleValue("push.all.url");
 		pushToCustomURL = ResourceUtils.getBundleValue("push.custom.url");
@@ -122,7 +123,7 @@ public class PushManager {
 		resource = new ClassPathResource("push/zh_HK/refund.template");
 		refund_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		// 退款offline
+		// 下线offline
 		resource = new ClassPathResource("push/en_US/offline.template");
 		offline_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
@@ -224,9 +225,6 @@ public class PushManager {
 			case zh_CN:
 				body = transfer_CN;
 				break;
-			case zh_HK:
-				body = transfer_HK;
-				break;
 			case zh_TW:
 				body = transfer_HK;
 				break;
@@ -241,9 +239,6 @@ public class PushManager {
 				break;
 			case zh_CN:
 				body = transfer_request_CN;
-				break;
-			case zh_HK:
-				body = transfer_request_HK;
 				break;
 			case zh_TW:
 				body = transfer_request_HK;
@@ -260,9 +255,6 @@ public class PushManager {
 			case zh_CN:
 				body = refund_CN;
 				break;
-			case zh_HK:
-				body = refund_HK;
-				break;
 			case zh_TW:
 				body = refund_HK;
 				break;
@@ -277,9 +269,6 @@ public class PushManager {
 				break;
 			case zh_CN:
 				body = offline_CN;
-				break;
-			case zh_HK:
-				body = offline_HK;
 				break;
 			case zh_TW:
 				body = offline_HK;

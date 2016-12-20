@@ -30,6 +30,7 @@ public class SmsManager {
 	public static Logger logger = LoggerFactory.getLogger(SmsManager.class);
 
 	private final String SMS_REPLACE_PIN = "[PIN]";
+	private final String SMS_REPLACE_TIME = "[TIME]";
 	private final String SMS_REPLACE_FROM = "[FROM]";
 	private final String SMS_REPLACE_CURRENCY = "[CURRENCY]";
 	private final String SMS_REPLACE_AMOUNT = "[AMOUNT]";
@@ -48,6 +49,7 @@ public class SmsManager {
 	// zh_HK
 	private String transfer_HK = "";
 
+	private String verifyTime = "";
 	private String appId = "";
 	private String sendURL = "";
 
@@ -56,6 +58,7 @@ public class SmsManager {
 	public void init() throws IOException {
 		appId = ResourceUtils.getBundleValue("appId");
 		sendURL = ResourceUtils.getBundleValue("sendSMS.serverUrl");
+		verifyTime = ResourceUtils.getBundleValue("verify.time");
 		// 加载模板
 		// 验证码
 		Resource resource = new ClassPathResource("sms/en_US/phoneVerify.template");
@@ -88,7 +91,7 @@ public class SmsManager {
 	@Async
 	public void sendSMS4PhoneVerify(String areaCode, String userPhone, String code) {
 		String phoneVerifyContent = templateChoose("phoneVerify", areaCode);
-		String content = phoneVerifyContent.replace(SMS_REPLACE_PIN, code);
+		String content = phoneVerifyContent.replace(SMS_REPLACE_PIN, code).replace(SMS_REPLACE_TIME, verifyTime);
 		sendSMS(areaCode + userPhone, content);
 	}
 

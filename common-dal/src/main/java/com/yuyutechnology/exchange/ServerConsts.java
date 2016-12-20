@@ -115,6 +115,8 @@ public class ServerConsts {
 	public static final String TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF = "03006";
 	
 	public static final String TRANSFER_HISTORY_NOT_ACQUIRED = "03007";
+	
+	public static final String TRANSFER_NOTIFICATION_NOT_ACQUIRED = "03008";
 
 	// 用户类型
 	/**
@@ -167,6 +169,12 @@ public class ServerConsts {
 	 * 交易已完成
 	 */
 	public static final int TRANSFER_STATUS_OF_COMPLETED = 2;
+	
+	//notification状态
+	
+	public static final int NOTIFICATION_STATUS_OF_PENDING = 0;
+	
+	public static final int NOTIFICATION_STATUS_OF_ALREADY_PAID = 1;
 
 	// unregistered状态
 	/**

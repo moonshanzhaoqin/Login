@@ -218,7 +218,7 @@ public class TransferManagerImpl implements TransferManager{
 			//如果是请求转账还需要更改消息通知中的状态
 			if(transfer.getNoticeId() != 0){
 				TransactionNotification notification =  notificationDAO.getNotificationById(transfer.getNoticeId());
-				notification.setTradingStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+				notification.setTradingStatus(ServerConsts.NOTIFICATION_STATUS_OF_ALREADY_PAID);
 				notificationDAO.updateNotification(notification);
 			}
 			//推送到账通知
@@ -317,7 +317,7 @@ public class TransferManagerImpl implements TransferManager{
 			transactionNotification.setCreateAt(new Date());
 			transactionNotification.setRemarks("");
 			transactionNotification.setNoticeStatus(0);
-			transactionNotification.setTradingStatus(0);
+			transactionNotification.setTradingStatus(ServerConsts.NOTIFICATION_STATUS_OF_PENDING);
 			
 			notificationDAO.addNotification(transactionNotification);
 			
@@ -391,7 +391,25 @@ public class TransferManagerImpl implements TransferManager{
 		
 		sb.append(" order by t1.finish_time desc");
 
-		HashMap<String, Object> map = transferDAO.getTransactionRecordByPage(sql+sb.toString(),sb.toString(),values,currentPage, pageSize);
+		HashMap<String, Object> map = transferDAO.getTransactionRecordByPage(sql+sb.toString(),
+				sb.toString(),values,currentPage, pageSize);
+		return map;
+	}
+
+	@Override
+	public HashMap<String, Object> getNotificationRecordsByPage(int userId, int currentPage, int pageSize) {
+		String sql = "SELECT t1.notice_id,t2.area_code,t2.user_phone,t1.currency,t1.amount,t1.create_at,t1.trading_status ";
+		StringBuilder sb = new StringBuilder(
+				"FROM `transaction_notification` t1,`user` t2 "+ 
+				"where t1.sponsor_id = t2.user_id and t1.payer_id = ?");
+		
+		List<Object> values = new ArrayList<Object>();
+		values.add(userId);
+		
+		sb.append(" order by t1.create_at desc");
+
+		HashMap<String, Object> map = notificationDAO.getNotificationRecordsByPage(sql+sb.toString(),
+				sb.toString(),values,currentPage, pageSize);
 		return map;
 	}
 }

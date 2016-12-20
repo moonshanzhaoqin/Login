@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
@@ -104,22 +105,21 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		// logger.info("interceptor excute order:1.preHandle================");
-
 		// 允许跨域访问
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Headers", "accept, content-type");
-
 		String requestURI = request.getRequestURI();
 		String sessionId = getToeknFromURI(request.getRequestURI());
 		logger.info("request URI:" + requestURI + " session : " + sessionId);
 		SessionData sessionData = sessionManager.get(sessionId);
 		// 判断是否需要拦截或者是否登录
 		if (validURL(requestURI) || sessionData!= null) {
-			logger.info("===================success=================");
+			logger.info("request URI:" + requestURI + " session : " + sessionId + "session ok");
 			sessionManager.refreshSessionDataExpireTime(sessionId);
 			SessionDataHolder.setSessionData(sessionData);
 			return true;
 		} else {
+			logger.info("request URI:" + requestURI + " session : " + sessionId + " " +MessageConsts.SESSION_TIMEOUT);
 			response.setStatus(500);
 			response.getOutputStream()
 					.print("{\"retCode\": " + ServerConsts.SESSION_TIMEOUT + " , \"msg\" : \"session timeout\"}");

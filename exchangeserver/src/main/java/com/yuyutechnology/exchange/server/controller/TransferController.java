@@ -18,11 +18,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.ServerConsts;
-import com.yuyutechnology.exchange.dto.TransferDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.push.PushManager;
+import com.yuyutechnology.exchange.server.controller.dto.NotificationDTO;
+import com.yuyutechnology.exchange.server.controller.dto.TransferDTO;
+import com.yuyutechnology.exchange.server.controller.request.GetNotificationRecordsRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetTransactionRecordRequest;
 import com.yuyutechnology.exchange.server.controller.request.MakeRequestRequest;
 import com.yuyutechnology.exchange.server.controller.request.ResendTransferPinRequest;
@@ -30,6 +32,7 @@ import com.yuyutechnology.exchange.server.controller.request.Respond2RequestRequ
 import com.yuyutechnology.exchange.server.controller.request.TransPwdConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransferConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransferInitiateRequest;
+import com.yuyutechnology.exchange.server.controller.response.GetNotificationRecordsResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetTransactionRecordResponse;
 import com.yuyutechnology.exchange.server.controller.response.MakeRequestResponse;
 import com.yuyutechnology.exchange.server.controller.response.ResendTransferPinResponse;
@@ -224,7 +227,6 @@ public class TransferController {
 				Object[] obj = (Object[]) object;
 				
 				TransferDTO dto = new TransferDTO();
-//				dto.setUserId((int) obj[0]);
 				dto.setCurrency((String) obj[1]);
 				
 				if(sessionData.getUserId() == (int) obj[0]){
@@ -232,8 +234,6 @@ public class TransferController {
 				}else{
 					dto.setAmount(new BigDecimal(obj[2]+"") );
 				}
-				
-
 				dto.setPhoneNum((String) obj[3]);
 				dto.setComments((String) obj[4]);
 				dto.setFinishAt((Date) obj[5]);
@@ -254,5 +254,55 @@ public class TransferController {
 		return rep;
 		
 	}
+	
+	@ApiOperation(value = "交易通知列表")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getNotificationRecords")
+	public @ResponseBody 
+	GetNotificationRecordsResponse getNotificationRecords(@PathVariable String token,
+			@RequestBody GetNotificationRecordsRequest reqMsg){
+		//从Session中获取Id
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		GetNotificationRecordsResponse rep = new GetNotificationRecordsResponse();
+		
+		HashMap<String, Object> map = transferManager.getNotificationRecordsByPage(
+				sessionData.getUserId(),reqMsg.getCurrentPage(), reqMsg.getPageSize());
+		
+		if(((ArrayList<?>)map.get("list")).isEmpty()){
+			rep.setRetCode(ServerConsts.TRANSFER_NOTIFICATION_NOT_ACQUIRED);
+			rep.setMessage("Notification Records not acquired");
+		}else{
+			
+			List<?> list = (ArrayList<?>)map.get("list");
+			ArrayList<NotificationDTO> dtos = new ArrayList<>();
+			for (Object object : list) {
+				Object[] obj = (Object[]) object;
+				
+				NotificationDTO dto = new NotificationDTO();
+				
+				dto.setNoticeId((int) obj[0]);
+				dto.setAreaCode((String) obj[1]);
+				dto.setSponsorPhone((String) obj[2]);
+				dto.setCurrency((String) obj[3]);
+				dto.setAmount((new BigDecimal(obj[4]+"")).doubleValue());
+				dto.setCreateAt((Date) obj[5]);
+				dto.setTradingStatus((int) obj[6]);
+				
+				dtos.add(dto);
+			}
+			
+			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setMessage("ok");
+			rep.setCurrentPage((int) map.get("currentPage"));
+			rep.setPageSize((int) map.get("pageSize"));
+			rep.setPageTotal((int) map.get("pageTotal"));
+			rep.setTotal(Integer.parseInt(map.get("total")+""));
+			rep.setList(dtos);
+		}
+
+		
+		return rep;
+	}
+	
+	
 
 }

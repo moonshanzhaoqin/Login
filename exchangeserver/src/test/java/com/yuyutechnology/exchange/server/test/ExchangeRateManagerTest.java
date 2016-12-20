@@ -14,7 +14,6 @@ import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.WalletManager;
-import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.server.controller.TransferController;
 
 /**
@@ -42,8 +41,8 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 	@Test
 	public void testUpdateRate() {
 
-		 exchangeRateManager.updateExchangeRateNoGoldq();
-		 exchangeRateManager.updateGoldpayExchangeRate();
+//		 exchangeRateManager.updateExchangeRateNoGoldq();
+//		 exchangeRateManager.updateGoldpayExchangeRate();
 
 		// String result = transferManager.transferInitiate(2,
 		// "+86","12312312336",
@@ -61,10 +60,10 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 //		 walletManager.getTotalAmoutGold(2);
 		 
 //		 exchangeRateManager.getTotalBalance(2);
+
+		transferManager.getNotificationRecordsByPage(4, 1, 10);
 		 
 		 
-		 User user = userDAO.getSystemUser();
-		 System.out.println("XXXXXXXXXX:"+user.getAreaCode());
 	}
 
 }

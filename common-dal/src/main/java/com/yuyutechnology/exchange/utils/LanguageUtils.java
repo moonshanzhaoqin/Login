@@ -10,7 +10,7 @@ import java.util.EnumSet;
 public class LanguageUtils {
 
 	public static enum Language {
-		en_US, zh_CN, zh_HK, zh_TW;
+		en_US, zh_CN, zh_TW;
 	};
 
 	public static Language standard(String language) {
