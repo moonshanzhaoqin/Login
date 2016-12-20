@@ -34,8 +34,8 @@ import com.yuyutechnology.exchange.server.controller.response.GetVerificationCod
 import com.yuyutechnology.exchange.server.controller.response.LoginResponse;
 import com.yuyutechnology.exchange.server.controller.response.RegisterResponse;
 import com.yuyutechnology.exchange.server.controller.response.TestCodeResponse;
-import com.yuyutechnology.exchange.session.SessionData;
-import com.yuyutechnology.exchange.session.SessionManager;
+import com.yuyutechnology.exchange.server.session.SessionData;
+import com.yuyutechnology.exchange.server.session.SessionManager;
 import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.UidUtils;
 
