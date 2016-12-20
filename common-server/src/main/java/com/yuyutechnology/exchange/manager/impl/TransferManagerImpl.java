@@ -344,7 +344,7 @@ public class TransferManagerImpl implements TransferManager{
 				"CONCAT(t1.area_code,t1.phone), "+
 				"t1.transfer_comment,t1.finish_time,t1.transfer_type ";
 		StringBuilder sb = new StringBuilder(
-				"FROM `transfer` t1 LEFT JOIN `user` t2  "+
+				"FROM `e_transfer` t1 LEFT JOIN `e_user` t2  "+
 				"ON  "+
 				"t1.user_from = t2.user_id  "+
 				"and t1.transfer_status=? "+
@@ -400,7 +400,7 @@ public class TransferManagerImpl implements TransferManager{
 	public HashMap<String, Object> getNotificationRecordsByPage(int userId, int currentPage, int pageSize) {
 		String sql = "SELECT t1.notice_id,t2.area_code,t2.user_phone,t1.currency,t1.amount,t1.create_at,t1.trading_status ";
 		StringBuilder sb = new StringBuilder(
-				"FROM `transaction_notification` t1,`user` t2 "+ 
+				"FROM `e_transaction_notification` t1,`e_user` t2 "+ 
 				"where t1.sponsor_id = t2.user_id and t1.payer_id = ?");
 		
 		List<Object> values = new ArrayList<Object>();
