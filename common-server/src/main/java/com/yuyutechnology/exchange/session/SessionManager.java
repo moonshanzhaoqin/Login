@@ -33,20 +33,20 @@ public class SessionManager {
 	 * @param sessionData
 	 */
 	public void saveSessionData(SessionData sessionData) {
-		saveSessionData(sessionData, true);
+		saveSessionData(sessionData, false);
 	}
 	
 	/**
 	 * 
 	 * @param sessionData
 	 */
-	public void saveSessionData(SessionData sessionData, boolean repeatLogin) {
+	public void saveSessionData(SessionData sessionData, boolean allowRepeatLogin) {
 		String json = JsonBinder.getInstance().toJson(sessionData);
 		String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", sessionData.getSessionId());
 		sessionRedisTemplate.opsForValue().set(key, json);
 		sessionRedisTemplate.expire(key, SESSION_TIMEOUT_MINUATE, TimeUnit.MINUTES);
 		if (sessionData.getUserId() != null) {
-			if (repeatLogin) {
+			if (!allowRepeatLogin) {
 				logout(sessionData.getUserId());
 			}
 			saveSessionDataToUserId(sessionData);
