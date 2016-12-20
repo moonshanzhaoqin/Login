@@ -120,7 +120,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			return true;
 		} else {
 			logger.info("request URI:" + requestURI + " session : " + sessionId + " " +MessageConsts.SESSION_TIMEOUT);
-			response.setStatus(500);
 			response.getOutputStream()
 					.print("{\"retCode\": " + ServerConsts.SESSION_TIMEOUT + " , \"msg\" : \"session timeout\"}");
 			response.getOutputStream().close();
