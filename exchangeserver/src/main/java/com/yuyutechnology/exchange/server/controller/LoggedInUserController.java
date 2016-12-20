@@ -193,6 +193,8 @@ public class LoggedInUserController {
 					logger.info("********Operation succeeded********");
 					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+					userManager.clearPinCode(ServerConsts.PIN_FUNC_CHANGEPHONE, changePhoneRequest.getAreaCode(),
+							changePhoneRequest.getUserPhone());
 				} else {
 					logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 					rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
@@ -465,6 +467,8 @@ public class LoggedInUserController {
 					logger.info("********Operation succeeded********");
 					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+					userManager.clearPinCode(ServerConsts.PIN_FUNC_MODIFYPAYPWD, modifyPayPwdByPINRequest.getAreaCode(),
+							modifyPayPwdByPINRequest.getUserPhone());
 				} else {
 					logger.info(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
 					rep.setRetCode(ServerConsts.PAY_PASSWORD_IS_ILLEGAL);

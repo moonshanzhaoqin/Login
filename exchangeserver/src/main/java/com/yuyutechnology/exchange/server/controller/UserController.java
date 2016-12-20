@@ -96,6 +96,8 @@ public class UserController {
 					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 				}
+				userManager.clearPinCode(ServerConsts.PIN_FUNC_FORGETPASSWORD, forgetPasswordRequest.getAreaCode(),
+					forgetPasswordRequest.getUserPhone());
 			} else {
 				logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 				rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
@@ -294,6 +296,9 @@ public class UserController {
 						rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 					}
+					
+					userManager.clearPinCode(ServerConsts.PIN_FUNC_REGISTER, registerRequest.getAreaCode(),
+						registerRequest.getUserPhone());
 				} else {
 					logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 					rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
