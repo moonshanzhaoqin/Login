@@ -14,10 +14,12 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
 import com.yuyutechnology.exchange.server.session.SessionData;
 import com.yuyutechnology.exchange.server.session.SessionDataHolder;
 import com.yuyutechnology.exchange.server.session.SessionManager;
 import com.yuyutechnology.exchange.startup.ServerContext;
+import com.yuyutechnology.exchange.utils.JsonBinder;
 
 /**
  * 登录拦截器
@@ -120,8 +122,10 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			return true;
 		} else {
 			logger.info("request URI:" + requestURI + " session : " + sessionId + " " +MessageConsts.SESSION_TIMEOUT);
-			response.getOutputStream()
-					.print("{\"retCode\": " + ServerConsts.SESSION_TIMEOUT + " , \"msg\" : \"session timeout\"}");
+			BaseResponse re = new BaseResponse();
+			re.setRetCode(ServerConsts.SESSION_TIMEOUT);
+			re.setMessage(MessageConsts.SESSION_TIMEOUT);
+			response.getOutputStream().print(JsonBinder.getInstance().toJson(re));
 			response.getOutputStream().close();
 			return false;
 		}

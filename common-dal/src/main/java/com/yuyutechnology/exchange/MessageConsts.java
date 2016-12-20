@@ -7,11 +7,11 @@ public class MessageConsts {
 	/**
 	 * 成功
 	 */
-	public static final String RET_CODE_SUCCESS = "Operation succeeded";
+	public static final String RET_CODE_SUCCESS = "OPERATION_SUCCEEDED";
 	/**
 	 * 失败
 	 */
-	public static final String RET_CODE_FAILUE = "Operation failed";
+	public static final String RET_CODE_FAILUE = "OPERATION_FAILED";
 
 	/**
 	 * Session过期
@@ -88,6 +88,7 @@ public class MessageConsts {
 	 * 换算后金额低于最小限额
 	 */
 	public static final String EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT = "EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT";
+	
 	public static final String EXCHANGE_THE_SAME_CURRENCY_CAN_NOT_BE_EXCHANGED = "EXCHANGE_THE_SAME_CURRENCY_CAN_NOT_BE_EXCHANGED";
 	// 交易03
 	/**
