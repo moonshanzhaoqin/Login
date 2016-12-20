@@ -9,7 +9,7 @@ public class BaseResponse {
 		super();
 		String name = this.getClass().getSimpleName();
 		name = name.substring(0, name.indexOf("Response"));
-		name = name.substring(0,1).toLowerCase() + name.substring(1);
+		name = name.substring(0, 1).toLowerCase() + name.substring(1);
 		apiName = name;
 	}
 
@@ -33,4 +33,3 @@ public class BaseResponse {
 		return apiName;
 	}
 }
-

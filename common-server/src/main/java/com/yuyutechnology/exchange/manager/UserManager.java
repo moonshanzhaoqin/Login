@@ -189,6 +189,8 @@ public interface UserManager {
 	 */
 	public void switchLanguage(Integer userId, String language);
 
+	public void logout(Integer userId);
+
 	
 
 }
