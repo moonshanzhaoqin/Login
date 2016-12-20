@@ -66,6 +66,9 @@ public class LoginRequest {
 	 * @return
 	 */
 	public int isEmpty() {
+		if (StringUtils.isEmpty(this.language)) {
+			this.language = "zh_CN";
+		}
 		if (StringUtils.isNotBlank(this.loginToken)) {
 			return 1;
 		}
@@ -77,9 +80,6 @@ public class LoginRequest {
 		}
 		if (StringUtils.isBlank(this.userPhone)) {
 			return 0;
-		}
-		if (StringUtils.isEmpty(this.language)) {
-			this.language = "zh_CN";
 		}
 		return 2;
 	}

@@ -83,6 +83,15 @@ public interface TransferManager {
 	 */
 	public String makeRequest(int userId,String payerAreaCode,String payerPhone,String currency,BigDecimal amount);
 	
+	/**
+	 * @Descrition : TODO
+	 * @author : nicholas.chi
+	 * @time : 2016年12月20日 下午3:59:04
+	 * @param userId
+	 * @param currentPage
+	 * @param pageSize
+	 * @return
+	 */
 	public HashMap<String, Object> getNotificationRecordsByPage(int userId,int currentPage, int pageSize);
 	
 

@@ -9,6 +9,6 @@ public interface GoldpayTransManager {
 	
 	public HashMap<String, String> requestPin(String transferId);
 	
-	public void goldpayTransConfirm(String pin,String transferId);
+	public HashMap<String, String> goldpayTransConfirm(int userId,String pin,String transferId);
 
 }

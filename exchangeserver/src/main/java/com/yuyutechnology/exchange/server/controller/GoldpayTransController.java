@@ -17,8 +17,10 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.server.controller.request.GoldpayPurchaseRequest;
+import com.yuyutechnology.exchange.server.controller.request.GoldpayTransConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.RequestPinRequest;
 import com.yuyutechnology.exchange.server.controller.response.GoldpayPurchaseResponse;
+import com.yuyutechnology.exchange.server.controller.response.GoldpayTransConfirmResponse;
 import com.yuyutechnology.exchange.server.controller.response.RequestPinResponse;
 import com.yuyutechnology.exchange.server.session.SessionData;
 import com.yuyutechnology.exchange.server.session.SessionDataHolder;
@@ -71,8 +73,20 @@ public class GoldpayTransController {
 		return rep;
 	}
 
-	public void goldpayTransConfirm(String pin,String transferId){
+	@ApiOperation(value = "goldpay 交易确认")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/goldpayTrans/goldpayTransConfirm")
+	public @ResponseBody
+	GoldpayTransConfirmResponse goldpayTransConfirm(@PathVariable String token,@RequestBody GoldpayTransConfirmRequest reqMsg){
+		//从Session中获取Id
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		GoldpayTransConfirmResponse rep = new GoldpayTransConfirmResponse(); 
+		HashMap<String, String> map = goldpayTransManager.goldpayTransConfirm(
+				sessionData.getUserId(), reqMsg.getPin(), reqMsg.getTransferId());
 		
+		rep.setRetCode(map.get("retCode"));
+		rep.setMessage(map.get("msg"));
+		
+		return rep;
 	}
 	
 	

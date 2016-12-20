@@ -368,7 +368,7 @@ public class UserManagerImpl implements UserManager {
 		User user = userDAO.getUser(userId);
 		user.setLoginIp(loginIp);
 		user.setLoginTime(new Date());
-		if (pushId!=null && !pushId.equals(user.getPushId())) {
+		if (pushId != null && !pushId.equals(user.getPushId())) {
 			// 推送消息：设备已下线
 			logger.info("Push message: device offline==>");
 			pushManager.push4Offline(user);
@@ -452,6 +452,15 @@ public class UserManagerImpl implements UserManager {
 			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
 			unregisteredDAO.updateUnregistered(unregistered);
 		}
+	}
+
+	@Override
+	public void logout(Integer userId) {
+		User user = userDAO.getUser(userId);
+		logger.info("unbind Tag==>");
+		pushManager.unbindPushTag(user);
+		user.setPushId(null);
+		userDAO.updateUser(user);
 	}
 
 }
