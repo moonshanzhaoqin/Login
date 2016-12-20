@@ -368,28 +368,25 @@ public class UserManagerImpl implements UserManager {
 		User user = userDAO.getUser(userId);
 		user.setLoginIp(loginIp);
 		user.setLoginTime(new Date());
-		if (StringUtils.isNotBlank(pushId)) {
-			if (user.getPushId() != pushId) {
-				// 推送消息：设备已下线
-				logger.info("Push message: device offline==>");
-				// pushManager.push4Offline(user);
-			}
-			user.setPushId(pushId);
+		if (!user.getPushId().equals(pushId)) {
+			// 推送消息：设备已下线
+			logger.info("Push message: device offline==>");
+			pushManager.push4Offline(user);
 		}
-
-		if (!user.getPushTag().equals(LanguageUtils.standard(language)) && StringUtils.isNotBlank(user.getPushId())) {
+		if (!user.getPushTag().equals(LanguageUtils.standard(language))) {
 			// 语言不一致，解绑Tag
 			logger.info("Language inconsistency, unbind Tag==>");
-			// pushManager.unbindPushTag(user);
+			pushManager.unbindPushTag(user);
 		}
+		user.setPushId(pushId);
 		user.setPushTag(LanguageUtils.standard(language));
 
 		userDAO.updateUser(user);
-		if (StringUtils.isNotBlank(user.getPushId()) && user.getPushTag() != null) {
-			// 绑定Tag
-			logger.info("bind Tag==>");
-			// pushManager.bindPushTag(user);
-		}
+		// 绑定Tag
+		logger.info("bind Tag==>");
+		 pushManager.bindPushTag(user);
+
+		userDAO.updateUser(user);
 	}
 
 	@Override
