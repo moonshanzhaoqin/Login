@@ -109,7 +109,7 @@ public class TransferManagerImpl implements TransferManager{
 			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		}else{
 			transfer.setUserTo(0);
-			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_IN_INVITE);
+			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_OUT_INVITE);
 		}
 		transfer.setNoticeId(noticeId);
 		//保存
@@ -185,7 +185,7 @@ public class TransferManagerImpl implements TransferManager{
 			unregisteredDAO.addUnregistered(unregistered);
 			//增加seq记录
 			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), systemUser.getUserId(), 
-					ServerConsts.TRANSFER_TYPE_IN_INVITE, transfer.getTransferId(), 
+					ServerConsts.TRANSFER_TYPE_OUT_INVITE, transfer.getTransferId(), 
 					transfer.getCurrency(), transfer.getTransferAmount());
 			
 			//更改Transfer状态
@@ -347,7 +347,7 @@ public class TransferManagerImpl implements TransferManager{
 				"FROM `e_transfer` t1 LEFT JOIN `e_user` t2  "+
 				"ON  "+
 				"t1.user_from = t2.user_id  "+
-				"and t1.transfer_status=? "+
+				"where t1.transfer_status=? "+
 				"and (t1.user_from = ? or t1.user_to = ?) ");
 		
 		List<Object> values = new ArrayList<Object>();
@@ -358,27 +358,27 @@ public class TransferManagerImpl implements TransferManager{
 		if(!period.equals("all")){
 			switch (period) {
 				case "today":
-					sb.append("where t1.finish_time > ?");
+					sb.append("and t1.finish_time > ?");
 					values.add(DateFormatUtils.getStartTime(sdf.format(new Date())));
 					break;
 					
 				case "lastMonth":
-					sb.append("where t1.finish_time > ?");
+					sb.append("and t1.finish_time > ?");
 					Date date = DateFormatUtils.getpreDays(-30);
 					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
 					break;
 				case "last3Month":
-					sb.append("where t1.finish_time > ?");
+					sb.append("and t1.finish_time > ?");
 					date = DateFormatUtils.getpreDays(-90);
 					values.add(DateFormatUtils.getStartTime(sdf.format(date)));		
 					break;
 				case "lastYear":
-					sb.append("where t1.finish_time > ?");
+					sb.append("and t1.finish_time > ?");
 					date = DateFormatUtils.getpreDays(-365);
 					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
 					break;
 				case "aYearAgo":
-					sb.append("where t1.finish_time < ?");
+					sb.append("and t1.finish_time < ?");
 					date = DateFormatUtils.getpreDays(-365);
 					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
 					break;

@@ -149,19 +149,20 @@ public class ServerConsts {
 	/**
 	 * 邀请
 	 */
-	public static final int TRANSFER_TYPE_IN_INVITE = 2;
+	public static final int TRANSFER_TYPE_OUT_INVITE = 2;
 	/**
 	 * 系统退款
 	 */
 	public static final int TRANSFER_TYPE_IN_SYSTEM_REFUND = 3;
 	/**
-	 * 金沛充值
-	 */
-	public static final int TRANSFER_TYPE_IN_GOLDPAY_RECHARGE = 4;
-	/**
 	 * 金沛体现
 	 */
-	public static final int TRANSFER_TYPE_IN_GOLDPAY_WITHDRAW = 5;
+	public static final int TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW = 4;
+	/**
+	 * 金沛充值
+	 */
+	public static final int TRANSFER_TYPE_IN_GOLDPAY_RECHARGE = 5;
+
 	
 
 	// 交易状态

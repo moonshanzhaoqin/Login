@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -285,6 +286,9 @@ public class PushManager {
 
 	@Async
 	private void pushToCustom(Integer userId, String deviceID, String title, String body) {
+		if(StringUtils.isBlank(deviceID)){
+			return;
+		}
 		PushToCustom pushToCustom = new PushToCustom();
 		pushToCustom.setAppName(appName);
 		pushToCustom.setBody(body);
@@ -298,6 +302,9 @@ public class PushManager {
 
 	@Async
 	private void tag(Func func, String deviceID, String pushTag) {
+		if(StringUtils.isBlank(deviceID)){
+			return;
+		}
 		TagRequest tagRequest = new TagRequest();
 		tagRequest.setAppName(appName);
 		tagRequest.setDeviceIds(deviceID);

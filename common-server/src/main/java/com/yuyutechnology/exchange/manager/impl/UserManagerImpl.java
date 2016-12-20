@@ -6,12 +6,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.InitBinder;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.AppVersionDAO;
@@ -80,8 +84,14 @@ public class UserManagerImpl implements UserManager {
 	private int verifyTime = 10;
 	private String verifyCode = "123456";
 
-	@Override
 	public void init() {
+		getResource();
+	}
+
+	@PostConstruct
+	@Scheduled(cron = "0 1/10 * * * ?")
+	@Override
+	public void getResource() {
 		logger.info("=========init UserManager=========");
 		qaSwitch = Boolean.parseBoolean(ResourceUtils.getBundleValue("qa.switch"));
 		verifyTime = Integer.parseInt(ResourceUtils.getBundleValue("verify.time"));
@@ -192,7 +202,7 @@ public class UserManagerImpl implements UserManager {
 		if (redisDAO.getValueByKey("getCurrentCurrency") == null) {
 			logger.info("getCurrentCurrency from db");
 			currencies = currencyDAO.getCurrentCurrency();
-			logger.info("currency={}",currencies);
+			logger.info("currency={}", currencies);
 			redisDAO.saveData("getCurrentCurrency", currencies, 30);
 		} else {
 			logger.info("getCurrentCurrency from redis:");
@@ -358,28 +368,25 @@ public class UserManagerImpl implements UserManager {
 		User user = userDAO.getUser(userId);
 		user.setLoginIp(loginIp);
 		user.setLoginTime(new Date());
-		if (StringUtils.isNotBlank(pushId)) {
-			if (user.getPushId() != pushId) {
-				// 推送消息：设备已下线
-				logger.info("Push message: device offline==>");
-				// pushManager.push4Offline(user);
-			}
-			user.setPushId(pushId);
+		if (!user.getPushId().equals(pushId)) {
+			// 推送消息：设备已下线
+			logger.info("Push message: device offline==>");
+			pushManager.push4Offline(user);
 		}
-
-		if (!user.getPushTag().equals(LanguageUtils.standard(language)) && StringUtils.isNotBlank(user.getPushId())) {
+		if (!user.getPushTag().equals(LanguageUtils.standard(language))) {
 			// 语言不一致，解绑Tag
 			logger.info("Language inconsistency, unbind Tag==>");
-			// pushManager.unbindPushTag(user);
+			pushManager.unbindPushTag(user);
 		}
+		user.setPushId(pushId);
 		user.setPushTag(LanguageUtils.standard(language));
 
 		userDAO.updateUser(user);
-		if (StringUtils.isNotBlank(user.getPushId()) && user.getPushTag() != null) {
-			// 绑定Tag
-			logger.info("bind Tag==>");
-			// pushManager.bindPushTag(user);
-		}
+		// 绑定Tag
+		logger.info("bind Tag==>");
+		 pushManager.bindPushTag(user);
+
+		userDAO.updateUser(user);
 	}
 
 	@Override
@@ -405,11 +412,11 @@ public class UserManagerImpl implements UserManager {
 		for (Wallet wallet : wallets) {
 			mapwallet.put(wallet.getCurrency().getCurrency(), wallet);
 		}
-		logger.info("mapwallet",mapwallet);
+		// logger.info("mapwallet",mapwallet);
 		// 获取当前可用的货币
 		List<Currency> currencies = getCurrentCurrency();
 		for (Currency currency : currencies) {
-			logger.info("{}",currency.getCurrency());
+			// logger.info("{}",currency.getCurrency());
 			if (mapwallet.get(currency.getCurrency()) == null) {
 				// 没有该货币的钱包，需要新增
 				walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date()));

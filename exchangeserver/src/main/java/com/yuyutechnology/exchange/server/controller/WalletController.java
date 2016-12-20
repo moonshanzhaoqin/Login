@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.manager.WalletManager;
 import com.yuyutechnology.exchange.server.controller.response.GetTotalAmontGoldResponse;
@@ -34,7 +35,7 @@ public class WalletController {
 		double amount = walletManager.getTotalAmoutGold(sessionData.getUserId());
 		
 		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-		rep.setMessage("ok");
+		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		rep.setAmountOfGold(amount);
 		
 		return rep;

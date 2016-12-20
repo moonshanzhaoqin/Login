@@ -67,6 +67,23 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 			
 			payModel = JsonBinder.getInstance().fromJson(result, PayModel.class);
 			
+			//错误处理
+			if(payModel!=null && !payModel.getResultCode().equals(1)){
+				if(payModel.getResultCode().equals(0)){
+					logger.warn("goldpayPurchase tpps callback: fail");
+				}else if(payModel.getResultCode().equals(-1)){
+					logger.warn("goldpayPurchase tpps callback: INVALID SIGN");
+				}else if(payModel.getResultCode().equals(-101)){
+					logger.warn("goldpayPurchase tpps callback: ORDERID REPEAT");
+				}else if(payModel.getResultCode().equals(-102)){
+					logger.warn("goldpayPurchase tpps callback: ORDERID_COMPLETE");
+				}
+				map.put("msg", "something wrong!");
+				map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+				
+				return map;
+			}
+
 			Transfer transfer = new Transfer(); 
 			transfer.setTransferId(transferId);
 			transfer.setCreateTime(new Date());
@@ -115,12 +132,20 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue("tpps.url")+"clientPin.do",
 				JsonBinder.getInstance().toJson(clientPin));
 		
-//		PayModel payModel;
+		PayModel payModel;
 		
 		if(!StringUtils.isEmpty(result)){
 			
 			logger.info("tpps callback result : {}",result);
-//			payModel = JsonBinder.getInstance().fromJson(result, PayModel.class);
+			payModel = JsonBinder.getInstance().fromJson(result, PayModel.class);
+			
+			if(payModel != null && !payModel.getResultCode().equals(1)){      //1:成功
+				logger.warn("requestPin tpps callback: {}",payModel.getResultMessage());
+				map.put("msg", "something wrong!");
+				map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+				return map;
+			}
+			
 			map.put("retCode", ServerConsts.RET_CODE_SUCCESS);
 			map.put("msg", "ok");
 			map.put("transferId", transferId);
