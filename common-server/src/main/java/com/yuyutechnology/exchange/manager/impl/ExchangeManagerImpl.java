@@ -127,7 +127,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			
 
 
-			String exchangeId = exchangeDAO.createExchangeId(ServerConsts.TRANSFER_TYPE_OF_EXCHANGE);
+			String exchangeId = exchangeDAO.createExchangeId(ServerConsts.TRANSFER_TYPE_EXCHANGE);
 			// 添加Exchange记录
 			Exchange exchange = new Exchange();
 			exchange.setExchangeId(exchangeId);
@@ -143,9 +143,9 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			exchangeDAO.addExchange(exchange);
 
 			// 添加seq记录
-			walletSeqDAO.addWalletSeq4Exchange(userId, ServerConsts.TRANSFER_TYPE_OF_EXCHANGE, exchangeId, currencyOut,
+			walletSeqDAO.addWalletSeq4Exchange(userId, ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId, currencyOut,
 					amountOut, currencyIn, amountIn);
-			walletSeqDAO.addWalletSeq4Exchange(systemUserId, ServerConsts.TRANSFER_TYPE_OF_EXCHANGE, exchangeId,
+			walletSeqDAO.addWalletSeq4Exchange(systemUserId, ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId,
 					currencyIn, amountIn, currencyOut, amountOut);
 		}
 

@@ -91,7 +91,7 @@ public class TransferManagerImpl implements TransferManager{
 //		}
 		
 		//生成TransId
-		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_OF_TRANSACTION);
+		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		
 		Transfer transfer = new Transfer(); 
 		transfer.setTransferId(transferId);
@@ -106,10 +106,10 @@ public class TransferManagerImpl implements TransferManager{
 		//判断接收人是否是已注册账号
 		if(receiver != null){
 			transfer.setUserTo(receiver.getUserId());
-			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_OF_TRANSACTION);
+			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		}else{
 			transfer.setUserTo(0);
-			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_OF_GIFT_OUT);
+			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_IN_INVITE);
 		}
 		transfer.setNoticeId(noticeId);
 		//保存
@@ -185,7 +185,7 @@ public class TransferManagerImpl implements TransferManager{
 			unregisteredDAO.addUnregistered(unregistered);
 			//增加seq记录
 			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), systemUser.getUserId(), 
-					ServerConsts.TRANSFER_TYPE_OF_GIFT_OUT, transfer.getTransferId(), 
+					ServerConsts.TRANSFER_TYPE_IN_INVITE, transfer.getTransferId(), 
 					transfer.getCurrency(), transfer.getTransferAmount());
 			
 			//更改Transfer状态
@@ -212,7 +212,7 @@ public class TransferManagerImpl implements TransferManager{
 			
 			//添加seq记录
 			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), transfer.getUserTo(), 
-					ServerConsts.TRANSFER_TYPE_OF_TRANSACTION, transfer.getTransferId(), 
+					ServerConsts.TRANSFER_TYPE_TRANSACTION, transfer.getTransferId(), 
 					transfer.getCurrency(), transfer.getTransferAmount());	
 			
 			//如果是请求转账还需要更改消息通知中的状态
@@ -252,12 +252,12 @@ public class TransferManagerImpl implements TransferManager{
 				transfer.getCurrency(), transfer.getTransferAmount(), "+");
 		//添加Seq记录
 		walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), transfer.getUserFrom(), 
-				ServerConsts.TRANSFER_TYPE_OF_SYSTEM_REFUND, unregistered.getTransferId(), 
+				ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, unregistered.getTransferId(), 
 				transfer.getCurrency(), transfer.getTransferAmount());
 		///////////////////////////生成transfer系统退款订单////////////////////////////
 		Transfer transfer2 = new Transfer();
 		//生成TransId
-		String transferId2 = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_OF_TRANSACTION);
+		String transferId2 = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		transfer2.setTransferId(transferId2);
 		transfer2.setUserFrom(systemUser.getUserId());
 		transfer2.setUserTo(transfer.getUserFrom());
@@ -266,7 +266,7 @@ public class TransferManagerImpl implements TransferManager{
 		transfer2.setCurrency(transfer.getCurrency());
 		transfer2.setTransferAmount(transfer.getTransferAmount());
 		transfer2.setTransferComment(unregistered.getUserPhone()+"对方逾期未注册,系统退款");
-		transfer2.setTransferType(ServerConsts.TRANSFER_TYPE_OF_SYSTEM_REFUND);
+		transfer2.setTransferType(ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND);
 		transfer2.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		transfer2.setCreateTime(new Date());
 		transfer2.setFinishTime(new Date());
