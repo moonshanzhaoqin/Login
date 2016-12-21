@@ -9,6 +9,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.dao.AppVersionDAO;
@@ -19,6 +20,7 @@ import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.pojo.AppVersion;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.utils.JsonBinder;
+import com.yuyutechnology.exchange.utils.ResourceUtils;
 
 /**
  * @author silent.sun
@@ -37,10 +39,17 @@ public class CommonManagerImpl implements CommonManager {
 	RedisDAO redisDAO;
 	
 	@Override
+	@Scheduled(cron = "0 1/5 * * * ?")
+	public void refreshConfig() {
+		ResourceUtils.clearCache();
+	}
+	
+	@Override
 	public AppVersion getAppVersion(String platformType, String updateWay) {
 		return appVersionDAO.getAppVersionInfo(platformType, updateWay);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<CurrencyInfo> getCurrency() {
 		List<Currency> currencies;
@@ -58,10 +67,10 @@ public class CommonManagerImpl implements CommonManager {
 			list.add(new CurrencyInfo(currency.getCurrency(), currency.getNameEn(), currency.getNameCn(),
 					currency.getNameHk(), currency.getCurrencyStatus()));
 		}
-		// logger.info("currency:{}",list);
 		return list;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Currency> getCurrentCurrency() {
 		List<Currency> currencies;
 		if (redisDAO.getValueByKey("getCurrentCurrency") == null) {
@@ -76,6 +85,7 @@ public class CommonManagerImpl implements CommonManager {
 		}
 		return currencies;
 	}
+	
 	@Override
 	public boolean verifyCurrency(String currency) {
 		List<Currency> currencyList = getCurrentCurrency();
@@ -85,7 +95,5 @@ public class CommonManagerImpl implements CommonManager {
 			}
 		}
 		return false;
-
 	}
-
 }

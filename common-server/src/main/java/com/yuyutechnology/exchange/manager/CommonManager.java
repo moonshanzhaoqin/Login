@@ -15,11 +15,13 @@ import com.yuyutechnology.exchange.pojo.Currency;
  */
 public interface CommonManager {
 	
+	public void refreshConfig();
+	
 	public AppVersion getAppVersion(String platformType, String updateWay);
 	
 	public List<CurrencyInfo> getCurrency();
 	
-	List<Currency> getCurrentCurrency();
+	public List<Currency> getCurrentCurrency();
 	
 	public boolean verifyCurrency(String currency);
 }
