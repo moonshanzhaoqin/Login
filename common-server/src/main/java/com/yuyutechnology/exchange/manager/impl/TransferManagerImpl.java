@@ -64,31 +64,35 @@ public class TransferManagerImpl implements TransferManager{
 	public static Logger logger = LoggerFactory.getLogger(TransferManagerImpl.class);
 
 	@Override
-	public String transferInitiate(int userId,String areaCode,String userPhone, String currency, 
+	public HashMap<String, String> transferInitiate(int userId,String areaCode,String userPhone, String currency, 
 			BigDecimal amount, String transferComment,int noticeId) {
 		
-		User receiver = userDAO.getUserByUserPhone(areaCode, userPhone);
+		HashMap<String, String> map = new HashMap<String, String>();
 		
+		User payer = userDAO.getUser(userId);
+		if(payer ==null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
+			logger.warn("The user does not exist or the account is blocked");
+			map.put("retCode", ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
+			map.put("msg", "The user does not exist or the account is blocked");
+			return map;
+		}
+		User receiver = userDAO.getUserByUserPhone(areaCode, userPhone);
+		//不用给自己转账
 		if(receiver!= null && userId == receiver.getUserId()){
 			logger.warn("Prohibit transfers to yourself");
-			return ServerConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF;
+			map.put("retCode", ServerConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
+			map.put("msg", "Prohibit transfers to yourself");
+			return map;
 		}
-
+		
 		//判断余额是否足够支付
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
 		if(wallet == null || wallet.getBalance().compareTo(amount) == -1){
 			logger.warn("Current balance is insufficient");
-			return ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT;
+			map.put("retCode", ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+			map.put("msg", "Current balance is insufficient");
+			return map;
 		}
-//		//当日累加金额
-//		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount(userId+"");
-//		//当日最大金额===================================================================
-//		BigDecimal dayMaxAmount =  new BigDecimal(20000);
-//		//判断是否超过当日累加金额
-//		if(accumulatedAmount.add(amount).compareTo(dayMaxAmount) == 1){
-//			logger.warn("Exceeded the day's transaction limit");
-//			return ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT;
-//		}
 		
 		//生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
@@ -115,14 +119,27 @@ public class TransferManagerImpl implements TransferManager{
 		//保存
 		transferDAO.addTransfer(transfer);
 		
-		return transferId;
+		map.put("retCode", ServerConsts.RET_CODE_SUCCESS);
+		map.put("msg", "ok");
+		map.put("transferId", transferId);
+		
+		return map;
 	}
 
 	@Override
 	public String payPwdConfirm(int userId, String transferId, String userPayPwd) {
 		
 		User user = userDAO.getUser(userId);
-		Transfer transfer = transferDAO.getTransferById(transferId);
+		if(user ==null || user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
+			logger.warn("The user does not exist or the account is blocked");
+			return ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED;
+		}
+		Transfer transfer = transferDAO.getTransferByIdAndUserId(transferId,userId);
+		if(transfer == null){
+			logger.warn("The transaction order does not exist");
+			return ServerConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST;
+		}
+		
 		
 		if(!PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())){
 			return ServerConsts.TRANSFER_PAYMENTPWD_INCORRECT;
@@ -146,16 +163,26 @@ public class TransferManagerImpl implements TransferManager{
 			return ServerConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION;
 			
 		}else{
-			transferConfirm(transferId);
+			transferConfirm(userId,transferId);
 		}
 		
 		return ServerConsts.RET_CODE_SUCCESS;
 	}
 
 	@Override
-	public String transferConfirm(String transferId) {
-		Transfer transfer = transferDAO.getTransferById(transferId);
-		User payer = userDAO.getUser(transfer.getUserFrom());
+	public String transferConfirm(int userId,String transferId) {
+		
+		Transfer transfer = transferDAO.getTransferByIdAndUserId(transferId,userId);
+		if(transfer == null){
+			logger.warn("The transaction order does not exist");
+			return ServerConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST;
+		}
+		
+		User payer = userDAO.getUser(userId);
+		if(payer ==null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
+			logger.warn("The user does not exist or the account is blocked");
+			return ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED;
+		}
 		
 		if(transfer.getUserTo() == 0){  	//交易对象没有注册账号
 			

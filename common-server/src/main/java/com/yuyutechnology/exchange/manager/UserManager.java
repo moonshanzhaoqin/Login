@@ -14,7 +14,7 @@ import com.yuyutechnology.exchange.pojo.Friend;
 
 public interface UserManager {
 	public void getResource();
-	
+
 	/**
 	 * 生成验证码并发送
 	 * 
@@ -61,7 +61,8 @@ public interface UserManager {
 	 * @param userPassword
 	 * @return
 	 */
-	public Integer register(String areaCode, String userPhone, String userName, String userPassword, String loginIp, String pushId, String language);
+	public Integer register(String areaCode, String userPhone, String userName, String userPassword, String loginIp,
+			String pushId, String language);
 
 	/**
 	 * 验证手机号与验证码是否匹配
@@ -191,6 +192,13 @@ public interface UserManager {
 
 	public void logout(Integer userId);
 
-	
+	/**
+	 * 清除验证码
+	 * 
+	 * @param func
+	 * @param areaCode
+	 * @param userPhone
+	 */
+	void clearPinCode(String func, String areaCode, String userPhone);
 
 }

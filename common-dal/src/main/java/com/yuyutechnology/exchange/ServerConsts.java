@@ -1,8 +1,14 @@
 package com.yuyutechnology.exchange;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ServerConsts {
 	// RetCode: 通用 00; 用户 01;兑换 02; 转账 03
 
+	public static List<String> successCodeList = new ArrayList<String>();
+	public static List<String> sessionCodeList = new ArrayList<String>();
+	
 	// 通用 00
 	/**
 	 * 成功
@@ -75,6 +81,10 @@ public class ServerConsts {
 	 * 好友已添加
 	 */
 	public static final String FRIEND_HAS_ADDED = "01013";
+	/**
+	 * 新旧密码相同
+	 */
+	public static final String NEW_PWD_EQUALS_OLD = "01014";
 	
 	// 兑换 02
 	/**
@@ -118,8 +128,15 @@ public class ServerConsts {
 	
 	public static final String TRANSFER_NOTIFICATION_NOT_ACQUIRED = "03008";
 	
-	public static final String TRANSFER_GOLDPATTRANS_ORDERID_NOT_EXIST = "03009";
-	public static final String TRANSFER_GOLDPATTRANS_CHECK_PIN_CODE_FAIL = "03010";
+	public static final String TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST = "03009";
+	
+	public static final String TRANSFER_GOLDPAYTRANS_CHECK_PIN_CODE_FAIL = "03010";
+	
+	public static final String TRANSFER_LESS_THAN_MINIMUM_AMOUNT = "03011";
+	
+	public static final String TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED = "03012";
+	
+	public static final String TRANSFER_TRANS_ORDERID_NOT_EXIST = "03013";
 
 	// 用户类型
 	/**
@@ -238,8 +255,13 @@ public class ServerConsts {
 	public static final int CURRENCY_UNAVAILABLE = 0;
 	
 	
-	
-	
-
+	static {
+		successCodeList.add(RET_CODE_SUCCESS);
+		successCodeList.add(TRANSFER_EXCEEDED_TRANSACTION_LIMIT);
+		successCodeList.add(TRANSFER_HISTORY_NOT_ACQUIRED);
+		successCodeList.add(TRANSFER_NOTIFICATION_NOT_ACQUIRED);
+		
+		sessionCodeList.add(SESSION_TIMEOUT);
+	}
 
 }

@@ -463,4 +463,8 @@ public class UserManagerImpl implements UserManager {
 		userDAO.updateUser(user);
 	}
 
+	@Override
+	public void clearPinCode(String func, String areaCode, String userPhone) {
+		redisDAO.deleteKey(func + areaCode + userPhone);
+	}
 }

@@ -65,24 +65,30 @@ public class TransferController {
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		TransferInitiateResponse rep = new TransferInitiateResponse();
-		String result = transferManager.transferInitiate(sessionData.getUserId(), reqMsg.getAreaCode(),
+
+		//装张金额上限
+		if(reqMsg.getCurrency() != ServerConsts.CURRENCY_OF_GOLDPAY && reqMsg.getAmount() < 0.01){
+			logger.warn("The input amount is less than the minimum amount");
+			rep.setRetCode(ServerConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
+			rep.setMessage("The input amount is less than the minimum amount");
+			return rep;
+		}else if (reqMsg.getCurrency() == ServerConsts.CURRENCY_OF_GOLDPAY && reqMsg.getAmount() < 1){
+			logger.warn("The input amount is less than the minimum amount");
+			rep.setRetCode(ServerConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
+			rep.setMessage("The input amount is less than the minimum amount");
+			return rep;
+		}
+		
+		HashMap<String, String> map = transferManager.transferInitiate(sessionData.getUserId(), reqMsg.getAreaCode(),
 				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()), 
 				reqMsg.getTransferComment(),0);
 		
-		if(result.equals(ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT)){
-			rep.setRetCode(ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-			rep.setMessage(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-		}else if(result.equals(ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT)){
-			rep.setRetCode(ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT);
-			rep.setMessage(MessageConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT);
-		}else if(result.equals(ServerConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF)){
-			rep.setRetCode(ServerConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
-			rep.setMessage(MessageConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
-		}else{
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-			rep.setTransferId(result);
+		if(map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
+			rep.setTransferId(map.get("transferId"));
 		}
+		
+		rep.setRetCode(map.get("retCode"));
+		rep.setMessage(map.get("msg"));
 
 		return rep;
 		
@@ -144,7 +150,7 @@ public class TransferController {
 		TransferConfirmResponse rep = new TransferConfirmResponse();
 		//判断PinCode是否正确
 		if(userManager.testPinCode(reqMsg.getTransferId(), user.getAreaCode(), user.getPhone(),reqMsg.getPinCode())){
-			String result = transferManager.transferConfirm(reqMsg.getTransferId());
+			String result = transferManager.transferConfirm(sessionData.getUserId(),reqMsg.getTransferId());
 			
 			if(result.equals(ServerConsts.RET_CODE_SUCCESS)){
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
@@ -188,22 +194,48 @@ public class TransferController {
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		Respond2RequestResponse rep = new Respond2RequestResponse();
-		String result = transferManager.transferInitiate(sessionData.getUserId(), reqMsg.getAreaCode(),
+//		String result = transferManager.transferInitiate(sessionData.getUserId(), reqMsg.getAreaCode(),
+//				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()), 
+//				null,reqMsg.getNoticeId());
+//		
+//		if(result.equals(ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT)){
+//			rep.setRetCode(ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+//			rep.setMessage(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+//		}else if(result.equals(ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT)){
+//			rep.setRetCode(ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT);
+//			rep.setMessage(MessageConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT);
+//		}else{
+//			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+//			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+//			rep.setTransferId(result);
+//		}
+		
+		//装张金额上限
+		if(reqMsg.getCurrency() != ServerConsts.CURRENCY_OF_GOLDPAY && reqMsg.getAmount() < 0.01){
+			logger.warn("The input amount is less than the minimum amount");
+			rep.setRetCode(ServerConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
+			rep.setMessage("The input amount is less than the minimum amount");
+			return rep;
+		}else if (reqMsg.getCurrency() == ServerConsts.CURRENCY_OF_GOLDPAY && reqMsg.getAmount() < 1){
+			logger.warn("The input amount is less than the minimum amount");
+			rep.setRetCode(ServerConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
+			rep.setMessage("The input amount is less than the minimum amount");
+			return rep;
+		}
+		
+		HashMap<String, String> map = transferManager.transferInitiate(sessionData.getUserId(), reqMsg.getAreaCode(),
 				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()), 
 				null,reqMsg.getNoticeId());
 		
-		if(result.equals(ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT)){
-			rep.setRetCode(ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-			rep.setMessage(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-		}else if(result.equals(ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT)){
-			rep.setRetCode(ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT);
-			rep.setMessage(MessageConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT);
-		}else{
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-			rep.setTransferId(result);
+		if(map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
+			rep.setTransferId(map.get("transferId"));
 		}
+		
+		rep.setRetCode(map.get("retCode"));
+		rep.setMessage(map.get("msg"));
+
 		return rep;
+
 	}
 
 	@ApiOperation(value = "获取交易明细")
