@@ -18,9 +18,11 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.server.controller.request.GoldpayPurchaseRequest;
 import com.yuyutechnology.exchange.server.controller.request.GoldpayTransConfirmRequest;
+import com.yuyutechnology.exchange.server.controller.request.GoldpayWithdrawRequest;
 import com.yuyutechnology.exchange.server.controller.request.RequestPinRequest;
 import com.yuyutechnology.exchange.server.controller.response.GoldpayPurchaseResponse;
 import com.yuyutechnology.exchange.server.controller.response.GoldpayTransConfirmResponse;
+import com.yuyutechnology.exchange.server.controller.response.GoldpayWithdrawResponse;
 import com.yuyutechnology.exchange.server.controller.response.RequestPinResponse;
 import com.yuyutechnology.exchange.server.session.SessionData;
 import com.yuyutechnology.exchange.server.session.SessionDataHolder;
@@ -102,5 +104,37 @@ public class GoldpayTransController {
 		return rep;
 	}
 	
+	
+	@ApiOperation(value = "goldpay 重新发送Pin")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/goldpayTrans/goldpayWithdraw")
+	public @ResponseBody
+	GoldpayWithdrawResponse goldpayWithdraw(@PathVariable String token,@RequestBody GoldpayWithdrawRequest reqMsg){
+		//从Session中获取Id
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		GoldpayWithdrawResponse rep = new GoldpayWithdrawResponse();
+		
+		if(reqMsg.getAmount() < 1 ){
+			logger.warn("The input amount is less than the minimum amount");
+			rep.setRetCode(ServerConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
+			rep.setMessage("The input amount is less than the minimum amount");
+			return rep;
+		}else if(reqMsg.getAmount() >= 1000000000){
+			logger.warn("Fill out the allowable amount");
+			rep.setRetCode(ServerConsts.TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT);
+			rep.setMessage("Fill out the allowable amount");
+			return rep;
+		}
+		
+		HashMap<String, String> map = goldpayTransManager.goldpayWithdraw(sessionData.getUserId(), reqMsg.getAmount());
+		
+		if(map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
+			rep.setTransferId(map.get("transferId"));
+		}
+		
+		rep.setRetCode(map.get("retCode"));
+		rep.setMessage(map.get("msg"));
+		
+		return rep;
+	}
 	
 }
