@@ -1,5 +1,6 @@
 package com.yuyutechnology.exchange.goldpay.transaction;
 
+
 public class PayModel {
 	
 	private Integer resultCode;
