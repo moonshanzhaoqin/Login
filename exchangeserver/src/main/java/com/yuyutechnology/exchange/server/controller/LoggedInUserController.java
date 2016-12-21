@@ -189,31 +189,38 @@ public class LoggedInUserController {
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
-			// 检验支付密码
-			if (userManager.checkUserPayPwd(sessionData.getUserId(), changePhoneRequest.getUserPayPwd())) {
-				// 校验手机验证码
-				if (userManager.testPinCode(ServerConsts.PIN_FUNC_CHANGEPHONE, changePhoneRequest.getAreaCode(),
-						changePhoneRequest.getUserPhone(), changePhoneRequest.getVerificationCode())) {
-					userManager.changePhone(sessionData.getUserId(), changePhoneRequest.getAreaCode(),
-							changePhoneRequest.getUserPhone());
-					sessionManager.logout(sessionData.getSessionId());
-					sessionManager.delLoginToken(sessionData.getUserId());
-					logger.info("********Operation succeeded********");
-					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-					userManager.clearPinCode(ServerConsts.PIN_FUNC_CHANGEPHONE, changePhoneRequest.getAreaCode(),
-							changePhoneRequest.getUserPhone());
+			if (userManager.checkChangePhoneTime(sessionData.getUserId())) {
+				// 检验支付密码
+				if (userManager.checkUserPayPwd(sessionData.getUserId(), changePhoneRequest.getUserPayPwd())) {
+					// 校验手机验证码
+					if (userManager.testPinCode(ServerConsts.PIN_FUNC_CHANGEPHONE, changePhoneRequest.getAreaCode(),
+							changePhoneRequest.getUserPhone(), changePhoneRequest.getVerificationCode())) {
+						userManager.changePhone(sessionData.getUserId(), changePhoneRequest.getAreaCode(),
+								changePhoneRequest.getUserPhone());
+						sessionManager.logout(sessionData.getSessionId());
+						sessionManager.delLoginToken(sessionData.getUserId());
+						logger.info("********Operation succeeded********");
+						rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+						userManager.clearPinCode(ServerConsts.PIN_FUNC_CHANGEPHONE, changePhoneRequest.getAreaCode(),
+								changePhoneRequest.getUserPhone());
+					} else {
+						logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
+						rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
+						rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
+					}
 				} else {
-					logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
-					rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
-					rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
+					logger.info(MessageConsts.PASSWORD_NOT_MATCH);
+					rep.setRetCode(ServerConsts.PASSWORD_NOT_MATCH);
+					rep.setMessage(MessageConsts.PASSWORD_NOT_MATCH);
 				}
-			} else {
-				logger.info(MessageConsts.PASSWORD_NOT_MATCH);
-				rep.setRetCode(ServerConsts.PASSWORD_NOT_MATCH);
-				rep.setMessage(MessageConsts.PASSWORD_NOT_MATCH);
+			}else {
+				logger.info(MessageConsts.TIME_NOT_ARRIVED);
+				rep.setRetCode(ServerConsts.TIME_NOT_ARRIVED);
+				rep.setMessage(MessageConsts.TIME_NOT_ARRIVED);
 			}
 		}
+
 		return rep;
 	}
 
