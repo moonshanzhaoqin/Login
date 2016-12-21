@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dao.BindDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
@@ -22,6 +23,7 @@ import com.yuyutechnology.exchange.goldpay.transaction.ClientPin;
 import com.yuyutechnology.exchange.goldpay.transaction.PayConfirm;
 import com.yuyutechnology.exchange.goldpay.transaction.PayModel;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
+import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.utils.HttpTookit;
@@ -34,6 +36,8 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 	@Autowired
 	UserDAO userDAO;
 	@Autowired
+	BindDAO bindBAO;
+	@Autowired
 	WalletDAO walletDAO;
 	@Autowired
 	TransferDAO transferDAO;
@@ -43,19 +47,30 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 	public static Logger logger = LoggerFactory.getLogger(GoldpayTransManagerImpl.class);
 
 	@Override
-	public HashMap<String, String> goldpayPurchase(int userId,String goldpayAccount,BigDecimal amount) {
+	public HashMap<String, String> goldpayPurchase(int userId,BigDecimal amount) {
 		
 		HashMap<String, String> map = new HashMap<>();
 		
 		User systemUser = userDAO.getSystemUser();
 		User user = userDAO.getUser(userId);
+		if(user == null){
+			logger.warn("User does not exist");
+			map.put("msg", "User does not exist");
+			map.put("retCode", ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
+		}
+		Bind bind = bindBAO.getBindByUserId(userId);
+		if(bind == null){
+			logger.warn("The account is not tied to goldpay");
+			map.put("msg", "The account is not tied to goldpay");
+			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+		}
 
 		//生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		ClientPayOrder clientPayOrder = new ClientPayOrder();
 		clientPayOrder.setOrderId(transferId);
 		clientPayOrder.setPayAmount(amount.intValue());
-		clientPayOrder.setFromAccountNum(goldpayAccount);
+		clientPayOrder.setFromAccountNum(bind.getGoldpayAcount());
 		clientPayOrder.setType(0);
 		String clientId = ResourceUtils.getBundleValue("client.id");
 		clientPayOrder.setClientId(clientId);
@@ -128,12 +143,18 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 
 
 	@Override
-	public HashMap<String, String> requestPin(String transferId) {
+	public HashMap<String, String> requestPin(int userId,String transferId) {
 		
 		HashMap<String, String> map = new HashMap<>();
 		
 		String clientId = ResourceUtils.getBundleValue("client.id");
-		Transfer transfer = transferDAO.getTransferById(transferId);
+		Transfer transfer = transferDAO.getTransferByIdAndUserId(transferId,userId);
+		if(transfer == null){
+			logger.warn("The transaction order does not exist");
+			map.put("msg", "The transaction order does not exist");
+			map.put("retCode", ServerConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST);
+			return map;
+		}
 		
 		ClientPin clientPin = new ClientPin();
 		clientPin.setClientId(clientId);
@@ -206,7 +227,6 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 			logger.info("goldpayTransConfirm tpps callback {} ",result);
 			
 			payConfirm = JsonBinder.getInstance().fromJson(result, PayConfirm.class);
-			
 			
 //			if(payConfirm == null || (payConfirm.getResultCode()!=0 && payConfirm.getResultCode()==307)){
 			

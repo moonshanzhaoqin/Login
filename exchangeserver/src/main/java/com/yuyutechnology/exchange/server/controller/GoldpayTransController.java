@@ -40,8 +40,15 @@ public class GoldpayTransController {
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		GoldpayPurchaseResponse rep = new GoldpayPurchaseResponse();
-		HashMap<String, String> map = goldpayTransManager.goldpayPurchase(sessionData.getUserId(), 
-				reqMsg.getGoldpayAccount(), new BigDecimal(reqMsg.getAmount()));
+		
+		if(reqMsg.getAmount() < 1){
+			logger.warn("The input amount is less than the minimum amount");
+			rep.setRetCode(ServerConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
+			rep.setMessage("The input amount is less than the minimum amount");
+			return rep;
+		}
+		
+		HashMap<String, String> map = goldpayTransManager.goldpayPurchase(sessionData.getUserId(), new BigDecimal(reqMsg.getAmount()));
 		
 		if(map != null && map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
 			rep.setTransferId(map.get("transferId"));
@@ -59,10 +66,11 @@ public class GoldpayTransController {
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/goldpayTrans/requestPin")
 	public @ResponseBody
 	RequestPinResponse requestPin(@PathVariable String token,@RequestBody RequestPinRequest reqMsg){
-		
+		//从Session中获取Id
+		SessionData sessionData = SessionDataHolder.getSessionData();
 		RequestPinResponse rep = new RequestPinResponse();
 		
-		HashMap<String, String> map = goldpayTransManager.requestPin(reqMsg.getTransferId());
+		HashMap<String, String> map = goldpayTransManager.requestPin(sessionData.getUserId(),reqMsg.getTransferId());
 		if(map != null && map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
 			rep.setTransferId(map.get("transferId"));
 		}
