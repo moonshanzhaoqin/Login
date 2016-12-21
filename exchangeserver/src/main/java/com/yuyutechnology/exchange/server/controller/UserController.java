@@ -369,7 +369,7 @@ public class UserController {
 	public GetCurrencyResponse getCurrency(HttpServletRequest request, HttpServletResponse response) {
 		logger.info("getCurrency : ");
 		GetCurrencyResponse rep = new GetCurrencyResponse();
-		rep.setCurrencyInfos(userManager.getCurrency());
+		rep.setCurrencyInfos(commonManager.getCurrency());
 		logger.info(MessageConsts.RET_CODE_SUCCESS);
 		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
