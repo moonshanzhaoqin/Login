@@ -94,7 +94,7 @@ public class UserManagerImpl implements UserManager {
 		if (friend == null) {
 			return ServerConsts.PHONE_NOT_EXIST;
 		} else if (friend.getUserId() == userId) {
-			return ServerConsts.ADD_FRIEND_OWEN;
+			return ServerConsts.PHONE_ID_YOUR_OWEN;
 		} else if (friendDAO.getFriendByUserIdAndFrindId(userId, friend.getUserId()) != null) {
 			return ServerConsts.FRIEND_HAS_ADDED;
 		} else {
@@ -145,8 +145,8 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public boolean checkChangePhoneTime(Integer userId) throws ParseException {
 		String timeString = redisDAO.getValueByKey("changephonetime" + userId);
-		if (timeString != null
-				&& (new Date().getTime() - simpleDateFormat.parse(timeString).getTime()) / (24 * 60 * 60 * 1000) < changePhoneTime) {
+		if (timeString != null && (new Date().getTime() - simpleDateFormat.parse(timeString).getTime())
+				/ (24 * 60 * 60 * 1000) < changePhoneTime) {
 			return false;
 		}
 		return true;
@@ -353,6 +353,7 @@ public class UserManagerImpl implements UserManager {
 				PasswordUtils.encrypt(userPassword, passwordSalt), new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER,
 				ServerConsts.USER_AVAILABLE_OF_AVAILABLE, passwordSalt, LanguageUtils.standard(language)));
 		logger.info("Add user complete");
+		redisDAO.saveData("changephonetime" + userId, simpleDateFormat.format(new Date()), 300000000);
 		// 添加钱包信息
 		createWallets4NewUser(userId);
 		// 根据UNregistered 更新新用户钱包 将资金从系统帐户划给新用户
@@ -485,6 +486,25 @@ public class UserManagerImpl implements UserManager {
 			// 更改unregistered状态
 			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
 			unregisteredDAO.updateUnregistered(unregistered);
+		}
+	}
+
+	@Override
+	public String deleteFriend(Integer userId, String areaCode, String phone) {
+		logger.info("Find friend==>");
+		User friend = userDAO.getUserByUserPhone(areaCode, phone);
+		if (friend == null) {
+			return ServerConsts.PHONE_NOT_EXIST;
+		} else if (friend.getUserId() == userId) {
+			return ServerConsts.PHONE_ID_YOUR_OWEN;
+		} else {
+			Friend friend2 = friendDAO.getFriendByUserIdAndFrindId(userId, friend.getUserId());
+			if (friend2 == null) {
+				return ServerConsts.PHONE_IS_NOT_FRIEND;
+			} else {
+				friendDAO.deleteFriend(friend2);
+				return ServerConsts.RET_CODE_SUCCESS;
+			}
 		}
 	}
 }

@@ -216,4 +216,14 @@ public interface UserManager {
 	 */
 	public boolean checkChangePhoneTime(Integer userId) throws ParseException;
 
+	/**
+	 * 删除好友
+	 * 
+	 * @param userId
+	 * @param areaCode
+	 * @param phone
+	 * @return 
+	 */
+	public String deleteFriend(Integer userId, String areaCode, String phone);
+
 }
