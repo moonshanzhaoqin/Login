@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public interface GoldpayTransManager {
 	
-	public HashMap<String, String> goldpayPurchase(int userId,String goldpayAccount,BigDecimal amount);
+	public HashMap<String, String> goldpayPurchase(int userId,BigDecimal amount);
 	
 	public HashMap<String, String> requestPin(String transferId);
 	

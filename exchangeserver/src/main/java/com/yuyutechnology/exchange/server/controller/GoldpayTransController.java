@@ -40,8 +40,14 @@ public class GoldpayTransController {
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		GoldpayPurchaseResponse rep = new GoldpayPurchaseResponse();
-		HashMap<String, String> map = goldpayTransManager.goldpayPurchase(sessionData.getUserId(), 
-				reqMsg.getGoldpayAccount(), new BigDecimal(reqMsg.getAmount()));
+		
+		if(reqMsg.getAmount() < 1){
+			
+		}
+		
+		
+		
+		HashMap<String, String> map = goldpayTransManager.goldpayPurchase(sessionData.getUserId(), new BigDecimal(reqMsg.getAmount()));
 		
 		if(map != null && map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
 			rep.setTransferId(map.get("transferId"));
