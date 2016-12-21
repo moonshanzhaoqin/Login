@@ -101,6 +101,8 @@ public class ServerConsts {
 	public static final String EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT = "02003";
 	
 	public static final String EXCHANGE_THE_SAME_CURRENCY_CAN_NOT_BE_EXCHANGED = "02004";
+	
+	public static final String EXCHANGE_ENTER_THE_AMOUNT_OF_VIOLATION = "02005";
 
 	// 交易03
 	/**

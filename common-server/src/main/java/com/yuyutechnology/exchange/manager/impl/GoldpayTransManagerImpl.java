@@ -143,12 +143,18 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 
 
 	@Override
-	public HashMap<String, String> requestPin(String transferId) {
+	public HashMap<String, String> requestPin(int userId,String transferId) {
 		
 		HashMap<String, String> map = new HashMap<>();
 		
 		String clientId = ResourceUtils.getBundleValue("client.id");
-		Transfer transfer = transferDAO.getTransferById(transferId);
+		Transfer transfer = transferDAO.getTransferByIdAndUserId(transferId,userId);
+		if(transfer == null){
+			logger.warn("The transaction order does not exist");
+			map.put("msg", "The transaction order does not exist");
+			map.put("retCode", ServerConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST);
+			return map;
+		}
 		
 		ClientPin clientPin = new ClientPin();
 		clientPin.setClientId(clientId);
