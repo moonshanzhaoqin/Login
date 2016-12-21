@@ -1,5 +1,15 @@
 package com.yuyutechnology.exchange.server.controller.response;
 
-public class BindGoldpayResponse extends BaseResponse {
+import com.yuyutechnology.exchange.dto.UserInfo;
 
+public class BindGoldpayResponse extends BaseResponse {
+	private UserInfo user;
+
+	public UserInfo getUser() {
+		return user;
+	}
+
+	public void setUser(UserInfo user) {
+		this.user = user;
+	}
 }

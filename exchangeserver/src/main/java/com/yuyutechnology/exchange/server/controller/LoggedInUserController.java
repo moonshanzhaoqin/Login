@@ -149,6 +149,8 @@ public class LoggedInUserController {
 			String retCode = userManager.bindGoldpay(sessionData.getUserId(), bindGoldpayRequest.getGoldpayToken());
 			switch (retCode) {
 			case ServerConsts.RET_CODE_SUCCESS:
+				// 获取用户信息
+				rep.setUser(userManager.getUserInfo(sessionData.getUserId()));
 				logger.info("********Operation succeeded********");
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);

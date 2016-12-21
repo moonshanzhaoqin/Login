@@ -127,8 +127,17 @@ public class UserManagerImpl implements UserManager {
 				logger.info("Goldpay account does not bind phone number.");
 				return ServerConsts.GOLDPAY_PHONE_IS_NOT_EXIST;
 			} else {
-				bindDAO.saveBind(new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(),
-						goldpayUser.getAccountNum(), goldpayToken));
+				Bind bind = bindDAO.getBindByUserId(userId);
+				if (bind==null) {
+					bind=new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(),
+							goldpayUser.getAccountNum(), goldpayToken);
+				}else{
+					bind.setGoldpayId(goldpayUser.getId());
+					bind.setGoldpayName(goldpayUser.getUsername());
+					bind.setGoldpayAcount(goldpayUser.getAccountNum());
+					bind.setToken(goldpayToken);
+				}
+				bindDAO.updateBind(bind);
 				return ServerConsts.RET_CODE_SUCCESS;
 			}
 		}
