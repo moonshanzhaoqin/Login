@@ -232,8 +232,10 @@ public class UserManagerImpl implements UserManager {
 		return list;
 	}
 
+
 	@SuppressWarnings("unchecked")
-	private List<Currency> getCurrentCurrency() {
+	@Override
+	public List<Currency> getCurrentCurrency() {
 		List<Currency> currencies;
 		if (redisDAO.getValueByKey("getCurrentCurrency") == null) {
 			logger.info("getCurrentCurrency from db");
@@ -506,5 +508,25 @@ public class UserManagerImpl implements UserManager {
 				return ServerConsts.RET_CODE_SUCCESS;
 			}
 		}
+	}
+
+	@Override
+	public boolean verifyCurrency(String currency) {
+		
+		List<Currency> currencyList = getCurrentCurrency();
+
+		int i =0;
+		
+		for (Currency currency2 : currencyList) {
+			if(currency2.getCurrency().equals(currency)){
+				i=1;
+			}
+		}
+		
+		if(i == 1 ){
+			return true;
+		}
+		return false;
+
 	}
 }

@@ -23,6 +23,7 @@ import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
+import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.TransactionNotification;
 import com.yuyutechnology.exchange.pojo.Transfer;
@@ -58,6 +59,8 @@ public class TransferManagerImpl implements TransferManager{
 	@Autowired
 	ExchangeRateManager exchangeRateManager;
 	@Autowired
+	UserManager userManager; 
+	@Autowired
 	PushManager pushManager;
 	@Autowired
 	SmsManager smsManager;
@@ -67,9 +70,16 @@ public class TransferManagerImpl implements TransferManager{
 	@Override
 	public HashMap<String, String> transferInitiate(int userId,String areaCode,String userPhone, String currency, 
 			BigDecimal amount, String transferComment,int noticeId) {
-		
+	
 		HashMap<String, String> map = new HashMap<String, String>();
 		
+		if(!userManager.verifyCurrency(currency)){
+			logger.warn("This currency is not a tradable currency");
+			map.put("retCode", ServerConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
+			map.put("msg", "This currency is not a tradable currency");
+			return map;
+		}
+
 		User payer = userDAO.getUser(userId);
 		if(payer ==null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
 			logger.warn("The user does not exist or the account is blocked");

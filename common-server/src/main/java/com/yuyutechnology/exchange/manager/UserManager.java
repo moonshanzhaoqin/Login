@@ -226,4 +226,7 @@ public interface UserManager {
 	 */
 	public String deleteFriend(Integer userId, String areaCode, String phone);
 
+	List<Currency> getCurrentCurrency();
+	
+	public boolean verifyCurrency(String currency);
 }
