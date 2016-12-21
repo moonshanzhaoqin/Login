@@ -145,6 +145,8 @@ public class ServerConsts {
 	public static final String TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH = "03015";
 
 	public static final String TRANSFER_PHONE_NUMBER_IS_EMPTY = "03016";
+	
+	public static final String TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT ="03016";
 	// 用户类型
 	/**
 	 * 普通用户
