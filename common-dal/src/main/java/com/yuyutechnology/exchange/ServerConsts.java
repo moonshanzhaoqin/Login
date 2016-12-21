@@ -106,6 +106,8 @@ public class ServerConsts {
 	public static final String EXCHANGE_THE_SAME_CURRENCY_CAN_NOT_BE_EXCHANGED = "02004";
 	
 	public static final String EXCHANGE_ENTER_THE_AMOUNT_OF_VIOLATION = "02005";
+	
+	public static final String EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY ="02006";
 
 	// 交易03
 	/**
@@ -149,7 +151,9 @@ public class ServerConsts {
 
 	public static final String TRANSFER_PHONE_NUMBER_IS_EMPTY = "03016";
 	
-	public static final String TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT ="03016";
+	public static final String TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT ="03017";
+	
+	public static final String TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY ="03018";
 	// 用户类型
 	/**
 	 * 普通用户

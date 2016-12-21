@@ -216,4 +216,7 @@ public interface UserManager {
 	 */
 	public boolean checkChangePhoneTime(Integer userId) throws ParseException;
 
+	List<Currency> getCurrentCurrency();
+	
+	public boolean verifyCurrency(String currency);
 }
