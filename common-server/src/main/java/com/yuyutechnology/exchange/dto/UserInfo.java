@@ -2,19 +2,16 @@ package com.yuyutechnology.exchange.dto;
 
 public class UserInfo {
 
-
 	@Override
 	public String toString() {
-		return "UserInfo [areaCode=" + areaCode + ", phone=" + phone + ", name=" + name + ", goldpayId=" + goldpayId
-				+ ", goldpayName=" + goldpayName + ", goldpayAcount=" + goldpayAcount + ", isPayPwd=" + isPayPwd + "]";
+		return "UserInfo [areaCode=" + areaCode + ", phone=" + phone + ", name=" + name + ", goldpayName=" + goldpayName
+				+ ", isPayPwd=" + isPayPwd + "]";
 	}
 
 	private String areaCode;
 	private String phone;
 	private String name;
-	private String goldpayId;
 	private String goldpayName;
-	private String goldpayAcount;
 	private boolean isPayPwd;
 
 	public String getAreaCode() {
@@ -41,28 +38,12 @@ public class UserInfo {
 		this.name = name;
 	}
 
-	public String getGoldpayId() {
-		return goldpayId;
-	}
-
-	public void setGoldpayId(String goldpayId) {
-		this.goldpayId = goldpayId;
-	}
-
 	public String getGoldpayName() {
 		return goldpayName;
 	}
 
 	public void setGoldpayName(String goldpayName) {
 		this.goldpayName = goldpayName;
-	}
-
-	public String getGoldpayAcount() {
-		return goldpayAcount;
-	}
-
-	public void setGoldpayAcount(String goldpayAcount) {
-		this.goldpayAcount = goldpayAcount;
 	}
 
 	public boolean isPayPwd() {
