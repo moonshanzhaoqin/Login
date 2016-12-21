@@ -39,7 +39,7 @@ public class MailManager {
 	@PostConstruct
 	@Scheduled(cron = "0 1/10 * * * ?")
 	public void init() throws IOException {
-		sendMailURL = ResourceUtils.getBundleValue("sendMail.Url");
+		sendMailURL = ResourceUtils.getBundleValue("sendMail.url");
 		contactSubject = ResourceUtils.getBundleValue("contact.subject");
 		contactFrom = ResourceUtils.getBundleValue("contact.from");
 		contactTo = ResourceUtils.getBundleValue("contact.to");
