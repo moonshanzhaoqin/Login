@@ -601,7 +601,13 @@ public class LoggedInUserController {
 		return rep;
 	}
 
-	// TODO deleteFriend 删除好友
+	/**
+	 * deleteFriend 删除好友
+	 * 
+	 * @param token
+	 * @param deleteFriendRequest
+	 * @return
+	 */
 	@ResponseBody
 	@ApiOperation(value = "删除好友", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/deleteFriend", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
@@ -615,7 +621,8 @@ public class LoggedInUserController {
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
-		    String retCode=userManager.deleteFriend(sessionData.getUserId(),deleteFriendRequest.getAreaCode(),deleteFriendRequest.getPhone());
+			String retCode = userManager.deleteFriend(sessionData.getUserId(), deleteFriendRequest.getAreaCode(),
+					deleteFriendRequest.getPhone());
 			switch (retCode) {
 			case ServerConsts.RET_CODE_SUCCESS:
 				logger.info("********Operation succeeded********");

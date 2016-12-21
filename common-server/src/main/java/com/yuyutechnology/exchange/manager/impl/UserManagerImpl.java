@@ -3,22 +3,16 @@ package com.yuyutechnology.exchange.manager.impl;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.annotation.PostConstruct;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.InitBinder;
-
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.AppVersionDAO;
 import com.yuyutechnology.exchange.dao.BindDAO;
@@ -30,12 +24,11 @@ import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
-import com.yuyutechnology.exchange.dto.CurrencyInfo;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.goldpay.GoldpayManager;
 import com.yuyutechnology.exchange.goldpay.GoldpayUser;
+import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.UserManager;
-import com.yuyutechnology.exchange.pojo.AppVersion;
 import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Friend;
@@ -45,7 +38,6 @@ import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.sms.SmsManager;
-import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.LanguageUtils;
 import com.yuyutechnology.exchange.utils.MathUtils;
 import com.yuyutechnology.exchange.utils.PasswordUtils;
@@ -81,6 +73,8 @@ public class UserManagerImpl implements UserManager {
 	GoldpayManager goldpayManager;
 	@Autowired
 	PushManager pushManager;
+	@Autowired
+	CommonManager commonManager;
 
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
@@ -194,49 +188,12 @@ public class UserManagerImpl implements UserManager {
 	 */
 	private void createWallets4NewUser(Integer userId) {
 		logger.info("New wallet for newly registered users==>");
-		List<Currency> currencies = getCurrentCurrency();
+		List<Currency> currencies = commonManager.getCurrentCurrency();
 		for (Currency currency : currencies) {
 			walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date()));
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<CurrencyInfo> getCurrency() {
-		List<Currency> currencies;
-		if (redisDAO.getValueByKey("getCurrency") == null) {
-			logger.info("getCurrency from db");
-			currencies = currencyDAO.getCurrencys();
-			redisDAO.saveData("getCurrency", currencies, 30);
-		} else {
-			logger.info("getCurrency from redis:");
-			currencies = (List<Currency>) JsonBinder.getInstance().fromJsonToList(redisDAO.getValueByKey("getCurrency"),
-					Currency.class);
-		}
-		List<CurrencyInfo> list = new ArrayList<>();
-		for (Currency currency : currencies) {
-			list.add(new CurrencyInfo(currency.getCurrency(), currency.getNameEn(), currency.getNameCn(),
-					currency.getNameHk(), currency.getCurrencyStatus()));
-		}
-		// logger.info("currency:{}",list);
-		return list;
-	}
-
-	@SuppressWarnings("unchecked")
-	private List<Currency> getCurrentCurrency() {
-		List<Currency> currencies;
-		if (redisDAO.getValueByKey("getCurrentCurrency") == null) {
-			logger.info("getCurrentCurrency from db");
-			currencies = currencyDAO.getCurrentCurrency();
-			logger.info("currency={}", currencies);
-			redisDAO.saveData("getCurrentCurrency", currencies, 30);
-		} else {
-			logger.info("getCurrentCurrency from redis:");
-			currencies = (List<Currency>) JsonBinder.getInstance()
-					.fromJsonToList(redisDAO.getValueByKey("getCurrentCurrency"), Currency.class);
-		}
-		return currencies;
-	}
 
 	@Override
 	public List<Friend> getFriends(Integer userId) {
@@ -422,7 +379,7 @@ public class UserManagerImpl implements UserManager {
 		}
 		// logger.info("mapwallet",mapwallet);
 		// 获取当前可用的货币
-		List<Currency> currencies = getCurrentCurrency();
+		List<Currency> currencies = commonManager.getCurrentCurrency();
 		for (Currency currency : currencies) {
 			// logger.info("{}",currency.getCurrency());
 			if (mapwallet.get(currency.getCurrency()) == null) {
