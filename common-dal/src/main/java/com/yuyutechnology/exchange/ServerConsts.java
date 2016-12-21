@@ -58,9 +58,9 @@ public class ServerConsts {
 	 */
 	public static final String PHONE_AND_PASSWORD_NOT_MATCH = "01007";
 	/**
-	 * 不能添加自己为好友
+	 * 手机号为自己
 	 */
-	public static final String ADD_FRIEND_OWEN = "01008";
+	public static final String PHONE_ID_YOUR_OWEN = "01008";
 	/**
 	 * 账号冻结
 	 */
@@ -89,6 +89,12 @@ public class ServerConsts {
 	 * 换绑手机时间未到
 	 */
 	public static final String TIME_NOT_ARRIVED = "01015";
+	/**
+	 * 该手机号不是好友
+	 */
+	public static final String PHONE_IS_NOT_FRIEND = "01016";
+	
+	
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息
@@ -265,6 +271,7 @@ public class ServerConsts {
 	 * 币种状态——不可用
 	 */
 	public static final int CURRENCY_UNAVAILABLE = 0;
+	
 	
 	
 	

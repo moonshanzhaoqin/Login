@@ -36,4 +36,10 @@ public class FriendDAOImpl implements FriendDAO {
 		return null;
 	}
 
+	@Override
+	public void deleteFriend(Friend friend2) {
+		hibernateTemplate.delete(friend2);
+
+	}
+
 }
