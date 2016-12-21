@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.AppVersion;
@@ -54,6 +55,8 @@ public class UserController {
 	SessionManager sessionManager;
 	@Autowired
 	UserManager userManager;
+	@Autowired
+	CommonManager commonManager;
 
 	/**
 	 * forget password 忘记密码
@@ -393,7 +396,7 @@ public class UserController {
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
-			AppVersion appVersion = userManager.getAppVersion(appVersionRequest.getPlatformType(),
+			AppVersion appVersion = commonManager.getAppVersion(appVersionRequest.getPlatformType(),
 					appVersionRequest.getUpdateWay());
 			if (appVersion == null) {
 				logger.info(MessageConsts.RET_CODE_FAILUE);

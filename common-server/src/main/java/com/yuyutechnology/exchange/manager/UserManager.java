@@ -144,7 +144,6 @@ public interface UserManager {
 	 */
 	public void changePhone(Integer userId, String areaCode, String userPhone);
 
-	public AppVersion getAppVersion(String platformType, String updateWay);
 
 	public List<CurrencyInfo> getCurrency();
 
@@ -223,8 +222,4 @@ public interface UserManager {
 	 * @return
 	 */
 	public String deleteFriend(Integer userId, String areaCode, String phone);
-
-	List<Currency> getCurrentCurrency();
-
-	public boolean verifyCurrency(String currency);
 }

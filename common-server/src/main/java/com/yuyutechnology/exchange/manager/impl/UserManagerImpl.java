@@ -200,11 +200,6 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
-	@Override
-	public AppVersion getAppVersion(String platformType, String updateWay) {
-		return appVersionDAO.getAppVersionInfo(platformType, updateWay);
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CurrencyInfo> getCurrency() {
@@ -228,8 +223,7 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
-	public List<Currency> getCurrentCurrency() {
+	private List<Currency> getCurrentCurrency() {
 		List<Currency> currencies;
 		if (redisDAO.getValueByKey("getCurrentCurrency") == null) {
 			logger.info("getCurrentCurrency from db");
@@ -488,25 +482,5 @@ public class UserManagerImpl implements UserManager {
 				return ServerConsts.RET_CODE_SUCCESS;
 			}
 		}
-	}
-
-	@Override
-	public boolean verifyCurrency(String currency) {
-
-		List<Currency> currencyList = getCurrentCurrency();
-
-		int i = 0;
-
-		for (Currency currency2 : currencyList) {
-			if (currency2.getCurrency().equals(currency)) {
-				i = 1;
-			}
-		}
-
-		if (i == 1) {
-			return true;
-		}
-		return false;
-
 	}
 }

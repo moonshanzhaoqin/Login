@@ -21,6 +21,7 @@ import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
+import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
@@ -64,6 +65,8 @@ public class TransferManagerImpl implements TransferManager{
 	PushManager pushManager;
 	@Autowired
 	SmsManager smsManager;
+	@Autowired
+	CommonManager commonManager;
 	
 	public static Logger logger = LoggerFactory.getLogger(TransferManagerImpl.class);
 
@@ -73,7 +76,7 @@ public class TransferManagerImpl implements TransferManager{
 	
 		HashMap<String, String> map = new HashMap<String, String>();
 		
-		if(!userManager.verifyCurrency(currency)){
+		if(!commonManager.verifyCurrency(currency)){
 			logger.warn("This currency is not a tradable currency");
 			map.put("retCode", ServerConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
 			map.put("msg", "This currency is not a tradable currency");
