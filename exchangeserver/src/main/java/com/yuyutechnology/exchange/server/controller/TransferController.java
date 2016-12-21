@@ -117,6 +117,8 @@ public class TransferController {
 			UserInfo user = userManager.getUserInfo(sessionData.getUserId());
 			userManager.getPinCode(reqMsg.getTransferId(),user.getAreaCode(), user.getPhone());
 			rep.setMessage("Need to send pin code verification");
+		}else if(result.equals(ServerConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST)){
+			rep.setMessage("The transaction order does not exist");
 		}else{
 			rep.setMessage("The payment password is incorrect");
 		}
@@ -201,21 +203,6 @@ public class TransferController {
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		Respond2RequestResponse rep = new Respond2RequestResponse();
-//		String result = transferManager.transferInitiate(sessionData.getUserId(), reqMsg.getAreaCode(),
-//				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()), 
-//				null,reqMsg.getNoticeId());
-//		
-//		if(result.equals(ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT)){
-//			rep.setRetCode(ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-//			rep.setMessage(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-//		}else if(result.equals(ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT)){
-//			rep.setRetCode(ServerConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT);
-//			rep.setMessage(MessageConsts.TRANSFER_EXCEEDED_TRANSACTION_LIMIT);
-//		}else{
-//			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-//			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-//			rep.setTransferId(result);
-//		}
 		
 		//装张金额上限
 		if(reqMsg.getCurrency() != ServerConsts.CURRENCY_OF_GOLDPAY && reqMsg.getAmount() < 0.01){

@@ -134,17 +134,15 @@ public class TransferManagerImpl implements TransferManager{
 			logger.warn("The user does not exist or the account is blocked");
 			return ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED;
 		}
+		if(!PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())){
+			return ServerConsts.TRANSFER_PAYMENTPWD_INCORRECT;
+		}
 		Transfer transfer = transferDAO.getTransferByIdAndUserId(transferId,userId);
 		if(transfer == null){
 			logger.warn("The transaction order does not exist");
 			return ServerConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST;
 		}
 		
-		
-		if(!PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())){
-			return ServerConsts.TRANSFER_PAYMENTPWD_INCORRECT;
-		}
-
 		Currency standardCurrency = currencyDAO.getStandardCurrency();
 		
 		//总账大于设置安全基数，弹出需要短信验证框===============================================

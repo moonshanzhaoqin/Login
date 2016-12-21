@@ -75,6 +75,12 @@ public class ExchangeController {
 			rep.setMessage("The same currency can not be exchanged");
 			return rep;
 		}
+		if((reqMsg.getCurrencyOut().equals(ServerConsts.CURRENCY_OF_GOLDPAY) && reqMsg.getAmountOut()<1)
+				||(!reqMsg.getCurrencyOut().equals(ServerConsts.CURRENCY_OF_GOLDPAY) && reqMsg.getAmountOut()<0.01)){
+			rep.setRetCode(ServerConsts.EXCHANGE_ENTER_THE_AMOUNT_OF_VIOLATION);
+			rep.setMessage("Enter the amount of violation");
+			return rep;
+		}
 		
 		HashMap<String, String> result = exchangeManager.exchangeCalculation(sessionData.getUserId(), 
 				reqMsg.getCurrencyOut(), reqMsg.getCurrencyIn(), new BigDecimal(reqMsg.getAmountOut()));
