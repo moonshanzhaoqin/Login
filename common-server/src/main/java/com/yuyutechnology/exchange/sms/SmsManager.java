@@ -34,6 +34,7 @@ public class SmsManager {
 	private final String SMS_REPLACE_FROM = "[FROM]";
 	private final String SMS_REPLACE_CURRENCY = "[CURRENCY]";
 	private final String SMS_REPLACE_AMOUNT = "[AMOUNT]";
+	private final String SMS_REPLACE_LINK = "[LINK]";
 
 	// en
 	private String phoneVerify_en = "";
@@ -52,6 +53,7 @@ public class SmsManager {
 	private String verifyTime = "";
 	private String appId = "";
 	private String sendURL = "";
+	private String downloadLink = "";
 
 	@PostConstruct
 	@Scheduled(cron = "0 1/10 * * * ?")
@@ -59,6 +61,7 @@ public class SmsManager {
 		appId = ResourceUtils.getBundleValue("appId");
 		sendURL = ResourceUtils.getBundleValue("sendSMS.serverUrl");
 		verifyTime = ResourceUtils.getBundleValue("verify.time");
+		downloadLink = ResourceUtils.getBundleValue("download.link");
 		// 加载模板
 		// 验证码
 		Resource resource = new ClassPathResource("sms/en_US/phoneVerify.template");
@@ -108,7 +111,8 @@ public class SmsManager {
 	public void sendSMS4Transfer(String areaCode, String userPhone, User user, String currency, BigDecimal amount) {
 		String transferContent = templateChoose("transfer", areaCode);
 		String content = transferContent.replace(SMS_REPLACE_FROM, user.getUserName())
-				.replace(SMS_REPLACE_CURRENCY, currency).replace(SMS_REPLACE_AMOUNT, amount.toString());
+				.replace(SMS_REPLACE_CURRENCY, currency).replace(SMS_REPLACE_AMOUNT, amount.toString())
+				.replace(SMS_REPLACE_LINK, downloadLink);
 		sendSMS(areaCode + userPhone, content);
 	}
 

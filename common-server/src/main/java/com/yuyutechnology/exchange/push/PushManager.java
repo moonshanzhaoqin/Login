@@ -154,8 +154,7 @@ public class PushManager {
 	public void push4TransferRuquest(User userFrom, User userTo, String currency, BigDecimal amount) {
 		String title = "转账请求";
 		String transferBody = templateChoose("transfer_request", userFrom.getPushTag());
-		String body = transferBody.replace(PUSH_REPLACE_TO, userTo.getUserName())
-				.replace(PUSH_REPLACE_CURRENCY, currency).replace(PUSH_REPLACE_AMOUNT, amount.toString());
+		String body = transferBody.replace(PUSH_REPLACE_TO, userTo.getUserName());
 		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body);
 	}
 
