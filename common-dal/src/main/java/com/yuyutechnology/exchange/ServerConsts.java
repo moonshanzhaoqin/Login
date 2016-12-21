@@ -58,9 +58,9 @@ public class ServerConsts {
 	 */
 	public static final String PHONE_AND_PASSWORD_NOT_MATCH = "01007";
 	/**
-	 * 不能添加自己为好友
+	 * 手机号为自己
 	 */
-	public static final String ADD_FRIEND_OWEN = "01008";
+	public static final String PHONE_ID_YOUR_OWEN = "01008";
 	/**
 	 * 账号冻结
 	 */
@@ -89,6 +89,12 @@ public class ServerConsts {
 	 * 换绑手机时间未到
 	 */
 	public static final String TIME_NOT_ARRIVED = "01015";
+	/**
+	 * 该手机号不是好友
+	 */
+	public static final String PHONE_IS_NOT_FRIEND = "01016";
+	
+	
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息
@@ -106,6 +112,8 @@ public class ServerConsts {
 	public static final String EXCHANGE_THE_SAME_CURRENCY_CAN_NOT_BE_EXCHANGED = "02004";
 	
 	public static final String EXCHANGE_ENTER_THE_AMOUNT_OF_VIOLATION = "02005";
+	
+	public static final String EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY ="02006";
 
 	// 交易03
 	/**
@@ -148,6 +156,10 @@ public class ServerConsts {
 	public static final String TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH = "03015";
 
 	public static final String TRANSFER_PHONE_NUMBER_IS_EMPTY = "03016";
+	
+	public static final String TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT ="03017";
+	
+	public static final String TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY ="03018";
 	// 用户类型
 	/**
 	 * 普通用户
@@ -259,6 +271,7 @@ public class ServerConsts {
 	 * 币种状态——不可用
 	 */
 	public static final int CURRENCY_UNAVAILABLE = 0;
+	
 	
 	
 	

@@ -1,5 +1,5 @@
 package com.yuyutechnology.exchange.server.controller.response;
 
-public class ContactUsResponse extends BaseResponse {
+public class DeleteFriendResponse extends BaseResponse {
 
 }

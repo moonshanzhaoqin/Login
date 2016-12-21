@@ -34,10 +34,6 @@ public class PushManager {
 		bindTag, unbindTag
 	}
 
-	private String appName = "";
-	private String pushURL = "";
-	private String day = "";
-
 	// 到账提醒
 	// en_US
 	private String transfer_en = "";
@@ -80,11 +76,6 @@ public class PushManager {
 	@Scheduled(cron = "0 1/10 * * * ?")
 	public void init() throws IOException {
 		logger.info("==========init PushManager==========");
-		appName = ResourceUtils.getBundleValue("appName");
-		pushURL = ResourceUtils.getBundleValue("push.url");
-
-		day = ResourceUtils.getBundleValue("refund.time");
-
 		// 加载模板
 		// 到账提醒
 		Resource resource = new ClassPathResource("push/en_US/transfer.template");
@@ -154,8 +145,7 @@ public class PushManager {
 	public void push4TransferRuquest(User userFrom, User userTo, String currency, BigDecimal amount) {
 		String title = "转账请求";
 		String transferBody = templateChoose("transfer_request", userFrom.getPushTag());
-		String body = transferBody.replace(PUSH_REPLACE_TO, userTo.getUserName())
-				.replace(PUSH_REPLACE_CURRENCY, currency).replace(PUSH_REPLACE_AMOUNT, amount.toString());
+		String body = transferBody.replace(PUSH_REPLACE_TO, userTo.getUserName());
 		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body);
 	}
 
@@ -171,7 +161,8 @@ public class PushManager {
 		String title = "退款通知";
 		String refundBody = templateChoose("refund", userFrom.getPushTag());
 		String body = refundBody.replace(PUSH_REPLACE_TO, areaCode + phone).replace(PUSH_REPLACE_CURRENCY, currency)
-				.replace(PUSH_REPLACE_AMOUNT, amount.toString()).replace(PUSH_REPLACE_DAY, day);
+				.replace(PUSH_REPLACE_AMOUNT, amount.toString())
+				.replace(PUSH_REPLACE_DAY, ResourceUtils.getBundleValue("refund.time"));
 		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body);
 	}
 
@@ -278,37 +269,37 @@ public class PushManager {
 
 	@Async
 	private void pushToCustom(Integer userId, String deviceID, String title, String body) {
-		if(StringUtils.isBlank(deviceID)){
+		if (StringUtils.isBlank(deviceID)) {
 			return;
 		}
 		PushToCustom pushToCustom = new PushToCustom();
-		pushToCustom.setAppName(appName);
+		pushToCustom.setAppName(ResourceUtils.getBundleValue("appName"));
 		pushToCustom.setBody(body);
 		pushToCustom.setTitle(title);
 		pushToCustom.setDeviceID(deviceID);
 		pushToCustom.setUserId(userId.toString());
 		String param = JsonBinder.getInstance().toJson(pushToCustom);
 		logger.info("pushRequest : {}", param);
-		HttpTookit.sendPost(pushURL+"/push_custom.do", param);
+		HttpTookit.sendPost(ResourceUtils.getBundleValue("push.url") + "/push_custom.do", param);
 	}
 
 	@Async
 	private void tag(Func func, String deviceID, String pushTag) {
-		if(StringUtils.isBlank(deviceID)){
+		if (StringUtils.isBlank(deviceID)) {
 			return;
 		}
 		TagRequest tagRequest = new TagRequest();
-		tagRequest.setAppName(appName);
+		tagRequest.setAppName(ResourceUtils.getBundleValue("appName"));
 		tagRequest.setDeviceIds(deviceID);
 		tagRequest.setTagName(pushTag);
 		String param = JsonBinder.getInstance().toJson(tagRequest);
 		logger.info("TagRequest : {}", param);
 		switch (func) {
 		case bindTag:
-			HttpTookit.sendPost(pushURL+"/bindTag.do", param);
+			HttpTookit.sendPost(ResourceUtils.getBundleValue("push.url") + "/bindTag.do", param);
 			break;
 		case unbindTag:
-			HttpTookit.sendPost(pushURL+"/unbindTag.do", param);
+			HttpTookit.sendPost(ResourceUtils.getBundleValue("push.url") + "/unbindTag.do", param);
 			break;
 		default:
 			break;

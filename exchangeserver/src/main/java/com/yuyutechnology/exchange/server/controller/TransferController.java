@@ -74,15 +74,16 @@ public class TransferController {
 			return rep;
 		}
 		//装张金额上限
-		if(reqMsg.getCurrency() != ServerConsts.CURRENCY_OF_GOLDPAY && reqMsg.getAmount() < 0.01){
+		if((reqMsg.getCurrency() != ServerConsts.CURRENCY_OF_GOLDPAY && reqMsg.getAmount() < 0.01)
+				||(reqMsg.getCurrency() == ServerConsts.CURRENCY_OF_GOLDPAY && reqMsg.getAmount() < 1)){
 			logger.warn("The input amount is less than the minimum amount");
 			rep.setRetCode(ServerConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The input amount is less than the minimum amount");
 			return rep;
-		}else if (reqMsg.getCurrency() == ServerConsts.CURRENCY_OF_GOLDPAY && reqMsg.getAmount() < 1){
-			logger.warn("The input amount is less than the minimum amount");
-			rep.setRetCode(ServerConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
-			rep.setMessage("The input amount is less than the minimum amount");
+		}else if(reqMsg.getAmount() >= 1000000000){
+			logger.warn("Fill out the allowable amount");
+			rep.setRetCode(ServerConsts.TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT);
+			rep.setMessage("Fill out the allowable amount");
 			return rep;
 		}
 		

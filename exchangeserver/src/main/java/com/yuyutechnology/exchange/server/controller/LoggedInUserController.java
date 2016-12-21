@@ -32,6 +32,7 @@ import com.yuyutechnology.exchange.server.controller.request.ChangePhoneRequest;
 import com.yuyutechnology.exchange.server.controller.request.CheckPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.CheckPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
+import com.yuyutechnology.exchange.server.controller.request.DeleteFriendRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByOldRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByPINRequest;
@@ -44,6 +45,7 @@ import com.yuyutechnology.exchange.server.controller.response.ChangePhoneRespons
 import com.yuyutechnology.exchange.server.controller.response.CheckPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.CheckPayPwdResponse;
 import com.yuyutechnology.exchange.server.controller.response.ContactUsResponse;
+import com.yuyutechnology.exchange.server.controller.response.DeleteFriendResponse;
 import com.yuyutechnology.exchange.server.controller.response.FriendsListResponse;
 import com.yuyutechnology.exchange.server.controller.response.LogoutResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPasswordResponse;
@@ -106,10 +108,10 @@ public class LoggedInUserController {
 				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
 				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
 				break;
-			case ServerConsts.ADD_FRIEND_OWEN:
-				logger.info(MessageConsts.ADD_FRIEND_OWEN);
-				rep.setRetCode(ServerConsts.ADD_FRIEND_OWEN);
-				rep.setMessage(MessageConsts.ADD_FRIEND_OWEN);
+			case ServerConsts.PHONE_ID_YOUR_OWEN:
+				logger.info(MessageConsts.PHONE_ID_YOUR_OWEN);
+				rep.setRetCode(ServerConsts.PHONE_ID_YOUR_OWEN);
+				rep.setMessage(MessageConsts.PHONE_ID_YOUR_OWEN);
 				break;
 			case ServerConsts.FRIEND_HAS_ADDED:
 				logger.info(MessageConsts.FRIEND_HAS_ADDED);
@@ -176,7 +178,7 @@ public class LoggedInUserController {
 	 * @param token
 	 * @param changePhoneRequest
 	 * @return
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	@ResponseBody
 	@ApiOperation(value = "换绑手机", httpMethod = "POST", notes = "")
@@ -216,7 +218,7 @@ public class LoggedInUserController {
 					rep.setRetCode(ServerConsts.PASSWORD_NOT_MATCH);
 					rep.setMessage(MessageConsts.PASSWORD_NOT_MATCH);
 				}
-			}else {
+			} else {
 				logger.info(MessageConsts.TIME_NOT_ARRIVED);
 				rep.setRetCode(ServerConsts.TIME_NOT_ARRIVED);
 				rep.setMessage(MessageConsts.TIME_NOT_ARRIVED);
@@ -572,7 +574,13 @@ public class LoggedInUserController {
 		return rep;
 	}
 
-	// TODO contactUs 联系我们
+	/**
+	 * contactUs 联系我们
+	 * 
+	 * @param token
+	 * @param contactUsRequest
+	 * @return
+	 */
 	@ResponseBody
 	@ApiOperation(value = "联系我们", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/contactUs", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
@@ -589,6 +597,52 @@ public class LoggedInUserController {
 			logger.info("********Operation succeeded********");
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		}
+		return rep;
+	}
+
+	// TODO deleteFriend 删除好友
+	@ResponseBody
+	@ApiOperation(value = "删除好友", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/deleteFriend", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public DeleteFriendResponse deleteFriend(@PathVariable String token,
+			@RequestBody DeleteFriendRequest deleteFriendRequest) {
+		logger.info("========deleteFriend : {}============", token);
+		DeleteFriendResponse rep = new DeleteFriendResponse();
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		if (deleteFriendRequest.isEmpty()) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+		} else {
+		    String retCode=userManager.deleteFriend(sessionData.getUserId(),deleteFriendRequest.getAreaCode(),deleteFriendRequest.getPhone());
+			switch (retCode) {
+			case ServerConsts.RET_CODE_SUCCESS:
+				logger.info("********Operation succeeded********");
+				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+				break;
+			case ServerConsts.PHONE_NOT_EXIST:
+				logger.info(MessageConsts.PHONE_NOT_EXIST);
+				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
+				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
+				break;
+			case ServerConsts.PHONE_ID_YOUR_OWEN:
+				logger.info(MessageConsts.PHONE_ID_YOUR_OWEN);
+				rep.setRetCode(ServerConsts.PHONE_ID_YOUR_OWEN);
+				rep.setMessage(MessageConsts.PHONE_ID_YOUR_OWEN);
+				break;
+			case ServerConsts.PHONE_IS_NOT_FRIEND:
+				logger.info(MessageConsts.PHONE_IS_NOT_FRIEND);
+				rep.setRetCode(ServerConsts.PHONE_IS_NOT_FRIEND);
+				rep.setMessage(MessageConsts.PHONE_IS_NOT_FRIEND);
+				break;
+			default:
+				logger.info(MessageConsts.RET_CODE_FAILUE);
+				rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
+				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+				break;
+			}
 		}
 		return rep;
 	}

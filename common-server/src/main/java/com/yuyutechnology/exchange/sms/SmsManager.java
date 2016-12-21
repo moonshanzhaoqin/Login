@@ -17,7 +17,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.utils.*;
 
@@ -34,6 +33,7 @@ public class SmsManager {
 	private final String SMS_REPLACE_FROM = "[FROM]";
 	private final String SMS_REPLACE_CURRENCY = "[CURRENCY]";
 	private final String SMS_REPLACE_AMOUNT = "[AMOUNT]";
+	private final String SMS_REPLACE_LINK = "[LINK]";
 
 	// en
 	private String phoneVerify_en = "";
@@ -49,16 +49,9 @@ public class SmsManager {
 	// zh_HK
 	private String transfer_HK = "";
 
-	private String verifyTime = "";
-	private String appId = "";
-	private String sendURL = "";
-
 	@PostConstruct
 	@Scheduled(cron = "0 1/10 * * * ?")
 	public void init() throws IOException {
-		appId = ResourceUtils.getBundleValue("appId");
-		sendURL = ResourceUtils.getBundleValue("sendSMS.serverUrl");
-		verifyTime = ResourceUtils.getBundleValue("verify.time");
 		// 加载模板
 		// 验证码
 		Resource resource = new ClassPathResource("sms/en_US/phoneVerify.template");
@@ -91,7 +84,8 @@ public class SmsManager {
 	@Async
 	public void sendSMS4PhoneVerify(String areaCode, String userPhone, String code) {
 		String phoneVerifyContent = templateChoose("phoneVerify", areaCode);
-		String content = phoneVerifyContent.replace(SMS_REPLACE_PIN, code).replace(SMS_REPLACE_TIME, verifyTime);
+		String content = phoneVerifyContent.replace(SMS_REPLACE_PIN, code).replace(SMS_REPLACE_TIME,
+				ResourceUtils.getBundleValue("verify.time"));
 		sendSMS(areaCode + userPhone, content);
 	}
 
@@ -108,7 +102,8 @@ public class SmsManager {
 	public void sendSMS4Transfer(String areaCode, String userPhone, User user, String currency, BigDecimal amount) {
 		String transferContent = templateChoose("transfer", areaCode);
 		String content = transferContent.replace(SMS_REPLACE_FROM, user.getUserName())
-				.replace(SMS_REPLACE_CURRENCY, currency).replace(SMS_REPLACE_AMOUNT, amount.toString());
+				.replace(SMS_REPLACE_CURRENCY, currency).replace(SMS_REPLACE_AMOUNT, amount.toString())
+				.replace(SMS_REPLACE_LINK, ResourceUtils.getBundleValue("download.link"));
 		sendSMS(areaCode + userPhone, content);
 	}
 
@@ -151,10 +146,10 @@ public class SmsManager {
 		SendMessageRequest sendMessageRequest = new SendMessageRequest();
 		sendMessageRequest.setTo(phoneNum);
 		sendMessageRequest.setContent(Content);
-		sendMessageRequest.setAppId(appId);
+		sendMessageRequest.setAppId(ResourceUtils.getBundleValue("appId"));
 		String param = JsonBinder.getInstance().toJson(sendMessageRequest);
 		logger.info("sendMessageRequest : {}", param);
-		HttpTookit.sendPost(sendURL, param);
+		HttpTookit.sendPost(ResourceUtils.getBundleValue("sendSMS.serverUrl"), param);
 	}
 
 }

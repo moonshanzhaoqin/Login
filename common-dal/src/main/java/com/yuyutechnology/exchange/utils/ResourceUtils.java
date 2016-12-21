@@ -12,4 +12,8 @@ public class ResourceUtils {
 		ResourceBundle resource = ResourceBundle.getBundle(filename);
 		return resource.getString(key);
 	}
+	
+	public static void clearCache() {
+		ResourceBundle.clearCache();
+	}
 }

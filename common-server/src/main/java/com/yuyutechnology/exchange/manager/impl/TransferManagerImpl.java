@@ -21,8 +21,10 @@ import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
+import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
+import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.TransactionNotification;
 import com.yuyutechnology.exchange.pojo.Transfer;
@@ -33,6 +35,7 @@ import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.sms.SmsManager;
 import com.yuyutechnology.exchange.utils.DateFormatUtils;
 import com.yuyutechnology.exchange.utils.PasswordUtils;
+import com.yuyutechnology.exchange.utils.ResourceUtils;
 
 @Service
 public class TransferManagerImpl implements TransferManager{
@@ -57,18 +60,29 @@ public class TransferManagerImpl implements TransferManager{
 	@Autowired
 	ExchangeRateManager exchangeRateManager;
 	@Autowired
+	UserManager userManager; 
+	@Autowired
 	PushManager pushManager;
 	@Autowired
 	SmsManager smsManager;
+	@Autowired
+	CommonManager commonManager;
 	
 	public static Logger logger = LoggerFactory.getLogger(TransferManagerImpl.class);
 
 	@Override
 	public HashMap<String, String> transferInitiate(int userId,String areaCode,String userPhone, String currency, 
 			BigDecimal amount, String transferComment,int noticeId) {
-		
+	
 		HashMap<String, String> map = new HashMap<String, String>();
 		
+		if(!commonManager.verifyCurrency(currency)){
+			logger.warn("This currency is not a tradable currency");
+			map.put("retCode", ServerConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
+			map.put("msg", "This currency is not a tradable currency");
+			return map;
+		}
+
 		User payer = userDAO.getUser(userId);
 		if(payer ==null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
 			logger.warn("The user does not exist or the account is blocked");
@@ -249,7 +263,7 @@ public class TransferManagerImpl implements TransferManager{
 			//推送到账通知
 
 			User payee = userDAO.getUser(transfer.getUserTo());
-//			pushManager.push4Transfer(payer, payee, transfer.getCurrency(), transfer.getTransferAmount());
+			pushManager.push4Transfer(payer, payee, transfer.getCurrency(), transfer.getTransferAmount());
 			
 		}
 		//更改Transfer状态
@@ -305,8 +319,8 @@ public class TransferManagerImpl implements TransferManager{
 		
 		//发送推送
 		User payee = userDAO.getUser(transfer.getUserFrom());
-//		pushManager.push4Refund(payee, payee.getAreaCode(),transfer.getAreaCode(),
-//				transfer.getPhone(), transfer.getTransferAmount());
+		pushManager.push4Refund(payee, payee.getAreaCode(),transfer.getAreaCode(),
+				transfer.getPhone(), transfer.getTransferAmount());
 		
 	}
 	
@@ -321,7 +335,7 @@ public class TransferManagerImpl implements TransferManager{
 		for (Unregistered unregistered : list) {
 			//:TODO
 			//判断是否超过期限
-			long deadline = 15*24*60*60*1000;
+			long deadline = (new Integer(ResourceUtils.getBundleValue("refund.time")))*24*60*60*1000;
 			if(new Date().getTime() - unregistered.getCreateTime().getTime() >= deadline){
 				systemRefund(unregistered);
 			} 
@@ -348,7 +362,7 @@ public class TransferManagerImpl implements TransferManager{
 			
 			//推送请求付款
 			User payee = userDAO.getUser(userId);
-//			pushManager.push4TransferRuquest(payee, payer, currency, amount);
+			pushManager.push4TransferRuquest(payee, payer, currency, amount);
 			
 			
 			return ServerConsts.RET_CODE_SUCCESS;

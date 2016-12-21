@@ -19,4 +19,6 @@ public interface FriendDAO {
 
 	public Friend getFriendByUserIdAndFrindId(Integer userId, Integer friendId);
 
+	public void deleteFriend(Friend friend2);
+
 }

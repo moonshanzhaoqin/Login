@@ -19,8 +19,10 @@ import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.dto.WalletInfo;
+import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
+import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Exchange;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.utils.DateFormatUtils;
@@ -38,9 +40,12 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	ExchangeDAO exchangeDAO;
 	@Autowired
 	WalletSeqDAO walletSeqDAO;
-
 	@Autowired
 	ExchangeRateManager exchangeRateManager;
+	@Autowired
+	UserManager userManager;
+	@Autowired
+	CommonManager commonManager;
 
 	public static Logger logger = LoggerFactory.getLogger(ExchangeManagerImpl.class);
 
@@ -65,6 +70,13 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			BigDecimal amountOut) {
 
 		HashMap<String, String> map = new HashMap<String, String>();
+		
+		if(!commonManager.verifyCurrency(currencyOut) || !commonManager.verifyCurrency(currencyIn)){
+			logger.warn("This currency is not a tradable currency");
+			map.put("retCode", ServerConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
+			map.put("msg", "This currency is not a tradable currency");
+			return map;
+		}
 
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currencyOut);
 		if (wallet == null) {

@@ -82,11 +82,6 @@ public class UserManagerImpl implements UserManager {
 	@Autowired
 	PushManager pushManager;
 
-	private boolean qaSwitch = false;
-	private int verifyTime = 10;
-	private int changePhoneTime = 15;
-	private String verifyCode = "123456";
-
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
 		logger.info("Find friend==>");
@@ -94,7 +89,7 @@ public class UserManagerImpl implements UserManager {
 		if (friend == null) {
 			return ServerConsts.PHONE_NOT_EXIST;
 		} else if (friend.getUserId() == userId) {
-			return ServerConsts.ADD_FRIEND_OWEN;
+			return ServerConsts.PHONE_ID_YOUR_OWEN;
 		} else if (friendDAO.getFriendByUserIdAndFrindId(userId, friend.getUserId()) != null) {
 			return ServerConsts.FRIEND_HAS_ADDED;
 		} else {
@@ -145,8 +140,8 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public boolean checkChangePhoneTime(Integer userId) throws ParseException {
 		String timeString = redisDAO.getValueByKey("changephonetime" + userId);
-		if (timeString != null
-				&& (new Date().getTime() - simpleDateFormat.parse(timeString).getTime()) / (24 * 60 * 60 * 1000) < changePhoneTime) {
+		if (timeString != null && (new Date().getTime() - simpleDateFormat.parse(timeString).getTime())
+				/ (24 * 60 * 60 * 1000) < Integer.parseInt(ResourceUtils.getBundleValue("changePhone.time"))) {
 			return false;
 		}
 		return true;
@@ -205,11 +200,6 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
-	@Override
-	public AppVersion getAppVersion(String platformType, String updateWay) {
-		return appVersionDAO.getAppVersionInfo(platformType, updateWay);
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CurrencyInfo> getCurrency() {
@@ -258,28 +248,18 @@ public class UserManagerImpl implements UserManager {
 	public void getPinCode(String func, String areaCode, String userPhone) {
 		// 随机生成六位数
 		final String random;
-		if (qaSwitch) {
-			random = verifyCode;
+		if (Boolean.parseBoolean(ResourceUtils.getBundleValue("qa.switch"))) {
+			random = ResourceUtils.getBundleValue("verify.code");
 		} else {
 			random = MathUtils.randomFixedLengthStr(6);
 		}
 		logger.info("getPinCode : phone={}, pincode={}", areaCode + userPhone, random);
 		final String md5random = DigestUtils.md5Hex(random);
 		// 存入redis userPhone:md5random
-		redisDAO.saveData(func + areaCode + userPhone, md5random, verifyTime);
+		redisDAO.saveData(func + areaCode + userPhone, md5random,
+				Integer.parseInt(ResourceUtils.getBundleValue("verify.time")));
 		// 发送验证码
 		smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random);
-	}
-
-	@PostConstruct
-	@Scheduled(cron = "0 1/10 * * * ?")
-	@Override
-	public void getResource() {
-		logger.info("=========init UserManager=========");
-		qaSwitch = Boolean.parseBoolean(ResourceUtils.getBundleValue("qa.switch"));
-		verifyTime = Integer.parseInt(ResourceUtils.getBundleValue("verify.time"));
-		changePhoneTime = Integer.parseInt(ResourceUtils.getBundleValue("changePhone.time"));
-		verifyCode = ResourceUtils.getBundleValue("verify.code");
 	}
 
 	@Override
@@ -327,10 +307,6 @@ public class UserManagerImpl implements UserManager {
 		return userInfo;
 	}
 
-	public void init() {
-		getResource();
-	}
-
 	@Override
 	public void logout(Integer userId) {
 		User user = userDAO.getUser(userId);
@@ -353,6 +329,7 @@ public class UserManagerImpl implements UserManager {
 				PasswordUtils.encrypt(userPassword, passwordSalt), new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER,
 				ServerConsts.USER_AVAILABLE_OF_AVAILABLE, passwordSalt, LanguageUtils.standard(language)));
 		logger.info("Add user complete");
+		redisDAO.saveData("changephonetime" + userId, simpleDateFormat.format(new Date()), 300000000);
 		// 添加钱包信息
 		createWallets4NewUser(userId);
 		// 根据UNregistered 更新新用户钱包 将资金从系统帐户划给新用户
@@ -485,6 +462,25 @@ public class UserManagerImpl implements UserManager {
 			// 更改unregistered状态
 			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
 			unregisteredDAO.updateUnregistered(unregistered);
+		}
+	}
+
+	@Override
+	public String deleteFriend(Integer userId, String areaCode, String phone) {
+		logger.info("Find friend==>");
+		User friend = userDAO.getUserByUserPhone(areaCode, phone);
+		if (friend == null) {
+			return ServerConsts.PHONE_NOT_EXIST;
+		} else if (friend.getUserId() == userId) {
+			return ServerConsts.PHONE_ID_YOUR_OWEN;
+		} else {
+			Friend friend2 = friendDAO.getFriendByUserIdAndFrindId(userId, friend.getUserId());
+			if (friend2 == null) {
+				return ServerConsts.PHONE_IS_NOT_FRIEND;
+			} else {
+				friendDAO.deleteFriend(friend2);
+				return ServerConsts.RET_CODE_SUCCESS;
+			}
 		}
 	}
 }
