@@ -137,6 +137,8 @@ public class ServerConsts {
 	public static final String TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED = "03012";
 	
 	public static final String TRANSFER_TRANS_ORDERID_NOT_EXIST = "03013";
+	
+	public static final String TRANSFER_PHONE_NUMBER_IS_EMPTY = "03014";
 
 	// 用户类型
 	/**
