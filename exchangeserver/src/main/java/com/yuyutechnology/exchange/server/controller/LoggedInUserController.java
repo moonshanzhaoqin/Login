@@ -3,6 +3,7 @@
  */
 package com.yuyutechnology.exchange.server.controller;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -175,12 +176,13 @@ public class LoggedInUserController {
 	 * @param token
 	 * @param changePhoneRequest
 	 * @return
+	 * @throws ParseException 
 	 */
 	@ResponseBody
 	@ApiOperation(value = "换绑手机", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/changePhone", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public ChangePhoneResponse changePhone(@PathVariable String token,
-			@RequestBody ChangePhoneRequest changePhoneRequest) {
+			@RequestBody ChangePhoneRequest changePhoneRequest) throws ParseException {
 		logger.info("========changePhone : {}============", token);
 		ChangePhoneResponse rep = new ChangePhoneResponse();
 		if (changePhoneRequest.isEmpty()) {
