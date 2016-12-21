@@ -14,8 +14,6 @@ import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Friend;
 
 public interface UserManager {
-	public void getResource();
-
 	/**
 	 * 生成验证码并发送
 	 * 
@@ -221,7 +219,7 @@ public interface UserManager {
 	 * @param userId
 	 * @param areaCode
 	 * @param phone
-	 * @return 
+	 * @return
 	 */
 	public String deleteFriend(Integer userId, String areaCode, String phone);
 }

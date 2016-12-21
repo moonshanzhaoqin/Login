@@ -82,11 +82,6 @@ public class UserManagerImpl implements UserManager {
 	@Autowired
 	PushManager pushManager;
 
-	private boolean qaSwitch = false;
-	private int verifyTime = 10;
-	private int changePhoneTime = 15;
-	private String verifyCode = "123456";
-
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
 		logger.info("Find friend==>");
@@ -146,7 +141,7 @@ public class UserManagerImpl implements UserManager {
 	public boolean checkChangePhoneTime(Integer userId) throws ParseException {
 		String timeString = redisDAO.getValueByKey("changephonetime" + userId);
 		if (timeString != null && (new Date().getTime() - simpleDateFormat.parse(timeString).getTime())
-				/ (24 * 60 * 60 * 1000) < changePhoneTime) {
+				/ (24 * 60 * 60 * 1000) < Integer.parseInt(ResourceUtils.getBundleValue("changePhone.time"))) {
 			return false;
 		}
 		return true;
@@ -253,28 +248,18 @@ public class UserManagerImpl implements UserManager {
 	public void getPinCode(String func, String areaCode, String userPhone) {
 		// 随机生成六位数
 		final String random;
-		if (qaSwitch) {
-			random = verifyCode;
+		if (Boolean.parseBoolean(ResourceUtils.getBundleValue("qa.switch"))) {
+			random = ResourceUtils.getBundleValue("verify.code");
 		} else {
 			random = MathUtils.randomFixedLengthStr(6);
 		}
 		logger.info("getPinCode : phone={}, pincode={}", areaCode + userPhone, random);
 		final String md5random = DigestUtils.md5Hex(random);
 		// 存入redis userPhone:md5random
-		redisDAO.saveData(func + areaCode + userPhone, md5random, verifyTime);
+		redisDAO.saveData(func + areaCode + userPhone, md5random,
+				Integer.parseInt(ResourceUtils.getBundleValue("verify.time")));
 		// 发送验证码
 		smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random);
-	}
-
-	@PostConstruct
-	@Scheduled(cron = "0 1/10 * * * ?")
-	@Override
-	public void getResource() {
-		logger.info("=========init UserManager=========");
-		qaSwitch = Boolean.parseBoolean(ResourceUtils.getBundleValue("qa.switch"));
-		verifyTime = Integer.parseInt(ResourceUtils.getBundleValue("verify.time"));
-		changePhoneTime = Integer.parseInt(ResourceUtils.getBundleValue("changePhone.time"));
-		verifyCode = ResourceUtils.getBundleValue("verify.code");
 	}
 
 	@Override
@@ -320,10 +305,6 @@ public class UserManagerImpl implements UserManager {
 			logger.warn("Can not find the user!!!");
 		}
 		return userInfo;
-	}
-
-	public void init() {
-		getResource();
 	}
 
 	@Override
