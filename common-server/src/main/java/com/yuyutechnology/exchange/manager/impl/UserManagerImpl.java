@@ -294,9 +294,12 @@ public class UserManagerImpl implements UserManager {
 				userInfo.setGoldpayAcount(bind.getGoldpayAcount());
 				userInfo.setGoldpayId(bind.getGoldpayId());
 				userInfo.setGoldpayName(bind.getGoldpayName());
-				logger.info("UserInfo={}", userInfo.toString());
+			}else {
+				userInfo.setGoldpayAcount("");
+				userInfo.setGoldpayId("");
+				userInfo.setGoldpayName("");
 			}
-
+			logger.info("UserInfo={}", userInfo.toString());
 		} else {
 			logger.warn("Can not find the user!!!");
 		}

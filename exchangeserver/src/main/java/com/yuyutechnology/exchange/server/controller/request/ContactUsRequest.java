@@ -8,6 +8,38 @@ public class ContactUsRequest {
 	private String category;
 	private String enquiry;
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getEnquiry() {
+		return enquiry;
+	}
+
+	public void setEnquiry(String enquiry) {
+		this.enquiry = enquiry;
+	}
+
 	/**
 	 * 判断参数是否为空
 	 * 
