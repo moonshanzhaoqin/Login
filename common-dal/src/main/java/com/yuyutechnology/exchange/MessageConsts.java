@@ -79,6 +79,11 @@ public class MessageConsts {
 	 * 新旧密码相同
 	 */
 	public static final String NEW_PWD_EQUALS_OLD = "NEW_PWD_EQUALS_OLD";
+	/**
+	 * 换绑手机时间未到
+	 */
+	public static final String TIME_NOT_ARRIVED = "TIME_NOT_ARRIVED";
+
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息
@@ -92,7 +97,7 @@ public class MessageConsts {
 	 * 换算后金额低于最小限额
 	 */
 	public static final String EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT = "EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT";
-	
+
 	public static final String EXCHANGE_THE_SAME_CURRENCY_CAN_NOT_BE_EXCHANGED = "EXCHANGE_THE_SAME_CURRENCY_CAN_NOT_BE_EXCHANGED";
 	// 交易03
 	/**
@@ -109,7 +114,7 @@ public class MessageConsts {
 	public static final String TRANSFER_PAYMENTPWD_INCORRECT = "TRANSFER_PAYMENTPWD_INCORRECT";
 
 	public static final String TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF = "TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF";
-	
+
 	public static final String TRANSFER_HISTORY_NOT_ACQUIRED = "TRANSFER_HISTORY_NOT_ACQUIRED";
 
 	public static final String TRANSFER_NOTIFICATION_NOT_ACQUIRED = "TRANSFER_NOTIFICATION_NOT_ACQUIRED";

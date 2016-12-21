@@ -1,6 +1,8 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,7 +54,7 @@ import com.yuyutechnology.exchange.utils.ResourceUtils;
 @Service
 public class UserManagerImpl implements UserManager {
 	public static Logger logger = LoggerFactory.getLogger(UserManagerImpl.class);
-
+	public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	@Autowired
 	UserDAO userDAO;
 	@Autowired
@@ -82,21 +84,8 @@ public class UserManagerImpl implements UserManager {
 
 	private boolean qaSwitch = false;
 	private int verifyTime = 10;
+	private int changePhoneTime = 15;
 	private String verifyCode = "123456";
-
-	public void init() {
-		getResource();
-	}
-
-	@PostConstruct
-	@Scheduled(cron = "0 1/10 * * * ?")
-	@Override
-	public void getResource() {
-		logger.info("=========init UserManager=========");
-		qaSwitch = Boolean.parseBoolean(ResourceUtils.getBundleValue("qa.switch"));
-		verifyTime = Integer.parseInt(ResourceUtils.getBundleValue("verify.time"));
-		verifyCode = ResourceUtils.getBundleValue("verify.code");
-	}
 
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
@@ -128,10 +117,10 @@ public class UserManagerImpl implements UserManager {
 				return ServerConsts.GOLDPAY_PHONE_IS_NOT_EXIST;
 			} else {
 				Bind bind = bindDAO.getBindByUserId(userId);
-				if (bind==null) {
-					bind=new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(),
-							goldpayUser.getAccountNum(), goldpayToken);
-				}else{
+				if (bind == null) {
+					bind = new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(), goldpayUser.getAccountNum(),
+							goldpayToken);
+				} else {
 					bind.setGoldpayId(goldpayUser.getId());
 					bind.setGoldpayName(goldpayUser.getUsername());
 					bind.setGoldpayAcount(goldpayUser.getAccountNum());
@@ -150,6 +139,17 @@ public class UserManagerImpl implements UserManager {
 		user.setAreaCode(areaCode);
 		user.setUserPhone(userPhone);
 		userDAO.updateUser(user);
+		redisDAO.saveData("changephonetime" + userId, simpleDateFormat.format(new Date()), 300000000);
+	}
+
+	@Override
+	public boolean checkChangePhoneTime(Integer userId) throws ParseException {
+		String timeString = redisDAO.getValueByKey("changephonetime" + userId);
+		if (timeString != null
+				&& (new Date().getTime() - simpleDateFormat.parse(timeString).getTime()) / (24 * 60 * 60 * 1000) < changePhoneTime) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
@@ -187,6 +187,11 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
+	@Override
+	public void clearPinCode(String func, String areaCode, String userPhone) {
+		redisDAO.deleteKey(func + areaCode + userPhone);
+	}
+
 	/**
 	 * 为新用户新建钱包
 	 * 
@@ -203,22 +208,6 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public AppVersion getAppVersion(String platformType, String updateWay) {
 		return appVersionDAO.getAppVersionInfo(platformType, updateWay);
-	}
-
-	@SuppressWarnings("unchecked")
-	private List<Currency> getCurrentCurrency() {
-		List<Currency> currencies;
-		if (redisDAO.getValueByKey("getCurrentCurrency") == null) {
-			logger.info("getCurrentCurrency from db");
-			currencies = currencyDAO.getCurrentCurrency();
-			logger.info("currency={}", currencies);
-			redisDAO.saveData("getCurrentCurrency", currencies, 30);
-		} else {
-			logger.info("getCurrentCurrency from redis:");
-			currencies = (List<Currency>) JsonBinder.getInstance()
-					.fromJsonToList(redisDAO.getValueByKey("getCurrentCurrency"), Currency.class);
-		}
-		return currencies;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -243,6 +232,22 @@ public class UserManagerImpl implements UserManager {
 		return list;
 	}
 
+	@SuppressWarnings("unchecked")
+	private List<Currency> getCurrentCurrency() {
+		List<Currency> currencies;
+		if (redisDAO.getValueByKey("getCurrentCurrency") == null) {
+			logger.info("getCurrentCurrency from db");
+			currencies = currencyDAO.getCurrentCurrency();
+			logger.info("currency={}", currencies);
+			redisDAO.saveData("getCurrentCurrency", currencies, 30);
+		} else {
+			logger.info("getCurrentCurrency from redis:");
+			currencies = (List<Currency>) JsonBinder.getInstance()
+					.fromJsonToList(redisDAO.getValueByKey("getCurrentCurrency"), Currency.class);
+		}
+		return currencies;
+	}
+
 	@Override
 	public List<Friend> getFriends(Integer userId) {
 		List<Friend> friends = friendDAO.getFriendsByUserId(userId);
@@ -264,6 +269,17 @@ public class UserManagerImpl implements UserManager {
 		redisDAO.saveData(func + areaCode + userPhone, md5random, verifyTime);
 		// 发送验证码
 		smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random);
+	}
+
+	@PostConstruct
+	@Scheduled(cron = "0 1/10 * * * ?")
+	@Override
+	public void getResource() {
+		logger.info("=========init UserManager=========");
+		qaSwitch = Boolean.parseBoolean(ResourceUtils.getBundleValue("qa.switch"));
+		verifyTime = Integer.parseInt(ResourceUtils.getBundleValue("verify.time"));
+		changePhoneTime = Integer.parseInt(ResourceUtils.getBundleValue("changePhone.time"));
+		verifyCode = ResourceUtils.getBundleValue("verify.code");
 	}
 
 	@Override
@@ -303,7 +319,7 @@ public class UserManagerImpl implements UserManager {
 				userInfo.setGoldpayAcount(bind.getGoldpayAcount());
 				userInfo.setGoldpayId(bind.getGoldpayId());
 				userInfo.setGoldpayName(bind.getGoldpayName());
-			}else {
+			} else {
 				userInfo.setGoldpayAcount("");
 				userInfo.setGoldpayId("");
 				userInfo.setGoldpayName("");
@@ -313,6 +329,19 @@ public class UserManagerImpl implements UserManager {
 			logger.warn("Can not find the user!!!");
 		}
 		return userInfo;
+	}
+
+	public void init() {
+		getResource();
+	}
+
+	@Override
+	public void logout(Integer userId) {
+		User user = userDAO.getUser(userId);
+		logger.info("unbind Tag==>");
+		pushManager.unbindPushTag(user);
+		user.setPushId(null);
+		userDAO.updateUser(user);
 	}
 
 	@Override
@@ -335,7 +364,6 @@ public class UserManagerImpl implements UserManager {
 		return userId;
 	}
 
-	// TODO 逻辑需要改动
 	@Override
 	public void switchLanguage(Integer userId, String language) {
 		User user = userDAO.getUser(userId);
@@ -373,8 +401,6 @@ public class UserManagerImpl implements UserManager {
 		userDAO.updateUser(user);
 	}
 
-	// TODO 逻辑需要改动
-	@Override
 	public void updateUser(Integer userId, String loginIp, String pushId, String language) {
 		logger.info("Update user login information==>");
 		User user = userDAO.getUser(userId);
@@ -464,19 +490,5 @@ public class UserManagerImpl implements UserManager {
 			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
 			unregisteredDAO.updateUnregistered(unregistered);
 		}
-	}
-
-	@Override
-	public void logout(Integer userId) {
-		User user = userDAO.getUser(userId);
-		logger.info("unbind Tag==>");
-		pushManager.unbindPushTag(user);
-		user.setPushId(null);
-		userDAO.updateUser(user);
-	}
-
-	@Override
-	public void clearPinCode(String func, String areaCode, String userPhone) {
-		redisDAO.deleteKey(func + areaCode + userPhone);
 	}
 }

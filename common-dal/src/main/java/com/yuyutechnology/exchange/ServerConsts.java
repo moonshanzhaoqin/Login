@@ -85,7 +85,10 @@ public class ServerConsts {
 	 * 新旧密码相同
 	 */
 	public static final String NEW_PWD_EQUALS_OLD = "01014";
-	
+	/**
+	 * 换绑手机时间未到
+	 */
+	public static final String TIME_NOT_ARRIVED = "01015";
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息
@@ -235,10 +238,6 @@ public class ServerConsts {
 	 */
 	public static final String PIN_FUNC_REGISTER = "REGISTER";
 	/**
-	 * 短信验证码功能——登录
-	 */
-	// public static final String PIN_FUNC_LOGIN= "LOGIN";
-	/**
 	 * 短信验证码功能——忘记密码
 	 */
 	public static final String PIN_FUNC_FORGETPASSWORD = "FORGETPASSWORD";
@@ -258,6 +257,7 @@ public class ServerConsts {
 	 * 币种状态——不可用
 	 */
 	public static final int CURRENCY_UNAVAILABLE = 0;
+	
 	
 	
 	static {

@@ -1,5 +1,6 @@
 package com.yuyutechnology.exchange.manager;
 
+import java.text.ParseException;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -190,6 +191,11 @@ public interface UserManager {
 	 */
 	public void switchLanguage(Integer userId, String language);
 
+	/**
+	 * 退出账号处理相关数据
+	 * 
+	 * @param userId
+	 */
 	public void logout(Integer userId);
 
 	/**
@@ -200,5 +206,14 @@ public interface UserManager {
 	 * @param userPhone
 	 */
 	void clearPinCode(String func, String areaCode, String userPhone);
+
+	/**
+	 * 检查换绑手机的时间限制是否已到
+	 * 
+	 * @param userId
+	 * @return
+	 * @throws ParseException
+	 */
+	public boolean checkChangePhoneTime(Integer userId) throws ParseException;
 
 }
