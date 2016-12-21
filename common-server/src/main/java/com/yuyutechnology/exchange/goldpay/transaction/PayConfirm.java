@@ -1,8 +1,5 @@
 package com.yuyutechnology.exchange.goldpay.transaction;
 
-import org.codehaus.jackson.annotate.JsonPropertyOrder;
-
-@JsonPropertyOrder(alphabetic=true)
 public class PayConfirm {
 	
 	private int resultCode;
