@@ -20,15 +20,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.mail.MailManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Friend;
+import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.server.controller.dto.FriendInfo;
 import com.yuyutechnology.exchange.server.controller.request.AddFriendRequest;
 import com.yuyutechnology.exchange.server.controller.request.BindGoldpayRequest;
 import com.yuyutechnology.exchange.server.controller.request.ChangePhoneRequest;
 import com.yuyutechnology.exchange.server.controller.request.CheckPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.CheckPayPwdRequest;
+import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByOldRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByPINRequest;
@@ -40,6 +43,7 @@ import com.yuyutechnology.exchange.server.controller.response.BindGoldpayRespons
 import com.yuyutechnology.exchange.server.controller.response.ChangePhoneResponse;
 import com.yuyutechnology.exchange.server.controller.response.CheckPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.CheckPayPwdResponse;
+import com.yuyutechnology.exchange.server.controller.response.ContactUsResponse;
 import com.yuyutechnology.exchange.server.controller.response.FriendsListResponse;
 import com.yuyutechnology.exchange.server.controller.response.LogoutResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPasswordResponse;
@@ -51,6 +55,7 @@ import com.yuyutechnology.exchange.server.controller.response.SwitchLanguageResp
 import com.yuyutechnology.exchange.server.session.SessionData;
 import com.yuyutechnology.exchange.server.session.SessionDataHolder;
 import com.yuyutechnology.exchange.server.session.SessionManager;
+import com.yuyutechnology.exchange.utils.JsonBinder;
 
 /**
  * @author suzan.wu
@@ -65,6 +70,8 @@ public class LoggedInUserController {
 	ExchangeManager exchangeManager;
 	@Autowired
 	SessionManager sessionManager;
+	@Autowired
+	MailManager mailManager;
 
 	/**
 	 * addFriend 添加好友
@@ -529,7 +536,12 @@ public class LoggedInUserController {
 
 	}
 
-	// TODO 退出账号 Logout
+	/**
+	 * 退出账号 Logout
+	 * 
+	 * @param token
+	 * @return
+	 */
 	@ResponseBody
 	@ApiOperation(value = "退出账号", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/logout", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
@@ -537,11 +549,11 @@ public class LoggedInUserController {
 		logger.info("========logout : {}============", token);
 		LogoutResponse rep = new LogoutResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		// TODO 清session
+		// 清session
 		sessionManager.logout(sessionData.getSessionId());
-		// TODO 清logintoken
+		// 清logintoken
 		sessionManager.delLoginToken(sessionData.getUserId());
-		// TODO 清pushId
+		// 清pushId,解绑Tag
 		userManager.logout(sessionData.getUserId());
 
 		logger.info("********Operation succeeded********");
@@ -550,4 +562,21 @@ public class LoggedInUserController {
 		return rep;
 	}
 
+	// TODO contactUs 联系我们
+	@ResponseBody
+	@ApiOperation(value = "联系我们", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/contactUs", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public ContactUsResponse contactUs(@PathVariable String token, @RequestBody ContactUsRequest contactUsRequest) {
+		logger.info("========contactUs : {}============", token);
+		ContactUsResponse rep = new ContactUsResponse();
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		if (contactUsRequest.isEmpty()) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+		} else {
+			mailManager.mail4contact(JsonBinder.getInstance().toJson(contactUsRequest));
+		}
+		return rep;
+	}
 }
