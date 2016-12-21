@@ -33,9 +33,11 @@ public class MailManager {
 		sendMessageRequest.setFromName(ResourceUtils.getBundleValue("contact.from"));
 		sendMessageRequest.setSubject(ResourceUtils.getBundleValue("contact.subject"));
 		List<String> toMails = new ArrayList<>();
-		toMails.add(ResourceUtils.getBundleValue("contact.to"));
+		String mails[] = ResourceUtils.getBundleValue("contact.to").split(",");
+		for (String mail : mails) {
+			toMails.add(mail);
+		}
 		sendMessageRequest.setToMails(toMails);
-
 		String param = JsonBinder.getInstance().toJson(sendMessageRequest);
 		logger.info("sendMailRequest : {}", param);
 		HttpTookit.sendPost(ResourceUtils.getBundleValue("sendMail.url"), param);
