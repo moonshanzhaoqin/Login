@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import com.yuyutechnology.exchange.dao.BindDAO;
 import com.yuyutechnology.exchange.pojo.Bind;
 
-
 @Repository
 public class BindDAOImpl implements BindDAO {
 	@Resource
@@ -19,13 +18,14 @@ public class BindDAOImpl implements BindDAO {
 	@Override
 	public Bind getBindByUserId(Integer userId) {
 		List<?> list = hibernateTemplate.find("from Bind where userId = ?", userId);
-		if(!list.isEmpty()){
+		if (!list.isEmpty()) {
 			return (Bind) list.get(0);
 		}
-		return null;	}
+		return null;
+	}
 
 	@Override
-	public void saveBind(Bind bind) {
+	public void updateBind(Bind bind) {
 		hibernateTemplate.saveOrUpdate(bind);
 	}
 }

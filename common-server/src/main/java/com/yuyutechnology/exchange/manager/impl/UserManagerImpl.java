@@ -127,8 +127,17 @@ public class UserManagerImpl implements UserManager {
 				logger.info("Goldpay account does not bind phone number.");
 				return ServerConsts.GOLDPAY_PHONE_IS_NOT_EXIST;
 			} else {
-				bindDAO.saveBind(new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(),
-						goldpayUser.getAccountNum(), goldpayToken));
+				Bind bind = bindDAO.getBindByUserId(userId);
+				if (bind==null) {
+					bind=new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(),
+							goldpayUser.getAccountNum(), goldpayToken);
+				}else{
+					bind.setGoldpayId(goldpayUser.getId());
+					bind.setGoldpayName(goldpayUser.getUsername());
+					bind.setGoldpayAcount(goldpayUser.getAccountNum());
+					bind.setToken(goldpayToken);
+				}
+				bindDAO.updateBind(bind);
 				return ServerConsts.RET_CODE_SUCCESS;
 			}
 		}
@@ -294,9 +303,12 @@ public class UserManagerImpl implements UserManager {
 				userInfo.setGoldpayAcount(bind.getGoldpayAcount());
 				userInfo.setGoldpayId(bind.getGoldpayId());
 				userInfo.setGoldpayName(bind.getGoldpayName());
-				logger.info("UserInfo={}", userInfo.toString());
+			}else {
+				userInfo.setGoldpayAcount("");
+				userInfo.setGoldpayId("");
+				userInfo.setGoldpayName("");
 			}
-
+			logger.info("UserInfo={}", userInfo.toString());
 		} else {
 			logger.warn("Can not find the user!!!");
 		}

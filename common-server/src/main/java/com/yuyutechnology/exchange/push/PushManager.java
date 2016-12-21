@@ -35,11 +35,7 @@ public class PushManager {
 	}
 
 	private String appName = "";
-	private String pushToAllURL = "";
-	private String pushToCustomURL = "";
-	private String pushToTagURL = "";
-	private String pushBindTagURL = "";
-	private String pushUnbindTagURL = "";
+	private String pushURL = "";
 	private String day = "";
 
 	// 到账提醒
@@ -85,11 +81,7 @@ public class PushManager {
 	public void init() throws IOException {
 		logger.info("==========init PushManager==========");
 		appName = ResourceUtils.getBundleValue("appName");
-		pushToAllURL = ResourceUtils.getBundleValue("push.all.url");
-		pushToCustomURL = ResourceUtils.getBundleValue("push.custom.url");
-		pushToTagURL = ResourceUtils.getBundleValue("push.tag.url");
-		pushBindTagURL = ResourceUtils.getBundleValue("push.bind.tag.url");
-		pushUnbindTagURL = ResourceUtils.getBundleValue("push.unbind.tag.url");
+		pushURL = ResourceUtils.getBundleValue("push.url");
 
 		day = ResourceUtils.getBundleValue("refund.time");
 
@@ -297,7 +289,7 @@ public class PushManager {
 		pushToCustom.setUserId(userId.toString());
 		String param = JsonBinder.getInstance().toJson(pushToCustom);
 		logger.info("pushRequest : {}", param);
-		HttpTookit.sendPost(pushToCustomURL, param);
+		HttpTookit.sendPost(pushURL+"/push_custom.do", param);
 	}
 
 	@Async
@@ -313,10 +305,10 @@ public class PushManager {
 		logger.info("TagRequest : {}", param);
 		switch (func) {
 		case bindTag:
-			HttpTookit.sendPost(pushBindTagURL, param);
+			HttpTookit.sendPost(pushURL+"/bindTag.do", param);
 			break;
 		case unbindTag:
-			HttpTookit.sendPost(pushUnbindTagURL, param);
+			HttpTookit.sendPost(pushURL+"/unbindTag.do", param);
 			break;
 		default:
 			break;

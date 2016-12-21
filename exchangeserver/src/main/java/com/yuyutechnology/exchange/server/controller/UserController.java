@@ -97,7 +97,7 @@ public class UserController {
 					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 				}
 				userManager.clearPinCode(ServerConsts.PIN_FUNC_FORGETPASSWORD, forgetPasswordRequest.getAreaCode(),
-					forgetPasswordRequest.getUserPhone());
+						forgetPasswordRequest.getUserPhone());
 			} else {
 				logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 				rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
@@ -189,9 +189,10 @@ public class UserController {
 				rep.setRetCode(ServerConsts.TOKEN_NOT_MATCH);
 				rep.setMessage(MessageConsts.TOKEN_NOT_MATCH);
 			} else {
-				//记录登录信息
-				userManager.updateUser(userId, HttpTookit.getIp(request),loginRequest.getPushId(),loginRequest.getLanguage());
-				//更新钱包
+				// 记录登录信息
+				userManager.updateUser(userId, HttpTookit.getIp(request), loginRequest.getPushId(),
+						loginRequest.getLanguage());
+				// 更新钱包
 				userManager.updateWallet(userId);
 				// 生成session Token
 				SessionData sessionData = new SessionData(userId, UidUtils.genUid());
@@ -218,9 +219,10 @@ public class UserController {
 				rep.setRetCode(ServerConsts.USER_BLOCKED);
 				rep.setMessage(MessageConsts.USER_BLOCKED);
 			} else if (userManager.checkUserPassword(userId, loginRequest.getUserPassword())) {
-				//记录登录信息
-				userManager.updateUser(userId, HttpTookit.getIp(request),loginRequest.getPushId(),loginRequest.getLanguage());
-				//更新钱包
+				// 记录登录信息
+				userManager.updateUser(userId, HttpTookit.getIp(request), loginRequest.getPushId(),
+						loginRequest.getLanguage());
+				// 更新钱包
 				userManager.updateWallet(userId);
 				// 生成session Token
 				SessionData sessionData = new SessionData(userId, UidUtils.genUid());
@@ -268,22 +270,24 @@ public class UserController {
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
-			//判断用户是否已注册
-			if(userManager.getUserId(registerRequest.getAreaCode(),registerRequest.getUserPhone())==null){
+			// 判断用户是否已注册
+			if (userManager.getUserId(registerRequest.getAreaCode(), registerRequest.getUserPhone()) == null) {
 				// 校验验证码
 				if (userManager.testPinCode(ServerConsts.PIN_FUNC_REGISTER, registerRequest.getAreaCode(),
 						registerRequest.getUserPhone(), registerRequest.getRegistrationCode())) {
 					Integer userId = userManager.register(registerRequest.getAreaCode(), registerRequest.getUserPhone(),
-							registerRequest.getUserName(), registerRequest.getUserPassword(), HttpTookit.getIp(request),registerRequest.getPushId(),registerRequest.getLanguage());
-					
+							registerRequest.getUserName(), registerRequest.getUserPassword(), HttpTookit.getIp(request),
+							registerRequest.getPushId(), registerRequest.getLanguage());
+
 					logger.info("userId==={}", userId);
 					if (userId == null) {
 						logger.info(MessageConsts.RET_CODE_FAILUE);
 						rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
 						rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 					} else {
-						//记录登录信息
-//						userManager.updateUser(userId, HttpTookit.getIp(request),registerRequest.getPushId(),registerRequest.getLanguage());
+						// 记录登录信息
+						userManager.updateUser(userId, HttpTookit.getIp(request), registerRequest.getPushId(),
+								registerRequest.getLanguage());
 						// 生成session Token
 						SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 						sessionManager.saveSessionData(sessionData);
@@ -296,22 +300,20 @@ public class UserController {
 						rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 					}
-					
+
 					userManager.clearPinCode(ServerConsts.PIN_FUNC_REGISTER, registerRequest.getAreaCode(),
-						registerRequest.getUserPhone());
+							registerRequest.getUserPhone());
 				} else {
 					logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 					rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
 					rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 				}
-			}else {
+			} else {
 				logger.info(MessageConsts.PHONE_IS_REGISTERED);
 				rep.setRetCode(ServerConsts.PHONE_IS_REGISTERED);
 				rep.setMessage(MessageConsts.PHONE_IS_REGISTERED);
 			}
-			
-			
-			
+
 		}
 		return rep;
 	}
