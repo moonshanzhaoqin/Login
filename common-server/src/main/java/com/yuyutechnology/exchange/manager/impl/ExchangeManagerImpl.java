@@ -229,24 +229,18 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		int bitsIn = 2;
 
 		// 获取汇率
-		double exchangeRate = exchangeRateManager.getExchangeRate(currencyIn, currencyOut);
+		double exchangeRate = exchangeRateManager.getExchangeRate(currencyOut,currencyIn);
 		// 计算最小单位对应的数值
-		double minimumValue = 0.01;
 		if (currencyIn.equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
-			minimumValue = 1;
 			bitsIn = 0;
 		}
 		if (currencyOut.equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
 			bitsOut = 0;
 		}
-
-		double rounding = Math.floor(outAmount.doubleValue() / (exchangeRate * minimumValue));
-
-		logger.info("rounding : {}", rounding);
-
-		BigDecimal out = new BigDecimal(exchangeRate * rounding * minimumValue).setScale(bitsOut,
-				BigDecimal.ROUND_CEILING);
-		BigDecimal in = new BigDecimal(minimumValue * rounding).setScale(bitsIn, BigDecimal.ROUND_FLOOR);
+		
+		BigDecimal in = (outAmount.multiply(new BigDecimal(exchangeRate))).setScale(bitsIn, BigDecimal.ROUND_FLOOR);
+		
+		BigDecimal out = (in.divide(new BigDecimal(exchangeRate),bitsOut,BigDecimal.ROUND_CEILING));
 
 		HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>();
 
