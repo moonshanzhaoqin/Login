@@ -62,7 +62,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		
 		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(clientPayOrder)
 				+ResourceUtils.getBundleValue("client.key"));
-		clientPayOrder.setSign(sign);
+		clientPayOrder.setSign(sign.toUpperCase());
 
 		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue("tpps.url")+"clientPay.do",
 				JsonBinder.getInstance().toJson(clientPayOrder));
@@ -77,6 +77,8 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 			
 			//错误处理
 			if(payModel!=null && !payModel.getResultCode().equals(1)){
+				map.put("msg", "something wrong!");
+				map.put("retCode", ServerConsts.RET_CODE_FAILUE);
 				if(payModel.getResultCode().equals(0)){
 					logger.warn("goldpayPurchase tpps callback: fail");
 				}else if(payModel.getResultCode().equals(-1)){
@@ -85,10 +87,15 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 					logger.warn("goldpayPurchase tpps callback: ORDERID REPEAT");
 				}else if(payModel.getResultCode().equals(-102)){
 					logger.warn("goldpayPurchase tpps callback: ORDERID_COMPLETE");
+				}else if(payModel.getResultCode().equals(200001)){
+					logger.warn("goldpayPurchase tpps callback: NOT_ENOUGH_GOLDPAY");
+					map.put("msg", "not enough goldpay!");
+					map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH);
+				}else if(payModel.getResultCode().equals(1016)){
+					logger.warn("goldpayPurchase tpps callback: NOT_ENOUGH_GOLDPAY");
+					map.put("msg", "goldpay account not vaild phone!");
+					map.put("retCode", ServerConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
 				}
-				map.put("msg", "something wrong!");
-				map.put("retCode", ServerConsts.RET_CODE_FAILUE);
-				
 				return map;
 			}
 
@@ -135,7 +142,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(clientPin)
 				+ResourceUtils.getBundleValue("client.key"));
 		
-		clientPin.setSign(sign);
+		clientPin.setSign(sign.toUpperCase());
 		
 		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue("tpps.url")+"clientPin.do",
 				JsonBinder.getInstance().toJson(clientPin));
@@ -187,7 +194,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(clientComfirmPay)
 				+ResourceUtils.getBundleValue("client.key"));
 		
-		clientComfirmPay.setSign(sign);
+		clientComfirmPay.setSign(sign.toUpperCase());
 		
 		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue("tpps.url")+"clientComfirmPay.do",
 				JsonBinder.getInstance().toJson(clientComfirmPay));
@@ -200,16 +207,24 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 			
 			payConfirm = JsonBinder.getInstance().fromJson(result, PayConfirm.class);
 			
-			if(payConfirm == null || (payConfirm.getResultCode()==1 && payConfirm.getResultCode()==307)){
+			
+//			if(payConfirm == null || (payConfirm.getResultCode()!=0 && payConfirm.getResultCode()==307)){
+			
+			if(payConfirm == null || (payConfirm.getResultCode() != 1 && payConfirm.getResultCode() != 307 & payConfirm.getResultCode() != 70002)){
 				map.put("retCode", ServerConsts.RET_CODE_FAILUE);
 				map.put("msg", "fail");
 				return map;
-			}else if(payConfirm.getResultCode()==307){
+			} else if (payConfirm.getResultCode()==307){
 				logger.warn("goldpayTransConfirm tpps callback  error ! {}  CHECK_PIN_CODE_FAIL");
 				map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_CHECK_PIN_CODE_FAIL);
 				map.put("msg", "CHECK_PIN_CODE_FAIL");
 				return map;
-			}
+			} else if (payConfirm.getResultCode()==70002){
+				logger.warn("goldpayTransConfirm status has completed");
+				map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_HAS_COMPLETED);
+				map.put("msg", "CHECK_PIN_CODE_FAIL");
+				return map;
+			} 
 			
 			//获取系统账号
 			User systemUser = userDAO.getSystemUser();
