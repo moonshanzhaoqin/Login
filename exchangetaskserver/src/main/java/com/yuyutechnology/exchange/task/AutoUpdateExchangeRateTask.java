@@ -22,8 +22,7 @@ public class AutoUpdateExchangeRateTask {
 	
 	public void autoUpdateExchangeRateTask(){
 		logger.info("=============autoUpdateExchangeRateTask Start==================");
-		exchangeRateManager.updateExchangeRateNoGoldq();
-		exchangeRateManager.updateGoldpayExchangeRate();
+		exchangeRateManager.updateExchangeRate();
 		logger.info("=============End at {}==================",new Date());
 	}
 	
