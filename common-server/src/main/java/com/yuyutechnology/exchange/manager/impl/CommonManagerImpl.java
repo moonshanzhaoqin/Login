@@ -39,7 +39,7 @@ public class CommonManagerImpl implements CommonManager {
 	RedisDAO redisDAO;
 	
 	@Override
-	@Scheduled(cron = "0 1/5 * * * ?")
+	@Scheduled(cron = "0 1/10 * * * ?")
 	public void refreshConfig() {
 		ResourceUtils.clearCache();
 	}

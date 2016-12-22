@@ -3,13 +3,7 @@ package com.yuyutechnology.exchange.manager;
 import java.text.ParseException;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.scheduling.annotation.Scheduled;
-
-import com.yuyutechnology.exchange.dto.CurrencyInfo;
 import com.yuyutechnology.exchange.dto.UserInfo;
-import com.yuyutechnology.exchange.pojo.AppVersion;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Friend;
 
@@ -143,9 +137,6 @@ public interface UserManager {
 	 * @param userPhone
 	 */
 	public void changePhone(Integer userId, String areaCode, String userPhone);
-
-
-	public List<CurrencyInfo> getCurrency();
 
 	/**
 	 * 更新登录信息

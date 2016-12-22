@@ -26,6 +26,7 @@ import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
+import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
@@ -229,7 +230,6 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 			payConfirm = JsonBinder.getInstance().fromJson(result, PayConfirm.class);
 			
 //			if(payConfirm == null || (payConfirm.getResultCode()!=0 && payConfirm.getResultCode()==307)){
-			
 			if(payConfirm == null || (payConfirm.getResultCode() != 1 && payConfirm.getResultCode() != 307 & payConfirm.getResultCode() != 70002)){
 				map.put("retCode", ServerConsts.RET_CODE_FAILUE);
 				map.put("msg", "fail");
@@ -273,5 +273,57 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		}
 	
 	}
+
+
+	@Override
+	public HashMap<String, String> goldpayWithdraw(int userId, double amount) {
+		
+		HashMap<String, String> map = new HashMap<String, String>();
+
+		User systemUser = userDAO.getSystemUser();
+		User payer = userDAO.getUser(userId);
+		if(payer ==null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
+			logger.warn("The user does not exist or the account is blocked");
+			map.put("retCode", ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
+			map.put("msg", "The user does not exist or the account is blocked");
+			return map;
+		}
+		
+		//判断余额是否足够支付
+		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, ServerConsts.CURRENCY_OF_GOLDPAY);
+		if(wallet == null || wallet.getBalance().compareTo(new BigDecimal(amount)) == -1){
+			logger.warn("Current balance is insufficient");
+			map.put("retCode", ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+			map.put("msg", "Current balance is insufficient");
+			return map;
+		}
+		
+		//生成TransId
+		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+		
+		Transfer transfer = new Transfer(); 
+		transfer.setTransferId(transferId);
+		transfer.setCreateTime(new Date());
+		transfer.setCurrency(ServerConsts.CURRENCY_OF_GOLDPAY);
+		transfer.setTransferAmount(new BigDecimal(amount));
+		transfer.setTransferComment("goldpay withdraw");
+		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
+		transfer.setUserFrom(userId);
+		transfer.setAreaCode(systemUser.getAreaCode());
+		transfer.setPhone(systemUser.getAreaCode());
+		transfer.setUserTo(systemUser.getUserId());
+		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
+		transfer.setNoticeId(0);
+		//保存
+		transferDAO.addTransfer(transfer);
+		
+		map.put("retCode", ServerConsts.RET_CODE_SUCCESS);
+		map.put("msg", "ok");
+		map.put("transferId", transferId);
+		
+		return map;
+	}
+	
+	
 
 }
