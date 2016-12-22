@@ -14,4 +14,6 @@ public interface UnregisteredDAO {
 	
 	public List<Unregistered> getAllUnfinishedTransaction();
 	
+	public Unregistered getUnregisteredByTransId(String transId);
+	
 }

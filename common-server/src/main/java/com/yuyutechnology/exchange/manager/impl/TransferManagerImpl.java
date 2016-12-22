@@ -181,6 +181,7 @@ public class TransferManagerImpl implements TransferManager{
 		return ServerConsts.RET_CODE_SUCCESS;
 	}
 
+	@SuppressWarnings("null")
 	@Override
 	public String transferConfirm(int userId,String transferId) {
 		
@@ -211,17 +212,21 @@ public class TransferManagerImpl implements TransferManager{
 			//加款
 			walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), 
 					transfer.getCurrency(), transfer.getTransferAmount(), "+");
-			//添加gift记录
-			Unregistered unregistered = new Unregistered();
-			unregistered.setCreateTime(new Date());
-			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_PENDING);
-			unregistered.setTransferId(transfer.getTransferId());
-			unregistered.setAreaCode(transfer.getAreaCode());
-			unregistered.setUserPhone(transfer.getPhone());
-			unregistered.setCurrency(transfer.getCurrency());
-			unregistered.setAmount(transfer.getTransferAmount());
 			
-			unregisteredDAO.addUnregistered(unregistered);
+			//添加gift记录
+			Unregistered unregistered = unregisteredDAO.getUnregisteredByTransId(transfer.getTransferId());
+			
+			if(unregistered == null){
+				unregistered.setCreateTime(new Date());
+				unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_PENDING);
+				unregistered.setTransferId(transfer.getTransferId());
+				unregistered.setAreaCode(transfer.getAreaCode());
+				unregistered.setUserPhone(transfer.getPhone());
+				unregistered.setCurrency(transfer.getCurrency());
+				unregistered.setAmount(transfer.getTransferAmount());
+				unregisteredDAO.addUnregistered(unregistered);
+			}
+
 			//增加seq记录
 			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), systemUser.getUserId(), 
 					ServerConsts.TRANSFER_TYPE_OUT_INVITE, transfer.getTransferId(), 
