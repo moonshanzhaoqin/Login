@@ -5,7 +5,6 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
@@ -28,7 +27,6 @@ public class AutoUpdateExchangeRateTask {
 		logger.info("=============End at {}==================",new Date());
 	}
 	
-	@Async
 	public void autoSystemRefundBatch(){
 		logger.info("=============autoSystemRefundBatch Start==================");
 		transferManager.systemRefundBatch();
