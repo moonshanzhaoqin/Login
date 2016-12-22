@@ -28,6 +28,17 @@ public class RedisDAOImpl implements RedisDAO {
 		commonRedisTemplate.opsForValue().set(key, json);
 		commonRedisTemplate.expire(key, timeout, TimeUnit.MINUTES);
 	}
+	
+	public void saveData(String key, Object value) {
+		String json = null;
+
+		if (value instanceof String) {
+			json = (String) value;
+		} else {
+			json = JsonBinder.getInstance().toJson(value);
+		}
+		commonRedisTemplate.opsForValue().set(key, json);
+	}
 
 	public String getValueByKey(String key) {
 		String jsonContent = commonRedisTemplate.opsForValue().get(key);

@@ -60,7 +60,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 				map.put(currency.getCurrency(), result);
 			}
 		}
-		redisDAO.saveData("redis_exchangeRate",JsonBinder.getInstance().toJson(map), 35);
+		redisDAO.saveData("redis_exchangeRate",JsonBinder.getInstance().toJson(map));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -129,7 +129,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		}
 		
 		redisDAO.saveData("redis_goldpay_exchangerate",JsonBinder.getInstance().
-				toJson(goldpayExchangeRate), 35);
+				toJson(goldpayExchangeRate));
 
 	}
 	
