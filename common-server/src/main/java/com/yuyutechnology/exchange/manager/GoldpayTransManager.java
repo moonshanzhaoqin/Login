@@ -12,5 +12,7 @@ public interface GoldpayTransManager {
 	public HashMap<String, String> goldpayTransConfirm(int userId,String pin,String transferId);
 	
 	public HashMap<String, String> goldpayWithdraw(int userId,double amount);
+	
+	public HashMap<String, String> withdrawConfirm(int userId,String payPwd,String transferId);
 
 }

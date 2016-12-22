@@ -43,7 +43,7 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 	    <task:scheduled 
 	    ref="autoUpdateExchangeRateTask" 
 	    method="autoSystemRefundBatch" 
-	    fixed-delay="1800000" initial-delay="1000"/>
+	    fixed-delay="1800000" initial-delay="5000"/>
 <!-- 	    <task:scheduled ref="beanC" method="methodC" cron="*/5 * * * * MON-FRI"/> -->
 	</task:scheduled-tasks>
 
