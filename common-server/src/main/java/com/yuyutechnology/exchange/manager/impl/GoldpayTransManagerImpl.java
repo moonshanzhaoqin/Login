@@ -289,6 +289,13 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 			map.put("msg", "The user does not exist or the account is blocked");
 			return map;
 		}
+		Bind bind = bindBAO.getBindByUserId(userId);
+		if(bind == null){
+			logger.warn("The account is not tied to goldpay");
+			map.put("msg", "The account is not tied to goldpay");
+			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			return map;
+		}
 		
 		//判断余额是否足够支付
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, ServerConsts.CURRENCY_OF_GOLDPAY);
@@ -336,29 +343,34 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 			logger.warn("The user does not exist or the account is blocked");
 			map.put("msg", "The user does not exist or the account is blocked");
 			map.put("retCode", ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
+			return map;
 		}
 		if(!PasswordUtils.check(payPwd, user.getUserPayPwd(), user.getPasswordSalt())){
 			logger.warn("The payment password is incorrect");
 			map.put("msg", "The payment password is incorrect");
 			map.put("retCode", ServerConsts.TRANSFER_PAYMENTPWD_INCORRECT);
+			return map;
 		}
 		Transfer transfer = transferDAO.getTransferByIdAndUserId(transferId,userId);
 		if(transfer == null){
 			logger.warn("The transaction order does not exist");
 			map.put("msg", "The transaction order does not exist");
 			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			return map;
 		}
 		Bind bind = bindBAO.getBindByUserId(userId);
 		if(bind == null){
 			logger.warn("The account is not tied to goldpay");
 			map.put("msg", "The account is not tied to goldpay");
 			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			return map;
 		}
 		Bind systemBind = bindBAO.getBindByUserId(systemUser.getUserId());
 		if(systemBind == null){
 			logger.warn("System account is not bound to goldpay");
 			map.put("msg", "System account is not bound to goldpay");
 			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			return map;
 		}
 		
 		MerchantPayOrder  merchantPayOrder  = new MerchantPayOrder();

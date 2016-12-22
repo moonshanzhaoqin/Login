@@ -4,7 +4,7 @@ public class ExchangeCalculationRequest {
 	
 	private String currencyOut;
 	private String currencyIn;
-	private Long amountOut;
+	private double amountOut;
 	
 	public String getCurrencyOut() {
 		return currencyOut;
@@ -18,10 +18,10 @@ public class ExchangeCalculationRequest {
 	public void setCurrencyIn(String currencyIn) {
 		this.currencyIn = currencyIn;
 	}
-	public Long getAmountOut() {
+	public double getAmountOut() {
 		return amountOut;
 	}
-	public void setAmountOut(Long amountOut) {
+	public void setAmountOut(double amountOut) {
 		this.amountOut = amountOut;
 	}
 }

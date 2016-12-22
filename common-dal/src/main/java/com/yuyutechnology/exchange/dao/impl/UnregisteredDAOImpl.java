@@ -44,4 +44,13 @@ public class UnregisteredDAOImpl implements UnregisteredDAO {
 				ServerConsts.UNREGISTERED_STATUS_OF_PENDING);
 		return (List<Unregistered>) list;
 	}
+
+	@Override
+	public Unregistered getUnregisteredByTransId(String transId) {
+		List<?> list = hibernateTemplate.find("from Unregistered where transferId = ?",transId);
+		if(!list.isEmpty()){
+			return (Unregistered) list.get(0);
+		}
+		return null;
+	}
 }
