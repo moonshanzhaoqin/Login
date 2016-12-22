@@ -87,9 +87,9 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		//1克黄金是一万goldpay
 		//获取1goldpay等于多少美金
 		//BigDecimal oneGoldpay = new BigDecimal(map.get(type)).divide(new BigDecimal(311035));
-		double gdp4USDExchangeRate = Double.parseDouble(spBid)/311035;
+		BigDecimal gdp4USDExchangeRate = (new BigDecimal(spBid)).divide(new BigDecimal(311035),5);
 		logger.info("goldpay for USD exchangeRate : {}",gdp4USDExchangeRate);
-		double USD4GdpExchangeRate = 311035/Double.parseDouble(spBid);
+		BigDecimal USD4GdpExchangeRate = (new BigDecimal(311035)).divide(new BigDecimal(spBid),5);
 		logger.info("USD for goldpay exchangeRate : {}",USD4GdpExchangeRate);
 		
 		GoldpayExchangeRate goldpayExchangeRate = new GoldpayExchangeRate();
@@ -104,21 +104,20 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 			ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().
 					fromJson(value, ExchangeRate.class);
 			//gdp4Others 表示 1gdp兑换多少其他币种
-			Map<String,Double> gdp4Others = new HashMap<String,Double>();
+			Map<String,BigDecimal> gdp4Others = new HashMap<String,BigDecimal>();
 			gdp4Others.put("USD", gdp4USDExchangeRate);
 			for(Map.Entry<String, Double> entry : exchangeRate.getRates().entrySet()){
-				gdp4Others.put(entry.getKey(), entry.getValue()/USD4GdpExchangeRate);
+				gdp4Others.put(entry.getKey(), (new BigDecimal(entry.getValue())).divide(USD4GdpExchangeRate, 5));
 			}
 			logger.info("gdp4Others Map : {}",gdp4Others.toString());
 			
 			//others4Gdp 表示 1其他币种兑换多少gdp
-			Map<String,Double> others4Gdp = new HashMap<String,Double>();
+			Map<String,BigDecimal> others4Gdp = new HashMap<String,BigDecimal>();
 			others4Gdp.put("USD", USD4GdpExchangeRate);
 			List<Currency> list = currencyDAO.getCurrencys();
 			for (Currency index : list) {
 				if(!index.getCurrency().equals("USD") && !index.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY) ){
-					others4Gdp.put(index.getCurrency(), getExchangeRateNoGoldq
-							(index.getCurrency(),"USD")/gdp4USDExchangeRate);
+					others4Gdp.put(index.getCurrency(), (new BigDecimal(getExchangeRateNoGoldq(index.getCurrency(),"USD"))).divide(gdp4USDExchangeRate, 5));
 				}
 			}
 			
@@ -144,13 +143,13 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 					fromJson(goldpayER, GoldpayExchangeRate.class);
 			
 			if(base.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
-				HashMap<String, Double> gdp4Others = (HashMap<String, Double>) 
+				HashMap<String, BigDecimal> gdp4Others = (HashMap<String, BigDecimal>) 
 						goldpayExchangeRate.getGdp4Others();
-				out = gdp4Others.get(outCurrency);
+				out = gdp4Others.get(outCurrency).doubleValue();
 			}else{
-				HashMap<String, Double> others4Gdp = (HashMap<String, Double>) 
+				HashMap<String, BigDecimal> others4Gdp = (HashMap<String, BigDecimal>) 
 						goldpayExchangeRate.getOthers4Gdp();
-				out = others4Gdp.get(base);
+				out = others4Gdp.get(base).doubleValue();
 			}
 			
 		}else{
