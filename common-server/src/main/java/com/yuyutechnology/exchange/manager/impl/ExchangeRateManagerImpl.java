@@ -46,7 +46,6 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 	
 	@Override
 	public void updateExchangeRateNoGoldq(){
-		
 		String exchangeRateUrl = ResourceUtils.getBundleValue("exchange.rate.url");
 		List<Currency> currencies = currencyDAO.getCurrencys();
 		if(currencies.isEmpty()){
@@ -139,6 +138,10 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 				outCurrency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 			//当兑换中有goldpay时，需要特殊处理
 			String goldpayER = redisDAO.getValueByKey("redis_goldpay_exchangerate");
+			if (StringUtils.isBlank(goldpayER)) {
+				 updateGoldpayExchangeRate();
+				 goldpayER = redisDAO.getValueByKey("redis_goldpay_exchangerate");
+			}
 			GoldpayExchangeRate goldpayExchangeRate = JsonBinder.getInstance().
 					fromJson(goldpayER, GoldpayExchangeRate.class);
 			
@@ -236,18 +239,18 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		double out = 0;
 		HashMap<String, String> map = new HashMap<String, String>();
 		String result = redisDAO.getValueByKey("redis_exchangeRate");
-		if(StringUtils.isNotBlank(result)){
-//			logger.info("result : {}",result);
-			map = JsonBinder.getInstance().fromJson(result, HashMap.class);
-			String value = map.get(base);
-			logger.info("value : {}",value);
-			ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().
-					fromJson(value, ExchangeRate.class);
-			out = exchangeRate.getRates().get(outCurrency);
+		if (StringUtils.isBlank(result)) {
+			 updateExchangeRateNoGoldq();
+			 result = redisDAO.getValueByKey("redis_exchangeRate");
 		}
-		
+//		logger.info("result : {}",result);
+		map = JsonBinder.getInstance().fromJson(result, HashMap.class);
+		String value = map.get(base);
+		logger.info("value : {}",value);
+		ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().
+				fromJson(value, ExchangeRate.class);
+		out = exchangeRate.getRates().get(outCurrency);
 		logger.info("base : {},out : {}",base,out);
-		
 		return out;
 	}
 
