@@ -20,6 +20,7 @@ import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.goldpay.transaction.ClientComfirmPay;
 import com.yuyutechnology.exchange.goldpay.transaction.ClientPayOrder;
 import com.yuyutechnology.exchange.goldpay.transaction.ClientPin;
+import com.yuyutechnology.exchange.goldpay.transaction.MerchantPayOrder;
 import com.yuyutechnology.exchange.goldpay.transaction.PayConfirm;
 import com.yuyutechnology.exchange.goldpay.transaction.PayModel;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
@@ -29,6 +30,7 @@ import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.JsonBinder;
+import com.yuyutechnology.exchange.utils.PasswordUtils;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
 
 @Service
@@ -229,7 +231,6 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 			
 			payConfirm = JsonBinder.getInstance().fromJson(result, PayConfirm.class);
 			
-//			if(payConfirm == null || (payConfirm.getResultCode()!=0 && payConfirm.getResultCode()==307)){
 			if(payConfirm == null || (payConfirm.getResultCode() != 1 && payConfirm.getResultCode() != 307 & payConfirm.getResultCode() != 70002)){
 				map.put("retCode", ServerConsts.RET_CODE_FAILUE);
 				map.put("msg", "fail");
@@ -321,6 +322,137 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		map.put("msg", "ok");
 		map.put("transferId", transferId);
 		
+		return map;
+	}
+
+
+	@Override
+	public HashMap<String, String> withdrawConfirm(int userId, String payPwd, String transferId) {
+		
+		HashMap<String, String> map = new HashMap<String, String>();
+		User systemUser = userDAO.getSystemUser();
+		User user = userDAO.getUser(userId);
+		if(user ==null || user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
+			logger.warn("The user does not exist or the account is blocked");
+			map.put("msg", "The user does not exist or the account is blocked");
+			map.put("retCode", ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
+		}
+		if(!PasswordUtils.check(payPwd, user.getUserPayPwd(), user.getPasswordSalt())){
+			logger.warn("The payment password is incorrect");
+			map.put("msg", "The payment password is incorrect");
+			map.put("retCode", ServerConsts.TRANSFER_PAYMENTPWD_INCORRECT);
+		}
+		Transfer transfer = transferDAO.getTransferByIdAndUserId(transferId,userId);
+		if(transfer == null){
+			logger.warn("The transaction order does not exist");
+			map.put("msg", "The transaction order does not exist");
+			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+		}
+		Bind bind = bindBAO.getBindByUserId(userId);
+		if(bind == null){
+			logger.warn("The account is not tied to goldpay");
+			map.put("msg", "The account is not tied to goldpay");
+			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+		}
+		Bind systemBind = bindBAO.getBindByUserId(systemUser.getUserId());
+		if(systemBind == null){
+			logger.warn("System account is not bound to goldpay");
+			map.put("msg", "System account is not bound to goldpay");
+			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+		}
+		
+		MerchantPayOrder  merchantPayOrder  = new MerchantPayOrder();
+		
+		merchantPayOrder.setFromAccountNum(systemBind.getGoldpayAcount());
+		merchantPayOrder.setFromAccountName(systemBind.getGoldpayName());
+		merchantPayOrder.setFromAccountToken(systemBind.getToken());
+		
+		merchantPayOrder.setToAccountNum(bind.getGoldpayAcount());
+		merchantPayOrder.setOrderId(transfer.getTransferId());
+		merchantPayOrder.setClientId(ResourceUtils.getBundleValue("client.id"));
+		merchantPayOrder.setPayAmount(transfer.getTransferAmount().intValue());
+		merchantPayOrder.setType(0);
+		
+		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(merchantPayOrder)
+				+ResourceUtils.getBundleValue("client.key"));
+		
+		merchantPayOrder.setSign(sign.toUpperCase());
+		
+		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue("tpps.url")+"merchantPay.do",
+				JsonBinder.getInstance().toJson(merchantPayOrder));
+		
+		PayModel payModel;
+		
+		if(!StringUtils.isEmpty(result)){
+			
+			logger.info("withdrawConfirm tpps callback result : {}",result);
+			payModel = JsonBinder.getInstance().fromJson(result, PayModel.class);
+			
+			if(payModel != null){
+				
+				if(payModel.getResultCode().equals(1)){
+					logger.info("withdrawConfirm tpps callback result :success");
+					
+					//用户扣款
+					int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId, 
+							transfer.getCurrency(), transfer.getTransferAmount(), "-");
+					
+					if(updateCount == 0){
+						logger.warn("Current balance is insufficient");
+						map.put("retCode", ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+						return map;
+					}
+					
+					//系统加款
+					walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), 
+							transfer.getCurrency(), transfer.getTransferAmount(), "+");
+					//更改Transfer状态
+					transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+					//添加seq记录
+					walletSeqDAO.addWalletSeq4Transaction(userId, systemUser.getUserId(), 
+							ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, transfer.getTransferId(), 
+							transfer.getCurrency(), transfer.getTransferAmount());	
+					
+					
+					map.put("retCode", ServerConsts.RET_CODE_SUCCESS);
+					map.put("msg", "ok");
+					return map;
+				}else{
+					map.put("msg", "something wrong!");
+					map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+					if(payModel.getResultCode().equals(0)){
+						logger.warn("goldpayPurchase tpps callback: fail");
+					}else if(payModel.getResultCode().equals(-1)){
+						logger.warn("goldpayPurchase tpps callback: INVALID SIGN");
+					}else if(payModel.getResultCode().equals(-101)){
+						logger.warn("goldpayPurchase tpps callback: ORDERID REPEAT");
+					}else if(payModel.getResultCode().equals(-102)){
+						logger.warn("goldpayPurchase tpps callback: ORDERID_COMPLETE");
+					}else if(payModel.getResultCode().equals(200001)){
+						logger.warn("goldpayPurchase tpps callback: NOT_ENOUGH_GOLDPAY");
+						map.put("msg", "not enough goldpay!");
+						map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH);
+					}else if(payModel.getResultCode().equals(1016)){
+						logger.warn("goldpayPurchase tpps callback: NOT_ENOUGH_GOLDPAY");
+						map.put("msg", "goldpay account not vaild phone!");
+						map.put("retCode", ServerConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
+					}
+					
+					return map;
+				}
+			}else{
+				logger.warn("withdrawConfirm tpps callback result : null");
+				map.put("msg", "something wrong!");
+				map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+				return map;
+			}
+
+		}else{
+			logger.warn("withdrawConfirm tpps callback result : null");
+			map.put("msg", "withdrawConfirm tpps callback result : null");
+			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+		}
+
 		return map;
 	}
 	

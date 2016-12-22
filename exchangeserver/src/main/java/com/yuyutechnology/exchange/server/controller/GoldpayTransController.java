@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,10 +21,12 @@ import com.yuyutechnology.exchange.server.controller.request.GoldpayPurchaseRequ
 import com.yuyutechnology.exchange.server.controller.request.GoldpayTransConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.GoldpayWithdrawRequest;
 import com.yuyutechnology.exchange.server.controller.request.RequestPinRequest;
+import com.yuyutechnology.exchange.server.controller.request.WithdrawConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.response.GoldpayPurchaseResponse;
 import com.yuyutechnology.exchange.server.controller.response.GoldpayTransConfirmResponse;
 import com.yuyutechnology.exchange.server.controller.response.GoldpayWithdrawResponse;
 import com.yuyutechnology.exchange.server.controller.response.RequestPinResponse;
+import com.yuyutechnology.exchange.server.controller.response.WithdrawConfirmResponse;
 import com.yuyutechnology.exchange.server.session.SessionData;
 import com.yuyutechnology.exchange.server.session.SessionDataHolder;
 
@@ -105,7 +108,7 @@ public class GoldpayTransController {
 	}
 	
 	
-	@ApiOperation(value = "goldpay 重新发送Pin")
+	@ApiOperation(value = "goldpay 提现")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/goldpayTrans/goldpayWithdraw")
 	public @ResponseBody
 	GoldpayWithdrawResponse goldpayWithdraw(@PathVariable String token,@RequestBody GoldpayWithdrawRequest reqMsg){
@@ -130,6 +133,28 @@ public class GoldpayTransController {
 		if(map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
 			rep.setTransferId(map.get("transferId"));
 		}
+		
+		rep.setRetCode(map.get("retCode"));
+		rep.setMessage(map.get("msg"));
+		
+		return rep;
+	}
+	
+	@ApiOperation(value = "goldpay 提现确认")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/goldpayTrans/withdrawConfirm")
+	public @ResponseBody 
+	WithdrawConfirmResponse withdrawConfirm(@PathVariable String token,@RequestBody WithdrawConfirmRequest reqMsg){
+		//从Session中获取Id
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		WithdrawConfirmResponse rep = new WithdrawConfirmResponse();
+		if(StringUtils.isEmpty(reqMsg.getPayPwd())){
+			rep.setRetCode(ServerConsts.TRANSFER_PAYMENTPWD_INCORRECT);
+			rep.setMessage("The payment password is incorrect");
+			return rep;
+		}
+		
+		HashMap<String, String> map = goldpayTransManager.withdrawConfirm(sessionData.getUserId(),
+				reqMsg.getPayPwd(), reqMsg.getTransferId());
 		
 		rep.setRetCode(map.get("retCode"));
 		rep.setMessage(map.get("msg"));
