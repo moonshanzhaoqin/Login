@@ -93,6 +93,9 @@ public interface TransferManager {
 	 * @return
 	 */
 	public HashMap<String, Object> getNotificationRecordsByPage(int userId,int currentPage, int pageSize);
+
+	public HashMap<String, String> respond2Request(int userId, String areaCode, String userPhone, String currency,
+			BigDecimal amount, String transferComment, int noticeId);
 	
 
 }

@@ -437,7 +437,8 @@ public class TransferManagerImpl implements TransferManager{
 
 	@Override
 	public HashMap<String, Object> getNotificationRecordsByPage(int userId, int currentPage, int pageSize) {
-		String sql = "SELECT t1.notice_id,t2.area_code,t2.user_phone,t1.currency,t1.amount,t1.create_at,t1.trading_status ";
+		String sql = "SELECT t1.notice_id,t2.area_code,t2.user_phone,"
+				+ "t1.currency,t1.amount,t1.create_at,t1.trading_status ";
 		StringBuilder sb = new StringBuilder(
 				"FROM `e_transaction_notification` t1,`e_user` t2 "+ 
 				"where t1.sponsor_id = t2.user_id and t1.payer_id = ?");
@@ -450,5 +451,90 @@ public class TransferManagerImpl implements TransferManager{
 		HashMap<String, Object> map = notificationDAO.getNotificationRecordsByPage(sql+sb.toString(),
 				sb.toString(),values,currentPage, pageSize);
 		return map;
+	}
+	
+	@Override
+	public HashMap<String, String> respond2Request(int userId,String areaCode,String userPhone, 
+			String currency,BigDecimal amount, String transferComment,int noticeId){
+		
+		HashMap<String, String> map = new HashMap<String, String>();
+		
+		TransactionNotification notification = notificationDAO.getNotificationById(noticeId);
+		
+		if(notification == null){
+			logger.warn("Can not find the corresponding notification information");
+			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("msg", "Can not find the corresponding notification information");
+			return map;
+		}else if(notification.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)
+				&& notification.getAmount().compareTo(new BigDecimal(0))==0){
+			logger.warn("The requestor does not enter the specified currency information");
+			notification.setAmount(amount);
+			notification.setCurrency(currency);
+		}else if(!notification.getCurrency().equals(currency) || notification.getAmount().compareTo(amount) != 0){
+			logger.warn("The input and order information do not match");
+			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("msg", "The input and order information do not match");
+			return map;
+		}
+		if(!commonManager.verifyCurrency(notification.getCurrency())){
+			logger.warn("This currency is not a tradable currency");
+			map.put("retCode", ServerConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
+			map.put("msg", "This currency is not a tradable currency");
+			return map;
+		}
+
+		//账号冻结
+		User payer = userDAO.getUser(userId);
+		if(payer ==null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
+			logger.warn("The user does not exist or the account is blocked");
+			map.put("retCode", ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
+			map.put("msg", "The user does not exist or the account is blocked");
+			return map;
+		}
+		
+		User receiver = userDAO.getUserByUserPhone(areaCode, userPhone);
+		//不用给自己转账
+		if(receiver!= null && userId == receiver.getUserId()){
+			logger.warn("Prohibit transfers to yourself");
+			map.put("retCode", ServerConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
+			map.put("msg", "Prohibit transfers to yourself");
+			return map;
+		}
+		
+		//判断余额是否足够支付
+		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
+		if(wallet == null || wallet.getBalance().compareTo(amount) == -1){
+			logger.warn("Current balance is insufficient");
+			map.put("retCode", ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+			map.put("msg", "Current balance is insufficient");
+			return map;
+		}
+		
+		//生成TransId
+		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+		
+		Transfer transfer = new Transfer(); 
+		transfer.setTransferId(transferId);
+		transfer.setCreateTime(new Date());
+		transfer.setCurrency(notification.getCurrency());
+		transfer.setTransferAmount(notification.getAmount());
+		transfer.setTransferComment(transferComment);
+		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
+		transfer.setUserFrom(userId);
+		transfer.setUserTo(notification.getSponsorId());
+		transfer.setAreaCode(areaCode);
+		transfer.setPhone(userPhone);
+		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+		transfer.setNoticeId(noticeId);
+		//保存
+		transferDAO.addTransfer(transfer);
+		
+		map.put("retCode", ServerConsts.RET_CODE_SUCCESS);
+		map.put("msg", "ok");
+		map.put("transferId", transferId);
+		
+		return map;
+		
 	}
 }
