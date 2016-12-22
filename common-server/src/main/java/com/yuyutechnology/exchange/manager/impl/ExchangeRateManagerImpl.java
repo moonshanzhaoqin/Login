@@ -87,9 +87,9 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		//1克黄金是一万goldpay
 		//获取1goldpay等于多少美金
 		//BigDecimal oneGoldpay = new BigDecimal(map.get(type)).divide(new BigDecimal(311035));
-		BigDecimal gdp4USDExchangeRate = (new BigDecimal(spBid)).divide(new BigDecimal(311035),5);
+		BigDecimal gdp4USDExchangeRate = (new BigDecimal(spBid)).divide(new BigDecimal(311035),5,BigDecimal.ROUND_DOWN);
 		logger.info("goldpay for USD exchangeRate : {}",gdp4USDExchangeRate);
-		BigDecimal USD4GdpExchangeRate = (new BigDecimal(311035)).divide(new BigDecimal(spBid),5);
+		BigDecimal USD4GdpExchangeRate = (new BigDecimal(311035)).divide(new BigDecimal(spBid),5,BigDecimal.ROUND_DOWN);
 		logger.info("USD for goldpay exchangeRate : {}",USD4GdpExchangeRate);
 		
 		GoldpayExchangeRate goldpayExchangeRate = new GoldpayExchangeRate();
@@ -107,7 +107,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 			Map<String,BigDecimal> gdp4Others = new HashMap<String,BigDecimal>();
 			gdp4Others.put("USD", gdp4USDExchangeRate);
 			for(Map.Entry<String, Double> entry : exchangeRate.getRates().entrySet()){
-				gdp4Others.put(entry.getKey(), (new BigDecimal(entry.getValue())).divide(USD4GdpExchangeRate, 5));
+				gdp4Others.put(entry.getKey(), (new BigDecimal(entry.getValue())).divide(USD4GdpExchangeRate, 5,BigDecimal.ROUND_DOWN));
 			}
 			logger.info("gdp4Others Map : {}",gdp4Others.toString());
 			
@@ -117,7 +117,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 			List<Currency> list = currencyDAO.getCurrencys();
 			for (Currency index : list) {
 				if(!index.getCurrency().equals("USD") && !index.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY) ){
-					others4Gdp.put(index.getCurrency(), (new BigDecimal(getExchangeRateNoGoldq(index.getCurrency(),"USD"))).divide(gdp4USDExchangeRate, 5));
+					others4Gdp.put(index.getCurrency(), (new BigDecimal(getExchangeRateNoGoldq(index.getCurrency(),"USD"))).divide(gdp4USDExchangeRate, 5,BigDecimal.ROUND_DOWN));
 				}
 			}
 			
