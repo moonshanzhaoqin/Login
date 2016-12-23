@@ -2,6 +2,8 @@ package com.yuyutechnology.exchange.push;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -33,6 +35,8 @@ public class PushManager {
 	public enum Func {
 		bindTag, unbindTag
 	}
+
+	private Map<String, String> ext = new HashMap<>();
 
 	// 到账提醒
 	// en_US
@@ -126,12 +130,14 @@ public class PushManager {
 	 * @param currency
 	 * @param amount
 	 */
+	@Async
 	public void push4Transfer(User userFrom, User userTo, String currency, BigDecimal amount) {
 		String title = "到账通知";
 		String transferBody = templateChoose("transfer", userTo.getPushTag());
 		String body = transferBody.replace(PUSH_REPLACE_FROM, userFrom.getUserName())
 				.replace(PUSH_REPLACE_CURRENCY, currency).replace(PUSH_REPLACE_AMOUNT, amount.toString());
-		pushToCustom(userTo.getUserId(), userTo.getPushId(), title, body);
+		ext.put("type", "transfer");
+		pushToCustom(userTo.getUserId(), userTo.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 	}
 
 	/**
@@ -142,11 +148,13 @@ public class PushManager {
 	 * @param currency
 	 * @param amount
 	 */
+	@Async
 	public void push4TransferRuquest(User userFrom, User userTo, String currency, BigDecimal amount) {
 		String title = "转账请求";
-		String transferBody = templateChoose("transfer_request", userFrom.getPushTag());
-		String body = transferBody.replace(PUSH_REPLACE_TO, userTo.getUserName());
-		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body);
+		String transferRuquestBody = templateChoose("transfer_request", userFrom.getPushTag());
+		String body = transferRuquestBody.replace(PUSH_REPLACE_TO, userTo.getUserName());
+		ext.put("type", "transfer_request");
+		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 	}
 
 	/**
@@ -157,26 +165,36 @@ public class PushManager {
 	 * @param currency
 	 * @param amount
 	 */
+	@Async
 	public void push4Refund(User userFrom, String areaCode, String phone, String currency, BigDecimal amount) {
 		String title = "退款通知";
 		String refundBody = templateChoose("refund", userFrom.getPushTag());
 		String body = refundBody.replace(PUSH_REPLACE_TO, areaCode + phone).replace(PUSH_REPLACE_CURRENCY, currency)
 				.replace(PUSH_REPLACE_AMOUNT, amount.toString())
 				.replace(PUSH_REPLACE_DAY, ResourceUtils.getBundleValue4String("refund.time"));
-		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body);
+		ext.put("type", "refund");
+		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 	}
 
-	// Offline 下线消息
+	/**
+	 * offline 下线消息
+	 * 
+	 * @param user
+	 */
+	@Async
 	public void push4Offline(User user) {
 		String title = "下线消息";
 		String offlineBody = templateChoose("offline", user.getPushTag());
 		String body = offlineBody;
-		pushToCustom(user.getUserId(), user.getPushId(), title, body);
+		ext.put("type", "offline");
+		pushToCustom(user.getUserId(), user.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 	}
 
 	/**
 	 * 绑定Tag
+	 * @param user
 	 */
+	@Async
 	public void bindPushTag(User user) {
 		tag(Func.bindTag, user.getPushId(), user.getPushTag().toString());
 	}
@@ -186,6 +204,7 @@ public class PushManager {
 	 * 
 	 * @param user
 	 */
+	@Async
 	public void unbindPushTag(User user) {
 		tag(Func.unbindTag, user.getPushId(), user.getPushTag().toString());
 	}
@@ -268,7 +287,7 @@ public class PushManager {
 	}
 
 	@Async
-	private void pushToCustom(Integer userId, String deviceID, String title, String body) {
+	private void pushToCustom(Integer userId, String deviceID, String title, String body, String extParameters) {
 		if (StringUtils.isBlank(deviceID)) {
 			return;
 		}
@@ -278,6 +297,7 @@ public class PushManager {
 		pushToCustom.setTitle(title);
 		pushToCustom.setDeviceID(deviceID);
 		pushToCustom.setUserId(userId.toString());
+		pushToCustom.setExtParameters(extParameters);
 		String param = JsonBinder.getInstance().toJson(pushToCustom);
 		logger.info("pushRequest : {}", param);
 		HttpTookit.sendPost(ResourceUtils.getBundleValue4String("push.url") + "/push_custom.do", param);
@@ -304,19 +324,6 @@ public class PushManager {
 		default:
 			break;
 		}
-
-	}
-
-	@Async
-	private void pushToTag() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Async
-	private void pushToAll() {
-		// TODO Auto-generated method stub
-
 	}
 
 }
