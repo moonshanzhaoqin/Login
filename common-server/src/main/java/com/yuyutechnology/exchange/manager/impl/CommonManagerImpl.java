@@ -102,13 +102,13 @@ public class CommonManagerImpl implements CommonManager {
 	}
 	
 	@Override
-	@Async
+//	@Async
 	public void addMsgFlag(int userId, int type) {
 		opsMsgFlag(userId, type, true);
 	}
 
 	@Override
-	@Async
+//	@Async
 	public void readMsgFlag(int userId, int type) {
 		opsMsgFlag(userId, type, false);
 	}
