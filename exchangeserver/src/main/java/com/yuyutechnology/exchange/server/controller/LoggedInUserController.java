@@ -195,7 +195,8 @@ public class LoggedInUserController {
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
-			if (userManager.checkChangePhoneTime(sessionData.getUserId())<=new Date().getTime()) {
+			long time = userManager.checkChangePhoneTime(sessionData.getUserId());
+			if (time<=new Date().getTime()) {
 				// 检验支付密码
 				if (userManager.checkUserPayPwd(sessionData.getUserId(), changePhoneRequest.getUserPayPwd())) {
 					// 校验手机验证码
@@ -225,8 +226,8 @@ public class LoggedInUserController {
 				rep.setRetCode(ServerConsts.TIME_NOT_ARRIVED);
 				rep.setMessage(MessageConsts.TIME_NOT_ARRIVED);
 			}
+			rep.setTime(time);
 		}
-
 		return rep;
 	}
 
@@ -240,14 +241,15 @@ public class LoggedInUserController {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		long time = userManager.checkChangePhoneTime(sessionData.getUserId());
 		if (time <= new Date().getTime()) {
-			rep.setChange(true);
+			logger.info("********Operation succeeded********");
+			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		} else {
-			rep.setChange(false);
+			logger.info(MessageConsts.TIME_NOT_ARRIVED);
+			rep.setRetCode(ServerConsts.TIME_NOT_ARRIVED);
+			rep.setMessage(MessageConsts.TIME_NOT_ARRIVED);
 		}
 		rep.setTime(time);
-		logger.info("********Operation succeeded********");
-		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
 

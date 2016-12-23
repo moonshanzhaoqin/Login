@@ -280,6 +280,7 @@ public class ServerConsts {
 		successCodeList.add(TRANSFER_EXCEEDED_TRANSACTION_LIMIT);
 		successCodeList.add(TRANSFER_HISTORY_NOT_ACQUIRED);
 		successCodeList.add(TRANSFER_NOTIFICATION_NOT_ACQUIRED);
+		successCodeList.add(TIME_NOT_ARRIVED);
 		
 		sessionCodeList.add(SESSION_TIMEOUT);
 	}
