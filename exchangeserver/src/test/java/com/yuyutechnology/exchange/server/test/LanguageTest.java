@@ -2,15 +2,13 @@ package com.yuyutechnology.exchange.server.test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-
+import java.util.Calendar;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.yuyutechnology.exchange.dao.RedisDAO;
-import com.yuyutechnology.exchange.utils.LanguageUtils;
 
 /**
  * 
@@ -40,5 +38,11 @@ public class LanguageTest extends BaseSpringJunit4{
 		
 //		redisDAO.saveData("123",simpleDateFormat.format(new Date()), 3);
 //		System.out.println(simpleDateFormat.parse(redisDAO.getValueByKey("123")).getTime() - new Date().getTime());
+		
+		
+		Calendar   cal1   =   Calendar.getInstance();
+		System.out.println(cal1.getTime());
+        cal1.add(Calendar.DATE,2);
+        System.out.println(cal1.getTime());
 	}
 }
