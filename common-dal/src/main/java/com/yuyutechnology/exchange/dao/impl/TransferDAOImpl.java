@@ -51,6 +51,12 @@ public class TransferDAOImpl implements TransferDAO {
 	public void addTransfer(Transfer transfer) {
 		hibernateTemplate.save(transfer);
 	}
+	
+	@Override
+	public void updateTransfer(Transfer transfer){
+		hibernateTemplate.saveOrUpdate(transfer);
+	}
+	
 
 	@Override
 	public Transfer getTransferById(String transferId) {
