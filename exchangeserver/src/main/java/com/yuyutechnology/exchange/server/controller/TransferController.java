@@ -201,8 +201,6 @@ public class TransferController {
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/requestATransfer")
 	public @ResponseBody
 	Respond2RequestResponse respond2Request(@PathVariable String token,@RequestBody Respond2RequestRequest reqMsg){
-		
-		logger.info("respond2Request=============Enter the content ： {} ，time ： {}  ",reqMsg.getNoticeId(),new Date());
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		Respond2RequestResponse rep = new Respond2RequestResponse();

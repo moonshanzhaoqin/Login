@@ -373,7 +373,7 @@ public class TransferManagerImpl implements TransferManager{
 			
 			//推送请求付款
 			User payee = userDAO.getUser(userId);
-			pushManager.push4TransferRuquest(payee, payer, currency, amount);
+			pushManager.push4TransferRuquest( payer,payee, currency, amount);
 			
 			
 			return ServerConsts.RET_CODE_SUCCESS;
