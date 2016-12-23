@@ -618,7 +618,7 @@ public class LoggedInUserController {
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
-			mailManager.mail4contact(JsonBinder.getInstance().toJson(contactUsRequest));
+			mailManager.mail4contact(contactUsRequest.getName(),contactUsRequest.getEmail(),contactUsRequest.getCategory(),contactUsRequest.getEnquiry());
 			logger.info("********Operation succeeded********");
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
