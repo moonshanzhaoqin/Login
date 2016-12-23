@@ -6,6 +6,7 @@ package com.yuyutechnology.exchange.manager.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,14 +54,14 @@ public class CommonManagerImpl implements CommonManager {
 	@Override
 	public List<CurrencyInfo> getCurrency() {
 		List<Currency> currencies;
-		if (redisDAO.getValueByKey("getCurrency") == null) {
+		String currencyString = redisDAO.getValueByKey("getCurrency");
+		if (StringUtils.isBlank(currencyString)) {
 			logger.info("getCurrency from db");
 			currencies = currencyDAO.getCurrencys();
-			redisDAO.saveData("getCurrency", currencies, 30);
+			redisDAO.saveData("getCurrency", JsonBinder.getInstance().toJson(currencies), 30);
 		} else {
-			logger.info("getCurrency from redis:");
-			currencies = (List<Currency>) JsonBinder.getInstance().fromJsonToList(redisDAO.getValueByKey("getCurrency"),
-					Currency.class);
+			logger.info("getCurrency from redis: " +currencyString);
+			currencies = (List<Currency>) JsonBinder.getInstance().fromJsonToList(currencyString, Currency.class);
 		}
 		List<CurrencyInfo> list = new ArrayList<>();
 		for (Currency currency : currencies) {
@@ -73,15 +74,16 @@ public class CommonManagerImpl implements CommonManager {
 	@SuppressWarnings("unchecked")
 	public List<Currency> getCurrentCurrency() {
 		List<Currency> currencies;
-		if (redisDAO.getValueByKey("getCurrentCurrency") == null) {
+		String currencyString = redisDAO.getValueByKey("getCurrentCurrency");
+		if (StringUtils.isBlank(currencyString)) {
 			logger.info("getCurrentCurrency from db");
 			currencies = currencyDAO.getCurrentCurrency();
 			logger.info("currency={}", currencies);
-			redisDAO.saveData("getCurrentCurrency", currencies, 30);
+			redisDAO.saveData("getCurrentCurrency", JsonBinder.getInstance().toJson(currencies), 30);
 		} else {
-			logger.info("getCurrentCurrency from redis:");
+			logger.info("getCurrentCurrency from redis: "+currencyString);
 			currencies = (List<Currency>) JsonBinder.getInstance()
-					.fromJsonToList(redisDAO.getValueByKey("getCurrentCurrency"), Currency.class);
+					.fromJsonToList(currencyString, Currency.class);
 		}
 		return currencies;
 	}
