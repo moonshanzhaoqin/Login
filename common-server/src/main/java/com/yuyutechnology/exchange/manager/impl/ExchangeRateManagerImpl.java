@@ -157,7 +157,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 			out = getExchangeRateNoGoldq(base,outCurrency);
 		}
 		
-		logger.info("base : {},out : {}",base,out);
+		logger.info("base : {},outCurrency : {},out : {}",new Object[]{base,outCurrency,out});
 		
 		return out;
 	}
