@@ -75,14 +75,14 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		clientPayOrder.setPayAmount(amount.intValue());
 		clientPayOrder.setFromAccountNum(bind.getGoldpayAcount());
 		clientPayOrder.setType(0);
-		String clientId = ResourceUtils.getBundleValue("client.id");
+		String clientId = ResourceUtils.getBundleValue4String("client.id");
 		clientPayOrder.setClientId(clientId);
 		
 		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(clientPayOrder)
-				+ResourceUtils.getBundleValue("client.key"));
+				+ResourceUtils.getBundleValue4String("client.key"));
 		clientPayOrder.setSign(sign.toUpperCase());
 
-		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue("tpps.url")+"clientPay.do",
+		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue4String("tpps.url")+"clientPay.do",
 				JsonBinder.getInstance().toJson(clientPayOrder));
 		
 		PayModel payModel;
@@ -150,7 +150,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		
 		HashMap<String, String> map = new HashMap<>();
 		
-		String clientId = ResourceUtils.getBundleValue("client.id");
+		String clientId = ResourceUtils.getBundleValue4String("client.id");
 		Transfer transfer = transferDAO.getTransferByIdAndUserId(transferId,userId);
 		if(transfer == null){
 			logger.warn("The transaction order does not exist");
@@ -164,11 +164,11 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		clientPin.setPayOrderId(transfer.getTransferComment());
 		
 		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(clientPin)
-				+ResourceUtils.getBundleValue("client.key"));
+				+ResourceUtils.getBundleValue4String("client.key"));
 		
 		clientPin.setSign(sign.toUpperCase());
 		
-		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue("tpps.url")+"clientPin.do",
+		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue4String("tpps.url")+"clientPin.do",
 				JsonBinder.getInstance().toJson(clientPin));
 		
 		PayModel payModel;
@@ -211,16 +211,16 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		}
 		
 		ClientComfirmPay  clientComfirmPay  = new ClientComfirmPay();
-		clientComfirmPay.setClientId(ResourceUtils.getBundleValue("client.id"));
+		clientComfirmPay.setClientId(ResourceUtils.getBundleValue4String("client.id"));
 		clientComfirmPay.setPin(pin);
 		clientComfirmPay.setPayOrderId(transfer.getTransferComment());
 		
 		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(clientComfirmPay)
-				+ResourceUtils.getBundleValue("client.key"));
+				+ResourceUtils.getBundleValue4String("client.key"));
 		
 		clientComfirmPay.setSign(sign.toUpperCase());
 		
-		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue("tpps.url")+"clientComfirmPay.do",
+		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue4String("tpps.url")+"clientComfirmPay.do",
 				JsonBinder.getInstance().toJson(clientComfirmPay));
 		
 		PayConfirm payConfirm;
@@ -381,16 +381,16 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		
 		merchantPayOrder.setToAccountNum(bind.getGoldpayAcount());
 		merchantPayOrder.setOrderId(transfer.getTransferId());
-		merchantPayOrder.setClientId(ResourceUtils.getBundleValue("client.id"));
+		merchantPayOrder.setClientId(ResourceUtils.getBundleValue4String("client.id"));
 		merchantPayOrder.setPayAmount(transfer.getTransferAmount().intValue());
 		merchantPayOrder.setType(0);
 		
 		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(merchantPayOrder)
-				+ResourceUtils.getBundleValue("client.key"));
+				+ResourceUtils.getBundleValue4String("client.key"));
 		
 		merchantPayOrder.setSign(sign.toUpperCase());
 		
-		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue("tpps.url")+"merchantPay.do",
+		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue4String("tpps.url")+"merchantPay.do",
 				JsonBinder.getInstance().toJson(merchantPayOrder));
 		
 		PayModel payModel;

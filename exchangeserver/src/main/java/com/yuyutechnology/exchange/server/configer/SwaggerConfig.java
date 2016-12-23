@@ -48,11 +48,7 @@ public class SwaggerConfig
 	    @Bean
 	    public SwaggerSpringMvcPlugin customImplementation()
 	    {
-	    	boolean enable = false;
-	    	try {
-				enable = Boolean.valueOf(ResourceUtils.getBundleValue("swagger.enable"));
-			} catch (Exception e) {
-			}
+	    	boolean enable = ResourceUtils.getBundleValue4Boolean("swagger.enable");
 	        return new SwaggerSpringMvcPlugin(this.springSwaggerConfig).apiInfo(apiInfo()).enable(enable).includePatterns(
 	                ".*?");
 	    }

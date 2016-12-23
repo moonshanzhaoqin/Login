@@ -29,18 +29,18 @@ public class MailManager {
 	private void sendMail(String content) {
 		SendMailRequest sendMessageRequest = new SendMailRequest();
 		sendMessageRequest.setContent(content);
-		sendMessageRequest.setFromMailAddress(ResourceUtils.getBundleValue("contact.from"));
-		sendMessageRequest.setFromName(ResourceUtils.getBundleValue("contact.from"));
-		sendMessageRequest.setSubject(ResourceUtils.getBundleValue("contact.subject"));
+		sendMessageRequest.setFromMailAddress(ResourceUtils.getBundleValue4String("contact.from"));
+		sendMessageRequest.setFromName(ResourceUtils.getBundleValue4String("contact.from"));
+		sendMessageRequest.setSubject(ResourceUtils.getBundleValue4String("contact.subject"));
 		List<String> toMails = new ArrayList<>();
-		String mails[] = ResourceUtils.getBundleValue("contact.to").split(",");
+		String mails[] = ResourceUtils.getBundleValue4String("contact.to").split(",");
 		for (String mail : mails) {
 			toMails.add(mail);
 		}
 		sendMessageRequest.setToMails(toMails);
 		String param = JsonBinder.getInstance().toJson(sendMessageRequest);
 		logger.info("sendMailRequest : {}", param);
-		HttpTookit.sendPost(ResourceUtils.getBundleValue("sendMail.url"), param);
+		HttpTookit.sendPost(ResourceUtils.getBundleValue4String("sendMail.url"), param);
 	}
 
 }
