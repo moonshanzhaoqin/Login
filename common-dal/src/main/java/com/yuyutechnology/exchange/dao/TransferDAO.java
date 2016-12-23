@@ -15,6 +15,9 @@ public interface TransferDAO {
 	public Transfer getTransferById(String transferId);
 	
 	public Transfer getTransferByIdAndUserId(String transferId,int userId);
+	
+	public Transfer getTransferByXXXX(String transferId,int userId,
+			int transferStatus,int transferType);
 
 	public void updateAccumulatedAmount(String key, BigDecimal amoumt);
 
@@ -22,8 +25,10 @@ public interface TransferDAO {
 
 	public void updateTransferStatus(String transferId, int transferStatus);
 
-	public void updateTransferStatusAndUserTo(String transferId, int transferStatus, Integer userTo);
+	public void updateTransferStatusAndUserTo(String transferId,
+			int transferStatus, Integer userTo);
 	
-	public HashMap<String, Object> getTransactionRecordByPage(String sql,String countSql,List<Object> values,int currentPage, int pageSize);
+	public HashMap<String, Object> getTransactionRecordByPage(
+			String sql,String countSql,List<Object> values,int currentPage, int pageSize);
 
 }
