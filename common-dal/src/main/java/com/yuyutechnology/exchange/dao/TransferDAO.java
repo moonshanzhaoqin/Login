@@ -14,10 +14,7 @@ public interface TransferDAO {
 
 	public Transfer getTransferById(String transferId);
 	
-	public Transfer getTransferByIdAndUserId(String transferId,int userId);
-	
-	public Transfer getTransferByXXXX(String transferId,int userId,
-			int transferStatus,int transferType);
+	public Transfer getTranByIdAndStatus(String transferId,int transferStatus);
 
 	public void updateAccumulatedAmount(String key, BigDecimal amoumt);
 

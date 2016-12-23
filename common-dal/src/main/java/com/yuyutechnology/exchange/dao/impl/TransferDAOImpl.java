@@ -58,15 +58,19 @@ public class TransferDAOImpl implements TransferDAO {
 		return transfer;
 	}
 	
+
 	@Override
-	public Transfer getTransferByIdAndUserId(String transferId, int userId) {
-		List<?> list = hibernateTemplate.find("from Transfer where transferId = ? and userFrom = ?", transferId,userId);
+	public Transfer getTranByIdAndStatus(String transferId, int transferStatus) {
+		List<?> list = hibernateTemplate.find("from Transfer where transferId = ? and transferStatus != ?", transferId,transferStatus);
+		
 		if(!list.isEmpty()){
 			return (Transfer) list.get(0);
 		}
+		
 		return null;
 	}
 
+	
 	@Override
 	public void updateTransferStatus(String transferId, int transferStatus) {
 		Transfer transfer = hibernateTemplate.get(Transfer.class, transferId);
@@ -124,16 +128,6 @@ public class TransferDAOImpl implements TransferDAO {
 		
 		return map;
 		
-	}
-
-	@Override
-	public Transfer getTransferByXXXX(String transferId, int userId, int transferStatus, int transferType) {
-		List<?> list = hibernateTemplate.find("from Transfer where transferId = ? "
-				+ "and userFrom = ? and transferStatus=? and transferType", transferId,userId,transferStatus,transferType);
-		if(!list.isEmpty()){
-			return (Transfer) list.get(0);
-		}
-		return null;
 	}
 
 }

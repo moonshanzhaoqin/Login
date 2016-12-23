@@ -151,7 +151,7 @@ public class TransferManagerImpl implements TransferManager{
 		if(!PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())){
 			return ServerConsts.TRANSFER_PAYMENTPWD_INCORRECT;
 		}
-		Transfer transfer = transferDAO.getTransferByIdAndUserId(transferId,userId);
+		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		if(transfer == null){
 			logger.warn("The transaction order does not exist");
 			return ServerConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST;
@@ -184,7 +184,7 @@ public class TransferManagerImpl implements TransferManager{
 	@Override
 	public String transferConfirm(int userId,String transferId) {
 		
-		Transfer transfer = transferDAO.getTransferByIdAndUserId(transferId,userId);
+		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		if(transfer == null){
 			logger.warn("The transaction order does not exist");
 			return ServerConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST;
@@ -285,7 +285,9 @@ public class TransferManagerImpl implements TransferManager{
 	@Override
 	public void systemRefund(Unregistered unregistered) {
 		
-		Transfer transfer = transferDAO.getTransferById(unregistered.getTransferId());
+		Transfer transfer = transferDAO.getTranByIdAndStatus(
+				unregistered.getTransferId(),
+				ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		User systemUser = userDAO.getSystemUser();
 		
 		//系统扣款
