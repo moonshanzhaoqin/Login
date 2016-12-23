@@ -348,9 +348,11 @@ public class UserManagerImpl implements UserManager {
 			// 语言不一致，解绑Tag
 			logger.info("Language inconsistency, unbind Tag==>");
 			pushManager.unbindPushTag(user);
+			user.setPushTag(LanguageUtils.standard(language));
 		}
-		user.setPushId(pushId);
-		user.setPushTag(LanguageUtils.standard(language));
+		if (pushId != null) {
+			user.setPushId(pushId);
+		}
 		userDAO.updateUser(user);
 		// 绑定Tag
 		logger.info("bind Tag==>");
