@@ -42,11 +42,11 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 	@Autowired
 	CurrencyDAO currencyDAO;
 	
+	private static int scale = 20;
+	
 	public static Logger logger = LoggerFactory.getLogger(ExchangeRateManagerImpl.class);
 	
-	@Override
-	public void updateExchangeRateNoGoldq(){
-		
+	private void updateExchangeRateNoGoldq(){
 		String exchangeRateUrl = ResourceUtils.getBundleValue("exchange.rate.url");
 		List<Currency> currencies = currencyDAO.getCurrencys();
 		if(currencies.isEmpty()){
@@ -63,10 +63,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		redisDAO.saveData("redis_exchangeRate",JsonBinder.getInstance().toJson(map));
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void updateGoldpayExchangeRate(){
-
+	private void updateGoldpayExchangeRate(){
 		Document doc = null;
 		try {
 			doc = Jsoup.connect(ResourceUtils.getBundleValue("gold.price.url")).get();
@@ -87,9 +84,9 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		//1克黄金是一万goldpay
 		//获取1goldpay等于多少美金
 		//BigDecimal oneGoldpay = new BigDecimal(map.get(type)).divide(new BigDecimal(311035));
-		BigDecimal gdp4USDExchangeRate = (new BigDecimal(spBid)).divide(new BigDecimal(311035),5,BigDecimal.ROUND_DOWN);
+		BigDecimal gdp4USDExchangeRate = (new BigDecimal(spBid)).divide(new BigDecimal(311035),scale,BigDecimal.ROUND_DOWN);
 		logger.info("goldpay for USD exchangeRate : {}",gdp4USDExchangeRate);
-		BigDecimal USD4GdpExchangeRate = (new BigDecimal(311035)).divide(new BigDecimal(spBid),5,BigDecimal.ROUND_DOWN);
+		BigDecimal USD4GdpExchangeRate = (new BigDecimal(311035)).divide(new BigDecimal(spBid),scale,BigDecimal.ROUND_DOWN);
 		logger.info("USD for goldpay exchangeRate : {}",USD4GdpExchangeRate);
 		
 		GoldpayExchangeRate goldpayExchangeRate = new GoldpayExchangeRate();
@@ -97,8 +94,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		
 		String result = redisDAO.getValueByKey("redis_exchangeRate");
 		if(StringUtils.isNotBlank(result)){
-			HashMap<String, String> map = JsonBinder.getInstance().
-					fromJson(result, HashMap.class);
+			HashMap<String, String> map = JsonBinder.getInstance().fromJson(result, HashMap.class);
 			String value = map.get("USD");
 
 			ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().
@@ -107,7 +103,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 			Map<String,BigDecimal> gdp4Others = new HashMap<String,BigDecimal>();
 			gdp4Others.put("USD", gdp4USDExchangeRate);
 			for(Map.Entry<String, Double> entry : exchangeRate.getRates().entrySet()){
-				gdp4Others.put(entry.getKey(), (new BigDecimal(entry.getValue())).divide(USD4GdpExchangeRate, 5,BigDecimal.ROUND_DOWN));
+				gdp4Others.put(entry.getKey(), (new BigDecimal(entry.getValue())).divide(USD4GdpExchangeRate, scale,BigDecimal.ROUND_DOWN));
 			}
 			logger.info("gdp4Others Map : {}",gdp4Others.toString());
 			
@@ -117,7 +113,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 			List<Currency> list = currencyDAO.getCurrencys();
 			for (Currency index : list) {
 				if(!index.getCurrency().equals("USD") && !index.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY) ){
-					others4Gdp.put(index.getCurrency(), (new BigDecimal(getExchangeRateNoGoldq(index.getCurrency(),"USD"))).divide(gdp4USDExchangeRate, 5,BigDecimal.ROUND_DOWN));
+					others4Gdp.put(index.getCurrency(), (new BigDecimal(getExchangeRateNoGoldq(index.getCurrency(),"USD"))).divide(gdp4USDExchangeRate, scale,BigDecimal.ROUND_DOWN));
 				}
 			}
 			
@@ -139,6 +135,11 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 				outCurrency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 			//当兑换中有goldpay时，需要特殊处理
 			String goldpayER = redisDAO.getValueByKey("redis_goldpay_exchangerate");
+			if (StringUtils.isBlank(goldpayER)) {
+				updateExchangeRateNoGoldq();
+				updateGoldpayExchangeRate();
+				 goldpayER = redisDAO.getValueByKey("redis_goldpay_exchangerate");
+			}
 			GoldpayExchangeRate goldpayExchangeRate = JsonBinder.getInstance().
 					fromJson(goldpayER, GoldpayExchangeRate.class);
 			
@@ -236,21 +237,40 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		double out = 0;
 		HashMap<String, String> map = new HashMap<String, String>();
 		String result = redisDAO.getValueByKey("redis_exchangeRate");
-		if(StringUtils.isNotBlank(result)){
-//			logger.info("result : {}",result);
-			map = JsonBinder.getInstance().fromJson(result, HashMap.class);
-			String value = map.get(base);
-			logger.info("value : {}",value);
-			ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().
-					fromJson(value, ExchangeRate.class);
-			out = exchangeRate.getRates().get(outCurrency);
+		if (StringUtils.isBlank(result)) {
+			updateExchangeRateNoGoldq();
+			updateGoldpayExchangeRate();
+			 result = redisDAO.getValueByKey("redis_exchangeRate");
 		}
-		
+//		logger.info("result : {}",result);
+		map = JsonBinder.getInstance().fromJson(result, HashMap.class);
+		String value = map.get(base);
+		logger.info("value : {}",value);
+		ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().
+				fromJson(value, ExchangeRate.class);
+		out = exchangeRate.getRates().get(outCurrency);
 		logger.info("base : {},out : {}",base,out);
-		
 		return out;
 	}
 
 
-	
+	public void updateExchangeRate() {
+		String goldpayER = redisDAO.getValueByKey("redis_goldpay_exchangerate");
+		if (StringUtils.isBlank(goldpayER)) {
+			updateExchangeRateNoGoldq();
+			updateGoldpayExchangeRate();
+		}else{
+			GoldpayExchangeRate goldpayExchangeRate = JsonBinder.getInstance().
+					fromJson(goldpayER, GoldpayExchangeRate.class);
+			int time = 30;
+			try {
+				time = Integer.valueOf(ResourceUtils.getBundleValue("rate.update.period.minuate"));
+			} catch (Exception e) {
+			}
+			if (new Date().getTime() - goldpayExchangeRate.getDate().getTime() >= time*60*1000){
+				updateExchangeRateNoGoldq();
+				updateGoldpayExchangeRate();
+			}
+		}
+	}
 }
