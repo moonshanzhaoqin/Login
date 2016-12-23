@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dto.MsgFlagInfo;
 import com.yuyutechnology.exchange.mail.MailManager;
+import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Friend;
@@ -34,6 +36,7 @@ import com.yuyutechnology.exchange.server.controller.request.CheckPasswordReques
 import com.yuyutechnology.exchange.server.controller.request.CheckPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
 import com.yuyutechnology.exchange.server.controller.request.DeleteFriendRequest;
+import com.yuyutechnology.exchange.server.controller.request.GetMsgFlagRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByOldRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByPINRequest;
@@ -49,6 +52,7 @@ import com.yuyutechnology.exchange.server.controller.response.CheckPayPwdRespons
 import com.yuyutechnology.exchange.server.controller.response.ContactUsResponse;
 import com.yuyutechnology.exchange.server.controller.response.DeleteFriendResponse;
 import com.yuyutechnology.exchange.server.controller.response.FriendsListResponse;
+import com.yuyutechnology.exchange.server.controller.response.GetMsgFlagResponse;
 import com.yuyutechnology.exchange.server.controller.response.LogoutResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPayPwdByOldResponse;
@@ -59,7 +63,6 @@ import com.yuyutechnology.exchange.server.controller.response.SwitchLanguageResp
 import com.yuyutechnology.exchange.server.session.SessionData;
 import com.yuyutechnology.exchange.server.session.SessionDataHolder;
 import com.yuyutechnology.exchange.server.session.SessionManager;
-import com.yuyutechnology.exchange.utils.JsonBinder;
 
 /**
  * @author suzan.wu
@@ -76,6 +79,8 @@ public class LoggedInUserController {
 	SessionManager sessionManager;
 	@Autowired
 	MailManager mailManager;
+	@Autowired
+	CommonManager commonManager;
 
 	/**
 	 * addFriend 添加好友
@@ -676,6 +681,19 @@ public class LoggedInUserController {
 				break;
 			}
 		}
+		return rep;
+	}
+	
+	@ApiOperation(value = "获取消息红点标志位")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/user/getMsgFlag")
+	public @ResponseBody GetMsgFlagResponse getMsgFlag(@PathVariable String token){
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		GetMsgFlagResponse rep = new GetMsgFlagResponse();
+		MsgFlagInfo msgFlagInfo = commonManager.getMsgFlag(sessionData.getUserId());
+		rep.setNewRequestTrans(msgFlagInfo.isNewRequestTrans());
+		rep.setNewTrans(msgFlagInfo.isNewTrans());
+		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
 

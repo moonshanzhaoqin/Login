@@ -9,12 +9,14 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.JsonBinder;
@@ -29,7 +31,10 @@ import com.yuyutechnology.exchange.utils.ResourceUtils;
 @Service
 public class PushManager {
 	public static Logger logger = LoggerFactory.getLogger(PushManager.class);
-
+	
+	@Autowired
+	CommonManager commonManager;
+	
 	public enum Func {
 		bindTag, unbindTag
 	}
@@ -132,6 +137,9 @@ public class PushManager {
 		String body = transferBody.replace(PUSH_REPLACE_FROM, userFrom.getUserName())
 				.replace(PUSH_REPLACE_CURRENCY, currency).replace(PUSH_REPLACE_AMOUNT, amount.toString());
 		pushToCustom(userTo.getUserId(), userTo.getPushId(), title, body);
+		
+		//新请求转账标记
+		commonManager.addMsgFlag(userTo.getUserId(), 0);
 	}
 
 	/**
@@ -147,6 +155,9 @@ public class PushManager {
 		String transferBody = templateChoose("transfer_request", userFrom.getPushTag());
 		String body = transferBody.replace(PUSH_REPLACE_TO, userTo.getUserName());
 		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body);
+		
+		//新请求转账标记
+		commonManager.addMsgFlag(userTo.getUserId(), 1);
 	}
 
 	/**

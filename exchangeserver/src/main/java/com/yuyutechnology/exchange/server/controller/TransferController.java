@@ -55,7 +55,6 @@ public class TransferController {
 	@Autowired
 	PushManager pushManager;
 	
-	
 	public static Logger logger = LoggerFactory.getLogger(TransferController.class);
 
 	@ApiOperation(value = "交易初始化")
@@ -348,11 +347,6 @@ public class TransferController {
 			rep.setTotal(Integer.parseInt(map.get("total")+""));
 			rep.setList(dtos);
 		}
-
-		
 		return rep;
 	}
-	
-	
-
 }
