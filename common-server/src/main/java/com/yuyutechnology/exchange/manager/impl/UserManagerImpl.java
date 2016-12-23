@@ -304,14 +304,14 @@ public class UserManagerImpl implements UserManager {
 		if (!user.getPushTag().equals(LanguageUtils.standard(language)) && StringUtils.isNotBlank(user.getPushId())) {
 			// 语言不一致，解绑Tag
 			logger.info("Language inconsistency, unbind Tag==>,");
-			// pushManager.unbindPushTag(user);
+			 pushManager.unbindPushTag(user);
 		}
 		user.setPushTag(LanguageUtils.standard(language));
 		userDAO.updateUser(user);
 		if (StringUtils.isNotBlank(user.getPushId()) && user.getPushTag() != null) {
 			// 绑定Tag
 			logger.info("bind Tag==>");
-			// pushManager.bindPushTag(user);
+			 pushManager.bindPushTag(user);
 		}
 	}
 
