@@ -42,13 +42,11 @@ public class MailManager {
 		// 加载模板
 		// 到账提醒
 		Resource resource = new ClassPathResource("mail/en_US/contactUs.template");
-		String contact = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-		contactTital = contact.substring(0, contact.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-		contactContent = contact.substring(contact.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
+		contactContent = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 	}
 
 	public void mail4contact(String name, String email, String category, String enquiry) {
-		contactContent.replace(MAIL_REPLACE_CATEGORY, category).replace(MAIL_REPLACE_EMAIL, email)
+		contactContent = contactContent.replace(MAIL_REPLACE_CATEGORY, category).replace(MAIL_REPLACE_EMAIL, email)
 				.replace(MAIL_REPLACE_ENQUIRY, enquiry).replace(MAIL_REPLACE_NAME, name);
 		logger.info("content : {}",contactContent);
 		sendMail(contactContent);
