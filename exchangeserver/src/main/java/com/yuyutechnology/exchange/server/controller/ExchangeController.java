@@ -105,22 +105,18 @@ public class ExchangeController {
 	public @ResponseBody
 	GetExchangeRateResponse getExchangeRate(@PathVariable String token,@RequestBody GetExchangeRateRequest reqMsg){
 		GetExchangeRateResponse rep = new GetExchangeRateResponse();
-		
-		if(commonManager.verifyCurrency(reqMsg.getBase())){
+		if(!commonManager.verifyCurrency(reqMsg.getBase())){
 			logger.warn("This currency is not a tradable currency");
 			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
 			rep.setMessage("This currency is not a tradable currency");
 			return rep;
 		}
-		
-		
 		HashMap<String, Double> map = exchangeRateManager.getExchangeRate(reqMsg.getBase());
 		if(map.isEmpty()){
 			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
 			rep.setMessage("Failed to get exchange rate");
 			return rep;
 		}
-		
 		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		rep.setBase(reqMsg.getBase());

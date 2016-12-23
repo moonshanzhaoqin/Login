@@ -30,7 +30,6 @@ import com.yuyutechnology.exchange.server.controller.dto.FriendInfo;
 import com.yuyutechnology.exchange.server.controller.request.AddFriendRequest;
 import com.yuyutechnology.exchange.server.controller.request.BindGoldpayRequest;
 import com.yuyutechnology.exchange.server.controller.request.ChangePhoneRequest;
-import com.yuyutechnology.exchange.server.controller.request.CheckChangePhoneRequest;
 import com.yuyutechnology.exchange.server.controller.request.CheckPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.CheckPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;

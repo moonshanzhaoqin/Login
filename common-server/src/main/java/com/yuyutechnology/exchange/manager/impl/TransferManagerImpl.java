@@ -388,9 +388,14 @@ public class TransferManagerImpl implements TransferManager{
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String sql = "SELECT "+
-				"t1.user_from,t1.currency,t1.transfer_amount, "+
-				"CONCAT(t1.area_code,t1.phone), "+
-				"t1.transfer_comment,t1.finish_time,t1.transfer_type ";
+				"t1.user_from,"
+				+ "t1.currency,"
+				+ "t1.transfer_amount,"
+				+ "CONCAT(t1.area_code,t1.phone),"
+				+ "CONCAT(t2.area_code,t2.user_phone),"
+				+ "t1.transfer_comment,"
+				+ "t1.finish_time,"
+				+ "t1.transfer_type ";
 		StringBuilder sb = new StringBuilder(
 				"FROM `e_transfer` t1 LEFT JOIN `e_user` t2  "+
 				"ON  "+
