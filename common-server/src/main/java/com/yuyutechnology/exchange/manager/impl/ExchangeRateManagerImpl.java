@@ -262,7 +262,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		}else{
 			GoldpayExchangeRate goldpayExchangeRate = JsonBinder.getInstance().
 					fromJson(goldpayER, GoldpayExchangeRate.class);
-			int time = ResourceUtils.getBundleValue4Long("rate.update.period.minuate", 30l).intValue();
+			int time = ResourceUtils.getBundleValue4Long("rate.update.period.minuate", 0l).intValue();
 			if (new Date().getTime() - goldpayExchangeRate.getDate().getTime() >= time*60*1000){
 				updateExchangeRateNoGoldq();
 				updateGoldpayExchangeRate();

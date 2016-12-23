@@ -34,7 +34,7 @@ public class ResourceUtils {
 		try {
 			defaultValue = resource.getString(key);
 		} catch (Exception e) {
-			logger.warn("getBundleValue exception" + key + " : " + defaultValue, e);
+			logger.warn("getBundleValue exception" + key + " : " + defaultValue + " " + e.getMessage());
 		}
 		return defaultValue;
 	}
@@ -45,7 +45,7 @@ public class ResourceUtils {
 		try {
 			defaultValue = Long.valueOf(resource.getString(key));
 		} catch (Exception e) {
-			logger.warn("getBundleValue exception" + key + " : " + defaultValue, e);
+			logger.warn("getBundleValue exception" + key + " : " + defaultValue + " " + e.getMessage());
 		}
 		return defaultValue;
 	}
@@ -55,7 +55,7 @@ public class ResourceUtils {
 		try {
 			defaultValue = Double.valueOf(resource.getString(key));
 		} catch (Exception e) {
-			logger.warn("getBundleValue exception" + key + " : " + defaultValue, e);
+			logger.warn("getBundleValue exception" + key + " : " + defaultValue + " " + e.getMessage());
 		}
 		return defaultValue;
 	}
@@ -65,7 +65,7 @@ public class ResourceUtils {
 		try {
 			defaultValue = Boolean.valueOf(resource.getString(key));
 		} catch (Exception e) {
-			logger.warn("getBundleValue exception" + key + " : " + defaultValue, e);
+			logger.warn("getBundleValue exception" + key + " : " + defaultValue + " " + e.getMessage());
 		}
 		return defaultValue;
 	}
