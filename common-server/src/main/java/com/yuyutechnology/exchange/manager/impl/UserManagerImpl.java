@@ -129,16 +129,17 @@ public class UserManagerImpl implements UserManager {
 		user.setAreaCode(areaCode);
 		user.setUserPhone(userPhone);
 		userDAO.updateUser(user);
-		Calendar time = Calendar.getInstance();
-		time.add(Calendar.DATE, Integer.parseInt(ResourceUtils.getBundleValue4String("changePhone.time")));
-		redisDAO.saveData("changephonetime" + userId,simpleDateFormat.format(time.getTime()));
+		redisDAO.saveData("changephonetime" + userId, simpleDateFormat.format(new Date()));
 	}
 
 	@Override
 	public long checkChangePhoneTime(Integer userId) throws ParseException {
 		String timeString = redisDAO.getValueByKey("changephonetime" + userId);
-		if (timeString!=null) {
-			return simpleDateFormat.parse(timeString).getTime();
+		if (timeString != null) {
+			Calendar time = Calendar.getInstance();
+			time.setTime(simpleDateFormat.parse(timeString));
+			time.add(Calendar.DATE, Integer.parseInt(ResourceUtils.getBundleValue4String("changePhone.time")));
+			return time.getTime().getTime();
 		}
 		return new Date().getTime();
 
@@ -288,9 +289,7 @@ public class UserManagerImpl implements UserManager {
 				PasswordUtils.encrypt(userPassword, passwordSalt), new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER,
 				ServerConsts.USER_AVAILABLE_OF_AVAILABLE, passwordSalt, LanguageUtils.standard(language)));
 		logger.info("Add user complete");
-		Calendar time = Calendar.getInstance();
-		time.add(Calendar.DATE, Integer.parseInt(ResourceUtils.getBundleValue4String("changePhone.time")));
-		redisDAO.saveData("changephonetime" + userId,simpleDateFormat.format(time.getTime()));
+		redisDAO.saveData("changephonetime" + userId, simpleDateFormat.format(new Date()));
 		// 添加钱包信息
 		createWallets4NewUser(userId);
 		// 根据UNregistered 更新新用户钱包 将资金从系统帐户划给新用户
@@ -304,14 +303,14 @@ public class UserManagerImpl implements UserManager {
 		if (!user.getPushTag().equals(LanguageUtils.standard(language)) && StringUtils.isNotBlank(user.getPushId())) {
 			// 语言不一致，解绑Tag
 			logger.info("Language inconsistency, unbind Tag==>,");
-			 pushManager.unbindPushTag(user);
+			pushManager.unbindPushTag(user);
 		}
 		user.setPushTag(LanguageUtils.standard(language));
 		userDAO.updateUser(user);
 		if (StringUtils.isNotBlank(user.getPushId()) && user.getPushTag() != null) {
 			// 绑定Tag
 			logger.info("bind Tag==>");
-			 pushManager.bindPushTag(user);
+			pushManager.bindPushTag(user);
 		}
 	}
 
