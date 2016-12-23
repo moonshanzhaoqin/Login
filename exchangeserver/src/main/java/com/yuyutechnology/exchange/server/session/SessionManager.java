@@ -2,7 +2,6 @@ package com.yuyutechnology.exchange.server.session;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -31,18 +30,8 @@ public class SessionManager {
 	public static String SESSION_DATA_KEY_USERID = "session_data[userid]";
 	public static String LOGIN_TOKEN_USERID_KEY = "loginTokenUserId[:userid]";
 	public static String LOGIN_TOKEN_TOKEN_KEY = "loginToken[:token]";
-	public int SESSION_TIMEOUT_MINUATE = 15;
-	public int LOGIN_TOKEN_TIMEOUT_DAY = 7;
-	
-	@PostConstruct
-	public void init () {
-		try {
-			SESSION_TIMEOUT_MINUATE = Integer.valueOf(ResourceUtils.getBundleValue("session.timeout.minuate"));
-			LOGIN_TOKEN_TIMEOUT_DAY = Integer.valueOf(ResourceUtils.getBundleValue("login.token.timeout.day"));
-		} catch (Exception e) {
-			logger.warn("get session time config error ! "+e.getMessage());
-		}
-	}
+	public int SESSION_TIMEOUT_MINUATE = ResourceUtils.getBundleValue4Long("session.timeout.minuate", 15l).intValue();
+	public int LOGIN_TOKEN_TIMEOUT_DAY = ResourceUtils.getBundleValue4Long("login.token.timeout.day", 7l).intValue();
 	
 	/**
 	 * 

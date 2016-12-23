@@ -5,6 +5,7 @@ package com.yuyutechnology.exchange.server.controller;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -42,6 +43,7 @@ import com.yuyutechnology.exchange.server.controller.request.SwitchLanguageReque
 import com.yuyutechnology.exchange.server.controller.response.AddFriendResponse;
 import com.yuyutechnology.exchange.server.controller.response.BindGoldpayResponse;
 import com.yuyutechnology.exchange.server.controller.response.ChangePhoneResponse;
+import com.yuyutechnology.exchange.server.controller.response.CheckChangePhoneResponse;
 import com.yuyutechnology.exchange.server.controller.response.CheckPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.CheckPayPwdResponse;
 import com.yuyutechnology.exchange.server.controller.response.ContactUsResponse;
@@ -193,7 +195,8 @@ public class LoggedInUserController {
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
-			if (userManager.checkChangePhoneTime(sessionData.getUserId())) {
+			long time = userManager.checkChangePhoneTime(sessionData.getUserId());
+			if (time<=new Date().getTime()) {
 				// 检验支付密码
 				if (userManager.checkUserPayPwd(sessionData.getUserId(), changePhoneRequest.getUserPayPwd())) {
 					// 校验手机验证码
@@ -223,8 +226,30 @@ public class LoggedInUserController {
 				rep.setRetCode(ServerConsts.TIME_NOT_ARRIVED);
 				rep.setMessage(MessageConsts.TIME_NOT_ARRIVED);
 			}
+			rep.setTime(time);
 		}
+		return rep;
+	}
 
+	// TODO checkChangePhone 校验换绑手机时间
+	@ResponseBody
+	@ApiOperation(value = "校验换绑手机", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/checkChangePhone", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public CheckChangePhoneResponse checkChangePhone(@PathVariable String token) throws ParseException {
+		logger.info("========checkChangePhone : {}============", token);
+		CheckChangePhoneResponse rep = new CheckChangePhoneResponse();
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		long time = userManager.checkChangePhoneTime(sessionData.getUserId());
+		if (time <= new Date().getTime()) {
+			logger.info("********Operation succeeded********");
+			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		} else {
+			logger.info(MessageConsts.TIME_NOT_ARRIVED);
+			rep.setRetCode(ServerConsts.TIME_NOT_ARRIVED);
+			rep.setMessage(MessageConsts.TIME_NOT_ARRIVED);
+		}
+		rep.setTime(time);
 		return rep;
 	}
 
@@ -653,4 +678,5 @@ public class LoggedInUserController {
 		}
 		return rep;
 	}
+
 }

@@ -2,17 +2,74 @@ package com.yuyutechnology.exchange.utils;
 
 import java.util.ResourceBundle;
 
-public class ResourceUtils {
-	public static String getBundleValue(String key) {
-		ResourceBundle resource = ResourceBundle.getBundle("server-conf");
-		return resource.getString(key);
-	}
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-	public static String getBundleValue(String filename, String key) {
-		ResourceBundle resource = ResourceBundle.getBundle(filename);
-		return resource.getString(key);
+import com.yuyutechnology.exchange.dao.impl.CurrencyDAOImpl;
+
+public class ResourceUtils {
+	
+	public static Logger logger = LoggerFactory.getLogger(ResourceUtils.class);
+	
+	private final static String configfileName = "server-conf";
+	
+	public static String getBundleValue4String(String key) {
+		return getBundleValue4String(key, "");
 	}
 	
+	public static Long getBundleValue4Long(String key) {
+		return getBundleValue4Long(key, 0l);
+	}
+	
+	public static Double getBundleValue4Double(String key) {
+		return getBundleValue4Double(key, 0d);
+	}
+	
+	public static boolean getBundleValue4Boolean(String key) {
+		return getBundleValue4Boolean(key, false);
+	}
+	
+	public static String getBundleValue4String(String key, String defaultValue) {
+		ResourceBundle resource = ResourceBundle.getBundle(configfileName);
+		try {
+			defaultValue = resource.getString(key);
+		} catch (Exception e) {
+			logger.warn("getBundleValue exception" + key + " : " + defaultValue + " " + e.getMessage());
+		}
+		return defaultValue;
+	}
+	
+	
+	public static Long getBundleValue4Long(String key, Long defaultValue) {
+		ResourceBundle resource = ResourceBundle.getBundle(configfileName);
+		try {
+			defaultValue = Long.valueOf(resource.getString(key));
+		} catch (Exception e) {
+			logger.warn("getBundleValue exception" + key + " : " + defaultValue + " " + e.getMessage());
+		}
+		return defaultValue;
+	}
+	
+	public static Double getBundleValue4Double(String key, Double defaultValue) {
+		ResourceBundle resource = ResourceBundle.getBundle(configfileName);
+		try {
+			defaultValue = Double.valueOf(resource.getString(key));
+		} catch (Exception e) {
+			logger.warn("getBundleValue exception" + key + " : " + defaultValue + " " + e.getMessage());
+		}
+		return defaultValue;
+	}
+	
+	public static boolean getBundleValue4Boolean(String key, boolean defaultValue) {
+		ResourceBundle resource = ResourceBundle.getBundle(configfileName);
+		try {
+			defaultValue = Boolean.valueOf(resource.getString(key));
+		} catch (Exception e) {
+			logger.warn("getBundleValue exception" + key + " : " + defaultValue + " " + e.getMessage());
+		}
+		return defaultValue;
+	}
+
 	public static void clearCache() {
 		ResourceBundle.clearCache();
 	}
