@@ -130,7 +130,7 @@ public class UserManagerImpl implements UserManager {
 		user.setUserPhone(userPhone);
 		userDAO.updateUser(user);
 		Calendar time = Calendar.getInstance();
-		time.add(Calendar.DATE, Integer.parseInt(ResourceUtils.getBundleValue("changePhone.time")));
+		time.add(Calendar.DATE, Integer.parseInt(ResourceUtils.getBundleValue4String("changePhone.time")));
 		redisDAO.saveData("changephonetime" + userId,simpleDateFormat.format(time.getTime()));
 	}
 
@@ -289,7 +289,7 @@ public class UserManagerImpl implements UserManager {
 				ServerConsts.USER_AVAILABLE_OF_AVAILABLE, passwordSalt, LanguageUtils.standard(language)));
 		logger.info("Add user complete");
 		Calendar time = Calendar.getInstance();
-		time.add(Calendar.DATE, Integer.parseInt(ResourceUtils.getBundleValue("changePhone.time")));
+		time.add(Calendar.DATE, Integer.parseInt(ResourceUtils.getBundleValue4String("changePhone.time")));
 		redisDAO.saveData("changephonetime" + userId,simpleDateFormat.format(time.getTime()));
 		// 添加钱包信息
 		createWallets4NewUser(userId);
