@@ -202,7 +202,7 @@ public interface UserManager {
 	 * @return
 	 * @throws ParseException
 	 */
-	public boolean checkChangePhoneTime(Integer userId) throws ParseException;
+	public long checkChangePhoneTime(Integer userId) throws ParseException;
 
 	/**
 	 * 删除好友
