@@ -3,6 +3,7 @@ package com.yuyutechnology.exchange.manager.impl;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -128,17 +129,19 @@ public class UserManagerImpl implements UserManager {
 		user.setAreaCode(areaCode);
 		user.setUserPhone(userPhone);
 		userDAO.updateUser(user);
-		redisDAO.saveData("changephonetime" + userId, simpleDateFormat.format(new Date()), 300000000);
+		Calendar time = Calendar.getInstance();
+		time.add(Calendar.DATE, Integer.parseInt(ResourceUtils.getBundleValue4String("changePhone.time")));
+		redisDAO.saveData("changephonetime" + userId,simpleDateFormat.format(time.getTime()));
 	}
 
 	@Override
-	public boolean checkChangePhoneTime(Integer userId) throws ParseException {
+	public long checkChangePhoneTime(Integer userId) throws ParseException {
 		String timeString = redisDAO.getValueByKey("changephonetime" + userId);
-		if (timeString != null && (new Date().getTime() - simpleDateFormat.parse(timeString).getTime())
-				/ (24 * 60 * 60 * 1000) < Integer.parseInt(ResourceUtils.getBundleValue("changePhone.time"))) {
-			return false;
+		if (timeString!=null) {
+			return simpleDateFormat.parse(timeString).getTime();
 		}
-		return true;
+		return new Date().getTime();
+
 	}
 
 	@Override
@@ -194,7 +197,6 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
-
 	@Override
 	public List<Friend> getFriends(Integer userId) {
 		List<Friend> friends = friendDAO.getFriendsByUserId(userId);
@@ -205,8 +207,8 @@ public class UserManagerImpl implements UserManager {
 	public void getPinCode(String func, String areaCode, String userPhone) {
 		// 随机生成六位数
 		final String random;
-		if (Boolean.parseBoolean(ResourceUtils.getBundleValue("qa.switch"))) {
-			random = ResourceUtils.getBundleValue("verify.code");
+		if (ResourceUtils.getBundleValue4Boolean("qa.switch")) {
+			random = ResourceUtils.getBundleValue4String("verify.code", "654321");
 		} else {
 			random = MathUtils.randomFixedLengthStr(6);
 		}
@@ -214,7 +216,7 @@ public class UserManagerImpl implements UserManager {
 		final String md5random = DigestUtils.md5Hex(random);
 		// 存入redis userPhone:md5random
 		redisDAO.saveData(func + areaCode + userPhone, md5random,
-				Integer.parseInt(ResourceUtils.getBundleValue("verify.time")));
+				ResourceUtils.getBundleValue4Long("verify.time", 10l).intValue());
 		// 发送验证码
 		smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random);
 	}
@@ -286,7 +288,9 @@ public class UserManagerImpl implements UserManager {
 				PasswordUtils.encrypt(userPassword, passwordSalt), new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER,
 				ServerConsts.USER_AVAILABLE_OF_AVAILABLE, passwordSalt, LanguageUtils.standard(language)));
 		logger.info("Add user complete");
-		redisDAO.saveData("changephonetime" + userId, simpleDateFormat.format(new Date()), 300000000);
+		Calendar time = Calendar.getInstance();
+		time.add(Calendar.DATE, Integer.parseInt(ResourceUtils.getBundleValue4String("changePhone.time")));
+		redisDAO.saveData("changephonetime" + userId,simpleDateFormat.format(time.getTime()));
 		// 添加钱包信息
 		createWallets4NewUser(userId);
 		// 根据UNregistered 更新新用户钱包 将资金从系统帐户划给新用户

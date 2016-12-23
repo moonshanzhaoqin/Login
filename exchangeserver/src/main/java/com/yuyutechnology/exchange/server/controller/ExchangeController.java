@@ -18,6 +18,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.WalletInfo;
+import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.pojo.Exchange;
@@ -40,6 +41,8 @@ public class ExchangeController {
 	ExchangeManager exchangeManager;
 	@Autowired
 	ExchangeRateManager exchangeRateManager;
+	@Autowired
+	CommonManager commonManager;
 	
 	public static Logger logger = LoggerFactory.getLogger(ExchangeController.class);
 	
@@ -102,6 +105,15 @@ public class ExchangeController {
 	public @ResponseBody
 	GetExchangeRateResponse getExchangeRate(@PathVariable String token,@RequestBody GetExchangeRateRequest reqMsg){
 		GetExchangeRateResponse rep = new GetExchangeRateResponse();
+		
+		if(commonManager.verifyCurrency(reqMsg.getBase())){
+			logger.warn("This currency is not a tradable currency");
+			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
+			rep.setMessage("This currency is not a tradable currency");
+			return rep;
+		}
+		
+		
 		HashMap<String, Double> map = exchangeRateManager.getExchangeRate(reqMsg.getBase());
 		if(map.isEmpty()){
 			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);

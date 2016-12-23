@@ -1,9 +1,6 @@
 package com.yuyutechnology.exchange.dto;
 
 import java.math.BigDecimal;
-import java.util.Date;
-
-import com.yuyutechnology.exchange.pojo.Currency;
 
 public class WalletInfo {
 	private String currency;
