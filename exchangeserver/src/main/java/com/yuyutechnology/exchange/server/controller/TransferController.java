@@ -258,32 +258,35 @@ public class TransferController {
 				dto.setCurrency((String) obj[1]);
 				
 				
-				if((int) obj[6] == ServerConsts.TRANSFER_TYPE_TRANSACTION){
+				if((int) obj[7] == ServerConsts.TRANSFER_TYPE_TRANSACTION){
 					if(sessionData.getUserId() == (int) obj[0]){
 						dto.setAmount(new BigDecimal("-"+obj[2]+"") );
 						dto.setTransferType(0);
+						dto.setPhoneNum((String) obj[3]);
 					}else{
 						dto.setAmount(new BigDecimal("+"+obj[2]+"") );
 						dto.setTransferType(1);
+						dto.setPhoneNum((String) obj[4]);
 					}
-				}else if ((int) obj[6] == ServerConsts.TRANSFER_TYPE_OUT_INVITE) {
+				}else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_OUT_INVITE) {
 					dto.setAmount(new BigDecimal("-"+obj[2]+"") );
-					dto.setTransferType((int) obj[6]);
-				}else if ((int) obj[6] == ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND) {
+					dto.setTransferType((int) obj[7]);
+					dto.setPhoneNum((String) obj[3]);
+				}else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND) {
 					dto.setAmount(new BigDecimal("+"+obj[2]+"") );
-					dto.setTransferType((int) obj[6]);
-				}else if ((int) obj[6] == ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW) {
+					dto.setTransferType((int) obj[7]);
+					dto.setPhoneNum((String) obj[3]);
+				}else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW) {
 					dto.setAmount(new BigDecimal("-"+obj[2]+"") );
-					dto.setTransferType((int) obj[6]);
-				}else if ((int) obj[6] == ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE) {
+					dto.setTransferType((int) obj[7]);
+					dto.setPhoneNum((String) obj[3]);
+				}else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE) {
 					dto.setAmount(new BigDecimal("+"+obj[2]+"") );
-					dto.setTransferType((int) obj[6]);
+					dto.setTransferType((int) obj[7]);
+					dto.setPhoneNum((String) obj[4]);
 				}
-			
-
-				dto.setPhoneNum((String) obj[3]);
-				dto.setComments((String) obj[4]);
-				dto.setFinishAt((Date) obj[5]);
+				dto.setComments((String) obj[5]);
+				dto.setFinishAt((Date) obj[6]);
 
 				
 				dtos.add(dto);

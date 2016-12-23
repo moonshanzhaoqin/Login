@@ -94,6 +94,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		
 		String result = redisDAO.getValueByKey("redis_exchangeRate");
 		if(StringUtils.isNotBlank(result)){
+			@SuppressWarnings("unchecked")
 			HashMap<String, String> map = JsonBinder.getInstance().fromJson(result, HashMap.class);
 			String value = map.get("USD");
 

@@ -94,6 +94,19 @@ public interface TransferManager {
 	 */
 	public HashMap<String, Object> getNotificationRecordsByPage(int userId,int currentPage, int pageSize);
 
+	/**
+	 * @Descrition : TODO
+	 * @author : nicholas.chi
+	 * @time : 2016年12月23日 上午10:37:31
+	 * @param userId
+	 * @param areaCode
+	 * @param userPhone
+	 * @param currency
+	 * @param amount
+	 * @param transferComment
+	 * @param noticeId
+	 * @return
+	 */
 	public HashMap<String, String> respond2Request(int userId, String areaCode, String userPhone, String currency,
 			BigDecimal amount, String transferComment, int noticeId);
 	
