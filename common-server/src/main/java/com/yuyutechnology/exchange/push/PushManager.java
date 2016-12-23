@@ -162,7 +162,7 @@ public class PushManager {
 		String refundBody = templateChoose("refund", userFrom.getPushTag());
 		String body = refundBody.replace(PUSH_REPLACE_TO, areaCode + phone).replace(PUSH_REPLACE_CURRENCY, currency)
 				.replace(PUSH_REPLACE_AMOUNT, amount.toString())
-				.replace(PUSH_REPLACE_DAY, ResourceUtils.getBundleValue("refund.time"));
+				.replace(PUSH_REPLACE_DAY, ResourceUtils.getBundleValue4String("refund.time"));
 		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body);
 	}
 
@@ -273,14 +273,14 @@ public class PushManager {
 			return;
 		}
 		PushToCustom pushToCustom = new PushToCustom();
-		pushToCustom.setAppName(ResourceUtils.getBundleValue("appName"));
+		pushToCustom.setAppName(ResourceUtils.getBundleValue4String("appName"));
 		pushToCustom.setBody(body);
 		pushToCustom.setTitle(title);
 		pushToCustom.setDeviceID(deviceID);
 		pushToCustom.setUserId(userId.toString());
 		String param = JsonBinder.getInstance().toJson(pushToCustom);
 		logger.info("pushRequest : {}", param);
-		HttpTookit.sendPost(ResourceUtils.getBundleValue("push.url") + "/push_custom.do", param);
+		HttpTookit.sendPost(ResourceUtils.getBundleValue4String("push.url") + "/push_custom.do", param);
 	}
 
 	@Async
@@ -289,17 +289,17 @@ public class PushManager {
 			return;
 		}
 		TagRequest tagRequest = new TagRequest();
-		tagRequest.setAppName(ResourceUtils.getBundleValue("appName"));
+		tagRequest.setAppName(ResourceUtils.getBundleValue4String("appName"));
 		tagRequest.setDeviceIds(deviceID);
 		tagRequest.setTagName(pushTag);
 		String param = JsonBinder.getInstance().toJson(tagRequest);
 		logger.info("TagRequest : {}", param);
 		switch (func) {
 		case bindTag:
-			HttpTookit.sendPost(ResourceUtils.getBundleValue("push.url") + "/bindTag.do", param);
+			HttpTookit.sendPost(ResourceUtils.getBundleValue4String("push.url") + "/bindTag.do", param);
 			break;
 		case unbindTag:
-			HttpTookit.sendPost(ResourceUtils.getBundleValue("push.url") + "/unbindTag.do", param);
+			HttpTookit.sendPost(ResourceUtils.getBundleValue4String("push.url") + "/unbindTag.do", param);
 			break;
 		default:
 			break;

@@ -85,7 +85,7 @@ public class SmsManager {
 	public void sendSMS4PhoneVerify(String areaCode, String userPhone, String code) {
 		String phoneVerifyContent = templateChoose("phoneVerify", areaCode);
 		String content = phoneVerifyContent.replace(SMS_REPLACE_PIN, code).replace(SMS_REPLACE_TIME,
-				ResourceUtils.getBundleValue("verify.time"));
+				ResourceUtils.getBundleValue4String("verify.time"));
 		sendSMS(areaCode + userPhone, content);
 	}
 
@@ -103,7 +103,7 @@ public class SmsManager {
 		String transferContent = templateChoose("transfer", areaCode);
 		String content = transferContent.replace(SMS_REPLACE_FROM, user.getUserName())
 				.replace(SMS_REPLACE_CURRENCY, currency).replace(SMS_REPLACE_AMOUNT, amount.toString())
-				.replace(SMS_REPLACE_LINK, ResourceUtils.getBundleValue("download.link"));
+				.replace(SMS_REPLACE_LINK, ResourceUtils.getBundleValue4String("download.link"));
 		sendSMS(areaCode + userPhone, content);
 	}
 
@@ -146,10 +146,10 @@ public class SmsManager {
 		SendMessageRequest sendMessageRequest = new SendMessageRequest();
 		sendMessageRequest.setTo(phoneNum);
 		sendMessageRequest.setContent(Content);
-		sendMessageRequest.setAppId(ResourceUtils.getBundleValue("appId"));
+		sendMessageRequest.setAppId(ResourceUtils.getBundleValue4String("appId"));
 		String param = JsonBinder.getInstance().toJson(sendMessageRequest);
 		logger.info("sendMessageRequest : {}", param);
-		HttpTookit.sendPost(ResourceUtils.getBundleValue("sendSMS.serverUrl"), param);
+		HttpTookit.sendPost(ResourceUtils.getBundleValue4String("sendSMS.serverUrl"), param);
 	}
 
 }

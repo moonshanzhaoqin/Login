@@ -135,7 +135,7 @@ public class UserManagerImpl implements UserManager {
 	public boolean checkChangePhoneTime(Integer userId) throws ParseException {
 		String timeString = redisDAO.getValueByKey("changephonetime" + userId);
 		if (timeString != null && (new Date().getTime() - simpleDateFormat.parse(timeString).getTime())
-				/ (24 * 60 * 60 * 1000) < Integer.parseInt(ResourceUtils.getBundleValue("changePhone.time"))) {
+				/ (24 * 60 * 60 * 1000) < ResourceUtils.getBundleValue4Long("changePhone.time", 15l).intValue()) {
 			return false;
 		}
 		return true;
@@ -205,8 +205,8 @@ public class UserManagerImpl implements UserManager {
 	public void getPinCode(String func, String areaCode, String userPhone) {
 		// 随机生成六位数
 		final String random;
-		if (Boolean.parseBoolean(ResourceUtils.getBundleValue("qa.switch"))) {
-			random = ResourceUtils.getBundleValue("verify.code");
+		if (ResourceUtils.getBundleValue4Boolean("qa.switch")) {
+			random = ResourceUtils.getBundleValue4String("verify.code", "654321");
 		} else {
 			random = MathUtils.randomFixedLengthStr(6);
 		}
@@ -214,7 +214,7 @@ public class UserManagerImpl implements UserManager {
 		final String md5random = DigestUtils.md5Hex(random);
 		// 存入redis userPhone:md5random
 		redisDAO.saveData(func + areaCode + userPhone, md5random,
-				Integer.parseInt(ResourceUtils.getBundleValue("verify.time")));
+				ResourceUtils.getBundleValue4Long("verify.time", 10l).intValue());
 		// 发送验证码
 		smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random);
 	}

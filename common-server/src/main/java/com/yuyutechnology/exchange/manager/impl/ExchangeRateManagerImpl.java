@@ -47,7 +47,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 	public static Logger logger = LoggerFactory.getLogger(ExchangeRateManagerImpl.class);
 	
 	private void updateExchangeRateNoGoldq(){
-		String exchangeRateUrl = ResourceUtils.getBundleValue("exchange.rate.url");
+		String exchangeRateUrl = ResourceUtils.getBundleValue4String("exchange.rate.url");
 		List<Currency> currencies = currencyDAO.getCurrencys();
 		if(currencies.isEmpty()){
 			return ;
@@ -66,7 +66,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 	private void updateGoldpayExchangeRate(){
 		Document doc = null;
 		try {
-			doc = Jsoup.connect(ResourceUtils.getBundleValue("gold.price.url")).get();
+			doc = Jsoup.connect(ResourceUtils.getBundleValue4String("gold.price.url")).get();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -262,11 +262,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		}else{
 			GoldpayExchangeRate goldpayExchangeRate = JsonBinder.getInstance().
 					fromJson(goldpayER, GoldpayExchangeRate.class);
-			int time = 30;
-			try {
-				time = Integer.valueOf(ResourceUtils.getBundleValue("rate.update.period.minuate"));
-			} catch (Exception e) {
-			}
+			int time = ResourceUtils.getBundleValue4Long("rate.update.period.minuate", 30l).intValue();
 			if (new Date().getTime() - goldpayExchangeRate.getDate().getTime() >= time*60*1000){
 				updateExchangeRateNoGoldq();
 				updateGoldpayExchangeRate();

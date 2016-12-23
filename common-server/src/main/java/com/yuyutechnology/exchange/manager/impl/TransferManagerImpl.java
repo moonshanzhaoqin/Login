@@ -340,7 +340,7 @@ public class TransferManagerImpl implements TransferManager{
 		for (Unregistered unregistered : list) {
 			//:TODO
 			//判断是否超过期限
-			long deadline = (new Integer(ResourceUtils.getBundleValue("refund.time")))*24*60*60*1000;
+			long deadline = ResourceUtils.getBundleValue4Long("refund.time", 3l)*24*60*60*1000;
 			if(new Date().getTime() - unregistered.getCreateTime().getTime() >= deadline){
 				systemRefund(unregistered);
 			} 
