@@ -11,6 +11,8 @@ public interface TransferDAO {
 	public String createTransId(int transferType);
 
 	public void addTransfer(Transfer transfer);
+	
+	public void updateTransfer(Transfer transfer);
 
 	public Transfer getTransferById(String transferId);
 	
