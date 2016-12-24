@@ -72,7 +72,7 @@ public final class HttpTookit
 	}
 
 	
-	public static String sendPost(String link, String param){
+	public static String sendPost4Form(String link, String param){
 		BufferedWriter out = null;
 		BufferedReader in = null;
 		String body = "";
@@ -86,7 +86,7 @@ public final class HttpTookit
 			connection.setInstanceFollowRedirects(true);
 			connection.setRequestMethod("POST"); // 设置请求方式
 			connection.setRequestProperty("Accept", "application/json"); // 设置接收数据的格式
-			connection.setRequestProperty("Content-Type", "application/json"); // 设置发送数据的格式
+			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded"); // 设置发送数据的格式
 			connection.connect();
 			out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
 			out.write(param);
@@ -116,6 +116,52 @@ public final class HttpTookit
 		}
 		return body;
 	}
+	
+	public static String sendPost(String link, String param){
+		BufferedWriter out = null;
+		BufferedReader in = null;
+		String body = "";
+		try {
+			URL url = new URL(link);// 创建连接
+			HttpURLConnection connection = (HttpURLConnection) url
+					.openConnection();
+			connection.setDoOutput(true);
+			connection.setDoInput(true);
+			connection.setUseCaches(false);
+			connection.setInstanceFollowRedirects(true);
+			connection.setRequestMethod("POST"); // 设置请求方式
+			connection.setRequestProperty("Accept", "application/json"); // 设置接收数据的格式
+			connection.setRequestProperty("Content-Type", "x-www-form-urlencoded"); // 设置发送数据的格式
+			connection.connect();
+			out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
+			out.write(param);
+			out.flush();
+			// 读取响应
+			InputStream jnn = connection.getInputStream();
+			in = new BufferedReader(new InputStreamReader(jnn, "UTF-8"));
+			String line = "";
+			while ((line = in.readLine()) != null) {
+				body += "" + line;
+			}
+			if (connection.getResponseCode() == 200) {
+				return body;
+			}
+		} catch (IOException e) {
+			logger.error("send to request is failed: {}",e);
+			e.printStackTrace();
+		} finally { // 关闭流
+			try {
+				if (out != null) {
+					out.close();
+				}
+			} catch (IOException ex) {
+				logger.error("close in or out io failed");
+				ex.printStackTrace();
+			}
+		}
+		return body;
+	}
+	
 	public static String getIp(HttpServletRequest request) {
 		String ip = request.getHeader("X-Forwarded-For");
 		if (StringUtils.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {

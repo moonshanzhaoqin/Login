@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.AppVersionDAO;
 import com.yuyutechnology.exchange.dao.BindDAO;
@@ -166,6 +167,16 @@ public class UserManagerImpl implements UserManager {
 			return true;
 		}
 		logger.info("***Does not match***");
+		return false;
+	}
+	
+	@Override
+	public boolean checkGoldpayPwd(Integer userId, String goldpayPassword) {
+		logger.info("Check {}  user's PAY password {} ==>", userId, goldpayPassword);
+		Bind bind = bindDAO.getBindByUserId(userId);
+		if (bind != null && goldpayManager.checkGoldpay(bind.getGoldpayName(), goldpayPassword)) {
+			return true;
+		}
 		return false;
 	}
 

@@ -1,5 +1,5 @@
 package com.yuyutechnology.exchange.server.controller.response;
 
-public class ModifyPayPwdByPINResponse extends BaseResponse{
+public class ModifyPayPwdByGoldpayResponse extends BaseResponse{
 	
 }

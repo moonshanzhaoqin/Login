@@ -32,13 +32,14 @@ import com.yuyutechnology.exchange.server.controller.dto.FriendInfo;
 import com.yuyutechnology.exchange.server.controller.request.AddFriendRequest;
 import com.yuyutechnology.exchange.server.controller.request.BindGoldpayRequest;
 import com.yuyutechnology.exchange.server.controller.request.ChangePhoneRequest;
+import com.yuyutechnology.exchange.server.controller.request.CheckGoldpayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.CheckPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.CheckPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
 import com.yuyutechnology.exchange.server.controller.request.DeleteFriendRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
+import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByGoldpayRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByOldRequest;
-import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByPINRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyUserNameRequest;
 import com.yuyutechnology.exchange.server.controller.request.SetUserPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.SwitchLanguageRequest;
@@ -46,6 +47,7 @@ import com.yuyutechnology.exchange.server.controller.response.AddFriendResponse;
 import com.yuyutechnology.exchange.server.controller.response.BindGoldpayResponse;
 import com.yuyutechnology.exchange.server.controller.response.ChangePhoneResponse;
 import com.yuyutechnology.exchange.server.controller.response.CheckChangePhoneResponse;
+import com.yuyutechnology.exchange.server.controller.response.CheckGoldpayPwdResponse;
 import com.yuyutechnology.exchange.server.controller.response.CheckPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.CheckPayPwdResponse;
 import com.yuyutechnology.exchange.server.controller.response.ContactUsResponse;
@@ -54,8 +56,8 @@ import com.yuyutechnology.exchange.server.controller.response.FriendsListRespons
 import com.yuyutechnology.exchange.server.controller.response.GetMsgFlagResponse;
 import com.yuyutechnology.exchange.server.controller.response.LogoutResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPasswordResponse;
+import com.yuyutechnology.exchange.server.controller.response.ModifyPayPwdByGoldpayResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPayPwdByOldResponse;
-import com.yuyutechnology.exchange.server.controller.response.ModifyPayPwdByPINResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyUserNameResponse;
 import com.yuyutechnology.exchange.server.controller.response.SetUserPayPwdResponse;
 import com.yuyutechnology.exchange.server.controller.response.SwitchLanguageResponse;
@@ -313,6 +315,33 @@ public class LoggedInUserController {
 	}
 
 	/**
+	 * checkGoldpayPwd 校验Goldpay密码
+	 * 
+	 * @param token
+	 * @param checkPayPwdRequest
+	 * @return
+	 */
+	@ResponseBody
+	@ApiOperation(value = "校验支付密码", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/checkGoldpayPwd", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public CheckGoldpayPwdResponse checkGoldpayPwd(@PathVariable String token,
+			@RequestBody CheckGoldpayPwdRequest checkPayGoldpayRequest) {
+		logger.info("========checkPassword : {}============", token);
+		CheckGoldpayPwdResponse rep = new CheckGoldpayPwdResponse();
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		if (userManager.checkUserPayPwd(sessionData.getUserId(), checkPayGoldpayRequest.getGoldpayPwd())) {
+			logger.info("********Operation succeeded********");
+			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		} else {
+			logger.info(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
+			rep.setRetCode(ServerConsts.GOLDPAY_PASSWORD_NOT_MATCH);
+			rep.setMessage(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
+		}
+		return rep;
+	}
+	
+	/**
 	 * friendsList好友列表
 	 * 
 	 * @param token
@@ -501,46 +530,42 @@ public class LoggedInUserController {
 	}
 
 	/**
-	 * modifyPayPwdByPIN 通过手机验证码更换支付密码
+	 * modifyPayPwdByGoldpay 通过Goldpay密码更换支付密码
 	 * 
 	 * @param token
-	 * @param modifyPayPwdByPINRequest
+	 * @param modifyPayPwdByGoldRequest
 	 * @return
 	 */
-
 	@ResponseBody
-	@ApiOperation(value = "通过手机验证码更换支付密码", httpMethod = "POST", notes = "")
+	@ApiOperation(value = "通过Goldpay密码更换支付密码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/modifyPayPwdByPIN", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public ModifyPayPwdByPINResponse modifyPayPwdByPIN(@PathVariable String token,
-			@RequestBody ModifyPayPwdByPINRequest modifyPayPwdByPINRequest) {
+	public ModifyPayPwdByGoldpayResponse modifyPayPwdByGoldpay(@PathVariable String token,
+			@RequestBody ModifyPayPwdByGoldpayRequest modifyPayPwdByGoldRequest) {
 		logger.info("========modifyPayPwdByOld : {}============", token);
-		ModifyPayPwdByPINResponse rep = new ModifyPayPwdByPINResponse();
-		if (modifyPayPwdByPINRequest.isEmpty()) {
+		ModifyPayPwdByGoldpayResponse rep = new ModifyPayPwdByGoldpayResponse();
+		if (modifyPayPwdByGoldRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
-			if (userManager.testPinCode(ServerConsts.PIN_FUNC_MODIFYPAYPWD, modifyPayPwdByPINRequest.getAreaCode(),
-					modifyPayPwdByPINRequest.getUserPhone(), modifyPayPwdByPINRequest.getVerificationCode())) {
-				SessionData sessionData = SessionDataHolder.getSessionData();
+			SessionData sessionData = SessionDataHolder.getSessionData();
+			if (userManager.checkGoldpayPwd(sessionData.getUserId(), modifyPayPwdByGoldRequest.getGoldpayPwd())) {
 				// PayPwd 6位数字
-				if (modifyPayPwdByPINRequest.getNewUserPayPwd().length() == 6
-						&& StringUtils.isNumeric(modifyPayPwdByPINRequest.getNewUserPayPwd())) {
-					userManager.updateUserPayPwd(sessionData.getUserId(), modifyPayPwdByPINRequest.getNewUserPayPwd());
+				if (modifyPayPwdByGoldRequest.getNewUserPayPwd().length() == 6
+						&& StringUtils.isNumeric(modifyPayPwdByGoldRequest.getNewUserPayPwd())) {
+					userManager.updateUserPayPwd(sessionData.getUserId(), modifyPayPwdByGoldRequest.getNewUserPayPwd());
 					logger.info("********Operation succeeded********");
 					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-					userManager.clearPinCode(ServerConsts.PIN_FUNC_MODIFYPAYPWD, modifyPayPwdByPINRequest.getAreaCode(),
-							modifyPayPwdByPINRequest.getUserPhone());
 				} else {
 					logger.info(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
 					rep.setRetCode(ServerConsts.PAY_PASSWORD_IS_ILLEGAL);
 					rep.setMessage(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
 				}
 			} else {
-				logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
-				rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
-				rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
+				logger.info(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
+				rep.setRetCode(ServerConsts.GOLDPAY_PASSWORD_NOT_MATCH);
+				rep.setMessage(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
 			}
 		}
 		return rep;
