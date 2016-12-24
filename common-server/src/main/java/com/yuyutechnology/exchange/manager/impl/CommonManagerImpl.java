@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import com.yuyutechnology.exchange.dao.AppVersionDAO;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dto.CurrencyInfo;
+import com.yuyutechnology.exchange.dto.MsgFlagInfo;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.pojo.AppVersion;
 import com.yuyutechnology.exchange.pojo.Currency;
@@ -97,5 +99,38 @@ public class CommonManagerImpl implements CommonManager {
 			}
 		}
 		return false;
+	}
+	
+	@Override
+//	@Async
+	public void addMsgFlag(int userId, int type) {
+		opsMsgFlag(userId, type, true);
+	}
+
+	@Override
+//	@Async
+	public void readMsgFlag(int userId, int type) {
+		opsMsgFlag(userId, type, false);
+	}
+	
+	public MsgFlagInfo getMsgFlag(int userId) {
+		MsgFlagInfo info = new MsgFlagInfo();
+		String msgFlagNewTransKey = "msgFlagNewTrans";
+		String msgFlagNewRequestTransKey = "msgFlagNewRequestTrans";
+		String msgFlagNewTrans = redisDAO.getData4Hash(msgFlagNewTransKey, userId+"");
+		String msgFlagNewRequestTrans = redisDAO.getData4Hash(msgFlagNewRequestTransKey, userId+"");
+		info.setNewTrans(Boolean.valueOf(msgFlagNewTrans));
+		info.setNewRequestTrans(Boolean.valueOf(msgFlagNewRequestTrans));
+		return info;
+	}
+
+	private void opsMsgFlag(int userId, int type, boolean on) {
+		String msgFlagNewTransKey = "msgFlagNewTrans";
+		String msgFlagNewRequestTransKey = "msgFlagNewRequestTrans";
+		if (type == 1) {
+			redisDAO.saveData4Hash(msgFlagNewTransKey, userId+"", Boolean.valueOf(on).toString());
+		}else{
+			redisDAO.saveData4Hash(msgFlagNewRequestTransKey, userId+"", Boolean.valueOf(on).toString());
+		}
 	}
 }

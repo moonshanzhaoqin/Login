@@ -112,7 +112,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		response.setHeader("Access-Control-Allow-Headers", "accept, content-type");
 		String requestURI = request.getRequestURI();
 		String sessionId = getToeknFromURI(request.getRequestURI());
-		logger.info("request URI:" + requestURI + " session : " + sessionId);
 		SessionData sessionData = sessionManager.get(sessionId);
 		// 判断是否需要拦截或者是否登录
 		if (validURL(requestURI) || sessionData!= null) {

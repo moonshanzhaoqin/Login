@@ -388,7 +388,7 @@ public class UserController {
 	@ResponseBody
 	@ApiOperation(value = "版本获取", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/appVersion", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public AppVersionResponse appVersion(@Validated @RequestBody AppVersionRequest appVersionRequest, HttpServletRequest request,
+	public AppVersionResponse appVersion(@RequestBody AppVersionRequest appVersionRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		logger.info("appVersion : ");
 		AppVersionResponse rep = new AppVersionResponse();
