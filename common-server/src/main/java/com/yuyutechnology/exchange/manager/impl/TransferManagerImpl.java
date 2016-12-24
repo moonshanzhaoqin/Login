@@ -446,7 +446,7 @@ public class TransferManagerImpl implements TransferManager{
 		HashMap<String, Object> map = transferDAO.getTransactionRecordByPage(sql+sb.toString(),
 				sb.toString(),values,currentPage, pageSize);
 		//读交易标记
-		commonManager.readMsgFlag(userId, 0);
+		commonManager.readMsgFlag(userId, 1);
 		return map;
 	}
 
@@ -466,7 +466,7 @@ public class TransferManagerImpl implements TransferManager{
 		HashMap<String, Object> map = notificationDAO.getNotificationRecordsByPage(sql+sb.toString(),
 				sb.toString(),values,currentPage, pageSize);
 		//读请求标记
-		commonManager.readMsgFlag(userId, 1);
+		commonManager.readMsgFlag(userId, 0);
 		return map;
 	}
 	

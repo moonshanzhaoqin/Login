@@ -145,7 +145,7 @@ public class PushManager {
 		pushToCustom(userTo.getUserId(), userTo.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 		
 		//新请求转账标记
-		commonManager.addMsgFlag(userTo.getUserId(), 0);
+		commonManager.addMsgFlag(userTo.getUserId(), 1);
 	}
 
 	/**
@@ -165,7 +165,7 @@ public class PushManager {
 		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 		
 		//新请求转账标记
-		commonManager.addMsgFlag(userTo.getUserId(), 1);
+		commonManager.addMsgFlag(userFrom.getUserId(), 0);
 	}
 
 	/**
