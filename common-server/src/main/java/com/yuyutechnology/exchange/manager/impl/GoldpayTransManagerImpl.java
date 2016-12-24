@@ -423,6 +423,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 					
 					transfer.setTransferComment(payModel.getOrderId());
 					transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+					transfer.setFinishTime(new Date());
 					transferDAO.updateTransfer(transfer);
 					
 					//添加seq记录
