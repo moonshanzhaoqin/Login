@@ -36,7 +36,6 @@ import com.yuyutechnology.exchange.server.controller.request.CheckPasswordReques
 import com.yuyutechnology.exchange.server.controller.request.CheckPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
 import com.yuyutechnology.exchange.server.controller.request.DeleteFriendRequest;
-import com.yuyutechnology.exchange.server.controller.request.GetMsgFlagRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByOldRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByPINRequest;
@@ -617,7 +616,6 @@ public class LoggedInUserController {
 	public ContactUsResponse contactUs(@PathVariable String token, @RequestBody ContactUsRequest contactUsRequest) {
 		logger.info("========contactUs : {}============", token);
 		ContactUsResponse rep = new ContactUsResponse();
-		SessionData sessionData = SessionDataHolder.getSessionData();
 		if (contactUsRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
