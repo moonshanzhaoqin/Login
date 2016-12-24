@@ -112,7 +112,7 @@ public class UserManagerImpl implements UserManager {
 							goldpayToken);
 				} else {
 					bind.setGoldpayId(goldpayUser.getId());
-					bind.setGoldpayName(goldpayUser.getUsername());
+					bind.setGoldpayName(MathUtils.hideString(goldpayUser.getUsername()));
 					bind.setGoldpayAcount(goldpayUser.getAccountNum());
 					bind.setToken(goldpayToken);
 				}
@@ -256,7 +256,7 @@ public class UserManagerImpl implements UserManager {
 			// goldpay
 			Bind bind = bindDAO.getBindByUserId(userId);
 			if (bind != null) {
-				userInfo.setGoldpayName(bind.getGoldpayName());
+				userInfo.setGoldpayName(MathUtils.hideString(bind.getGoldpayName()));
 			} else {
 				userInfo.setGoldpayName("");
 			}

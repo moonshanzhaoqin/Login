@@ -1,4 +1,5 @@
 package com.yuyutechnology.exchange.utils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.RandomUtils;
 /**
  * 
@@ -45,4 +46,16 @@ public class MathUtils
 		return userId+sb.toString();
 	}
 	
+	public static String hideString(String string) {
+		if (StringUtils.isBlank(string) || string.length() <= 2) {
+			return "**";
+		}
+		int index = Double.valueOf(Math.ceil(Double.valueOf(string.length()) / 4.0)).intValue();
+		int hideLengh = string.length() - index * 2;
+		String hideString = "";
+		for (int i = 0; i < hideLengh; i++) {
+			hideString += "*";
+		}
+		return string.substring(0, index) + hideString + string.substring(string.length()-index);
+	}
 }
