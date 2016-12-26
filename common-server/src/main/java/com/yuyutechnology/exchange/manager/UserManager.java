@@ -109,6 +109,13 @@ public interface UserManager {
 	 * @param oldPassword
 	 */
 	public boolean checkUserPassword(Integer userId, String oldPassword);
+	
+	/**
+	 * @param userId
+	 * @param goldpayPassword
+	 * @return
+	 */
+	public boolean checkGoldpayPwd(Integer userId, String goldpayPassword);
 
 	/**
 	 * 获取好友列表

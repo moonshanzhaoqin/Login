@@ -269,7 +269,6 @@ public class TransferManagerImpl implements TransferManager{
 
 			User payee = userDAO.getUser(transfer.getUserTo());
 			pushManager.push4Transfer(payer, payee, transfer.getCurrency(), transfer.getTransferAmount());
-			
 		}
 		//更改Transfer状态
 		transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
@@ -373,9 +372,7 @@ public class TransferManagerImpl implements TransferManager{
 			
 			//推送请求付款
 			User payee = userDAO.getUser(userId);
-			pushManager.push4TransferRuquest(payee, payer, currency, amount);
-			
-			
+			pushManager.push4TransferRuquest( payer,payee, currency, amount);
 			return ServerConsts.RET_CODE_SUCCESS;
 			
 		}
@@ -448,6 +445,8 @@ public class TransferManagerImpl implements TransferManager{
 
 		HashMap<String, Object> map = transferDAO.getTransactionRecordByPage(sql+sb.toString(),
 				sb.toString(),values,currentPage, pageSize);
+		//读交易标记
+		commonManager.readMsgFlag(userId, 1);
 		return map;
 	}
 
@@ -466,6 +465,8 @@ public class TransferManagerImpl implements TransferManager{
 
 		HashMap<String, Object> map = notificationDAO.getNotificationRecordsByPage(sql+sb.toString(),
 				sb.toString(),values,currentPage, pageSize);
+		//读请求标记
+		commonManager.readMsgFlag(userId, 0);
 		return map;
 	}
 	

@@ -1,5 +1,8 @@
 package com.yuyutechnology.exchange.goldpay;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +17,7 @@ public class GoldpayManager {
 	public static Logger logger = LoggerFactory.getLogger(GoldpayManager.class);
 
 	public GoldpayUser getGoldpayInfo(String accessToken) {
-		String result = HttpTookit.sendGet(ResourceUtils.getBundleValue4String("GoldpayURL") + "?access_token=" + accessToken, null);
+		String result = HttpTookit.sendGet(ResourceUtils.getBundleValue4String("goldpayUas.url") + "unity/userInfo.do?access_token=" + accessToken, null);
 		logger.info("result==={}", result);
 		if (StringUtils.isNotEmpty(result)) {
 			GoldpayInfo goldpayInfo = JsonBinder.getInstance().fromJson(result, GoldpayInfo.class);
@@ -23,5 +26,23 @@ public class GoldpayManager {
 			}
 		}
 		return null;
+	}
+	
+	public boolean checkGoldpay(String userName, String password) {
+		StringBuilder param = new StringBuilder();
+		param.append("client_id=").append(ResourceUtils.getBundleValue4String("goldpayUas.client.id", "exchange-client")).append("&");
+		param.append("client_secret=").append(ResourceUtils.getBundleValue4String("goldpayUas.client.key", "exchange")).append("&");
+		param.append("grant_type=").append("password").append("&");
+		param.append("username=").append(userName).append("&");
+		param.append("password=").append(password);
+		String result = HttpTookit.sendPost4Form(ResourceUtils.getBundleValue4String("goldpayUas.url") + "oauth/token", param.toString());
+		logger.info("result==={}", result);
+		if (StringUtils.isNotEmpty(result)) {
+			Map<String, String> resultMap = JsonBinder.getInstance().fromJson(result, HashMap.class);
+			if (StringUtils.isNotBlank(resultMap.get("access_token"))) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

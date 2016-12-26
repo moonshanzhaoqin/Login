@@ -52,4 +52,17 @@ public class RedisDAOImpl implements RedisDAO {
 	public void deleteKey(String key) {
 		commonRedisTemplate.delete(key);
 	}
+	
+	public String getData4Hash(String key, String hashKey) {
+		return (String) commonRedisTemplate.opsForHash().get(key, hashKey);
+	}
+	
+	public void saveData4Hash(String key, String hashKey, String value) {
+		commonRedisTemplate.opsForHash().put(key, hashKey, value);
+	}
+	
+	public void delData4Hash(String key, String ... hashKeys) {
+		commonRedisTemplate.opsForHash().delete(key, hashKeys);
+	}
+
 }

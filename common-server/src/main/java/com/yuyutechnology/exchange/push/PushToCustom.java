@@ -6,6 +6,7 @@ public class PushToCustom {
 	private String userId;
 	private String title;
 	private String body;
+	private String extParameters;
 
 	public String getAppName() {
 		return appName;
@@ -47,10 +48,18 @@ public class PushToCustom {
 		this.body = body;
 	}
 
+	public String getExtParameters() {
+		return extParameters;
+	}
+
+	public void setExtParameters(String extParameters) {
+		this.extParameters = extParameters;
+	}
+
 	@Override
 	public String toString() {
 		return "PushToCustom [appName=" + appName + ", deviceID=" + deviceID + ", userId=" + userId + ", title=" + title
-				+ ", body=" + body + "]";
+				+ ", body=" + body + ", extParameters=" + extParameters + "]";
 	}
 
 }

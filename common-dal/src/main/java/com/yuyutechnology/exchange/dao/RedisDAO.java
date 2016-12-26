@@ -10,4 +10,10 @@ public interface RedisDAO {
 	
 	public void deleteKey(String key);
 	
+	public void saveData4Hash(String key, String hashKey, String value);
+	
+	public String getData4Hash(String key, String hashKey);
+	
+	public void delData4Hash(String key, String ... hashKeys);
+	
 }

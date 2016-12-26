@@ -58,6 +58,11 @@ public class ExchangeController {
 			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
 			rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 		}else{
+			
+			
+			
+			
+			
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			rep.setWallets(wallets);

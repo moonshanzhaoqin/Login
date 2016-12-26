@@ -87,6 +87,10 @@ public class MessageConsts {
 	 * 该手机号不是好友
 	 */
 	public static final String PHONE_IS_NOT_FRIEND = "PHONE_IS_NOT_FRIEND";
+	/**
+	 * Goldpay密码错误
+	 */
+	public static final String GOLDPAY_PASSWORD_NOT_MATCH = "GOLDPAY_PASSWORD_NOT_MATCH";
 	
 	// 兑换 02
 	/**

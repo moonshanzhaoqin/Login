@@ -419,7 +419,13 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 					walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), 
 							transfer.getCurrency(), transfer.getTransferAmount(), "+");
 					//更改Transfer状态
-					transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+//					transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+					
+					transfer.setTransferComment(payModel.getOrderId());
+					transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+					transfer.setFinishTime(new Date());
+					transferDAO.updateTransfer(transfer);
+					
 					//添加seq记录
 					walletSeqDAO.addWalletSeq4Transaction(userId, systemUser.getUserId(), 
 							ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, transfer.getTransferId(), 

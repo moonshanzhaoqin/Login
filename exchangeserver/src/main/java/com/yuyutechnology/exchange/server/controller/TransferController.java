@@ -55,7 +55,6 @@ public class TransferController {
 	@Autowired
 	PushManager pushManager;
 	
-	
 	public static Logger logger = LoggerFactory.getLogger(TransferController.class);
 
 	@ApiOperation(value = "交易初始化")
@@ -201,8 +200,6 @@ public class TransferController {
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/requestATransfer")
 	public @ResponseBody
 	Respond2RequestResponse respond2Request(@PathVariable String token,@RequestBody Respond2RequestRequest reqMsg){
-		
-		logger.info("respond2Request=============Enter the content ： {} ，time ： {}  ",reqMsg.getNoticeId(),new Date());
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		Respond2RequestResponse rep = new Respond2RequestResponse();
@@ -350,11 +347,6 @@ public class TransferController {
 			rep.setTotal(Integer.parseInt(map.get("total")+""));
 			rep.setList(dtos);
 		}
-
-		
 		return rep;
 	}
-	
-	
-
 }
