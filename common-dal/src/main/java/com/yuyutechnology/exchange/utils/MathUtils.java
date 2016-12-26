@@ -50,7 +50,7 @@ public class MathUtils
 		if (StringUtils.isBlank(string) || string.length() <= 2) {
 			return "**";
 		}
-		int index = Double.valueOf(Math.ceil(Double.valueOf(string.length()) / 4.0)).intValue();
+		int index = Double.valueOf(Math.floor(Double.valueOf(string.length()) / 4.0)).intValue();
 		int hideLengh = string.length() - index * 2;
 		String hideString = "";
 		for (int i = 0; i < hideLengh; i++) {
