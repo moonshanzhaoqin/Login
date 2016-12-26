@@ -35,6 +35,7 @@ import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Friend;
 import com.yuyutechnology.exchange.pojo.FriendId;
+import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
@@ -422,18 +423,39 @@ public class UserManagerImpl implements UserManager {
 		List<Unregistered> unregistereds = unregisteredDAO.getUnregisteredByUserPhone(areaCode, userPhone);
 		for (Unregistered unregistered : unregistereds) {
 			logger.info("+ {} : {}", unregistered.getCurrency(), unregistered.getAmount());
+			
+			Transfer payerTransfer = transferDAO.getTransferById(unregistered.getTransferId());
+			User payer = userDAO.getUser(payerTransfer.getUserFrom());
+
 			// 系统账号扣款
 			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, unregistered.getCurrency(),
 					unregistered.getAmount(), "-");
 			// 用户加款
 			walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(), unregistered.getAmount(),
 					"+");
+			
+			//生成TransId
+			String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+			Transfer transfer = new Transfer();
+			transfer.setTransferId(transferId);
+			transfer.setUserFrom(systemUserId);
+			transfer.setUserTo(userId);
+			transfer.setAreaCode(payer.getAreaCode());
+			transfer.setPhone(payer.getUserPhone());
+			transfer.setCurrency(unregistered.getCurrency());
+			transfer.setTransferAmount(unregistered.getAmount());
+			transfer.setCreateTime(new Date());
+			transfer.setFinishTime(new Date());
+			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+			transfer.setNoticeId(0);
+			
+			transferDAO.addTransfer(transfer);
+			
 			// 增加seq记录
 			walletSeqDAO.addWalletSeq4Transaction(systemUserId, userId, ServerConsts.TRANSFER_TYPE_TRANSACTION,
-					unregistered.getTransferId(), unregistered.getCurrency(), unregistered.getAmount());
-			// 更改Transfer状态
-			transferDAO.updateTransferStatusAndUserTo(unregistered.getTransferId(),
-					ServerConsts.TRANSFER_STATUS_OF_COMPLETED, userId);
+					transferId, unregistered.getCurrency(), unregistered.getAmount());
+
 			// 更改unregistered状态
 			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
 			unregisteredDAO.updateUnregistered(unregistered);
