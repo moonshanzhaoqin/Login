@@ -197,10 +197,10 @@ public class TransferManagerImpl implements TransferManager{
 			return ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED;
 		}
 		
-		if(transfer.getUserTo() == 0){  	//交易对象没有注册账号
-			
-			//获取系统账号
-			User systemUser = userDAO.getSystemUser();
+		//获取系统账号
+		User systemUser = userDAO.getSystemUser();
+		
+		if(transfer.getUserTo() == systemUser.getUserId()){  	//交易对象没有注册账号
 			//扣款
 			Integer updateCount = walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), 
 					transfer.getCurrency(), transfer.getTransferAmount(), "-");
@@ -285,15 +285,12 @@ public class TransferManagerImpl implements TransferManager{
 	@Override
 	public void systemRefund(Unregistered unregistered) {
 		
-		Transfer transfer = transferDAO.getTranByIdAndStatus(
-				unregistered.getTransferId(),
-				ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		Transfer transfer = transferDAO.getTransferById(unregistered.getTransferId());
 		
-		if(transfer == null){
+		if(transfer == null || transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_COMPLETED){
 			logger.warn("Did not find the corresponding transfer information");
 			return ;
 		}
-		
 		
 		User systemUser = userDAO.getSystemUser();
 		
