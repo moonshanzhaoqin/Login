@@ -126,7 +126,8 @@ public class TransferManagerImpl implements TransferManager{
 			transfer.setUserTo(receiver.getUserId());
 			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		}else{
-			transfer.setUserTo(0);
+			User systemUser = userDAO.getSystemUser();
+			transfer.setUserTo(systemUser.getUserId());
 			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_OUT_INVITE);
 		}
 		transfer.setNoticeId(noticeId);
@@ -196,10 +197,10 @@ public class TransferManagerImpl implements TransferManager{
 			return ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED;
 		}
 		
-		if(transfer.getUserTo() == 0){  	//交易对象没有注册账号
-			
-			//获取系统账号
-			User systemUser = userDAO.getSystemUser();
+		//获取系统账号
+		User systemUser = userDAO.getSystemUser();
+		
+		if(transfer.getUserTo() == systemUser.getUserId()){  	//交易对象没有注册账号
 			//扣款
 			Integer updateCount = walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), 
 					transfer.getCurrency(), transfer.getTransferAmount(), "-");
