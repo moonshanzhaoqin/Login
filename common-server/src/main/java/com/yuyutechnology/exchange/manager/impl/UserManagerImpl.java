@@ -425,6 +425,12 @@ public class UserManagerImpl implements UserManager {
 			logger.info("+ {} : {}", unregistered.getCurrency(), unregistered.getAmount());
 			
 			Transfer payerTransfer = transferDAO.getTransferById(unregistered.getTransferId());
+			
+			if(payerTransfer == null){
+				logger.warn("Did not find the corresponding transfer information");
+				return ;
+			}
+			
 			User payer = userDAO.getUser(payerTransfer.getUserFrom());
 
 			// 系统账号扣款
@@ -448,6 +454,7 @@ public class UserManagerImpl implements UserManager {
 			transfer.setFinishTime(new Date());
 			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+			transfer.setTransferComment(unregistered.getTransferId());
 			transfer.setNoticeId(0);
 			
 			transferDAO.addTransfer(transfer);
@@ -479,5 +486,10 @@ public class UserManagerImpl implements UserManager {
 				return ServerConsts.RET_CODE_SUCCESS;
 			}
 		}
+	}
+
+	@Override
+	public User getSystemUser() {
+		return userDAO.getSystemUser();
 	}
 }
