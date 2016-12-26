@@ -37,6 +37,7 @@ import com.yuyutechnology.exchange.server.controller.request.CheckPasswordReques
 import com.yuyutechnology.exchange.server.controller.request.CheckPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
 import com.yuyutechnology.exchange.server.controller.request.DeleteFriendRequest;
+import com.yuyutechnology.exchange.server.controller.request.LogoutRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByGoldpayRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByOldRequest;
@@ -611,17 +612,22 @@ public class LoggedInUserController {
 	@ResponseBody
 	@ApiOperation(value = "退出账号", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/logout", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public LogoutResponse logout(@PathVariable String token) {
+	public LogoutResponse logout(@PathVariable String token, @RequestBody LogoutRequest logoutRequest) {
 		logger.info("========logout : {}============", token);
 		LogoutResponse rep = new LogoutResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		// 清session
-		sessionManager.logout(sessionData.getSessionId());
+		int userId = 0;
+		if (sessionData == null) {
+			userId = logoutRequest.getUserId();
+		}else{
+			userId = sessionData.getUserId();
+			// 清session
+			sessionManager.logout(sessionData.getSessionId());
+		}
 		// 清logintoken
-		sessionManager.delLoginToken(sessionData.getUserId());
+		sessionManager.delLoginToken(userId);
 		// 清pushId,解绑Tag
-		userManager.logout(sessionData.getUserId());
-
+		userManager.logout(userId);
 		logger.info("********Operation succeeded********");
 		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);

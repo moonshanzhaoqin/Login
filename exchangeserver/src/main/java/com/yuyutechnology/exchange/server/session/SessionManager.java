@@ -153,12 +153,14 @@ public class SessionManager {
 	}
 	
 	public void delLoginToken(int userId) {
-		String userIdKey = StringUtils.replace(LOGIN_TOKEN_USERID_KEY, ":userid", userId+"");
-		String token = sessionRedisTemplate.opsForValue().get(userIdKey);
-		if (StringUtils.isNotBlank(token)) {
-			sessionRedisTemplate.delete(userIdKey);
-			String tokenKey = StringUtils.replace(LOGIN_TOKEN_TOKEN_KEY, ":token", token);
-			sessionRedisTemplate.delete(tokenKey);
+		if (userId != 0) {
+			String userIdKey = StringUtils.replace(LOGIN_TOKEN_USERID_KEY, ":userid", userId+"");
+			String token = sessionRedisTemplate.opsForValue().get(userIdKey);
+			if (StringUtils.isNotBlank(token)) {
+				sessionRedisTemplate.delete(userIdKey);
+				String tokenKey = StringUtils.replace(LOGIN_TOKEN_TOKEN_KEY, ":token", token);
+				sessionRedisTemplate.delete(tokenKey);
+			}
 		}
 	}
 }
