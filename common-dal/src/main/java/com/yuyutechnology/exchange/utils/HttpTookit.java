@@ -131,7 +131,7 @@ public final class HttpTookit
 			connection.setInstanceFollowRedirects(true);
 			connection.setRequestMethod("POST"); // 设置请求方式
 			connection.setRequestProperty("Accept", "application/json"); // 设置接收数据的格式
-			connection.setRequestProperty("Content-Type", "x-www-form-urlencoded"); // 设置发送数据的格式
+			connection.setRequestProperty("Content-Type", "application/json"); // 设置发送数据的格式
 			connection.connect();
 			out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
 			out.write(param);
