@@ -288,6 +288,13 @@ public class TransferManagerImpl implements TransferManager{
 		Transfer transfer = transferDAO.getTranByIdAndStatus(
 				unregistered.getTransferId(),
 				ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		
+		if(transfer == null){
+			logger.warn("Did not find the corresponding transfer information");
+			return ;
+		}
+		
+		
 		User systemUser = userDAO.getSystemUser();
 		
 		//系统扣款
