@@ -153,8 +153,17 @@ public class GoldpayTransController {
 			return rep;
 		}
 		
-		HashMap<String, String> map = goldpayTransManager.withdrawConfirm(sessionData.getUserId(),
+		HashMap<String, String> map = goldpayTransManager.withdrawConfirm1(sessionData.getUserId(),
 				reqMsg.getPayPwd(), reqMsg.getTransferId());
+		
+		if(map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
+			HashMap<String, String> map2 = goldpayTransManager.withdrawConfirm2(sessionData.getUserId(), reqMsg.getTransferId());
+			if(!map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
+				
+			}
+			rep.setRetCode(map2.get("retCode"));
+			rep.setMessage(map2.get("msg"));
+		}
 		
 		rep.setRetCode(map.get("retCode"));
 		rep.setMessage(map.get("msg"));
