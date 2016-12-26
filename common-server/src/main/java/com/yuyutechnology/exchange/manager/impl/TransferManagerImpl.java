@@ -126,7 +126,8 @@ public class TransferManagerImpl implements TransferManager{
 			transfer.setUserTo(receiver.getUserId());
 			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		}else{
-			transfer.setUserTo(0);
+			User systemUser = userDAO.getSystemUser();
+			transfer.setUserTo(systemUser.getUserId());
 			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_OUT_INVITE);
 		}
 		transfer.setNoticeId(noticeId);
