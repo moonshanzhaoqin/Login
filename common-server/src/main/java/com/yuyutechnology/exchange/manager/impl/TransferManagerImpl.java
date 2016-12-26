@@ -300,10 +300,7 @@ public class TransferManagerImpl implements TransferManager{
 		//用户加款
 		walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), 
 				transfer.getCurrency(), transfer.getTransferAmount(), "+");
-		//添加Seq记录
-		walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), transfer.getUserFrom(), 
-				ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, unregistered.getTransferId(), 
-				transfer.getCurrency(), transfer.getTransferAmount());
+
 		///////////////////////////生成transfer系统退款订单////////////////////////////
 		Transfer transfer2 = new Transfer();
 		//生成TransId
@@ -324,6 +321,10 @@ public class TransferManagerImpl implements TransferManager{
 		
 		transferDAO.addTransfer(transfer2);
 		///////////////////////////end////////////////////////////
+		//添加Seq记录
+		walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), transfer.getUserFrom(), 
+				ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND,transferId2 , 
+				transfer.getCurrency(), transfer.getTransferAmount());
 		//修改gift记录
 		unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_BACK);
 		unregisteredDAO.updateUnregistered(unregistered);
