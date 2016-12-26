@@ -311,7 +311,7 @@ public class PushManager {
 		pushToCustom.setExtParameters(extParameters);
 		String param = JsonBinder.getInstance().toJson(pushToCustom);
 		logger.info("pushRequest : {}", param);
-		HttpTookit.sendPost(ResourceUtils.getBundleValue4String("push.url") + "/push_custom.do", param);
+		HttpTookit.sendPost(ResourceUtils.getBundleValue4String("push.url") + "push_custom.do", param);
 	}
 
 	@Async

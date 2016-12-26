@@ -486,8 +486,8 @@ public class TransferManagerImpl implements TransferManager{
 		}else if(notification.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)
 				&& notification.getAmount().compareTo(new BigDecimal(0))==0){
 			logger.warn("The requestor does not enter the specified currency information");
-			notification.setAmount(amount);
-			notification.setCurrency(currency);
+//			notification.setAmount(amount);
+//			notification.setCurrency(currency);
 		}else if(!notification.getCurrency().equals(currency) || notification.getAmount().compareTo(amount) != 0){
 			logger.warn("The input and order information do not match");
 			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
@@ -534,8 +534,10 @@ public class TransferManagerImpl implements TransferManager{
 		Transfer transfer = new Transfer(); 
 		transfer.setTransferId(transferId);
 		transfer.setCreateTime(new Date());
-		transfer.setCurrency(notification.getCurrency());
-		transfer.setTransferAmount(notification.getAmount());
+//		transfer.setCurrency(notification.getCurrency());
+//		transfer.setTransferAmount(notification.getAmount());
+		transfer.setCurrency(currency);
+		transfer.setTransferAmount(amount);
 		transfer.setTransferComment(transferComment);
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		transfer.setUserFrom(userId);
