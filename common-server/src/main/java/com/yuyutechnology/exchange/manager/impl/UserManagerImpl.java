@@ -352,9 +352,9 @@ public class UserManagerImpl implements UserManager {
 		User user = userDAO.getUser(userId);
 		user.setLoginIp(loginIp);
 		user.setLoginTime(new Date());
-		if (pushId != null && !pushId.equals(user.getPushId())) {
+		if (StringUtils.isNotBlank(pushId) && !pushId.equals(user.getPushId())) {
 			// 推送消息：设备已下线
-			logger.info("Push message: device offline==>");
+			logger.info("Push message: device offline==> oldPushId : {} , newPushId : {} ", new Object[]{user.getPushId(), pushId});
 			pushManager.push4Offline(user);
 		}
 		if (!user.getPushTag().equals(LanguageUtils.standard(language))) {
@@ -363,7 +363,7 @@ public class UserManagerImpl implements UserManager {
 			pushManager.unbindPushTag(user);
 			user.setPushTag(LanguageUtils.standard(language));
 		}
-		if (pushId != null) {
+		if (StringUtils.isNotBlank(pushId)) {
 			user.setPushId(pushId);
 		}
 		userDAO.updateUser(user);

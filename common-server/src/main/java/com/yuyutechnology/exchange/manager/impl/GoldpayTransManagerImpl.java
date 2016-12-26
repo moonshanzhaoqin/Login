@@ -318,7 +318,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		transfer.setUserFrom(userId);
 		transfer.setAreaCode(systemUser.getAreaCode());
-		transfer.setPhone(systemUser.getAreaCode());
+		transfer.setPhone(systemUser.getUserPhone());
 		transfer.setUserTo(systemUser.getUserId());
 		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
 		transfer.setNoticeId(0);

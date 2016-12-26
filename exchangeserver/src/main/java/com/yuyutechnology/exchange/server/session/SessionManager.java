@@ -27,6 +27,7 @@ public class SessionManager {
 	@Resource
 	RedisTemplate<String, String> sessionRedisTemplate;
 	public static String SESSION_DATA_KEY = "session_data[sessionid]";
+//	public static String REPEAT_LOGIN_SESSION_DATA_KEY = "repeat_login_session_data[:sessionid]";
 	public static String SESSION_DATA_KEY_USERID = "session_data[userid]";
 	public static String LOGIN_TOKEN_USERID_KEY = "loginTokenUserId[:userid]";
 	public static String LOGIN_TOKEN_TOKEN_KEY = "loginToken[:token]";
@@ -52,7 +53,7 @@ public class SessionManager {
 		sessionRedisTemplate.expire(key, SESSION_TIMEOUT_MINUATE, TimeUnit.MINUTES);
 		if (sessionData.getUserId() != null) {
 			if (!allowRepeatLogin) {
-				logout(sessionData.getUserId());
+				repeatLogin(sessionData.getUserId());
 			}
 			saveSessionDataToUserId(sessionData);
 		}
@@ -106,7 +107,7 @@ public class SessionManager {
 	/**
 	 * @param userId
 	 */
-	public void logout(int userId) {
+	public void repeatLogin(int userId) {
 		SessionData session = getByUserid(userId);
 		if (session != null && StringUtils.isNotEmpty(session.getSessionId())) {
 			String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", session.getSessionId());
