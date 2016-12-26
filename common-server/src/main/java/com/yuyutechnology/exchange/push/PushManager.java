@@ -193,12 +193,12 @@ public class PushManager {
 	 * @param user
 	 */
 	@Async
-	public void push4Offline(User user) {
+	public void push4Offline(User user, String pushId) {
 		String title = "下线消息";
 		String offlineBody = templateChoose("offline", user.getPushTag());
 		String body = offlineBody;
 		ext.put("type", "offline");
-		pushToCustom(user.getUserId(), user.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
+		pushToCustom(user.getUserId(), pushId, title, body, JsonBinder.getInstance().toJson(ext));
 	}
 
 	/**
