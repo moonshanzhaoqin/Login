@@ -355,7 +355,7 @@ public class UserManagerImpl implements UserManager {
 		if (StringUtils.isNotBlank(pushId) && !pushId.equals(user.getPushId())) {
 			// 推送消息：设备已下线
 			logger.info("Push message: device offline==> oldPushId : {} , newPushId : {} ", new Object[]{user.getPushId(), pushId});
-			pushManager.push4Offline(user);
+			pushManager.push4Offline(user, user.getPushId());
 		}
 		if (!user.getPushTag().equals(LanguageUtils.standard(language))) {
 			// 语言不一致，解绑Tag
