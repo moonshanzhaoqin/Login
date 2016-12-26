@@ -65,7 +65,7 @@ public class WalletDAOImpl implements WalletDAO {
 				}else{
 					if(userId != systemUserId){
 						query = session.createQuery("update Wallet set updateTime = ? ,balance = balance-"
-								+amount+" where userId = ? and currency.currency = ? and balance-"+amount+">0");
+								+amount+" where userId = ? and currency.currency = ? and balance-"+amount+">=0");
 					}else{
 						query = session.createQuery("update Wallet set updateTime = ? ,balance = balance-"
 								+amount+" where userId = ? and currency.currency = ?");
