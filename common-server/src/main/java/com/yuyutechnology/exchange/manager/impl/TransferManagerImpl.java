@@ -330,8 +330,8 @@ public class TransferManagerImpl implements TransferManager{
 		
 		//发送推送
 		User payee = userDAO.getUser(transfer.getUserFrom());
-		pushManager.push4Refund(payee, payee.getAreaCode(),transfer.getAreaCode(),
-				transfer.getPhone(), transfer.getTransferAmount());
+		pushManager.push4Refund(payee, payee.getAreaCode(),transfer.getPhone(),
+				transfer.getCurrency(), transfer.getTransferAmount());
 		
 	}
 	
@@ -488,6 +488,9 @@ public class TransferManagerImpl implements TransferManager{
 			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
 			map.put("msg", "Can not find the corresponding notification information");
 			return map;
+		}else if(notification.getPayerId()!=userId || notification.getTradingStatus() 
+				== ServerConsts.NOTIFICATION_STATUS_OF_ALREADY_PAID){
+			
 		}else if(notification.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)
 				&& notification.getAmount().compareTo(new BigDecimal(0))==0){
 			logger.warn("The requestor does not enter the specified currency information");
