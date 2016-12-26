@@ -327,10 +327,10 @@ public class PushManager {
 		logger.info("TagRequest : {}", param);
 		switch (func) {
 		case bindTag:
-			HttpTookit.sendPost(ResourceUtils.getBundleValue4String("push.url") + "/bindTag.do", param);
+			HttpTookit.sendPost(ResourceUtils.getBundleValue4String("push.url") + "bindTag.do", param);
 			break;
 		case unbindTag:
-			HttpTookit.sendPost(ResourceUtils.getBundleValue4String("push.url") + "/unbindTag.do", param);
+			HttpTookit.sendPost(ResourceUtils.getBundleValue4String("push.url") + "unbindTag.do", param);
 			break;
 		default:
 			break;
