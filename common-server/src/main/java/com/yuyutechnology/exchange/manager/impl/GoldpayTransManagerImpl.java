@@ -587,7 +587,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 				if(payModel.getResultCode().equals(1) || payModel.getResultCode().equals(-102)){
 					logger.info("withdrawConfirm tpps callback result :success");
 					
-					transfer.setTransferComment(payModel.getOrderId());
+					transfer.setTransferComment(payModel.getPayOrderId());
 					transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 					transfer.setFinishTime(new Date());
 					transferDAO.updateTransfer(transfer);
