@@ -16,11 +16,6 @@ public class ConfigDAOImpl implements ConfigDAO {
 	HibernateTemplate hibernateTemplate;
 
 	@Override
-	public String getConfigValue(String configKey) {
-		return hibernateTemplate.get(Config.class, configKey).getConfigValue();
-	}
-
-	@Override
 	public void saveOrUpdateConfig(String configKey, String configValue) {
 		hibernateTemplate.saveOrUpdate(new Config(configKey, configValue));
 	}
