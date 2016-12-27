@@ -522,7 +522,7 @@ public class TransferManagerImpl implements TransferManager{
 			return map;
 		}
 		
-		User receiver = userDAO.getUserByUserPhone(areaCode, userPhone);
+		User receiver = userDAO.getUser(notification.getSponsorId());
 		//不用给自己转账
 		if(receiver!= null && userId == receiver.getUserId()){
 			logger.warn("Prohibit transfers to yourself");
