@@ -33,12 +33,13 @@ public class Unregistered implements java.io.Serializable {
 	private Date createTime;
 	private int unregisteredStatus;
 	private String transferId;
+	private String refundTransId;
 
 	public Unregistered() {
 	}
 
 	public Unregistered(String areaCode, String userPhone, String currency, BigDecimal amount, Date createTime,
-			int unregisteredStatus, String transferId) {
+			int unregisteredStatus, String transferId,String refundTransId) {
 		this.areaCode = areaCode;
 		this.userPhone = userPhone;
 		this.currency = currency;
@@ -46,6 +47,7 @@ public class Unregistered implements java.io.Serializable {
 		this.createTime = createTime;
 		this.unregisteredStatus = unregisteredStatus;
 		this.transferId = transferId;
+		this.refundTransId = refundTransId;
 	}
 
 	@Id
@@ -122,6 +124,15 @@ public class Unregistered implements java.io.Serializable {
 
 	public void setTransferId(String transferId) {
 		this.transferId = transferId;
+	}
+
+	@Column(name = "refund_trans_id")
+	public String getRefundTransId() {
+		return refundTransId;
+	}
+
+	public void setRefundTransId(String refundTransId) {
+		this.refundTransId = refundTransId;
 	}
 
 }

@@ -327,6 +327,7 @@ public class TransferManagerImpl implements TransferManager{
 				transfer.getCurrency(), transfer.getTransferAmount());
 		//修改gift记录
 		unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_BACK);
+		unregistered.setRefundTransId(transferId2);
 		unregisteredDAO.updateUnregistered(unregistered);
 		
 		//发送推送
