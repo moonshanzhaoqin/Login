@@ -243,9 +243,7 @@ public class TransferController {
 		GetTransactionRecordResponse rep = new GetTransactionRecordResponse();
 		HashMap<String,Object> map = transferManager.getTransactionRecordByPage(reqMsq.getPeriod(), sessionData.getUserId(),
 				reqMsq.getCurrentPage(), reqMsq.getPageSize());
-		
-		
-		
+
 		User systemUser = userManager.getSystemUser();
 		
 		if(((ArrayList<?>)map.get("list")).isEmpty()){
@@ -294,10 +292,9 @@ public class TransferController {
 					dto.setTransferType((int) obj[7]);
 					dto.setPhoneNum((String) obj[4]);
 				}
-				dto.setComments((String) obj[5]);
+				dto.setComments("");
 				dto.setFinishAt((Date) obj[6]);
 
-				
 				dtos.add(dto);
 			}
 			

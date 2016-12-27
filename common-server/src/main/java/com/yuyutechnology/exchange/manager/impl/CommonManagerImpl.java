@@ -6,6 +6,8 @@ package com.yuyutechnology.exchange.manager.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.dao.AppVersionDAO;
+import com.yuyutechnology.exchange.dao.ConfigDAO;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dto.CurrencyInfo;
@@ -38,9 +41,12 @@ public class CommonManagerImpl implements CommonManager {
 	@Autowired
 	CurrencyDAO currencyDAO;
 	@Autowired
+	ConfigDAO configDAO;
+	@Autowired
 	RedisDAO redisDAO;
 	
 	@Override
+	@PostConstruct
 	@Scheduled(cron = "0 1/10 * * * ?")
 	public void refreshConfig() {
 		ResourceUtils.clearCache();

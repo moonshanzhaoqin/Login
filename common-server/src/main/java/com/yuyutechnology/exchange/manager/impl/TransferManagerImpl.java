@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.ConfigKeyEnum;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.NotificationDAO;
@@ -22,6 +23,7 @@ import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.manager.CommonManager;
+import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
@@ -67,6 +69,8 @@ public class TransferManagerImpl implements TransferManager{
 	SmsManager smsManager;
 	@Autowired
 	CommonManager commonManager;
+	@Autowired
+	ConfigManager configManager;
 	
 	public static Logger logger = LoggerFactory.getLogger(TransferManagerImpl.class);
 
@@ -158,16 +162,14 @@ public class TransferManagerImpl implements TransferManager{
 			return ServerConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST;
 		}
 		
-		Currency standardCurrency = currencyDAO.getStandardCurrency();
-		
 		//总账大于设置安全基数，弹出需要短信验证框===============================================
 		BigDecimal totalBalance =  exchangeRateManager.getTotalBalance(userId);
-		BigDecimal totalBalanceMax =  standardCurrency.getAssetThreshold();
-		//当天累计转出总金额大于设置安全基数，弹出需要短信验证框
+		BigDecimal totalBalanceMax =  BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TOTALBALANCETHRESHOLD, 100000d));
 		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount(userId+"");
-		BigDecimal accumulatedAmountMax =  standardCurrency.getTransferMax();
+		//当天累计转出总金额大于设置安全基数，弹出需要短信验证框
+		BigDecimal accumulatedAmountMax =  BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.DAILYTRANSFERTHRESHOLD, 100000d));
 		//单笔转出金额大于设置安全基数，弹出需要短信验证框
-		BigDecimal AmountofSingleTransfer =  standardCurrency.getTransferLarge();
+		BigDecimal AmountofSingleTransfer = BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.EACHTRANSFERTHRESHOLD, 100000d));
 		
 		if(totalBalance.compareTo(totalBalanceMax) == 1 || 
 				( accumulatedAmount.compareTo(accumulatedAmountMax) == 1 || 
@@ -526,6 +528,12 @@ public class TransferManagerImpl implements TransferManager{
 			logger.warn("Prohibit transfers to yourself");
 			map.put("retCode", ServerConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
 			map.put("msg", "Prohibit transfers to yourself");
+			return map;
+		}
+		if(!receiver.getAreaCode().equals(areaCode) || !receiver.getUserPhone().equals(userPhone)){
+			logger.warn("Payee phone information does not match");
+			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("msg", "Payee phone information does not match");
 			return map;
 		}
 		
