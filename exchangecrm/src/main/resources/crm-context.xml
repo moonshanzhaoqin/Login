@@ -15,7 +15,6 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 	<import resource="db-redis-context.xml" />
 	<import resource="aop-context.xml" />
 
-	</bean>
 	<bean id="springMVCExceptionResolver" class="com.yuyutechnology.exchange.cfg.SpringMVCExceptionResolver"/>
 	<bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
