@@ -139,7 +139,7 @@ public class ServerConsts {
 	
 	public static final String TRANSFER_HISTORY_NOT_ACQUIRED = "03007";
 	
-	public static final String TRANSFER_NOTIFICATION_NOT_ACQUIRED = "03008";
+//	public static final String TRANSFER_NOTIFICATION_NOT_ACQUIRED = "03008";
 	
 	public static final String TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST = "03009";
 	
@@ -279,9 +279,9 @@ public class ServerConsts {
 		successCodeList.add(RET_CODE_SUCCESS);
 		successCodeList.add(TRANSFER_REQUIRES_PHONE_VERIFICATION);
 		successCodeList.add(TRANSFER_HISTORY_NOT_ACQUIRED);
-		successCodeList.add(TRANSFER_NOTIFICATION_NOT_ACQUIRED);
+//		successCodeList.add(TRANSFER_NOTIFICATION_NOT_ACQUIRED);
 		successCodeList.add(TIME_NOT_ARRIVED);
-		
+//		successCodeList.add(TIME_NOT_ARRIVED);
 		sessionCodeList.add(SESSION_TIMEOUT);
 	}
 

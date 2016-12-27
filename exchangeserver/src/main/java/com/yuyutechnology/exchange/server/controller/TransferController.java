@@ -324,7 +324,7 @@ public class TransferController {
 				sessionData.getUserId(),reqMsg.getCurrentPage(), reqMsg.getPageSize());
 		
 		if(((ArrayList<?>)map.get("list")).isEmpty()){
-			rep.setRetCode(ServerConsts.TRANSFER_NOTIFICATION_NOT_ACQUIRED);
+			rep.setRetCode(ServerConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
 			rep.setMessage("Notification Records not acquired");
 		}else{
 			
