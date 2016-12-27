@@ -85,59 +85,6 @@ public class LoggedInUserController {
 	CommonManager commonManager;
 
 	/**
-	 * addFriend 添加好友
-	 * 
-	 * @param token
-	 * @param addFriendRequest
-	 * @return
-	 */
-	@ResponseBody
-	@ApiOperation(value = "添加好友", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/user/addFriend", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public AddFriendResponse addFriend(@PathVariable String token, @RequestBody AddFriendRequest addFriendRequest) {
-		logger.info("========addFriend : {}============", token);
-		AddFriendResponse rep = new AddFriendResponse();
-
-		if (addFriendRequest.isEmpty()) {
-			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
-		} else {
-			SessionData sessionData = SessionDataHolder.getSessionData();
-			String retCode = userManager.addfriend(sessionData.getUserId(), addFriendRequest.getAreaCode(),
-					addFriendRequest.getUserPhone());
-			switch (retCode) {
-			case ServerConsts.RET_CODE_SUCCESS:
-				logger.info("********Operation succeeded********");
-				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-				break;
-			case ServerConsts.PHONE_NOT_EXIST:
-				logger.info(MessageConsts.PHONE_NOT_EXIST);
-				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
-				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
-				break;
-			case ServerConsts.PHONE_ID_YOUR_OWEN:
-				logger.info(MessageConsts.PHONE_ID_YOUR_OWEN);
-				rep.setRetCode(ServerConsts.PHONE_ID_YOUR_OWEN);
-				rep.setMessage(MessageConsts.PHONE_ID_YOUR_OWEN);
-				break;
-			case ServerConsts.FRIEND_HAS_ADDED:
-				logger.info(MessageConsts.FRIEND_HAS_ADDED);
-				rep.setRetCode(ServerConsts.FRIEND_HAS_ADDED);
-				rep.setMessage(MessageConsts.FRIEND_HAS_ADDED);
-				break;
-			default:
-				logger.info(MessageConsts.RET_CODE_FAILUE);
-				rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
-				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
-				break;
-			}
-		}
-		return rep;
-	}
-
-	/**
 	 * 绑定goldpay
 	 * 
 	 * @param token
@@ -203,7 +150,7 @@ public class LoggedInUserController {
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			long time = userManager.checkChangePhoneTime(sessionData.getUserId());
-			if (time<=new Date().getTime()) {
+			if (time <= new Date().getTime()) {
 				// 检验支付密码
 				if (userManager.checkUserPayPwd(sessionData.getUserId(), changePhoneRequest.getUserPayPwd())) {
 					// 校验手机验证码
@@ -323,49 +270,28 @@ public class LoggedInUserController {
 	 * @return
 	 */
 	@ResponseBody
-	@ApiOperation(value = "校验支付密码", httpMethod = "POST", notes = "")
+	@ApiOperation(value = "校验Goldpay密码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/checkGoldpayPwd", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public CheckGoldpayPwdResponse checkGoldpayPwd(@PathVariable String token,
 			@RequestBody CheckGoldpayPwdRequest checkPayGoldpayRequest) {
 		logger.info("========checkPassword : {}============", token);
 		CheckGoldpayPwdResponse rep = new CheckGoldpayPwdResponse();
-		SessionData sessionData = SessionDataHolder.getSessionData();
-		if (userManager.checkUserPayPwd(sessionData.getUserId(), checkPayGoldpayRequest.getGoldpayPwd())) {
-			logger.info("********Operation succeeded********");
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		if (checkPayGoldpayRequest.isEmpty()) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
-			logger.info(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
-			rep.setRetCode(ServerConsts.GOLDPAY_PASSWORD_NOT_MATCH);
-			rep.setMessage(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
+			SessionData sessionData = SessionDataHolder.getSessionData();
+			if (userManager.checkUserPayPwd(sessionData.getUserId(), checkPayGoldpayRequest.getGoldpayPwd())) {
+				logger.info("********Operation succeeded********");
+				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+			} else {
+				logger.info(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
+				rep.setRetCode(ServerConsts.GOLDPAY_PASSWORD_NOT_MATCH);
+				rep.setMessage(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
+			}
 		}
-		return rep;
-	}
-	
-	/**
-	 * friendsList好友列表
-	 * 
-	 * @param token
-	 * @return
-	 */
-	@ResponseBody
-	@ApiOperation(value = "好友列表", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/user/friendsList", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public FriendsListResponse friendsList(@PathVariable String token) {
-		logger.info("========friendsList : {}============", token);
-		FriendsListResponse rep = new FriendsListResponse();
-		SessionData sessionData = SessionDataHolder.getSessionData();
-		List<FriendInfo> friendInfos = new ArrayList<FriendInfo>();
-		List<Friend> friends = userManager.getFriends(sessionData.getUserId());
-		for (Friend friend : friends) {
-			logger.info("friend={}", friend.toString());
-			friendInfos.add(new FriendInfo(friend.getUser().getAreaCode(), friend.getUser().getUserPhone(),
-					friend.getUser().getUserName()));
-		}
-		rep.setFriends(friendInfos);
-		logger.info("********Operation succeeded********");
-		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
 
@@ -383,7 +309,6 @@ public class LoggedInUserController {
 			@RequestBody ModifyPasswordRequest modifyPasswordRequest) {
 		logger.info("========modifyPassword : {}============", token);
 		ModifyPasswordResponse rep = new ModifyPasswordResponse();
-
 		if (modifyPasswordRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
@@ -619,7 +544,7 @@ public class LoggedInUserController {
 		int userId = 0;
 		if (sessionData == null) {
 			userId = logoutRequest.getUserId();
-		}else{
+		} else {
 			userId = sessionData.getUserId();
 			// 清session
 			sessionManager.logout(sessionData.getSessionId());
@@ -652,7 +577,8 @@ public class LoggedInUserController {
 			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
-			mailManager.mail4contact(contactUsRequest.getName(),contactUsRequest.getEmail(),contactUsRequest.getCategory(),contactUsRequest.getEnquiry());
+			mailManager.mail4contact(contactUsRequest.getName(), contactUsRequest.getEmail(),
+					contactUsRequest.getCategory(), contactUsRequest.getEnquiry());
 			logger.info("********Operation succeeded********");
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
@@ -660,62 +586,9 @@ public class LoggedInUserController {
 		return rep;
 	}
 
-	/**
-	 * deleteFriend 删除好友
-	 * 
-	 * @param token
-	 * @param deleteFriendRequest
-	 * @return
-	 */
-	@ResponseBody
-	@ApiOperation(value = "删除好友", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/user/deleteFriend", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public DeleteFriendResponse deleteFriend(@PathVariable String token,
-			@RequestBody DeleteFriendRequest deleteFriendRequest) {
-		logger.info("========deleteFriend : {}============", token);
-		DeleteFriendResponse rep = new DeleteFriendResponse();
-		SessionData sessionData = SessionDataHolder.getSessionData();
-		if (deleteFriendRequest.isEmpty()) {
-			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
-		} else {
-			String retCode = userManager.deleteFriend(sessionData.getUserId(), deleteFriendRequest.getAreaCode(),
-					deleteFriendRequest.getPhone());
-			switch (retCode) {
-			case ServerConsts.RET_CODE_SUCCESS:
-				logger.info("********Operation succeeded********");
-				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-				break;
-			case ServerConsts.PHONE_NOT_EXIST:
-				logger.info(MessageConsts.PHONE_NOT_EXIST);
-				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
-				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
-				break;
-			case ServerConsts.PHONE_ID_YOUR_OWEN:
-				logger.info(MessageConsts.PHONE_ID_YOUR_OWEN);
-				rep.setRetCode(ServerConsts.PHONE_ID_YOUR_OWEN);
-				rep.setMessage(MessageConsts.PHONE_ID_YOUR_OWEN);
-				break;
-			case ServerConsts.PHONE_IS_NOT_FRIEND:
-				logger.info(MessageConsts.PHONE_IS_NOT_FRIEND);
-				rep.setRetCode(ServerConsts.PHONE_IS_NOT_FRIEND);
-				rep.setMessage(MessageConsts.PHONE_IS_NOT_FRIEND);
-				break;
-			default:
-				logger.info(MessageConsts.RET_CODE_FAILUE);
-				rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
-				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
-				break;
-			}
-		}
-		return rep;
-	}
-	
 	@ApiOperation(value = "获取消息红点标志位")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/user/getMsgFlag")
-	public @ResponseBody GetMsgFlagResponse getMsgFlag(@PathVariable String token){
+	public @ResponseBody GetMsgFlagResponse getMsgFlag(@PathVariable String token) {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		GetMsgFlagResponse rep = new GetMsgFlagResponse();
 		MsgFlagInfo msgFlagInfo = commonManager.getMsgFlag(sessionData.getUserId());
