@@ -13,6 +13,10 @@ public interface GoldpayTransManager {
 	
 	public HashMap<String, String> goldpayWithdraw(int userId,double amount);
 	
-	public HashMap<String, String> withdrawConfirm(int userId,String payPwd,String transferId);
+//	public HashMap<String, String> withdrawConfirm(int userId,String payPwd,String transferId);
+
+	public HashMap<String, String> withdrawConfirm1(int userId, String payPwd, String transferId);
+
+	public HashMap<String, String> withdrawConfirm2(int userId, String transferId);
 
 }

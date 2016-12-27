@@ -197,10 +197,10 @@ public class TransferManagerImpl implements TransferManager{
 			return ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED;
 		}
 		
-		if(transfer.getUserTo() == 0){  	//交易对象没有注册账号
-			
-			//获取系统账号
-			User systemUser = userDAO.getSystemUser();
+		//获取系统账号
+		User systemUser = userDAO.getSystemUser();
+		
+		if(transfer.getUserTo() == systemUser.getUserId()){  	//交易对象没有注册账号
 			//扣款
 			Integer updateCount = walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), 
 					transfer.getCurrency(), transfer.getTransferAmount(), "-");
@@ -285,9 +285,13 @@ public class TransferManagerImpl implements TransferManager{
 	@Override
 	public void systemRefund(Unregistered unregistered) {
 		
-		Transfer transfer = transferDAO.getTranByIdAndStatus(
-				unregistered.getTransferId(),
-				ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		Transfer transfer = transferDAO.getTransferById(unregistered.getTransferId());
+		
+		if(transfer == null || transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_COMPLETED){
+			logger.warn("Did not find the corresponding transfer information");
+			return ;
+		}
+		
 		User systemUser = userDAO.getSystemUser();
 		
 		//系统扣款
@@ -296,10 +300,7 @@ public class TransferManagerImpl implements TransferManager{
 		//用户加款
 		walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), 
 				transfer.getCurrency(), transfer.getTransferAmount(), "+");
-		//添加Seq记录
-		walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), transfer.getUserFrom(), 
-				ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, unregistered.getTransferId(), 
-				transfer.getCurrency(), transfer.getTransferAmount());
+
 		///////////////////////////生成transfer系统退款订单////////////////////////////
 		Transfer transfer2 = new Transfer();
 		//生成TransId
@@ -320,14 +321,19 @@ public class TransferManagerImpl implements TransferManager{
 		
 		transferDAO.addTransfer(transfer2);
 		///////////////////////////end////////////////////////////
+		//添加Seq记录
+		walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), transfer.getUserFrom(), 
+				ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND,transferId2 , 
+				transfer.getCurrency(), transfer.getTransferAmount());
 		//修改gift记录
 		unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_BACK);
+		unregistered.setRefundTransId(transferId2);
 		unregisteredDAO.updateUnregistered(unregistered);
 		
 		//发送推送
 		User payee = userDAO.getUser(transfer.getUserFrom());
-		pushManager.push4Refund(payee, payee.getAreaCode(),transfer.getAreaCode(),
-				transfer.getPhone(), transfer.getTransferAmount());
+		pushManager.push4Refund(payee, payee.getAreaCode(),transfer.getPhone(),
+				transfer.getCurrency(), transfer.getTransferAmount());
 		
 	}
 	
@@ -484,6 +490,9 @@ public class TransferManagerImpl implements TransferManager{
 			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
 			map.put("msg", "Can not find the corresponding notification information");
 			return map;
+		}else if(notification.getPayerId()!=userId || notification.getTradingStatus() 
+				== ServerConsts.NOTIFICATION_STATUS_OF_ALREADY_PAID){
+			
 		}else if(notification.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)
 				&& notification.getAmount().compareTo(new BigDecimal(0))==0){
 			logger.warn("The requestor does not enter the specified currency information");

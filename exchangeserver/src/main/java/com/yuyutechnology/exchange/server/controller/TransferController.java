@@ -23,6 +23,7 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
+import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.server.controller.dto.NotificationDTO;
 import com.yuyutechnology.exchange.server.controller.dto.TransferDTO;
@@ -242,6 +243,8 @@ public class TransferController {
 		GetTransactionRecordResponse rep = new GetTransactionRecordResponse();
 		HashMap<String,Object> map = transferManager.getTransactionRecordByPage(reqMsq.getPeriod(), sessionData.getUserId(),
 				reqMsq.getCurrentPage(), reqMsq.getPageSize());
+
+		User systemUser = userManager.getSystemUser();
 		
 		if(((ArrayList<?>)map.get("list")).isEmpty()){
 			rep.setRetCode(ServerConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
@@ -265,7 +268,12 @@ public class TransferController {
 					}else{
 						dto.setAmount(new BigDecimal("+"+obj[2]+"") );
 						dto.setTransferType(1);
-						dto.setPhoneNum((String) obj[4]);
+						
+						if((systemUser.getAreaCode()+systemUser.getUserPhone()).equals((String) obj[4])){
+							dto.setPhoneNum((String) obj[3]);
+						}else{
+							dto.setPhoneNum((String) obj[4]);
+						}
 					}
 				}else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_OUT_INVITE) {
 					dto.setAmount(new BigDecimal("-"+obj[2]+"") );
@@ -284,10 +292,9 @@ public class TransferController {
 					dto.setTransferType((int) obj[7]);
 					dto.setPhoneNum((String) obj[4]);
 				}
-				dto.setComments((String) obj[5]);
+				dto.setComments("");
 				dto.setFinishAt((Date) obj[6]);
 
-				
 				dtos.add(dto);
 			}
 			

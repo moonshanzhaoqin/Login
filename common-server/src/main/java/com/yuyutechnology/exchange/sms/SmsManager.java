@@ -99,14 +99,14 @@ public class SmsManager {
 	 * 
 	 * @param areaCode
 	 * @param userPhone
-	 * @param user
+	 * @param from
 	 * @param currency
 	 * @param amount
 	 */
 	@Async
-	public void sendSMS4Transfer(String areaCode, String userPhone, User user, String currency, BigDecimal amount) {
+	public void sendSMS4Transfer(String areaCode, String userPhone, User from, String currency, BigDecimal amount) {
 		String transferContent = templateChoose("transfer", areaCode);
-		String content = transferContent.replace(SMS_REPLACE_FROM, user.getUserName())
+		String content = transferContent.replace(SMS_REPLACE_FROM, from.getAreaCode()+from.getUserPhone())
 				.replace(SMS_REPLACE_CURRENCY, currency).replace(SMS_REPLACE_AMOUNT, amount.toString())
 				.replace(SMS_REPLACE_LINK, ResourceUtils.getBundleValue4String("download.link"));
 		sendSMS(areaCode + userPhone, content);
