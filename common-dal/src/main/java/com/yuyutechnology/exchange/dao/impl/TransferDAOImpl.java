@@ -101,7 +101,7 @@ public class TransferDAOImpl implements TransferDAO {
 
 	@Override
 	public void updateAccumulatedAmount(String key,BigDecimal amoumt) {
-		commonRedisTemplate.opsForValue().increment(accumulated_amount_key.replace("[key]", key),amoumt.longValue() );
+		commonRedisTemplate.opsForValue().increment(accumulated_amount_key.replace("[key]", key),amoumt.doubleValue());
 	}
 
 	@Override
