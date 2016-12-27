@@ -27,7 +27,6 @@ import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
-import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.TransactionNotification;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
@@ -171,6 +170,10 @@ public class TransferManagerImpl implements TransferManager{
 		//单笔转出金额大于设置安全基数，弹出需要短信验证框
 		BigDecimal AmountofSingleTransfer = BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.EACHTRANSFERTHRESHOLD, 100000d));
 		
+		logger.info("totalBalance : {},totalBalanceMax: {} ",totalBalance,totalBalanceMax);
+		logger.info("accumulatedAmount : {},accumulatedAmountMax: {} ",accumulatedAmount,accumulatedAmountMax);
+		logger.info("AmountofSingleTransfer : {},AmountofSingleTransferMax: {} ",transfer.getTransferAmount(),AmountofSingleTransfer);
+		
 		if(totalBalance.compareTo(totalBalanceMax) == 1 || 
 				( accumulatedAmount.compareTo(accumulatedAmountMax) == 1 || 
 				transfer.getTransferAmount().compareTo(AmountofSingleTransfer) == 1)){
@@ -278,7 +281,7 @@ public class TransferManagerImpl implements TransferManager{
 
 		//转换金额
 		BigDecimal exchangeResult = exchangeRateManager.getExchangeResult(transfer.getCurrency(),transfer.getTransferAmount());
-		transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", exchangeResult);
+		transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
 		
 		return ServerConsts.RET_CODE_SUCCESS;
 	}
