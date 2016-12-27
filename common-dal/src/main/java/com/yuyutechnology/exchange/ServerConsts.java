@@ -18,7 +18,6 @@ public class ServerConsts {
 	 * 失败
 	 */
 	public static final String RET_CODE_FAILUE = "00001";
-
 	/**
 	 * Session过期
 	 */
@@ -27,7 +26,6 @@ public class ServerConsts {
 	 * 参数为空
 	 */
 	public static final String PARAMETER_IS_EMPTY = "00003";
-
 	// 用户 01
 	/**
 	 * 手机号已注册
@@ -97,8 +95,6 @@ public class ServerConsts {
 	 * Goldpay密码错误
 	 */
 	public static final String GOLDPAY_PASSWORD_NOT_MATCH = "01017";
-	
-	
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息
@@ -281,7 +277,7 @@ public class ServerConsts {
 	
 	static {
 		successCodeList.add(RET_CODE_SUCCESS);
-		successCodeList.add(TRANSFER_EXCEEDED_TRANSACTION_LIMIT);
+		successCodeList.add(TRANSFER_REQUIRES_PHONE_VERIFICATION);
 		successCodeList.add(TRANSFER_HISTORY_NOT_ACQUIRED);
 		successCodeList.add(TRANSFER_NOTIFICATION_NOT_ACQUIRED);
 		successCodeList.add(TIME_NOT_ARRIVED);
