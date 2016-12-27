@@ -53,10 +53,10 @@ public class MailManager {
 	}
 
 	public void mail4contact(String name, String email, String category, String enquiry) {
-		contactContent = contactContent.replace(MAIL_REPLACE_CATEGORY, category).replace(MAIL_REPLACE_EMAIL, email)
+		String content = contactContent.replace(MAIL_REPLACE_CATEGORY, category).replace(MAIL_REPLACE_EMAIL, email)
 				.replace(MAIL_REPLACE_ENQUIRY, enquiry).replace(MAIL_REPLACE_NAME, name);
-		logger.info("content : {}", contactContent);
-		sendMail(contactContent);
+		logger.info("content : {}", content);
+		sendMail(content);
 	}
 
 	@Async
