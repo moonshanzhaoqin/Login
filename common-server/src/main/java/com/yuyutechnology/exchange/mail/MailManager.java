@@ -10,6 +10,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -37,14 +38,18 @@ public class MailManager {
 
 	@PostConstruct
 	@Scheduled(cron = "0 1/10 * * * ?")
-	public void init() throws IOException {
+	public void init() {
 		logger.info("==========init MailManager==========");
 		// 加载模板
 		// 到账提醒
-		Resource resource = new ClassPathResource("mail/en_US/contactUs.template");
-		String contact = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-		contactTital = contact.substring(0, contact.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-		contactContent = contact.substring(contact.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
+		try {
+			Resource resource = new ClassPathResource("mail/en_US/contactUs.template");
+			String contact = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			contactTital = contact.substring(0, contact.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
+			contactContent = contact.substring(contact.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
+		} catch (Exception e) {
+			logger.warn("Mai template read error , can't send email : "+ e.getMessage());
+		}
 	}
 
 	public void mail4contact(String name, String email, String category, String enquiry) {
@@ -56,20 +61,23 @@ public class MailManager {
 
 	@Async
 	private void sendMail(String content) {
-		SendMailRequest sendMessageRequest = new SendMailRequest();
-		sendMessageRequest.setContent(content);
-		sendMessageRequest.setFromMailAddress(ResourceUtils.getBundleValue4String("contact.from"));
-		sendMessageRequest.setFromName(ResourceUtils.getBundleValue4String("contact.from"));
-		sendMessageRequest.setSubject(contactTital);
-		List<String> toMails = new ArrayList<>();
-		String mails[] = ResourceUtils.getBundleValue4String("contact.to").split(",");
-		for (String mail : mails) {
-			toMails.add(mail);
+		logger.info("sendMail , content : {}", content);
+		if (StringUtils.isNotBlank(content)) {
+			SendMailRequest sendMessageRequest = new SendMailRequest();
+			sendMessageRequest.setContent(content);
+			sendMessageRequest.setFromMailAddress(ResourceUtils.getBundleValue4String("contact.from"));
+			sendMessageRequest.setFromName(ResourceUtils.getBundleValue4String("contact.from"));
+			sendMessageRequest.setSubject(contactTital);
+			List<String> toMails = new ArrayList<>();
+			String mails[] = ResourceUtils.getBundleValue4String("contact.to").split(",");
+			for (String mail : mails) {
+				toMails.add(mail);
+			}
+			sendMessageRequest.setToMails(toMails);
+			String param = JsonBinder.getInstance().toJson(sendMessageRequest);
+			logger.info("sendMailRequest : {}", param);
+			HttpTookit.sendPost(ResourceUtils.getBundleValue4String("sendMail.url"), param);
 		}
-		sendMessageRequest.setToMails(toMails);
-		String param = JsonBinder.getInstance().toJson(sendMessageRequest);
-		logger.info("sendMailRequest : {}", param);
-		HttpTookit.sendPost(ResourceUtils.getBundleValue4String("sendMail.url"), param);
 	}
 
 }

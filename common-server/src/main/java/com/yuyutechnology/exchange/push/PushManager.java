@@ -83,48 +83,52 @@ public class PushManager {
 
 	@PostConstruct
 	@Scheduled(cron = "0 1/10 * * * ?")
-	public void init() throws IOException {
+	public void init() {
 		logger.info("==========init PushManager==========");
 		// 加载模板
 		// 到账提醒
-		Resource resource = new ClassPathResource("push/en_US/transfer.template");
-		transfer_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+		try {
+			Resource resource = new ClassPathResource("push/en_US/transfer.template");
+			transfer_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		resource = new ClassPathResource("push/zh_CN/transfer.template");
-		transfer_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			resource = new ClassPathResource("push/zh_CN/transfer.template");
+			transfer_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		resource = new ClassPathResource("push/zh_HK/transfer.template");
-		transfer_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			resource = new ClassPathResource("push/zh_HK/transfer.template");
+			transfer_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		// 请求转账
-		resource = new ClassPathResource("push/en_US/transfer_request.template");
-		transfer_request_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			// 请求转账
+			resource = new ClassPathResource("push/en_US/transfer_request.template");
+			transfer_request_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		resource = new ClassPathResource("push/zh_CN/transfer_request.template");
-		transfer_request_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			resource = new ClassPathResource("push/zh_CN/transfer_request.template");
+			transfer_request_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		resource = new ClassPathResource("push/zh_HK/transfer_request.template");
-		transfer_request_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			resource = new ClassPathResource("push/zh_HK/transfer_request.template");
+			transfer_request_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		// 退款refund
-		resource = new ClassPathResource("push/en_US/refund.template");
-		refund_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			// 退款refund
+			resource = new ClassPathResource("push/en_US/refund.template");
+			refund_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		resource = new ClassPathResource("push/zh_CN/refund.template");
-		refund_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			resource = new ClassPathResource("push/zh_CN/refund.template");
+			refund_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		resource = new ClassPathResource("push/zh_HK/refund.template");
-		refund_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			resource = new ClassPathResource("push/zh_HK/refund.template");
+			refund_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		// 下线offline
-		resource = new ClassPathResource("push/en_US/offline.template");
-		offline_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			// 下线offline
+			resource = new ClassPathResource("push/en_US/offline.template");
+			offline_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		resource = new ClassPathResource("push/zh_CN/offline.template");
-		offline_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			resource = new ClassPathResource("push/zh_CN/offline.template");
+			offline_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		resource = new ClassPathResource("push/zh_HK/offline.template");
-		offline_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			resource = new ClassPathResource("push/zh_HK/offline.template");
+			offline_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+		} catch (Exception e) {
+			logger.warn("push template read error , can't push :  "+ e.getMessage());
+		}
 	}
 
 	/**
@@ -297,9 +301,8 @@ public class PushManager {
 		return body;
 	}
 
-	@Async
 	private void pushToCustom(Integer userId, String deviceID, String title, String body, String extParameters) {
-		if (StringUtils.isBlank(deviceID)) {
+		if (StringUtils.isBlank(deviceID) || StringUtils.isBlank(body)) {
 			return;
 		}
 		PushToCustom pushToCustom = new PushToCustom();
@@ -314,7 +317,6 @@ public class PushManager {
 		HttpTookit.sendPost(ResourceUtils.getBundleValue4String("push.url") + "push_custom.do", param);
 	}
 
-	@Async
 	private void tag(Func func, String deviceID, String pushTag) {
 		if (StringUtils.isBlank(deviceID)) {
 			return;

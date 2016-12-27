@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -51,27 +52,31 @@ public class SmsManager {
 
 	@PostConstruct
 	@Scheduled(cron = "0 1/10 * * * ?")
-	public void init() throws IOException {
+	public void init() {
 		// 加载模板
 		// 验证码
-		Resource resource = new ClassPathResource("sms/en_US/phoneVerify.template");
-		phoneVerify_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+		try {
+			Resource resource = new ClassPathResource("sms/en_US/phoneVerify.template");
+			phoneVerify_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		resource = new ClassPathResource("sms/zh_CN/phoneVerify.template");
-		phoneVerify_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			resource = new ClassPathResource("sms/zh_CN/phoneVerify.template");
+			phoneVerify_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		resource = new ClassPathResource("sms/zh_HK/phoneVerify.template");
-		phoneVerify_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			resource = new ClassPathResource("sms/zh_HK/phoneVerify.template");
+			phoneVerify_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		// 转账
-		resource = new ClassPathResource("sms/en_US/transfer.template");
-		transfer_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			// 转账
+			resource = new ClassPathResource("sms/en_US/transfer.template");
+			transfer_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		resource = new ClassPathResource("sms/zh_CN/transfer.template");
-		transfer_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			resource = new ClassPathResource("sms/zh_CN/transfer.template");
+			transfer_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		resource = new ClassPathResource("sms/zh_HK/transfer.template");
-		transfer_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			resource = new ClassPathResource("sms/zh_HK/transfer.template");
+			transfer_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+		} catch (Exception e) {
+			logger.warn("sms template read error , can't send sms: "+ e.getMessage());
+		}
 	}
 
 	/**
@@ -142,14 +147,17 @@ public class SmsManager {
 	}
 
 	@Async
-	private void sendSMS(String phoneNum, String Content) {
-		SendMessageRequest sendMessageRequest = new SendMessageRequest();
-		sendMessageRequest.setTo(phoneNum);
-		sendMessageRequest.setContent(Content);
-		sendMessageRequest.setAppId(ResourceUtils.getBundleValue4String("appId"));
-		String param = JsonBinder.getInstance().toJson(sendMessageRequest);
-		logger.info("sendMessageRequest : {}", param);
-		HttpTookit.sendPost(ResourceUtils.getBundleValue4String("sendSMS.serverUrl"), param);
+	private void sendSMS(String phoneNum, String content) {
+		logger.info("sendSMS , phoneNum : {} , content : {}", phoneNum, content);
+		if (StringUtils.isNotBlank(phoneNum) && StringUtils.isNotBlank(content)) {
+			SendMessageRequest sendMessageRequest = new SendMessageRequest();
+			sendMessageRequest.setTo(phoneNum);
+			sendMessageRequest.setContent(content);
+			sendMessageRequest.setAppId(ResourceUtils.getBundleValue4String("appId"));
+			String param = JsonBinder.getInstance().toJson(sendMessageRequest);
+			logger.info("sendMessageRequest : {}", param);
+			HttpTookit.sendPost(ResourceUtils.getBundleValue4String("sendSMS.serverUrl"), param);
+		}
 	}
 
 }
