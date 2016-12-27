@@ -6,6 +6,7 @@ import java.util.List;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Friend;
+import com.yuyutechnology.exchange.pojo.User;
 
 public interface UserManager {
 	/**
@@ -220,4 +221,6 @@ public interface UserManager {
 	 * @return
 	 */
 	public String deleteFriend(Integer userId, String areaCode, String phone);
+	
+	public User getSystemUser();
 }
