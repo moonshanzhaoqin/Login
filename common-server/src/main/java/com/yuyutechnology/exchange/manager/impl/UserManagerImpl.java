@@ -170,7 +170,7 @@ public class UserManagerImpl implements UserManager {
 		logger.info("***Does not match***");
 		return false;
 	}
-	
+
 	@Override
 	public boolean checkGoldpayPwd(Integer userId, String goldpayPassword) {
 		logger.info("Check {}  user's PAY password {} ==>", userId, goldpayPassword);
@@ -281,7 +281,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void logout(Integer userId) {
-		if(userId !=  0) {
+		if (userId != 0) {
 			User user = userDAO.getUser(userId);
 			logger.info("unbind Tag==>");
 			pushManager.unbindPushTag(user);
@@ -355,8 +355,9 @@ public class UserManagerImpl implements UserManager {
 		user.setLoginTime(new Date());
 		if (StringUtils.isNotBlank(pushId) && !pushId.equals(user.getPushId())) {
 			// 推送消息：设备已下线
-			logger.info("Push message: device offline==> oldPushId : {} , newPushId : {} ", new Object[]{user.getPushId(), pushId});
-			pushManager.push4Offline(user, user.getPushId());
+			logger.info("Push message: device offline==> oldPushId : {} , newPushId : {} ",
+					new Object[] { user.getPushId(), pushId });
+			pushManager.push4Offline(user, simpleDateFormat.format(new Date()));
 		}
 		if (!user.getPushTag().equals(LanguageUtils.standard(language))) {
 			// 语言不一致，解绑Tag
@@ -423,14 +424,14 @@ public class UserManagerImpl implements UserManager {
 		List<Unregistered> unregistereds = unregisteredDAO.getUnregisteredByUserPhone(areaCode, userPhone);
 		for (Unregistered unregistered : unregistereds) {
 			logger.info("+ {} : {}", unregistered.getCurrency(), unregistered.getAmount());
-			
+
 			Transfer payerTransfer = transferDAO.getTransferById(unregistered.getTransferId());
-			
-			if(payerTransfer == null){
+
+			if (payerTransfer == null) {
 				logger.warn("Did not find the corresponding transfer information");
-				return ;
+				return;
 			}
-			
+
 			User payer = userDAO.getUser(payerTransfer.getUserFrom());
 
 			// 系统账号扣款
@@ -439,8 +440,8 @@ public class UserManagerImpl implements UserManager {
 			// 用户加款
 			walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(), unregistered.getAmount(),
 					"+");
-			
-			//生成TransId
+
+			// 生成TransId
 			String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 			Transfer transfer = new Transfer();
 			transfer.setTransferId(transferId);
@@ -456,9 +457,9 @@ public class UserManagerImpl implements UserManager {
 			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 			transfer.setTransferComment(unregistered.getTransferId());
 			transfer.setNoticeId(0);
-			
+
 			transferDAO.addTransfer(transfer);
-			
+
 			// 增加seq记录
 			walletSeqDAO.addWalletSeq4Transaction(systemUserId, userId, ServerConsts.TRANSFER_TYPE_TRANSACTION,
 					transferId, unregistered.getCurrency(), unregistered.getAmount());

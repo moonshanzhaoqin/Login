@@ -2,6 +2,7 @@ package com.yuyutechnology.exchange.push;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,17 +34,21 @@ import com.yuyutechnology.exchange.utils.ResourceUtils;
 @Service
 public class PushManager {
 	public static Logger logger = LoggerFactory.getLogger(PushManager.class);
-	
+
 	@Autowired
 	CommonManager commonManager;
-	
+
 	public enum Func {
 		bindTag, unbindTag
 	}
 
-	private Map<String, String> ext = new HashMap<>();
-
 	// 到账提醒
+	// en_US
+	private String transfer_title_en = "";
+	// zh_CN
+	private String transfer_title_CN = "";
+	// zh_HK
+	private String transfer_title_HK = "";
 	// en_US
 	private String transfer_en = "";
 	// zh_CN
@@ -53,6 +58,12 @@ public class PushManager {
 
 	// 请求转账
 	// en_US
+	private String transfer_request_title_en = "";
+	// zh_CN
+	private String transfer_request_title_CN = "";
+	// zh_HK
+	private String transfer_request_title_HK = "";
+	// en_US
 	private String transfer_request_en = "";
 	// zh_CN
 	private String transfer_request_CN = "";
@@ -61,6 +72,12 @@ public class PushManager {
 
 	// 退款refund
 	// en_US
+	private String refund_title_en = "";
+	// zh_CN
+	private String refund_title_CN = "";
+	// zh_HK
+	private String refund_title_HK = "";
+	// en_US
 	private String refund_en = "";
 	// zh_CN
 	private String refund_CN = "";
@@ -68,6 +85,12 @@ public class PushManager {
 	private String refund_HK = "";
 
 	// 下线offline
+	// en_US
+	private String offline_title_en = "";
+	// zh_CN
+	private String offline_title_CN = "";
+	// zh_HK
+	private String offline_title_HK = "";
 	// en_US
 	private String offline_en = "";
 	// zh_CN
@@ -88,42 +111,67 @@ public class PushManager {
 		// 加载模板
 		// 到账提醒
 		Resource resource = new ClassPathResource("push/en_US/transfer.template");
-		transfer_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+		String string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+		transfer_title_en = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
+		transfer_en = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
 
 		resource = new ClassPathResource("push/zh_CN/transfer.template");
-		transfer_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+		string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+		transfer_title_CN = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
+		transfer_CN = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
 
 		resource = new ClassPathResource("push/zh_HK/transfer.template");
+		string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+		transfer_title_HK = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
 		transfer_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
 		// 请求转账
 		resource = new ClassPathResource("push/en_US/transfer_request.template");
+		string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+		transfer_request_title_en = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r",
+				"");
 		transfer_request_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
 		resource = new ClassPathResource("push/zh_CN/transfer_request.template");
+		string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+		transfer_request_title_CN = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r",
+				"");
 		transfer_request_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
 		resource = new ClassPathResource("push/zh_HK/transfer_request.template");
+		string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+		transfer_request_title_HK = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r",
+				"");
 		transfer_request_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
 		// 退款refund
 		resource = new ClassPathResource("push/en_US/refund.template");
+		string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+		refund_title_en = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
 		refund_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
 		resource = new ClassPathResource("push/zh_CN/refund.template");
+		refund_title_CN = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
 		refund_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
 		resource = new ClassPathResource("push/zh_HK/refund.template");
+		refund_title_HK = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
 		refund_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
 		// 下线offline
 		resource = new ClassPathResource("push/en_US/offline.template");
+		string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+		offline_title_en = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
 		offline_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
 		resource = new ClassPathResource("push/zh_CN/offline.template");
+		string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+		offline_title_CN = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
 		offline_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
 		resource = new ClassPathResource("push/zh_HK/offline.template");
+		string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+		offline_title_HK = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
 		offline_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 	}
 
@@ -137,14 +185,15 @@ public class PushManager {
 	 */
 	@Async
 	public void push4Transfer(User userFrom, User userTo, String currency, BigDecimal amount) {
-		String title = "到账通知";
+		String title = titleChoose("transfer", userTo.getPushTag());
 		String transferBody = templateChoose("transfer", userTo.getPushTag());
 		String body = transferBody.replace(PUSH_REPLACE_FROM, userFrom.getUserName())
 				.replace(PUSH_REPLACE_CURRENCY, currency).replace(PUSH_REPLACE_AMOUNT, amount.toString());
+		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "transfer");
 		pushToCustom(userTo.getUserId(), userTo.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
-		
-		//新请求转账标记
+
+		// 新请求转账标记
 		commonManager.addMsgFlag(userTo.getUserId(), 1);
 	}
 
@@ -158,13 +207,14 @@ public class PushManager {
 	 */
 	@Async
 	public void push4TransferRuquest(User userFrom, User userTo, String currency, BigDecimal amount) {
-		String title = "转账请求";
+		String title = titleChoose("transfer_request", userTo.getPushTag());
 		String transferRuquestBody = templateChoose("transfer_request", userFrom.getPushTag());
 		String body = transferRuquestBody.replace(PUSH_REPLACE_TO, userTo.getUserName());
+		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "transfer_request");
 		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
-		
-		//新请求转账标记
+
+		// 新请求转账标记
 		commonManager.addMsgFlag(userFrom.getUserId(), 0);
 	}
 
@@ -178,11 +228,12 @@ public class PushManager {
 	 */
 	@Async
 	public void push4Refund(User userFrom, String areaCode, String phone, String currency, BigDecimal amount) {
-		String title = "退款通知";
+		String title = titleChoose("refund", userFrom.getPushTag());
 		String refundBody = templateChoose("refund", userFrom.getPushTag());
 		String body = refundBody.replace(PUSH_REPLACE_TO, areaCode + phone).replace(PUSH_REPLACE_CURRENCY, currency)
 				.replace(PUSH_REPLACE_AMOUNT, amount.toString())
 				.replace(PUSH_REPLACE_DAY, ResourceUtils.getBundleValue4String("refund.time"));
+		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "refund");
 		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 	}
@@ -193,16 +244,19 @@ public class PushManager {
 	 * @param user
 	 */
 	@Async
-	public void push4Offline(User user, String pushId) {
-		String title = "下线消息";
+	public void push4Offline(User user, String date) {
+		String title = titleChoose("offline", user.getPushTag());
 		String offlineBody = templateChoose("offline", user.getPushTag());
 		String body = offlineBody;
+		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "offline");
-		pushToCustom(user.getUserId(), pushId, title, body, JsonBinder.getInstance().toJson(ext));
+		ext.put("time", date);
+		pushToCustom(user.getUserId(), user.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 	}
 
 	/**
 	 * 绑定Tag
+	 * 
 	 * @param user
 	 */
 	@Async
@@ -297,7 +351,82 @@ public class PushManager {
 		return body;
 	}
 
-	@Async
+	/**
+	 * 根据功能和语言选择标题
+	 * 
+	 * @param func
+	 * @param pushTag
+	 * @return
+	 */
+	private String titleChoose(String func, Language pushTag) {
+		String title = null;
+		switch (func) {
+		case "transfer":
+			switch (pushTag) {
+			case en_US:
+				title = transfer_title_en;
+				break;
+			case zh_CN:
+				title = transfer_title_CN;
+				break;
+			case zh_TW:
+				title = transfer_title_HK;
+				break;
+			default:
+				break;
+			}
+			break;
+		case "transfer_request":
+			switch (pushTag) {
+			case en_US:
+				title = transfer_request_title_en;
+				break;
+			case zh_CN:
+				title = transfer_request_title_CN;
+				break;
+			case zh_TW:
+				title = transfer_request_title_HK;
+				break;
+			default:
+				break;
+			}
+			break;
+		case "refund":
+			switch (pushTag) {
+			case en_US:
+				title = refund_title_en;
+				break;
+			case zh_CN:
+				title = refund_title_CN;
+				break;
+			case zh_TW:
+				title = refund_title_HK;
+				break;
+			default:
+				break;
+			}
+			break;
+		case "offline":
+			switch (pushTag) {
+			case en_US:
+				title = offline_title_en;
+				break;
+			case zh_CN:
+				title = offline_title_CN;
+				break;
+			case zh_TW:
+				title = offline_title_HK;
+				break;
+			default:
+				break;
+			}
+			break;
+		default:
+			title = null;
+		}
+		return title;
+	}
+
 	private void pushToCustom(Integer userId, String deviceID, String title, String body, String extParameters) {
 		if (StringUtils.isBlank(deviceID)) {
 			return;
@@ -314,7 +443,6 @@ public class PushManager {
 		HttpTookit.sendPost(ResourceUtils.getBundleValue4String("push.url") + "push_custom.do", param);
 	}
 
-	@Async
 	private void tag(Func func, String deviceID, String pushTag) {
 		if (StringUtils.isBlank(deviceID)) {
 			return;
