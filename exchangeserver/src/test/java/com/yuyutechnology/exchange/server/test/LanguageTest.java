@@ -1,5 +1,6 @@
 package com.yuyutechnology.exchange.server.test;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -40,9 +41,16 @@ public class LanguageTest extends BaseSpringJunit4{
 //		System.out.println(simpleDateFormat.parse(redisDAO.getValueByKey("123")).getTime() - new Date().getTime());
 		
 		
-		Calendar   cal1   =   Calendar.getInstance();
-		System.out.println(cal1.getTime());
-        cal1.add(Calendar.DATE,2);
-        System.out.println(cal1.getTime());
+//		Calendar   cal1   =   Calendar.getInstance();
+//		System.out.println(cal1.getTime());
+//        cal1.add(Calendar.DATE,2);
+//        System.out.println(cal1.getTime());
+		System.out.println(new BigDecimal(12.00));
+		System.out.println(new BigDecimal("12.00"));
+		System.out.println(new BigDecimal("12.00").intValue());
+		logger.info(new BigDecimal(12.00).toString());
+		logger.info(new BigDecimal("12.00").toString());
+		logger.info(new BigDecimal(new BigDecimal("12.00").intValue()).toString());
+		logger.info(new BigDecimal(new BigDecimal("12.12").intValue()).toString());
 	}
 }

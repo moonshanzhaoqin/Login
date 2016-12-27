@@ -192,7 +192,8 @@ public class PushManager {
 		String title = titleChoose("transfer", userTo.getPushTag());
 		String transferBody = templateChoose("transfer", userTo.getPushTag());
 		String body = transferBody.replace(PUSH_REPLACE_FROM, userFrom.getUserName())
-				.replace(PUSH_REPLACE_CURRENCY, currency).replace(PUSH_REPLACE_AMOUNT, amount.toString());
+				.replace(PUSH_REPLACE_CURRENCY, currency).replace(PUSH_REPLACE_AMOUNT,
+						currency.equals("GDQ") ? new BigDecimal(amount.intValue()).toString() : amount.toString());
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "transfer");
 		pushToCustom(userTo.getUserId(), userTo.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
@@ -235,7 +236,8 @@ public class PushManager {
 		String title = titleChoose("refund", userFrom.getPushTag());
 		String refundBody = templateChoose("refund", userFrom.getPushTag());
 		String body = refundBody.replace(PUSH_REPLACE_TO, areaCode + phone).replace(PUSH_REPLACE_CURRENCY, currency)
-				.replace(PUSH_REPLACE_AMOUNT, amount.toString())
+				.replace(PUSH_REPLACE_AMOUNT,
+						currency.equals("GDQ") ? new BigDecimal(amount.intValue()).toString() : amount.toString())
 				.replace(PUSH_REPLACE_DAY, ResourceUtils.getBundleValue4String("refund.time"));
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "refund");

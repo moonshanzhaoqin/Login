@@ -75,7 +75,7 @@ public class SmsManager {
 			resource = new ClassPathResource("sms/zh_HK/transfer.template");
 			transfer_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 		} catch (Exception e) {
-			logger.warn("sms template read error , can't send sms: "+ e.getMessage());
+			logger.warn("sms template read error , can't send sms: " + e.getMessage());
 		}
 	}
 
@@ -106,8 +106,10 @@ public class SmsManager {
 	@Async
 	public void sendSMS4Transfer(String areaCode, String userPhone, User from, String currency, BigDecimal amount) {
 		String transferContent = templateChoose("transfer", areaCode);
-		String content = transferContent.replace(SMS_REPLACE_FROM, from.getAreaCode()+from.getUserPhone())
-				.replace(SMS_REPLACE_CURRENCY, currency).replace(SMS_REPLACE_AMOUNT, amount.toString())
+		String content = transferContent.replace(SMS_REPLACE_FROM, from.getAreaCode() + from.getUserPhone())
+				.replace(SMS_REPLACE_CURRENCY, currency)
+				.replace(SMS_REPLACE_AMOUNT,
+						currency.equals("GDQ") ? new BigDecimal(amount.intValue()).toString() : amount.toString())
 				.replace(SMS_REPLACE_LINK, ResourceUtils.getBundleValue4String("download.link"));
 		sendSMS(areaCode + userPhone, content);
 	}
