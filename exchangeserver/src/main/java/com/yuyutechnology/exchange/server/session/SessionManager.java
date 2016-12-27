@@ -131,6 +131,7 @@ public class SessionManager {
 	}
 
 	public String createLoginToken(int userId) {
+		delLoginToken(userId);
 		String userIdKey = StringUtils.replace(LOGIN_TOKEN_USERID_KEY, ":userid", userId+"");
 		String loginToken = DigestUtils.md5Hex(UidUtils.genUid());
 		String key = StringUtils.replace(LOGIN_TOKEN_TOKEN_KEY, ":token", loginToken);
