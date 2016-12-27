@@ -24,8 +24,6 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 		</property>
 	</bean>
 	
-	<bean id="serverConfig" class="com.yuyutechnology.exchange.cfg.ServerConfig"></bean>
-	
 	<context:component-scan base-package="com.yuyutechnology" />   
 	<context:annotation-config />
 
