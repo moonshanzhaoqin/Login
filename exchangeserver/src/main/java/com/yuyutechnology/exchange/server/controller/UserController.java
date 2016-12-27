@@ -363,18 +363,18 @@ public class UserController {
 	 * @param response
 	 * @return
 	 */
-	@ResponseBody
-	@ApiOperation(value = "获取货币列表", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/getCurrency", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public GetCurrencyResponse getCurrency(HttpServletRequest request, HttpServletResponse response) {
-		logger.info("getCurrency : ");
-		GetCurrencyResponse rep = new GetCurrencyResponse();
-		rep.setCurrencyInfos(commonManager.getCurrency());
-		logger.info(MessageConsts.RET_CODE_SUCCESS);
-		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-		return rep;
-	}
+//	@ResponseBody
+//	@ApiOperation(value = "获取货币列表", httpMethod = "POST", notes = "")
+//	@RequestMapping(value = "/getCurrency", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+//	public GetCurrencyResponse getCurrency(HttpServletRequest request, HttpServletResponse response) {
+//		logger.info("getCurrency : ");
+//		GetCurrencyResponse rep = new GetCurrencyResponse();
+//		rep.setCurrencyInfos(commonManager.getCurrency());
+//		logger.info(MessageConsts.RET_CODE_SUCCESS);
+//		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+//		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+//		return rep;
+//	}
 
 	/**
 	 * appVersion 版本获取
