@@ -164,19 +164,22 @@ public class TransferManagerImpl implements TransferManager{
 		//总账大于设置安全基数，弹出需要短信验证框===============================================
 		BigDecimal totalBalance =  exchangeRateManager.getTotalBalance(userId);
 		BigDecimal totalBalanceMax =  BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TOTALBALANCETHRESHOLD, 100000d));
-		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount(userId+"");
 		//当天累计转出总金额大于设置安全基数，弹出需要短信验证框
+		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount(userId+"");
 		BigDecimal accumulatedAmountMax =  BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.DAILYTRANSFERTHRESHOLD, 100000d));
 		//单笔转出金额大于设置安全基数，弹出需要短信验证框
-		BigDecimal AmountofSingleTransfer = BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.EACHTRANSFERTHRESHOLD, 100000d));
+		BigDecimal singleTransferAmount = exchangeRateManager.getExchangeResult(transfer.getCurrency(), transfer.getTransferAmount());
+		BigDecimal singleTransferAmountMax = BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.EACHTRANSFERTHRESHOLD, 100000d));
+		
+		
 		
 		logger.info("totalBalance : {},totalBalanceMax: {} ",totalBalance,totalBalanceMax);
 		logger.info("accumulatedAmount : {},accumulatedAmountMax: {} ",accumulatedAmount,accumulatedAmountMax);
-		logger.info("AmountofSingleTransfer : {},AmountofSingleTransferMax: {} ",transfer.getTransferAmount(),AmountofSingleTransfer);
+		logger.info("singleTransferAmount : {},singleTransferAmountMax: {} ",singleTransferAmount,singleTransferAmountMax);
 		
 		if(totalBalance.compareTo(totalBalanceMax) == 1 || 
 				( accumulatedAmount.compareTo(accumulatedAmountMax) == 1 || 
-				transfer.getTransferAmount().compareTo(AmountofSingleTransfer) == 1)){
+						singleTransferAmount.compareTo(singleTransferAmountMax) == 1)){
 			logger.warn("The transaction amount exceeds the limit");
 			return ServerConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION;
 			

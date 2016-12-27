@@ -162,7 +162,7 @@ public class ExchangeController {
 		@SuppressWarnings("unchecked")
 		List<Exchange> list = (List<Exchange>) map.get("list");
 		if(list.isEmpty()){
-			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
+			rep.setRetCode(ServerConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
 			rep.setMessage("No data is available");
 			return rep;
 		}
