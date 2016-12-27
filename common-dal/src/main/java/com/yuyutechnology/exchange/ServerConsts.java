@@ -249,7 +249,7 @@ public class ServerConsts {
 	/**
 	 * 本位货币，主币(结算单位)
 	 */
-	public static final String STANDARD_CURRENCY = "standard_currency";
+	public static final String STANDARD_CURRENCY = "USD";
 	// 短信验证码功能
 	/**
 	 * 短信验证码功能——注册

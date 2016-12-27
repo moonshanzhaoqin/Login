@@ -41,13 +41,4 @@ public class CurrencyDAOImpl implements CurrencyDAO {
 				ServerConsts.CURRENCY_AVAILABLE);
 		return (List<Currency>) list;
 	}
-
-	@Override
-	public Currency getStandardCurrency() {
-		String standardCurrency = hibernateTemplate.get(Config.class, ServerConsts.STANDARD_CURRENCY).getConfigValue();
-		logger.info("current currency is {}",standardCurrency);
-		Currency currency = hibernateTemplate.get(Currency.class, standardCurrency);
-		return currency ;
-	}
-
 }

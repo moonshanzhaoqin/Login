@@ -1,8 +1,6 @@
 package com.yuyutechnology.exchange.pojo;
 // Generated Dec 17, 2016 2:05:54 PM by Hibernate Tools 5.1.0.Alpha1
 
-import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -24,9 +22,6 @@ public class Currency implements java.io.Serializable {
 	private String nameCn;
 	private String nameHk;
 	private int currencyStatus;
-	private BigDecimal transferMax;
-	private BigDecimal transferLarge;
-	private BigDecimal assetThreshold;
 	private String currencyOrder;
 
 	public Currency() {
@@ -37,16 +32,12 @@ public class Currency implements java.io.Serializable {
 		this.currencyStatus = currencyStatus;
 	}
 
-	public Currency(String currency, String nameEn, String nameCn, String nameHk, int currencyStatus,
-			BigDecimal transferMax, BigDecimal transferLarge, BigDecimal assetThreshold, String currencyOrder) {
+	public Currency(String currency, String nameEn, String nameCn, String nameHk, int currencyStatus, String currencyOrder) {
 		this.currency = currency;
 		this.nameEn = nameEn;
 		this.nameCn = nameCn;
 		this.nameHk = nameHk;
 		this.currencyStatus = currencyStatus;
-		this.transferMax = transferMax;
-		this.transferLarge = transferLarge;
-		this.assetThreshold = assetThreshold;
 		this.currencyOrder = currencyOrder;
 	}
 
@@ -95,33 +86,6 @@ public class Currency implements java.io.Serializable {
 
 	public void setCurrencyStatus(int currencyStatus) {
 		this.currencyStatus = currencyStatus;
-	}
-
-	@Column(name = "transfer_max", precision = 10)
-	public BigDecimal getTransferMax() {
-		return this.transferMax;
-	}
-
-	public void setTransferMax(BigDecimal transferMax) {
-		this.transferMax = transferMax;
-	}
-
-	@Column(name = "transfer_large", precision = 10)
-	public BigDecimal getTransferLarge() {
-		return this.transferLarge;
-	}
-
-	public void setTransferLarge(BigDecimal transferLarge) {
-		this.transferLarge = transferLarge;
-	}
-
-	@Column(name = "asset_threshold", precision = 10)
-	public BigDecimal getAssetThreshold() {
-		return this.assetThreshold;
-	}
-
-	public void setAssetThreshold(BigDecimal assetThreshold) {
-		this.assetThreshold = assetThreshold;
 	}
 
 	@Column(name = "currency_order", unique = true)

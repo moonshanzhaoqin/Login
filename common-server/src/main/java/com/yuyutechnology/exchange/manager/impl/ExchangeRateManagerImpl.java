@@ -185,11 +185,10 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 	public BigDecimal getExchangeResult(String transCurrency,BigDecimal transAmount){
 		BigDecimal result = null;
 		//默认币种
-		String standardCurrency = configDAO.getConfigValue(ServerConsts.STANDARD_CURRENCY);
-		if(transCurrency.equals(standardCurrency)){
+		if(transCurrency.equals(ServerConsts.STANDARD_CURRENCY)){
 			result = transAmount;
 		}else{
-			double exchangeRate = getExchangeRate(transCurrency, standardCurrency);
+			double exchangeRate = getExchangeRate(transCurrency, ServerConsts.STANDARD_CURRENCY);
 			result = transAmount.multiply(new BigDecimal(exchangeRate));
 		}
 		return result;
@@ -197,37 +196,24 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 	
 	@Override
 	public BigDecimal getTotalBalance(int userId){
-		String standardCurrency = configDAO.getConfigValue(ServerConsts.STANDARD_CURRENCY);
-		logger.info("The current default currency : {}" ,standardCurrency);
+		logger.info("The current default currency : {}" ,ServerConsts.STANDARD_CURRENCY);
 		List<Wallet> list = walletDAO.getWalletsByUserId(userId);
 		double totalBalance = 0;
 		if(list.isEmpty()){
 			return new BigDecimal(0);
 		}
-		
 		for (Wallet wallet : list) {
-			
-			if(!wallet.getCurrency().getCurrency().equals(standardCurrency)){
-				
+			if(!wallet.getCurrency().getCurrency().equals(ServerConsts.STANDARD_CURRENCY)){
 				double exchangeRate = getExchangeRate(
-						wallet.getCurrency().getCurrency(), standardCurrency);
+						wallet.getCurrency().getCurrency(), ServerConsts.STANDARD_CURRENCY);
 				
 				totalBalance = totalBalance+wallet.getBalance().longValue()*exchangeRate;
-				
 			}else{
 				totalBalance = totalBalance+wallet.getBalance().longValue();
 			}
 		}
-		
-		BigDecimal out = null ;
-		if(standardCurrency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
-			out = new BigDecimal(totalBalance).setScale(0,BigDecimal.ROUND_FLOOR);
-		}else{
-			out = new BigDecimal(totalBalance).setScale(2,BigDecimal.ROUND_FLOOR);
-		}
-		
+		BigDecimal out = new BigDecimal(totalBalance).setScale(2,BigDecimal.ROUND_FLOOR);
 		logger.info("Total assets of the current account : {}" ,out);
-		
 		return out;
 	}
 
