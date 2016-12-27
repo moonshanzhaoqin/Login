@@ -530,6 +530,12 @@ public class TransferManagerImpl implements TransferManager{
 			map.put("msg", "Prohibit transfers to yourself");
 			return map;
 		}
+		if(!receiver.getAreaCode().equals(areaCode) || !receiver.getUserPhone().equals(userPhone)){
+			logger.warn("Payee phone information does not match");
+			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("msg", "Payee phone information does not match");
+			return map;
+		}
 		
 		//判断余额是否足够支付
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
