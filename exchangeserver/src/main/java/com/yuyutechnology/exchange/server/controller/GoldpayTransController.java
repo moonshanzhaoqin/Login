@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.yuyutechnology.exchange.ConfigKeyEnum;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.server.controller.request.GoldpayPurchaseRequest;
 import com.yuyutechnology.exchange.server.controller.request.GoldpayTransConfirmRequest;
@@ -35,6 +37,8 @@ public class GoldpayTransController {
 	
 	@Autowired
 	GoldpayTransManager goldpayTransManager;
+	@Autowired
+	ConfigManager configManager;
 	
 	public static Logger logger = LoggerFactory.getLogger(GoldpayTransController.class);
 	
@@ -51,7 +55,7 @@ public class GoldpayTransController {
 			rep.setRetCode(ServerConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The input amount is less than the minimum amount");
 			return rep;
-		}else if(reqMsg.getAmount() >= 1000000000){
+		}else if(reqMsg.getAmount() > configManager.getConfigLongValue(ConfigKeyEnum.ENTERMAXIMUMAMOUNT, 1000000000L)){
 			logger.warn("Fill out the allowable amount");
 			rep.setRetCode(ServerConsts.TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT);
 			rep.setMessage("Fill out the allowable amount");
@@ -121,7 +125,7 @@ public class GoldpayTransController {
 			rep.setRetCode(ServerConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The input amount is less than the minimum amount");
 			return rep;
-		}else if(reqMsg.getAmount() >= 1000000000){
+		}else if(reqMsg.getAmount() > configManager.getConfigLongValue(ConfigKeyEnum.ENTERMAXIMUMAMOUNT, 1000000000L)){
 			logger.warn("Fill out the allowable amount");
 			rep.setRetCode(ServerConsts.TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT);
 			rep.setMessage("Fill out the allowable amount");
