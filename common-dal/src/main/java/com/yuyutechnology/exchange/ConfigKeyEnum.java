@@ -9,7 +9,8 @@ package com.yuyutechnology.exchange;
  */
 public enum ConfigKeyEnum {
 	
-	DAILYTRANSFERTHRESHOLD("daily_transfer_threshold"),EACHTRANSFERTHRESHOLD("each_transfer_threshold"),TOTALBALANCETHRESHOLD("total_balance_threshold");
+	DAILYTRANSFERTHRESHOLD("daily_transfer_threshold"),EACHTRANSFERTHRESHOLD("each_transfer_threshold"),TOTALBALANCETHRESHOLD("total_balance_threshold")
+	,ENTERMAXIMUMAMOUNT("enter_maximum_amount");
 	
 	private String key;
 	private ConfigKeyEnum(String key)
