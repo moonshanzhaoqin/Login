@@ -22,7 +22,7 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
-				<value>classpath:crm-conf.properties</value>
+				<value>classpath:server-conf.properties</value>
 			</list>
 		</property>
 	</bean>

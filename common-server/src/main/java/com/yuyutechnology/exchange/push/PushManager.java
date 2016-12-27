@@ -106,73 +106,77 @@ public class PushManager {
 
 	@PostConstruct
 	@Scheduled(cron = "0 1/10 * * * ?")
-	public void init() throws IOException {
+	public void init() {
 		logger.info("==========init PushManager==========");
 		// 加载模板
-		// 到账提醒
-		Resource resource = new ClassPathResource("push/en_US/transfer.template");
-		String string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-		transfer_title_en = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-		transfer_en = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
+		try {
+			// 到账提醒
+			Resource resource = new ClassPathResource("push/en_US/transfer.template");
+			String string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			transfer_title_en = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
+			transfer_en = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
 
-		resource = new ClassPathResource("push/zh_CN/transfer.template");
-		string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-		transfer_title_CN = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-		transfer_CN = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
+			resource = new ClassPathResource("push/zh_CN/transfer.template");
+			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			transfer_title_CN = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
+			transfer_CN = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
 
-		resource = new ClassPathResource("push/zh_HK/transfer.template");
-		string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-		transfer_title_HK = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-		transfer_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			resource = new ClassPathResource("push/zh_HK/transfer.template");
+			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			transfer_title_HK = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
+			transfer_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		// 请求转账
-		resource = new ClassPathResource("push/en_US/transfer_request.template");
-		string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-		transfer_request_title_en = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r",
-				"");
-		transfer_request_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			// 请求转账
+			resource = new ClassPathResource("push/en_US/transfer_request.template");
+			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			transfer_request_title_en = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "")
+					.replaceAll("\r", "");
+			transfer_request_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		resource = new ClassPathResource("push/zh_CN/transfer_request.template");
-		string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-		transfer_request_title_CN = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r",
-				"");
-		transfer_request_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			resource = new ClassPathResource("push/zh_CN/transfer_request.template");
+			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			transfer_request_title_CN = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "")
+					.replaceAll("\r", "");
+			transfer_request_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		resource = new ClassPathResource("push/zh_HK/transfer_request.template");
-		string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-		transfer_request_title_HK = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r",
-				"");
-		transfer_request_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			resource = new ClassPathResource("push/zh_HK/transfer_request.template");
+			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			transfer_request_title_HK = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "")
+					.replaceAll("\r", "");
+			transfer_request_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		// 退款refund
-		resource = new ClassPathResource("push/en_US/refund.template");
-		string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-		refund_title_en = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-		refund_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			// 退款refund
+			resource = new ClassPathResource("push/en_US/refund.template");
+			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			refund_title_en = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
+			refund_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		resource = new ClassPathResource("push/zh_CN/refund.template");
-		refund_title_CN = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-		refund_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			resource = new ClassPathResource("push/zh_CN/refund.template");
+			refund_title_CN = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
+			refund_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		resource = new ClassPathResource("push/zh_HK/refund.template");
-		refund_title_HK = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-		refund_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			resource = new ClassPathResource("push/zh_HK/refund.template");
+			refund_title_HK = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
+			refund_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		// 下线offline
-		resource = new ClassPathResource("push/en_US/offline.template");
-		string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-		offline_title_en = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-		offline_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			// 下线offline
+			resource = new ClassPathResource("push/en_US/offline.template");
+			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			offline_title_en = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
+			offline_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		resource = new ClassPathResource("push/zh_CN/offline.template");
-		string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-		offline_title_CN = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-		offline_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			resource = new ClassPathResource("push/zh_CN/offline.template");
+			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			offline_title_CN = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
+			offline_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 
-		resource = new ClassPathResource("push/zh_HK/offline.template");
-		string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-		offline_title_HK = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-		offline_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			resource = new ClassPathResource("push/zh_HK/offline.template");
+			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			offline_title_HK = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
+			offline_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+		} catch (Exception e) {
+			logger.warn("push template read error , can't push :  " + e.getMessage());
+		}
 	}
 
 	/**
@@ -428,7 +432,7 @@ public class PushManager {
 	}
 
 	private void pushToCustom(Integer userId, String deviceID, String title, String body, String extParameters) {
-		if (StringUtils.isBlank(deviceID)) {
+		if (StringUtils.isBlank(deviceID) || StringUtils.isBlank(body)) {
 			return;
 		}
 		PushToCustom pushToCustom = new PushToCustom();
