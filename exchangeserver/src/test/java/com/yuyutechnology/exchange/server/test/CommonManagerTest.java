@@ -6,8 +6,10 @@ package com.yuyutechnology.exchange.server.test;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.yuyutechnology.exchange.ConfigKeyEnum;
 import com.yuyutechnology.exchange.goldpay.GoldpayManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
+import com.yuyutechnology.exchange.manager.ConfigManager;
 
 /**
  * @author silent.sun
@@ -19,12 +21,18 @@ public class CommonManagerTest extends BaseSpringJunit4 {
 	CommonManager commonManager;
 	
 	@Autowired
+	ConfigManager configManager;
+	
+	@Autowired
 	GoldpayManager goldpayManager;
 	
 	@Test
 	public void testFlag() throws InterruptedException {
 		
-		System.out.println(goldpayManager.checkGoldpay("silent", "12345678"));
+		
+		System.out.println(configManager.getConfigStringValue(ConfigKeyEnum.DAILYTRANSFERTHRESHOLD, "12223123"));
+		
+//		System.out.println(goldpayManager.checkGoldpay("silent", "12345678"));
 		
 //		commonManager.addMsgFlag(7, 0);
 //		commonManager.addMsgFlag(7, 1);

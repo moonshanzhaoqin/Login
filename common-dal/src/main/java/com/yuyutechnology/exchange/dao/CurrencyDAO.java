@@ -24,7 +24,5 @@ public interface CurrencyDAO {
 	public List<Currency> getCurrencys();
 
 	public List<Currency> getCurrentCurrency();
-	
-	public Currency getStandardCurrency();
 
 }
