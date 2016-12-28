@@ -197,7 +197,7 @@ public class PushManager {
 						currency.equals("GDQ") ? new BigDecimal(amount.intValue()).toString() : amount.toString());
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "transfer");
-		pushToCustom(userTo.getUserId(), userTo.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
+		pushToCustom(userTo.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 
 		// 新请求转账标记
 		commonManager.addMsgFlag(userTo.getUserId(), 1);
@@ -218,7 +218,7 @@ public class PushManager {
 		String body = transferRuquestBody.replace(PUSH_REPLACE_TO, userTo.getUserName());
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "transfer_request");
-		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
+		pushToCustom(userFrom.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 
 		// 新请求转账标记
 		commonManager.addMsgFlag(userFrom.getUserId(), 0);
@@ -242,7 +242,7 @@ public class PushManager {
 				.replace(PUSH_REPLACE_DAY, ResourceUtils.getBundleValue4String("refund.time"));
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "refund");
-		pushToCustom(userFrom.getUserId(), userFrom.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
+		pushToCustom(userFrom.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 	}
 
 	/**
@@ -251,14 +251,14 @@ public class PushManager {
 	 * @param user
 	 */
 	@Async
-	public void push4Offline(User user, String date) {
-		String title = titleChoose("offline", user.getPushTag());
-		String offlineBody = templateChoose("offline", user.getPushTag());
+	public void push4Offline(String pushId, Language pushTag, String date) {
+		String title = titleChoose("offline", pushTag);
+		String offlineBody = templateChoose("offline", pushTag);
 		String body = offlineBody;
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "offline");
 		ext.put("time", date);
-		pushToCustom(user.getUserId(), user.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
+		pushToCustom(pushId, title, body, JsonBinder.getInstance().toJson(ext));
 	}
 
 	/**
@@ -267,8 +267,8 @@ public class PushManager {
 	 * @param user
 	 */
 	@Async
-	public void bindPushTag(User user) {
-		tag(Func.bindTag, user.getPushId(), user.getPushTag().toString());
+	public void bindPushTag(String pushId, Language pushTag) {
+		tag(Func.bindTag, pushId, pushTag.toString());
 	}
 
 	/**
@@ -277,8 +277,8 @@ public class PushManager {
 	 * @param user
 	 */
 	@Async
-	public void unbindPushTag(User user) {
-		tag(Func.unbindTag, user.getPushId(), user.getPushTag().toString());
+	public void unbindPushTag(String pushId, Language pushTag) {
+		tag(Func.unbindTag, pushId, pushTag.toString());
 	}
 
 	/**
@@ -434,7 +434,7 @@ public class PushManager {
 		return title;
 	}
 
-	private void pushToCustom(Integer userId, String deviceID, String title, String body, String extParameters) {
+	private void pushToCustom(String deviceID, String title, String body, String extParameters) {
 		if (StringUtils.isBlank(deviceID) || StringUtils.isBlank(body)) {
 			return;
 		}
@@ -443,7 +443,6 @@ public class PushManager {
 		pushToCustom.setBody(body);
 		pushToCustom.setTitle(title);
 		pushToCustom.setDeviceID(deviceID);
-		pushToCustom.setUserId(userId.toString());
 		pushToCustom.setExtParameters(extParameters);
 		String param = JsonBinder.getInstance().toJson(pushToCustom);
 		logger.info("pushRequest : {}", param);
