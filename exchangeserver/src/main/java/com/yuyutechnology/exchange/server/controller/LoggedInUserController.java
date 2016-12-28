@@ -31,7 +31,6 @@ import com.yuyutechnology.exchange.server.controller.request.CheckGoldpayPwdRequ
 import com.yuyutechnology.exchange.server.controller.request.CheckPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.CheckPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
-import com.yuyutechnology.exchange.server.controller.request.LogoutRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByGoldpayRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByOldRequest;
@@ -176,7 +175,13 @@ public class LoggedInUserController {
 		return rep;
 	}
 
-	// TODO checkChangePhone 校验换绑手机时间
+	/**
+	 * checkChangePhone 校验换绑手机时间
+	 * 
+	 * @param token
+	 * @return
+	 * @throws ParseException
+	 */
 	@ResponseBody
 	@ApiOperation(value = "校验换绑手机", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/checkChangePhone", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
@@ -528,22 +533,16 @@ public class LoggedInUserController {
 	@ResponseBody
 	@ApiOperation(value = "退出账号", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/logout", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public LogoutResponse logout(@PathVariable String token, @RequestBody LogoutRequest logoutRequest) {
+	public LogoutResponse logout(@PathVariable String token) {
 		logger.info("========logout : {}============", token);
 		LogoutResponse rep = new LogoutResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		int userId = 0;
-		if (sessionData == null) {
-			userId = logoutRequest.getUserId();
-		} else {
-			userId = sessionData.getUserId();
-			// 清session
-			sessionManager.logout(sessionData.getSessionId());
-		}
+		// 清session
+		sessionManager.logout(sessionData.getSessionId());
 		// 清logintoken
-		sessionManager.delLoginToken(userId);
+		sessionManager.delLoginToken(sessionData.getUserId());
 		// 清pushId,解绑Tag
-		userManager.logout(userId);
+		userManager.logout(sessionData.getUserId());
 		logger.info("********Operation succeeded********");
 		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
