@@ -65,7 +65,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		if(bind == null){
 			logger.warn("The account is not tied to goldpay");
 			map.put("msg", "The account is not tied to goldpay");
-			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("retCode", ServerConsts.GOLDPAY_NOT_BIND);
 		}
 
 		//生成TransId
@@ -294,7 +294,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		if(bind == null){
 			logger.warn("The account is not tied to goldpay");
 			map.put("msg", "The account is not tied to goldpay");
-			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("retCode", ServerConsts.GOLDPAY_NOT_BIND);
 			return map;
 		}
 		
