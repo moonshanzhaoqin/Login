@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.utils.page;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -86,7 +87,8 @@ public class PageUtils {
 	public static List<?> getListByPage4MySql(HibernateTemplate hibernateTemplate,final String mySql, 
 			final List<?> values,final int firstResult, final int masResult) {
 		
-		List<?> list = hibernateTemplate.executeWithNativeSession(new HibernateCallback<List<?>>() {
+		List<?> list = new ArrayList<>();
+		list = hibernateTemplate.executeWithNativeSession(new HibernateCallback<List<?>>() {
 
 			@Override
 			public List<?> doInHibernate(Session session) throws HibernateException {
