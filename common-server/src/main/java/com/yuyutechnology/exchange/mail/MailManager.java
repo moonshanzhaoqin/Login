@@ -48,7 +48,7 @@ public class MailManager {
 			contactTital = contact.substring(0, contact.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
 			contactContent = contact.substring(contact.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
 		} catch (Exception e) {
-			logger.warn("Mai template read error , can't send email : "+ e.getMessage());
+			logger.warn("Mail template read error , can't send email : "+ e.getMessage());
 		}
 	}
 
