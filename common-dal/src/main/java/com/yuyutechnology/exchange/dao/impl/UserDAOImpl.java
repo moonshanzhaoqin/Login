@@ -62,4 +62,14 @@ public class UserDAOImpl implements UserDAO {
 
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> getUserList() {
+		List<?> list = hibernateTemplate.find("from User");
+		if(!list.isEmpty()){
+			return (List<User>) list;
+		}
+		return null;
+	}
+
 }

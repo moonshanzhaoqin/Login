@@ -2,7 +2,9 @@ package com.yuyutechnology.exchange.dao.impl;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -10,6 +12,8 @@ import javax.annotation.Resource;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
@@ -26,6 +30,8 @@ public class WalletDAOImpl implements WalletDAO {
 
 	@Resource
 	HibernateTemplate hibernateTemplate;
+	
+	public static Logger logger = LoggerFactory.getLogger(WalletDAOImpl.class);
 	
 	@PostConstruct
 	public void updateSystemUserId(){
@@ -84,5 +90,36 @@ public class WalletDAOImpl implements WalletDAO {
 	@Override
 	public void addwallet(Wallet wallet) {
 		hibernateTemplate.saveOrUpdate(wallet);
+	}
+
+
+	@Override
+	public Map<String, BigDecimal> getUserTotalBalance(final int systemUserId) {
+		
+		Map<String, BigDecimal> map = new HashMap<String,BigDecimal>();
+		
+		List<?> list = hibernateTemplate.executeWithNativeSession(new HibernateCallback<List<?>>() {
+			@Override
+			public List<?> doInHibernate(Session session) throws HibernateException {
+				Query query = session.createSQLQuery("SELECT currency,SUM(balance) "
+						+ "FROM `e_wallet` WHERE user_id <> ? GROUP BY currency ");
+				query.setInteger(0, systemUserId);
+				return query.list();
+			}
+		});
+
+		if(list.isEmpty()){
+			return null;
+		}
+		
+		for (Object object : list) {
+			Object[] obj = (Object[]) object;
+			map.put(new String((String) obj[0]), new BigDecimal(obj[1]+""));
+		}
+		
+		logger.info("Map content : {}",map.toString());
+		
+		return map;
+
 	}
 }

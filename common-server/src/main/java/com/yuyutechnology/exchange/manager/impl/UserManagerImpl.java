@@ -491,4 +491,9 @@ public class UserManagerImpl implements UserManager {
 	public User getSystemUser() {
 		return userDAO.getSystemUser();
 	}
+
+	@Override
+	public List<User> getUserList() {
+		return userDAO.getUserList();
+	}
 }

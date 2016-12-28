@@ -11,4 +11,6 @@ public interface WalletManager {
 	 */
 	public double getTotalAmoutGold(int userId);
 	
+	public void getUserTotalBalance(int systemUserId);
+	
 }
