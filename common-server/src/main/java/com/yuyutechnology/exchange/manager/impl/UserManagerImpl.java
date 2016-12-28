@@ -284,7 +284,7 @@ public class UserManagerImpl implements UserManager {
 		if (userId != 0) {
 			User user = userDAO.getUser(userId);
 			logger.info("unbind Tag==>");
-			pushManager.unbindPushTag(user);
+			pushManager.unbindPushTag(user.getPushId(), user.getPushTag());
 			user.setPushId(null);
 			userDAO.updateUser(user);
 		}
@@ -302,7 +302,7 @@ public class UserManagerImpl implements UserManager {
 		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName,
 				PasswordUtils.encrypt(userPassword, passwordSalt), new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER,
 				ServerConsts.USER_AVAILABLE_OF_AVAILABLE, passwordSalt, LanguageUtils.standard(language)));
-		logger.info("Add user complete");
+		logger.info("Add user complete!");
 		redisDAO.saveData("changephonetime" + userId, simpleDateFormat.format(new Date()));
 		// 添加钱包信息
 		createWallets4NewUser(userId);
@@ -314,18 +314,16 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public void switchLanguage(Integer userId, String language) {
 		User user = userDAO.getUser(userId);
-		if (!user.getPushTag().equals(LanguageUtils.standard(language)) && StringUtils.isNotBlank(user.getPushId())) {
+		if (!user.getPushTag().equals(LanguageUtils.standard(language))) {
 			// 语言不一致，解绑Tag
 			logger.info("Language inconsistency, unbind Tag==>,");
-			pushManager.unbindPushTag(user);
+			pushManager.unbindPushTag(user.getPushId(), user.getPushTag());
 		}
 		user.setPushTag(LanguageUtils.standard(language));
 		userDAO.updateUser(user);
-		if (StringUtils.isNotBlank(user.getPushId()) && user.getPushTag() != null) {
-			// 绑定Tag
-			logger.info("bind Tag==>");
-			pushManager.bindPushTag(user);
-		}
+		// 绑定Tag
+		logger.info("bind Tag==>");
+		pushManager.bindPushTag(user.getPushId(), user.getPushTag());
 	}
 
 	@Override
@@ -357,12 +355,12 @@ public class UserManagerImpl implements UserManager {
 			// 推送消息：设备已下线
 			logger.info("Push message: device offline==> oldPushId : {} , newPushId : {} ",
 					new Object[] { user.getPushId(), pushId });
-			pushManager.push4Offline(user,String.valueOf(new Date().getTime()));
+			pushManager.push4Offline(user.getPushId(), user.getPushTag(), String.valueOf(new Date().getTime()));
 		}
 		if (!user.getPushTag().equals(LanguageUtils.standard(language))) {
 			// 语言不一致，解绑Tag
 			logger.info("Language inconsistency, unbind Tag==>");
-			pushManager.unbindPushTag(user);
+			pushManager.unbindPushTag(user.getPushId(), user.getPushTag());
 			user.setPushTag(LanguageUtils.standard(language));
 		}
 		if (StringUtils.isNotBlank(pushId)) {
@@ -371,7 +369,7 @@ public class UserManagerImpl implements UserManager {
 		userDAO.updateUser(user);
 		// 绑定Tag
 		logger.info("bind Tag==>");
-		pushManager.bindPushTag(user);
+		pushManager.bindPushTag(user.getPushId(), user.getPushTag());
 	}
 
 	@Override

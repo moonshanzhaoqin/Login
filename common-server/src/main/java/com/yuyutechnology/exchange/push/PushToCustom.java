@@ -3,7 +3,6 @@ package com.yuyutechnology.exchange.push;
 public class PushToCustom {
 	private String appName;
 	private String deviceID;
-	private String userId;
 	private String title;
 	private String body;
 	private String extParameters;
@@ -22,14 +21,6 @@ public class PushToCustom {
 
 	public void setDeviceID(String deviceID) {
 		this.deviceID = deviceID;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
 	}
 
 	public String getTitle() {
@@ -58,8 +49,8 @@ public class PushToCustom {
 
 	@Override
 	public String toString() {
-		return "PushToCustom [appName=" + appName + ", deviceID=" + deviceID + ", userId=" + userId + ", title=" + title
-				+ ", body=" + body + ", extParameters=" + extParameters + "]";
+		return "PushToCustom [appName=" + appName + ", deviceID=" + deviceID + ", title=" + title + ", body=" + body
+				+ ", extParameters=" + extParameters + "]";
 	}
 
 }

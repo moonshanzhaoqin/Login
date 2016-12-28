@@ -36,21 +36,23 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public User getUserByUserPhone(String areaCode, String userPhone) {
 		List<?> list = hibernateTemplate.find("from User where areaCode = ? and userPhone = ?", areaCode, userPhone);
-//		logger.info("{}",list);
+		// logger.info("{}",list);
 		if (!list.isEmpty()) {
 			return (User) list.get(0);
 		}
 		return null;
 	}
 
-//	@SuppressWarnings("unchecked")
+	// @SuppressWarnings("unchecked")
 	@Override
 	public Integer addUser(User user) {
 		Integer userId = (Integer) hibernateTemplate.save(user);
-//		List<Currency> currencies = (List<Currency>) hibernateTemplate.find("from Currency");
-//		for (Currency currency : currencies) {
-//			hibernateTemplate.saveOrUpdate(new Wallet(userId, currency.getCurrency(), new BigDecimal(0), new Date()));
-//		}
+		// List<Currency> currencies = (List<Currency>)
+		// hibernateTemplate.find("from Currency");
+		// for (Currency currency : currencies) {
+		// hibernateTemplate.saveOrUpdate(new Wallet(userId,
+		// currency.getCurrency(), new BigDecimal(0), new Date()));
+		// }
 		return userId;
 	}
 

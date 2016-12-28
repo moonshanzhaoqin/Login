@@ -65,7 +65,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		if(bind == null){
 			logger.warn("The account is not tied to goldpay");
 			map.put("msg", "The account is not tied to goldpay");
-			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("retCode", ServerConsts.GOLDPAY_NOT_BIND);
 		}
 
 		//生成TransId
@@ -110,7 +110,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 					map.put("msg", "not enough goldpay!");
 					map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH);
 				}else if(payModel.getResultCode().equals(1016)){
-					logger.warn("goldpayPurchase tpps callback: NOT_ENOUGH_GOLDPAY");
+					logger.warn("goldpay account not vaild phone!");
 					map.put("msg", "goldpay account not vaild phone!");
 					map.put("retCode", ServerConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
 				}
@@ -294,7 +294,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		if(bind == null){
 			logger.warn("The account is not tied to goldpay");
 			map.put("msg", "The account is not tied to goldpay");
-			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("retCode", ServerConsts.GOLDPAY_NOT_BIND);
 			return map;
 		}
 		

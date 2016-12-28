@@ -30,7 +30,6 @@ import com.yuyutechnology.exchange.server.controller.request.RegisterRequest;
 import com.yuyutechnology.exchange.server.controller.request.TestCodeRequest;
 import com.yuyutechnology.exchange.server.controller.response.AppVersionResponse;
 import com.yuyutechnology.exchange.server.controller.response.ForgetPasswordResponse;
-import com.yuyutechnology.exchange.server.controller.response.GetCurrencyResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetVerificationCodeResponse;
 import com.yuyutechnology.exchange.server.controller.response.LoginResponse;
 import com.yuyutechnology.exchange.server.controller.response.RegisterResponse;
