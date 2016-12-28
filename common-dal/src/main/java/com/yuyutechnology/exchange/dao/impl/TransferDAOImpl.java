@@ -102,6 +102,8 @@ public class TransferDAOImpl implements TransferDAO {
 	@Override
 	public void updateAccumulatedAmount(String key,BigDecimal amoumt) {
 		commonRedisTemplate.opsForValue().increment(accumulated_amount_key.replace("[key]", key),amoumt.doubleValue());
+		commonRedisTemplate.expireAt(accumulated_amount_key.replace("[key]", key), 
+				com.yuyutechnology.exchange.utils.DateFormatUtils.getIntervalDay(new Date(),1));
 	}
 
 	@Override
