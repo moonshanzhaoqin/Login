@@ -95,6 +95,10 @@ public class ServerConsts {
 	 * Goldpay密码错误
 	 */
 	public static final String GOLDPAY_PASSWORD_NOT_MATCH = "01017";
+	/**
+	 * Goldpay未绑定
+	 */
+	public static final String GOLDPAY_NOT_BIND = "01018";
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息
