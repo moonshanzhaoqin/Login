@@ -28,6 +28,7 @@ public class GoldpayManager {
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public boolean checkGoldpay(String userName, String password) {
 		StringBuilder param = new StringBuilder();
 		param.append("client_id=").append(ResourceUtils.getBundleValue4String("goldpayUas.client.id", "exchange-client")).append("&");
