@@ -465,7 +465,7 @@ public class PushManager {
 			HttpTookit.sendPost(ResourceUtils.getBundleValue4String("push.url") + "bindTag.do", param);
 			break;
 		case unbindTag:
-			HttpTookit.sendPost(ResourceUtils.getBundleValue4String("push.url") + "unbindTag.do", param);
+			HttpTookit.sendPost(ResourceUtils.getBundleValue4String("push.url") + "unBindTag.do", param);
 			break;
 		default:
 			break;

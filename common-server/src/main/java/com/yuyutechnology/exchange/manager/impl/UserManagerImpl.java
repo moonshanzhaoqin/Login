@@ -302,7 +302,7 @@ public class UserManagerImpl implements UserManager {
 		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName,
 				PasswordUtils.encrypt(userPassword, passwordSalt), new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER,
 				ServerConsts.USER_AVAILABLE_OF_AVAILABLE, passwordSalt, LanguageUtils.standard(language)));
-		logger.info("Add user complete");
+		logger.info("Add user complete!");
 		redisDAO.saveData("changephonetime" + userId, simpleDateFormat.format(new Date()));
 		// 添加钱包信息
 		createWallets4NewUser(userId);
