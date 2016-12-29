@@ -62,12 +62,12 @@
 						<div class="row center-block" style="height:175px;width:100%;margin-top: 15px;">
 							<div class="inner-addon left-addon ">
 								<span class="glyphicon glyphicon-envelope"></span>
-								<input name="userEmail" type="text" class="form-control userEmail" placeholder="yourEmail@xxx.com" style="border:0px;height: 40px;"/>
+								<input name="adminName" type="text" class="form-control adminName" placeholder="Admin Name" style="border:0px;height: 40px;"/>
 							</div>
 							<br />
 							<div class="inner-addon left-addon">
 								<span class="glyphicon glyphicon-lock"></span>
-								<input name="userPassword" type="password" class="form-control userPassword" style="border:0px;height: 40px;" value="123456"/>
+								<input name="adminPassword" type="password" class="form-control adminPassword" style="border:0px;height: 40px;" value="123456"/>
 							</div>
 						</div>
 						
@@ -86,7 +86,7 @@
 			</div>
 			<div class="row">
 				<input id="retCode"  name="retCode" value="${model.retCode }" type="hidden">
-				<input id="retMessage"  name="retMessage" value="${model.retMessage }" type="hidden">
+				<input id="retMessage"  name="retMessage" value="${message}" type="hidden">
 			</div>
 		</div><!--end of container-->
 		
@@ -100,31 +100,32 @@
 			$(function(){
 				var retCode = $('#retCode').val();
 				var retMessage = $('#retMessage').val();
-				
-				if(1 == retCode){
-					alert(retMessage);
+					
+				if(retMessage!=null || retMessage!=""){
+				alert(retMessage);
 				}
+				
 				$('#retCode').val("");
 			});
 			//登录提交 
 			$('.login').click(function(){
-				var email = $('.userEmail').val().trim();
-				var password = $('.userPassword').val().trim();
-				//检验账号密码
-				if(!checkEmail(email)){
-					alert("邮箱格式不正确")
-					return;
-				}else{
+// 				var email = $('.userEmail').val().trim();
+// 				var password = $('.userPassword').val().trim();
+// 				//检验账号密码
+// 				if(!checkEmail(email)){
+// 					alert("邮箱格式不正确")
+// 					return;
+// 				}else{
 					$(".form").submit();
-				}
+// 				}
 				
 			});
 			
 			//检查邮箱格式
-			function checkEmail(email){
-				var reg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
-				return reg.test(email);
-			}
+// 			function checkEmail(email){
+// 				var reg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+// 				return reg.test(email);
+// 			}
 			
 			
 		</script>

@@ -6,4 +6,6 @@ public interface AdminDAO {
 
 	Admin getAdminByName(String adminName);
 
+	void updateAdmin(Admin admin);
+
 }

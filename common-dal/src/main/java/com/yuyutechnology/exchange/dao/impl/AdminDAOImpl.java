@@ -15,7 +15,7 @@ import com.yuyutechnology.exchange.pojo.Admin;
 @Repository
 public class AdminDAOImpl implements AdminDAO {
 	public static Logger logger = LoggerFactory.getLogger(AdminDAOImpl.class);
-	
+
 	@Resource
 	HibernateTemplate hibernateTemplate;
 
@@ -26,5 +26,10 @@ public class AdminDAOImpl implements AdminDAO {
 			return (Admin) list.get(0);
 		}
 		return null;
+	}
+
+	@Override
+	public void updateAdmin(Admin admin) {
+		hibernateTemplate.saveOrUpdate(admin);
 	}
 }
