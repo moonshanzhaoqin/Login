@@ -1,8 +1,8 @@
 package com.yuyutechnology.exchange.dao;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.yuyutechnology.exchange.pojo.Wallet;
 
@@ -23,6 +23,6 @@ public interface WalletDAO {
 
 	public void addwallet(Wallet wallet);
 	
-	public Map<String, BigDecimal> getUserTotalBalance(int systemUserId);
+	public HashMap<String, BigDecimal> getUserAccountTotalAssets(int systemUserId);
 
 }

@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -94,9 +93,9 @@ public class WalletDAOImpl implements WalletDAO {
 
 
 	@Override
-	public Map<String, BigDecimal> getUserTotalBalance(final int systemUserId) {
+	public HashMap<String, BigDecimal> getUserAccountTotalAssets(final int systemUserId) {
 		
-		Map<String, BigDecimal> map = new HashMap<String,BigDecimal>();
+		HashMap<String, BigDecimal> map = new HashMap<String,BigDecimal>();
 		
 		List<?> list = hibernateTemplate.executeWithNativeSession(new HibernateCallback<List<?>>() {
 			@Override
