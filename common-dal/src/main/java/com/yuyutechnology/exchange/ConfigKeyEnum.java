@@ -10,7 +10,7 @@ package com.yuyutechnology.exchange;
 public enum ConfigKeyEnum {
 	
 	DAILYTRANSFERTHRESHOLD("daily_transfer_threshold"),EACHTRANSFERTHRESHOLD("each_transfer_threshold"),TOTALBALANCETHRESHOLD("total_balance_threshold")
-	,ENTERMAXIMUMAMOUNT("enter_maximum_amount");
+	,ENTERMAXIMUMAMOUNT("enter_maximum_amount"),TPPSCLIENTID("tpps_client_id"),TPPSCLIENTKEY("tpps_client_key"),TPPSTRANSTOKEN("tpps_trans_token");
 	
 	private String key;
 	private ConfigKeyEnum(String key)
