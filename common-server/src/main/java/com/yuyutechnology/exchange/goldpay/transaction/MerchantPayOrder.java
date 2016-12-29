@@ -4,8 +4,7 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
 @JsonPropertyOrder(alphabetic=true)
 public class MerchantPayOrder {
-	private String fromAccountNum;
-	private String fromAccountName; 
+	
 	private String fromAccountToken; 
 	private String toAccountNum; 
 	
@@ -18,18 +17,6 @@ public class MerchantPayOrder {
 	private String itemDesc; 
 	private String attach;
 	
-	public String getFromAccountNum() {
-		return fromAccountNum;
-	}
-	public void setFromAccountNum(String fromAccountNum) {
-		this.fromAccountNum = fromAccountNum;
-	}
-	public String getFromAccountName() {
-		return fromAccountName;
-	}
-	public void setFromAccountName(String fromAccountName) {
-		this.fromAccountName = fromAccountName;
-	}
 	public String getFromAccountToken() {
 		return fromAccountToken;
 	}

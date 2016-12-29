@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.yuyutechnology.exchange.ConfigKeyEnum;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
@@ -23,6 +24,7 @@ import com.yuyutechnology.exchange.goldpay.transaction.ClientPin;
 import com.yuyutechnology.exchange.goldpay.transaction.MerchantPayOrder;
 import com.yuyutechnology.exchange.goldpay.transaction.PayConfirm;
 import com.yuyutechnology.exchange.goldpay.transaction.PayModel;
+import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Transfer;
@@ -46,6 +48,8 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 	TransferDAO transferDAO;
 	@Autowired
 	WalletSeqDAO walletSeqDAO;
+	@Autowired
+	ConfigManager configManager;
 	
 	public static Logger logger = LoggerFactory.getLogger(GoldpayTransManagerImpl.class);
 
@@ -75,11 +79,10 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		clientPayOrder.setPayAmount(amount.intValue());
 		clientPayOrder.setFromAccountNum(bind.getGoldpayAcount());
 		clientPayOrder.setType(0);
-		String clientId = ResourceUtils.getBundleValue4String("client.id");
-		clientPayOrder.setClientId(clientId);
+		clientPayOrder.setClientId(configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTID, ""));
 		
 		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(clientPayOrder)
-				+ResourceUtils.getBundleValue4String("client.key"));
+				+configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTKEY, ""));
 		clientPayOrder.setSign(sign.toUpperCase());
 
 		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue4String("tpps.url")+"clientPay.do",
@@ -150,7 +153,6 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		
 		HashMap<String, String> map = new HashMap<>();
 		
-		String clientId = ResourceUtils.getBundleValue4String("client.id");
 		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		if(transfer == null || transfer.getTransferType() != ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE){
 			logger.warn("The transaction order does not exist");
@@ -160,11 +162,11 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		}
 		
 		ClientPin clientPin = new ClientPin();
-		clientPin.setClientId(clientId);
+		clientPin.setClientId(configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTID, ""));
 		clientPin.setPayOrderId(transfer.getTransferComment());
 		
 		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(clientPin)
-				+ResourceUtils.getBundleValue4String("client.key"));
+				+configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTKEY, ""));
 		
 		clientPin.setSign(sign.toUpperCase());
 		
@@ -211,12 +213,12 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		}
 		
 		ClientComfirmPay  clientComfirmPay  = new ClientComfirmPay();
-		clientComfirmPay.setClientId(ResourceUtils.getBundleValue4String("client.id"));
+		clientComfirmPay.setClientId(configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTID, ""));
 		clientComfirmPay.setPin(pin);
 		clientComfirmPay.setPayOrderId(transfer.getTransferComment());
 		
 		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(clientComfirmPay)
-				+ResourceUtils.getBundleValue4String("client.key"));
+				+configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTKEY, ""));
 		
 		clientComfirmPay.setSign(sign.toUpperCase());
 		
@@ -530,7 +532,6 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 	public HashMap<String, String> withdrawConfirm2(int userId, String transferId){
 		
 		HashMap<String, String> map = new HashMap<String, String>();
-		User systemUser = userDAO.getSystemUser();
 		Bind bind = bindBAO.getBindByUserId(userId);
 		if(bind == null){
 			logger.warn("The account is not tied to goldpay");
@@ -538,13 +539,14 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
 			return map;
 		}
-		Bind systemBind = bindBAO.getBindByUserId(systemUser.getUserId());
-		if(systemBind == null){
-			logger.warn("System account is not bound to goldpay");
-			map.put("msg", "System account is not bound to goldpay");
-			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
-			return map;
-		}
+//		User systemUser = userDAO.getSystemUser();
+//		Bind systemBind = bindBAO.getBindByUserId(systemUser.getUserId());
+//		if(systemBind == null){
+//			logger.warn("System account is not bound to goldpay");
+//			map.put("msg", "System account is not bound to goldpay");
+//			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+//			return map;
+//		}
 
 		Transfer transfer = transferDAO.getTransferById(transferId);
 		
@@ -555,20 +557,16 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 			return map;
 		}
 
-		MerchantPayOrder  merchantPayOrder  = new MerchantPayOrder();
-		
-		merchantPayOrder.setFromAccountNum(systemBind.getGoldpayAcount());
-		merchantPayOrder.setFromAccountName(systemBind.getGoldpayName());
-		merchantPayOrder.setFromAccountToken(systemBind.getToken());
-		
+		MerchantPayOrder merchantPayOrder  = new MerchantPayOrder();
+		merchantPayOrder.setFromAccountToken(configManager.getConfigStringValue(ConfigKeyEnum.TPPSTRANSTOKEN, ""));
 		merchantPayOrder.setToAccountNum(bind.getGoldpayAcount());
 		merchantPayOrder.setOrderId(transfer.getTransferId());
-		merchantPayOrder.setClientId(ResourceUtils.getBundleValue4String("client.id"));
+		merchantPayOrder.setClientId(configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTID, ""));
 		merchantPayOrder.setPayAmount(transfer.getTransferAmount().intValue());
 		merchantPayOrder.setType(0);
 		
 		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(merchantPayOrder)
-				+ResourceUtils.getBundleValue4String("client.key"));
+				+configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTKEY, ""));
 		
 		merchantPayOrder.setSign(sign.toUpperCase());
 		
