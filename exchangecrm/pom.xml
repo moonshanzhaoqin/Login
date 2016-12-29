@@ -1,15 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>anytime_exchange_sys</artifactId>
 		<groupId>com.yuyutechnology.exchange</groupId>
 		<version>1.0.0</version>
 	</parent>
-    <artifactId>exchangecrm</artifactId>
-    <packaging>war</packaging>
-    <name>exchangecrm</name>
-    <url>http://maven.apache.org</url>
+	<artifactId>exchangecrm</artifactId>
+	<packaging>war</packaging>
+	<name>exchangecrm</name>
+	<url>http://maven.apache.org</url>
 
 	<profiles>
 		<!-- 开发环境，默认激活 -->
@@ -51,12 +51,19 @@
 			<groupId>com.yuyutechnology.exchange</groupId>
 			<artifactId>common-dal</artifactId>
 			<version>1.0.0</version>
-		</dependency>		
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/javax.servlet/jstl -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+
 	</dependencies>
 
-    <build>
-        <finalName>crm</finalName>
-        <plugins>
+	<build>
+		<finalName>crm</finalName>
+		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -100,7 +107,7 @@
 					</execution>
 				</executions>
 			</plugin>
-        	<plugin>
+			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
 				<version>7.1.6.v20100715</version>
@@ -130,6 +137,6 @@
 					<warName>crm</warName>
 				</configuration>
 			</plugin>
-        </plugins>
-    </build>
+		</plugins>
+	</build>
 </project>
