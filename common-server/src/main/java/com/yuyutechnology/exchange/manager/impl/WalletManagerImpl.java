@@ -1,6 +1,8 @@
 package com.yuyutechnology.exchange.manager.impl;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -65,7 +67,7 @@ public class WalletManagerImpl implements WalletManager {
 
 	@Override
 	public void getUserTotalBalance(int systemUserId) {
-		walletDAO.getUserTotalBalance(systemUserId);
+		walletDAO.getUserAccountTotalAssets(systemUserId);
 	}
 
 }

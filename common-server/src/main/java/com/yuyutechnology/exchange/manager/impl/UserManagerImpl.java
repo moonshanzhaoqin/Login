@@ -114,7 +114,7 @@ public class UserManagerImpl implements UserManager {
 							goldpayToken);
 				} else {
 					bind.setGoldpayId(goldpayUser.getId());
-					bind.setGoldpayName(MathUtils.hideString(goldpayUser.getUsername()));
+					bind.setGoldpayName(goldpayUser.getUsername());
 					bind.setGoldpayAcount(goldpayUser.getAccountNum());
 					bind.setToken(goldpayToken);
 				}

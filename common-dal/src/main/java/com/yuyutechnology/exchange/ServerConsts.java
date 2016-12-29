@@ -275,6 +275,7 @@ public class ServerConsts {
 	 * 币种状态——不可用
 	 */
 	public static final int CURRENCY_UNAVAILABLE = 0;
+	public static final String ADMIN_DEFAULT_PASSWORD = "12345678";
 	
 	
 	

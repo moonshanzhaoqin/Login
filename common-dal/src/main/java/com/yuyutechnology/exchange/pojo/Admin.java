@@ -20,9 +20,8 @@ public class Admin {
 
 	}
 
-	public Admin(Integer adminId, String adminName, String adminPassword, String passwordSalt) {
+	public Admin(String adminName, String adminPassword, String passwordSalt) {
 		super();
-		this.adminId = adminId;
 		this.adminName = adminName;
 		this.adminPassword = adminPassword;
 		this.passwordSalt = passwordSalt;
