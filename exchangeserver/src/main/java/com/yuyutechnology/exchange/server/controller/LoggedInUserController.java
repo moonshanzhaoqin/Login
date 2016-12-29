@@ -31,6 +31,7 @@ import com.yuyutechnology.exchange.server.controller.request.CheckGoldpayPwdRequ
 import com.yuyutechnology.exchange.server.controller.request.CheckPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.CheckPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
+import com.yuyutechnology.exchange.server.controller.request.LogoutRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByGoldpayRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByOldRequest;
@@ -148,7 +149,7 @@ public class LoggedInUserController {
 							changePhoneRequest.getUserPhone(), changePhoneRequest.getVerificationCode())) {
 						userManager.changePhone(sessionData.getUserId(), changePhoneRequest.getAreaCode(),
 								changePhoneRequest.getUserPhone());
-						sessionManager.logout(sessionData.getSessionId());
+						sessionManager.cleanSession(sessionData.getSessionId());
 						sessionManager.delLoginToken(sessionData.getUserId());
 						logger.info("********Operation succeeded********");
 						rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
@@ -318,7 +319,7 @@ public class LoggedInUserController {
 					rep.setMessage(MessageConsts.NEW_PWD_EQUALS_OLD);
 				} else {
 					userManager.updatePassword(sessionData.getUserId(), modifyPasswordRequest.getNewPassword());
-					sessionManager.logout(sessionData.getSessionId());
+					sessionManager.cleanSession(sessionData.getSessionId());
 					sessionManager.delLoginToken(sessionData.getUserId());
 					logger.info("********Operation succeeded********");
 					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
@@ -533,16 +534,20 @@ public class LoggedInUserController {
 	@ResponseBody
 	@ApiOperation(value = "退出账号", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/logout", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public LogoutResponse logout(@PathVariable String token) {
+	public LogoutResponse logout(@PathVariable String token, @RequestBody LogoutRequest logoutRequest) {
 		logger.info("========logout : {}============", token);
 		LogoutResponse rep = new LogoutResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		// 清session
-		sessionManager.logout(sessionData.getSessionId());
-		// 清logintoken
-		sessionManager.delLoginToken(sessionData.getUserId());
-		// 清pushId,解绑Tag
-		userManager.logout(sessionData.getUserId());
+		int userId = 0;
+		SessionData activeSessionData = sessionManager.getByUserid(userId);
+		if (sessionData == null && activeSessionData == null) {
+			userId = logoutRequest.getUserId();
+		} else if (sessionData != null) {
+			userId = sessionData.getUserId();
+			sessionManager.cleanSession(sessionData.getSessionId());
+		}
+		sessionManager.delLoginToken(userId);
+		userManager.logout(userId);
 		logger.info("********Operation succeeded********");
 		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);

@@ -256,6 +256,7 @@ public class UserManagerImpl implements UserManager {
 		UserInfo userInfo = null;
 		if (user != null) {
 			userInfo = new UserInfo();
+			userInfo.setUserId(user.getUserId());
 			userInfo.setAreaCode(user.getAreaCode());
 			userInfo.setPhone(user.getUserPhone());
 			userInfo.setName(user.getUserName());

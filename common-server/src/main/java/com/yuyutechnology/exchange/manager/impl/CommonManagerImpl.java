@@ -60,13 +60,15 @@ public class CommonManagerImpl implements CommonManager {
 
 	private void initCurrency() {
 		allCurrencies = currencyDAO.getCurrencys();
+		List<Currency> currentCurrenciesTmp = new ArrayList<Currency>();
 		for (Currency currency : allCurrencies) {
 			allCurrenciesMap.put(currency.getCurrency(), currency);
 			if (currency.getCurrencyStatus() == ServerConsts.CURRENCY_AVAILABLE) {
-				currentCurrencies.add(currency);
+				currentCurrenciesTmp.add(currency);
 				currentCurrenciesMap.put(currency.getCurrency(), currency);
 			}
 		}
+		currentCurrencies = currentCurrenciesTmp;
 	}
 
 	@Override

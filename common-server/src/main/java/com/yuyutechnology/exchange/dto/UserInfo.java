@@ -7,7 +7,7 @@ public class UserInfo {
 		return "UserInfo [areaCode=" + areaCode + ", phone=" + phone + ", name=" + name + ", goldpayName=" + goldpayName
 				+ ", isPayPwd=" + isPayPwd + "]";
 	}
-
+	private int userId;
 	private String areaCode;
 	private String phone;
 	private String name;
@@ -52,6 +52,14 @@ public class UserInfo {
 
 	public void setPayPwd(boolean isPayPwd) {
 		this.isPayPwd = isPayPwd;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
 }
