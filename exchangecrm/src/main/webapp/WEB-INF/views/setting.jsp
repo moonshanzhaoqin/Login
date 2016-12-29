@@ -23,7 +23,7 @@
 	</head>
 	<body>
 		<%@ include file="header.jsp"%>
-		Home Page!
+		setting!
 		
 	</body>
 </html>

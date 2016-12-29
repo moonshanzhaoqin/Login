@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.crm.request.LoginRquest;
+import com.yuyutechnology.exchange.crm.request.ModifyPasswordRquest;
 import com.yuyutechnology.exchange.manager.AdminManager;
 
 @Controller
@@ -36,18 +37,55 @@ public class AdminController {
 			switch (retCode) {
 			case RetCodeConsts.ADMIN_NOT_EXIST:
 				mav.setViewName("login");
+				mav.addObject("retCode", RetCodeConsts.ADMIN_NOT_EXIST);
 				mav.addObject("message", "ADMIN_NOT_EXIST");
 				break;
 			case RetCodeConsts.PASSWORD_NOT_MATCH_NAME:
 				mav.setViewName("login");
+				mav.addObject("retCode", RetCodeConsts.PASSWORD_NOT_MATCH_NAME);
 				mav.addObject("message", "PASSWORD_NOT_MATCH_NAME");
 				break;
 			case RetCodeConsts.SUCCESS:
 				mav.setViewName("home");
+				mav.addObject("retCode", RetCodeConsts.SUCCESS);
 				break;
 			default:
 				break;
 			}
+
+		}
+
+		return mav;
+	}
+	
+	@RequestMapping(value = "/modifyPassword", method = { RequestMethod.POST })
+	public ModelAndView modifyPassword(ModifyPasswordRquest modifyPasswordRquest, HttpServletRequest request, HttpServletResponse response) {
+		mav = new ModelAndView();
+
+		if (modifyPasswordRquest.isEmpty()) {
+			logger.info("parameter is empty");
+
+		} else {
+			Integer adminId = null;
+			int retCode = adminManager.modifyPassword(adminId,modifyPasswordRquest.getOldPassword(), modifyPasswordRquest.getNewPassword());
+//			switch (retCode) {
+//			case RetCodeConsts.ADMIN_NOT_EXIST:
+//				mav.setViewName("login");
+//				mav.addObject("retCode", RetCodeConsts.ADMIN_NOT_EXIST);
+//				mav.addObject("message", "ADMIN_NOT_EXIST");
+//				break;
+//			case RetCodeConsts.PASSWORD_NOT_MATCH_NAME:
+//				mav.setViewName("login");
+//				mav.addObject("retCode", RetCodeConsts.PASSWORD_NOT_MATCH_NAME);
+//				mav.addObject("message", "PASSWORD_NOT_MATCH_NAME");
+//				break;
+//			case RetCodeConsts.SUCCESS:
+//				mav.setViewName("home");
+//				mav.addObject("retCode", RetCodeConsts.SUCCESS);
+//				break;
+//			default:
+//				break;
+//			}
 
 		}
 
