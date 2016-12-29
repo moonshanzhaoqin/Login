@@ -41,7 +41,7 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 	@Test
 	public void testUpdateRate() {
 
-		 exchangeRateManager.updateExchangeRate();
+//		 exchangeRateManager.updateExchangeRate();
 
 		// String result = transferManager.transferInitiate(2,
 		// "+86","12312312336",
@@ -61,6 +61,8 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 //		 exchangeRateManager.getTotalBalance(2);
 
 //		transferManager.getNotificationRecordsByPage(4, 1, 10);
+		 
+		 walletManager.getUserTotalBalance(1);
 		 
 		 
 	}

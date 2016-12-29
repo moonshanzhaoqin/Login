@@ -223,4 +223,6 @@ public interface UserManager {
 	public String deleteFriend(Integer userId, String areaCode, String phone);
 	
 	public User getSystemUser();
+	
+	public List<User> getUserList();
 }

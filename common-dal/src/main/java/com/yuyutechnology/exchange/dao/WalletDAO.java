@@ -2,6 +2,7 @@ package com.yuyutechnology.exchange.dao;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import com.yuyutechnology.exchange.pojo.Wallet;
 
@@ -21,5 +22,7 @@ public interface WalletDAO {
 	public Integer updateWalletByUserIdAndCurrency(int userId,String currency,BigDecimal amount,String capitalFlows);
 
 	public void addwallet(Wallet wallet);
+	
+	public Map<String, BigDecimal> getUserTotalBalance(int systemUserId);
 
 }

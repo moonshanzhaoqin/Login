@@ -63,4 +63,9 @@ public class WalletManagerImpl implements WalletManager {
 		return goldAmount;
 	}
 
+	@Override
+	public void getUserTotalBalance(int systemUserId) {
+		walletDAO.getUserTotalBalance(systemUserId);
+	}
+
 }

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
-import com.yuyutechnology.exchange.pojo.Config;
 import com.yuyutechnology.exchange.pojo.Currency;
 
 @Repository

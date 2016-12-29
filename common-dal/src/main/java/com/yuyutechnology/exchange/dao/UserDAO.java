@@ -3,6 +3,8 @@
  */
 package com.yuyutechnology.exchange.dao;
 
+import java.util.List;
+
 import com.yuyutechnology.exchange.pojo.User;
 
 /**
@@ -20,5 +22,7 @@ public interface UserDAO {
 	public Integer addUser(User user);
 
 	public void updateUser(User user);
+	
+	public List<User> getUserList();
 
 }
