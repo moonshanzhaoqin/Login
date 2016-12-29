@@ -96,7 +96,7 @@ public class SessionManager {
 	 * 
 	 * @param sessionId
 	 */
-	public void logout(String sessionId) {
+	public void cleanSession(String sessionId) {
 		String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", sessionId);
 		sessionRedisTemplate.delete(key);
 	}

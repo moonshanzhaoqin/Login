@@ -7,6 +7,7 @@ public class TransferDTO {
 	
 //	private int userId;
 	private String currency;
+	private String currencyUnit;
 	private BigDecimal amount;
 	private String phoneNum;
 	private String comments;
@@ -55,5 +56,10 @@ public class TransferDTO {
 	public void setTransferType(int transferType) {
 		this.transferType = transferType;
 	}
-
+	public String getCurrencyUnit() {
+		return currencyUnit;
+	}
+	public void setCurrencyUnit(String currencyUnit) {
+		this.currencyUnit = currencyUnit;
+	}
 }

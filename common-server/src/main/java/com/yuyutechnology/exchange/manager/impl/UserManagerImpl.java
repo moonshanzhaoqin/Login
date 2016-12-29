@@ -204,7 +204,7 @@ public class UserManagerImpl implements UserManager {
 	 */
 	private void createWallets4NewUser(Integer userId) {
 		logger.info("New wallet for newly registered users==>");
-		List<Currency> currencies = commonManager.getCurrentCurrency();
+		List<Currency> currencies = commonManager.getCurrentCurrencies();
 		for (Currency currency : currencies) {
 			walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date()));
 		}
@@ -256,6 +256,7 @@ public class UserManagerImpl implements UserManager {
 		UserInfo userInfo = null;
 		if (user != null) {
 			userInfo = new UserInfo();
+			userInfo.setUserId(user.getUserId());
 			userInfo.setAreaCode(user.getAreaCode());
 			userInfo.setPhone(user.getUserPhone());
 			userInfo.setName(user.getUserName());
@@ -397,7 +398,7 @@ public class UserManagerImpl implements UserManager {
 		}
 		// logger.info("mapwallet",mapwallet);
 		// 获取当前可用的货币
-		List<Currency> currencies = commonManager.getCurrentCurrency();
+		List<Currency> currencies = commonManager.getCurrentCurrencies();
 		for (Currency currency : currencies) {
 			// logger.info("{}",currency.getCurrency());
 			if (mapwallet.get(currency.getCurrency()) == null) {

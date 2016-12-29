@@ -58,7 +58,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 					|| wallet.getBalance().compareTo(BigDecimal.ZERO)!=0 ) {
 				list.add(new WalletInfo(wallet.getCurrency().getCurrency(),
 						wallet.getCurrency().getNameEn(), wallet.getCurrency().getNameCn(),
-						wallet.getCurrency().getNameHk(), wallet.getCurrency().getCurrencyStatus(),
+						wallet.getCurrency().getNameHk(), wallet.getCurrency().getCurrencyStatus(), wallet.getCurrency().getCurrencyUnit(),
 						wallet.getBalance()));
 			}
 		}

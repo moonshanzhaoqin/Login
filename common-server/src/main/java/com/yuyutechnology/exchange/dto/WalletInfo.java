@@ -8,6 +8,7 @@ public class WalletInfo {
 	private String nameCn;
 	private String nameHk;
 	private int currencyStatus;
+	private String currencyUnit;
 	private BigDecimal balance;
 
 	public WalletInfo() {
@@ -15,15 +16,17 @@ public class WalletInfo {
 	}
 
 	public WalletInfo(String currency, String nameEn, String nameCn, String nameHk, int currencyStatus,
-			BigDecimal balance) {
+			String currencyUnit, BigDecimal balance) {
 		super();
 		this.currency = currency;
 		this.nameEn = nameEn;
 		this.nameCn = nameCn;
 		this.nameHk = nameHk;
 		this.currencyStatus = currencyStatus;
+		this.currencyUnit = currencyUnit;
 		this.balance = balance;
 	}
+
 
 	public String getCurrency() {
 		return currency;
@@ -71,5 +74,13 @@ public class WalletInfo {
 
 	public void setCurrencyStatus(int currencyStatus) {
 		this.currencyStatus = currencyStatus;
+	}
+
+	public String getCurrencyUnit() {
+		return currencyUnit;
+	}
+
+	public void setCurrencyUnit(String currencyUnit) {
+		this.currencyUnit = currencyUnit;
 	}
 }
