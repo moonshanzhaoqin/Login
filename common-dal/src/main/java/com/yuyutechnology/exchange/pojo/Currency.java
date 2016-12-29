@@ -18,6 +18,7 @@ public class Currency implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 5962261170598609844L;
 	private String currency;
+	private String currencyUnit;
 	private String nameEn;
 	private String nameCn;
 	private String nameHk;
@@ -95,6 +96,15 @@ public class Currency implements java.io.Serializable {
 
 	public void setCurrencyOrder(String currencyOrder) {
 		this.currencyOrder = currencyOrder;
+	}
+
+	@Column(name = "currency_unit", unique = true)
+	public String getCurrencyUnit() {
+		return currencyUnit;
+	}
+
+	public void setCurrencyUnit(String currencyUnit) {
+		this.currencyUnit = currencyUnit;
 	}
 
 }

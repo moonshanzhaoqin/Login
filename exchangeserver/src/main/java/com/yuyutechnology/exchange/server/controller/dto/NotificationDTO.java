@@ -8,6 +8,7 @@ public class NotificationDTO {
 	private String areaCode;
 	private String sponsorPhone;
 	private String currency;
+	private String currencyUnit;
 	private double amount;
 	private Date createAt;
 	private int tradingStatus;
@@ -54,5 +55,10 @@ public class NotificationDTO {
 	public void setTradingStatus(int tradingStatus) {
 		this.tradingStatus = tradingStatus;
 	}
-
+	public String getCurrencyUnit() {
+		return currencyUnit;
+	}
+	public void setCurrencyUnit(String currencyUnit) {
+		this.currencyUnit = currencyUnit;
+	}
 }

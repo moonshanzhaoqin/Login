@@ -22,6 +22,7 @@ import com.yuyutechnology.exchange.ConfigKeyEnum;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.UserInfo;
+import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
@@ -59,6 +60,8 @@ public class TransferController {
 	PushManager pushManager;
 	@Autowired
 	ConfigManager configManager;
+	@Autowired
+	CommonManager commonManager;
 	
 	public static Logger logger = LoggerFactory.getLogger(TransferController.class);
 
@@ -262,7 +265,7 @@ public class TransferController {
 				
 				TransferDTO dto = new TransferDTO();
 				dto.setCurrency((String) obj[1]);
-				
+				dto.setCurrencyUnit(commonManager.getCurreny(dto.getCurrency()).getCurrencyUnit());
 				
 				if((int) obj[7] == ServerConsts.TRANSFER_TYPE_TRANSACTION){
 					if(sessionData.getUserId() == (int) obj[0]){
@@ -346,7 +349,7 @@ public class TransferController {
 				dto.setAmount((new BigDecimal(obj[4]+"")).doubleValue());
 				dto.setCreateAt((Date) obj[5]);
 				dto.setTradingStatus((int) obj[6]);
-				
+				dto.setCurrencyUnit(commonManager.getCurreny(dto.getCurrency()).getCurrencyUnit());
 				dtos.add(dto);
 			}
 			

@@ -1,15 +1,15 @@
 package com.yuyutechnology.exchange.server.controller.dto;
 
-public class FriendInfo {
+public class FriendDTO {
 	
 	private String areaCode;
 	private String phone;
 	private String name;
 	
-	public FriendInfo() {
+	public FriendDTO() {
 		super();
 	}
-	public FriendInfo(String areaCode, String phone, String name) {
+	public FriendDTO(String areaCode, String phone, String name) {
 		super();
 		this.areaCode = areaCode;
 		this.phone = phone;
