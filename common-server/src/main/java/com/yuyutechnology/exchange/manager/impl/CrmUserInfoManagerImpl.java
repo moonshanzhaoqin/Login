@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -87,7 +88,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 			}
 		}
 		
-		map.put("totalAssets", totalAssets);
+		map.put("totalAssets", totalAssets.setScale(2, RoundingMode.CEILING));
 		
 		return map;
 		
