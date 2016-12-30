@@ -233,7 +233,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 			
 			payConfirm = JsonBinder.getInstance().fromJson(result, PayConfirm.class);
 			
-			if(payConfirm == null || (payConfirm.getResultCode() != 1 && payConfirm.getResultCode() != 307 & payConfirm.getResultCode() != 70002)){
+			if(payConfirm == null || (payConfirm.getResultCode() != 1 && payConfirm.getResultCode() != 307)){
 				map.put("retCode", ServerConsts.RET_CODE_FAILUE);
 				map.put("msg", "fail");
 				return map;
