@@ -225,7 +225,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue4String("tpps.url")+"clientComfirmPay.do",
 				JsonBinder.getInstance().toJson(clientComfirmPay));
 		PayConfirm payConfirm;
-		if(StringUtils.isBlank(result)){
+		if(StringUtils.isNotBlank(result)){
 			logger.info("goldpayTransConfirm tpps callback {} ",result);
 			payConfirm = JsonBinder.getInstance().fromJson(result, PayConfirm.class);
 			if (payConfirm != null && (payConfirm.getResultCode() == 1 || payConfirm.getResultCode() == 70002)) {
