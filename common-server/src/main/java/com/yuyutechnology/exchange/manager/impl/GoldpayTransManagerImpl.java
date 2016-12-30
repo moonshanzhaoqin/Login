@@ -81,7 +81,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		clientPayOrder.setType(0);
 		clientPayOrder.setClientId(configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTID, ""));
 		
-		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(clientPayOrder)
+		String sign = DigestUtils.md5Hex(JsonBinder.getInstanceNonNull().toJson(clientPayOrder)
 				+configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTKEY, ""));
 		clientPayOrder.setSign(sign.toUpperCase());
 
@@ -165,7 +165,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		clientPin.setClientId(configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTID, ""));
 		clientPin.setPayOrderId(transfer.getTransferComment());
 		
-		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(clientPin)
+		String sign = DigestUtils.md5Hex(JsonBinder.getInstanceNonNull().toJson(clientPin)
 				+configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTKEY, ""));
 		
 		clientPin.setSign(sign.toUpperCase());
@@ -217,7 +217,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		clientComfirmPay.setPin(StringUtils.defaultString(pin));
 		clientComfirmPay.setPayOrderId(transfer.getTransferComment());
 		
-		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(clientComfirmPay)
+		String sign = DigestUtils.md5Hex(JsonBinder.getInstanceNonNull().toJson(clientComfirmPay)
 				+configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTKEY, ""));
 		
 		clientComfirmPay.setSign(sign.toUpperCase());
@@ -565,7 +565,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		merchantPayOrder.setPayAmount(transfer.getTransferAmount().intValue());
 		merchantPayOrder.setType(0);
 		
-		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(merchantPayOrder)
+		String sign = DigestUtils.md5Hex(JsonBinder.getInstanceNonNull().toJson(merchantPayOrder)
 				+configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTKEY, ""));
 		
 		merchantPayOrder.setSign(sign.toUpperCase());
@@ -632,7 +632,4 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		}
 		return map;
 	}
-	
-	
-
 }
