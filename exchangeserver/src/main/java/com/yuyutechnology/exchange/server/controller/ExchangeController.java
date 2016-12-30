@@ -178,6 +178,7 @@ public class ExchangeController {
 			dto.setCreateTime(exchange.getCreateTime());
 			dto.setFinishTime(exchange.getFinishTime());
 			dto.setExchangeStatus(exchange.getExchangeStatus());
+			exs.add(dto);
 		}
 		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
