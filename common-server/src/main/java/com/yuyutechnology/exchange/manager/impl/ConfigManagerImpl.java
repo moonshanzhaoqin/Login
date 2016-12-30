@@ -85,4 +85,22 @@ public class ConfigManagerImpl implements ConfigManager{
 		}
 		return defaultValue;
 	}
+
+	@Override
+	public void updateConfig(String configKey, String configValue) {
+		configDAO.saveOrUpdateConfig(configKey, configValue);
+		
+	}
+
+	@Override
+	public void addConfig(Config config) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<Config> getConfigList() {
+		List<Config> configs = configDAO.getCongifValues();
+		return configs;
+	}
 }

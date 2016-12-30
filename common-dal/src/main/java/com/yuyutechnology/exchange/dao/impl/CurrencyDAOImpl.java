@@ -40,4 +40,10 @@ public class CurrencyDAOImpl implements CurrencyDAO {
 				ServerConsts.CURRENCY_AVAILABLE);
 		return (List<Currency>) list;
 	}
+
+	@Override
+	public void updateCurrency(Currency currency) {
+		hibernateTemplate.saveOrUpdate(currency);
+		
+	}
 }
