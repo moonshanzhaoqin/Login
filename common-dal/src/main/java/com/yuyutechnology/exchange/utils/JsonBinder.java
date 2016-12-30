@@ -46,6 +46,7 @@ public class JsonBinder
 	private static Object lock = new Object();
 	private static JsonBinder jsonBinder;
 	private static JsonBinder jsonBinderNonNull;
+	private static JsonBinder jsonBinderNonEmpty;
 	private ObjectMapper mapper;
 	private ObjectMapper mapperFileter;
 	private JsonFactory jsonFactory;
@@ -88,6 +89,22 @@ public class JsonBinder
 		}
 		return jsonBinderNonNull;
 	}
+	
+	public static JsonBinder getInstanceNonEmpty()
+	{
+		if (jsonBinderNonEmpty == null)
+		{
+			synchronized (lock)
+			{
+				if (jsonBinderNonEmpty == null)
+				{
+					jsonBinderNonEmpty = new JsonBinder(Inclusion.NON_EMPTY);
+				}
+			}
+		}
+		return jsonBinderNonEmpty;
+	}
+	
 	@SuppressWarnings("deprecation")
 	protected JsonBinder(Inclusion inclusion)
 	{
