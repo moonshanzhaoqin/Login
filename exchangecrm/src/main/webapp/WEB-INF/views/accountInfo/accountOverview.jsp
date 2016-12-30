@@ -20,7 +20,64 @@
 			
 			<!-- -->
 			<div class="row well">
-				well
+			系统账户信息
+				<table class = "table table-striped table-bordered">
+					<thead>
+						<tr>
+							<c:if test="${not empty systemTotalAssets }">
+								<c:forEach var="wallet" items="${systemTotalAssets }">
+									<c:if test="${wallet.key != 'totalAssets' }">
+										<th>${wallet.key}</th>
+									</c:if>
+								</c:forEach>
+								<th>totalAssets</th>
+							</c:if>
+						</tr>
+					</thead>
+					<tbody>
+						<c:if test="${not empty systemTotalAssets }">
+							<c:forEach var="wallet" items="${systemTotalAssets }">
+								<c:if test="${wallet.key != 'totalAssets' }">
+									<td>${wallet.value}</td>
+								</c:if>
+							</c:forEach>
+							<c:forEach var="wallet" items="${systemTotalAssets }">
+								<c:if test="${wallet.key == 'totalAssets' }">
+									<td>${wallet.value}</td>
+								</c:if>
+							</c:forEach>	
+						</c:if>
+					</tbody>
+				</table>
+				用户账户信息
+				<table class = "table table-striped table-bordered">
+					<thead>
+						<tr>
+							<c:if test="${not empty userTotalAssets }">
+								<c:forEach var="wallet" items="${userTotalAssets }">
+									<c:if test="${wallet.key != 'totalAssets' }">
+										<th>${wallet.key}</th>
+									</c:if>
+								</c:forEach>
+								<th>totalAssets</th>
+							</c:if>
+						</tr>
+					</thead>
+					<tbody>
+						<c:if test="${not empty userTotalAssets }">
+							<c:forEach var="wallet" items="${userTotalAssets }">
+								<c:if test="${wallet.key != 'totalAssets' }">
+									<td>${wallet.value}</td>
+								</c:if>
+							</c:forEach>
+							<c:forEach var="wallet" items="${userTotalAssets }">
+								<c:if test="${wallet.key == 'totalAssets' }">
+									<td>${wallet.value}</td>
+								</c:if>
+							</c:forEach>	
+						</c:if>
+					</tbody>
+				</table>
 			</div><!--row 结束-->
 			
 			
@@ -31,10 +88,10 @@
         			<form id="searchForm" action="<c:url value='/account/getTotalAssetsInfoByPage' />" method="POST">
         				<ul class="formbar">
         					<li>
-        						<input type="text" class="form-control" placeholder="userPhone" name="userPhone" size="8">
+        						<input type="text" value="${model.userPhone }" class="form-control" placeholder="userPhone" name="userPhone" size="8">
         					</li>
         					<li>
-        						<input type="text" class="form-control" placeholder="userName" name="userName" size="8">
+        						<input type="text" value="${model.userName }" class="form-control" placeholder="userName" name="userName" size="8">
         					</li>
         					<li>
         						<select name="isFrozen" class="form-control">
@@ -44,10 +101,10 @@
         						</select>
         					</li>
         					<li>
-        						<input type="text" class="form-control" placeholder="upperLimit" name="upperLimit" size="8">
+        						<input type="text" value="${model.upperLimit }" class="form-control" placeholder="upperLimit" name="upperLimit" size="8">
         					</li>
         					<li>
-        						<input type="text" class="form-control" placeholder="lowerLimit" name="lowerLimit" size="8">
+        						<input type="text" value="${model.lowerLimit }" class="form-control" placeholder="lowerLimit" name="lowerLimit" size="8">
         					</li>
 
         					<li>
@@ -71,7 +128,7 @@
 				<table class = "table table-striped table-bordered">
 					<thead>
 						<tr>
-							<th>编号</th>
+							<th>用户编号</th>
 							<th>手机号</th>
 							<th>用户名</th>
 							<th>用户类型</th>
