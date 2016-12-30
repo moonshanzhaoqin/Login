@@ -6,11 +6,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +26,7 @@ import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
+import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.server.controller.dto.NotificationDTO;
@@ -349,7 +350,12 @@ public class TransferController {
 				dto.setAmount((new BigDecimal(obj[4]+"")).doubleValue());
 				dto.setCreateAt((Date) obj[5]);
 				dto.setTradingStatus((int) obj[6]);
-				dto.setCurrencyUnit(commonManager.getCurreny(dto.getCurrency()).getCurrencyUnit());
+				Currency currency = commonManager.getCurreny(dto.getCurrency());
+				if (currency != null) {
+					dto.setCurrencyUnit(currency.getCurrencyUnit());
+				}else{
+					dto.setCurrencyUnit("");
+				}
 				dtos.add(dto);
 			}
 			

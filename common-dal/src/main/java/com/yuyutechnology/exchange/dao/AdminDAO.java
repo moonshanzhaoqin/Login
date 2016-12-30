@@ -8,4 +8,6 @@ public interface AdminDAO {
 
 	void updateAdmin(Admin admin);
 
+	Admin getAdmin(Integer adminId);
+
 }

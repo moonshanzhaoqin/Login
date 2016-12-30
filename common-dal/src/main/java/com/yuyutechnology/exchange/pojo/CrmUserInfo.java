@@ -13,7 +13,7 @@ import javax.persistence.Table;
 public class CrmUserInfo {
 	
 //	private long infoId;
-	private long userId;
+	private Integer userId;
 	private String areaCode;
 	private String userPhone;
 	private String userName;
@@ -26,7 +26,7 @@ public class CrmUserInfo {
 		super();
 	}
 	
-	public CrmUserInfo(long userId, String areaCode, String userPhone, String userName, int userType,
+	public CrmUserInfo(Integer userId, String areaCode, String userPhone, String userName, int userType,
 			int userAvailable, BigDecimal userTotalAssets,Date updateAt) {
 		super();
 //		this.infoId = infoId;
@@ -59,10 +59,10 @@ public class CrmUserInfo {
 //		this.infoId = infoId;
 //	}
 	@Column(name = "user_id")
-	public long getUserId() {
+	public Integer getUserId() {
 		return userId;
 	}
-	public void setUserId(long userId) {
+	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
 	@Column(name = "area_code")
