@@ -34,7 +34,7 @@ public class TransferDAOImpl implements TransferDAO {
 	public String createTransId(int transferType) {
 		Long id = commonRedisTemplate.opsForValue().increment(anytime_exechange_assign_transid, 1);
 		StringBuilder sb = new StringBuilder();
-		sb.append(DateFormatUtils.format(new Date(), "yyyyMMdd")).append(transferType).append("T");
+		sb.append(DateFormatUtils.format(new Date(), "yyyyMMddHHmm")).append(transferType).append("T");
 		String idStr = String.valueOf(id);
 		if (idStr.length() < 6)
 		{
