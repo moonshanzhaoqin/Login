@@ -208,7 +208,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		if(transfer == null || transfer.getTransferType() != ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE){
 			map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST);
-			map.put("msg", "Order does not exist");
+			map.put("msg", "Order does not exist or has completed");
 			return map;
 		}
 		
@@ -224,19 +224,33 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		
 		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue4String("tpps.url")+"clientComfirmPay.do",
 				JsonBinder.getInstance().toJson(clientComfirmPay));
-		
 		PayConfirm payConfirm;
-		
-		if(!StringUtils.isNotBlank(result)){
-			
+		if(StringUtils.isNotBlank(result)){
 			logger.info("goldpayTransConfirm tpps callback {} ",result);
-			
 			payConfirm = JsonBinder.getInstance().fromJson(result, PayConfirm.class);
-			
-			if (payConfirm == null || payConfirm.getResultCode() != 1) {
+			if (payConfirm != null && (payConfirm.getResultCode() == 1 || payConfirm.getResultCode() == 70002)) {
+				User systemUser = userDAO.getSystemUser();
+				//系统扣款
+				walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), 
+						transfer.getCurrency(), transfer.getTransferAmount(), "-");
+				//用户加款
+				walletDAO.updateWalletByUserIdAndCurrency(userId, 
+						transfer.getCurrency(), transfer.getTransferAmount(), "+");
+				
+				//添加Seq记录
+				walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), userId, 
+						ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE, transferId, 
+						transfer.getCurrency(), transfer.getTransferAmount());
+				//更改订单状态
+				transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+				
+				map.put("retCode", ServerConsts.RET_CODE_SUCCESS);
+				map.put("msg", "ok");
+				return map;
+			}else{
 				map.put("retCode", ServerConsts.RET_CODE_FAILUE);
 				map.put("msg", "fail");
-				if (payConfirm.getResultCode() == 307) {
+				if (payConfirm != null && payConfirm.getResultCode() == 307) {
 					logger.warn("goldpayTransConfirm tpps callback  error ! {}  CHECK_PIN_CODE_FAIL");
 					map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_CHECK_PIN_CODE_FAIL);
 					map.put("msg", "CHECK_PIN_CODE_FAIL");
@@ -259,27 +273,6 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 //				map.put("msg", "CHECK_PIN_CODE_FAIL");
 //				return map;
 //			} 
-			
-			//获取系统账号
-			User systemUser = userDAO.getSystemUser();
-			//系统扣款
-			walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), 
-					transfer.getCurrency(), transfer.getTransferAmount(), "-");
-			//用户加款
-			walletDAO.updateWalletByUserIdAndCurrency(userId, 
-					transfer.getCurrency(), transfer.getTransferAmount(), "+");
-			
-			//添加Seq记录
-			walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), userId, 
-					ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE, transferId, 
-					transfer.getCurrency(), transfer.getTransferAmount());
-			//更改订单状态
-			transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-			
-			map.put("retCode", ServerConsts.RET_CODE_SUCCESS);
-			map.put("msg", "ok");
-			return map;
-			
 		}else{
 			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
 			map.put("msg", "fail");
