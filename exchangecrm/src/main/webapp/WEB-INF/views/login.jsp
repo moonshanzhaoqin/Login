@@ -85,7 +85,7 @@
 				<div class="col-md-1"></div>
 			</div>
 			<div class="row">
-				<input id="retCode"  name="retCode" value="${model.retCode }" type="hidden">
+				<input id="retCode"  name="retCode" value="${retCode}" type="hidden">
 				<input id="retMessage"  name="retMessage" value="${message}" type="hidden">
 			</div>
 		</div><!--end of container-->
@@ -101,7 +101,7 @@
 				var retCode = $('#retCode').val();
 				var retMessage = $('#retMessage').val();
 					
-				if(retMessage!=null || retMessage!=""){
+				if(retCode!=00000){
 				alert(retMessage);
 				}
 				

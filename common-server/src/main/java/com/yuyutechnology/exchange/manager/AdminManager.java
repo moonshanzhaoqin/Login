@@ -6,4 +6,6 @@ public interface AdminManager {
 
 	void addAdmin(String adminName);
 
+	int modifyPassword(Integer adminId, String oldPassword, String newPassword);
+
 }

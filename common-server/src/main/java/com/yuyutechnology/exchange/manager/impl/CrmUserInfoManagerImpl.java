@@ -104,21 +104,21 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 			sb.append("and userPhone= ? ");
 			values.add(userPhone);
 		}
-		if(!StringUtils.isEmpty(userName)){
-			sb.append("and userName = ? ");
-			values.add(userName);
-		}
 		if(isFrozen != 3){
 			sb.append("and userAvailable = ? ");
 			values.add(isFrozen);
 		}
-		if(upperLimit.compareTo(new BigDecimal(0)) == 1){
+		if(upperLimit != null && upperLimit.compareTo(new BigDecimal(0)) == 1){
 			sb.append("and userTotalAssets <= ? ");
 			values.add(upperLimit);
 		}
-		if(lowerLimit.compareTo(new BigDecimal(0)) == 1){
+		if(lowerLimit != null && lowerLimit.compareTo(new BigDecimal(0)) == 1){
 			sb.append("and userTotalAssets >= ? ");
 			values.add(lowerLimit);
+		}
+		if(!StringUtils.isEmpty(userName)){
+			sb.append("and userName like '%"+userName+"%'");
+
 		}
 		
 		sb.append(" order by userTotalAssets desc");

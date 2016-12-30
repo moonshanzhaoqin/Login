@@ -32,4 +32,9 @@ public class AdminDAOImpl implements AdminDAO {
 	public void updateAdmin(Admin admin) {
 		hibernateTemplate.saveOrUpdate(admin);
 	}
+
+	@Override
+	public Admin getAdmin(Integer adminId) {
+		return	hibernateTemplate.get(Admin.class, adminId);
+	}
 }
