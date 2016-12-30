@@ -253,14 +253,13 @@ public class TransferController {
 				reqMsq.getCurrentPage(), reqMsq.getPageSize());
 
 		User systemUser = userManager.getSystemUser();
-		
+		ArrayList<TransferDTO> dtos = new ArrayList<>();
+		rep.setList(dtos);
 		if(((ArrayList<?>)map.get("list")).isEmpty()){
 			rep.setRetCode(ServerConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
 			rep.setMessage("Transaction history not acquired");
 		}else{
-			
 			List<?> list = (ArrayList<?>)map.get("list");
-			ArrayList<TransferDTO> dtos = new ArrayList<>();
 			for (Object object : list) {
 				Object[] obj = (Object[]) object;
 				
@@ -312,7 +311,6 @@ public class TransferController {
 			rep.setPageSize((int) map.get("pageSize"));
 			rep.setPageTotal((int) map.get("pageTotal"));
 			rep.setTotal(Integer.parseInt(map.get("total")+""));
-			rep.setList(dtos);
 		}
 		
 		return rep;
@@ -331,13 +329,14 @@ public class TransferController {
 		HashMap<String, Object> map = transferManager.getNotificationRecordsByPage(
 				sessionData.getUserId(),reqMsg.getCurrentPage(), reqMsg.getPageSize());
 		
+		ArrayList<NotificationDTO> dtos = new ArrayList<>();
+		rep.setList(dtos);
 		if(((ArrayList<?>)map.get("list")).isEmpty()){
 			rep.setRetCode(ServerConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
 			rep.setMessage("Notification Records not acquired");
 		}else{
 			
 			List<?> list = (ArrayList<?>)map.get("list");
-			ArrayList<NotificationDTO> dtos = new ArrayList<>();
 			for (Object object : list) {
 				Object[] obj = (Object[]) object;
 				
@@ -358,14 +357,12 @@ public class TransferController {
 				}
 				dtos.add(dto);
 			}
-			
 			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			rep.setCurrentPage((int) map.get("currentPage"));
 			rep.setPageSize((int) map.get("pageSize"));
 			rep.setPageTotal((int) map.get("pageTotal"));
 			rep.setTotal(Integer.parseInt(map.get("total")+""));
-			rep.setList(dtos);
 		}
 		return rep;
 	}
