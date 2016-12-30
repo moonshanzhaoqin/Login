@@ -233,16 +233,26 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 			
 			payConfirm = JsonBinder.getInstance().fromJson(result, PayConfirm.class);
 			
-			if(payConfirm == null || (payConfirm.getResultCode() != 1 && payConfirm.getResultCode() != 307 & payConfirm.getResultCode() != 70002)){
+			if (payConfirm == null || payConfirm.getResultCode() != 1) {
 				map.put("retCode", ServerConsts.RET_CODE_FAILUE);
 				map.put("msg", "fail");
+				if (payConfirm.getResultCode() == 307) {
+					logger.warn("goldpayTransConfirm tpps callback  error ! {}  CHECK_PIN_CODE_FAIL");
+					map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_CHECK_PIN_CODE_FAIL);
+					map.put("msg", "CHECK_PIN_CODE_FAIL");
+				}
 				return map;
-			} else if (payConfirm.getResultCode()==307){
-				logger.warn("goldpayTransConfirm tpps callback  error ! {}  CHECK_PIN_CODE_FAIL");
-				map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_CHECK_PIN_CODE_FAIL);
-				map.put("msg", "CHECK_PIN_CODE_FAIL");
-				return map;
-			} 
+			}
+//			if(payConfirm == null || (payConfirm.getResultCode() != 1 && payConfirm.getResultCode() != 307)){
+//				map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+//				map.put("msg", "fail");
+//				return map;
+//			} else if (payConfirm.getResultCode()==307){
+//				logger.warn("goldpayTransConfirm tpps callback  error ! {}  CHECK_PIN_CODE_FAIL");
+//				map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_CHECK_PIN_CODE_FAIL);
+//				map.put("msg", "CHECK_PIN_CODE_FAIL");
+//				return map;
+//			} 
 //			else if (payConfirm.getResultCode()==70002){
 //				logger.warn("goldpayTransConfirm status has completed");
 //				map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_HAS_COMPLETED);
@@ -633,11 +643,4 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		return map;
 	}
 	
-	public static void main(String[] args) {
-		ClientComfirmPay  clientComfirmPay  = new ClientComfirmPay();
-		clientComfirmPay.setClientId("123");
-		clientComfirmPay.setPin("");
-		clientComfirmPay.setPayOrderId("123");
-		System.out.println(JsonBinder.getInstanceNonEmpty().toJson(clientComfirmPay));
-	}
 }
