@@ -5,11 +5,11 @@ import java.util.Date;
 import java.util.HashMap;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.yuyutechnology.exchange.ConfigKeyEnum;
 import com.yuyutechnology.exchange.ServerConsts;
@@ -214,7 +214,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		
 		ClientComfirmPay  clientComfirmPay  = new ClientComfirmPay();
 		clientComfirmPay.setClientId(configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTID, ""));
-		clientComfirmPay.setPin(pin);
+		clientComfirmPay.setPin(StringUtils.defaultString(pin));
 		clientComfirmPay.setPayOrderId(transfer.getTransferComment());
 		
 		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(clientComfirmPay)
@@ -227,7 +227,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		
 		PayConfirm payConfirm;
 		
-		if(!StringUtils.isEmpty(result)){
+		if(!StringUtils.isNotBlank(result)){
 			
 			logger.info("goldpayTransConfirm tpps callback {} ",result);
 			
