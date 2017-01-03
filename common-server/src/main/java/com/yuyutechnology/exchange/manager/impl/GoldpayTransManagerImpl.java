@@ -58,12 +58,11 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		
 		HashMap<String, String> map = new HashMap<>();
 		
-		User systemUser = userDAO.getSystemUser();
 		User user = userDAO.getUser(userId);
-		if(user == null){
-			logger.warn("User does not exist");
-			map.put("msg", "User does not exist");
+		if(user ==null || user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
+			logger.warn("The user does not exist or the account is blocked");
 			map.put("retCode", ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
+			map.put("msg", "The user does not exist or the account is blocked");
 			return map;
 		}
 		Bind bind = bindBAO.getBindByUserId(userId);
@@ -73,7 +72,6 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 			map.put("retCode", ServerConsts.GOLDPAY_NOT_BIND);
 			return map;
 		}
-
 		//生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		ClientPayOrder clientPayOrder = new ClientPayOrder();
@@ -121,7 +119,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 				}
 				return map;
 			}
-
+			User systemUser = userDAO.getSystemUser();
 			Transfer transfer = new Transfer(); 
 			transfer.setTransferId(transferId);
 			transfer.setCreateTime(new Date());
