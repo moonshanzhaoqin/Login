@@ -12,4 +12,7 @@ public interface CurrencyManager {
 
 	List<Currency> getCurrencyList();
 
+	void updateCurrency(String currency, String nameCn, String nameEn, String nameHk, String currencyUnit,
+			String Status, String currencyOrder);
+
 }

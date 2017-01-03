@@ -61,4 +61,18 @@ public class CurrencyManagerImpl implements CurrencyManager {
 		return currencyDAO.getCurrencys();
 	}
 
+	@Override
+	public void updateCurrency(String currencyId, String nameCn, String nameEn, String nameHk, String currencyUnit,
+			String currencyStatus, String currencyOrder) {
+		Currency currency = currencyDAO.getCurrency(currencyId);
+		currency.setCurrencyOrder(currencyOrder);
+//		currency.setCurrencyStatus(currencyStatus);
+		currency.setCurrencyUnit(currencyUnit);
+		currency.setNameCn(nameCn);
+		currency.setNameHk(nameHk);
+		currency.setNameEn(nameEn);
+		currencyDAO.updateCurrency(currency);
+	}
+
+
 }

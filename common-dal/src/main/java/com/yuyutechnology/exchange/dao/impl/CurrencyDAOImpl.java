@@ -44,6 +44,5 @@ public class CurrencyDAOImpl implements CurrencyDAO {
 	@Override
 	public void updateCurrency(Currency currency) {
 		hibernateTemplate.saveOrUpdate(currency);
-		
 	}
 }

@@ -3,7 +3,6 @@
  */
 package com.yuyutechnology.exchange.sms;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 
 import javax.annotation.PostConstruct;
@@ -19,7 +18,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.pojo.User;
-import com.yuyutechnology.exchange.utils.*;
+import com.yuyutechnology.exchange.utils.HttpTookit;
+import com.yuyutechnology.exchange.utils.JsonBinder;
+import com.yuyutechnology.exchange.utils.ResourceUtils;
 
 /**
  * @author suzan.wu
@@ -35,6 +36,11 @@ public class SmsManager {
 	private final String SMS_REPLACE_CURRENCY = "[CURRENCY]";
 	private final String SMS_REPLACE_AMOUNT = "[AMOUNT]";
 	private final String SMS_REPLACE_LINK = "[LINK]";
+	
+	private final String SMS_REPLACE_DIFFERENCE = "[DIFFERENCE]";
+	private final String SMS_REPLACE_LOWERLIMIT = "[LOWERLIMIT]";
+	private final String SMS_REPLACE_GRADE = "[GRADE]";
+	
 
 	// en
 	private String phoneVerify_en = "";
@@ -49,6 +55,9 @@ public class SmsManager {
 	private String transfer_CN = "";
 	// zh_HK
 	private String transfer_HK = "";
+	
+	// zh_CN
+	private String criticalAlarm_CN = "";
 
 	@PostConstruct
 	@Scheduled(cron = "0 1/10 * * * ?")
@@ -74,6 +83,12 @@ public class SmsManager {
 
 			resource = new ClassPathResource("sms/zh_HK/transfer.template");
 			transfer_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			
+			//临界报警
+			resource = new ClassPathResource("sms/zh_CN/criticalAlarm.template");
+			criticalAlarm_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			
+			
 		} catch (Exception e) {
 			logger.warn("sms template read error , can't send sms: " + e.getMessage());
 		}
@@ -110,8 +125,20 @@ public class SmsManager {
 				.replace(SMS_REPLACE_CURRENCY, currency)
 				.replace(SMS_REPLACE_AMOUNT,
 						currency.equals("GDQ") ? new BigDecimal(amount.intValue()).toString() : amount.toString())
-				.replace(SMS_REPLACE_LINK, ResourceUtils.getBundleValue4String("download.link"));
+				.replace(SMS_REPLACE_LINK, ResourceUtils.getBundleValue4String("download.link"))
+				.replace(SMS_REPLACE_TIME, ResourceUtils.getBundleValue4String("refund.time"));
 		sendSMS(areaCode + userPhone, content);
+	}
+	
+	@Async
+	public void sendSMS4CriticalAlarm(String phone,BigDecimal difference,BigDecimal lowerLimit,String grade,String dateTime){
+		String transferContent = criticalAlarm_CN;
+		String content = transferContent
+				.replace(SMS_REPLACE_DIFFERENCE,difference.toString())
+				.replace(SMS_REPLACE_LOWERLIMIT,lowerLimit.toString())
+				.replace(SMS_REPLACE_GRADE,grade)
+				.replace(SMS_REPLACE_TIME,dateTime);
+		sendSMS(phone, content);
 	}
 
 	/**

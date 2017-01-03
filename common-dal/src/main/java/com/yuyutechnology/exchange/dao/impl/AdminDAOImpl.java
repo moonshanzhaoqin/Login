@@ -37,4 +37,14 @@ public class AdminDAOImpl implements AdminDAO {
 	public Admin getAdmin(Integer adminId) {
 		return	hibernateTemplate.get(Admin.class, adminId);
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Admin> getAdminList(){
+		List<?> list = hibernateTemplate.find("from Admin");
+		if(list.isEmpty()){
+			return null;
+		}
+		return (List<Admin>) list;
+	}
 }
