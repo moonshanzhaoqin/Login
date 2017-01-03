@@ -12,6 +12,7 @@ import com.yuyutechnology.exchange.pojo.Config;
 
 @Repository
 public class ConfigDAOImpl implements ConfigDAO {
+	
 	@Resource
 	HibernateTemplate hibernateTemplate;
 
@@ -20,6 +21,7 @@ public class ConfigDAOImpl implements ConfigDAO {
 		hibernateTemplate.saveOrUpdate(new Config(configKey, configValue));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Config> getCongifValues() {
 		return (List<Config>) hibernateTemplate.find("from Config");

@@ -1,6 +1,9 @@
 package com.yuyutechnology.exchange.manager;
 
+import java.util.List;
+
 import com.yuyutechnology.exchange.ConfigKeyEnum;
+import com.yuyutechnology.exchange.pojo.Config;
 
 public interface ConfigManager {
 	
@@ -13,5 +16,13 @@ public interface ConfigManager {
 	public Boolean getConfigBooleanValue (ConfigKeyEnum key);
 	
 	public Double getConfigDoubleValue (ConfigKeyEnum key, Double defaultValue);
+
+	public void updateConfig(String configKey, String configValue);
+
+	public void addConfig(Config config);
+
+	public List<Config> getConfigList();
+
+	
 
 }

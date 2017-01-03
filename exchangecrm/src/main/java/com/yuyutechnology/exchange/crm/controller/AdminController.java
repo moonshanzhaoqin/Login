@@ -68,24 +68,19 @@ public class AdminController {
 		} else {
 			Integer adminId = null;
 			int retCode = adminManager.modifyPassword(adminId,modifyPasswordRquest.getOldPassword(), modifyPasswordRquest.getNewPassword());
-//			switch (retCode) {
-//			case RetCodeConsts.ADMIN_NOT_EXIST:
-//				mav.setViewName("login");
-//				mav.addObject("retCode", RetCodeConsts.ADMIN_NOT_EXIST);
-//				mav.addObject("message", "ADMIN_NOT_EXIST");
-//				break;
-//			case RetCodeConsts.PASSWORD_NOT_MATCH_NAME:
-//				mav.setViewName("login");
-//				mav.addObject("retCode", RetCodeConsts.PASSWORD_NOT_MATCH_NAME);
-//				mav.addObject("message", "PASSWORD_NOT_MATCH_NAME");
-//				break;
-//			case RetCodeConsts.SUCCESS:
-//				mav.setViewName("home");
-//				mav.addObject("retCode", RetCodeConsts.SUCCESS);
-//				break;
-//			default:
-//				break;
-//			}
+			switch (retCode) {
+			case RetCodeConsts.PASSWORD_NOT_MATCH_NAME:
+				mav.setViewName("setting");
+				mav.addObject("retCode", RetCodeConsts.PASSWORD_NOT_MATCH_NAME);
+				mav.addObject("message", "PASSWORD_NOT_MATCH_NAME");
+				break;
+			case RetCodeConsts.SUCCESS:
+				mav.setViewName("home");
+				mav.addObject("retCode", RetCodeConsts.SUCCESS);
+				break;
+			default:
+				break;
+			}
 
 		}
 

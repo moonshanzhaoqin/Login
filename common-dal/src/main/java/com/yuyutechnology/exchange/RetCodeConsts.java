@@ -25,4 +25,21 @@ public class RetCodeConsts {
 	 * 用户名和密码不匹配
 	 */
 	public static final int PASSWORD_NOT_MATCH_NAME = 01002;
+
+	/**
+	 * 货币不存在
+	 */
+	public static final int CURRENCY_NOT_EXIST = 02001;
+
+	/**
+	 * 货币已是可用
+	 */
+
+	public static final int CURRENCY_HAS_BEEN_AVAILABLE = 02002;
+
+	/**
+	 * 货币已是不可用
+	 */
+	public static final int CURRENCY_HAS_BEEN_UNAVAILABLE = 02003;
+
 }
