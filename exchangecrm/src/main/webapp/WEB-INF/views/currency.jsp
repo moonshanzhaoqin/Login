@@ -30,6 +30,7 @@
 						<th>繁体</th>
 						<th>单位</th>
 						<th>状态</th>
+						<th>顺序</th>
 					</tr>
 				</thead>
 				<tbody></tbody>
@@ -52,36 +53,32 @@
 						<div class="form-group">
 							<label for="currency" class="col-sm-2 control-label">货币符号</label>
 							<div class="col-sm-5">
-								<input type="text" name="currency" id="currency"
-									placeholder="CNF" >
+								<input type="text" name="currency" class="form-control"
+									readonly>
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="nameCn" class="col-sm-2 control-label">中文名字</label>
 							<div class="col-sm-5">
-								<input type="text" name="nameCn" class="form-control"
-									id="nameCn" placeholder="">
+								<input type="text" name="nameCn" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="nameEn" class="col-sm-2 control-label">英文名字</label>
 							<div class="col-sm-5">
-								<input type="text" name="nameEn" class="form-control"
-									id="nameEn" placeholder="">
+								<input type="text" name="nameEn" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="nameHk" class="col-sm-2 control-label">繁体名字</label>
 							<div class="col-sm-5">
-								<input type="text" name="nameHk" class="form-control"
-									id="nameHk" placeholder="">
+								<input type="text" name="nameHk" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="currencyUnit" class="col-sm-2 control-label">单位</label>
 							<div class="col-sm-5">
-								<input type="text" name="currencyUnit" class="form-control"
-									id="currencyUnit" placeholder="">
+								<input type="text" name="currencyUnit" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
@@ -94,15 +91,14 @@
 						<div class="form-group">
 							<label for="currencyOrder" class="col-sm-2 control-label">排序</label>
 							<div class="col-sm-5">
-								<input type="text" name="currencyOrder" class="form-control"
-									id="currencyOrder" value="CNF">
+								<input type="text" name="currencyOrder" class="form-control">
 							</div>
 						</div>
 					</form>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary"
+					<button type="button" class="btn btn-primary" data-dismiss="modal"
 						onclick="updateCurrency()">提交更改</button>
 				</div>
 			</div>
@@ -137,7 +133,8 @@
 		});
 
 		function initCurrency() {
-			$.ajax({
+			$
+					.ajax({
 						type : "post",
 						url : "/crm/getCurrencyList",
 						dataType : 'json',
@@ -169,6 +166,9 @@
 										+ (data[i].currencyStatus == 0 ? 'unavailable'
 												: 'available')
 										+ '</td>'
+										+ '<td>'
+										+ data[i].currencyOrder
+										+ '</td>'
 										+ '</tr>'
 							}
 							$('#currency tbody').html(html);
@@ -183,17 +183,27 @@
 
 		}
 		function updateCurrency() {
+			form = document.getElementById("updateCurrency");
+			data = {
+				currency : form.currency.value,
+				currencyOrder : form.currencyOrder.value,
+				currencyStatus : form.currencyStatus.value,
+				currencyUnit : form.currencyUnit.value,
+				nameCn : form.nameCn.value,
+				nameEn : form.nameEn.value,
+				nameHk : form.nameHk.value
+			}
+			// 			console.log(data);
+			// 			console.log(JSON.stringify(data));
 			$.ajax({
 				type : "post",
-				dataType : 'json',
-				contentType : "application/json; charset=utf-8",
 				url : "/crm/updateCurrency",
-				dataType: "json",
-				data:'{}',
+				contentType : "application/json; charset=utf-8",
+				dataType : 'json',
+				data : JSON.stringify(data),
 				success : function(data) {
 					console.log("success");
-					console.log(data);
-
+					initCurrency();
 				},
 				error : function(xhr, err) {
 					console.log("error");

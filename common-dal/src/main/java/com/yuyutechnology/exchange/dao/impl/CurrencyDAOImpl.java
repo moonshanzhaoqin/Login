@@ -29,7 +29,7 @@ public class CurrencyDAOImpl implements CurrencyDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Currency> getCurrencys() {
-		List<?> list = hibernateTemplate.find("from Currency");
+		List<?> list = hibernateTemplate.find("from Currency order by currencyOrder");
 		return (List<Currency>) list;
 	}
 
