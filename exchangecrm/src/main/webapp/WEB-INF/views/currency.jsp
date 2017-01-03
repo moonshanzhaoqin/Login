@@ -194,7 +194,7 @@
 			$.ajax({
 				type : "post",
 				url : "/crm/updateCurrency",
-// 				dataType: "json",
+				dataType: "json",
 				contentType : "application/json; charset=utf-8",
 				data :$("#updateCurrency").serializeArray(),
 // 				{

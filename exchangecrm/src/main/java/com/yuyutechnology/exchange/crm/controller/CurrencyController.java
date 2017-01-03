@@ -27,48 +27,48 @@ public class CurrencyController {
 	CurrencyManager currencyManager;
 
 	// TODO 启用货币 enableCurrency
-	@ResponseBody
-	@RequestMapping(value = "/enableCurrency", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public String enableCurrency(CurrencyRequest currencyRequest) {
-
-		int retCode = currencyManager.enableCurrency(currencyRequest.getCurrency());
-		switch (retCode) {
-		case RetCodeConsts.CURRENCY_NOT_EXIST:
-
-			break;
-		case RetCodeConsts.CURRENCY_HAS_BEEN_AVAILABLE:
-
-			break;
-		case RetCodeConsts.SUCCESS:
-
-			break;
-		default:
-			break;
-		}
-		return null;
-	}
+//	@ResponseBody
+//	@RequestMapping(value = "/enableCurrency", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+//	public String enableCurrency(CurrencyRequest currencyRequest) {
+//
+//		int retCode = currencyManager.enableCurrency(currencyRequest.getCurrency());
+//		switch (retCode) {
+//		case RetCodeConsts.CURRENCY_NOT_EXIST:
+//
+//			break;
+//		case RetCodeConsts.CURRENCY_HAS_BEEN_AVAILABLE:
+//
+//			break;
+//		case RetCodeConsts.SUCCESS:
+//
+//			break;
+//		default:
+//			break;
+//		}
+//		return null;
+//	}
 
 	// TODO 禁用货币 disableCurrency
-	@ResponseBody
-	@RequestMapping(value = "/disableCurrency", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public String disableCurrency(CurrencyRequest currencyRequest) {
-
-		int retCode = currencyManager.disableCurrency(currencyRequest.getCurrency());
-		switch (retCode) {
-		case RetCodeConsts.CURRENCY_NOT_EXIST:
-
-			break;
-		case RetCodeConsts.CURRENCY_HAS_BEEN_UNAVAILABLE:
-
-			break;
-		case RetCodeConsts.SUCCESS:
-
-			break;
-		default:
-			break;
-		}
-		return null;
-	}
+//	@ResponseBody
+//	@RequestMapping(value = "/disableCurrency", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+//	public String disableCurrency(CurrencyRequest currencyRequest) {
+//
+//		int retCode = currencyManager.disableCurrency(currencyRequest.getCurrency());
+//		switch (retCode) {
+//		case RetCodeConsts.CURRENCY_NOT_EXIST:
+//
+//			break;
+//		case RetCodeConsts.CURRENCY_HAS_BEEN_UNAVAILABLE:
+//
+//			break;
+//		case RetCodeConsts.SUCCESS:
+//
+//			break;
+//		default:
+//			break;
+//		}
+//		return null;
+//	}
 
 	// TODO 获取货币列表 getCurrencyList
 	@ResponseBody
@@ -79,17 +79,15 @@ public class CurrencyController {
 
 	// TODO 保存货币信息 updateCurrency
 	@ResponseBody
-	@RequestMapping(value = "/updateCurrency", method = RequestMethod.POST)
-//	@RequestMapping(value = "/updateCurrency", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public String updateCurrency(@RequestBody CurrencyRequest currencyRequest, HttpServletRequest request,
-			HttpServletResponse response) {
+	// @RequestMapping(value = "/updateCurrency", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateCurrency", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public void updateCurrency(@RequestBody CurrencyRequest currencyRequest, HttpServletRequest request) {
 
 		logger.info("{}", currencyRequest.toString());
-		currencyManager.updateCurrency(currencyRequest.getCurrency(), currencyRequest.getNameCn(),
-				currencyRequest.getNameEn(), currencyRequest.getNameHk(), currencyRequest.getCurrencyUnit(),
-				currencyRequest.getCurrencyStatus(), currencyRequest.getCurrencyOrder());
+//		currencyManager.updateCurrency(currencyRequest.getCurrency(), currencyRequest.getNameCn(),
+//				currencyRequest.getNameEn(), currencyRequest.getNameHk(), currencyRequest.getCurrencyUnit(),
+//				currencyRequest.getCurrencyStatus(), currencyRequest.getCurrencyOrder());
 
-		return null;
 	}
 
 }
