@@ -2,6 +2,7 @@ package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -120,7 +121,8 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		
 		for (String supervisorId : arr) {
 			CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
-
+			mailManager.mail4criticalAlarm(crmSupervisor.getSupervisorEmail(),
+					difference, lowerLimit, alarmGrade, sdf.format(new Date()));
 		}
 	}
 
