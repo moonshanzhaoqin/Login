@@ -20,14 +20,14 @@
 				<div>
 					<ul class="nav navbar-nav navbar-left">
 						<li >
-							<a href="<c:url value='/home' />">首页</a>
+							<a href="<c:url value='/account/getTotalAssetsInfo' />">首页</a>
 						</li>
 						
 						<li >   
 							<a href="<c:url value='/userAssets' />">用户资产</a>
 						</li>
 <li >   
-							<a href="<c:url value='/warn' />">预警</a>
+							<a href="<c:url value='/alarm/addAlarmConfig' />">预警</a>
 						</li>
 						<li >   
 							<a href="<c:url value='/currency' />">币种</a>

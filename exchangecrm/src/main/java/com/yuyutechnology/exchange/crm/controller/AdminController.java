@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -59,14 +60,14 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value = "/modifyPassword", method = { RequestMethod.POST })
-	public ModelAndView modifyPassword(ModifyPasswordRquest modifyPasswordRquest, HttpServletRequest request, HttpServletResponse response) {
+	public ModelAndView modifyPassword(@RequestBody ModifyPasswordRquest modifyPasswordRquest, HttpServletRequest request, HttpServletResponse response) {
 		mav = new ModelAndView();
 
 		if (modifyPasswordRquest.isEmpty()) {
 			logger.info("parameter is empty");
 
 		} else {
-			Integer adminId = null;
+			Integer adminId = 1;
 			int retCode = adminManager.modifyPassword(adminId,modifyPasswordRquest.getOldPassword(), modifyPasswordRquest.getNewPassword());
 			switch (retCode) {
 			case RetCodeConsts.PASSWORD_NOT_MATCH_NAME:
