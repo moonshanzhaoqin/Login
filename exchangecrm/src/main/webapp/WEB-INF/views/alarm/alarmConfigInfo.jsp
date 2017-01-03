@@ -45,6 +45,7 @@
 				<table class = "table table-striped table-bordered">
 					<thead>
 						<tr>
+							<th>编号</th>
 							<th>等级</th>
 							<th>上限</th>
 							<th>下限</th>
@@ -56,6 +57,7 @@
 						<c:if test="${not empty list }">
 							<c:forEach var="alarmConfig" items="${list}">
 								<tr>
+									<td>${alarmConfig.alarmId }</td>
 									<td>${alarmConfig.alarmGrade }</td>
 									<td>${alarmConfig.upperLimit }</td>
 									<td>${alarmConfig.lowerLimit }</td>
@@ -65,7 +67,7 @@
 						        		<c:if test="${alarmConfig.alarmMode eq 3}">短信+邮件</c:if>
 									</td>
 									<td>
-										<a href="#">删除</a>
+										<a href="#" onclick="delAlarmConfig(this)">删除</a>
 									</td>
 								</tr>
 							</c:forEach>
@@ -80,6 +82,21 @@
 		<script type="text/javascript" src="<c:url value="/resources/js/jquery.min.js" />" ></script>
 		<script type="text/javascript" src="<c:url value="/resources/bootstrap/js/bootstrap.min.js" />" ></script>
 		<script type="text/javascript" src="<c:url value="/resources/bootstrap/js/bootstrap-table.js" />" ></script>
+		<script type="text/javascript">
+			function delAlarmConfig(obj){
+				
+				var r = confirm("确定要删除该信息？");
+				
+				if(r != true){
+					return ;
+				}
+				
+				var tds=$(obj).parent().parent().find('td');
+				var alarmId = tds.eq(0).text();
+				
+				alert("alarmId : "+alarmId);
+			}
+		</script>
 		
 	</body>
 </html>

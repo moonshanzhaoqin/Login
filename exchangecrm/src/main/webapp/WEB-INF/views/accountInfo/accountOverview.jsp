@@ -144,8 +144,14 @@
 									<td>${userInfo.userId }</td>
 									<td>${userInfo.userPhone }</td>
 									<td>${userInfo.userName }</td>
-									<td>${userInfo.userType }</td>
-									<td>${userInfo.userAvailable }</td>
+									<td>
+										<c:if test="${userInfo.userType eq 1}"><font color="red">系统用户</font></c:if>
+						        		<c:if test="${userInfo.userType eq 0}">普通用户</c:if>
+									</td>
+									<td>
+										<c:if test="${userInfo.userAvailable eq 1}">未冻结</c:if>
+						        		<c:if test="${userInfo.userAvailable eq 0}">已冻结</c:if>
+									</td>
 									<td>${userInfo.userTotalAssets }</td>
 								</tr>
 							</c:forEach>
