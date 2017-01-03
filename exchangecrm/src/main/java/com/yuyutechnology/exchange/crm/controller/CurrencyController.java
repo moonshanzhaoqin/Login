@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,7 +18,6 @@ import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.crm.request.CurrencyRequest;
 import com.yuyutechnology.exchange.manager.CurrencyManager;
 import com.yuyutechnology.exchange.pojo.Currency;
-
 
 @Controller
 public class CurrencyController {
@@ -69,26 +69,27 @@ public class CurrencyController {
 		}
 		return null;
 	}
-	
-	// TODO 获取货币列表 getCurrencyList
-		@ResponseBody
-		@RequestMapping(value = "/getCurrencyList", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-		public List<Currency> getCurrencyList(HttpServletRequest request, HttpServletResponse response) {
-			return    currencyManager.getCurrencyList();
-		}
-		
-		
-		
-		//TODO  保存货币信息  updateCurrency
-		@ResponseBody
-		@RequestMapping(value = "/updateCurrency", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-		public String updateCurrency(Currency currency, HttpServletRequest request, HttpServletResponse response) {
 
-			
-			
-			
-			
-			return null;
-		}
-		
+	// TODO 获取货币列表 getCurrencyList
+	@ResponseBody
+	@RequestMapping(value = "/getCurrencyList", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public List<Currency> getCurrencyList(HttpServletRequest request, HttpServletResponse response) {
+		return currencyManager.getCurrencyList();
+	}
+
+	// TODO 保存货币信息 updateCurrency
+	@ResponseBody
+	@RequestMapping(value = "/updateCurrency", method = RequestMethod.POST)
+//	@RequestMapping(value = "/updateCurrency", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public String updateCurrency(@RequestBody CurrencyRequest currencyRequest, HttpServletRequest request,
+			HttpServletResponse response) {
+
+		logger.info("{}", currencyRequest.toString());
+		currencyManager.updateCurrency(currencyRequest.getCurrency(), currencyRequest.getNameCn(),
+				currencyRequest.getNameEn(), currencyRequest.getNameHk(), currencyRequest.getCurrencyUnit(),
+				currencyRequest.getCurrencyStatus(), currencyRequest.getCurrencyOrder());
+
+		return null;
+	}
+
 }
