@@ -78,9 +78,7 @@ public class CurrencyController {
 	}
 
 	// TODO 保存货币信息 updateCurrency
-	@ResponseBody
-	@RequestMapping(value = "/updateCurrency", method = RequestMethod.POST)
-//	@RequestMapping(value = "/updateCurrency", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	@RequestMapping(value = "/updateCurrency", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public String updateCurrency(@RequestBody CurrencyRequest currencyRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 

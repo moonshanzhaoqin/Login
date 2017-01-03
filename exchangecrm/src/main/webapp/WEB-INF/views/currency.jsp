@@ -183,36 +183,15 @@
 
 		}
 		function updateCurrency() {
-			form = document.getElementById("updateCurrency");
-			console.log(form.currency.value);
-			console.log(form.currencyUnit.value);
-			console.log(form.nameCn.value);
-			console.log(form.nameHk.value);
-			console.log(form.currencyOrder.value);
-			console.log(form.currencyStatus.value);
-
 			$.ajax({
 				type : "post",
-				url : "/crm/updateCurrency",
-// 				dataType: "json",
+				dataType : 'json',
 				contentType : "application/json; charset=utf-8",
-				data :$("#updateCurrency").serializeArray(),
-// 				{
-// 					'currency' : 'CNY',
-// 					'currencyUnit' : 'CNY',
-// 					'nameCn' : 'CNY',
-// 					'nameEn' : 'CNY',
-// 					'nameHk' : 'CNY',
-// 					'currencyOrder' : '2',
-// 					'currencyStatus' : '1'
-// 					'currency' : form.currency.value,
-// 					'currencyUnit' : form.currencyUnit.value,
-// 					'nameCn' : form.nameCn.value,
-// 					'nameEn' : form.nameEn.value,
-// 					'nameHk' : form.nameHk.value,
-// 					'currencyOrder' : form.currencyOrder.value,
-// 					'currencyStatus' : form.currencyStatus.value
-// 				},
+				url : "/crm/updateCurrency",
+ 				data : '{"currency":"GDQ","nameCn":"GDQ","nameEn":"GDQ","nameHk":"GDQ","currencyUnit":"Q","currencyStatus":"1","currencyOrder":"1"}'
+ 					,
+
+
 				success : function(data) {
 					console.log("success");
 					console.log(data);

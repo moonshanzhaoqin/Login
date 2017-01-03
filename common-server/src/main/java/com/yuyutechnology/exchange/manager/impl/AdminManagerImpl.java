@@ -1,5 +1,7 @@
 package com.yuyutechnology.exchange.manager.impl;
 
+import java.util.List;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +66,10 @@ public class AdminManagerImpl implements AdminManager {
 		}
 	}
 	
-	
+	@Override
+	public List<Admin> getAdminList(){
+		return adminDAO.getAdminList();
+	}
 	
 
 }
