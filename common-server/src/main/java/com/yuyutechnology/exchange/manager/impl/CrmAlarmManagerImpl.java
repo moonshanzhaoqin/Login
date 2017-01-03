@@ -130,6 +130,11 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	public List<CrmSupervisor> getCrmSupervisorList() {
 		return crmSupervisorDAO.getCrmSupervisorList();
 	}
+
+	@Override
+	public List<CrmAlarm> getCrmAlarmConfigList() {
+		return crmAlarmDAO.getCrmAlarmConfigList();
+	}
 	
 	
 }
