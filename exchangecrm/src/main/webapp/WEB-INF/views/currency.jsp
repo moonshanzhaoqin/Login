@@ -189,45 +189,7 @@
 				contentType : "application/json; charset=utf-8",
 				url : "/crm/updateCurrency",
 				dataType: "json",
-<<<<<<< .mine
- 					,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
-				contentType : "application/json; charset=utf-8",
-				data :$("#updateCurrency").serializeArray(),
-// 				{
-// 					'currency' : 'CNY',
-// 					'currencyUnit' : 'CNY',
-// 					'nameCn' : 'CNY',
-// 					'nameEn' : 'CNY',
-// 					'nameHk' : 'CNY',
-// 					'currencyOrder' : '2',
-// 					'currencyStatus' : '1'
-// 					'currency' : form.currency.value,
-// 					'currencyUnit' : form.currencyUnit.value,
-// 					'nameCn' : form.nameCn.value,
-// 					'nameEn' : form.nameEn.value,
-// 					'nameHk' : form.nameHk.value,
-// 					'currencyOrder' : form.currencyOrder.value,
-// 					'currencyStatus' : form.currencyStatus.value
-// 				},
->>>>>>> .theirs
+				data:'{}',
 				success : function(data) {
 					console.log("success");
 					console.log(data);

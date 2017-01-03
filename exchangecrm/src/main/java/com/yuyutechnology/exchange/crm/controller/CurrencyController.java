@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.crm.request.CurrencyRequest;
 import com.yuyutechnology.exchange.manager.CurrencyManager;
 import com.yuyutechnology.exchange.pojo.Currency;
@@ -78,22 +77,15 @@ public class CurrencyController {
 	}
 
 	// TODO 保存货币信息 updateCurrency
-<<<<<<< .mine
 	@RequestMapping(value = "/updateCurrency", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public String updateCurrency(@RequestBody CurrencyRequest currencyRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 
-=======
-	@ResponseBody
-	// @RequestMapping(value = "/updateCurrency", method = RequestMethod.POST)
-	@RequestMapping(value = "/updateCurrency", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public void updateCurrency(@RequestBody CurrencyRequest currencyRequest, HttpServletRequest request) {
->>>>>>> .theirs
-
 		logger.info("{}", currencyRequest.toString());
-//		currencyManager.updateCurrency(currencyRequest.getCurrency(), currencyRequest.getNameCn(),
-//				currencyRequest.getNameEn(), currencyRequest.getNameHk(), currencyRequest.getCurrencyUnit(),
-//				currencyRequest.getCurrencyStatus(), currencyRequest.getCurrencyOrder());
+		currencyManager.updateCurrency(currencyRequest.getCurrency(), currencyRequest.getNameCn(),
+				currencyRequest.getNameEn(), currencyRequest.getNameHk(), currencyRequest.getCurrencyUnit(),
+				currencyRequest.getCurrencyStatus(), currencyRequest.getCurrencyOrder());
+		return null;
 
 	}
 
