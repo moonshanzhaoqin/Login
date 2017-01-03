@@ -64,12 +64,14 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 			logger.warn("User does not exist");
 			map.put("msg", "User does not exist");
 			map.put("retCode", ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
+			return map;
 		}
 		Bind bind = bindBAO.getBindByUserId(userId);
 		if(bind == null){
 			logger.warn("The account is not tied to goldpay");
 			map.put("msg", "The account is not tied to goldpay");
 			map.put("retCode", ServerConsts.GOLDPAY_NOT_BIND);
+			return map;
 		}
 
 		//生成TransId

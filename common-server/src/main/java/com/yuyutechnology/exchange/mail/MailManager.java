@@ -78,7 +78,11 @@ public class MailManager {
 				replace(MAIL_REPLACE_ENQUIRY, grade).
 				replace(MAIL_REPLACE_NAME, dateTime);
 		logger.info("content : {}", content);
-		sendMail(content);
+		
+		List<String> toMails = new ArrayList<>();
+		toMails.add(email);
+		
+		sendMail(toMails,content);
 	}
 	
 	
@@ -106,5 +110,21 @@ public class MailManager {
 			HttpTookit.sendPost(ResourceUtils.getBundleValue4String("sendMail.url"), param);
 		}
 	}
+	
+	public void sendMail(List<String> toMails,String content){
+		logger.info("sendMail, content : {}",content);
+		
+		SendMailRequest sendMessageRequest = new SendMailRequest();
+		sendMessageRequest.setContent(content);
+		sendMessageRequest.setFromMailAddress(ResourceUtils.getBundleValue4String("contact.from"));
+		sendMessageRequest.setFromName(ResourceUtils.getBundleValue4String("contact.from"));
+		sendMessageRequest.setSubject(contactTital);
+		sendMessageRequest.setToMails(toMails);
+		String param = JsonBinder.getInstance().toJson(sendMessageRequest);
+		logger.info("sendMailRequest : {}", param);
+		HttpTookit.sendPost(ResourceUtils.getBundleValue4String("sendMail.url"), param);
+	}
+	
+	
 
 }
