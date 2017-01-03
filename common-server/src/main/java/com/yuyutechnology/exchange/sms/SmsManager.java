@@ -125,8 +125,8 @@ public class SmsManager {
 				.replace(SMS_REPLACE_CURRENCY, currency)
 				.replace(SMS_REPLACE_AMOUNT,
 						currency.equals("GDQ") ? new BigDecimal(amount.intValue()).toString() : amount.toString())
-				.replace(SMS_REPLACE_LINK, ResourceUtils.getBundleValue4String("download.link")
-				.replace(SMS_REPLACE_TIME, ResourceUtils.getBundleValue4String("refund.time")));
+				.replace(SMS_REPLACE_LINK, ResourceUtils.getBundleValue4String("download.link"))
+				.replace(SMS_REPLACE_TIME, ResourceUtils.getBundleValue4String("refund.time"));
 		sendSMS(areaCode + userPhone, content);
 	}
 	
