@@ -29,6 +29,8 @@ public interface CommonManager {
 	
 	public boolean verifyCurrency(String currency);
 	
+	public List<String> getAllConfigurableCurrencies();
+	
 	/**
 	 * @param userId
 	 * @param type 0=转账提示, 1=请求消息提示

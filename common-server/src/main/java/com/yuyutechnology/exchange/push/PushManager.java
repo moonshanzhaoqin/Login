@@ -1,8 +1,6 @@
 package com.yuyutechnology.exchange.push;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -236,12 +234,14 @@ public class PushManager {
 	public void push4Refund(User userFrom, String areaCode, String phone, String currency, BigDecimal amount) {
 		String title = titleChoose("refund", userFrom.getPushTag());
 		String refundBody = templateChoose("refund", userFrom.getPushTag());
+		
 		String body = refundBody.replace(PUSH_REPLACE_TO, areaCode + phone).replace(PUSH_REPLACE_CURRENCY, currency)
 				.replace(PUSH_REPLACE_AMOUNT,
 						currency.equals("GDQ") ? new BigDecimal(amount.intValue()).toString() : amount.toString())
 				.replace(PUSH_REPLACE_DAY, ResourceUtils.getBundleValue4String("refund.time"));
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "refund");
+		
 		pushToCustom(userFrom.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 	}
 
