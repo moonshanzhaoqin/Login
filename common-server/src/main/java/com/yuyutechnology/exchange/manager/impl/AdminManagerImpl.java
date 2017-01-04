@@ -54,8 +54,8 @@ public class AdminManagerImpl implements AdminManager {
 	}
 
 	@Override
-	public int modifyPassword(Integer adminId,String oldPassword, String newPassword) {
-		Admin admin = adminDAO.getAdmin(adminId);
+	public int modifyPassword(String adminName,String oldPassword, String newPassword) {
+		Admin admin = adminDAO.getAdminByName(adminName);
 		if (PasswordUtils.check(oldPassword, admin.getAdminPassword(), admin.getPasswordSalt())) {
 			admin.setAdminPassword(PasswordUtils.encrypt(newPassword, admin.getPasswordSalt()));
 			logger.info("modifyPassword sucess");
