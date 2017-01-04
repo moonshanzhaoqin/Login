@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yuyutechnology.exchange.crm.request.SaveAlarmConfigRequest;
+import com.yuyutechnology.exchange.crm.request.SaveSupervisorRequest;
 import com.yuyutechnology.exchange.manager.AdminManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
@@ -82,6 +83,41 @@ public class AlarmController {
 		return mav;
 	}
 	
+	@RequestMapping(value="/alarm/getSupervisorList",method=RequestMethod.GET)
+	public ModelAndView getSupervisorList(){
+		mav = new ModelAndView();
+		List<CrmSupervisor> list = crmAlarmManager.getCrmSupervisorList();
+		mav.addObject("list", list);
+		mav.setViewName("/alarm/supervisorInfo");
+		return mav;
+	}
+	
+	@RequestMapping(value="/alarm/delSupervisor",method=RequestMethod.GET)
+	public ModelAndView delSupervisor(Integer supervisorId){
+		mav = new ModelAndView();
+		crmAlarmManager.delSupervisorById(supervisorId);
+		mav.setViewName("redirect:/alarm/getSupervisorList");
+		return mav;
+	}
+	
+	@RequestMapping(value="/alarm/addSupervisor",method=RequestMethod.GET)
+	public ModelAndView addSupervisor(){
+		mav = new ModelAndView();
+		mav.setViewName("/alarm/addSupervisorConfig");
+		return mav;
+	}
+	
+	@RequestMapping(value="/alarm/saveSupervisor",method=RequestMethod.POST)
+	public ModelAndView saveSupervisor(SaveSupervisorRequest request){
+		mav = new ModelAndView();
+		crmAlarmManager.saveSupervisor(request.getSupervisorName(), 
+				request.getSupervisorMobile(), request.getSupervisorEmail());
+		mav.setViewName("redirect:/alarm/getSupervisorList");
+		return mav;
+	}
+	
+	
+	
 //	@RequestMapping(value="/alarm/saveAlarmConfig",method=RequestMethod.POST)
 //	public void saveAlarmConfig(HttpServletResponse response,SaveAlarmConfigRequest request){
 //		Map<String, Object> map = new HashMap<String, Object>();
@@ -101,6 +137,4 @@ public class AlarmController {
 //		out.print(JsonBinder.getInstance().toJson(map));
 //	}
 	
-	
-
 }

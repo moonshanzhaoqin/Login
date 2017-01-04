@@ -18,5 +18,10 @@ public interface CrmAlarmManager {
 	public List<CrmAlarm> getCrmAlarmConfigList();
 	
 	public List<CrmSupervisor> getCrmSupervisorList();
+	
+	public void delSupervisorById(Integer supervisorId);
+	
+	public void saveSupervisor(String supervisorName,
+			String supervisorMobile,String supervisorEmail);
 
 }

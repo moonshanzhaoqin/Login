@@ -31,4 +31,15 @@ public class CrmSupervisorDAOImpl implements CrmSupervisorDAO {
 		return hibernateTemplate.get(CrmSupervisor.class, supervisorId);
 	}
 
+	@Override
+	public void delSupervisorById(Integer supervisorId) {
+		CrmSupervisor crmSupervisor = hibernateTemplate.get(CrmSupervisor.class, supervisorId);
+		hibernateTemplate.delete(crmSupervisor);
+	}
+
+	@Override
+	public void saveCrmSupervisor(CrmSupervisor crmSupervisor) {
+		hibernateTemplate.save(crmSupervisor);
+	}
+
 }

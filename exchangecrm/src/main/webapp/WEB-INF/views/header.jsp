@@ -41,7 +41,10 @@
 							        </li>
 							        <li role="presentation" class="divider"></li>
 							        <li role="presentation">
-							            <a role="menuitem" tabindex="-1" href="#">监督人信息</a>
+							            <a role="menuitem" tabindex="-1" href="<c:url value='/alarm/getSupervisorList' />">监督人信息</a>
+							        </li>
+							        <li role="presentation">
+							            <a role="menuitem" tabindex="-1" href="<c:url value='/alarm/addSupervisor' />">添加监督人</a>
 							        </li>
 							    </ul>
 							</div>

@@ -2,7 +2,6 @@ package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -136,6 +135,23 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	@Override
 	public List<CrmAlarm> getCrmAlarmConfigList() {
 		return crmAlarmDAO.getCrmAlarmConfigList();
+	}
+
+	@Override
+	public void delSupervisorById(Integer supervisorId) {
+		crmSupervisorDAO.delSupervisorById(supervisorId);
+	}
+
+	@Override
+	public void saveSupervisor(String supervisorName, String supervisorMobile, String supervisorEmail) {
+		CrmSupervisor crmSupervisor = new CrmSupervisor();
+		crmSupervisor.setSupervisorName(supervisorName);
+		crmSupervisor.setSupervisorMobile(supervisorMobile);
+		crmSupervisor.setSupervisorEmail(supervisorEmail);
+		crmSupervisor.setUpdateAt(new Date());
+		
+		crmSupervisorDAO.saveCrmSupervisor(crmSupervisor);
+		
 	}
 	
 	
