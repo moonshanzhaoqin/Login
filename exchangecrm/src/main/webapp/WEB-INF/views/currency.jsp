@@ -20,7 +20,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-2"></div>
-			<table class="table table-bordered table-hover col-md-8"
+			<table class="table table-bordered table-hover .table-striped col-md-8"
 				id="currency">
 				<thead>
 					<tr>

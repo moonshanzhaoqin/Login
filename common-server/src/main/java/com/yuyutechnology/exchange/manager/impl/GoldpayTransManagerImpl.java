@@ -305,7 +305,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		
 		//判断余额是否足够支付
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, ServerConsts.CURRENCY_OF_GOLDPAY);
-		if(wallet == null || wallet.getBalance().compareTo(new BigDecimal(amount)) == -1){
+		if(wallet == null || wallet.getBalance().compareTo(new BigDecimal(Double.toString(amount))) == -1){
 			logger.warn("Current balance is insufficient");
 			map.put("retCode", ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
 			map.put("msg", "Current balance is insufficient");
@@ -319,7 +319,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		transfer.setTransferId(transferId);
 		transfer.setCreateTime(new Date());
 		transfer.setCurrency(ServerConsts.CURRENCY_OF_GOLDPAY);
-		transfer.setTransferAmount(new BigDecimal(amount));
+		transfer.setTransferAmount(new BigDecimal(Double.toString(amount)));
 		transfer.setTransferComment("goldpay withdraw");
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		transfer.setUserFrom(userId);

@@ -96,7 +96,7 @@ public class TransferController {
 		}
 		
 		HashMap<String, String> map = transferManager.transferInitiate(sessionData.getUserId(), reqMsg.getAreaCode(),
-				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()), 
+				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())), 
 				reqMsg.getTransferComment(),0);
 		
 		if(map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
@@ -227,7 +227,7 @@ public class TransferController {
 		}
 		
 		HashMap<String, String> map = transferManager.respond2Request(sessionData.getUserId(), reqMsg.getAreaCode(),
-				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()), 
+				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())), 
 				null,reqMsg.getNoticeId());
 		
 		if(map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){

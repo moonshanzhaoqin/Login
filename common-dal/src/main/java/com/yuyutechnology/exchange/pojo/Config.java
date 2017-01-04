@@ -19,6 +19,7 @@ public class Config implements java.io.Serializable {
 	private static final long serialVersionUID = -3689008979108574924L;
 	private String configKey;
 	private String configValue;
+	private String configName;
 
 	public Config() {
 	}
@@ -50,6 +51,14 @@ public class Config implements java.io.Serializable {
 
 	public void setConfigValue(String configValue) {
 		this.configValue = configValue;
+	}
+	@Column(name = "config_name")
+	public String getConfigName() {
+		return configName;
+	}
+
+	public void setConfigName(String configName) {
+		this.configName = configName;
 	}
 
 }

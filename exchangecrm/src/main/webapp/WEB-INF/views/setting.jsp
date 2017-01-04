@@ -35,14 +35,14 @@
 			<div class="panel-body">
 				<form class="form-horizontal" role="form" id="modifyPassword">
 					<div class="form-group">
-						<label for="oldPassword" class="col-sm-2 control-label">原密码</label>
+						<label for="oldPassword" class="col-sm-2 control-label input-lg">原密码</label>
 						<div class="col-sm-10">
 							<input type="password" class="form-control input-lg"
 								name="oldPassword" placeholder="Old Password">
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="newPassword" class="col-sm-2 control-label">新密码</label>
+						<label for="newPassword" class="col-sm-2 control-label input-lg">新密码</label>
 						<div class="col-sm-10">
 							<input type="password" class="form-control input-lg"
 								name="newPassword" placeholder="New Password">
