@@ -5,14 +5,11 @@ import java.util.List;
 import com.yuyutechnology.exchange.pojo.Config;
 
 public interface ConfigDAO {
-	/**
-	 * 添加或更改配置
-	 * 
-	 * @param configKey
-	 * @param configValue
-	 */
-	public void saveOrUpdateConfig(String configKey, String configValue);
-	
-	public List<Config> getCongifValues();
+
+	public List<Config> getConfigValues();
+
+	void saveOrUpdateConfig(Config config);
+
+	Config getConfig(String configKey);
 
 }
