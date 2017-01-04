@@ -92,12 +92,12 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		}
 		// 然后判断换算后金额是否超过最小限额
 		double exchangeRate = exchangeRateManager.getExchangeRate(currencyOut, currencyIn);
-		BigDecimal result = amountOut.multiply(new BigDecimal(exchangeRate));
+		BigDecimal result = amountOut.multiply(new BigDecimal(Double.toString(exchangeRate)));
 		logger.info("out : " + amountOut + " exchangeRate : " + exchangeRate + "result : " + result);
 		if (currencyIn.equals(ServerConsts.CURRENCY_OF_GOLDPAY) && result.compareTo(new BigDecimal(1)) == 1) {
 
 		} else if (!currencyIn.equals(ServerConsts.CURRENCY_OF_GOLDPAY)
-				&& result.compareTo(new BigDecimal(0.01)) == 1) {
+				&& result.compareTo(new BigDecimal("0.01")) == 1) {
 
 		} else {
 			map.put("retCode", ServerConsts.EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT);
@@ -150,7 +150,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			exchange.setAmountIn(new BigDecimal(result.get("in")));
 			exchange.setCreateTime(new Date());
 			exchange.setFinishTime(new Date());
-			exchange.setExchangeRate(new BigDecimal(exchangeRateManager.getExchangeRate(currencyOut, currencyIn)));
+			exchange.setExchangeRate(new BigDecimal(Double.toString(exchangeRateManager.getExchangeRate(currencyOut, currencyIn))));
 
 			exchangeDAO.addExchange(exchange);
 
@@ -238,9 +238,9 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			bitsOut = 0;
 		}
 		
-		BigDecimal in = (outAmount.multiply(new BigDecimal(exchangeRate))).setScale(bitsIn, BigDecimal.ROUND_FLOOR);
+		BigDecimal in = (outAmount.multiply(new BigDecimal(Double.toString(exchangeRate)))).setScale(bitsIn, BigDecimal.ROUND_FLOOR);
 		
-		BigDecimal out = (in.divide(new BigDecimal(exchangeRate),bitsOut,BigDecimal.ROUND_CEILING));
+		BigDecimal out = (in.divide(new BigDecimal(Double.toString(exchangeRate)),bitsOut,BigDecimal.ROUND_CEILING));
 
 		HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>();
 

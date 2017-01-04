@@ -88,7 +88,7 @@ public class ExchangeController {
 		}
 
 		HashMap<String, String> result = exchangeManager.exchangeCalculation(sessionData.getUserId(),
-				reqMsg.getCurrencyOut(), reqMsg.getCurrencyIn(), new BigDecimal(reqMsg.getAmountOut()));
+				reqMsg.getCurrencyOut(), reqMsg.getCurrencyIn(), new BigDecimal(Double.toString(reqMsg.getAmountOut())));
 
 		rep.setRetCode(result.get("retCode"));
 		rep.setMessage(result.get("msg"));
@@ -135,8 +135,8 @@ public class ExchangeController {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		ExchangeConfirmResponse rep = new ExchangeConfirmResponse();
 		HashMap<String, String> result = exchangeManager.exchangeConfirm(sessionData.getUserId(),
-				reqMsg.getCurrencyOut(), reqMsg.getCurrencyIn(), new BigDecimal(reqMsg.getAmountOut()),
-				new BigDecimal(reqMsg.getAmountIn()));
+				reqMsg.getCurrencyOut(), reqMsg.getCurrencyIn(), new BigDecimal(Double.toString(reqMsg.getAmountOut())),
+				new BigDecimal(Double.toString(reqMsg.getAmountIn())));
 
 		rep.setRetCode(result.get("retCode"));
 		rep.setMessage(result.get("msg"));
