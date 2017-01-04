@@ -88,7 +88,7 @@ public class ExchangeController {
 		}
 
 		HashMap<String, String> result = exchangeManager.exchangeCalculation(sessionData.getUserId(),
-				reqMsg.getCurrencyOut(), reqMsg.getCurrencyIn(), new BigDecimal(reqMsg.getAmountOut()));
+				reqMsg.getCurrencyOut(), reqMsg.getCurrencyIn(), new BigDecimal(Double.toString(reqMsg.getAmountOut())));
 
 		rep.setRetCode(result.get("retCode"));
 		rep.setMessage(result.get("msg"));

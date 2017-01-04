@@ -104,7 +104,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 			Map<String,BigDecimal> gdp4Others = new HashMap<String,BigDecimal>();
 			gdp4Others.put("USD", gdp4USDExchangeRate);
 			for(Map.Entry<String, Double> entry : exchangeRate.getRates().entrySet()){
-				gdp4Others.put(entry.getKey(), (new BigDecimal(entry.getValue())).divide(USD4GdpExchangeRate, scale,BigDecimal.ROUND_DOWN));
+				gdp4Others.put(entry.getKey(), (new BigDecimal(Double.toString(entry.getValue()))).divide(USD4GdpExchangeRate, scale,BigDecimal.ROUND_DOWN));
 			}
 			logger.info("gdp4Others Map : {}",gdp4Others.toString());
 			
@@ -114,7 +114,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 			List<Currency> list = currencyDAO.getCurrencys();
 			for (Currency index : list) {
 				if(!index.getCurrency().equals("USD") && !index.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY) ){
-					others4Gdp.put(index.getCurrency(), (new BigDecimal(getExchangeRateNoGoldq(index.getCurrency(),"USD"))).divide(gdp4USDExchangeRate, scale,BigDecimal.ROUND_DOWN));
+					others4Gdp.put(index.getCurrency(), (new BigDecimal(Double.toString(getExchangeRateNoGoldq(index.getCurrency(),"USD")))).divide(gdp4USDExchangeRate, scale,BigDecimal.ROUND_DOWN));
 				}
 			}
 			
@@ -189,7 +189,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 			result = transAmount;
 		}else{
 			double exchangeRate = getExchangeRate(transCurrency, ServerConsts.STANDARD_CURRENCY);
-			result = transAmount.multiply(new BigDecimal(exchangeRate));
+			result = transAmount.multiply(new BigDecimal(Double.toString(exchangeRate)));
 		}
 		return result;
 	}
@@ -212,7 +212,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 				totalBalance = totalBalance+wallet.getBalance().longValue();
 			}
 		}
-		BigDecimal out = new BigDecimal(totalBalance).setScale(2,BigDecimal.ROUND_FLOOR);
+		BigDecimal out = new BigDecimal(Double.toString(totalBalance)).setScale(2,BigDecimal.ROUND_FLOOR);
 		logger.info("Total assets of the current account : {}" ,out);
 		return out;
 	}
