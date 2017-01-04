@@ -1,4 +1,5 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page isELIgnored ="false" %>
 <%@page contentType="text/html; charset=utf-8"%>
 <!DOCTYPE html>
@@ -134,6 +135,7 @@
 							<th>用户类型</th>
 							<th>是否冻结</th>
 							<th>总资产</th>
+							<th>更新时间（UTC）</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -152,6 +154,7 @@
 						        		<c:if test="${userInfo.userAvailable eq 0}">已冻结</c:if>
 									</td>
 									<td>${userInfo.userTotalAssets }</td>
+									<td><fmt:formatDate value="${userInfo.updateAt }" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 								</tr>
 							</c:forEach>
 						</c:if>
