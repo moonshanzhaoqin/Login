@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
+import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.CurrencyManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 
@@ -20,40 +21,8 @@ public class CurrencyManagerImpl implements CurrencyManager {
 
 	@Autowired
 	CurrencyDAO currencyDAO;
-
-	@Override
-	public int enableCurrency(String currencyId) {
-		Currency currency = currencyDAO.getCurrency(currencyId);
-		if (currency == null) {
-			logger.info("currency not exist");
-			return RetCodeConsts.CURRENCY_NOT_EXIST;
-		} else if (currency.getCurrencyStatus() == ServerConsts.CURRENCY_AVAILABLE) {
-			logger.info("currency has been AVAILABLE");
-			return RetCodeConsts.CURRENCY_HAS_BEEN_AVAILABLE;
-		} else {
-			currency.setCurrencyStatus(ServerConsts.CURRENCY_AVAILABLE);
-			currencyDAO.updateCurrency(currency);
-			return RetCodeConsts.SUCCESS;
-		}
-
-	}
-
-	@Override
-	public int disableCurrency(String currencyId) {
-		Currency currency = currencyDAO.getCurrency(currencyId);
-		if (currency == null) {
-			logger.info("currency not exist");
-			return RetCodeConsts.CURRENCY_NOT_EXIST;
-		} else if (currency.getCurrencyStatus() == ServerConsts.CURRENCY_UNAVAILABLE) {
-			logger.info("currency has been UNAVAILABLE");
-			return RetCodeConsts.CURRENCY_HAS_BEEN_UNAVAILABLE;
-		} else {
-			currency.setCurrencyStatus(ServerConsts.CURRENCY_UNAVAILABLE);
-			currencyDAO.updateCurrency(currency);
-			return RetCodeConsts.SUCCESS;
-		}
-
-	}
+	@Autowired
+	CommonManager commonManager;
 
 	@Override
 	public List<Currency> getCurrencyList() {
@@ -65,6 +34,17 @@ public class CurrencyManagerImpl implements CurrencyManager {
 	public void updateCurrency(Currency currency) {
 		// TODO Auto-generated method stub
 		currencyDAO.updateCurrency(currency);
+	}
+
+	@Override
+	public int addCurrency(String currencyId) {
+		Currency currency = currencyDAO.getCurrency(currencyId);
+		if (currency == null) {
+			currencyDAO.updateCurrency(new Currency(currencyId,currencyId,currencyId,currencyId,currencyId, ServerConsts.CURRENCY_UNAVAILABLE, "0"));
+			return RetCodeConsts.SUCCESS;
+		} else {
+			return RetCodeConsts.FAILUE;
+		}
 	}
 
 }

@@ -33,8 +33,9 @@ public class Currency implements java.io.Serializable {
 		this.currencyStatus = currencyStatus;
 	}
 
-	public Currency(String currency, String nameEn, String nameCn, String nameHk, int currencyStatus, String currencyOrder) {
+	public Currency(String currency,String currencyUnit, String nameEn, String nameCn, String nameHk, int currencyStatus, String currencyOrder) {
 		this.currency = currency;
+		this.currencyUnit = currencyUnit;
 		this.nameEn = nameEn;
 		this.nameCn = nameCn;
 		this.nameHk = nameHk;
