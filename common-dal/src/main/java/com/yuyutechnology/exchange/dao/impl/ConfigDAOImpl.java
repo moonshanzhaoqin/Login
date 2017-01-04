@@ -25,7 +25,7 @@ public class ConfigDAOImpl implements ConfigDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Config> getConfigValues() {
-		return (List<Config>) hibernateTemplate.find("from Config");
+		return (List<Config>) hibernateTemplate.find("from Config order by configOrder");
 	}
 
 	@Override
