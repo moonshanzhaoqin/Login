@@ -68,8 +68,10 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		}
 		
 		for (CrmAlarm crmAlarm : list) {
-			if(difference.compareTo(crmAlarm.getLowerLimit()) == 1 
-					&& difference.compareTo(crmAlarm.getUpperLimit()) == -1){
+			if((difference.compareTo(crmAlarm.getLowerLimit()) == 1 || 
+					difference.compareTo(crmAlarm.getLowerLimit()) == 0) 
+					&& (difference.compareTo(crmAlarm.getUpperLimit()) == -1 || 
+					difference.compareTo(crmAlarm.getUpperLimit()) == 0)){
 				logger.warn("Time : {},difference : {},configId : {},alarmGrade: {}",
 						new Object[]{new Date(),difference,crmAlarm.getAlarmId(),
 								crmAlarm.getAlarmGrade()});

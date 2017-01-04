@@ -18,6 +18,5 @@ public interface CrmAlarmManager {
 	public List<CrmAlarm> getCrmAlarmConfigList();
 	
 	public List<CrmSupervisor> getCrmSupervisorList();
-	
 
 }
