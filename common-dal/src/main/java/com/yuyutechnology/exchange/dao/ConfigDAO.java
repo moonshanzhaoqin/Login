@@ -10,4 +10,6 @@ public interface ConfigDAO {
 
 	void saveOrUpdateConfig(Config config);
 
+	Config getConfig(String configKey);
+
 }

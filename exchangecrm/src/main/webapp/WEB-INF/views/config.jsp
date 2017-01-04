@@ -28,10 +28,9 @@
 </head>
 <body>
 	<%@ include file="header.jsp"%>
-			<div class="container">
-			<form class="form-horizontal">
-			</form>
-		</div>
+	<div class="container">
+		<form class="form-horizontal"></form>
+	</div>
 
 	<script type="text/javascript"
 		src="<c:url value="/resources/js/jquery.min.js" />"></script>
@@ -43,56 +42,63 @@
 		});
 
 		function initConfig() {
-			$.ajax({
-				type: "post",
-				url: "/crm/getConfigList",
-				dataType: 'json',
-				contentType: "application/json; charset=utf-8",
-				data: {},
-				success: function(data) {
-					console.log("success");
-					html = "";
-					for(var i = 0; i < data.length; i++) {
-						html += '<div class="form-group" id="' + data[i].configKey + '">' +
-							'<label  class="col-lg-2 control-label">' + data[i].configName + '</label>' +
-							'<div class="col-lg-8"><input type="text" class="form-control" value="' + data[i].configValue + '"></div>' +
-							'<div class="col-lg-2"><button type="button" class="btn btn-info" onclick="updateConfig()"><span class="glyphicon glyphicon-ok" style="color: white;"></span>&nbsp;保存</button></div>' +
-							'</div>'
-					}
-					$(form).html(html);
-				},
-				error: function(xhr, err) {
-					console.log("error");
-					console.log(err);
-				},
-				async: false
-			});
+			$
+					.ajax({
+						type : "post",
+						url : "/crm/getConfigList",
+						dataType : 'json',
+						contentType : "application/json; charset=utf-8",
+						data : {},
+						success : function(data) {
+							console.log("success");
+							html = "";
+							for (var i = 0; i < data.length; i++) {
+								html += '<div class="form-group" id="' + data[i].configKey + '">'
+										+ '<label  class="col-lg-2 control-label">'
+										+ data[i].configName
+										+ '</label>'
+										+ '<div class="col-lg-8"><input type="text" class="form-control" value="' + data[i].configValue + '"></div>'
+										+ '<div class="col-lg-2"><button type="button" class="btn btn-info" onclick="updateConfig()"><span class="glyphicon glyphicon-ok" style="color: white;"></span>&nbsp;保存</button></div>'
+										+ '</div>'
+							}
+							$('form').html(html);
+						},
+						error : function(xhr, err) {
+							console.log("error");
+							console.log(err);
+						},
+						async : false
+					});
 		}
 
-		function updateConfig(id) {
-			console.log(e);
-			//				data = {
-			//					configKey: id,
-			//					configValue: $('#' + id).val(),
-			//				}
-			//				$.ajax({
-			//					type: "post",
-			//					url: "/crm/updateConfig",
-			//					contentType: "application/json; charset=utf-8",
-			//					dataType: 'json',
-			//					data: JSON.stringify(data),
-			//					success: function(data) {
-			//						console.log("success");
-			//						//						initConfig();
-			//					},
-			//					error: function(xhr, err) {
-			//						console.log("error");
-			//						console.log(err);
-			//						console.log(xhr);
-			//					},
-			//					async: false
-			//				});
-		
+		function updateConfig() {
+			console.log(event);
+			var target = event.target || event.currentTarget;
+			var id = $(target).parent().parent().attr('id');
+			var value=$(target).parent().parent().find('input').val();
+			console.log(value);
+			data = {
+				configKey : id,
+				configValue :value
+			}
+			$.ajax({
+				type : "post",
+				url : "/crm/updateConfig",
+				contentType : "application/json; charset=utf-8",
+				dataType : 'json',
+				data : JSON.stringify(data),
+				success : function(data) {
+					console.log("success");
+					//						initConfig();
+				},
+				error : function(xhr, err) {
+					console.log("error");
+					console.log(err);
+					console.log(xhr);
+				},
+				async : false
+			});
+
 		}
 	</script>
 </body>

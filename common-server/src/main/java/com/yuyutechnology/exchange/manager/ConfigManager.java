@@ -17,7 +17,7 @@ public interface ConfigManager {
 	
 	public Double getConfigDoubleValue (ConfigKeyEnum key, Double defaultValue);
 
-	public void updateConfig(String configKey, String configValue);
+	public int updateConfig(String configKey, String configValue);
 
 	public void addConfig(Config config);
 

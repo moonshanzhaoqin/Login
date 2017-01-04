@@ -29,8 +29,8 @@ public class ConfigController {
 	public BaseResponse updateConfig(@RequestBody Config config) {
 		BaseResponse rep = new BaseResponse();
 		logger.info("updateConfig({}, {})",config.getConfigKey(),config.getConfigValue());
-		configManager.updateConfig(config.getConfigKey(), config.getConfigValue());
-		rep.setRetCode(RetCodeConsts.SUCCESS);
+		int retCode=configManager.updateConfig(config.getConfigKey(), config.getConfigValue());
+		rep.setRetCode(retCode);
 		return rep;
 	}
 
