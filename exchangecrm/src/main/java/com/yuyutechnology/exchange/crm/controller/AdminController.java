@@ -47,6 +47,8 @@ public class AdminController {
 				mav.addObject("message", "PASSWORD_NOT_MATCH_NAME");
 				break;
 			case RetCodeConsts.SUCCESS:
+				// 写入session
+				request.getSession().setAttribute("adminName", loginRquest.getAdminName());
 				mav.setViewName("home");
 				mav.addObject("retCode", RetCodeConsts.SUCCESS);
 				break;
@@ -58,17 +60,17 @@ public class AdminController {
 
 		return mav;
 	}
-	
-	@RequestMapping(value = "/modifyPassword", method = { RequestMethod.POST })
-	public ModelAndView modifyPassword(@RequestBody ModifyPasswordRquest modifyPasswordRquest, HttpServletRequest request, HttpServletResponse response) {
-		mav = new ModelAndView();
 
+	@RequestMapping(value = "/modifyPassword", method = { RequestMethod.POST })
+	public ModelAndView modifyPassword(@RequestBody ModifyPasswordRquest modifyPasswordRquest,
+			HttpServletRequest request, HttpServletResponse response) {
+		mav = new ModelAndView();
 		if (modifyPasswordRquest.isEmpty()) {
 			logger.info("parameter is empty");
-
 		} else {
-			Integer adminId = 1;
-			int retCode = adminManager.modifyPassword(adminId,modifyPasswordRquest.getOldPassword(), modifyPasswordRquest.getNewPassword());
+			String adminName = (String) request.getSession().getAttribute("adminName");
+			int retCode = adminManager.modifyPassword(adminName, modifyPasswordRquest.getOldPassword(),
+					modifyPasswordRquest.getNewPassword());
 			switch (retCode) {
 			case RetCodeConsts.PASSWORD_NOT_MATCH_NAME:
 				mav.setViewName("setting");
@@ -82,10 +84,14 @@ public class AdminController {
 			default:
 				break;
 			}
-
 		}
-
 		return mav;
+	}
+
+	@RequestMapping(value = "/exit", method = RequestMethod.GET)
+	public String exit(HttpServletRequest request) {
+		request.getSession().invalidate();
+		return "login";
 	}
 
 }
