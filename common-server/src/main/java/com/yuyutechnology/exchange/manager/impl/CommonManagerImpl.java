@@ -4,12 +4,15 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +28,9 @@ import com.yuyutechnology.exchange.dto.MsgFlagInfo;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.pojo.AppVersion;
 import com.yuyutechnology.exchange.pojo.Currency;
+import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
+import com.yuyutechnology.exchange.utils.exchangerate.ExchangeRate;
 
 /**
  * @author silent.sun
@@ -130,5 +135,23 @@ public class CommonManagerImpl implements CommonManager {
 		} else {
 			redisDAO.saveData4Hash(msgFlagNewRequestTransKey, userId + "", Boolean.valueOf(on).toString());
 		}
+	}
+
+	@Override
+	public List<String> getAllConfigurableCurrencies() {
+		List<String> currencies = new ArrayList<String>();
+		currencies.add("USD");
+		currencies.add("GDQ");
+		String result = redisDAO.getValueByKey("redis_exchangeRate");
+		if(StringUtils.isNotBlank(result)){
+			@SuppressWarnings("unchecked")
+			HashMap<String, String> map = JsonBinder.getInstance().fromJson(result, HashMap.class);
+			String value = map.get("USD");
+			ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().
+					fromJson(value, ExchangeRate.class);
+			currencies.addAll(exchangeRate.getRates().keySet());
+			return currencies;
+		}
+		return currencies;
 	}
 }
