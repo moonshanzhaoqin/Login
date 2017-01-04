@@ -12,6 +12,9 @@
 	</head>
 	
 	<body>
+	
+		<%@ include file="../header.jsp"%>
+	
 		<div class="container">
 			</br>
 			</br>
@@ -78,17 +81,19 @@
 							</c:if>
 						</div>
 					</div></br>
+					
+					<div class="row">
+						<div class="col-lg-4 text-right">
+						</div>
+						
+						<div class="col-lg-4">
+							<input class="btn btn-primary btn-lg btn-block" type="submit" value="确认"/>
+<!-- 							<button id="saveConfigBtn" class="btn btn-primary btn-lg btn-block">确认</button> -->
+						</div>
+					</div></br>
 				</form>
 									
-				<div class="row">
-					<div class="col-lg-4 text-right">
-					</div>
-					
-					<div class="col-lg-4">
-<!-- 						<input class="btn btn-primary btn-lg btn-block" type="submit" value="确认"/> -->
-						<button id="saveConfigBtn" class="btn btn-primary btn-lg btn-block">确认</button>
-					</div>
-				</div></br>
+
 			</div>
 			
 		</div>
@@ -99,16 +104,5 @@
 		<script type="text/javascript" src="<c:url value="/resources/js/jquery.min.js" />" ></script>
 		<script type="text/javascript" src="<c:url value="/resources/bootstrap/js/bootstrap.min.js" />" ></script>
 		
-		<script type="text/javascript">
-			
-		$("#saveConfigBtn").click(function(){
-
-			 $("#saveConfig").submit();
-			
-		});
-		
-		</script>
-		
-
 	</body>
 </html>

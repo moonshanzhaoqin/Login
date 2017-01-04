@@ -20,14 +20,31 @@
 				<div>
 					<ul class="nav navbar-nav navbar-left">
 						<li >
-							<a href="<c:url value='/home' />">首页</a>
+							<a href="<c:url value='/account/getTotalAssetsInfo' />">首页</a>
 						</li>
 						
 						<li >   
 							<a href="<c:url value='/userAssets' />">用户资产</a>
 						</li>
-<li >   
-							<a href="<c:url value='/warn' />">预警</a>
+						<li >   
+							<div class="dropdown">
+								<button type="button" class="btn dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" 
+								style="background-color:transparent;border:0">预警
+							        <span class="caret"></span>
+							    </button>
+							     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+							        <li role="presentation">
+							            <a role="menuitem" tabindex="-1" href="<c:url value='/alarm/getAlarmConfigList' />">预警信息</a>
+							        </li>
+							        <li role="presentation">
+							            <a role="menuitem" tabindex="-1" href="<c:url value='/alarm/addAlarmConfig' />">预警设置</a>
+							        </li>
+							        <li role="presentation" class="divider"></li>
+							        <li role="presentation">
+							            <a role="menuitem" tabindex="-1" href="#">监督人信息</a>
+							        </li>
+							    </ul>
+							</div>
 						</li>
 						<li >   
 							<a href="<c:url value='/currency' />">币种</a>
