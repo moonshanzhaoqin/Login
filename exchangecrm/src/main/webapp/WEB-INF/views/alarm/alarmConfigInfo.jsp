@@ -45,10 +45,10 @@
 				<table class = "table table-striped table-bordered">
 					<thead>
 						<tr>
-							<th>编号</th>
+							<th style="display:none">编号</th>
 							<th>等级</th>
-							<th>上限</th>
 							<th>下限</th>
+							<th>上限</th>
 							<th>报警方式</th>
 							<th>操作</th>
 						</tr>
@@ -57,10 +57,10 @@
 						<c:if test="${not empty list }">
 							<c:forEach var="alarmConfig" items="${list}">
 								<tr>
-									<td>${alarmConfig.alarmId }</td>
+									<td style="display:none">${alarmConfig.alarmId }</td>
 									<td>${alarmConfig.alarmGrade }</td>
-									<td>${alarmConfig.upperLimit }</td>
 									<td>${alarmConfig.lowerLimit }</td>
+									<td>${alarmConfig.upperLimit }</td>
 									<td>
 										<c:if test="${alarmConfig.alarmMode eq 1}">短信</c:if>
 						        		<c:if test="${alarmConfig.alarmMode eq 2}">邮件</c:if>
@@ -94,7 +94,10 @@
 				var tds=$(obj).parent().parent().find('td');
 				var alarmId = tds.eq(0).text();
 				
-				alert("alarmId : "+alarmId);
+				var delAlarmConfigUrl = "<c:url value='/alarm/delAlarmConfig' />";
+				location.href=delAlarmConfigUrl+'?alarmId='+alarmId;
+				
+// 				alert("alarmId : "+alarmId);
 			}
 		</script>
 		

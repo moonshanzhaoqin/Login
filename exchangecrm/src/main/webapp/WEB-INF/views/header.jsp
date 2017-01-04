@@ -40,10 +40,10 @@
 							        <li role="presentation">
 							            <a role="menuitem" tabindex="-1" href="<c:url value='/alarm/addAlarmConfig' />">预警设置</a>
 							        </li>
-<!-- 							        <li role="presentation" class="divider"></li> -->
-<!-- 							        <li role="presentation"> -->
-<!-- 							            <a role="menuitem" tabindex="-1" href="#">监督人信息</a> -->
-<!-- 							        </li> -->
+							        <li role="presentation" class="divider"></li>
+							        <li role="presentation">
+							            <a role="menuitem" tabindex="-1" href="#">监督人信息</a>
+							        </li>
 							    </ul>
 							</div>
 						</li>

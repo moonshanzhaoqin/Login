@@ -340,7 +340,13 @@ public class TransferManagerImpl implements TransferManager{
 		
 		//发送推送
 		User payee = userDAO.getUser(transfer.getUserFrom());
-		pushManager.push4Refund(payee, payee.getAreaCode(),transfer.getPhone(),
+		
+		logger.info("================================systemRefund start=================================");
+		logger.info("payee:{},payeePhone:{},payeePushTag:{}",new Object[]{payee.getUserName()
+				,payee.getAreaCode()+payee.getUserPhone(),payee.getPushTag()});
+		logger.info("================================systemRefund end=================================");
+		
+		pushManager.push4Refund(payee, transfer.getAreaCode(),transfer.getPhone(),
 				transfer.getCurrency(), transfer.getTransferAmount());
 		
 	}
