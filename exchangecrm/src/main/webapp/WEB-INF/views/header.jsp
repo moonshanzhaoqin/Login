@@ -23,11 +23,7 @@
 						<li >
 							<a href="<c:url value='/account/getTotalAssetsInfo' />">首页</a>
 						</li>
-						
-						<li >   
-							<a href="<c:url value='/userAssets' />">用户资产</a>
-						</li>
-						<li >   
+						<li style="padding: 9px 0;">   
 							<div class="dropdown">
 								<button type="button" class="btn dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" 
 								style="background-color:transparent;border:0">预警
