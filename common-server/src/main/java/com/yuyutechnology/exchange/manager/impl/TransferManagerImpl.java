@@ -104,6 +104,7 @@ public class TransferManagerImpl implements TransferManager{
 		
 		//判断余额是否足够支付
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
+		logger.info("wallet info , balance : {}, userId : {}, transAmount : {}", new Object[]{wallet.getBalance().doubleValue(), wallet.getUserId(), amount});
 		if(wallet == null || wallet.getBalance().compareTo(amount) == -1){
 			logger.warn("Current balance is insufficient");
 			map.put("retCode", ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
