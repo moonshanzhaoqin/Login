@@ -28,18 +28,22 @@
 <body>
 	<%@ include file="header.jsp"%>
 	<div class="container">
-		<table class="table table-bordered table-hover col-md-8" id="config">
-			<thead>
-				<th>KEY</th>
-				<th>VALUE</th>
-			</thead>
-			<tbody>
-				<tr data-toggle="modal" data-target="#myModal" data-whatever="">
-					<td></td>
-					<td></td>
-				</tr>
-			</tbody>
-		</table>
+		<form class="form-horizontal" role="form">
+			<div class="form-group">
+				<label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id="inputEmail3"
+						placeholder="Email">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="inputPassword3" class="col-lg-2 control-label">Password</label>
+				<div class="col-lg-10">
+					<input type="text" class="form-control" id="inputPassword3"
+						placeholder="Password">
+				</div>
+			</div>
+		</form>
 	</div>
 	<!-- 模态框（Modal） -->
 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
@@ -51,8 +55,7 @@
 						aria-hidden="true">&times;</button>
 					<h4 class="modal-title" id="myModalLabel">编辑币种</h4>
 				</div>
-				<div class="modal-body">
-				</div>
+				<div class="modal-body"></div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 					<button type="button" class="btn btn-primary" data-dismiss="modal"
@@ -71,19 +74,20 @@
 
 			$('#myModal').on('show.bs.modal', function(e) {
 				// do something...
-// 				var tr = $(e.relatedTarget) // Button that triggered the modal
-// 				var config = tr.data('whatever') // Extract info from data-* attributes
-// 				console.log(config);
-// 				form = document.getElementById("configValue");
-// 				form.configKey.value = config.configKey;
-// 				form.configValue.value = config.configValue;
+				// 				var tr = $(e.relatedTarget) // Button that triggered the modal
+				// 				var config = tr.data('whatever') // Extract info from data-* attributes
+				// 				console.log(config);
+				// 				form = document.getElementById("configValue");
+				// 				form.configKey.value = config.configKey;
+				// 				form.configValue.value = config.configValue;
 			})
 
 		});
 
 		function initConfig() {
 			console.log("initConfig");
-			$.ajax({
+			$
+					.ajax({
 						type : "post",
 						url : "/crm/getConfigList",
 						dataType : 'json',
