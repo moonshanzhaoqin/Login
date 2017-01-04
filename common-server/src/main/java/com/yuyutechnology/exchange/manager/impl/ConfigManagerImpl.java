@@ -10,6 +10,9 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.spi.LocationAwareLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -25,6 +28,7 @@ import com.yuyutechnology.exchange.pojo.Config;
  */
 @Component
 public class ConfigManagerImpl implements ConfigManager{
+	private static Logger logger = LoggerFactory.getLogger(ConfigManagerImpl.class);
 	
 	@Autowired
 	ConfigDAO configDAO;
@@ -39,7 +43,7 @@ public class ConfigManagerImpl implements ConfigManager{
 	}
 	
 	private void initConfig(){
-		List<Config> configs = configDAO.getCongifValues();
+		List<Config> configs = configDAO.getConfigValues();
 		for (Config config : configs) {
 			configMap.put(config.getConfigKey(), config.getConfigValue());
 		}
@@ -88,7 +92,8 @@ public class ConfigManagerImpl implements ConfigManager{
 
 	@Override
 	public void updateConfig(String configKey, String configValue) {
-		configDAO.saveOrUpdateConfig(configKey, configValue);
+		logger.info("{},{}",configKey,configValue);
+		configDAO.saveOrUpdateConfig(new Config(configKey, configValue));
 		
 	}
 
@@ -100,7 +105,7 @@ public class ConfigManagerImpl implements ConfigManager{
 
 	@Override
 	public List<Config> getConfigList() {
-		List<Config> configs = configDAO.getCongifValues();
+		List<Config> configs = configDAO.getConfigValues();
 		return configs;
 	}
 }

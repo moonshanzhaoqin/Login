@@ -17,13 +17,13 @@ public class ConfigDAOImpl implements ConfigDAO {
 	HibernateTemplate hibernateTemplate;
 
 	@Override
-	public void saveOrUpdateConfig(String configKey, String configValue) {
-		hibernateTemplate.saveOrUpdate(new Config(configKey, configValue));
+	public void saveOrUpdateConfig(Config config) {
+		hibernateTemplate.saveOrUpdate(config);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Config> getCongifValues() {
+	public List<Config> getConfigValues() {
 		return (List<Config>) hibernateTemplate.find("from Config");
 	}
 
