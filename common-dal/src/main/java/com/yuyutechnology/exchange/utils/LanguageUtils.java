@@ -7,19 +7,11 @@ import java.util.EnumSet;
  * @author suzan.wu
  *
  */
-public class LanguageUtils {
 
-	public static enum Language {
-		en_US("US"), zh_CN("CN"), zh_TW("TW");
-		
-		private String value;
-		private Language(String value){
-			this.value=value;
-		}
-		public String getValue() {
-			return value;
-		}
-	};
+public class LanguageUtils {
+	public enum Language {
+		en_US, zh_CN, zh_TW;
+	}
 
 	public static Language standard(String language) {
 		EnumSet<Language> languages = EnumSet.allOf(Language.class);

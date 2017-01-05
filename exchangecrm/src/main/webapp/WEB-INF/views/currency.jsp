@@ -10,9 +10,6 @@
 
 <link rel="stylesheet"
 	href='<c:url value="/resources/bootstrap/css/bootstrap.min.css" />' />
-<link rel="stylesheet"
-	href='<c:url value="/resources/bootstrap/css/bootstrap-table.css" />' />
-
 </head>
 <body>
 	<%@ include file="header.jsp"%>

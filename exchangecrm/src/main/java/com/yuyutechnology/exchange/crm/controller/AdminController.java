@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yuyutechnology.exchange.RetCodeConsts;
+import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
 import com.yuyutechnology.exchange.crm.request.LoginRquest;
 import com.yuyutechnology.exchange.crm.request.ModifyPasswordRquest;
 import com.yuyutechnology.exchange.manager.AdminManager;
@@ -32,7 +33,6 @@ public class AdminController {
 
 		if (loginRquest.isEmpty()) {
 			logger.info("parameter is empty");
-
 		} else {
 			int retCode = adminManager.login(loginRquest.getAdminName(), loginRquest.getAdminPassword());
 			switch (retCode) {
@@ -49,43 +49,29 @@ public class AdminController {
 			case RetCodeConsts.SUCCESS:
 				// 写入session
 				request.getSession().setAttribute("adminName", loginRquest.getAdminName());
-				mav.setViewName("home");
-				mav.addObject("retCode", RetCodeConsts.SUCCESS);
+				mav.setViewName("redirect:/account/getTotalAssetsInfo");
 				break;
 			default:
 				break;
 			}
-
 		}
-
 		return mav;
 	}
 
 	@RequestMapping(value = "/modifyPassword", method = { RequestMethod.POST })
-	public ModelAndView modifyPassword(@RequestBody ModifyPasswordRquest modifyPasswordRquest,
+	public BaseResponse modifyPassword(@RequestBody ModifyPasswordRquest modifyPasswordRquest,
 			HttpServletRequest request, HttpServletResponse response) {
-		mav = new ModelAndView();
+		BaseResponse rep=new  BaseResponse();
 		if (modifyPasswordRquest.isEmpty()) {
 			logger.info("parameter is empty");
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 		} else {
 			String adminName = (String) request.getSession().getAttribute("adminName");
 			int retCode = adminManager.modifyPassword(adminName, modifyPasswordRquest.getOldPassword(),
 					modifyPasswordRquest.getNewPassword());
-			switch (retCode) {
-			case RetCodeConsts.PASSWORD_NOT_MATCH_NAME:
-				mav.setViewName("setting");
-				mav.addObject("retCode", RetCodeConsts.PASSWORD_NOT_MATCH_NAME);
-				mav.addObject("message", "PASSWORD_NOT_MATCH_NAME");
-				break;
-			case RetCodeConsts.SUCCESS:
-				mav.setViewName("home");
-				mav.addObject("retCode", RetCodeConsts.SUCCESS);
-				break;
-			default:
-				break;
-			}
+			rep.setRetCode(retCode);
 		}
-		return mav;
+		return rep;
 	}
 
 	@RequestMapping(value = "/exit", method = RequestMethod.GET)

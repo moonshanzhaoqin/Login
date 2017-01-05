@@ -60,20 +60,23 @@ public class WalletDAOImpl implements WalletDAO {
 
 	@Override
 	public Integer updateWalletByUserIdAndCurrency(final int userId,final String currency, final BigDecimal amount, final String capitalFlows) {
+		
+		logger.info("updateWalletByUserIdAndCurrency , userId : {} , currency : {}, amount : {}, capitalFlows : {}", new Object[]{userId, currency, amount.toString(), capitalFlows});
+		
 		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
 			@Override
 			public Integer doInHibernate(Session session) throws HibernateException {
 				Query query = null;
 				if(capitalFlows.equals("+")){
 					query = session.createQuery("update Wallet set updateTime = ? ,balance = balance+"
-							+amount+" where userId = ? and currency.currency = ?");
+							+amount.abs()+" where userId = ? and currency.currency = ?");
 				}else{
 					if(userId != systemUserId){
 						query = session.createQuery("update Wallet set updateTime = ? ,balance = balance-"
-								+amount+" where userId = ? and currency.currency = ? and balance-"+amount+">=0");
+								+amount.abs()+" where userId = ? and currency.currency = ? and balance-"+amount.abs()+">=0");
 					}else{
 						query = session.createQuery("update Wallet set updateTime = ? ,balance = balance-"
-								+amount+" where userId = ? and currency.currency = ?");
+								+amount.abs()+" where userId = ? and currency.currency = ?");
 					}
 
 				}

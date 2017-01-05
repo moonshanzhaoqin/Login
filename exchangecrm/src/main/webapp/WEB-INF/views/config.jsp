@@ -8,23 +8,8 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Anytime Exchange</title>
-
 <link rel="stylesheet"
 	href='<c:url value="/resources/bootstrap/css/bootstrap.min.css" />' />
-<link rel="stylesheet"
-	href='<c:url value="/resources/bootstrap/css/bootstrap-table.css" />' />
-<link rel="stylesheet"
-	href='<c:url value="/resources/bootstrap/css/bootstrap-datetimepicker.css" />' />
-<link rel="stylesheet"
-	href='<c:url value="/resources/bootstrap/css/bootstrap-paginator.min.css" />' />
-
-<style type="text/css">
-.formbar li {
-	list-style: none;
-	display: inline-block;
-}
-</style>
-
 </head>
 <body>
 	<%@ include file="header.jsp"%>
@@ -58,7 +43,7 @@
 										+ data[i].configName
 										+ '</label>'
 										+ '<div class="col-lg-8"><input type="text" class="form-control" value="' + data[i].configValue + '"></div>'
-										+ '<div class="col-lg-2"><button type="button" class="btn btn-info" onclick="updateConfig()"><span class="glyphicon glyphicon-ok" style="color: white;"></span>&nbsp;保存</button></div>'
+										+ '<div class="col-lg-2"><button type="button" class="btn btn-default" onclick="updateConfig()"><span class="glyphicon glyphicon-ok"></span>&nbsp;保存</button></div>'
 										+ '</div>'
 							}
 							$('form').html(html);

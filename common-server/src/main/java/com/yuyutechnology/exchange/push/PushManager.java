@@ -154,10 +154,12 @@ public class PushManager {
 			refund_en = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
 
 			resource = new ClassPathResource("push/zh_CN/refund.template");
+			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 			refund_title_CN = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
 			refund_CN = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
 
 			resource = new ClassPathResource("push/zh_HK/refund.template");
+			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 			refund_title_HK = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
 			refund_HK = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
 
