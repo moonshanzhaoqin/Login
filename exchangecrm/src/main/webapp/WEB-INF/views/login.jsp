@@ -126,7 +126,7 @@
 			var retCode = $('#retCode').val();
 			var retMessage = $('#retMessage').val();
 
-			if (retCode != "00000" && retCode!="" && retCode!=null) {
+			if (retCode == "04001" && retCode=="04002" ) {
 				alert(retMessage);
 			}
 
