@@ -75,6 +75,6 @@
 				location.href=delAlarmConfigUrl+'?alarmId='+alarmId;
 			}
 		</script>
-		
+		<%@ include file="../footer.jsp"%>
 	</body>
 </html>
