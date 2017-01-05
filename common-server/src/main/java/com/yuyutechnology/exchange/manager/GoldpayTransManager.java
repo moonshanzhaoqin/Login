@@ -1,7 +1,11 @@
 package com.yuyutechnology.exchange.manager;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+
+import com.yuyutechnology.exchange.pojo.Transfer;
 
 public interface GoldpayTransManager {
 	
@@ -18,5 +22,9 @@ public interface GoldpayTransManager {
 	public HashMap<String, String> withdrawConfirm1(int userId, String payPwd, String transferId);
 
 	public HashMap<String, String> withdrawConfirm2(int userId, String transferId);
+	
+	public void withdrawRefund(int userId, String transferId, String transferCurrency, BigDecimal transferAmount);
+	
+	public List<Transfer> findGoldpayWithdrawByTimeBefore(Date date);
 
 }

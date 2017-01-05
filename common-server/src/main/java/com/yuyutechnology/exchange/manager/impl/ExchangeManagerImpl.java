@@ -97,7 +97,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		if (currencyIn.equals(ServerConsts.CURRENCY_OF_GOLDPAY) && result.compareTo(new BigDecimal(1)) == 1) {
 
 		} else if (!currencyIn.equals(ServerConsts.CURRENCY_OF_GOLDPAY)
-				&& result.compareTo(new BigDecimal("0.01")) == 1) {
+				&& result.compareTo(new BigDecimal("0.0001")) == 1) {
 
 		} else {
 			map.put("retCode", ServerConsts.EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT);
@@ -225,8 +225,8 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		logger.info("currencyOut : {},currencyIn : {},outAmount:{}",
 				new String[] { currencyOut, currencyIn, outAmount.toString() });
 		// 取余位数
-		int bitsOut = 2;
-		int bitsIn = 2;
+		int bitsOut = 4;
+		int bitsIn = 4;
 
 		// 获取汇率
 		double exchangeRate = exchangeRateManager.getExchangeRate(currencyOut,currencyIn);

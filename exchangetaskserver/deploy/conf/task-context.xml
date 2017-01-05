@@ -28,9 +28,9 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 	<context:annotation-config />
 
 	<task:annotation-driven executor="taskServerExecutor" scheduler="taskServerScheduler"/>
-	<task:executor id="taskServerExecutor" pool-size="5"/>
-	<task:scheduler id="taskServerScheduler" pool-size="10"/>
+	<task:executor id="taskServerExecutor" pool-size="10"/>
 	
+	<task:scheduler id="taskServerScheduler" pool-size="10"/>
 	<task:scheduled-tasks scheduler="taskServerScheduler">
 	    
 	    <task:scheduled 
@@ -51,6 +51,11 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 	    <task:scheduled 
 	    ref="autoAlarmTask" 
 	    method="autoAlarmTask" 
+	    fixed-delay="600000" initial-delay="1000"/>
+	    
+	   	<task:scheduled 
+	    ref="autoTransferRefundTask" 
+	    method="autoWithdrawRefund" 
 	    fixed-delay="600000" initial-delay="1000"/>
 	    
 	    

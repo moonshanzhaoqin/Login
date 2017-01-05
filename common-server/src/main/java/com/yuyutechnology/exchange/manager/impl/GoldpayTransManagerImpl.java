@@ -3,12 +3,14 @@ package com.yuyutechnology.exchange.manager.impl;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ConfigKeyEnum;
@@ -532,6 +534,21 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 	}
 	
 	@Override
+	public void withdrawRefund(int userId, String transferId, String transferCurrency, BigDecimal transferAmount){
+		User systemUser = userDAO.getSystemUser();
+		//系统加款
+		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transferCurrency, transferAmount, "-");
+		//用户扣款
+		walletDAO.updateWalletByUserIdAndCurrency(userId,  transferCurrency, transferAmount, "+");
+		//更改Transfer状态
+		transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_REFUND);
+		//添加seq记录
+		walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), userId, 
+				ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_REFUND, transferId, 
+				transferCurrency, transferAmount);	
+	}
+	
+	@Override
 	public HashMap<String, String> withdrawConfirm2(int userId, String transferId){
 		
 		HashMap<String, String> map = new HashMap<String, String>();
@@ -633,6 +650,12 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
 		}
 		return map;
+	}
+
+
+	@Override
+	public List<Transfer> findGoldpayWithdrawByTimeBefore(Date date) {
+		return transferDAO.findTransferByStatusAndTimeBefore(ServerConsts.TRANSFER_STATUS_OF_PROCESSING, ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, date);
 	}
 	
 }

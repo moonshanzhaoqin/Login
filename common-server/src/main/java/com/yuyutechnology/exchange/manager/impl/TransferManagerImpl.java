@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -501,18 +502,23 @@ public class TransferManagerImpl implements TransferManager{
 			return map;
 		}else if(notification.getPayerId()!=userId || notification.getTradingStatus() 
 				== ServerConsts.NOTIFICATION_STATUS_OF_ALREADY_PAID){
-			
+			logger.warn("Order status exception");
+			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("msg", "Order status exception");
+			return map;
 		}else if(notification.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)
-				&& notification.getAmount().compareTo(new BigDecimal(0))==0){
+				&& notification.getAmount().compareTo(new BigDecimal("0"))==0){
 			logger.warn("The requestor does not enter the specified currency information");
-//			notification.setAmount(amount);
-//			notification.setCurrency(currency);
-		}else if(!notification.getCurrency().equals(currency) || notification.getAmount().compareTo(amount) != 0){
+		}else if((!notification.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)
+				&& notification.getAmount().compareTo(new BigDecimal("0"))!=0) 
+				&& (!notification.getCurrency().equals(currency) || notification.getAmount().compareTo(amount) != 0)){
 			logger.warn("The input and order information do not match");
 			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
 			map.put("msg", "The input and order information do not match");
 			return map;
 		}
+		
+		
 		if(!commonManager.verifyCurrency(notification.getCurrency())){
 			logger.warn("This currency is not a tradable currency");
 			map.put("retCode", ServerConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
@@ -559,8 +565,6 @@ public class TransferManagerImpl implements TransferManager{
 		Transfer transfer = new Transfer(); 
 		transfer.setTransferId(transferId);
 		transfer.setCreateTime(new Date());
-//		transfer.setCurrency(notification.getCurrency());
-//		transfer.setTransferAmount(notification.getAmount());
 		transfer.setCurrency(currency);
 		transfer.setTransferAmount(amount);
 		transfer.setTransferComment(transferComment);

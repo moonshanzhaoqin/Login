@@ -64,6 +64,12 @@ public class TransferDAOImpl implements TransferDAO {
 		return transfer;
 	}
 	
+	@Override
+	public List<Transfer> findTransferByStatusAndTimeBefore(int transferStatus, int transferType, Date date) {
+		List<?> list = hibernateTemplate.find("from Transfer where transferStatus = ? and transferType = ? and finishTime <= ? ",transferStatus,transferType, date);
+		return (List<Transfer>) list;
+	}
+	
 
 	@Override
 	public Transfer getTranByIdAndStatus(String transferId, int transferStatus) {
@@ -82,7 +88,7 @@ public class TransferDAOImpl implements TransferDAO {
 	public void updateTransferStatus(String transferId, int transferStatus) {
 		Transfer transfer = hibernateTemplate.get(Transfer.class, transferId);
 		transfer.setTransferStatus(transferStatus);
-		if(transferStatus == ServerConsts.TRANSFER_STATUS_OF_COMPLETED){
+		if(transferStatus == ServerConsts.TRANSFER_STATUS_OF_COMPLETED || transferStatus == ServerConsts.TRANSFER_STATUS_OF_REFUND){
 			transfer.setFinishTime(new Date());
 		}
 		hibernateTemplate.saveOrUpdate(transfer);

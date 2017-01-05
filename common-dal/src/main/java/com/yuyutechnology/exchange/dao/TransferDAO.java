@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.dao;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,5 +30,6 @@ public interface TransferDAO {
 	
 	public HashMap<String, Object> getTransactionRecordByPage(
 			String sql,String countSql,List<Object> values,int currentPage, int pageSize);
-
+	
+	public List<Transfer> findTransferByStatusAndTimeBefore(int transferStatus, int transferType, Date date);
 }
