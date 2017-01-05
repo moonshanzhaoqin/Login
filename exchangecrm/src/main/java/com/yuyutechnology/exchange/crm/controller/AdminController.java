@@ -34,6 +34,9 @@ public class AdminController {
 
 		if (loginRquest.isEmpty()) {
 			logger.info("parameter is empty");
+			mav.setViewName("login");
+			mav.addObject("retCode", ServerConsts.PARAMETER_IS_EMPTY);
+			mav.addObject("message", "parameter is empty");
 		} else {
 			String retCode = adminManager.login(loginRquest.getAdminName(), loginRquest.getAdminPassword());
 			switch (retCode) {
