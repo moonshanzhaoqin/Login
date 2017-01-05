@@ -590,9 +590,7 @@ public class TransferManagerImpl implements TransferManager{
 	}
 	
 	private BigDecimal amountFormatByCurrency(String currency,BigDecimal amoumt){
-		
 		DecimalFormat df1;
-		
 		if(StringUtils.isNotBlank(currency) && currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 			df1 = new DecimalFormat("0");  
 		}else{
