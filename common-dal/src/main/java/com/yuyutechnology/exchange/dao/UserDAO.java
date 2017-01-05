@@ -24,5 +24,7 @@ public interface UserDAO {
 	public void updateUser(User user);
 	
 	public List<User> getUserList();
+	
+	public void userFreeze(Integer userId,int userAvailable);
 
 }

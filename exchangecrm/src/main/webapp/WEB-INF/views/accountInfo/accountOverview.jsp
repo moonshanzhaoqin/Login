@@ -161,7 +161,7 @@
 											<a href="#" onclick="userFreeze(this,0)">冻结用户</a>
 										</c:if>
 										<c:if test="${userInfo.userAvailable eq 0}">
-											<a href="#" onclick="userFreeze(this,1)">解冻用户</a>
+											<a href="#" onclick="userFreeze(this,1)"><font color="red">解冻用户</font></a>
 										</c:if>
 									</td>
 								</tr>
@@ -222,7 +222,7 @@
 			
 			function userFreeze(obj,operate){
 				
-				if(operate = 0 ){
+				if(operate == 0 ){
 					var r = confirm("确定冻结该用户么？");
 					if(r != true){
 						return ;
@@ -237,8 +237,8 @@
 				var tds=$(obj).parent().parent().find('td');
 				var userId = tds.eq(0).text();
 				
-// 				var delAlarmConfigUrl = "<c:url value='/alarm/delAlarmConfig' />";
-// 				location.href=delAlarmConfigUrl+'?userId='+alarmId+'&operate='+operate;
+				var userFreezeUrl = "<c:url value='/account/userFreeze' />";
+				location.href=userFreezeUrl+'?userId='+userId+'&operate='+operate;
 			}
 			
 		</script>

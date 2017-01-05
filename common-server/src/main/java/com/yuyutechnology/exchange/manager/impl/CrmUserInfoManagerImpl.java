@@ -131,6 +131,11 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 		
 		return result;
 	}
+
+	@Override
+	public void userFreeze(Integer userId, int userAvailable) {
+		crmUserInfoDAO.userFreeze(userId, userAvailable);
+	}
 	
 	
 	

@@ -15,5 +15,7 @@ public interface CrmUserInfoManager {
 
 	public HashMap<String, Object> getUserAccountInfoListByPage(String userPhone,String userName, 
 			int isFrozen, BigDecimal upperLimit, BigDecimal lowerLimit,int currentPage, int pageSize);
+	
+	public void userFreeze(Integer userId,int userAvailable);
 
 }
