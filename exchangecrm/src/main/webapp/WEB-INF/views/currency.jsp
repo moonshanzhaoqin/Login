@@ -16,9 +16,7 @@
 
 	<div class="container">
 		<div class="row">
-			<div class="col-md-2"></div>
-			<table
-				class="table table-bordered table-hover table-striped col-md-8"
+			<table class="table table-bordered table-hover table-striped"
 				id="currency">
 				<thead>
 					<tr>
@@ -33,7 +31,6 @@
 				</thead>
 				<tbody></tbody>
 			</table>
-			<div class="col-md-2"></div>
 		</div>
 		<div class="row">
 			<div class="form-group col-sm-5">
@@ -111,13 +108,11 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal"
-						onclick="updateCurrency()">提交更改</button>
+					<button type="button" class="btn btn-primary" onclick="updateCurrency()">提交更改</button>
 				</div>
 			</div>
 		</div>
 	</div>
-
 
 	<script type="text/javascript"
 		src="<c:url value="/resources/js/jquery.min.js" />"></script>
@@ -223,8 +218,6 @@
 				nameEn : form.nameEn.value,
 				nameHk : form.nameHk.value
 			}
-			// 			console.log(data);
-			// 			console.log(JSON.stringify(data));
 			$.ajax({
 				type : "post",
 				url : "/crm/updateCurrency",
@@ -232,8 +225,14 @@
 				dataType : 'json',
 				data : JSON.stringify(data),
 				success : function(data) {
-					console.log("success");
-					initCurrency();
+					if (data.retCode == "00000") {
+						console.log("success");
+						$('#myModal').modal('hide')
+						initCurrency();
+					} else {
+						console.log("updateCurrency" + data.message);
+						alert(data.message);
+					}
 				},
 				error : function(xhr, err) {
 					console.log("error");
@@ -254,13 +253,12 @@
 				dataType : 'json',
 				data : JSON.stringify(data),
 				success : function(data) {
-					if (data.retCode == 0) {
+					if (data.retCode == "00000") {
 						console.log("success");
 						initCurrency();
 					} else {
 						alert("币种已存在")
 					}
-
 				},
 				error : function(xhr, err) {
 					console.log("error");

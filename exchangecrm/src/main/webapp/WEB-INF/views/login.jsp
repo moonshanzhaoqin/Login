@@ -126,7 +126,7 @@
 			var retCode = $('#retCode').val();
 			var retMessage = $('#retMessage').val();
 
-			if (retCode != 00000) {
+			if (retCode != "00000") {
 				alert(retMessage);
 			}
 

@@ -10,6 +10,6 @@ public interface CurrencyManager {
 
 	void updateCurrency(Currency currency);
 
-	int addCurrency(String currency);
+	String addCurrency(String currency);
 
 }

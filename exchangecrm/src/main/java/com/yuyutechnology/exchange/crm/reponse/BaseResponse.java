@@ -1,14 +1,14 @@
 package com.yuyutechnology.exchange.crm.reponse;
 
 public class BaseResponse {
-	private int retCode;
+	private String retCode;
 	private String message;
 
-	public int getRetCode() {
+	public String getRetCode() {
 		return retCode;
 	}
 
-	public void setRetCode(int retCode) {
+	public void setRetCode(String retCode) {
 		this.retCode = retCode;
 	}
 
