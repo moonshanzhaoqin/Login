@@ -10,55 +10,53 @@
 
 <link rel="stylesheet"
 	href='<c:url value="/resources/bootstrap/css/bootstrap.min.css" />' />
-<link rel="stylesheet"
-	href='<c:url value="/resources/bootstrap/css/bootstrap-table.css" />' />
-<link rel="stylesheet"
-	href='<c:url value="/resources/bootstrap/css/bootstrap-datetimepicker.css" />' />
-<link rel="stylesheet"
-	href='<c:url value="/resources/bootstrap/css/bootstrap-paginator.min.css" />' />
-
-<style type="text/css">
-.formbar li {
-	list-style: none;
-	display: inline-block;
-}
-</style>
 
 </head>
 <body>
 	<%@ include file="header.jsp"%>
 	<div class="container">
-		<div class="panel panel-primary ">
-			<div class="panel-heading">
-				<h3 class="panel-title">修改密码</h3>
-			</div>
-			<div class="panel-body">
-				<form class="form-horizontal" role="form" id="modifyPassword">
+	<div class="row ">
+	<div class="col-sm-4"></div>
+	<button class="btn btn-default btn-lg col-sm-4 " data-toggle="modal" data-target="#myModal">修改密码</button>
+	<div class="col-sm-4"></div>
+	</div>
+	</div>
+<!-- 模态框（Modal） -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">修改密码</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" role="form" id="modifyPassword">
 					<div class="form-group">
-						<label for="oldPassword" class="col-sm-2 control-label input-lg">原密码</label>
+						<label for="oldPassword" class="col-sm-2 control-label">原密码</label>
 						<div class="col-sm-10">
-							<input type="password" class="form-control input-lg"
+							<input type="password" class="form-control"
 								name="oldPassword" placeholder="Old Password">
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="newPassword" class="col-sm-2 control-label input-lg">新密码</label>
+						<label for="newPassword" class="col-sm-2 control-label ">新密码</label>
 						<div class="col-sm-10">
-							<input type="password" class="form-control input-lg"
+							<input type="password" class="form-control "
 								name="newPassword" placeholder="New Password">
 						</div>
 					</div>
-					<div class="form-group">
-						<div class="col-sm-offset-2 col-sm-10">
-							<button type="button" class="btn btn-primary btn-lg"
-								onclick="modifyPassword()">确认修改</button>
-						</div>
-					</div>
 				</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal"
+						onclick="modifyPassword()">提交更改</button>
+				</div>
 			</div>
 		</div>
 	</div>
-
 	<script type="text/javascript"
 		src="<c:url value="/resources/js/jquery.min.js" />"></script>
 	<script type="text/javascript"
@@ -78,6 +76,7 @@
 				data : JSON.stringify(data),
 				success : function(data) {
 					console.log("success");
+					alert("修改成功")
 				},
 				error : function(xhr, err) {
 					console.log("error");
