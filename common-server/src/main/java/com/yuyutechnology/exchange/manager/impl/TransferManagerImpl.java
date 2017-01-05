@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -589,9 +590,7 @@ public class TransferManagerImpl implements TransferManager{
 	}
 	
 	private BigDecimal amountFormatByCurrency(String currency,BigDecimal amoumt){
-		
 		DecimalFormat df1;
-		
 		if(StringUtils.isNotBlank(currency) && currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 			df1 = new DecimalFormat("0");  
 		}else{
