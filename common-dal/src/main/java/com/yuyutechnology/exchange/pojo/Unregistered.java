@@ -89,7 +89,7 @@ public class Unregistered implements java.io.Serializable {
 		this.currency = currency;
 	}
 
-	@Column(name = "amount", nullable = false, precision = 10)
+	@Column(name = "amount", nullable = false, precision = 20, scale = 4)
 	public BigDecimal getAmount() {
 		return this.amount;
 	}

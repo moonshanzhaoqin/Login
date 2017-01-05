@@ -100,7 +100,7 @@ public class Exchange implements java.io.Serializable {
 		this.currencyIn = currencyIn;
 	}
 
-	@Column(name = "amount_out", nullable = false, precision = 10)
+	@Column(name = "amount_out", nullable = false, precision = 20, scale = 4)
 	public BigDecimal getAmountOut() {
 		return this.amountOut;
 	}
@@ -109,7 +109,7 @@ public class Exchange implements java.io.Serializable {
 		this.amountOut = amountOut;
 	}
 
-	@Column(name = "amount_in", nullable = false, precision = 10)
+	@Column(name = "amount_in", nullable = false, precision = 20, scale = 4)
 	public BigDecimal getAmountIn() {
 		return this.amountIn;
 	}
@@ -118,7 +118,7 @@ public class Exchange implements java.io.Serializable {
 		this.amountIn = amountIn;
 	}
 
-	@Column(name = "exchange_rate", nullable = false, precision = 10, scale = 4)
+	@Column(name = "exchange_rate", nullable = false, precision = 20, scale = 4)
 	public BigDecimal getExchangeRate() {
 		return this.exchangeRate;
 	}
