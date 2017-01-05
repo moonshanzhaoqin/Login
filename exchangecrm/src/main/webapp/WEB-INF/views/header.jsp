@@ -12,9 +12,16 @@
         	时间：2015-12-25
         	描述：导航栏
         -->
-	<nav class="navbar navbar-default" role="navigation">
+	<nav class="navbar navbar-default .navbar-static-top" role="navigation">
 		<div class="container">
 			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+					aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
 				<a class="navbar-brand" href="#"><img alt="Anytime Exchange"
 					src='<c:url value="/resources/img/ae_logo.png"/>' height="32px"></a>
 			</div>
@@ -42,8 +49,8 @@
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown"><a href="#" class="dropdown-toggle"
-						data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span>${sessionScope.adminName } <span
-							class="caret"></span></a>
+						data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span>${sessionScope.adminName }
+							<span class="caret"></span></a>
 						<ul class="dropdown-menu" role="menu">
 							<li><a href="<c:url value='/setting' />">设置</a></li>
 						</ul></li>

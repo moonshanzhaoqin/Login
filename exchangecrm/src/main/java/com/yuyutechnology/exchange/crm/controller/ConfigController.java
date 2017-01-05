@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.pojo.Config;
@@ -29,18 +28,11 @@ public class ConfigController {
 	public BaseResponse updateConfig(@RequestBody Config config) {
 		BaseResponse rep = new BaseResponse();
 		logger.info("updateConfig({}, {})",config.getConfigKey(),config.getConfigValue());
-		int retCode=configManager.updateConfig(config.getConfigKey(), config.getConfigValue());
+		String retCode=configManager.updateConfig(config.getConfigKey(), config.getConfigValue());
 		rep.setRetCode(retCode);
 		return rep;
 	}
 
-	// TODO addConfig
-	@ResponseBody
-	@RequestMapping(value = "/addConfig", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public String addConfig(@RequestBody Config config) {
-		configManager.addConfig(config);
-		return null;
-	}
 
 	// TODO getConfigList
 	@ResponseBody

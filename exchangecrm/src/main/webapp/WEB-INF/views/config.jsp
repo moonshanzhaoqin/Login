@@ -57,14 +57,12 @@
 		}
 
 		function updateConfig() {
-			console.log(event);
 			var target = event.target || event.currentTarget;
 			var id = $(target).parent().parent().attr('id');
-			var value=$(target).parent().parent().find('input').val();
-			console.log(value);
+			var value = $(target).parent().parent().find('input').val();
 			data = {
 				configKey : id,
-				configValue :value
+				configValue : value
 			}
 			$.ajax({
 				type : "post",
@@ -74,7 +72,7 @@
 				data : JSON.stringify(data),
 				success : function(data) {
 					console.log("success");
-					//						initConfig();
+					initConfig();
 				},
 				error : function(xhr, err) {
 					console.log("error");

@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.manager.CommonManager;
@@ -37,13 +36,13 @@ public class CurrencyManagerImpl implements CurrencyManager {
 	}
 
 	@Override
-	public int addCurrency(String currencyId) {
+	public String addCurrency(String currencyId) {
 		Currency currency = currencyDAO.getCurrency(currencyId);
 		if (currency == null) {
 			currencyDAO.updateCurrency(new Currency(currencyId,currencyId,currencyId,currencyId,currencyId, ServerConsts.CURRENCY_UNAVAILABLE, "0"));
-			return RetCodeConsts.SUCCESS;
+			return ServerConsts.RET_CODE_SUCCESS;
 		} else {
-			return RetCodeConsts.FAILUE;
+			return ServerConsts.RET_CODE_FAILUE;
 		}
 	}
 
