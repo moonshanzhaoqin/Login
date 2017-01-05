@@ -136,6 +136,7 @@
 							<th>是否冻结</th>
 							<th>总资产</th>
 							<th>更新时间（UTC）</th>
+							<th>操作</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -155,6 +156,14 @@
 									</td>
 									<td>${userInfo.userTotalAssets }</td>
 									<td><fmt:formatDate value="${userInfo.updateAt }" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+									<td>
+										<c:if test="${userInfo.userAvailable eq 1}">
+											<a href="#" onclick="userFreeze(this,0)">冻结用户</a>
+										</c:if>
+										<c:if test="${userInfo.userAvailable eq 0}">
+											<a href="#" onclick="userFreeze(this,1)">解冻用户</a>
+										</c:if>
+									</td>
 								</tr>
 							</c:forEach>
 						</c:if>
@@ -210,6 +219,28 @@
 				//分页控件
 				$('#paginator').bootstrapPaginator(options);	
 			});
+			
+			function userFreeze(obj,operate){
+				
+				if(operate = 0 ){
+					var r = confirm("确定冻结该用户么？");
+					if(r != true){
+						return ;
+					}
+				}else{
+					var r = confirm("确定要解除冻结该用户么？");
+					if(r != true){
+						return ;
+					}
+				}
+
+				var tds=$(obj).parent().parent().find('td');
+				var userId = tds.eq(0).text();
+				
+// 				var delAlarmConfigUrl = "<c:url value='/alarm/delAlarmConfig' />";
+// 				location.href=delAlarmConfigUrl+'?userId='+alarmId+'&operate='+operate;
+			}
+			
 		</script>
 	</body>
 </html>
