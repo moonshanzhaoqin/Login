@@ -20,7 +20,8 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-2"></div>
-			<table class="table table-bordered table-hover .table-striped col-md-8"
+			<table
+				class="table table-bordered table-hover table-striped col-md-8"
 				id="currency">
 				<thead>
 					<tr>
@@ -35,8 +36,24 @@
 				</thead>
 				<tbody></tbody>
 			</table>
+			<div class="col-md-2"></div>
 		</div>
-		<div class="col-md-2"></div>
+		<div class="row">
+			<div class="form-group col-sm-5">
+				<select class="form-control">
+					<option>1</option>
+					<option>2</option>
+					<option>3</option>
+					<option>4</option>
+					<option>5</option>
+				</select>
+			</div>
+
+			<button type="submit" class="btn btn-primary col-sm-2"
+				onclick="addCurrency()">
+				<span class="glyphicon glyphicon-plus"></span> 添加新币种
+			</button>
+		</div>
 	</div>
 	<!-- 模态框（Modal） -->
 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
@@ -53,8 +70,7 @@
 						<div class="form-group">
 							<label for="currency" class="col-sm-2 control-label">货币符号</label>
 							<div class="col-sm-5">
-								<input type="text" name="currency" class="form-control"
-									readonly>
+								<input type="text" name="currency" class="form-control" readonly>
 							</div>
 						</div>
 						<div class="form-group">
@@ -146,7 +162,7 @@
 								html += '<tr data-toggle="modal" data-target="#myModal" data-whatever='
 										+ JSON.stringify(data[i])
 										+ '>'
-										+ '<td>'
+										+ '<td style="font-weight:bold;">'
 										+ data[i].currency
 										+ '</td>'
 										+ '<td>'
@@ -161,14 +177,11 @@
 										+ '<td>'
 										+ data[i].currencyUnit
 										+ '</td>'
-										+ '<td>'
-										+ (data[i].currencyStatus == 0 ? 'unavailable'
-												: 'available')
-										+ '</td>'
+										+ (data[i].currencyStatus == 0 ? '<td style="color:red">UNAVAILABLE</td>'
+												: '<td style="color:green">AVAILABLE</td>')
 										+ '<td>'
 										+ data[i].currencyOrder
-										+ '</td>'
-										+ '</tr>'
+										+ '</td>' + '</tr>'
 							}
 							$('#currency tbody').html(html);
 
@@ -179,7 +192,28 @@
 						},
 						async : false
 					});
+			$.ajax({
+				type : "post",
+				url : "/crm/getAddingCurrencyList",
+				dataType : 'json',
+				contentType : "application/json; charset=utf-8",
+				data : {},
+				success : function(data) {
+					console.log("success");
+					var html = "";
+					for (var i = 0; i < data.length; i++) {
+						html += '<option value="'+data[i]+'">' + data[i]
+								+ '</option>'
+					}
+					$('select').html(html);
 
+				},
+				error : function(xhr, err) {
+					console.log("error");
+					console.log(err);
+				},
+				async : false
+			});
 		}
 		function updateCurrency() {
 			form = document.getElementById("updateCurrency");
@@ -211,6 +245,34 @@
 				},
 				async : false
 			});
+		}
+		function addCurrency() {
+			data = {
+				currency : $('select').val()
+			}
+			$.ajax({
+				type : "post",
+				url : "/crm/addCurrency",
+				contentType : "application/json; charset=utf-8",
+				dataType : 'json',
+				data : JSON.stringify(data),
+				success : function(data) {
+					if (data.retCode == 0) {
+						console.log("success");
+						initCurrency();
+					} else {
+						alert("币种已存在")
+					}
+
+				},
+				error : function(xhr, err) {
+					console.log("error");
+					console.log(err);
+					console.log(xhr);
+				},
+				async : false
+			});
+
 		}
 	</script>
 </body>

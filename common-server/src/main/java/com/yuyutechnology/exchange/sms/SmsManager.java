@@ -11,12 +11,15 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.ConfigKeyEnum;
+import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.JsonBinder;
@@ -29,6 +32,9 @@ import com.yuyutechnology.exchange.utils.ResourceUtils;
 @Service
 public class SmsManager {
 	public static Logger logger = LoggerFactory.getLogger(SmsManager.class);
+	
+	@Autowired
+	ConfigManager configManager;
 
 	private final String SMS_REPLACE_PIN = "[PIN]";
 	private final String SMS_REPLACE_TIME = "[TIME]";
@@ -105,7 +111,7 @@ public class SmsManager {
 	public void sendSMS4PhoneVerify(String areaCode, String userPhone, String code) {
 		String phoneVerifyContent = templateChoose("phoneVerify", areaCode);
 		String content = phoneVerifyContent.replace(SMS_REPLACE_PIN, code).replace(SMS_REPLACE_TIME,
-				ResourceUtils.getBundleValue4String("verify.time"));
+				configManager.getConfigStringValue(ConfigKeyEnum.VERIFYTIME, "10"));
 		sendSMS(areaCode + userPhone, content);
 	}
 
@@ -125,8 +131,8 @@ public class SmsManager {
 				.replace(SMS_REPLACE_CURRENCY, currency)
 				.replace(SMS_REPLACE_AMOUNT,
 						currency.equals("GDQ") ? new BigDecimal(amount.intValue()).toString() : amount.toString())
-				.replace(SMS_REPLACE_LINK, ResourceUtils.getBundleValue4String("download.link"))
-				.replace(SMS_REPLACE_TIME, ResourceUtils.getBundleValue4String("refund.time"));
+				.replace(SMS_REPLACE_LINK, configManager.getConfigStringValue(ConfigKeyEnum.DOWNLOADLINK, ""))
+				.replace(SMS_REPLACE_TIME, configManager.getConfigStringValue(ConfigKeyEnum.REFUNTIME, "7"));
 		sendSMS(areaCode + userPhone, content);
 	}
 	

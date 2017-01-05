@@ -6,12 +6,10 @@ import com.yuyutechnology.exchange.pojo.Currency;
 
 public interface CurrencyManager {
 
-	int enableCurrency(String currency);
-
-	int disableCurrency(String currencyId);
-
 	List<Currency> getCurrencyList();
 
 	void updateCurrency(Currency currency);
+
+	int addCurrency(String currency);
 
 }

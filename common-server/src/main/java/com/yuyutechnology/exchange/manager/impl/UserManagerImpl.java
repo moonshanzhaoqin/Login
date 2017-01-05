@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.ConfigKeyEnum;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.AppVersionDAO;
 import com.yuyutechnology.exchange.dao.BindDAO;
@@ -30,6 +31,7 @@ import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.goldpay.GoldpayManager;
 import com.yuyutechnology.exchange.goldpay.GoldpayUser;
 import com.yuyutechnology.exchange.manager.CommonManager;
+import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Currency;
@@ -78,6 +80,8 @@ public class UserManagerImpl implements UserManager {
 	PushManager pushManager;
 	@Autowired
 	CommonManager commonManager;
+	@Autowired
+	ConfigManager configManager;
 
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
@@ -140,7 +144,7 @@ public class UserManagerImpl implements UserManager {
 		if (timeString != null) {
 			Calendar time = Calendar.getInstance();
 			time.setTime(simpleDateFormat.parse(timeString));
-			time.add(Calendar.DATE, Integer.parseInt(ResourceUtils.getBundleValue4String("changePhone.time")));
+			time.add(Calendar.DATE, configManager.getConfigLongValue(ConfigKeyEnum.CHANGEPHONETIME, 10l).intValue());
 			return time.getTime().getTime();
 		}
 		return new Date().getTime();
@@ -229,7 +233,7 @@ public class UserManagerImpl implements UserManager {
 		final String md5random = DigestUtils.md5Hex(random);
 		// 存入redis userPhone:md5random
 		redisDAO.saveData(func + areaCode + userPhone, md5random,
-				ResourceUtils.getBundleValue4Long("verify.time", 10l).intValue());
+				configManager.getConfigLongValue(ConfigKeyEnum.VERIFYTIME, 10l).intValue());
 		// 发送验证码
 		smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random);
 	}

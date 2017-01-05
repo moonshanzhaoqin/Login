@@ -20,6 +20,7 @@ public class Config implements java.io.Serializable {
 	private String configKey;
 	private String configValue;
 	private String configName;
+	private String configOrder;
 
 	public Config() {
 	}
@@ -52,6 +53,7 @@ public class Config implements java.io.Serializable {
 	public void setConfigValue(String configValue) {
 		this.configValue = configValue;
 	}
+
 	@Column(name = "config_name")
 	public String getConfigName() {
 		return configName;
@@ -59,6 +61,15 @@ public class Config implements java.io.Serializable {
 
 	public void setConfigName(String configName) {
 		this.configName = configName;
+	}
+
+	@Column(name = "config_order")
+	public String getConfigOrder() {
+		return configOrder;
+	}
+
+	public void setConfigOrder(String configOrder) {
+		this.configOrder = configOrder;
 	}
 
 }

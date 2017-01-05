@@ -10,5 +10,8 @@ public interface CrmSupervisorDAO {
 	
 	public CrmSupervisor getCrmSupervisorById(Integer supervisorId);
 	
+	public void delSupervisorById(Integer supervisorId);
+	
+	public void saveCrmSupervisor(CrmSupervisor crmSupervisor);
 
 }

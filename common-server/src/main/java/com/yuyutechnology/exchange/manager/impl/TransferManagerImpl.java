@@ -36,7 +36,6 @@ import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.sms.SmsManager;
 import com.yuyutechnology.exchange.utils.DateFormatUtils;
 import com.yuyutechnology.exchange.utils.PasswordUtils;
-import com.yuyutechnology.exchange.utils.ResourceUtils;
 
 @Service
 public class TransferManagerImpl implements TransferManager{
@@ -342,11 +341,6 @@ public class TransferManagerImpl implements TransferManager{
 		//发送推送
 		User payee = userDAO.getUser(transfer.getUserFrom());
 		
-		logger.info("================================systemRefund start=================================");
-		logger.info("payee:{},payeePhone:{},payeePushTag:{}",new Object[]{payee.getUserName()
-				,payee.getAreaCode()+payee.getUserPhone(),payee.getPushTag()});
-		logger.info("================================systemRefund end=================================");
-		
 		pushManager.push4Refund(payee, transfer.getAreaCode(),transfer.getPhone(),
 				transfer.getCurrency(), transfer.getTransferAmount());
 		
@@ -363,7 +357,7 @@ public class TransferManagerImpl implements TransferManager{
 		for (Unregistered unregistered : list) {
 			//:TODO
 			//判断是否超过期限
-			long deadline = ResourceUtils.getBundleValue4Long("refund.time", 3l)*24*60*60*1000;
+			long deadline = configManager.getConfigLongValue(ConfigKeyEnum.REFUNTIME, 3l)*24*60*60*1000;
 			if(new Date().getTime() - unregistered.getCreateTime().getTime() >= deadline){
 				
 				logger.info("Invitation ID: {}, The invitee has not registered for the due "

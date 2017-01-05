@@ -156,22 +156,16 @@ public class GoldpayTransController {
 			rep.setMessage("The payment password is incorrect");
 			return rep;
 		}
-		
 		HashMap<String, String> map = goldpayTransManager.withdrawConfirm1(sessionData.getUserId(),
 				reqMsg.getPayPwd(), reqMsg.getTransferId());
-		
 		if(map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
 			HashMap<String, String> map2 = goldpayTransManager.withdrawConfirm2(sessionData.getUserId(), reqMsg.getTransferId());
-			if(!map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
-				
-			}
 			rep.setRetCode(map2.get("retCode"));
 			rep.setMessage(map2.get("msg"));
+			return rep;
 		}
-		
 		rep.setRetCode(map.get("retCode"));
 		rep.setMessage(map.get("msg"));
-		
 		return rep;
 	}
 	

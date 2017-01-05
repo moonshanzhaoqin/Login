@@ -614,11 +614,10 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 						map.put("msg", "not enough goldpay!");
 						map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH);
 					}else if(payModel.getResultCode().equals(1016)){
-						logger.warn("goldpayPurchase tpps callback: NOT_ENOUGH_GOLDPAY");
+						logger.warn("goldpayPurchase tpps callback: GOLDPAY_PHONE_IS_NOT_EXIST");
 						map.put("msg", "goldpay account not vaild phone!");
 						map.put("retCode", ServerConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
 					}
-					
 					return map;
 				}
 			}else{

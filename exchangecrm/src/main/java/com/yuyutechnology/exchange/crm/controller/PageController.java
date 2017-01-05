@@ -21,20 +21,6 @@ public class PageController {
 		return "login";
 	}
 
-	@RequestMapping(value = "/home", method = { RequestMethod.GET })
-	public String home(HttpServletRequest request, HttpServletResponse response) {
-		return "home";
-	}
-
-	@RequestMapping(value = "/userAssets", method = { RequestMethod.GET })
-	public String userAssets(HttpServletRequest request, HttpServletResponse response) {
-		return "userAssets";
-	}
-
-	@RequestMapping(value = "/warn", method = { RequestMethod.GET })
-	public String warn(HttpServletRequest request, HttpServletResponse response) {
-		return "warn";
-	}
 
 	@RequestMapping(value = "/currency", method = { RequestMethod.GET })
 	public String currency(HttpServletRequest request, HttpServletResponse response) {
