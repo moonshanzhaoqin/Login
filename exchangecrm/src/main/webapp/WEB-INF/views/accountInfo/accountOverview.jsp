@@ -211,5 +211,6 @@
 				$('#paginator').bootstrapPaginator(options);	
 			});
 		</script>
+		<%@ include file="../footer.jsp"%>
 	</body>
 </html>

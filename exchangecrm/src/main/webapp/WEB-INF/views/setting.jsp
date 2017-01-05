@@ -63,7 +63,6 @@
 		src="//cdn.bootcss.com/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js"></script>
 	<script>
 		$(function() {
-			
 			$('#modifyPassword').bootstrapValidator({
 				message : 'This value is not valid',
 				feedbackIcons : {/*输入框不同状态，显示图片的样式*/
@@ -138,6 +137,5 @@
 			});}
 		}
 	</script>
-
 </body>
 </html>

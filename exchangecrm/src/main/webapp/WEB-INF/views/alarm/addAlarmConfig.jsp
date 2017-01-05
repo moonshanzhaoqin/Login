@@ -103,6 +103,6 @@
 		<!--引入Js文件-->
 		<script type="text/javascript" src="<c:url value="/resources/js/jquery.min.js" />" ></script>
 		<script type="text/javascript" src="<c:url value="/resources/bootstrap/js/bootstrap.min.js" />" ></script>
-		
+		<%@ include file="../footer.jsp"%>
 	</body>
 </html>

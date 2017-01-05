@@ -14,7 +14,7 @@
 <body>
 	<%@ include file="header.jsp"%>
 	<div class="container">
-		<form class="form-horizontal"></form>
+		<form class="form-horizontal" id="config"></form>
 	</div>
 
 	<script type="text/javascript"
@@ -46,7 +46,7 @@
 										+ '<div class="col-lg-2"><button type="button" class="btn btn-default" onclick="updateConfig()"><span class="glyphicon glyphicon-ok"></span>&nbsp;保存</button></div>'
 										+ '</div>'
 							}
-							$('form').html(html);
+							$('#config').html(html);
 						},
 						error : function(xhr, err) {
 							console.log("error");
@@ -84,6 +84,7 @@
 
 		}
 	</script>
+	<%@ include file="footer.jsp"%>
 </body>
 </body>
 </html>
