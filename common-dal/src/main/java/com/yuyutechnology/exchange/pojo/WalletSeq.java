@@ -91,7 +91,7 @@ public class WalletSeq implements java.io.Serializable {
 		this.currency = currency;
 	}
 
-	@Column(name = "amount", precision = 10)
+	@Column(name = "amount", precision = 20, scale = 4)
 	public BigDecimal getAmount() {
 		return this.amount;
 	}

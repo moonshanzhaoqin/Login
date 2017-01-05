@@ -81,7 +81,7 @@ public class Wallet implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-	@Column(name = "balance", nullable = false, precision = 10)
+	@Column(name = "balance", nullable = false, precision = 20, scale = 4)
 	public BigDecimal getBalance() {
 		return this.balance;
 	}

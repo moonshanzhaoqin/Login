@@ -124,7 +124,7 @@ public class Transfer implements java.io.Serializable {
 		this.currency = currency;
 	}
 
-	@Column(name = "transfer_amount", nullable = false, precision = 10)
+	@Column(name = "transfer_amount", nullable = false, precision = 20, scale = 4)
 	public BigDecimal getTransferAmount() {
 		return this.transferAmount;
 	}
