@@ -52,6 +52,14 @@ public class DateFormatUtils {
 		return calendar.getTime();
 	}
 	
+	public static Date getIntervalHour(Date date, int intervalHour)
+	{
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.HOUR, intervalHour);
+		return calendar.getTime();
+	}
+	
 	public static Date getIntervalMinuteGMT8(Date date, int intervalMinute)
 	{
 		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
@@ -71,7 +79,6 @@ public class DateFormatUtils {
 		Date startTime = null;
 		try {
 			startTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startStr);
-			System.out.println("startTime :"+startTime);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -159,6 +166,13 @@ public class DateFormatUtils {
 		return calendar.getTime();
 	}
 	
+	public static Date getpreHours(int count){
+		Date date = new Date();
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.HOUR,count);
+		return calendar.getTime();
+	}
 	
 	public static void main(String[] args){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

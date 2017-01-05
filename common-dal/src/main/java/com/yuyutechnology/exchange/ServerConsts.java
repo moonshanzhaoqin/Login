@@ -208,7 +208,10 @@ public class ServerConsts {
 	 * 金沛充值
 	 */
 	public static final int TRANSFER_TYPE_IN_GOLDPAY_RECHARGE = 5;
-
+	/**
+	 * 金沛充值
+	 */
+	public static final int TRANSFER_TYPE_IN_GOLDPAY_REFUND = 6;
 	
 
 	// 交易状态
@@ -224,6 +227,10 @@ public class ServerConsts {
 	 * 交易已完成
 	 */
 	public static final int TRANSFER_STATUS_OF_COMPLETED = 2;
+	/**
+	 * 交易退回
+	 */
+	public static final int TRANSFER_STATUS_OF_REFUND = 3;
 	
 	//notification状态
 	
