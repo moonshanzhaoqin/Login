@@ -18,6 +18,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ConfigKeyEnum;
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.pojo.User;
@@ -198,7 +199,7 @@ public class PushManager {
 		String transferBody = templateChoose("transfer", userTo.getPushTag());
 		String body = transferBody.replace(PUSH_REPLACE_FROM, userFrom.getUserName())
 				.replace(PUSH_REPLACE_CURRENCY, currency).replace(PUSH_REPLACE_AMOUNT,
-						currency.equals("GDQ") ? new BigDecimal(amount.intValue()).toString() : amount.toString());
+						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? new BigDecimal(amount.intValue()).toString() : amount.toString());
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "transfer");
 		pushToCustom(userTo.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
@@ -243,7 +244,7 @@ public class PushManager {
 		logger.info("refund,{}=={}", userFrom.getPushTag(), refundBody);
 		String body = refundBody.replace(PUSH_REPLACE_TO, areaCode + phone).replace(PUSH_REPLACE_CURRENCY, currency)
 				.replace(PUSH_REPLACE_AMOUNT,
-						currency.equals("GDQ") ? new BigDecimal(amount.intValue()).toString() : amount.toString())
+						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? new BigDecimal(amount.intValue()).toString() : amount.toString())
 				.replace(PUSH_REPLACE_DAY, configManager.getConfigStringValue(ConfigKeyEnum.REFUNTIME, "7"));
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "refund");

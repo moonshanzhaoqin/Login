@@ -19,6 +19,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ConfigKeyEnum;
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.utils.HttpTookit;
@@ -130,7 +131,7 @@ public class SmsManager {
 		String content = transferContent.replace(SMS_REPLACE_FROM, from.getAreaCode() + from.getUserPhone())
 				.replace(SMS_REPLACE_CURRENCY, currency)
 				.replace(SMS_REPLACE_AMOUNT,
-						currency.equals("GDQ") ? new BigDecimal(amount.intValue()).toString() : amount.toString())
+						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? new BigDecimal(amount.intValue()).toString() : amount.toString())
 				.replace(SMS_REPLACE_LINK, configManager.getConfigStringValue(ConfigKeyEnum.DOWNLOADLINK, ""))
 				.replace(SMS_REPLACE_TIME, configManager.getConfigStringValue(ConfigKeyEnum.REFUNTIME, "7"));
 		sendSMS(areaCode + userPhone, content);

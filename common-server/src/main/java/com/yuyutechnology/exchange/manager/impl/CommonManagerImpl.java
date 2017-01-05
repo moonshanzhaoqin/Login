@@ -140,13 +140,13 @@ public class CommonManagerImpl implements CommonManager {
 	@Override
 	public List<String> getAllConfigurableCurrencies() {
 		List<String> currencies = new ArrayList<String>();
-		currencies.add("USD");
-		currencies.add("GDQ");
+		currencies.add(ServerConsts.STANDARD_CURRENCY);
+		currencies.add(ServerConsts.CURRENCY_OF_GOLDPAY);
 		String result = redisDAO.getValueByKey("redis_exchangeRate");
 		if(StringUtils.isNotBlank(result)){
 			@SuppressWarnings("unchecked")
 			HashMap<String, String> map = JsonBinder.getInstance().fromJson(result, HashMap.class);
-			String value = map.get("USD");
+			String value = map.get(ServerConsts.STANDARD_CURRENCY);
 			ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().
 					fromJson(value, ExchangeRate.class);
 			currencies.addAll(exchangeRate.getRates().keySet());
