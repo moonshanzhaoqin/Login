@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -246,7 +247,8 @@ public class TransferManagerImpl implements TransferManager{
 			
 			//向未注册用户发送短信
 			smsManager.sendSMS4Transfer(transfer.getAreaCode(), transfer.getPhone(), payer,
-					transfer.getCurrency(), transfer.getTransferAmount());
+					transfer.getCurrency(), 
+					amountFormatByCurrency(transfer.getCurrency(),transfer.getTransferAmount()));
 			
 		
 		}else{	//交易对象注册账号,交易正常进行，无需经过系统账户							
@@ -277,7 +279,8 @@ public class TransferManagerImpl implements TransferManager{
 			//推送到账通知
 
 			User payee = userDAO.getUser(transfer.getUserTo());
-			pushManager.push4Transfer(payer, payee, transfer.getCurrency(), transfer.getTransferAmount());
+			pushManager.push4Transfer(payer, payee, transfer.getCurrency(), 
+					amountFormatByCurrency(transfer.getCurrency(),transfer.getTransferAmount()));
 		}
 		//更改Transfer状态
 		transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
@@ -342,7 +345,7 @@ public class TransferManagerImpl implements TransferManager{
 		User payee = userDAO.getUser(transfer.getUserFrom());
 		
 		pushManager.push4Refund(payee, transfer.getAreaCode(),transfer.getPhone(),
-				transfer.getCurrency(), transfer.getTransferAmount());
+				transfer.getCurrency(), amountFormatByCurrency(transfer.getCurrency(),transfer.getTransferAmount()));
 		
 	}
 	
@@ -388,7 +391,7 @@ public class TransferManagerImpl implements TransferManager{
 			
 			//推送请求付款
 			User payee = userDAO.getUser(userId);
-			pushManager.push4TransferRuquest( payer,payee, currency, amount);
+			pushManager.push4TransferRuquest( payer,payee, currency, amountFormatByCurrency(currency,amount));
 			return ServerConsts.RET_CODE_SUCCESS;
 			
 		}
@@ -583,5 +586,18 @@ public class TransferManagerImpl implements TransferManager{
 		
 		return map;
 		
+	}
+	
+	private BigDecimal amountFormatByCurrency(String currency,BigDecimal amoumt){
+		
+		DecimalFormat df1;
+		
+		if(StringUtils.isNotBlank(currency) && currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
+			df1 = new DecimalFormat("0");  
+		}else{
+			df1 = new DecimalFormat("0.00");  
+		}
+		
+		return new BigDecimal(df1.format(amoumt));  
 	}
 }
