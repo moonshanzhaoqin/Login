@@ -81,7 +81,7 @@ public class ExchangeController {
 		}
 		if ((reqMsg.getCurrencyOut().equals(ServerConsts.CURRENCY_OF_GOLDPAY) && reqMsg.getAmountOut() < 1)
 				|| (!reqMsg.getCurrencyOut().equals(ServerConsts.CURRENCY_OF_GOLDPAY)
-						&& reqMsg.getAmountOut() < 0.01)) {
+						&& reqMsg.getAmountOut() < 0.0001)) {
 			rep.setRetCode(ServerConsts.EXCHANGE_ENTER_THE_AMOUNT_OF_VIOLATION);
 			rep.setMessage("Enter the amount of violation");
 			return rep;
@@ -158,8 +158,8 @@ public class ExchangeController {
 		GetExchangeHistoryResponse rep = new GetExchangeHistoryResponse();
 		HashMap<String, Object> map = exchangeManager.getExchangeRecordsByPage(sessionData.getUserId(),
 				reqMsg.getPeriod(), reqMsg.getCurrentPage(), reqMsg.getPageSize());
-		@SuppressWarnings("unchecked")
 		List<ExchangeDTO> exs = new ArrayList<ExchangeDTO>();
+		@SuppressWarnings("unchecked")
 		List<Exchange> list = (List<Exchange>) map.get("list");
 		if (list.isEmpty()) {
 			rep.setRetCode(ServerConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
