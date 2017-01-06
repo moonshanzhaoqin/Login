@@ -37,7 +37,13 @@
 			</div><!--row 结束-->
 			
 			<div class="row">
-				<h4 class="text-left">预警信息详情</h4>	
+			
+				<div class="col-lg-6">
+					<h4 class="text-left">预警信息详情</h4>	
+				</div>
+				<div class="col-lg-6 text-right" >
+					<button class="btn btn-primary " data-toggle="modal" data-target="#addAlarmConfigModal">添加预警信息</button>
+				</div>	
 			</div>
 			
 			<!-- -->
@@ -75,6 +81,10 @@
 					</tbody>
 				</table>
 			</div><!--row 结束-->
+			
+			
+			<%@ include file="alarmModal.jsp"%>
+
 		</div>
 		
 		
@@ -84,21 +94,47 @@
 		<script type="text/javascript" src="<c:url value="/resources/bootstrap/js/bootstrap-table.js" />" ></script>
 		<script type="text/javascript">
 			function delAlarmConfig(obj){
-				
 				var r = confirm("确定要删除该信息？");
-				
 				if(r != true){
 					return ;
 				}
-				
 				var tds=$(obj).parent().parent().find('td');
 				var alarmId = tds.eq(0).text();
-				
 				var delAlarmConfigUrl = "<c:url value='/alarm/delAlarmConfig' />";
 				location.href=delAlarmConfigUrl+'?alarmId='+alarmId;
-				
-// 				alert("alarmId : "+alarmId);
 			}
+			
+			$("#addAlarmConfigBtn").click(function(){
+// 				alert("点击按钮");
+				
+				var alarmGrade = $("#alarmGrade").val().trim();
+				var lowerLimit = $("#criticalThresholdLowerLimit").val().trim();
+				var upperLimit = $("#criticalThresholdUpperLimit").val().trim();
+// 				var alarmMode = $("#alarmMode").val().trim();
+				
+				if( checkNotBlank(alarmGrade) && checkNotBlank(lowerLimit) && checkNotBlank(upperLimit)){
+					if(lowerLimit > upperLimit){
+						alert("下限不能大于上限！");
+						return ;
+					}
+					
+				}else{
+					alert("有未填写完整的信息，请填写完善后再提交！");
+					return ;
+				}
+				
+				
+				$("#addAlarmConfig").submit();
+			});
+			
+			function checkNotBlank(param){
+				if(param == null ||(param == undefined || param == '')){
+					return false;
+				}
+				return true;
+			}
+			
+			
 		</script>
 		<%@ include file="../footer.jsp"%>
 	</body>

@@ -62,10 +62,10 @@ public class LanguageTest extends BaseSpringJunit4{
 //		logger.info(new BigDecimal("12.00").toString());
 //		logger.info(new BigDecimal(new BigDecimal("12.00").intValue()).toString());
 //		logger.info(new BigDecimal(new BigDecimal("12.12").intValue()).toString());
+		System.out.println(BigDecimal.ZERO);
 		
-		
-		System.out.println(configManager.getConfigStringValue(ConfigKeyEnum.VERIFYTIME, "10"));
-		System.out.println(configManager.getConfigStringValue(ConfigKeyEnum.REFUNTIME, "7"));
+//		System.out.println(configManager.getConfigStringValue(ConfigKeyEnum.VERIFYTIME, "10"));
+//		System.out.println(configManager.getConfigStringValue(ConfigKeyEnum.REFUNTIME, "7"));
 		
 	}
 }

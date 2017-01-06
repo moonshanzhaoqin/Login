@@ -28,7 +28,8 @@
 			<div class="collapse navbar-collapse"
 				id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav navbar-left">
-					<li><a href="<c:url value='/account/getTotalAssetsInfo' />">首页</a>
+					<li><a href="<c:url value='/account/getTotalAssetsDetails' />">首页</a>
+					<li><a href="<c:url value='/account/accountOverview' />">账户信息</a>
 					</li>
 					<li class="dropdown"><a href="#" class="dropdown-toggle"
 						data-toggle="dropdown">预警 <span class="caret"></span></a>
@@ -40,8 +41,8 @@
 							<li class="divider"></li>
 							<li><a href="<c:url value='/alarm/getSupervisorList' />">监督人信息</a>
 							</li>
-							<li><a href="<c:url value='/alarm/addSupervisor' />">添加监督人</a>
-							</li>
+<%-- 							<li><a href="<c:url value='/alarm/addSupervisor' />">添加监督人</a> --%>
+<!-- 							</li> -->
 						</ul></li>
 					<li><a href="<c:url value='/currency' />">币种</a></li>
 					<li><a href="<c:url value='/config' />">配置</a></li>

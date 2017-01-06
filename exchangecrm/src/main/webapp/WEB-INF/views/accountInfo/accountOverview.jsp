@@ -20,69 +20,6 @@
 		
 		<div class="container">
 			<!-- -->
-			<div class="row well">
-			系统账户信息
-				<table class = "table table-striped table-bordered">
-					<thead>
-						<tr>
-							<c:if test="${not empty systemTotalAssets }">
-								<c:forEach var="wallet" items="${systemTotalAssets }">
-									<c:if test="${wallet.key != 'totalAssets' }">
-										<th>${wallet.key}</th>
-									</c:if>
-								</c:forEach>
-								<th>totalAssets</th>
-							</c:if>
-						</tr>
-					</thead>
-					<tbody>
-						<c:if test="${not empty systemTotalAssets }">
-							<c:forEach var="wallet" items="${systemTotalAssets }">
-								<c:if test="${wallet.key != 'totalAssets' }">
-									<td>${wallet.value}(USD)</td>
-								</c:if>
-							</c:forEach>
-							<c:forEach var="wallet" items="${systemTotalAssets }">
-								<c:if test="${wallet.key == 'totalAssets' }">
-									<td>${wallet.value}(USD)</td>
-								</c:if>
-							</c:forEach>	
-						</c:if>
-					</tbody>
-				</table>
-				用户账户信息
-				<table class = "table table-striped table-bordered">
-					<thead>
-						<tr>
-							<c:if test="${not empty userTotalAssets }">
-								<c:forEach var="wallet" items="${userTotalAssets }">
-									<c:if test="${wallet.key != 'totalAssets' }">
-										<th>${wallet.key}</th>
-									</c:if>
-								</c:forEach>
-								<th>totalAssets</th>
-							</c:if>
-						</tr>
-					</thead>
-					<tbody>
-						<c:if test="${not empty userTotalAssets }">
-							<c:forEach var="wallet" items="${userTotalAssets }">
-								<c:if test="${wallet.key != 'totalAssets' }">
-									<td>${wallet.value}</td>
-								</c:if>
-							</c:forEach>
-							<c:forEach var="wallet" items="${userTotalAssets }">
-								<c:if test="${wallet.key == 'totalAssets' }">
-									<td>${wallet.value}</td>
-								</c:if>
-							</c:forEach>	
-						</c:if>
-					</tbody>
-				</table>
-			</div><!--row 结束-->
-			
-			
-			<!-- -->
 			<div class="row">
 
         		<div class="" style="float: right;">
