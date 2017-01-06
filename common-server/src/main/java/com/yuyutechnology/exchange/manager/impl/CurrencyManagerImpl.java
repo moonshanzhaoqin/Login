@@ -48,8 +48,10 @@ public class CurrencyManagerImpl implements CurrencyManager {
 	public String addCurrency(String currencyId) {
 		Currency currency = currencyDAO.getCurrency(currencyId);
 		if (currency == null) {
-			currencyDAO.updateCurrency(new Currency(currencyId,currencyId,currencyId,currencyId,currencyId, ServerConsts.CURRENCY_UNAVAILABLE, "0"));
-			walletDAO.addwallet(new Wallet(currency, userDAO.getSystemUser().getUserId(),  BigDecimal.ZERO, new  Date()));
+			currency=new Currency(currencyId,currencyId,currencyId,currencyId,currencyId, ServerConsts.CURRENCY_UNAVAILABLE, "0");
+			currencyDAO.updateCurrency(currency);
+			//为系统用户添加新钱包
+			walletDAO.addwallet(new Wallet(currency, userDAO.getSystemUser().getUserId(),  BigDecimal.ZERO, new Date()));
 			return ServerConsts.RET_CODE_SUCCESS;
 		} else {
 			return ServerConsts.RET_CODE_FAILUE;
