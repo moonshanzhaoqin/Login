@@ -23,6 +23,7 @@ import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
 import com.yuyutechnology.exchange.manager.impl.CrmAlarmManagerImpl;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.pojo.CrmSupervisor;
+import com.yuyutechnology.exchange.utils.JsonBinder;
 
 @Controller
 public class AlarmController {
@@ -64,22 +65,15 @@ public class AlarmController {
 		return mav;
 	}
 	
-	
-	@RequestMapping(value="/alarm/addAlarmConfig",method=RequestMethod.GET)
-	public ModelAndView addAlarmConfig(){
-		mav = new ModelAndView();
-		List<CrmSupervisor> list = crmAlarmManager.getCrmSupervisorList();
-		mav.addObject("list", list);
-		mav.setViewName("/alarm/addAlarmConfig");
-		return mav;
-	}
-	
 	@RequestMapping(value="/alarm/saveAlarmConfig",method=RequestMethod.POST)
 	public ModelAndView saveAlarmConfig(HttpServletResponse response,SaveAlarmConfigRequest request){
 		mav = new ModelAndView();
+//		crmAlarmManager.addAlarmConfig(request.getAlarmGrade(), request.getCriticalThresholdLowerLimit()
+//				,request.getCriticalThresholdUpperLimit(),
+//				request.getAlarmMode(), 0,Arrays.toString(request.getSupervisorId()));
 		crmAlarmManager.addAlarmConfig(request.getAlarmGrade(), request.getCriticalThresholdLowerLimit()
 				,request.getCriticalThresholdUpperLimit(),
-				request.getAlarmMode(), 0,Arrays.toString(request.getSupervisorId()));
+				request.getAlarmMode(), 0,JsonBinder.getInstance().toJson(request.getSupervisorId()));
 		mav.setViewName("redirect:/alarm/getAlarmConfigList");
 		return mav;
 	}
@@ -98,13 +92,6 @@ public class AlarmController {
 		mav = new ModelAndView();
 		crmAlarmManager.delSupervisorById(supervisorId);
 		mav.setViewName("redirect:/alarm/getSupervisorList");
-		return mav;
-	}
-	
-	@RequestMapping(value="/alarm/addSupervisor",method=RequestMethod.GET)
-	public ModelAndView addSupervisor(){
-		mav = new ModelAndView();
-		mav.setViewName("/alarm/addSupervisorConfig");
 		return mav;
 	}
 	

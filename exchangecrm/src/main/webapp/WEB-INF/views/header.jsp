@@ -36,13 +36,9 @@
 						<ul class="dropdown-menu" role="menu">
 							<li><a href="<c:url value='/alarm/getAlarmConfigList' />">预警信息</a>
 							</li>
-							<li><a href="<c:url value='/alarm/addAlarmConfig' />">预警设置</a>
-							</li>
 							<li class="divider"></li>
 							<li><a href="<c:url value='/alarm/getSupervisorList' />">监督人信息</a>
 							</li>
-<%-- 							<li><a href="<c:url value='/alarm/addSupervisor' />">添加监督人</a> --%>
-<!-- 							</li> -->
 						</ul></li>
 					<li><a href="<c:url value='/currency' />">币种</a></li>
 					<li><a href="<c:url value='/config' />">配置</a></li>

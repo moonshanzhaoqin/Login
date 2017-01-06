@@ -62,7 +62,7 @@
 							<div class="row">
 								<div class="row">
 									<div class="col-md-4">
-				            			<h4 class="text-right">报警方式:</h4>	
+				            			<h4 class="text-right">监督人添加:</h4>	
 				            		</div>
 				            		<div class="col-md-8">
 				            			<c:if test="${not empty supervisorList }">
