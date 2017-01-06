@@ -116,25 +116,4 @@ public class AlarmController {
 		return mav;
 	}
 	
-	
-	
-//	@RequestMapping(value="/alarm/saveAlarmConfig",method=RequestMethod.POST)
-//	public void saveAlarmConfig(HttpServletResponse response,SaveAlarmConfigRequest request){
-//		Map<String, Object> map = new HashMap<String, Object>();
-//		PrintWriter out = null;
-//		try {
-//			out = response.getWriter();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//		crmAlarmManager.addAlarmConfig(request.getAlarmGrade(), request.getCriticalThresholdLowerLimit()
-//				,request.getCriticalThresholdUpperLimit(),
-//				request.getAlarmMode(), 0,Arrays.toString(request.getSupervisorId()));
-//		
-//		map.put("retCode", 1);
-//		out.print(JsonBinder.getInstance().toJson(map));
-//	}
-	
 }

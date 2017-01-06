@@ -15,11 +15,36 @@
 		
 		<%@ include file="../header.jsp"%>
 		<div class="container">
-			
+		
+		
+			<div class="row">
+				<h4 class="text-left">监督人添加</h4>	
+			</div>
+		
+			<div class="row well">
+				<form id="saveSupervisor" action="<c:url value='/alarm/saveSupervisor' />" method="POST">
+				
+					<div class="col-lg-3 text-right">
+						<input class="form-control" name="supervisorName" id="name" placeholder="请填写姓名"/>
+					</div>
+					
+					<div class="col-lg-3 text-right">
+						<input class="form-control" name="supervisorMobile" id="mobile" placeholder="请填写手机号"/>
+					</div>
+					
+					<div class="col-lg-3 text-right">
+						<input class="form-control" name="supervisorEmail" id="email" placeholder="请填写邮箱地址"/>
+					</div>
+				</form>
+									
+					<div class="col-lg-3 text-center">
+						<button id="saveSupervisorBtn" class="btn btn-primary">确认</button>
+					</div>
+			</div>
+		
 			<div class="row">
 				<h4 class="text-left">监督人员信息列表</h4>	
 			</div>
-		
 			
 			<!-- -->
 			<div class="row">
@@ -52,6 +77,7 @@
 					</tbody>
 				</table>
 			</div><!--row 结束-->
+	
 		</div>
 		
 		
@@ -59,6 +85,7 @@
 		<script type="text/javascript" src="<c:url value="/resources/js/jquery.min.js" />" ></script>
 		<script type="text/javascript" src="<c:url value="/resources/bootstrap/js/bootstrap.min.js" />" ></script>
 		<script type="text/javascript" src="<c:url value="/resources/bootstrap/js/bootstrap-table.js" />" ></script>
+		
 		<script type="text/javascript">
 			function delSupervisor(obj){
 				
@@ -69,11 +96,45 @@
 				}
 				
 				var tds=$(obj).parent().parent().find('td');
-				var alarmId = tds.eq(0).text();
+				var supervisorId = tds.eq(0).text();
 				
-				var delAlarmConfigUrl = "<c:url value='/alarm/delAlarmConfig' />";
-				location.href=delAlarmConfigUrl+'?alarmId='+alarmId;
+				var delSupervisorUrl = "<c:url value='/alarm/delSupervisor' />";
+				location.href=delSupervisorUrl+'?supervisorId='+supervisorId;
 			}
+			
+			$("#saveSupervisorBtn").click(function(){
+				
+				var name = $("#name").val().trim();
+				var mobile = $("#mobile").val().trim();
+				var email = $("#email").val().trim();
+				
+				if(checkNotBlank(name) && checkNotBlank(mobile) && checkNotBlank(email)){
+					
+					if(checkEmail(email)){
+						$("#saveSupervisor").submit();
+					}else{
+						alert("邮箱格式不正确，请重新填写！");
+						return ;
+					}
+				}else{
+					alert("有未填写完整的信息，请填写完善后再提交！");
+					return ;
+				}
+			});
+			
+			
+			function checkNotBlank(param){
+				if(param == null ||(param == undefined || param == '')){
+					return false;
+				}
+				return true;
+			}
+			
+			function checkEmail(email){
+				var reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+				return reg.test(email);
+			}
+			
 		</script>
 		<%@ include file="../footer.jsp"%>
 	</body>

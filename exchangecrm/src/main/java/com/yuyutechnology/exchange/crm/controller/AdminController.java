@@ -53,7 +53,7 @@ public class AdminController {
 			case ServerConsts.RET_CODE_SUCCESS:
 				// 写入session
 				request.getSession().setAttribute("adminName", loginRquest.getAdminName());
-				mav.setViewName("redirect:/account/getTotalAssetsInfo");
+				mav.setViewName("redirect:/account/getTotalAssetsDetails");
 				break;
 			default:
 				break;

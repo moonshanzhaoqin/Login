@@ -29,9 +29,24 @@ public class AccountInfoController {
 	ModelAndView mav;
 	
 	private static Logger log = LoggerFactory.getLogger(AccountInfoController.class);
+	
+	@RequestMapping(value="/account/getTotalAssetsDetails",method=RequestMethod.GET)
+	public ModelAndView getTotalAssetsDetails(){
+		mav = new ModelAndView();
+		HashMap<String, BigDecimal> systemTotalAssets = crmUserInfoManager.getSystemAccountTotalAssets();
+		HashMap<String, BigDecimal> userTotalAssets = crmUserInfoManager.getUserAccountTotalAssets();
+		
+		mav.addObject("systemTotalAssets", systemTotalAssets);
+		mav.addObject("userTotalAssets", userTotalAssets);
+		
+		mav.setViewName("/accountInfo/totalAssetsDetails");
+		return mav;
+	}
+	
+	
 
-	@RequestMapping(value="/account/getTotalAssetsInfo",method=RequestMethod.GET)
-	public ModelAndView getTotalAssetsInfo(GetTotalAssetsInfoRequest requst){
+	@RequestMapping(value="/account/accountOverview",method=RequestMethod.GET)
+	public ModelAndView getAccountOverview(GetTotalAssetsInfoRequest requst){
 
 		mav = new ModelAndView();
 		PageBean pageBean = new PageBean();
@@ -44,14 +59,11 @@ public class AccountInfoController {
 		pageBean.setRows((List<?>) result.get("list"));
 		requst.setPageBean(pageBean);
 
-		HashMap<String, BigDecimal> systemTotalAssets = crmUserInfoManager.getSystemAccountTotalAssets();
-		HashMap<String, BigDecimal> userTotalAssets = crmUserInfoManager.getUserAccountTotalAssets();
-		
-		log.info("systemTotalAssets : {}",systemTotalAssets.toString());
-		log.info("userTotalAssets : {}",userTotalAssets.toString());
-		
-		mav.addObject("systemTotalAssets", systemTotalAssets);
-		mav.addObject("userTotalAssets", userTotalAssets);
+//		HashMap<String, BigDecimal> systemTotalAssets = crmUserInfoManager.getSystemAccountTotalAssets();
+//		HashMap<String, BigDecimal> userTotalAssets = crmUserInfoManager.getUserAccountTotalAssets();
+//		
+//		mav.addObject("systemTotalAssets", systemTotalAssets);
+//		mav.addObject("userTotalAssets", userTotalAssets);
 		mav.addObject("model", requst);
 		
 		mav.setViewName("/accountInfo/accountOverview");
