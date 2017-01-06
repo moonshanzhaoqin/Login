@@ -39,12 +39,12 @@
 						<c:if test="${not empty systemTotalAssets }">
 							<c:forEach var="wallet" items="${systemTotalAssets }">
 								<c:if test="${wallet.key != 'totalAssets' }">
-									<td>${wallet.value}</td>
+									<td>${wallet.value}(USD)</td>
 								</c:if>
 							</c:forEach>
 							<c:forEach var="wallet" items="${systemTotalAssets }">
 								<c:if test="${wallet.key == 'totalAssets' }">
-									<td>${wallet.value}</td>
+									<td>${wallet.value}(USD)</td>
 								</c:if>
 							</c:forEach>	
 						</c:if>
@@ -89,10 +89,10 @@
         			<form id="searchForm" action="<c:url value='/account/getTotalAssetsInfoByPage' />" method="POST">
         				<ul class="formbar">
         					<li>
-        						<input type="text" value="${model.userPhone }" class="form-control" placeholder="userPhone" name="userPhone" size="8">
+        						<input type="text" value="${model.userPhone }" class="form-control" placeholder="手机号" name="userPhone" size="8">
         					</li>
         					<li>
-        						<input type="text" value="${model.userName }" class="form-control" placeholder="userName" name="userName" size="8">
+        						<input type="text" value="${model.userName }" class="form-control" placeholder="用户名" name="userName" size="8">
         					</li>
         					<li>
         						<select name="isFrozen" class="form-control">
@@ -102,10 +102,10 @@
         						</select>
         					</li>
         					<li>
-        						<input type="text" value="${model.upperLimit }" class="form-control" placeholder="upperLimit" name="upperLimit" size="8">
+        						<input type="text" value="${model.lowerLimit }" class="form-control" placeholder="下限" name="lowerLimit" size="8">
         					</li>
         					<li>
-        						<input type="text" value="${model.lowerLimit }" class="form-control" placeholder="lowerLimit" name="lowerLimit" size="8">
+        						<input type="text" value="${model.upperLimit }" class="form-control" placeholder="上限" name="upperLimit" size="8">
         					</li>
 
         					<li>
