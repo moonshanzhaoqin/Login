@@ -10,9 +10,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.yuyutechnology.exchange.RetCodeConsts;
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
 import com.yuyutechnology.exchange.crm.request.LoginRquest;
 import com.yuyutechnology.exchange.crm.request.ModifyPasswordRquest;
@@ -33,20 +34,23 @@ public class AdminController {
 
 		if (loginRquest.isEmpty()) {
 			logger.info("parameter is empty");
+			mav.setViewName("login");
+			mav.addObject("retCode", ServerConsts.PARAMETER_IS_EMPTY);
+			mav.addObject("message", "parameter is empty");
 		} else {
-			int retCode = adminManager.login(loginRquest.getAdminName(), loginRquest.getAdminPassword());
+			String retCode = adminManager.login(loginRquest.getAdminName(), loginRquest.getAdminPassword());
 			switch (retCode) {
-			case RetCodeConsts.ADMIN_NOT_EXIST:
+			case ServerConsts.ADMIN_NOT_EXIST:
 				mav.setViewName("login");
-				mav.addObject("retCode", RetCodeConsts.ADMIN_NOT_EXIST);
+				mav.addObject("retCode", ServerConsts.ADMIN_NOT_EXIST);
 				mav.addObject("message", "ADMIN_NOT_EXIST");
 				break;
-			case RetCodeConsts.PASSWORD_NOT_MATCH_NAME:
+			case ServerConsts.PASSWORD_NOT_MATCH_NAME:
 				mav.setViewName("login");
-				mav.addObject("retCode", RetCodeConsts.PASSWORD_NOT_MATCH_NAME);
+				mav.addObject("retCode", ServerConsts.PASSWORD_NOT_MATCH_NAME);
 				mav.addObject("message", "PASSWORD_NOT_MATCH_NAME");
 				break;
-			case RetCodeConsts.SUCCESS:
+			case ServerConsts.RET_CODE_SUCCESS:
 				// 写入session
 				request.getSession().setAttribute("adminName", loginRquest.getAdminName());
 				mav.setViewName("redirect:/account/getTotalAssetsInfo");
@@ -58,17 +62,29 @@ public class AdminController {
 		return mav;
 	}
 
+	@ResponseBody
 	@RequestMapping(value = "/modifyPassword", method = { RequestMethod.POST })
 	public BaseResponse modifyPassword(@RequestBody ModifyPasswordRquest modifyPasswordRquest,
 			HttpServletRequest request, HttpServletResponse response) {
 		BaseResponse rep=new  BaseResponse();
 		if (modifyPasswordRquest.isEmpty()) {
 			logger.info("parameter is empty");
-			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
 		} else {
 			String adminName = (String) request.getSession().getAttribute("adminName");
-			int retCode = adminManager.modifyPassword(adminName, modifyPasswordRquest.getOldPassword(),
+			String retCode = adminManager.modifyPassword(adminName, modifyPasswordRquest.getOldPassword(),
 					modifyPasswordRquest.getNewPassword());
+			switch (retCode) {
+			case ServerConsts.RET_CODE_SUCCESS:
+				rep.setMessage("modifyPassword sucess");
+				break;
+			case ServerConsts.PASSWORD_NOT_MATCH_NAME:
+				rep.setMessage("oldPassword is wrong");
+				break;
+			default:
+				break;
+			}
+			
 			rep.setRetCode(retCode);
 		}
 		return rep;

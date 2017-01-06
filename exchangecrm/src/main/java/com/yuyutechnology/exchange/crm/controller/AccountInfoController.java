@@ -13,12 +13,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yuyutechnology.exchange.crm.request.GetTotalAssetsInfoRequest;
+import com.yuyutechnology.exchange.crm.request.UserFreezeRequest;
 import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
+import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.utils.page.PageBean;
 
 @Controller
 public class AccountInfoController {
 	
+	@Autowired
+	UserManager userManager;
 	@Autowired
 	CrmUserInfoManager crmUserInfoManager;
 	
@@ -83,5 +87,15 @@ public class AccountInfoController {
 		mav.setViewName("/accountInfo/accountOverview");
 		return mav;
 	}
+	
+	@RequestMapping(value="/account/userFreeze",method=RequestMethod.GET)
+	public ModelAndView userFreeze(UserFreezeRequest request){
+		mav = new ModelAndView();
+		userManager.userFreeze(request.getUserId(), request.getOperate());
+		crmUserInfoManager.userFreeze(request.getUserId(), request.getOperate());
+		mav.setViewName("redirect:/account/getTotalAssetsInfo");
+		return mav;
+	}
+	
 	
 }

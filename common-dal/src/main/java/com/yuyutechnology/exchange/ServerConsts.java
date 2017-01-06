@@ -164,6 +164,21 @@ public class ServerConsts {
 	public static final String TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT ="03017";
 	
 	public static final String TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY ="03018";
+	//crm 管理员04
+	/**
+	 * 管理员不存在
+	 */
+	public static final String ADMIN_NOT_EXIST = "04001";
+	/**
+	 * 用户名和密码不匹配
+	 */
+	public static final String PASSWORD_NOT_MATCH_NAME = "04002";
+	
+	
+	
+	
+	
+	
 	// 用户类型
 	/**
 	 * 普通用户

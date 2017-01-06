@@ -96,13 +96,13 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		if(StringUtils.isNotBlank(result)){
 			@SuppressWarnings("unchecked")
 			HashMap<String, String> map = JsonBinder.getInstance().fromJson(result, HashMap.class);
-			String value = map.get("USD");
+			String value = map.get(ServerConsts.STANDARD_CURRENCY);
 
 			ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().
 					fromJson(value, ExchangeRate.class);
 			//gdp4Others 表示 1gdp兑换多少其他币种
 			Map<String,BigDecimal> gdp4Others = new HashMap<String,BigDecimal>();
-			gdp4Others.put("USD", gdp4USDExchangeRate);
+			gdp4Others.put(ServerConsts.STANDARD_CURRENCY, gdp4USDExchangeRate);
 			for(Map.Entry<String, Double> entry : exchangeRate.getRates().entrySet()){
 				gdp4Others.put(entry.getKey(), (new BigDecimal(Double.toString(entry.getValue()))).divide(USD4GdpExchangeRate, scale,BigDecimal.ROUND_DOWN));
 			}
@@ -110,11 +110,11 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 			
 			//others4Gdp 表示 1其他币种兑换多少gdp
 			Map<String,BigDecimal> others4Gdp = new HashMap<String,BigDecimal>();
-			others4Gdp.put("USD", USD4GdpExchangeRate);
+			others4Gdp.put(ServerConsts.STANDARD_CURRENCY, USD4GdpExchangeRate);
 			List<Currency> list = currencyDAO.getCurrencys();
 			for (Currency index : list) {
-				if(!index.getCurrency().equals("USD") && !index.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY) ){
-					others4Gdp.put(index.getCurrency(), (new BigDecimal(Double.toString(getExchangeRateNoGoldq(index.getCurrency(),"USD")))).divide(gdp4USDExchangeRate, scale,BigDecimal.ROUND_DOWN));
+				if(!index.getCurrency().equals(ServerConsts.STANDARD_CURRENCY) && !index.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY) ){
+					others4Gdp.put(index.getCurrency(), (new BigDecimal(Double.toString(getExchangeRateNoGoldq(index.getCurrency(),ServerConsts.STANDARD_CURRENCY)))).divide(gdp4USDExchangeRate, scale,BigDecimal.ROUND_DOWN));
 				}
 			}
 			

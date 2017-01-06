@@ -72,4 +72,11 @@ public class UserDAOImpl implements UserDAO {
 		return null;
 	}
 
+	@Override
+	public void userFreeze(Integer userId, int userAvailable) {
+		User user = hibernateTemplate.get(User.class, userId);
+		user.setUserAvailable(userAvailable);
+		hibernateTemplate.update(user);
+	}
+
 }

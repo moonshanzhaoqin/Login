@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CrmUserInfoDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
@@ -81,7 +82,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 		BigDecimal totalAssets = new BigDecimal(0);
 		
 		for (Entry<String, BigDecimal> entry : map.entrySet()) {
-			if(entry.getKey().equals("USD")){
+			if(entry.getKey().equals(ServerConsts.STANDARD_CURRENCY)){
 				totalAssets = totalAssets.add(entry.getValue());
 			}else{
 				totalAssets = totalAssets.add(exchangeRateManager.getExchangeResult(entry.getKey(), entry.getValue()));
@@ -129,6 +130,11 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 		
 		
 		return result;
+	}
+
+	@Override
+	public void userFreeze(Integer userId, int userAvailable) {
+		crmUserInfoDAO.userFreeze(userId, userAvailable);
 	}
 	
 	

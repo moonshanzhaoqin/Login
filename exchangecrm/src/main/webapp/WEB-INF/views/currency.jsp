@@ -10,19 +10,31 @@
 
 <link rel="stylesheet"
 	href='<c:url value="/resources/bootstrap/css/bootstrap.min.css" />' />
+<link rel="stylesheet"
+	href="<c:url value="/resources/css/common.css" />" />
 </head>
 <body>
 	<%@ include file="header.jsp"%>
 
 	<div class="container">
+		<div class="row ">
+
+			<ul class="formbar pull-right">
+				<li><select class="form-control"></select></li>
+				<li>
+					<button type="button" class="btn btn-default"
+						onclick="addCurrency()">
+						<span class="glyphicon glyphicon-plus"></span> 添加新币种
+					</button>
+				</li>
+			</ul>
+		</div>
 		<div class="row">
-			<div class="col-md-2"></div>
-			<table
-				class="table table-bordered table-hover table-striped col-md-8"
+			<table class="table table-bordered table-hover table-striped"
 				id="currency">
 				<thead>
 					<tr>
-						<th>货币符号</th>
+						<th>货币代码</th>
 						<th>简体</th>
 						<th>英文</th>
 						<th>繁体</th>
@@ -33,24 +45,8 @@
 				</thead>
 				<tbody></tbody>
 			</table>
-			<div class="col-md-2"></div>
 		</div>
-		<div class="row">
-			<div class="form-group col-sm-5">
-				<select class="form-control">
-					<option>1</option>
-					<option>2</option>
-					<option>3</option>
-					<option>4</option>
-					<option>5</option>
-				</select>
-			</div>
 
-			<button type="submit" class="btn btn-primary col-sm-2"
-				onclick="addCurrency()">
-				<span class="glyphicon glyphicon-plus"></span> 添加新币种
-			</button>
-		</div>
 	</div>
 	<!-- 模态框（Modal） -->
 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
@@ -65,7 +61,7 @@
 				<div class="modal-body">
 					<form class="form-horizontal" role="form" id="updateCurrency">
 						<div class="form-group">
-							<label for="currency" class="col-sm-2 control-label">货币符号</label>
+							<label for="currency" class="col-sm-2 control-label">货币代码</label>
 							<div class="col-sm-5">
 								<input type="text" name="currency" class="form-control" readonly>
 							</div>
@@ -111,13 +107,12 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal"
+					<button type="button" class="btn btn-primary"
 						onclick="updateCurrency()">提交更改</button>
 				</div>
 			</div>
 		</div>
 	</div>
-
 
 	<script type="text/javascript"
 		src="<c:url value="/resources/js/jquery.min.js" />"></script>
@@ -223,8 +218,6 @@
 				nameEn : form.nameEn.value,
 				nameHk : form.nameHk.value
 			}
-			// 			console.log(data);
-			// 			console.log(JSON.stringify(data));
 			$.ajax({
 				type : "post",
 				url : "/crm/updateCurrency",
@@ -232,8 +225,15 @@
 				dataType : 'json',
 				data : JSON.stringify(data),
 				success : function(data) {
-					console.log("success");
-					initCurrency();
+					if (data.retCode == "00000") {
+						console.log("success");
+						$('#myModal').modal('hide')
+						alert("修改成功！");
+						initCurrency();
+					} else {
+						console.log("updateCurrency" + data.message);
+						alert(data.message);
+					}
 				},
 				error : function(xhr, err) {
 					console.log("error");
@@ -254,13 +254,14 @@
 				dataType : 'json',
 				data : JSON.stringify(data),
 				success : function(data) {
-					if (data.retCode == 0) {
+					if (data.retCode == "00000") {
 						console.log("success");
+						alert("添加成功！");
 						initCurrency();
+
 					} else {
 						alert("币种已存在")
 					}
-
 				},
 				error : function(xhr, err) {
 					console.log("error");
@@ -272,5 +273,6 @@
 
 		}
 	</script>
+	<%@ include file="footer.jsp"%>
 </body>
 </html>

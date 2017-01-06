@@ -501,4 +501,9 @@ public class UserManagerImpl implements UserManager {
 	public List<User> getUserList() {
 		return userDAO.getUserList();
 	}
+
+	@Override
+	public void userFreeze(Integer userId, int userAvailable) {
+		userDAO.userFreeze(userId, userAvailable);
+	}
 }

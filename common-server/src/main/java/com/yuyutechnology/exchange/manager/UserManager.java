@@ -225,4 +225,7 @@ public interface UserManager {
 	public User getSystemUser();
 	
 	public List<User> getUserList();
+	
+	public void userFreeze(Integer userId,int userAvailable);
+	
 }

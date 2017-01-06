@@ -39,12 +39,12 @@
 						<c:if test="${not empty systemTotalAssets }">
 							<c:forEach var="wallet" items="${systemTotalAssets }">
 								<c:if test="${wallet.key != 'totalAssets' }">
-									<td>${wallet.value}</td>
+									<td>${wallet.value}(USD)</td>
 								</c:if>
 							</c:forEach>
 							<c:forEach var="wallet" items="${systemTotalAssets }">
 								<c:if test="${wallet.key == 'totalAssets' }">
-									<td>${wallet.value}</td>
+									<td>${wallet.value}(USD)</td>
 								</c:if>
 							</c:forEach>	
 						</c:if>
@@ -89,10 +89,10 @@
         			<form id="searchForm" action="<c:url value='/account/getTotalAssetsInfoByPage' />" method="POST">
         				<ul class="formbar">
         					<li>
-        						<input type="text" value="${model.userPhone }" class="form-control" placeholder="userPhone" name="userPhone" size="8">
+        						<input type="text" value="${model.userPhone }" class="form-control" placeholder="手机号" name="userPhone" size="8">
         					</li>
         					<li>
-        						<input type="text" value="${model.userName }" class="form-control" placeholder="userName" name="userName" size="8">
+        						<input type="text" value="${model.userName }" class="form-control" placeholder="用户名" name="userName" size="8">
         					</li>
         					<li>
         						<select name="isFrozen" class="form-control">
@@ -102,10 +102,10 @@
         						</select>
         					</li>
         					<li>
-        						<input type="text" value="${model.upperLimit }" class="form-control" placeholder="upperLimit" name="upperLimit" size="8">
+        						<input type="text" value="${model.lowerLimit }" class="form-control" placeholder="下限" name="lowerLimit" size="8">
         					</li>
         					<li>
-        						<input type="text" value="${model.lowerLimit }" class="form-control" placeholder="lowerLimit" name="lowerLimit" size="8">
+        						<input type="text" value="${model.upperLimit }" class="form-control" placeholder="上限" name="upperLimit" size="8">
         					</li>
 
         					<li>
@@ -136,6 +136,7 @@
 							<th>是否冻结</th>
 							<th>总资产</th>
 							<th>更新时间（UTC）</th>
+							<th>操作</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -155,6 +156,14 @@
 									</td>
 									<td>${userInfo.userTotalAssets }</td>
 									<td><fmt:formatDate value="${userInfo.updateAt }" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+									<td>
+										<c:if test="${userInfo.userAvailable eq 1}">
+											<a href="#" onclick="userFreeze(this,0)">冻结用户</a>
+										</c:if>
+										<c:if test="${userInfo.userAvailable eq 0}">
+											<a href="#" onclick="userFreeze(this,1)"><font color="red">解冻用户</font></a>
+										</c:if>
+									</td>
 								</tr>
 							</c:forEach>
 						</c:if>
@@ -210,6 +219,29 @@
 				//分页控件
 				$('#paginator').bootstrapPaginator(options);	
 			});
+			
+			function userFreeze(obj,operate){
+				
+				if(operate == 0 ){
+					var r = confirm("确定冻结该用户么？");
+					if(r != true){
+						return ;
+					}
+				}else{
+					var r = confirm("确定要解除冻结该用户么？");
+					if(r != true){
+						return ;
+					}
+				}
+
+				var tds=$(obj).parent().parent().find('td');
+				var userId = tds.eq(0).text();
+				
+				var userFreezeUrl = "<c:url value='/account/userFreeze' />";
+				location.href=userFreezeUrl+'?userId='+userId+'&operate='+operate;
+			}
+			
 		</script>
+		<%@ include file="../footer.jsp"%>
 	</body>
 </html>

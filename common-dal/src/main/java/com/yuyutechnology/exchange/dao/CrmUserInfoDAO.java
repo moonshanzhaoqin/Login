@@ -13,5 +13,7 @@ public interface CrmUserInfoDAO {
 	
 	public HashMap<String, Object> getUserAccountInfoListByPage(
 			String sql,List<Object> values,int currentPage, int pageSize);
+	
+	public void userFreeze(Integer userId, int userAvailable);
 
 }

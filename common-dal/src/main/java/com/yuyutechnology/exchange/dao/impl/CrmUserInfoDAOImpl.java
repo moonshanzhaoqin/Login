@@ -58,4 +58,13 @@ public class CrmUserInfoDAOImpl implements CrmUserInfoDAO {
 		return map;
 	}
 
+	@Override
+	public void userFreeze(Integer userId, int userAvailable) {
+		CrmUserInfo crmUserInfo = hibernateTemplate.get(CrmUserInfo.class, userId);
+		crmUserInfo.setUserAvailable(userAvailable);
+		hibernateTemplate.update(crmUserInfo);
+	}
+	
+	
+
 }
