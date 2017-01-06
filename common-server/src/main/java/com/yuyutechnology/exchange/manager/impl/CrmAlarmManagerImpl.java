@@ -108,7 +108,7 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		String[] arr = (supervisorIdArr.replace("[", "").replace("]", "")).split(",");
 		
 		for (String supervisorId : arr) {
-			CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
+			CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId.trim()));
 			smsManager.sendSMS4CriticalAlarm(crmSupervisor.getSupervisorMobile(), 
 					difference, lowerLimit, alarmGrade, sdf.format(new Date()));
 		}
