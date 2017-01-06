@@ -48,11 +48,11 @@
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown"><a href="#" class="dropdown-toggle"
-						data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span>${sessionScope.adminName }
+						data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> ${sessionScope.adminName }
 							<span class="caret"></span></a>
 						<ul class="dropdown-menu" role="menu">
 							<li><a href="#passwordModal" data-toggle="modal">修改密码</a></li>
-							<li><a href="<c:url value='/exit' />">退出</a></li>
+							<li><a href="<c:url value='/exit' />"><span class="glyphicon glyphicon-log-out"></span> 退出</a></li>
 						</ul></li>
 				</ul>
 			</div>
