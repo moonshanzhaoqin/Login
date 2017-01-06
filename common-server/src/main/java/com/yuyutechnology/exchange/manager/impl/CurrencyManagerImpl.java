@@ -1,5 +1,7 @@
 package com.yuyutechnology.exchange.manager.impl;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,9 +11,12 @@ import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
+import com.yuyutechnology.exchange.dao.UserDAO;
+import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.CurrencyManager;
 import com.yuyutechnology.exchange.pojo.Currency;
+import com.yuyutechnology.exchange.pojo.Wallet;
 
 @Service
 public class CurrencyManagerImpl implements CurrencyManager {
@@ -20,6 +25,10 @@ public class CurrencyManagerImpl implements CurrencyManager {
 
 	@Autowired
 	CurrencyDAO currencyDAO;
+	@Autowired
+	WalletDAO walletDAO;
+	@Autowired
+	UserDAO userDAO;
 	@Autowired
 	CommonManager commonManager;
 
@@ -40,6 +49,7 @@ public class CurrencyManagerImpl implements CurrencyManager {
 		Currency currency = currencyDAO.getCurrency(currencyId);
 		if (currency == null) {
 			currencyDAO.updateCurrency(new Currency(currencyId,currencyId,currencyId,currencyId,currencyId, ServerConsts.CURRENCY_UNAVAILABLE, "0"));
+			walletDAO.addwallet(new Wallet(currency, userDAO.getSystemUser().getUserId(),  BigDecimal.ZERO, new  Date()));
 			return ServerConsts.RET_CODE_SUCCESS;
 		} else {
 			return ServerConsts.RET_CODE_FAILUE;

@@ -407,7 +407,7 @@ public class UserManagerImpl implements UserManager {
 			// logger.info("{}",currency.getCurrency());
 			if (mapwallet.get(currency.getCurrency()) == null) {
 				// 没有该货币的钱包，需要新增
-				walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date()));
+				walletDAO.addwallet(new Wallet(currency, userId, BigDecimal.ZERO, new Date()));
 				logger.info("Added {}wallet to user {}", currency.getCurrency(), userId);
 			}
 		}
