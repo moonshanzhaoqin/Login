@@ -198,7 +198,7 @@ public class PushManager {
 		String title = titleChoose("transfer", userTo.getPushTag());
 		String transferBody = templateChoose("transfer", userTo.getPushTag());
 		String body = transferBody.replace(PUSH_REPLACE_FROM, userFrom.getUserName())
-				.replace(PUSH_REPLACE_CURRENCY, currency).replace(PUSH_REPLACE_AMOUNT,
+				.replace(PUSH_REPLACE_CURRENCY, commonManager.getCurreny(currency).getCurrencyUnit()).replace(PUSH_REPLACE_AMOUNT,
 						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? new BigDecimal(amount.intValue()).toString() : amount.toString());
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "transfer");
@@ -242,7 +242,7 @@ public class PushManager {
 		String title = titleChoose("refund", userFrom.getPushTag());
 		String refundBody = templateChoose("refund", userFrom.getPushTag());
 		logger.info("refund,{}=={}", userFrom.getPushTag(), refundBody);
-		String body = refundBody.replace(PUSH_REPLACE_TO, areaCode + phone).replace(PUSH_REPLACE_CURRENCY, currency)
+		String body = refundBody.replace(PUSH_REPLACE_TO, areaCode + phone).replace(PUSH_REPLACE_CURRENCY, commonManager.getCurreny(currency).getCurrencyUnit())
 				.replace(PUSH_REPLACE_AMOUNT,
 						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? new BigDecimal(amount.intValue()).toString() : amount.toString())
 				.replace(PUSH_REPLACE_DAY, configManager.getConfigStringValue(ConfigKeyEnum.REFUNTIME, "7"));

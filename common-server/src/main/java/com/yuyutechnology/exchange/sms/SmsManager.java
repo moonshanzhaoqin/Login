@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ConfigKeyEnum;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.utils.HttpTookit;
@@ -36,6 +37,8 @@ public class SmsManager {
 	
 	@Autowired
 	ConfigManager configManager;
+	@Autowired
+	CommonManager commonManager;
 
 	private final String SMS_REPLACE_PIN = "[PIN]";
 	private final String SMS_REPLACE_TIME = "[TIME]";
@@ -129,7 +132,7 @@ public class SmsManager {
 	public void sendSMS4Transfer(String areaCode, String userPhone, User from, String currency, BigDecimal amount) {
 		String transferContent = templateChoose("transfer", areaCode);
 		String content = transferContent.replace(SMS_REPLACE_FROM, from.getAreaCode() + from.getUserPhone())
-				.replace(SMS_REPLACE_CURRENCY, currency)
+				.replace(SMS_REPLACE_CURRENCY, commonManager.getCurreny(currency).getCurrencyUnit())
 				.replace(SMS_REPLACE_AMOUNT,
 						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? new BigDecimal(amount.intValue()).toString() : amount.toString())
 				.replace(SMS_REPLACE_LINK, configManager.getConfigStringValue(ConfigKeyEnum.DOWNLOADLINK, ""))
