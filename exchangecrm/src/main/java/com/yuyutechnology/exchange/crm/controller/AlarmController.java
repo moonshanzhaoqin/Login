@@ -45,8 +45,9 @@ public class AlarmController {
 		HashMap<String, BigDecimal> systemTotalAssets = crmUserInfoManager.getSystemAccountTotalAssets();
 		HashMap<String, BigDecimal> userTotalAssets = crmUserInfoManager.getUserAccountTotalAssets();
 		BigDecimal difference = systemTotalAssets.get("totalAssets").subtract(userTotalAssets.get("totalAssets"));
-		
+		List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
 		List<CrmAlarm> list = crmAlarmManager.getCrmAlarmConfigList();
+		mav.addObject("supervisorList", supervisorList);
 		mav.addObject("list", list);
 		mav.addObject("systemTotalAssets", systemTotalAssets.get("totalAssets"));
 		mav.addObject("userTotalAssets", userTotalAssets.get("totalAssets"));
