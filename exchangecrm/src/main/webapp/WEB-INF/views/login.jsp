@@ -114,7 +114,6 @@
 	<!--end of container-->
 
 	<div class="footer navbar-fixed-bottom" style="margin-left: -60px;">
-		<%--        	<%@ include file="../views/common/footer.jsp"%>     --%>
 	</div>
 
 	<script type="text/javascript"

@@ -12,7 +12,7 @@
 	href='<c:url value="/resources/bootstrap/css/bootstrap.min.css" />' />
 </head>
 <body>
-	<%@ include file="header.jsp"%>
+	<%@ include file="common/header.jsp"%>
 	<div class="container">
 		<form class="form-horizontal" id="config"></form>
 	</div>
@@ -84,7 +84,7 @@
 
 		}
 	</script>
-	<%@ include file="footer.jsp"%>
+	<%@ include file="common/footer.jsp"%>
 </body>
 </body>
 </html>

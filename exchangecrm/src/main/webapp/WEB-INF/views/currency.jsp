@@ -14,7 +14,7 @@
 	href="<c:url value="/resources/css/common.css" />" />
 </head>
 <body>
-	<%@ include file="header.jsp"%>
+	<%@ include file="common/header.jsp"%>
 
 	<div class="container">
 		<div class="row ">
@@ -273,6 +273,6 @@
 
 		}
 	</script>
-	<%@ include file="footer.jsp"%>
+	<%@ include file="common/footer.jsp"%>
 </body>
 </html>
