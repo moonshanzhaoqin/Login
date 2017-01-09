@@ -105,7 +105,7 @@ public class AccountInfoController {
 		mav = new ModelAndView();
 		userManager.userFreeze(request.getUserId(), request.getOperate());
 		crmUserInfoManager.userFreeze(request.getUserId(), request.getOperate());
-		mav.setViewName("redirect:/account/getTotalAssetsInfo");
+		mav.setViewName("redirect:/account/accountOverview");
 		return mav;
 	}
 	
