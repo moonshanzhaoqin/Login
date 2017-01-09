@@ -151,9 +151,9 @@
 							console.log("success");
 							var html = "";
 							for (var i = 0; i < data.length; i++) {
-								html += '<tr data-toggle="modal" data-target="#myModal" data-whatever='
+								html += '<tr data-toggle="modal" data-target="#myModal" data-whatever='+"'"
 										+ JSON.stringify(data[i])
-										+ '>'
+										+"'"+ '>'
 										+ '<td style="font-weight:bold;">'
 										+ data[i].currency
 										+ '</td>'
