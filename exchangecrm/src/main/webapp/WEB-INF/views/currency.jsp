@@ -22,9 +22,12 @@
 			<ul class="formbar pull-right">
 				<li><select class="form-control"></select></li>
 				<li>
-					<button type="button" class="btn btn-default"
+					<button type="button" class="btn btn-primary"
 						onclick="addCurrency()">
-						<span class="glyphicon glyphicon-plus"></span> 添加新币种
+						<!--
+						<span class="glyphicon glyphicon-plus"></span>
+						-->
+						添加新币种
 					</button>
 				</li>
 			</ul>

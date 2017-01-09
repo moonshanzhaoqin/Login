@@ -27,33 +27,32 @@
 		});
 
 		function initConfig() {
-			$
-					.ajax({
-						type : "post",
-						url : "/crm/getConfigList",
-						dataType : 'json',
-						contentType : "application/json; charset=utf-8",
-						data : {},
-						success : function(data) {
-							console.log("success");
-							html = "";
-							for (var i = 0; i < data.length; i++) {
-								html += '<div class="form-group" id="' + data[i].configKey + '">'
-										+ '<label  class="col-lg-2 control-label">'
-										+ data[i].configName
-										+ '</label>'
-										+ '<div class="col-lg-8"><input type="text" class="form-control" value="' + data[i].configValue + '"></div>'
-										+ '<div class="col-lg-2"><button type="button" class="btn btn-default" onclick="updateConfig()"><span class="glyphicon glyphicon-ok"></span>&nbsp;保存</button></div>'
-										+ '</div>'
-							}
-							$('#config').html(html);
-						},
-						error : function(xhr, err) {
-							console.log("error");
-							console.log(err);
-						},
-						async : false
-					});
+			$.ajax({
+				type : "post",
+				url : "/crm/getConfigList",
+				dataType : 'json',
+				contentType : "application/json; charset=utf-8",
+				data : {},
+				success : function(data) {
+					console.log("success");
+					html = "";
+					for (var i = 0; i < data.length; i++) {
+						html += '<div class="form-group" id="' + data[i].configKey + '">'
+							+ '<label  class="col-lg-2 control-label">'
+							+ data[i].configName
+							+ '</label>'
+							+ '<div class="col-lg-8"><input type="text" class="form-control" value="' + data[i].configValue + '"></div>'
+							+ '<div class="col-lg-2"><button type="button" class="btn btn-primary" onclick="updateConfig()">保存</button></div>'
+							+ '</div>'
+						}
+						$('#config').html(html);
+				},
+				error : function(xhr, err) {
+					console.log("error");
+					console.log(err);
+				},
+				async : false
+			});
 		}
 
 		function updateConfig() {
