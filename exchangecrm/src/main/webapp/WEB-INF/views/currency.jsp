@@ -44,6 +44,7 @@
 						<th>单位</th>
 						<th>状态</th>
 						<th>顺序</th>
+						<th>操作</th>
 					</tr>
 				</thead>
 				<tbody></tbody>
@@ -154,9 +155,7 @@
 							console.log("success");
 							var html = "";
 							for (var i = 0; i < data.length; i++) {
-								html += '<tr data-toggle="modal" data-target="#myModal" data-whatever='+"'"
-										+ JSON.stringify(data[i])
-										+"'"+ '>'
+								html += '<tr>'
 										+ '<td style="font-weight:bold;">'
 										+ data[i].currency
 										+ '</td>'
@@ -176,7 +175,11 @@
 												: '<td style="color:green">AVAILABLE</td>')
 										+ '<td>'
 										+ data[i].currencyOrder
-										+ '</td>' + '</tr>'
+										+ '</td>' 
+										+'<td><a data-toggle="modal" data-target="#myModal" data-whatever='+"'"
+										+ JSON.stringify(data[i])
+										+"'"+ '>修改</a></td>'
+										+ '</tr>'
 							}
 							$('#currency tbody').html(html);
 
