@@ -25,8 +25,8 @@
 					<thead>
 						<tr>
 							<th>币种</th>
-							<th>系统账户信息</th>
-							<th>用户账户信息</th>
+							<th>系统总账</th>
+							<th>用户总账</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -50,7 +50,7 @@
 						</c:if>
 						
 						<tr>
-							<td>总金额（USD）</td>
+							<td style="font-weight:bold;">总金额（USD）</td>
 							<c:if test="${not empty systemTotalAssets }">
 								<c:forEach var="wallet" items="${systemTotalAssets }">
 									<c:if test="${wallet.key == 'totalAssets' }">

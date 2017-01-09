@@ -30,6 +30,13 @@
 				<env>prod</env>
 			</properties>
 		</profile>
+		<!-- 准生产 -->
+		<profile>
+			<id>stage</id>
+			<properties>
+				<env>stage</env>
+			</properties>
+		</profile>
 		<!-- 测试环境 -->
 		<profile>
 			<id>test</id>
