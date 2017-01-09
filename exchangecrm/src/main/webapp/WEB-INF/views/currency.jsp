@@ -14,7 +14,7 @@
 	href="<c:url value="/resources/css/common.css" />" />
 </head>
 <body>
-	<%@ include file="header.jsp"%>
+	<%@ include file="common/header.jsp"%>
 
 	<div class="container">
 		<div class="row ">
@@ -22,9 +22,12 @@
 			<ul class="formbar pull-right">
 				<li><select class="form-control"></select></li>
 				<li>
-					<button type="button" class="btn btn-default"
+					<button type="button" class="btn btn-primary"
 						onclick="addCurrency()">
-						<span class="glyphicon glyphicon-plus"></span> 添加新币种
+						<!--
+						<span class="glyphicon glyphicon-plus"></span>
+						-->
+						添加新币种
 					</button>
 				</li>
 			</ul>
@@ -41,6 +44,7 @@
 						<th>单位</th>
 						<th>状态</th>
 						<th>顺序</th>
+						<th>操作</th>
 					</tr>
 				</thead>
 				<tbody></tbody>
@@ -151,9 +155,7 @@
 							console.log("success");
 							var html = "";
 							for (var i = 0; i < data.length; i++) {
-								html += '<tr data-toggle="modal" data-target="#myModal" data-whatever='
-										+ JSON.stringify(data[i])
-										+ '>'
+								html += '<tr>'
 										+ '<td style="font-weight:bold;">'
 										+ data[i].currency
 										+ '</td>'
@@ -173,7 +175,11 @@
 												: '<td style="color:green">AVAILABLE</td>')
 										+ '<td>'
 										+ data[i].currencyOrder
-										+ '</td>' + '</tr>'
+										+ '</td>' 
+										+'<td><a data-toggle="modal" data-target="#myModal" data-whatever='+"'"
+										+ JSON.stringify(data[i])
+										+"'"+ '>修改</a></td>'
+										+ '</tr>'
 							}
 							$('#currency tbody').html(html);
 
@@ -273,6 +279,6 @@
 
 		}
 	</script>
-	<%@ include file="footer.jsp"%>
+	<%@ include file="common/footer.jsp"%>
 </body>
 </html>

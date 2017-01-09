@@ -173,12 +173,6 @@ public class ServerConsts {
 	 * 用户名和密码不匹配
 	 */
 	public static final String PASSWORD_NOT_MATCH_NAME = "04002";
-	
-	
-	
-	
-	
-	
 	// 用户类型
 	/**
 	 * 普通用户
@@ -297,9 +291,8 @@ public class ServerConsts {
 	 * 币种状态——不可用
 	 */
 	public static final int CURRENCY_UNAVAILABLE = 0;
+	
 	public static final String ADMIN_DEFAULT_PASSWORD = "12345678";
-	
-	
 	
 	
 	static {

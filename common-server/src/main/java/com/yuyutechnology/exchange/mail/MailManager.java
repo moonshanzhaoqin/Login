@@ -72,7 +72,7 @@ public class MailManager {
 	}
 	
 	public void mail4criticalAlarm(String email,BigDecimal difference,BigDecimal lowerLimit,String grade,String dateTime) {
-		String content = contactContent.
+		String content = criticalAlarmContent.
 				replace(MAIL_REPLACE_CATEGORY, difference.toString()).
 				replace(MAIL_REPLACE_EMAIL, lowerLimit.toString()).
 				replace(MAIL_REPLACE_ENQUIRY, grade).

@@ -85,7 +85,7 @@
 							<span class="glyphicon glyphicon-lock"></span> <input
 								name="adminPassword" type="password"
 								class="form-control adminPassword"
-								style="border: 0px; height: 40px;" value="123456" />
+								style="border: 0px; height: 40px;" />
 						</div>
 					</div>
 
@@ -114,7 +114,6 @@
 	<!--end of container-->
 
 	<div class="footer navbar-fixed-bottom" style="margin-left: -60px;">
-		<%--        	<%@ include file="../views/common/footer.jsp"%>     --%>
 	</div>
 
 	<script type="text/javascript"
