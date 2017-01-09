@@ -100,7 +100,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 			int isFrozen,BigDecimal upperLimit,BigDecimal lowerLimit,int currentPage, int pageSize) {
 		
 		List<Object> values = new ArrayList<Object>();
-		StringBuilder sb = new StringBuilder("from CrmUserInfo where 1 = 1 ");
+		StringBuilder sb = new StringBuilder("from CrmUserInfo where userType = 0 ");
 		
 		if(!StringUtils.isEmpty(userPhone)){
 			sb.append("and userPhone= ? ");
