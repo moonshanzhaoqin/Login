@@ -162,9 +162,9 @@ public class LoggedInUserController {
 						rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 					}
 				} else {
-					logger.info(MessageConsts.PASSWORD_NOT_MATCH);
-					rep.setRetCode(ServerConsts.PASSWORD_NOT_MATCH);
-					rep.setMessage(MessageConsts.PASSWORD_NOT_MATCH);
+					logger.info(MessageConsts.PAY_PWD_NOT_MATCH);
+					rep.setRetCode(ServerConsts.PAY_PWD_NOT_MATCH);
+					rep.setMessage(MessageConsts.PAY_PWD_NOT_MATCH);
 				}
 			} else {
 				logger.info(MessageConsts.TIME_NOT_ARRIVED);

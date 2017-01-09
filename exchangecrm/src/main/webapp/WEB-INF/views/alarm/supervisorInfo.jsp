@@ -13,7 +13,7 @@
 	
 	<body>
 		
-		<%@ include file="../header.jsp"%>
+		<%@ include file="../common/header.jsp"%>
 		<div class="container">
 		
 		
@@ -137,5 +137,6 @@
 			
 		</script>
 		<%@ include file="../footer.jsp"%>
+		<%@ include file="../common/footer.jsp"%>
 	</body>
 </html>

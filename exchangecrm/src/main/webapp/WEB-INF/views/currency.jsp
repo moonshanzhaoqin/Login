@@ -14,7 +14,7 @@
 	href="<c:url value="/resources/css/common.css" />" />
 </head>
 <body>
-	<%@ include file="header.jsp"%>
+	<%@ include file="common/header.jsp"%>
 
 	<div class="container">
 		<div class="row ">
@@ -22,9 +22,12 @@
 			<ul class="formbar pull-right">
 				<li><select class="form-control"></select></li>
 				<li>
-					<button type="button" class="btn btn-default"
+					<button type="button" class="btn btn-primary"
 						onclick="addCurrency()">
-						<span class="glyphicon glyphicon-plus"></span> 添加新币种
+						<!--
+						<span class="glyphicon glyphicon-plus"></span>
+						-->
+						添加新币种
 					</button>
 				</li>
 			</ul>
@@ -35,12 +38,13 @@
 				<thead>
 					<tr>
 						<th>货币代码</th>
-						<th>简体</th>
-						<th>英文</th>
-						<th>繁体</th>
-						<th>单位</th>
+						<th>简体名称</th>
+						<th>英文名称</th>
+						<th>繁体名称</th>
+						<th>货币单位</th>
 						<th>状态</th>
 						<th>顺序</th>
+						<th>操作</th>
 					</tr>
 				</thead>
 				<tbody></tbody>
@@ -67,13 +71,13 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="nameCn" class="col-sm-2 control-label">中文名字</label>
+							<label for="nameCn" class="col-sm-2 control-label">简体名称</label>
 							<div class="col-sm-5">
 								<input type="text" name="nameCn" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="nameEn" class="col-sm-2 control-label">英文名字</label>
+							<label for="nameEn" class="col-sm-2 control-label">英文名称</label>
 							<div class="col-sm-5">
 								<input type="text" name="nameEn" class="form-control">
 							</div>
@@ -85,7 +89,7 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="currencyUnit" class="col-sm-2 control-label">单位</label>
+							<label for="currencyUnit" class="col-sm-2 control-label">货币单位</label>
 							<div class="col-sm-5">
 								<input type="text" name="currencyUnit" class="form-control">
 							</div>
@@ -93,8 +97,8 @@
 						<div class="form-group">
 							<label for="currency" class="col-sm-2 control-label">状态</label>
 							<div class="col-sm-5">
-								<input type="radio" name="currencyStatus" value="1">可用 <input
-									type="radio" name="currencyStatus" value="0">不可用
+								<input type="radio" name="currencyStatus" value="1">上架 <input
+									type="radio" name="currencyStatus" value="0">下架
 							</div>
 						</div>
 						<div class="form-group">
@@ -108,7 +112,7 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 					<button type="button" class="btn btn-primary"
-						onclick="updateCurrency()">提交更改</button>
+						onclick="updateCurrency()">保存</button>
 				</div>
 			</div>
 		</div>
@@ -151,9 +155,7 @@
 							console.log("success");
 							var html = "";
 							for (var i = 0; i < data.length; i++) {
-								html += '<tr data-toggle="modal" data-target="#myModal" data-whatever='
-										+ JSON.stringify(data[i])
-										+ '>'
+								html += '<tr>'
 										+ '<td style="font-weight:bold;">'
 										+ data[i].currency
 										+ '</td>'
@@ -169,11 +171,15 @@
 										+ '<td>'
 										+ data[i].currencyUnit
 										+ '</td>'
-										+ (data[i].currencyStatus == 0 ? '<td style="color:red">UNAVAILABLE</td>'
-												: '<td style="color:green">AVAILABLE</td>')
+										+ (data[i].currencyStatus == 0 ? '<td style="color:red">下架</td>'
+												: '<td style="color:green">上架</td>')
 										+ '<td>'
 										+ data[i].currencyOrder
-										+ '</td>' + '</tr>'
+										+ '</td>' 
+										+'<td><a data-toggle="modal" data-target="#myModal" data-whatever='+"'"
+										+ JSON.stringify(data[i])
+										+"'"+ '>编辑</a></td>'
+										+ '</tr>'
 							}
 							$('#currency tbody').html(html);
 
@@ -273,6 +279,6 @@
 
 		}
 	</script>
-	<%@ include file="footer.jsp"%>
+	<%@ include file="common/footer.jsp"%>
 </body>
 </html>

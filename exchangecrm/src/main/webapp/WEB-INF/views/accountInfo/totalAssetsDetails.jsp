@@ -16,7 +16,7 @@
 	</head>
 	
 	<body>
-		<%@ include file="../header.jsp"%>
+		<%@ include file="../common/header.jsp"%>
 		
 		<div class="container">
 		
@@ -25,8 +25,8 @@
 					<thead>
 						<tr>
 							<th>币种</th>
-							<th>系统账户信息</th>
-							<th>用户账户信息</th>
+							<th>系统总账</th>
+							<th>用户总账</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -35,7 +35,7 @@
 							<c:forEach var="systemWallet" items="${systemTotalAssets }">
 								<c:if test="${systemWallet.key != 'totalAssets' }">
 									<tr>
-										<td>${systemWallet.key}</td>
+										<td style="font-weight:bold;">${systemWallet.key}</td>
 										<td>${systemWallet.value}</td>
 										<c:if test="${not empty userTotalAssets }">
 											<c:forEach var="userWallet" items="${userTotalAssets }">
@@ -50,7 +50,7 @@
 						</c:if>
 						
 						<tr>
-							<td>总金额（USD）</td>
+							<td style="font-weight:bold;">总金额（USD）</td>
 							<c:if test="${not empty systemTotalAssets }">
 								<c:forEach var="wallet" items="${systemTotalAssets }">
 									<c:if test="${wallet.key == 'totalAssets' }">
@@ -79,6 +79,6 @@
 		<script type="text/javascript" src="<c:url value="/resources/bootstrap/js/bootstrap.min.js" />" ></script>
 		<script type="text/javascript" src="<c:url value="/resources/bootstrap/js/bootstrap-table.js" />" ></script>
 		
-		<%@ include file="../footer.jsp"%>
+		<%@ include file="../common/footer.jsp"%>
 	</body>
 </html>

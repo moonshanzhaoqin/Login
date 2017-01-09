@@ -8,19 +8,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class PageController {
 	private static Logger logger = LoggerFactory.getLogger(PageController.class);
 
-	ModelAndView mav;
-
 	@RequestMapping(value = "/login", method = { RequestMethod.GET })
 	public String login(HttpServletRequest request, HttpServletResponse response) {
 		return "login";
 	}
-
 
 	@RequestMapping(value = "/currency", method = { RequestMethod.GET })
 	public String currency(HttpServletRequest request, HttpServletResponse response) {
@@ -31,10 +27,4 @@ public class PageController {
 	public String config(HttpServletRequest request, HttpServletResponse response) {
 		return "config";
 	}
-
-	@RequestMapping(value = "/setting", method = { RequestMethod.GET })
-	public String settings(HttpServletRequest request, HttpServletResponse response) {
-		return "setting";
-	}
-
 }

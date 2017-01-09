@@ -13,7 +13,7 @@
 	
 	<body>
 		
-		<%@ include file="../header.jsp"%>
+		<%@ include file="../common/header.jsp"%>
 		
 		<div class="container">
 			<!-- -->
@@ -21,9 +21,9 @@
 				<table class = "table"> 
 					<thead>
 						<tr>
-							<th>系统总资产</th>
-							<th>用户总资产</th>
-							<th>差额</th>
+							<th>系统总资产（USD）</th>
+							<th>用户总资产（USD）</th>
+							<th>差额（USD）</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -202,6 +202,6 @@
 			
 			
 		</script>
-		<%@ include file="../footer.jsp"%>
+		<%@ include file="../common/footer.jsp"%>
 	</body>
 </html>

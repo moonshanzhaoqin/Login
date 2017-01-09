@@ -16,7 +16,7 @@
 	</head>
 	
 	<body>
-		<%@ include file="../header.jsp"%>
+		<%@ include file="../common/header.jsp"%>
 		
 		<div class="container">
 			<!-- -->
@@ -54,7 +54,7 @@
         					</li>
         					
         					<li >
-        						<button type="submit" class="btn btn-default">搜索</button>
+        						<button type="submit" class="btn btn-primary">搜索</button>
         					</li>
         				</ul>
         			</form>
@@ -71,7 +71,7 @@
 							<th>用户名</th>
 							<th>用户类型</th>
 							<th>是否冻结</th>
-							<th>总资产</th>
+							<th>总资产（USD）</th>
 							<th>更新时间（UTC）</th>
 							<th>操作</th>
 						</tr>
@@ -179,6 +179,6 @@
 			}
 			
 		</script>
-		<%@ include file="../footer.jsp"%>
+		<%@ include file="../common/footer.jsp"%>
 	</body>
 </html>
