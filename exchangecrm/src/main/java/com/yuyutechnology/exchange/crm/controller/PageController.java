@@ -31,10 +31,4 @@ public class PageController {
 	public String config(HttpServletRequest request, HttpServletResponse response) {
 		return "config";
 	}
-
-	@RequestMapping(value = "/setting", method = { RequestMethod.GET })
-	public String settings(HttpServletRequest request, HttpServletResponse response) {
-		return "setting";
-	}
-
 }

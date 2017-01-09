@@ -14,7 +14,7 @@
 	href="<c:url value="/resources/css/common.css" />" />
 </head>
 <body>
-	<%@ include file="header.jsp"%>
+	<%@ include file="common/header.jsp"%>
 
 	<div class="container">
 		<div class="row ">
@@ -22,9 +22,12 @@
 			<ul class="formbar pull-right">
 				<li><select class="form-control"></select></li>
 				<li>
-					<button type="button" class="btn btn-default"
+					<button type="button" class="btn btn-primary"
 						onclick="addCurrency()">
-						<span class="glyphicon glyphicon-plus"></span> 添加新币种
+						<!--
+						<span class="glyphicon glyphicon-plus"></span>
+						-->
+						添加新币种
 					</button>
 				</li>
 			</ul>
@@ -273,6 +276,6 @@
 
 		}
 	</script>
-	<%@ include file="footer.jsp"%>
+	<%@ include file="common/footer.jsp"%>
 </body>
 </html>

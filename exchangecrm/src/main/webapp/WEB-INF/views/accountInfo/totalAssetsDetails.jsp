@@ -16,7 +16,7 @@
 	</head>
 	
 	<body>
-		<%@ include file="../header.jsp"%>
+		<%@ include file="../common/header.jsp"%>
 		
 		<div class="container">
 		
@@ -79,6 +79,6 @@
 		<script type="text/javascript" src="<c:url value="/resources/bootstrap/js/bootstrap.min.js" />" ></script>
 		<script type="text/javascript" src="<c:url value="/resources/bootstrap/js/bootstrap-table.js" />" ></script>
 		
-		<%@ include file="../footer.jsp"%>
+		<%@ include file="../common/footer.jsp"%>
 	</body>
 </html>

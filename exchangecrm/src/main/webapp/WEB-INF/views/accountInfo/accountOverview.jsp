@@ -16,7 +16,7 @@
 	</head>
 	
 	<body>
-		<%@ include file="../header.jsp"%>
+		<%@ include file="../common/header.jsp"%>
 		
 		<div class="container">
 			<!-- -->
@@ -54,7 +54,7 @@
         					</li>
         					
         					<li >
-        						<button type="submit" class="btn btn-default">搜索</button>
+        						<button type="submit" class="btn btn-primary">搜索</button>
         					</li>
         				</ul>
         			</form>
@@ -179,6 +179,6 @@
 			}
 			
 		</script>
-		<%@ include file="../footer.jsp"%>
+		<%@ include file="../common/footer.jsp"%>
 	</body>
 </html>
