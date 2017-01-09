@@ -85,7 +85,7 @@
 							<span class="glyphicon glyphicon-lock"></span> <input
 								name="adminPassword" type="password"
 								class="form-control adminPassword"
-								style="border: 0px; height: 40px;" value="123456" />
+								style="border: 0px; height: 40px;" />
 						</div>
 					</div>
 
