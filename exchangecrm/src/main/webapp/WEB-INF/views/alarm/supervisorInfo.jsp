@@ -1,4 +1,5 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page isELIgnored ="false" %>
 <%@page contentType="text/html; charset=utf-8"%>
 <!DOCTYPE html>
@@ -67,7 +68,7 @@
 									<td>${supervisor.supervisorName }</td>
 									<td>${supervisor.supervisorMobile }</td>
 									<td>${supervisor.supervisorEmail }</td>
-									<td>${supervisor.updateAt }</td>
+									<td><fmt:formatDate value="${supervisor.updateAt }" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 									<td>
 										<a href="#" onclick="delSupervisor(this)">删除</a>
 									</td>
