@@ -35,7 +35,7 @@
 							<c:forEach var="systemWallet" items="${systemTotalAssets }">
 								<c:if test="${systemWallet.key != 'totalAssets' }">
 									<tr>
-										<td>${systemWallet.key}</td>
+										<td style="font-weight:bold;">${systemWallet.key}</td>
 										<td>${systemWallet.value}</td>
 										<c:if test="${not empty userTotalAssets }">
 											<c:forEach var="userWallet" items="${userTotalAssets }">
