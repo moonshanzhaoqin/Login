@@ -29,7 +29,7 @@
 					</div>
 					
 					<div class="col-lg-3 text-right">
-						<input class="form-control" name="supervisorMobile" id="mobile" placeholder="请填写手机号"/>
+						<input class="form-control" name="supervisorMobile" id="mobile" placeholder="请填写手机号(+86)"/>
 					</div>
 					
 					<div class="col-lg-3 text-right">

@@ -18,13 +18,20 @@ public class CrmAlarmDAOImpl implements CrmAlarmDAO {
 
 	@Override
 	public void addCrmAlarmConfig(CrmAlarm crmAlarm) {
-		hibernateTemplate.save(crmAlarm);
+		hibernateTemplate.saveOrUpdate(crmAlarm);
 	}
 
 	@Override
 	public void delCrmAlarmConfig(int alarmId) {
 		CrmAlarm crmAlarm = hibernateTemplate.get(CrmAlarm.class, alarmId);
 		hibernateTemplate.delete(crmAlarm);
+	}
+	
+
+	@Override
+	public CrmAlarm getCrmAlarmConfig(int alarmId) {
+		CrmAlarm crmAlarm = hibernateTemplate.get(CrmAlarm.class, alarmId);
+		return crmAlarm;
 	}
 
 	@SuppressWarnings("unchecked")
