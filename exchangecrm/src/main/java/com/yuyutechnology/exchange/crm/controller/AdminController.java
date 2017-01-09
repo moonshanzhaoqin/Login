@@ -17,14 +17,14 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
 import com.yuyutechnology.exchange.crm.request.LoginRquest;
 import com.yuyutechnology.exchange.crm.request.ModifyPasswordRquest;
-import com.yuyutechnology.exchange.manager.AdminManager;
+import com.yuyutechnology.exchange.manager.CrmAdminManager;
 
 @Controller
 public class AdminController {
-	private static Logger logger = LoggerFactory.getLogger(PageController.class);
+	private static Logger logger = LoggerFactory.getLogger(AdminController.class);
 
 	@Autowired
-	AdminManager adminManager;
+	CrmAdminManager adminManager;
 
 	ModelAndView mav;
 

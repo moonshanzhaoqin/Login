@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.yuyutechnology.exchange.manager.AdminManager;
+import com.yuyutechnology.exchange.manager.CrmAdminManager;
 
 /**
  * 
@@ -15,7 +15,7 @@ import com.yuyutechnology.exchange.manager.AdminManager;
 public class AdminTest extends BaseSpringJunit4 {
 	public static Logger logger = LoggerFactory.getLogger(AdminTest.class);
 	@Autowired
-	AdminManager adminManager;
+	CrmAdminManager adminManager;
 
 	@Test
 	public void addAdminTEST() {

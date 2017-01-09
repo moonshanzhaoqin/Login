@@ -1,7 +1,6 @@
 package com.yuyutechnology.exchange.crm.controller;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,7 +16,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yuyutechnology.exchange.crm.request.SaveAlarmConfigRequest;
 import com.yuyutechnology.exchange.crm.request.SaveSupervisorRequest;
-import com.yuyutechnology.exchange.manager.AdminManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
 import com.yuyutechnology.exchange.manager.impl.CrmAlarmManagerImpl;
@@ -29,15 +27,13 @@ import com.yuyutechnology.exchange.utils.JsonBinder;
 public class AlarmController {
 	
 	@Autowired
-	AdminManager adminManager;
-	@Autowired
 	CrmAlarmManager crmAlarmManager;
 	@Autowired
 	CrmUserInfoManager crmUserInfoManager;
 	
 	ModelAndView mav;
 	
-	private static Logger logger = LoggerFactory.getLogger(CrmAlarmManagerImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(AlarmController.class);
 	
 	@RequestMapping(value="/alarm/getAlarmConfigList",method=RequestMethod.GET)
 	public ModelAndView getAlarmConfigList(){
