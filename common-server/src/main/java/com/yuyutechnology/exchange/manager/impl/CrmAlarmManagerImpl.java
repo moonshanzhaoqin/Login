@@ -58,6 +58,11 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	}
 
 	@Override
+	public CrmAlarm getAlarmConfigById(int alarmId) {
+		return crmAlarmDAO.getCrmAlarmConfig(alarmId);
+	}
+	
+	@Override
 	public void autoAlarm(BigDecimal difference) {
 		List<CrmAlarm> list = crmAlarmDAO.getCrmAlarmConfigList();
 		
@@ -153,6 +158,20 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		crmSupervisorDAO.saveCrmSupervisor(crmSupervisor);
 		
 	}
-	
+
+	@Override
+	public void updateAlarmConfig(Integer alarmId, String alarmGrade, BigDecimal lowerLimit, BigDecimal upperLimit,
+			int alarmMode, int editorid, String adminIdArr) {
+		CrmAlarm crmAlarm = crmAlarmDAO.getCrmAlarmConfig(alarmId);
+		crmAlarm.setAlarmId(alarmId);
+		crmAlarm.setAlarmGrade(alarmGrade);
+		crmAlarm.setLowerLimit(lowerLimit);
+		crmAlarm.setUpperLimit(upperLimit);
+		crmAlarm.setAlarmMode(alarmMode);
+		crmAlarm.setSupervisorIdArr(adminIdArr);
+		crmAlarm.setEditorid(editorid);
+		
+		crmAlarmDAO.addCrmAlarmConfig(crmAlarm);
+	}	
 	
 }

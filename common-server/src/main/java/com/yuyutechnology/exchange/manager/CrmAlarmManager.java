@@ -11,7 +11,12 @@ public interface CrmAlarmManager {
 	public void addAlarmConfig(String alarmGrade,BigDecimal lowerLimit,
 			BigDecimal upperLimit,int alarmMode,int editorid,String adminIdArr);
 	
+	public void updateAlarmConfig(Integer alarmId,String alarmGrade,BigDecimal lowerLimit,
+			BigDecimal upperLimit,int alarmMode,int editorid,String adminIdArr);
+	
 	public void delAlarmConfig(int alarmId);
+	
+	public CrmAlarm getAlarmConfigById(int alarmId);
 	
 	public void autoAlarm(BigDecimal Difference);
 	

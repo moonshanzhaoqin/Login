@@ -1,8 +1,11 @@
 package com.yuyutechnology.exchange.crm.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,9 +19,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yuyutechnology.exchange.crm.request.SaveAlarmConfigRequest;
 import com.yuyutechnology.exchange.crm.request.SaveSupervisorRequest;
+import com.yuyutechnology.exchange.crm.request.UpdateAlarmConfigInfoRequest;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
-import com.yuyutechnology.exchange.manager.impl.CrmAlarmManagerImpl;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.pojo.CrmSupervisor;
 import com.yuyutechnology.exchange.utils.JsonBinder;
@@ -61,12 +64,42 @@ public class AlarmController {
 		return mav;
 	}
 	
+	@RequestMapping(value="/alarm/updateAlarmConfig",method=RequestMethod.POST)
+	public void updateAlarmConfig(HttpServletResponse response,Integer alarmId){
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		CrmAlarm crmAlarm = crmAlarmManager.getAlarmConfigById(alarmId);
+		List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
+		
+		map.put("retCode", 1);
+		map.put("crmAlarm", crmAlarm);
+		map.put("list", supervisorList);
+		out.print(JsonBinder.getInstance().toJson(map));
+
+	}
+	
+	@RequestMapping(value="/alarm/updateAlarmConfigInfo",method=RequestMethod.POST)
+	public ModelAndView updateAlarmConfigInfo(UpdateAlarmConfigInfoRequest request){
+		mav = new ModelAndView();
+		crmAlarmManager.updateAlarmConfig(request.getAlarmId(), request.getAlarmGrade(), 
+				request.getCriticalThresholdLowerLimit(), request.getCriticalThresholdUpperLimit(),
+				request.getAlarmMode(), 0,JsonBinder.getInstance().toJson(request.getSupervisorId()));
+		mav.setViewName("redirect:/alarm/getAlarmConfigList");
+		return mav;
+	}
+	
+	
+	
 	@RequestMapping(value="/alarm/saveAlarmConfig",method=RequestMethod.POST)
 	public ModelAndView saveAlarmConfig(HttpServletResponse response,SaveAlarmConfigRequest request){
 		mav = new ModelAndView();
-//		crmAlarmManager.addAlarmConfig(request.getAlarmGrade(), request.getCriticalThresholdLowerLimit()
-//				,request.getCriticalThresholdUpperLimit(),
-//				request.getAlarmMode(), 0,Arrays.toString(request.getSupervisorId()));
 		crmAlarmManager.addAlarmConfig(request.getAlarmGrade(), request.getCriticalThresholdLowerLimit()
 				,request.getCriticalThresholdUpperLimit(),
 				request.getAlarmMode(), 0,JsonBinder.getInstance().toJson(request.getSupervisorId()));

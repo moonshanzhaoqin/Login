@@ -1,5 +1,6 @@
 package com.yuyutechnology.exchange.manager.impl;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class WalletManagerImpl implements WalletManager {
 	@Override
 	public double getTotalAmoutGold(int userId) {
 		
-		double goldpayAmount = 0;
+		BigDecimal goldpayAmount = new BigDecimal("0");
 
 		List<Wallet> list = walletDAO.getWalletsByUserId(userId);
 		
@@ -46,21 +47,18 @@ public class WalletManagerImpl implements WalletManager {
 				
 				logger.info("base : {} for goldpay ,exchangeRate : {}" ,wallet.getCurrency().getCurrency(),exchangeRate);
 				
-				goldpayAmount = goldpayAmount+wallet.getBalance().longValue()*exchangeRate;
+				goldpayAmount = goldpayAmount.add(wallet.getBalance().multiply(new BigDecimal(Double.toString(exchangeRate))));
 				
 			}else{
-				goldpayAmount = goldpayAmount+wallet.getBalance().longValue();
+				goldpayAmount = goldpayAmount.add(wallet.getBalance());
 			}
 		}
-		
-		DecimalFormat df = new DecimalFormat("#.##");
-		
+
 		logger.info("user id : {} ,Currently has total goldpay : {}",userId,goldpayAmount);
-		Double goldAmount = Double.parseDouble(df.format(goldpayAmount/10000));
-		
+		BigDecimal goldAmount = goldpayAmount.divide(new BigDecimal("10000"),2,BigDecimal.ROUND_FLOOR);
 		logger.info("user id : {} ,Currently has total gold : {}",userId ,goldAmount);
 		
-		return goldAmount;
+		return goldAmount.doubleValue();
 	}
 
 	@Override
