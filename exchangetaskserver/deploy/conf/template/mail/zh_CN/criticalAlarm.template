@@ -1,0 +1,2 @@
+余额预警
+当前余额差值[DIFFERENCE]低于临界阈值[LOWERLIMIT]，触发第[GRADE]等级预警，触发时间为[TIME]
