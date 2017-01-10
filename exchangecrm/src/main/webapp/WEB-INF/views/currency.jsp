@@ -102,7 +102,7 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="currencyOrder" class="col-sm-2 control-label">排序</label>
+							<label for="currencyOrder" class="col-sm-2 control-label">顺序</label>
 							<div class="col-sm-5">
 								<input type="text" name="currencyOrder" class="form-control">
 							</div>
@@ -187,6 +187,14 @@
 						validators : {
 							notEmpty : {
 								message : '顺序不能为空'
+							},
+							regexp : {/* 只需加此键值对，包含正则表达式，和提示 */
+								regexp : /^[0-9]/,
+								message : '只能是数字'
+							},
+							stringLength : {
+								max : 6,
+								message : '数字过大'
 							}
 						}
 					}
@@ -305,7 +313,7 @@
 					},
 					async : false
 				});
-			}else{
+			} else {
 				alert("请正确填写后，再提交！")
 			}
 		}
@@ -324,7 +332,6 @@
 						console.log("success");
 						alert("添加成功！");
 						initCurrency();
-
 					} else {
 						alert("币种已存在")
 					}
