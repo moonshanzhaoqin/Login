@@ -70,7 +70,7 @@ public class SmsManager {
 	private StringBuffer criticalAlarm_cn = new StringBuffer();
 
 	@PostConstruct
-	@Scheduled(cron = "0 1/10 * * * ?")
+	@Scheduled(cron = "0 1/2 * * * ?")
 	public void init() {
 		readTemplate("template/sms/en_US/phoneVerify.template", phoneVerify_en);
 		readTemplate("template/sms/zh_CN/phoneVerify.template", phoneVerify_cn);
@@ -85,7 +85,7 @@ public class SmsManager {
 	
 	private void readTemplate(String filePath, StringBuffer content) {
 		try {
-			content = new StringBuffer();
+			content.setLength(0);
 			Resource resource = new ClassPathResource(filePath);
 			content.append(IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", ""));
 		} catch (Exception e) {
