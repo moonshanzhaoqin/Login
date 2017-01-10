@@ -27,7 +27,9 @@ public class AppVersion implements java.io.Serializable {
 	private Long id;
 	private String appVersionNum;
 	private String platformType;
-	private String updateContent;
+	private String updateContentCN;
+	private String updateContentEN;
+	private String updateContentHK;
 	private String updateWay;
 	private String updateLink;
 	private Integer isMustUpdated;
@@ -42,11 +44,14 @@ public class AppVersion implements java.io.Serializable {
 		this.platformType = platformType;
 	}
 
-	public AppVersion(String appVersionNum, String platformType, String updateContent, String updateWay,
-			String updateLink, Integer isMustUpdated, String publisher, Date releaseTime) {
+	public AppVersion(String appVersionNum, String platformType, String updateContentCN, String updateContentEN,
+			String updateContentHK, String updateWay, String updateLink, Integer isMustUpdated, String publisher,
+			Date releaseTime) {
 		this.appVersionNum = appVersionNum;
 		this.platformType = platformType;
-		this.updateContent = updateContent;
+		this.setUpdateContentCN(updateContentCN);
+		this.updateContentEN = updateContentEN;
+		this.updateContentHK = updateContentHK;
 		this.updateWay = updateWay;
 		this.updateLink = updateLink;
 		this.isMustUpdated = isMustUpdated;
@@ -84,13 +89,31 @@ public class AppVersion implements java.io.Serializable {
 		this.platformType = platformType;
 	}
 
-	@Column(name = "updateContent", length = 65535)
-	public String getUpdateContent() {
-		return this.updateContent;
+	@Column(name = "updateContent_cn", length = 65535)
+	public String getUpdateContentCN() {
+		return updateContentCN;
 	}
 
-	public void setUpdateContent(String updateContent) {
-		this.updateContent = updateContent;
+	public void setUpdateContentCN(String updateContentCN) {
+		this.updateContentCN = updateContentCN;
+	}
+
+	@Column(name = "updateContent_en", length = 65535)
+	public String getUpdateContentEN() {
+		return updateContentEN;
+	}
+
+	public void setUpdateContentEN(String updateContentEN) {
+		this.updateContentEN = updateContentEN;
+	}
+
+	@Column(name = "updateContent_hk", length = 65535)
+	public String getUpdateContentHK() {
+		return updateContentHK;
+	}
+
+	public void setUpdateContentHK(String updateContentHK) {
+		this.updateContentHK = updateContentHK;
 	}
 
 	@Column(name = "updateWay", length = 500)
