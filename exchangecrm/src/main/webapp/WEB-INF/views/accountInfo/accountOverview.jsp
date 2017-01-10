@@ -71,7 +71,7 @@
 							<th>用户名</th>
 							<th>用户类型</th>
 							<th>是否冻结</th>
-							<th>总资产</th>
+							<th>总资产（USD）</th>
 							<th>更新时间（UTC）</th>
 							<th>操作</th>
 						</tr>

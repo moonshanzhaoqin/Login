@@ -10,6 +10,8 @@ public interface CrmAlarmDAO {
 	
 	public void delCrmAlarmConfig(int alarmId);
 	
+	public CrmAlarm getCrmAlarmConfig(int alarmId);
+	
 	public List<CrmAlarm> getCrmAlarmConfigList();
 
 }

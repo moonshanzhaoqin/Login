@@ -21,9 +21,9 @@
 				<table class = "table"> 
 					<thead>
 						<tr>
-							<th>系统总资产</th>
-							<th>用户总资产</th>
-							<th>差额</th>
+							<th>系统总资产（USD）</th>
+							<th>用户总资产（USD）</th>
+							<th>差额（USD）</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -73,6 +73,7 @@
 						        		<c:if test="${alarmConfig.alarmMode eq 3}">短信+邮件</c:if>
 									</td>
 									<td>
+										<a href="#" onclick="updateAlarmConfig(this)">编辑</a>
 										<a href="#" onclick="delAlarmConfig(this)">删除</a>
 									</td>
 								</tr>
@@ -84,6 +85,7 @@
 			
 			
 			<%@ include file="alarmModal.jsp"%>
+			<%@ include file="updateAlarmModal.jsp"%>
 
 		</div>
 		
@@ -104,29 +106,93 @@
 				location.href=delAlarmConfigUrl+'?alarmId='+alarmId;
 			}
 			
-			$("#addAlarmConfigBtn").click(function(){
-// 				alert("点击按钮");
+			
+			function updateAlarmConfig(obj){
+				var tds=$(obj).parent().parent().find('td');
+				var alarmId = tds.eq(0).text();
 				
+				$.ajax({
+						url:"<c:url value='/alarm/updateAlarmConfig' />",
+						type:"post",
+						async:false,
+						dataType:"JSON",
+						data:{
+							alarmId:alarmId,
+						},
+						success:function(data){
+							if(data.retCode == 1){
+								$('#updateAlarmModal').modal('show');
+								$("#updateAlarmId").val(data.crmAlarm.alarmId);
+								$("#updateAlarmGrade").val(data.crmAlarm.alarmGrade);
+								$("#updateLowerLimit").val(data.crmAlarm.lowerLimit);
+								$("#updateUpperLimit").val(data.crmAlarm.upperLimit);
+								
+								//拼接html
+								
+								var optionStr="";
+								if(data.crmAlarm.alarmMode == 1){
+									optionStr='<option value="1" selected>短信</option><option value="2" >邮件</option><option value="3" >短信+邮件</option>';
+								}else if(data.crmAlarm.alarmMode == 2){
+									optionStr='<option value="1">短信</option><option value="2"  selected>邮件</option><option value="3" >短信+邮件</option>';
+								}else{
+									optionStr='<option value="1">短信</option><option value="2">邮件</option><option value="3" selected>短信+邮件</option>';
+								}
+								
+								$("#updateAlarmMode").html(optionStr);
+								
+								var supervisorGroup = '';
+								for(var i = 0; i<data.list.length;i++){
+									var supervisor = data.list[i];
+									if((data.crmAlarm.supervisorIdArr).indexOf(supervisor.supervisorId) != -1){
+										supervisorGroup +='<div class="col-lg-4"><input class="panel-group" name="supervisorId" type="checkbox" value='+supervisor.supervisorId+' checked/>'+supervisor.supervisorName+'</div>';
+									}else{
+										supervisorGroup +='<div class="col-lg-4"><input class="panel-group" name="supervisorId" type="checkbox" value='+supervisor.supervisorId+' />'+supervisor.supervisorName+'</div>';
+									}
+								}
+								
+								$("#updateSupervisorGroup").html(supervisorGroup);
+								
+							}
+						}
+					});
+			}
+			
+			
+			$("#addAlarmConfigBtn").click(function(){				
 				var alarmGrade = $("#alarmGrade").val().trim();
 				var lowerLimit = $("#criticalThresholdLowerLimit").val().trim();
 				var upperLimit = $("#criticalThresholdUpperLimit").val().trim();
-// 				var alarmMode = $("#alarmMode").val().trim();
 				
 				if( checkNotBlank(alarmGrade) && checkNotBlank(lowerLimit) && checkNotBlank(upperLimit)){
-					if(lowerLimit > upperLimit){
+					if(parseInt(lowerLimit) > parseInt(upperLimit)){
 						alert("下限不能大于上限！");
 						return ;
 					}
-					
 				}else{
 					alert("有未填写完整的信息，请填写完善后再提交！");
 					return ;
 				}
-				
-				
 				$("#addAlarmConfig").submit();
 			});
 			
+			
+			$("#updateAlarmConfigBtn").click(function(){		
+				var alarmGrade = $("#updateAlarmGrade").val().trim();
+				var lowerLimit = $("#updateLowerLimit").val().trim();
+				var upperLimit = $("#updateUpperLimit").val().trim();
+				
+				if( checkNotBlank(alarmGrade) && checkNotBlank(lowerLimit) && checkNotBlank(upperLimit)){
+					if(parseInt(lowerLimit) > parseInt(upperLimit)){
+						alert("下限不能大于上限！");
+						return ;
+					}
+				}else{
+					alert("有未填写完整的信息，请填写完善后再提交！");
+					return ;
+				}
+				$("#updateAlarmConfig").submit();
+			});
+
 			function checkNotBlank(param){
 				if(param == null ||(param == undefined || param == '')){
 					return false;
