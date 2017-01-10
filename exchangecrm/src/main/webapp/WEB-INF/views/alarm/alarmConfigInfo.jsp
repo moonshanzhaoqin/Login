@@ -5,7 +5,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>预警信息</title>
+		<title>Anytime Exchange</title>
 		
 		<link rel="stylesheet" href='<c:url value="/resources/bootstrap/css/bootstrap.min.css" />' />
 		<link rel="stylesheet" href='<c:url value="/resources/bootstrap/css/bootstrap-table.css" />' />
@@ -55,7 +55,7 @@
 							<th>等级</th>
 							<th>下限</th>
 							<th>上限</th>
-							<th>报警方式</th>
+							<th>预警方式</th>
 							<th>状态</th>
 							<th>操作</th>
 						</tr>

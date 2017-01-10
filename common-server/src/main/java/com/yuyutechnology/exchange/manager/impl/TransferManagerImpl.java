@@ -130,6 +130,9 @@ public class TransferManagerImpl implements TransferManager{
 		if(receiver != null){
 			transfer.setUserTo(receiver.getUserId());
 			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+			//判断对方是否有该种货币
+			commonManager.checkAndUpdateWallet(receiver.getUserId(), currency);
+			
 		}else{
 			User systemUser = userDAO.getSystemUser();
 			transfer.setUserTo(systemUser.getUserId());
