@@ -48,4 +48,5 @@ public interface CommonManager {
 	 * @return
 	 */
 	public MsgFlagInfo getMsgFlag(int userId);
+	
 }
