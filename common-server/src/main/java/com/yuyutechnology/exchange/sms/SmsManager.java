@@ -55,52 +55,40 @@ public class SmsManager {
 	// en
 	private String phoneVerify_en = "";
 	// zh_CN
-	private String phoneVerify_CN = "";
+	private String phoneVerify_cn = "";
 	// zh_HK
-	private String phoneVerify_HK = "";
+	private String phoneVerify_hk = "";
 
 	// en
 	private String transfer_en = "";
 	// zh_CN
-	private String transfer_CN = "";
+	private String transfer_cn = "";
 	// zh_HK
-	private String transfer_HK = "";
+	private String transfer_hk = "";
 	
 	// zh_CN
-	private String criticalAlarm_CN = "";
+	private String criticalAlarm_cn = "";
 
 	@PostConstruct
 	@Scheduled(cron = "0 1/10 * * * ?")
 	public void init() {
-		// 加载模板
-		// 验证码
+		readTemplate("template/sms/en_US/phoneVerify.template", phoneVerify_en);
+		readTemplate("template/sms/zh_CN/phoneVerify.template", phoneVerify_cn);
+		readTemplate("template/sms/zh_HK/phoneVerify.template", phoneVerify_hk);
+		
+		readTemplate("template/sms/en_US/transfer.template", transfer_en);
+		readTemplate("template/sms/zh_CN/transfer.template", transfer_cn);
+		readTemplate("template/sms/zh_HK/transfer.template", transfer_hk);
+		
+		readTemplate("template/sms/zh_CN/criticalAlarm.template", criticalAlarm_cn);
+	}
+	
+	private void readTemplate(String filePath, String content) {
 		try {
-			Resource resource = new ClassPathResource("sms/en_US/phoneVerify.template");
-			phoneVerify_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-
-			resource = new ClassPathResource("sms/zh_CN/phoneVerify.template");
-			phoneVerify_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-
-			resource = new ClassPathResource("sms/zh_HK/phoneVerify.template");
-			phoneVerify_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-
-			// 转账
-			resource = new ClassPathResource("sms/en_US/transfer.template");
-			transfer_en = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-
-			resource = new ClassPathResource("sms/zh_CN/transfer.template");
-			transfer_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-
-			resource = new ClassPathResource("sms/zh_HK/transfer.template");
-			transfer_HK = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-			
-			//临界报警
-			resource = new ClassPathResource("sms/zh_CN/criticalAlarm.template");
-			criticalAlarm_CN = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-			
-			
+			Resource resource = new ClassPathResource(filePath);
+			content = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 		} catch (Exception e) {
-			logger.warn("sms template read error , can't send sms: " + e.getMessage());
+			logger.warn("SMS template ({}) read error , can't send this msg : {} ", new Object[]{filePath, e.getMessage()});
 		}
 	}
 
@@ -142,7 +130,7 @@ public class SmsManager {
 	
 	@Async
 	public void sendSMS4CriticalAlarm(String phone,BigDecimal difference,BigDecimal lowerLimit,String grade,String dateTime){
-		String transferContent = criticalAlarm_CN;
+		String transferContent = criticalAlarm_cn;
 		String content = transferContent
 				.replace(SMS_REPLACE_DIFFERENCE,difference.toString())
 				.replace(SMS_REPLACE_LOWERLIMIT,lowerLimit.toString())
@@ -163,18 +151,18 @@ public class SmsManager {
 		switch (func) {
 		case "phoneVerify":
 			if ("+86".equals(areaCode)) {
-				content = phoneVerify_CN;
+				content = phoneVerify_cn;
 			} else if ("+852".equals(areaCode) || ("+853".equals(areaCode) || "+886".equals(areaCode))) {
-				content = phoneVerify_HK;
+				content = phoneVerify_hk;
 			} else {
 				content = phoneVerify_en;
 			}
 			break;
 		case "transfer":
 			if ("+86".equals(areaCode)) {
-				content = transfer_CN;
+				content = transfer_cn;
 			} else if ("+852".equals(areaCode) || ("+853".equals(areaCode) || "+886".equals(areaCode))) {
-				content = transfer_HK;
+				content = transfer_hk;
 			} else {
 				content = transfer_en;
 			}
@@ -185,7 +173,6 @@ public class SmsManager {
 		return content;
 	}
 
-	@Async
 	private void sendSMS(String phoneNum, String content) {
 		logger.info("sendSMS , phoneNum : {} , content : {}", phoneNum, content);
 		if (StringUtils.isNotBlank(phoneNum) && StringUtils.isNotBlank(content)) {

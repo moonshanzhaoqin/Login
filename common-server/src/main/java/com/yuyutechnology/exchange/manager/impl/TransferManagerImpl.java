@@ -359,7 +359,6 @@ public class TransferManagerImpl implements TransferManager{
 			return;
 		}
 		for (Unregistered unregistered : list) {
-			//:TODO
 			//判断是否超过期限
 			long deadline = configManager.getConfigLongValue(ConfigKeyEnum.REFUNTIME, 3l)*24*60*60*1000;
 			if(new Date().getTime() - unregistered.getCreateTime().getTime() >= deadline){

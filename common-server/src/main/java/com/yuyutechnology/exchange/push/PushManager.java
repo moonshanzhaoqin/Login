@@ -49,57 +49,57 @@ public class PushManager {
 	// en_US
 	private String transfer_title_en = "";
 	// zh_CN
-	private String transfer_title_CN = "";
+	private String transfer_title_cn = "";
 	// zh_HK
-	private String transfer_title_HK = "";
+	private String transfer_title_hk = "";
 	// en_US
 	private String transfer_en = "";
 	// zh_CN
-	private String transfer_CN = "";
+	private String transfer_cn = "";
 	// zh_HK
-	private String transfer_HK = "";
+	private String transfer_hk = "";
 
 	// 请求转账
 	// en_US
 	private String transfer_request_title_en = "";
 	// zh_CN
-	private String transfer_request_title_CN = "";
+	private String transfer_request_title_cn = "";
 	// zh_HK
-	private String transfer_request_title_HK = "";
+	private String transfer_request_title_hk = "";
 	// en_US
 	private String transfer_request_en = "";
 	// zh_CN
-	private String transfer_request_CN = "";
+	private String transfer_request_cn = "";
 	// zh_HK
-	private String transfer_request_HK = "";
+	private String transfer_request_hk = "";
 
 	// 退款refund
 	// en_US
 	private String refund_title_en = "";
-	// zh_CN
-	private String refund_title_CN = "";
-	// zh_HK
-	private String refund_title_HK = "";
-	// en_US
+	// zh_cn
+	private String refund_title_cn = "";
+	// zh_hk
+	private String refund_title_hk = "";
+	// en_us
 	private String refund_en = "";
-	// zh_CN
-	private String refund_CN = "";
-	// zh_HK
-	private String refund_HK = "";
+	// zh_cn
+	private String refund_cn = "";
+	// zh_hk
+	private String refund_hk = "";
 
 	// 下线offline
-	// en_US
+	// en_us
 	private String offline_title_en = "";
-	// zh_CN
-	private String offline_title_CN = "";
-	// zh_HK
-	private String offline_title_HK = "";
-	// en_US
+	// zh_cn
+	private String offline_title_cn = "";
+	// zh_hk
+	private String offline_title_hk = "";
+	// en_us
 	private String offline_en = "";
-	// zh_CN
-	private String offline_CN = "";
-	// zh_HK
-	private String offline_HK = "";
+	// zh_cn
+	private String offline_cn = "";
+	// zh_hk
+	private String offline_hk = "";
 
 	private final String PUSH_REPLACE_FROM = "[FROM]";
 	private final String PUSH_REPLACE_TO = "[TO]";
@@ -111,80 +111,36 @@ public class PushManager {
 	@Scheduled(cron = "0 1/10 * * * ?")
 	public void init() {
 		logger.info("==========init PushManager==========");
-		// 加载模板
-		try {
-			// 到账提醒
-			Resource resource = new ClassPathResource("push/en_US/transfer.template");
-			String string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-			transfer_title_en = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-			transfer_en = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
-
-			resource = new ClassPathResource("push/zh_CN/transfer.template");
-			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-			transfer_title_CN = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-			transfer_CN = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
-
-			resource = new ClassPathResource("push/zh_HK/transfer.template");
-			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-			transfer_title_HK = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-			transfer_HK = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
-
-			// 请求转账
-			resource = new ClassPathResource("push/en_US/transfer_request.template");
-			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-			transfer_request_title_en = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "")
-					.replaceAll("\r", "");
-			transfer_request_en = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
-
-			resource = new ClassPathResource("push/zh_CN/transfer_request.template");
-			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-			transfer_request_title_CN = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "")
-					.replaceAll("\r", "");
-			transfer_request_CN = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
-
-			resource = new ClassPathResource("push/zh_HK/transfer_request.template");
-			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-			transfer_request_title_HK = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "")
-					.replaceAll("\r", "");
-			transfer_request_HK = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
-
-			// 退款refund
-			resource = new ClassPathResource("push/en_US/refund.template");
-			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-			refund_title_en = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-			refund_en = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
-
-			resource = new ClassPathResource("push/zh_CN/refund.template");
-			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-			refund_title_CN = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-			refund_CN = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
-
-			resource = new ClassPathResource("push/zh_HK/refund.template");
-			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-			refund_title_HK = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-			refund_HK = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
-
-			// 下线offline
-			resource = new ClassPathResource("push/en_US/offline.template");
-			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-			offline_title_en = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-			offline_en = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
-
-			resource = new ClassPathResource("push/zh_CN/offline.template");
-			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-			offline_title_CN = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-			offline_CN = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
-
-			resource = new ClassPathResource("push/zh_HK/offline.template");
-			string = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-			offline_title_HK = string.substring(0, string.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-			offline_HK = string.substring(string.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
-
-		} catch (Exception e) {
-			logger.warn("push template read error , can't push :  " + e.getMessage());
-		}
+		
+		readTemplate("template/push/en_US/transfer.template", transfer_title_en, transfer_en);
+		readTemplate("template/push/zh_CN/transfer.template", transfer_title_cn, transfer_cn);
+		readTemplate("template/push/zh_HK/transfer.template", transfer_title_hk, transfer_hk);
+		
+		readTemplate("template/push/en_US/transfer_request.template", transfer_request_title_en, transfer_request_en);
+		readTemplate("template/push/zh_CN/transfer_request.template", transfer_request_title_cn, transfer_request_cn);
+		readTemplate("template/push/zh_HK/transfer_request.template", transfer_request_title_hk, transfer_request_hk);
+		
+		readTemplate("template/push/en_US/refund.template", refund_title_en, refund_en);
+		readTemplate("template/push/zh_CN/refund.template", refund_title_cn, refund_cn);
+		readTemplate("template/push/zh_HK/refund.template", refund_title_hk, refund_hk);
+		
+		readTemplate("template/push/en_US/offline.template", offline_title_en, offline_en);
+		readTemplate("template/push/zh_CN/offline.template", offline_title_cn, offline_cn);
+		readTemplate("template/push/zh_HK/offline.template", offline_title_hk, offline_hk);
+		
 	}
 
+	private void readTemplate(String filePath, String tital, String content) {
+		try {
+			Resource resource = new ClassPathResource(filePath);
+			String fileString = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			tital = fileString.substring(0, fileString.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
+			content = fileString.substring(fileString.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
+		} catch (Exception e) {
+			logger.warn("push template ({}) read error , can't push this msg : {} ", new Object[]{filePath, e.getMessage()});
+		}
+	}
+	
 	/**
 	 * 到账通知
 	 * 
@@ -305,10 +261,10 @@ public class PushManager {
 				body = transfer_en;
 				break;
 			case zh_CN:
-				body = transfer_CN;
+				body = transfer_cn;
 				break;
 			case zh_TW:
-				body = transfer_HK;
+				body = transfer_hk;
 				break;
 			default:
 				break;
@@ -320,10 +276,10 @@ public class PushManager {
 				body = transfer_request_en;
 				break;
 			case zh_CN:
-				body = transfer_request_CN;
+				body = transfer_request_cn;
 				break;
 			case zh_TW:
-				body = transfer_request_HK;
+				body = transfer_request_hk;
 				break;
 			default:
 				break;
@@ -335,10 +291,10 @@ public class PushManager {
 				body = refund_en;
 				break;
 			case zh_CN:
-				body = refund_CN;
+				body = refund_cn;
 				break;
 			case zh_TW:
-				body = refund_HK;
+				body = refund_hk;
 				break;
 			default:
 				break;
@@ -350,10 +306,10 @@ public class PushManager {
 				body = offline_en;
 				break;
 			case zh_CN:
-				body = offline_CN;
+				body = offline_cn;
 				break;
 			case zh_TW:
-				body = offline_HK;
+				body = offline_hk;
 				break;
 			default:
 				break;
@@ -381,10 +337,10 @@ public class PushManager {
 				title = transfer_title_en;
 				break;
 			case zh_CN:
-				title = transfer_title_CN;
+				title = transfer_title_cn;
 				break;
 			case zh_TW:
-				title = transfer_title_HK;
+				title = transfer_title_hk;
 				break;
 			default:
 				break;
@@ -396,10 +352,10 @@ public class PushManager {
 				title = transfer_request_title_en;
 				break;
 			case zh_CN:
-				title = transfer_request_title_CN;
+				title = transfer_request_title_cn;
 				break;
 			case zh_TW:
-				title = transfer_request_title_HK;
+				title = transfer_request_title_hk;
 				break;
 			default:
 				break;
@@ -411,10 +367,10 @@ public class PushManager {
 				title = refund_title_en;
 				break;
 			case zh_CN:
-				title = refund_title_CN;
+				title = refund_title_cn;
 				break;
 			case zh_TW:
-				title = refund_title_HK;
+				title = refund_title_hk;
 				break;
 			default:
 				break;
@@ -426,10 +382,10 @@ public class PushManager {
 				title = offline_title_en;
 				break;
 			case zh_CN:
-				title = offline_title_CN;
+				title = offline_title_cn;
 				break;
 			case zh_TW:
-				title = offline_title_HK;
+				title = offline_title_hk;
 				break;
 			default:
 				break;
