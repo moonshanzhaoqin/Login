@@ -14,6 +14,8 @@ public interface CrmAlarmManager {
 	public void updateAlarmConfig(Integer alarmId,String alarmGrade,BigDecimal lowerLimit,
 			BigDecimal upperLimit,int alarmMode,int editorid,String adminIdArr);
 	
+	public void updateAlarmAvailable(Integer alarmId, int alarmAvailable);
+	
 	public void delAlarmConfig(int alarmId);
 	
 	public CrmAlarm getAlarmConfigById(int alarmId);

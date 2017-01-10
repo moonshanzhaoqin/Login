@@ -14,4 +14,6 @@ public interface CrmAlarmDAO {
 	
 	public List<CrmAlarm> getCrmAlarmConfigList();
 
+	public List<CrmAlarm> getCrmAlarmConfigListByType(int alarmAvailable);
+
 }

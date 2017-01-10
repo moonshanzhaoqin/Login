@@ -56,6 +56,7 @@
 							<th>下限</th>
 							<th>上限</th>
 							<th>报警方式</th>
+							<th>状态</th>
 							<th>操作</th>
 						</tr>
 					</thead>
@@ -73,8 +74,22 @@
 						        		<c:if test="${alarmConfig.alarmMode eq 3}">短信+邮件</c:if>
 									</td>
 									<td>
+										<c:if test="${alarmConfig.alarmAvailable eq 0}">
+											<font color="red">不可用</font>
+										</c:if>
+						        		<c:if test="${alarmConfig.alarmAvailable eq 1}">可用</c:if>
+									</td>
+									<td>
 										<a href="#" onclick="updateAlarmConfig(this)">编辑</a>
 										<a href="#" onclick="delAlarmConfig(this)">删除</a>
+										
+										<c:if test="${alarmConfig.alarmAvailable eq 0}">
+											<a href="#" onclick="updateAlarmAvailable(this,1)">可用</a>
+										</c:if>
+										<c:if test="${alarmConfig.alarmAvailable eq 1}">
+											<a href="#" onclick="updateAlarmAvailable(this,0)">不可用</a>
+										</c:if>
+										
 									</td>
 								</tr>
 							</c:forEach>
@@ -155,6 +170,26 @@
 							}
 						}
 					});
+			}
+			
+			function updateAlarmAvailable(obj,alarmAvailable){
+				
+				if(alarmAvailable == 0){
+					var r = confirm("确定要将该预警状态置为不可用状态么？");
+					if(r != true){
+						return ;
+					}
+				}else{
+					var r = confirm("确定要将该预警状态置为可用状态么？");
+					if(r != true){
+						return ;
+					}
+				}
+				var tds=$(obj).parent().parent().find('td');
+				var alarmId = tds.eq(0).text();
+				
+				var updateAlarmAvailableUrl = "<c:url value='/alarm/updateAlarmAvailable' />";
+				location.href=updateAlarmAvailableUrl+'?alarmId='+alarmId+'&alarmAvailable='+alarmAvailable;
 			}
 			
 			

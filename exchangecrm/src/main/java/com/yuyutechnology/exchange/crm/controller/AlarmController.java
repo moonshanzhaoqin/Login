@@ -95,14 +95,20 @@ public class AlarmController {
 		return mav;
 	}
 	
-	
-	
 	@RequestMapping(value="/alarm/saveAlarmConfig",method=RequestMethod.POST)
 	public ModelAndView saveAlarmConfig(HttpServletResponse response,SaveAlarmConfigRequest request){
 		mav = new ModelAndView();
 		crmAlarmManager.addAlarmConfig(request.getAlarmGrade(), request.getCriticalThresholdLowerLimit()
 				,request.getCriticalThresholdUpperLimit(),
 				request.getAlarmMode(), 0,JsonBinder.getInstance().toJson(request.getSupervisorId()));
+		mav.setViewName("redirect:/alarm/getAlarmConfigList");
+		return mav;
+	}
+	
+	@RequestMapping(value="/alarm/updateAlarmAvailable",method=RequestMethod.GET)
+	public ModelAndView updateAlarmAvailable(Integer alarmId,int alarmAvailable){
+		mav = new ModelAndView();
+		crmAlarmManager.updateAlarmAvailable(alarmId, alarmAvailable);
 		mav.setViewName("redirect:/alarm/getAlarmConfigList");
 		return mav;
 	}

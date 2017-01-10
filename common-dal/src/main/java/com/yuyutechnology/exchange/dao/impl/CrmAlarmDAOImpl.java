@@ -43,5 +43,15 @@ public class CrmAlarmDAOImpl implements CrmAlarmDAO {
 		}
 		return (List<CrmAlarm>) list;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CrmAlarm> getCrmAlarmConfigListByType(int alarmAvailable){
+		List<?> list = hibernateTemplate.find("from CrmAlarm where alarmAvailable = ?",alarmAvailable);
+		if(list.isEmpty()){
+			return null;
+		}
+		return (List<CrmAlarm>) list;
+	}
 
 }
