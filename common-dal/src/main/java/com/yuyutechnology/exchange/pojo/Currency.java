@@ -23,7 +23,7 @@ public class Currency implements java.io.Serializable {
 	private String nameCn;
 	private String nameHk;
 	private int currencyStatus;
-	private String currencyOrder;
+	private int currencyOrder;
 
 	public Currency() {
 	}
@@ -33,7 +33,7 @@ public class Currency implements java.io.Serializable {
 		this.currencyStatus = currencyStatus;
 	}
 
-	public Currency(String currency,String currencyUnit, String nameEn, String nameCn, String nameHk, int currencyStatus, String currencyOrder) {
+	public Currency(String currency,String currencyUnit, String nameEn, String nameCn, String nameHk, int currencyStatus, int currencyOrder) {
 		this.currency = currency;
 		this.currencyUnit = currencyUnit;
 		this.nameEn = nameEn;
@@ -91,11 +91,11 @@ public class Currency implements java.io.Serializable {
 	}
 
 	@Column(name = "currency_order", unique = true)
-	public String getCurrencyOrder() {
+	public int getCurrencyOrder() {
 		return this.currencyOrder;
 	}
 
-	public void setCurrencyOrder(String currencyOrder) {
+	public void setCurrencyOrder(int currencyOrder) {
 		this.currencyOrder = currencyOrder;
 	}
 
