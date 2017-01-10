@@ -85,6 +85,7 @@ public class SmsManager {
 	
 	private void readTemplate(String filePath, StringBuffer content) {
 		try {
+			content = new StringBuffer();
 			Resource resource = new ClassPathResource(filePath);
 			content.append(IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", ""));
 		} catch (Exception e) {
