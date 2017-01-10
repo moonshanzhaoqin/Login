@@ -64,6 +64,7 @@ public class TransferDAOImpl implements TransferDAO {
 		return transfer;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Transfer> findTransferByStatusAndTimeBefore(int transferStatus, int transferType, Date date) {
 		List<?> list = hibernateTemplate.find("from Transfer where transferStatus = ? and transferType = ? and createTime <= ? ",transferStatus,transferType, date);

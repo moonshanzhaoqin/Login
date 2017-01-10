@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.dao.ConfigDAO;
 import com.yuyutechnology.exchange.pojo.Config;
-import com.yuyutechnology.exchange.pojo.User;
 
 @Repository
 public class ConfigDAOImpl implements ConfigDAO {
