@@ -8,7 +8,7 @@ public interface ExchangeRateManager {
 	/**
 	 * 
 	 */
-	public void updateExchangeRate();
+	public void updateExchangeRate(boolean refresh);
 
 	/**
 	 * @Descrition : TODO

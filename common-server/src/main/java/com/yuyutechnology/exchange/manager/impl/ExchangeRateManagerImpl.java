@@ -227,7 +227,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		if (StringUtils.isBlank(result)) {
 			updateExchangeRateNoGoldq();
 			updateGoldpayExchangeRate();
-			 result = redisDAO.getValueByKey("redis_exchangeRate");
+			result = redisDAO.getValueByKey("redis_exchangeRate");
 		}
 //		logger.info("result : {}",result);
 		map = JsonBinder.getInstance().fromJson(result, HashMap.class);
@@ -241,9 +241,9 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 	}
 
 
-	public void updateExchangeRate() {
+	public void updateExchangeRate(boolean refresh) {
 		String goldpayER = redisDAO.getValueByKey("redis_goldpay_exchangerate");
-		if (StringUtils.isBlank(goldpayER)) {
+		if (StringUtils.isBlank(goldpayER) || refresh) {
 			updateExchangeRateNoGoldq();
 			updateGoldpayExchangeRate();
 		}else{

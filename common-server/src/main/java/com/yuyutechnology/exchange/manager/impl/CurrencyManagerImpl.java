@@ -15,6 +15,7 @@ import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.CurrencyManager;
+import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Wallet;
 
@@ -31,6 +32,8 @@ public class CurrencyManagerImpl implements CurrencyManager {
 	UserDAO userDAO;
 	@Autowired
 	CommonManager commonManager;
+	@Autowired
+	ExchangeRateManager exchangeRateManager;
 
 	@Override
 	public List<Currency> getCurrencyList() {
@@ -52,6 +55,8 @@ public class CurrencyManagerImpl implements CurrencyManager {
 			currencyDAO.updateCurrency(currency);
 			//为系统用户添加新钱包
 			walletDAO.addwallet(new Wallet(currency, userDAO.getSystemUser().getUserId(),  BigDecimal.ZERO, new Date()));
+			//强制刷新rate缓存
+			exchangeRateManager.updateExchangeRate(true);
 			return ServerConsts.RET_CODE_SUCCESS;
 		} else {
 			return ServerConsts.RET_CODE_FAILUE;
