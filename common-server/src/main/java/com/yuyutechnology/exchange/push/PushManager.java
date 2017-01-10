@@ -47,59 +47,59 @@ public class PushManager {
 
 	// 到账提醒
 	// en_US
-	private String transfer_title_en = "";
+	private StringBuffer transfer_title_en = new StringBuffer();
 	// zh_CN
-	private String transfer_title_cn = "";
+	private StringBuffer transfer_title_cn = new StringBuffer();
 	// zh_HK
-	private String transfer_title_hk = "";
+	private StringBuffer transfer_title_hk = new StringBuffer();
 	// en_US
-	private String transfer_en = "";
+	private StringBuffer transfer_en = new StringBuffer();
 	// zh_CN
-	private String transfer_cn = "";
+	private StringBuffer transfer_cn = new StringBuffer();
 	// zh_HK
-	private String transfer_hk = "";
+	private StringBuffer transfer_hk = new StringBuffer();
 
 	// 请求转账
 	// en_US
-	private String transfer_request_title_en = "";
+	private StringBuffer transfer_request_title_en = new StringBuffer();
 	// zh_CN
-	private String transfer_request_title_cn = "";
+	private StringBuffer transfer_request_title_cn = new StringBuffer();
 	// zh_HK
-	private String transfer_request_title_hk = "";
+	private StringBuffer transfer_request_title_hk = new StringBuffer();
 	// en_US
-	private String transfer_request_en = "";
+	private StringBuffer transfer_request_en = new StringBuffer();
 	// zh_CN
-	private String transfer_request_cn = "";
+	private StringBuffer transfer_request_cn = new StringBuffer();
 	// zh_HK
-	private String transfer_request_hk = "";
+	private StringBuffer transfer_request_hk = new StringBuffer();
 
 	// 退款refund
 	// en_US
-	private String refund_title_en = "";
+	private StringBuffer refund_title_en = new StringBuffer();
 	// zh_cn
-	private String refund_title_cn = "";
+	private StringBuffer refund_title_cn = new StringBuffer();
 	// zh_hk
-	private String refund_title_hk = "";
+	private StringBuffer refund_title_hk = new StringBuffer();
 	// en_us
-	private String refund_en = "";
+	private StringBuffer refund_en = new StringBuffer();
 	// zh_cn
-	private String refund_cn = "";
+	private StringBuffer refund_cn = new StringBuffer();
 	// zh_hk
-	private String refund_hk = "";
+	private StringBuffer refund_hk = new StringBuffer();
 
 	// 下线offline
 	// en_us
-	private String offline_title_en = "";
+	private StringBuffer offline_title_en = new StringBuffer();
 	// zh_cn
-	private String offline_title_cn = "";
+	private StringBuffer offline_title_cn = new StringBuffer();
 	// zh_hk
-	private String offline_title_hk = "";
+	private StringBuffer offline_title_hk = new StringBuffer();
 	// en_us
-	private String offline_en = "";
+	private StringBuffer offline_en = new StringBuffer();
 	// zh_cn
-	private String offline_cn = "";
+	private StringBuffer offline_cn = new StringBuffer();
 	// zh_hk
-	private String offline_hk = "";
+	private StringBuffer offline_hk = new StringBuffer();
 
 	private final String PUSH_REPLACE_FROM = "[FROM]";
 	private final String PUSH_REPLACE_TO = "[TO]";
@@ -130,12 +130,12 @@ public class PushManager {
 		
 	}
 
-	private void readTemplate(String filePath, String tital, String content) {
+	private void readTemplate(String filePath, StringBuffer tital, StringBuffer content) {
 		try {
 			Resource resource = new ClassPathResource(filePath);
 			String fileString = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-			tital = fileString.substring(0, fileString.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-			content = fileString.substring(fileString.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
+			tital.append(fileString.substring(0, fileString.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", ""));
+			content.append(fileString.substring(fileString.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", ""));
 		} catch (Exception e) {
 			logger.warn("push template ({}) read error , can't push this msg : {} ", new Object[]{filePath, e.getMessage()});
 		}
@@ -253,7 +253,7 @@ public class PushManager {
 	 */
 
 	private String templateChoose(String func, Language pushTag) {
-		String body = null;
+		StringBuffer body = null;
 		switch (func) {
 		case "transfer":
 			switch (pushTag) {
@@ -316,9 +316,9 @@ public class PushManager {
 			}
 			break;
 		default:
-			body = null;
+			body = new StringBuffer();
 		}
-		return body;
+		return body.toString();
 	}
 
 	/**
@@ -329,7 +329,7 @@ public class PushManager {
 	 * @return
 	 */
 	private String titleChoose(String func, Language pushTag) {
-		String title = null;
+		StringBuffer title = null;
 		switch (func) {
 		case "transfer":
 			switch (pushTag) {
@@ -392,9 +392,9 @@ public class PushManager {
 			}
 			break;
 		default:
-			title = null;
+			title = new StringBuffer();
 		}
-		return title;
+		return title.toString();
 	}
 
 	private void pushToCustom(String deviceID, String title, String body, String extParameters) {

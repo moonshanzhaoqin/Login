@@ -3,7 +3,6 @@
  */
 package com.yuyutechnology.exchange.mail;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +30,11 @@ import com.yuyutechnology.exchange.utils.ResourceUtils;
 public class MailManager {
 	public static Logger logger = LoggerFactory.getLogger(MailManager.class);
 	
-	private String contactTital;
-	private String contactContent;
+	private StringBuffer contactTital = new StringBuffer();
+	private StringBuffer contactContent = new StringBuffer();
 	
-	private String criticalAlarmTital;
-	private String criticalAlarmContent;
+	private StringBuffer criticalAlarmTital = new StringBuffer();
+	private StringBuffer criticalAlarmContent = new StringBuffer();
 
 	private final String MAIL_REPLACE_EMAIL = "[EMAIL]";
 	private final String MAIL_REPLACE_NAME = "[NAME]";
@@ -50,19 +49,19 @@ public class MailManager {
 		readTemplate("template/mail/zh_CN/criticalAlarm.template", criticalAlarmTital, criticalAlarmContent);
 	}
 	
-	private void readTemplate(String filePath, String tital, String content) {
+	private void readTemplate(String filePath, StringBuffer tital, StringBuffer content) {
 		try {
 			Resource resource = new ClassPathResource(filePath);
 			String fileString = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-			tital = fileString.substring(0, fileString.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-			content = fileString.substring(fileString.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
+			tital.append(fileString.substring(0, fileString.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", ""));
+			content.append(fileString.substring(fileString.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", ""));
 		} catch (Exception e) {
 			logger.warn("Mail template ({}) read error , can't send this email : {} ", new Object[]{filePath, e.getMessage()});
 		}
 	}
 
 	public void mail4contact(String name, String email, String category, String enquiry) {
-		String content = contactContent.replace(MAIL_REPLACE_CATEGORY, category).replace(MAIL_REPLACE_EMAIL, email)
+		String content = contactContent.toString().replace(MAIL_REPLACE_CATEGORY, category).replace(MAIL_REPLACE_EMAIL, email)
 				.replace(MAIL_REPLACE_ENQUIRY, enquiry).replace(MAIL_REPLACE_NAME, name);
 		logger.info("content : {}", content);
 		List<String> toMails = new ArrayList<>();
@@ -70,11 +69,11 @@ public class MailManager {
 		for (String mail : mails) {
 			toMails.add(mail);
 		}
-		sendMail(toMails, contactTital, content);
+		sendMail(toMails, contactTital.toString(), content);
 	}
 	
 	public void mail4criticalAlarm(String email,BigDecimal difference,BigDecimal lowerLimit,String grade,String dateTime) {
-		String content = criticalAlarmContent.
+		String content = criticalAlarmContent.toString().
 				replace(MAIL_REPLACE_CATEGORY, difference.toString()).
 				replace(MAIL_REPLACE_EMAIL, lowerLimit.toString()).
 				replace(MAIL_REPLACE_ENQUIRY, grade).
@@ -82,7 +81,7 @@ public class MailManager {
 		logger.info("content : {}", content);
 		List<String> toMails = new ArrayList<>();
 		toMails.add(email);
-		sendMail(toMails, criticalAlarmTital, content);
+		sendMail(toMails, criticalAlarmTital.toString(), content);
 	}
 	
 	public void sendMail(List<String> toMails, String tital, String content){
@@ -92,7 +91,7 @@ public class MailManager {
 			sendMessageRequest.setContent(content);
 			sendMessageRequest.setFromMailAddress(ResourceUtils.getBundleValue4String("contact.from"));
 			sendMessageRequest.setFromName(ResourceUtils.getBundleValue4String("contact.from"));
-			sendMessageRequest.setSubject(contactTital);
+			sendMessageRequest.setSubject(contactTital.toString());
 			sendMessageRequest.setToMails(toMails);
 			String param = JsonBinder.getInstance().toJson(sendMessageRequest);
 			logger.info("sendMailRequest : {}", param);

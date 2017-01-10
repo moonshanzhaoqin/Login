@@ -3,6 +3,7 @@ package com.yuyutechnology.exchange.crm.controller;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,12 @@ public class AccountInfoController {
 		HashMap<String, BigDecimal> systemTotalAssets = crmUserInfoManager.getSystemAccountTotalAssets();
 		HashMap<String, BigDecimal> userTotalAssets = crmUserInfoManager.getUserAccountTotalAssets();
 		
+		for (Entry<String, BigDecimal> entry : systemTotalAssets.entrySet()) {
+			if(!userTotalAssets.containsKey(entry.getKey())){
+				userTotalAssets.put(entry.getKey(), new BigDecimal("0.0000"));
+			}
+		}
+
 		mav.addObject("systemTotalAssets", systemTotalAssets);
 		mav.addObject("userTotalAssets", userTotalAssets);
 		
