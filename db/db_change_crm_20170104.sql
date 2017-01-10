@@ -55,3 +55,10 @@ CREATE TABLE `e_crm_user_info` (
 COLLATE='utf8_general_ci'
 ENGINE=InnoDB
 ;
+
+ALTER TABLE `e_crm_alarm`
+	ADD COLUMN `alarm_available` int(1)COMMENT '报警可用，0false1true' AFTER `supervisor_id_arr`;
+
+
+
+
