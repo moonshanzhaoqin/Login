@@ -73,6 +73,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		// 允许跨域访问
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Headers", "accept, content-type");
+		
 		String requestURI = request.getRequestURI();
 		String adminName=(String) request.getSession().getAttribute("adminName");
 		// 判断是否需要拦截或者是否登录
