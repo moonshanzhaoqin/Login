@@ -132,6 +132,8 @@ public class PushManager {
 
 	private void readTemplate(String filePath, StringBuffer tital, StringBuffer content) {
 		try {
+			tital = new StringBuffer();
+			content = new StringBuffer();
 			Resource resource = new ClassPathResource(filePath);
 			String fileString = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
 			tital.append(fileString.substring(0, fileString.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", ""));
