@@ -53,21 +53,21 @@ public class SmsManager {
 	
 
 	// en
-	private String phoneVerify_en = "";
+	private StringBuffer phoneVerify_en = new StringBuffer();
 	// zh_CN
-	private String phoneVerify_cn = "";
+	private StringBuffer phoneVerify_cn = new StringBuffer();
 	// zh_HK
-	private String phoneVerify_hk = "";
+	private StringBuffer phoneVerify_hk = new StringBuffer();
 
 	// en
-	private String transfer_en = "";
+	private StringBuffer transfer_en = new StringBuffer();
 	// zh_CN
-	private String transfer_cn = "";
+	private StringBuffer transfer_cn = new StringBuffer();
 	// zh_HK
-	private String transfer_hk = "";
+	private StringBuffer transfer_hk = new StringBuffer();
 	
 	// zh_CN
-	private String criticalAlarm_cn = "";
+	private StringBuffer criticalAlarm_cn = new StringBuffer();
 
 	@PostConstruct
 	@Scheduled(cron = "0 1/10 * * * ?")
@@ -83,10 +83,10 @@ public class SmsManager {
 		readTemplate("template/sms/zh_CN/criticalAlarm.template", criticalAlarm_cn);
 	}
 	
-	private void readTemplate(String filePath, String content) {
+	private void readTemplate(String filePath, StringBuffer content) {
 		try {
 			Resource resource = new ClassPathResource(filePath);
-			content = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			content.append(IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", ""));
 		} catch (Exception e) {
 			logger.warn("SMS template ({}) read error , can't send this msg : {} ", new Object[]{filePath, e.getMessage()});
 		}
@@ -130,7 +130,7 @@ public class SmsManager {
 	
 	@Async
 	public void sendSMS4CriticalAlarm(String phone,BigDecimal difference,BigDecimal lowerLimit,String grade,String dateTime){
-		String transferContent = criticalAlarm_cn;
+		String transferContent = criticalAlarm_cn.toString();
 		String content = transferContent
 				.replace(SMS_REPLACE_DIFFERENCE,difference.toString())
 				.replace(SMS_REPLACE_LOWERLIMIT,lowerLimit.toString())
@@ -147,7 +147,7 @@ public class SmsManager {
 	 * @return
 	 */
 	private String templateChoose(String func, String areaCode) {
-		String content;
+		StringBuffer content;
 		switch (func) {
 		case "phoneVerify":
 			if ("+86".equals(areaCode)) {
@@ -168,9 +168,9 @@ public class SmsManager {
 			}
 			break;
 		default:
-			content = null;
+			content = new StringBuffer();
 		}
-		return content;
+		return content.toString();
 	}
 
 	private void sendSMS(String phoneNum, String content) {
