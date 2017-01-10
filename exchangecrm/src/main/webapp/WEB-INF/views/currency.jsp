@@ -102,7 +102,7 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="currencyOrder" class="col-sm-2 control-label">排序</label>
+							<label for="currencyOrder" class="col-sm-2 control-label">顺序</label>
 							<div class="col-sm-5">
 								<input type="text" name="currencyOrder" class="form-control">
 							</div>
@@ -141,6 +141,65 @@
 				form.nameHk.value = currency.nameHk
 			})
 
+			$('#updateCurrency').bootstrapValidator({
+				message : 'This value is not valid',
+				feedbackIcons : {/*输入框不同状态，显示图片的样式*/
+					valid : 'glyphicon glyphicon-ok',
+					invalid : 'glyphicon glyphicon-remove',
+					validating : 'glyphicon glyphicon-refresh'
+				},
+				fields : {/*验证*/
+					nameEn : {/*键名username和input name值对应*/
+						message : '无效',
+						validators : {
+							notEmpty : {/*非空提示*/
+								message : '名称不能为空'
+							}
+						/*最后一个没有逗号*/
+						}
+					},
+					nameCn : {
+						message : '无效',
+						validators : {
+							notEmpty : {
+								message : '名称不能为空'
+							}
+						}
+					},
+					nameHk : {
+						message : '无效',
+						validators : {
+							notEmpty : {
+								message : '名称不能为空'
+							}
+						}
+					},
+					currencyUnit : {
+						message : '无效',
+						validators : {
+							notEmpty : {
+								message : '单位不能为空'
+							}
+						}
+					},
+					currencyOrder : {
+						message : '无效',
+						validators : {
+							notEmpty : {
+								message : '顺序不能为空'
+							},
+							regexp : {/* 只需加此键值对，包含正则表达式，和提示 */
+								regexp : /^[0-9]/,
+								message : '只能是数字'
+							},
+							stringLength : {
+								max : 6,
+								message : '数字过大'
+							}
+						}
+					}
+				}
+			});
 		});
 
 		function initCurrency() {
@@ -175,11 +234,12 @@
 												: '<td style="color:green">上架</td>')
 										+ '<td>'
 										+ data[i].currencyOrder
-										+ '</td>' 
-										+'<td><a data-toggle="modal" data-target="#myModal" data-whatever='+"'"
+										+ '</td>'
+										+ '<td><a data-toggle="modal" data-target="#myModal" data-whatever='
+										+ "'"
 										+ JSON.stringify(data[i])
-										+"'"+ '>编辑</a></td>'
-										+ '</tr>'
+										+ "'"
+										+ '>编辑</a></td>' + '</tr>'
 							}
 							$('#currency tbody').html(html);
 
@@ -214,40 +274,48 @@
 			});
 		}
 		function updateCurrency() {
-			form = document.getElementById("updateCurrency");
-			data = {
-				currency : form.currency.value,
-				currencyOrder : form.currencyOrder.value,
-				currencyStatus : form.currencyStatus.value,
-				currencyUnit : form.currencyUnit.value,
-				nameCn : form.nameCn.value,
-				nameEn : form.nameEn.value,
-				nameHk : form.nameHk.value
+			var updateCurrencyValidator = $('#updateCurrency').data(
+					'bootstrapValidator');
+			updateCurrencyValidator.validate();
+			console.log(updateCurrencyValidator.isValid());
+			if (updateCurrencyValidator.isValid()) {
+				form = document.getElementById("updateCurrency");
+				data = {
+					currency : form.currency.value,
+					currencyOrder : form.currencyOrder.value,
+					currencyStatus : form.currencyStatus.value,
+					currencyUnit : form.currencyUnit.value,
+					nameCn : form.nameCn.value,
+					nameEn : form.nameEn.value,
+					nameHk : form.nameHk.value
+				}
+				$.ajax({
+					type : "post",
+					url : "/crm/updateCurrency",
+					contentType : "application/json; charset=utf-8",
+					dataType : 'json',
+					data : JSON.stringify(data),
+					success : function(data) {
+						if (data.retCode == "00000") {
+							console.log("success");
+							$('#myModal').modal('hide')
+							alert("修改成功！");
+							initCurrency();
+						} else {
+							console.log("updateCurrency" + data.message);
+							alert(data.message);
+						}
+					},
+					error : function(xhr, err) {
+						console.log("error");
+						console.log(err);
+						console.log(xhr);
+					},
+					async : false
+				});
+			} else {
+				alert("请正确填写后，再提交！")
 			}
-			$.ajax({
-				type : "post",
-				url : "/crm/updateCurrency",
-				contentType : "application/json; charset=utf-8",
-				dataType : 'json',
-				data : JSON.stringify(data),
-				success : function(data) {
-					if (data.retCode == "00000") {
-						console.log("success");
-						$('#myModal').modal('hide')
-						alert("修改成功！");
-						initCurrency();
-					} else {
-						console.log("updateCurrency" + data.message);
-						alert(data.message);
-					}
-				},
-				error : function(xhr, err) {
-					console.log("error");
-					console.log(err);
-					console.log(xhr);
-				},
-				async : false
-			});
 		}
 		function addCurrency() {
 			data = {
@@ -264,7 +332,6 @@
 						console.log("success");
 						alert("添加成功！");
 						initCurrency();
-
 					} else {
 						alert("币种已存在")
 					}

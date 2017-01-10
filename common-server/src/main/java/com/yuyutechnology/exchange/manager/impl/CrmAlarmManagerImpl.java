@@ -46,6 +46,7 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		crmAlarm.setUpperLimit(upperLimit);
 		crmAlarm.setSupervisorIdArr(supervisorId);
 		crmAlarm.setEditorid(editorid);
+		crmAlarm.setAlarmAvailable(1);
 		
 		crmAlarmDAO.addCrmAlarmConfig(crmAlarm);
 		
@@ -64,7 +65,7 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	
 	@Override
 	public void autoAlarm(BigDecimal difference) {
-		List<CrmAlarm> list = crmAlarmDAO.getCrmAlarmConfigList();
+		List<CrmAlarm> list = crmAlarmDAO.getCrmAlarmConfigListByType(1);
 		
 		if(list == null){
 			logger.warn("No related alarm information is configured ! {}",new Date());
@@ -172,6 +173,13 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		crmAlarm.setEditorid(editorid);
 		
 		crmAlarmDAO.addCrmAlarmConfig(crmAlarm);
-	}	
+	}
+	
+	@Override
+	public void updateAlarmAvailable(Integer alarmId,int  alarmAvailable){
+		CrmAlarm crmAlarm = crmAlarmDAO.getCrmAlarmConfig(alarmId);
+		crmAlarm.setAlarmAvailable(alarmAvailable);
+		crmAlarmDAO.addCrmAlarmConfig(crmAlarm);
+	}
 	
 }

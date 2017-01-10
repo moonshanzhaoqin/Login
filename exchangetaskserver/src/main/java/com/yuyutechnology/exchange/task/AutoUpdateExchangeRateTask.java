@@ -22,7 +22,7 @@ public class AutoUpdateExchangeRateTask {
 	
 	public void autoUpdateExchangeRateTask(){
 		logger.info("=============autoUpdateExchangeRateTask Start==================");
-		exchangeRateManager.updateExchangeRate();
+		exchangeRateManager.updateExchangeRate(false);
 		logger.info("=============End at {}==================",new Date());
 	}
 	

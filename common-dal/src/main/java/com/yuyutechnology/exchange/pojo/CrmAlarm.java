@@ -21,6 +21,7 @@ public class CrmAlarm {
 	private BigDecimal lowerLimit;
 	private BigDecimal upperLimit;
 	private int alarmMode;
+	private int alarmAvailable;
 	private Date createAt;
 	private int editorid;
 	private String supervisorIdArr;
@@ -68,6 +69,13 @@ public class CrmAlarm {
 	}
 	public void setAlarmMode(int alarmMode) {
 		this.alarmMode = alarmMode;
+	}
+	@Column(name = "alarm_available")
+	public int getAlarmAvailable() {
+		return alarmAvailable;
+	}
+	public void setAlarmAvailable(int alarmAvailable) {
+		this.alarmAvailable = alarmAvailable;
 	}
 	@Column(name = "create_at")
 	public Date getCreateAt() {

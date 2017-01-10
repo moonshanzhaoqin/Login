@@ -3,6 +3,7 @@
  */
 package com.yuyutechnology.exchange.mail;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -46,21 +46,18 @@ public class MailManager {
 	@Scheduled(cron = "0 1/10 * * * ?")
 	public void init() {
 		logger.info("==========init MailManager==========");
-		// 加载模板
-		// 到账提醒
+		readTemplate("template/mail/zh_CN/contactUs.template", contactTital, contactContent);
+		readTemplate("template/mail/zh_CN/criticalAlarm.template", criticalAlarmTital, criticalAlarmContent);
+	}
+	
+	private void readTemplate(String filePath, String tital, String content) {
 		try {
-			Resource resource = new ClassPathResource("mail/en_US/contactUs.template");
-			String contact = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-			contactTital = contact.substring(0, contact.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-			contactContent = contact.substring(contact.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
-			
-			resource = new ClassPathResource("mail/zh_CN/criticalAlarm.template");
-			contact = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-			criticalAlarmTital = contact.substring(0, contact.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
-			criticalAlarmContent = contact.substring(contact.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
-
+			Resource resource = new ClassPathResource(filePath);
+			String fileString = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
+			tital = fileString.substring(0, fileString.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", "");
+			content = fileString.substring(fileString.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", "");
 		} catch (Exception e) {
-			logger.warn("Mail template read error , can't send email : "+ e.getMessage());
+			logger.warn("Mail template ({}) read error , can't send this email : {} ", new Object[]{filePath, e.getMessage()});
 		}
 	}
 
@@ -68,7 +65,12 @@ public class MailManager {
 		String content = contactContent.replace(MAIL_REPLACE_CATEGORY, category).replace(MAIL_REPLACE_EMAIL, email)
 				.replace(MAIL_REPLACE_ENQUIRY, enquiry).replace(MAIL_REPLACE_NAME, name);
 		logger.info("content : {}", content);
-		sendMail(content);
+		List<String> toMails = new ArrayList<>();
+		String mails[] = ResourceUtils.getBundleValue4String("contact.to").split(",");
+		for (String mail : mails) {
+			toMails.add(mail);
+		}
+		sendMail(toMails, contactTital, content);
 	}
 	
 	public void mail4criticalAlarm(String email,BigDecimal difference,BigDecimal lowerLimit,String grade,String dateTime) {
@@ -78,53 +80,23 @@ public class MailManager {
 				replace(MAIL_REPLACE_ENQUIRY, grade).
 				replace(MAIL_REPLACE_NAME, dateTime);
 		logger.info("content : {}", content);
-		
 		List<String> toMails = new ArrayList<>();
 		toMails.add(email);
-		
-		sendMail(toMails,content);
+		sendMail(toMails, criticalAlarmTital, content);
 	}
 	
-	
-	
-	
-	
-
-	@Async
-	private void sendMail(String content) {
-		logger.info("sendMail , content : {}", content);
+	public void sendMail(List<String> toMails, String tital, String content){
+		logger.info("sendMail,tital : {}, content : {}",tital, content);
 		if (StringUtils.isNotBlank(content)) {
 			SendMailRequest sendMessageRequest = new SendMailRequest();
 			sendMessageRequest.setContent(content);
 			sendMessageRequest.setFromMailAddress(ResourceUtils.getBundleValue4String("contact.from"));
 			sendMessageRequest.setFromName(ResourceUtils.getBundleValue4String("contact.from"));
 			sendMessageRequest.setSubject(contactTital);
-			List<String> toMails = new ArrayList<>();
-			String mails[] = ResourceUtils.getBundleValue4String("contact.to").split(",");
-			for (String mail : mails) {
-				toMails.add(mail);
-			}
 			sendMessageRequest.setToMails(toMails);
 			String param = JsonBinder.getInstance().toJson(sendMessageRequest);
 			logger.info("sendMailRequest : {}", param);
 			HttpTookit.sendPost(ResourceUtils.getBundleValue4String("sendMail.url"), param);
 		}
 	}
-	
-	public void sendMail(List<String> toMails,String content){
-		logger.info("sendMail, content : {}",content);
-		
-		SendMailRequest sendMessageRequest = new SendMailRequest();
-		sendMessageRequest.setContent(content);
-		sendMessageRequest.setFromMailAddress(ResourceUtils.getBundleValue4String("contact.from"));
-		sendMessageRequest.setFromName(ResourceUtils.getBundleValue4String("contact.from"));
-		sendMessageRequest.setSubject(contactTital);
-		sendMessageRequest.setToMails(toMails);
-		String param = JsonBinder.getInstance().toJson(sendMessageRequest);
-		logger.info("sendMailRequest : {}", param);
-		HttpTookit.sendPost(ResourceUtils.getBundleValue4String("sendMail.url"), param);
-	}
-	
-	
-
 }

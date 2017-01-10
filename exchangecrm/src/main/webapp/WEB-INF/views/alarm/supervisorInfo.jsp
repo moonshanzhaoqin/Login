@@ -6,7 +6,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>监督人员信息列表</title>
+		<title>预警人员信息列表</title>
 		
 		<link rel="stylesheet" href='<c:url value="/resources/bootstrap/css/bootstrap.min.css" />' />
 		<link rel="stylesheet" href='<c:url value="/resources/bootstrap/css/bootstrap-table.css" />' />
@@ -19,7 +19,7 @@
 		
 		
 			<div class="row">
-				<h4 class="text-left">监督人添加</h4>	
+				<h4 class="text-left">预警人添加</h4>	
 			</div>
 		
 			<div class="row well">
@@ -44,7 +44,7 @@
 			</div>
 		
 			<div class="row">
-				<h4 class="text-left">监督人员信息列表</h4>	
+				<h4 class="text-left">预警人员信息列表</h4>	
 			</div>
 			
 			<!-- -->
