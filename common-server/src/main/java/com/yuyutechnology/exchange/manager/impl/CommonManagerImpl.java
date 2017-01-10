@@ -3,7 +3,9 @@
  */
 package com.yuyutechnology.exchange.manager.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +24,12 @@ import com.yuyutechnology.exchange.dao.AppVersionDAO;
 import com.yuyutechnology.exchange.dao.ConfigDAO;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
+import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dto.MsgFlagInfo;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.pojo.AppVersion;
 import com.yuyutechnology.exchange.pojo.Currency;
+import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
 import com.yuyutechnology.exchange.utils.exchangerate.ExchangeRate;
@@ -41,6 +45,8 @@ public class CommonManagerImpl implements CommonManager {
 
 	@Autowired
 	AppVersionDAO appVersionDAO;
+	@Autowired
+	WalletDAO walletDAO;
 	@Autowired
 	CurrencyDAO currencyDAO;
 	@Autowired
@@ -141,15 +147,25 @@ public class CommonManagerImpl implements CommonManager {
 		currencies.add(ServerConsts.STANDARD_CURRENCY);
 		currencies.add(ServerConsts.CURRENCY_OF_GOLDPAY);
 		String result = redisDAO.getValueByKey("redis_exchangeRate");
-		if(StringUtils.isNotBlank(result)){
+		if (StringUtils.isNotBlank(result)) {
 			@SuppressWarnings("unchecked")
 			HashMap<String, String> map = JsonBinder.getInstance().fromJson(result, HashMap.class);
 			String value = map.get(ServerConsts.STANDARD_CURRENCY);
-			ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().
-					fromJson(value, ExchangeRate.class);
+			ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().fromJson(value, ExchangeRate.class);
 			currencies.addAll(exchangeRate.getRates().keySet());
 			return currencies;
 		}
 		return currencies;
+	}
+
+	@Override
+	public void checkAndUpdateWallet(Integer userId, String currency) {
+		logger.info("Update Wallet==>");
+		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
+		if (wallet == null) {
+			// 没有该货币的钱包，需要新增
+			walletDAO.addwallet(new Wallet(allCurrenciesMap.get(currency), userId, BigDecimal.ZERO, new Date()));
+			logger.info("Added {} wallet to user {}", currency, userId);
+		}
 	}
 }

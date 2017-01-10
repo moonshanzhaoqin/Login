@@ -48,4 +48,7 @@ public interface CommonManager {
 	 * @return
 	 */
 	public MsgFlagInfo getMsgFlag(int userId);
+
+	void checkAndUpdateWallet(Integer userId,String currency);
+	
 }

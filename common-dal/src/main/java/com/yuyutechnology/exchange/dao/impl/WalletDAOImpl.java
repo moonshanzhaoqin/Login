@@ -44,14 +44,16 @@ public class WalletDAOImpl implements WalletDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Wallet> getWalletsByUserId(int userId) {
-		List<?> list = hibernateTemplate.find("from Wallet where userId = ? order by currency.currencyOrder", userId);
+		List<?> list = hibernateTemplate.find("from Wallet where userId = ? "
+				+ "order by currency.currencyOrder", userId);
 		return (List<Wallet>) list;
 	}
 
 	@Override
 	public Wallet getWalletByUserIdAndCurrency(int userId, String currency) {
 		Wallet wallet = null;
-		List<?> list = hibernateTemplate.find("from Wallet where userId = ? and currency.currency = ?", userId,currency);
+		List<?> list = hibernateTemplate.find("from Wallet where userId = ? "
+				+ "and currency.currency = ?", userId,currency);
 		if(!list.isEmpty()){
 			wallet = (Wallet) list.get(0);
 		}
@@ -59,9 +61,11 @@ public class WalletDAOImpl implements WalletDAO {
 	}
 
 	@Override
-	public Integer updateWalletByUserIdAndCurrency(final int userId,final String currency, final BigDecimal amount, final String capitalFlows) {
+	public Integer updateWalletByUserIdAndCurrency(final int userId,final String currency, 
+			final BigDecimal amount, final String capitalFlows) {
 		
-		logger.info("updateWalletByUserIdAndCurrency , userId : {} , currency : {}, amount : {}, capitalFlows : {}", new Object[]{userId, currency, amount.toString(), capitalFlows});
+		logger.info("updateWalletByUserIdAndCurrency , userId : {} , currency "
+				+ ": {}, amount : {}, capitalFlows : {}", new Object[]{userId, currency, amount.toString(), capitalFlows});
 		
 		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
 			@Override
