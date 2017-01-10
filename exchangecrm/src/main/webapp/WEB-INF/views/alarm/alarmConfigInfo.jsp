@@ -38,10 +38,10 @@
 			
 			<div class="row">
 			
-				<div class="col-lg-6">
+				<div class="col-sm-6">
 					<h4 class="text-left">预警信息详情</h4>	
 				</div>
-				<div class="col-lg-6 text-right" >
+				<div class="col-sm-6 text-right" >
 					<button class="btn btn-primary " data-toggle="modal" data-target="#addAlarmConfigModal">添加预警信息</button>
 				</div>	
 			</div>
