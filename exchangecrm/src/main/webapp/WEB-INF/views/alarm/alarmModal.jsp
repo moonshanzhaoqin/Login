@@ -6,7 +6,6 @@
 		<title></title>
 	</head>
 	<body>
-		<!--修改密码弹窗-->
 		<div class="modal fade" id="addAlarmConfigModal" tabindex="-1" role="dialog"
 			aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
@@ -14,14 +13,14 @@
 				
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title" id="myModalLabel">报警信息配置</h4>
+						<h4 class="modal-title" id="myModalLabel">预警信息配置</h4>
 					</div>
 					
 					<form id="addAlarmConfig" method="POST" action="<c:url value="/alarm/saveAlarmConfig" />">
 						<div class="modal-body">
 							<div class="row">
 								<div class="col-md-4">
-			            			<h4 class="text-right">报警等级:</h4>	
+			            			<h4 class="text-right">预警等级:</h4>	
 			            		</div>
 			            		<div class="col-md-4">
 			            			<input class="form-control" name="alarmGrade" id="alarmGrade"/>
@@ -48,7 +47,7 @@
 							
 							<div class="row">
 								<div class="col-md-4">
-			            			<h4 class="text-right">报警方式:</h4>	
+			            			<h4 class="text-right">预警方式:</h4>	
 			            		</div>
 			            		<div class="col-md-4">
 			            			<select class="form-control" name="alarmMode" id="alarmMode">
