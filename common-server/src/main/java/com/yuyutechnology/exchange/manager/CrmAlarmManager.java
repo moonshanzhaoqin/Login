@@ -28,7 +28,7 @@ public interface CrmAlarmManager {
 	
 	public void delSupervisorById(Integer supervisorId);
 	
-	public void saveSupervisor(String supervisorName,
+	public String saveSupervisor(String supervisorName,
 			String supervisorMobile,String supervisorEmail);
 
 }

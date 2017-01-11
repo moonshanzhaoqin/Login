@@ -75,7 +75,7 @@ public class TransferDAOImpl implements TransferDAO {
 	@Override
 	public Transfer getTranByIdAndStatus(String transferId, int transferStatus) {
 		List<?> list = hibernateTemplate.find("from Transfer where transferId = ? "
-				+ "and transferStatus != ?", transferId,transferStatus);
+				+ "and transferStatus = ?", transferId,transferStatus);
 		
 		if(!list.isEmpty()){
 			return (Transfer) list.get(0);

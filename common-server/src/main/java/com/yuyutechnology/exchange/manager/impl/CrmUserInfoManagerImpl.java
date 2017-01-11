@@ -108,7 +108,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 			}
 		}
 		
-		map.put("totalAssets", totalAssets.setScale(2, RoundingMode.CEILING));
+		map.put("totalAssets", totalAssets.setScale(4, RoundingMode.CEILING));
 		
 		return map;
 		

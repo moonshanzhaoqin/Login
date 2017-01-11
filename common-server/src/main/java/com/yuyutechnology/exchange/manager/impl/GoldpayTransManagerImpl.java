@@ -154,7 +154,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		
 		HashMap<String, String> map = new HashMap<>();
 		
-		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		if(transfer == null || transfer.getTransferType() != ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE){
 			logger.warn("The transaction order does not exist");
 			map.put("msg", "The transaction order does not exist");
@@ -206,7 +206,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		
 		HashMap<String, String> map = new HashMap<>();
 		
-		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		if(transfer == null || transfer.getTransferType() != ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE){
 			map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST);
 			map.put("msg", "Order does not exist or has completed");
@@ -499,7 +499,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 			map.put("retCode", ServerConsts.TRANSFER_PAYMENTPWD_INCORRECT);
 			return map;
 		}
-		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		if(transfer == null || transfer.getTransferType() != ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW){
 			logger.warn("The transaction order does not exist");
 			map.put("msg", "The transaction order does not exist");

@@ -160,7 +160,7 @@ public class TransferManagerImpl implements TransferManager{
 		if(!PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())){
 			return ServerConsts.TRANSFER_PAYMENTPWD_INCORRECT;
 		}
-		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		if(transfer == null){
 			logger.warn("The transaction order does not exist");
 			return ServerConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST;
@@ -198,7 +198,7 @@ public class TransferManagerImpl implements TransferManager{
 	@Override
 	public String transferConfirm(int userId,String transferId) {
 		
-		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		if(transfer == null){
 			logger.warn("The transaction order does not exist");
 			return ServerConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST;

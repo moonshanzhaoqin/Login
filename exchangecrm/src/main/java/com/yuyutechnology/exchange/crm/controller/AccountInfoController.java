@@ -93,8 +93,10 @@ public class AccountInfoController {
 		HashMap<String, BigDecimal> systemTotalAssets = crmUserInfoManager.getSystemAccountTotalAssets();
 		HashMap<String, BigDecimal> userTotalAssets = crmUserInfoManager.getUserAccountTotalAssets();
 		
-		log.info("systemTotalAssets : {}",systemTotalAssets.toString());
-		log.info("userTotalAssets : {}",userTotalAssets.toString());
+		if(systemTotalAssets != null && userTotalAssets != null){
+			log.info("systemTotalAssets : {}",systemTotalAssets.toString());
+			log.info("userTotalAssets : {}",userTotalAssets.toString());
+		}
 		
 		mav.addObject("systemTotalAssets", systemTotalAssets);
 		mav.addObject("userTotalAssets", userTotalAssets);
