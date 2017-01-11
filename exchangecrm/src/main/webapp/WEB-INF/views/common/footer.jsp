@@ -70,6 +70,8 @@
 							console.log("success");
 							alert("修改成功");
 							$('#myModal').modal('hide')
+							location.href="<c:url value='/login' />"
+							
 						} else {
 							console.log(data.message);
 							alert(data.message);

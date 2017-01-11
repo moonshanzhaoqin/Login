@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
 import com.yuyutechnology.exchange.crm.request.AddCurrencyRequest;
+import com.yuyutechnology.exchange.crm.request.ChangeCurrencyStatusRequest;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.CurrencyManager;
 import com.yuyutechnology.exchange.pojo.Currency;
@@ -69,4 +70,16 @@ public class CurrencyController {
 		return rep;
 	}
 
+	//TODO 修改币种状态
+	@ResponseBody
+	@RequestMapping(value = "/changeCurrencyStatus", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public BaseResponse changeCurrencyStatus(@RequestBody ChangeCurrencyStatusRequest changeCurrencyStatusRequest, HttpServletRequest request,
+			HttpServletResponse response) {
+		BaseResponse rep = new BaseResponse();
+		logger.info("change {} Status {}", changeCurrencyStatusRequest.getCurrency(),changeCurrencyStatusRequest.getStatus());
+		String retCode = currencyManager.changeCurrencyStatus(changeCurrencyStatusRequest.getCurrency(),changeCurrencyStatusRequest.getStatus());
+		rep.setRetCode(retCode);
+		return rep;
+	}
+	
 }

@@ -378,7 +378,7 @@ public class UserController {
 			AppVersion appVersion = commonManager.getAppVersion(appVersionRequest.getPlatformType(),
 					appVersionRequest.getUpdateWay());
 			if (appVersion == null) {
-				logger.info(MessageConsts.RET_CODE_FAILUE);
+				logger.warn("No this appVersion : {}",appVersionRequest.toString());
 				rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
 				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 			} else if (appVersion.getAppVersionNum().equals(appVersionRequest.getAppVersionNum())) {
