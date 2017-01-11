@@ -28,12 +28,14 @@ public class AutoAlarmTask {
 		
 		HashMap<String, BigDecimal> systemTotalAssets = crmUserInfoManager.getSystemAccountTotalAssets();
 		HashMap<String, BigDecimal> userTotalAssets = crmUserInfoManager.getUserAccountTotalAssets();
-		BigDecimal difference = systemTotalAssets.get("totalAssets").subtract(userTotalAssets.get("totalAssets"));
 		
-		crmAlarmManager.autoAlarm(difference);
+		if(systemTotalAssets != null && userTotalAssets != null){
+			BigDecimal difference = systemTotalAssets.get("totalAssets").subtract(userTotalAssets.get("totalAssets"));	
+			crmAlarmManager.autoAlarm(difference);
+			logger.info("=============autoAlarmTask difference : {}",difference);
+		}
 		
-		logger.info("=============autoAlarmTask end==================difference : {}",difference);
-		
+		logger.info("=============autoAlarmTask END=================={}",new Date());	
 	}
 
 }

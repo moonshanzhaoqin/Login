@@ -44,6 +44,9 @@
 												</c:if>
 											</c:forEach>
 										</c:if>
+										<c:if test="${empty userTotalAssets }">
+											<td>0.0000</td>
+										</c:if>
 									</tr>
 								</c:if>
 							</c:forEach>

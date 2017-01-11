@@ -505,32 +505,34 @@ public class TransferManagerImpl implements TransferManager{
 			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
 			map.put("msg", "Can not find the corresponding notification information");
 			return map;
-		}else if(notification.getPayerId()!=userId || notification.getTradingStatus() 
+		}
+		if(notification.getPayerId()!=userId || notification.getTradingStatus() 
 				== ServerConsts.NOTIFICATION_STATUS_OF_ALREADY_PAID){
 			logger.warn("Order status exception");
 			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
 			map.put("msg", "Order status exception");
 			return map;
-		}else if(notification.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)
-				&& notification.getAmount().compareTo(new BigDecimal("0"))==0){
-			logger.warn("The requestor does not enter the specified currency information");
-		}else if((!notification.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)
+		}
+		if(StringUtils.isBlank(currency) || amount.compareTo(new BigDecimal("0"))==0){
+			logger.warn("The requestor currency and amount information is blank");
+			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("msg", "The requestor currency and amount information is blank");
+			return map;
+		}
+		if((StringUtils.isNotBlank(notification.getCurrency())
 				&& notification.getAmount().compareTo(new BigDecimal("0"))!=0) 
 				&& (!notification.getCurrency().equals(currency) || notification.getAmount().compareTo(amount) != 0)){
 			logger.warn("The input and order information do not match");
-			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("retCode", ServerConsts.TRANSFER_REQUEST_INFORMATION_NOT_MATCH);
 			map.put("msg", "The input and order information do not match");
 			return map;
 		}
-		
-		
-		if(!commonManager.verifyCurrency(notification.getCurrency())){
+		if(!commonManager.verifyCurrency(currency)){
 			logger.warn("This currency is not a tradable currency");
 			map.put("retCode", ServerConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
 			map.put("msg", "This currency is not a tradable currency");
 			return map;
 		}
-
 		//账号冻结
 		User payer = userDAO.getUser(userId);
 		if(payer ==null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
