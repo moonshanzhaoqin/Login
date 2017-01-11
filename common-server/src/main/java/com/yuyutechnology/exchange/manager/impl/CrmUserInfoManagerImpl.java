@@ -84,11 +84,21 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 	@Override
 	public HashMap<String, BigDecimal> getUserAccountTotalAssets(){
 		
+		HashMap<String, BigDecimal> map = null;
+		
 		User systemUser = userDAO.getSystemUser();
 		
-		HashMap<String, BigDecimal> map = walletDAO.getUserAccountTotalAssets(systemUser.getUserId());
+		if(systemUser == null){
+			return map;
+		}
+		
+		map = walletDAO.getUserAccountTotalAssets(systemUser.getUserId());
 		
 		BigDecimal totalAssets = new BigDecimal(0);
+		
+		if(map == null){
+			return map;
+		}
 		
 		for (Entry<String, BigDecimal> entry : map.entrySet()) {
 			if(entry.getKey().equals(ServerConsts.STANDARD_CURRENCY)){

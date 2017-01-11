@@ -37,12 +37,14 @@ public class AccountInfoController {
 		HashMap<String, BigDecimal> systemTotalAssets = crmUserInfoManager.getSystemAccountTotalAssets();
 		HashMap<String, BigDecimal> userTotalAssets = crmUserInfoManager.getUserAccountTotalAssets();
 		
-		for (Entry<String, BigDecimal> entry : systemTotalAssets.entrySet()) {
-			if(!userTotalAssets.containsKey(entry.getKey())){
-				userTotalAssets.put(entry.getKey(), new BigDecimal("0.0000"));
+		if(systemTotalAssets != null && userTotalAssets!=null){
+			for (Entry<String, BigDecimal> entry : systemTotalAssets.entrySet()) {
+				if(!userTotalAssets.containsKey(entry.getKey())){
+					userTotalAssets.put(entry.getKey(), new BigDecimal("0.0000"));
+				}
 			}
 		}
-
+		
 		mav.addObject("systemTotalAssets", systemTotalAssets);
 		mav.addObject("userTotalAssets", userTotalAssets);
 		
@@ -66,11 +68,6 @@ public class AccountInfoController {
 		pageBean.setRows((List<?>) result.get("list"));
 		requst.setPageBean(pageBean);
 
-//		HashMap<String, BigDecimal> systemTotalAssets = crmUserInfoManager.getSystemAccountTotalAssets();
-//		HashMap<String, BigDecimal> userTotalAssets = crmUserInfoManager.getUserAccountTotalAssets();
-//		
-//		mav.addObject("systemTotalAssets", systemTotalAssets);
-//		mav.addObject("userTotalAssets", userTotalAssets);
 		mav.addObject("model", requst);
 		
 		mav.setViewName("/accountInfo/accountOverview");
