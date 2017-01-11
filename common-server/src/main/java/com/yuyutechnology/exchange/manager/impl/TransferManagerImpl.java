@@ -505,19 +505,21 @@ public class TransferManagerImpl implements TransferManager{
 			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
 			map.put("msg", "Can not find the corresponding notification information");
 			return map;
-		}else if(notification.getPayerId()!=userId || notification.getTradingStatus() 
+		}
+		if(notification.getPayerId()!=userId || notification.getTradingStatus() 
 				== ServerConsts.NOTIFICATION_STATUS_OF_ALREADY_PAID){
 			logger.warn("Order status exception");
 			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
 			map.put("msg", "Order status exception");
 			return map;
-		}else if(StringUtils.isBlank(notification.getCurrency())
-				|| notification.getAmount().compareTo(new BigDecimal("0"))==0){
-			logger.warn("The requestor does not enter the specified currency information");
-			map.put("retCode", ServerConsts.TRANSFER_REQUEST_INFORMATION_NOT_MATCH);
-			map.put("msg", "The requestor does not enter the specified currency information");
+		}
+		if(StringUtils.isBlank(currency) || amount.compareTo(new BigDecimal("0"))==0){
+			logger.warn("The requestor currency and amount information is blank");
+			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("msg", "The requestor currency and amount information is blank");
 			return map;
-		}else if((StringUtils.isNotBlank(notification.getCurrency())
+		}
+		if((StringUtils.isNotBlank(notification.getCurrency())
 				&& notification.getAmount().compareTo(new BigDecimal("0"))!=0) 
 				&& (!notification.getCurrency().equals(currency) || notification.getAmount().compareTo(amount) != 0)){
 			logger.warn("The input and order information do not match");
