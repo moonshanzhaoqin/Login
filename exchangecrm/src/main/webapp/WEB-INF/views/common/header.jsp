@@ -23,7 +23,7 @@
 						class="icon-bar"></span>
 				</button>
 				<a class="navbar-brand" href="#"><img alt="Anytime Exchange"
-					src='<c:url value="/resources/img/ae_logo.png"/>' height="32px"></a>
+					src='<c:url value="/resources/img/ex_page_logo_small.png"/>' height="30px"></a>
 			</div>
 			<div class="collapse navbar-collapse"
 				id="bs-example-navbar-collapse-1">
