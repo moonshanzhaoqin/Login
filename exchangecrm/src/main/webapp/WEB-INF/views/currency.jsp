@@ -230,8 +230,8 @@
 										+ '<td>'
 										+ data[i].currencyUnit
 										+ '</td>'
-										+ (data[i].currencyStatus == 0 ? '<td style="color:red">下架</td>'
-												: '<td style="color:green">上架</td>')
+										+ (data[i].currencyStatus == 0 ? '<td style="color:red">未上架</td>'
+												: '<td style="color:green">已上架</td>')
 										+ '<td>'
 										+ data[i].currencyOrder
 										+ '</td>'
@@ -239,7 +239,9 @@
 										+ "'"
 										+ JSON.stringify(data[i])
 										+ "'"
-										+ '>编辑</a></td>' + '</tr>'
+										+ '>编辑</a> '+(data[i].currencyStatus == 0 ? '<a onclick=" changeCurrencyStatus(this,1)">上架</a>'
+												: '<a style="color:red" onclick=" changeCurrencyStatus(this,0)">下架</td>')
+										+'</td>' + '</tr>'
 							}
 							$('#currency tbody').html(html);
 
@@ -280,15 +282,7 @@
 			console.log(updateCurrencyValidator.isValid());
 			if (updateCurrencyValidator.isValid()) {
 				form = document.getElementById("updateCurrency");
-				data = {
-					currency : form.currency.value,
-					currencyOrder : form.currencyOrder.value,
-					currencyStatus : form.currencyStatus.value,
-					currencyUnit : form.currencyUnit.value,
-					nameCn : form.nameCn.value,
-					nameEn : form.nameEn.value,
-					nameHk : form.nameHk.value
-				}
+				
 				$.ajax({
 					type : "post",
 					url : "/crm/updateCurrency",
@@ -317,6 +311,50 @@
 				alert("请正确填写后，再提交！")
 			}
 		}
+		
+		
+		function changeCurrencyStatus(obj,status){
+			if(status == 0 ){
+				var r = confirm("确定该下架币种该么？");
+				if(r != true){
+					return ;
+				}
+			}else{
+				var r = confirm("确定要上架该币种么？");
+				if(r != true){
+					return ;
+				}
+			}
+
+			var tds=$(obj).parent().parent().find('td');
+			var currency = tds.eq(0).text();
+			data = {
+					currency : currency,
+					status : status
+				}
+			
+			$.ajax({
+				type : "post",
+				url : "/crm/changeCurrencyStatus",
+				contentType : "application/json; charset=utf-8",
+				dataType : 'json',
+				data : JSON.stringify(data),
+				success : function(data) {
+					if (data.retCode == "00000") {
+						initCurrency();
+					} else {
+						alert("something is wrong!");
+					}
+				},
+				error : function(xhr, err) {
+					console.log("error");
+					console.log(err);
+					console.log(xhr);
+				},
+				async : false
+			});
+		}
+		
 		function addCurrency() {
 			data = {
 				currency : $('select').val()

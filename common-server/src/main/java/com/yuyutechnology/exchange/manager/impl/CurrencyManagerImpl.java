@@ -51,16 +51,30 @@ public class CurrencyManagerImpl implements CurrencyManager {
 	public String addCurrency(String currencyId) {
 		Currency currency = currencyDAO.getCurrency(currencyId);
 		if (currency == null) {
-			currency=new Currency(currencyId,currencyId,currencyId,currencyId,currencyId, ServerConsts.CURRENCY_UNAVAILABLE, 0);
+			currency = new Currency(currencyId, currencyId, currencyId, currencyId, currencyId,
+					ServerConsts.CURRENCY_UNAVAILABLE, 0);
 			currencyDAO.updateCurrency(currency);
-			//为系统用户添加新钱包
-			walletDAO.addwallet(new Wallet(currency, userDAO.getSystemUser().getUserId(),  BigDecimal.ZERO, new Date()));
-			//强制刷新汇率缓存
+			// 为系统用户添加新钱包
+			walletDAO.addwallet(new Wallet(currency, userDAO.getSystemUser().getUserId(), BigDecimal.ZERO, new Date()));
+			// 强制刷新汇率缓存
 			exchangeRateManager.updateExchangeRate(true);
 			return ServerConsts.RET_CODE_SUCCESS;
 		} else {
+			logger.info("Currency {} is exist", currencyId);
 			return ServerConsts.RET_CODE_FAILUE;
 		}
 	}
 
+	@Override
+	public String changeCurrencyStatus(String currencyId, int status) {
+		Currency currency = currencyDAO.getCurrency(currencyId);
+		if (currency == null) {
+			logger.warn("Currency {} is not exist", currencyId);
+			return ServerConsts.RET_CODE_FAILUE;
+		} else {
+			currency.setCurrencyStatus(status);
+			currencyDAO.updateCurrency(currency);
+			return ServerConsts.RET_CODE_SUCCESS;
+		}
+	}
 }

@@ -12,4 +12,6 @@ public interface CurrencyManager {
 
 	String addCurrency(String currency);
 
+	String changeCurrencyStatus(String currencyId, int status);
+
 }

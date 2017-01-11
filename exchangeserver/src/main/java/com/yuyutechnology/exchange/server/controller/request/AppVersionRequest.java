@@ -3,6 +3,12 @@ package com.yuyutechnology.exchange.server.controller.request;
 import org.apache.commons.lang.StringUtils;
 
 public class AppVersionRequest {
+	@Override
+	public String toString() {
+		return "AppVersionRequest [appVersionNum=" + appVersionNum + ", platformType=" + platformType + ", updateWay="
+				+ updateWay + "]";
+	}
+
 	private String appVersionNum; // 版本号
 	private String platformType; // 平台 0Android 1iOS
 	private String updateWay; // GooglePlay;YingYongBao
