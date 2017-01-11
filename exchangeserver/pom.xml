@@ -32,9 +32,9 @@
 		</profile>
 		<!-- 准生产 -->
 		<profile>
-			<id>stage</id>
+			<id>stag</id>
 			<properties>
-				<env>stage</env>
+				<env>stag</env>
 			</properties>
 		</profile>
 		<!-- 测试环境 -->
