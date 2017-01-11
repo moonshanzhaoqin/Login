@@ -164,6 +164,8 @@ public class ServerConsts {
 	public static final String TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT ="03017";
 	
 	public static final String TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY ="03018";
+	
+	public static final String TRANSFER_REQUEST_INFORMATION_NOT_MATCH ="03019";
 	//crm 管理员04
 	/**
 	 * 管理员不存在
