@@ -55,7 +55,16 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 		HashMap<String, BigDecimal> map = new HashMap<>();
 		User systemUser = userDAO.getSystemUser();
 		
+		if(systemUser == null){
+			return map;
+		}
+		
 		CrmUserInfo crmUserInfo = crmUserInfoDAO.getCrmUserInfoByUserId(systemUser.getUserId());
+		
+		if(crmUserInfo == null){
+			return map;
+		}
+		
 		BigDecimal totalAssets = crmUserInfo.getUserTotalAssets();
 		map.put("totalAssets", totalAssets);
 		
