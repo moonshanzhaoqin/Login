@@ -239,9 +239,10 @@
 										+ "'"
 										+ JSON.stringify(data[i])
 										+ "'"
-										+ '>编辑</a> '+(data[i].currencyStatus == 0 ? '<a onclick=" changeCurrencyStatus(this,1)">上架</a>'
+										+ '>编辑</a> '
+										+ (data[i].currencyStatus == 0 ? '<a onclick=" changeCurrencyStatus(this,1)">上架</a>'
 												: '<a style="color:red" onclick=" changeCurrencyStatus(this,0)">下架</td>')
-										+'</td>' + '</tr>'
+										+ '</td>' + '</tr>'
 							}
 							$('#currency tbody').html(html);
 
@@ -282,7 +283,15 @@
 			console.log(updateCurrencyValidator.isValid());
 			if (updateCurrencyValidator.isValid()) {
 				form = document.getElementById("updateCurrency");
-				
+				data = {
+					currency : form.currency.value,
+					currencyOrder : form.currencyOrder.value,
+					currencyStatus : form.currencyStatus.value,
+					currencyUnit : form.currencyUnit.value,
+					nameCn : form.nameCn.value,
+					nameEn : form.nameEn.value,
+					nameHk : form.nameHk.value
+				}
 				$.ajax({
 					type : "post",
 					url : "/crm/updateCurrency",
@@ -311,28 +320,27 @@
 				alert("请正确填写后，再提交！")
 			}
 		}
-		
-		
-		function changeCurrencyStatus(obj,status){
-			if(status == 0 ){
+
+		function changeCurrencyStatus(obj, status) {
+			if (status == 0) {
 				var r = confirm("确定该下架币种该么？");
-				if(r != true){
-					return ;
+				if (r != true) {
+					return;
 				}
-			}else{
+			} else {
 				var r = confirm("确定要上架该币种么？");
-				if(r != true){
-					return ;
+				if (r != true) {
+					return;
 				}
 			}
 
-			var tds=$(obj).parent().parent().find('td');
+			var tds = $(obj).parent().parent().find('td');
 			var currency = tds.eq(0).text();
-			data = {
-					currency : currency,
-					status : status
-				}
-			
+			var data = {
+				currency : currency,
+				status : status
+			}
+
 			$.ajax({
 				type : "post",
 				url : "/crm/changeCurrencyStatus",
@@ -354,9 +362,9 @@
 				async : false
 			});
 		}
-		
+
 		function addCurrency() {
-			data = {
+			var data = {
 				currency : $('select').val()
 			}
 			$.ajax({
