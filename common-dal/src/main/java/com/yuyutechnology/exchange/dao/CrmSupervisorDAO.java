@@ -13,5 +13,8 @@ public interface CrmSupervisorDAO {
 	public void delSupervisorById(Integer supervisorId);
 	
 	public void saveCrmSupervisor(CrmSupervisor crmSupervisor);
+	
+	public List<CrmSupervisor> getCrmSupervisorByCondition(String supervisorName,
+			String supervisorMobile,String supervisorEmail);
 
 }
