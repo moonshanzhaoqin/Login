@@ -189,10 +189,8 @@ public class TransferManagerImpl implements TransferManager{
 			return ServerConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION;
 			
 		}else{
-			transferConfirm(userId,transferId);
+			return transferConfirm(userId,transferId);
 		}
-		
-		return ServerConsts.RET_CODE_SUCCESS;
 	}
 
 	@Override
