@@ -75,6 +75,8 @@ public class CommonManagerImpl implements CommonManager {
 			if (currency.getCurrencyStatus() == ServerConsts.CURRENCY_AVAILABLE) {
 				currentCurrenciesTmp.add(currency);
 				currentCurrenciesMap.put(currency.getCurrency(), currency);
+			}else{
+				currentCurrenciesMap.remove(currency.getCurrency());
 			}
 		}
 		currentCurrencies = currentCurrenciesTmp;
