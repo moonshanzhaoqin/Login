@@ -42,4 +42,18 @@ public class CrmSupervisorDAOImpl implements CrmSupervisorDAO {
 		hibernateTemplate.save(crmSupervisor);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CrmSupervisor> getCrmSupervisorByCondition(String supervisorName, 
+			String supervisorMobile,String supervisorEmail) {
+		List<?> list = hibernateTemplate.find("from CrmSupervisor where 1 = 1 "
+				+ "or supervisorName = ? or supervisorMobile = ? or supervisorEmail = ?",
+				supervisorName,supervisorMobile,supervisorEmail);
+		if(list.isEmpty()){
+			return null;
+		}
+
+		return (List<CrmSupervisor>) list;
+	}
+
 }
