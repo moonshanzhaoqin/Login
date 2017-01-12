@@ -135,12 +135,30 @@ public class AlarmController {
 	}
 	
 	@RequestMapping(value="/alarm/saveSupervisor",method=RequestMethod.POST)
-	public ModelAndView saveSupervisor(SaveSupervisorRequest request){
-		mav = new ModelAndView();
-		crmAlarmManager.saveSupervisor(request.getSupervisorName(), 
+	public void saveSupervisor(HttpServletResponse response,SaveSupervisorRequest request){
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		String retCode = crmAlarmManager.saveSupervisor(request.getSupervisorName(), 
 				request.getSupervisorMobile(), request.getSupervisorEmail());
-		mav.setViewName("redirect:/alarm/getSupervisorList");
-		return mav;
+		map.put("retCode", retCode);
+		out.print(JsonBinder.getInstanceNonNull().toJson(map));
 	}
+	
+//	@RequestMapping(value="/alarm/saveSupervisor",method=RequestMethod.POST)
+//	public ModelAndView saveSupervisor(SaveSupervisorRequest request){
+//		mav = new ModelAndView();
+//		String retCode = crmAlarmManager.saveSupervisor(request.getSupervisorName(), 
+//				request.getSupervisorMobile(), request.getSupervisorEmail());
+//		mav.addObject("retCode", retCode);
+//		mav.setViewName("redirect:/alarm/getSupervisorList");
+//		return mav;
+//	}
 	
 }

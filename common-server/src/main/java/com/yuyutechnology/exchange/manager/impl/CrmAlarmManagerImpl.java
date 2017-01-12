@@ -149,14 +149,23 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	}
 
 	@Override
-	public void saveSupervisor(String supervisorName, String supervisorMobile, String supervisorEmail) {
-		CrmSupervisor crmSupervisor = new CrmSupervisor();
-		crmSupervisor.setSupervisorName(supervisorName);
-		crmSupervisor.setSupervisorMobile(supervisorMobile);
-		crmSupervisor.setSupervisorEmail(supervisorEmail);
-		crmSupervisor.setUpdateAt(new Date());
+	public String saveSupervisor(String supervisorName, String supervisorMobile, String supervisorEmail) {
 		
-		crmSupervisorDAO.saveCrmSupervisor(crmSupervisor);
+		List<CrmSupervisor> list = crmSupervisorDAO.
+				getCrmSupervisorByCondition(supervisorName, supervisorMobile, supervisorEmail);
+		
+		if(list == null || list.isEmpty()){
+			CrmSupervisor crmSupervisor = new CrmSupervisor();
+			crmSupervisor.setSupervisorName(supervisorName);
+			crmSupervisor.setSupervisorMobile(supervisorMobile);
+			crmSupervisor.setSupervisorEmail(supervisorEmail);
+			crmSupervisor.setUpdateAt(new Date());
+			
+			crmSupervisorDAO.saveCrmSupervisor(crmSupervisor);
+			
+			return "success";
+		}
+		return "fail";
 		
 	}
 

@@ -5,7 +5,8 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Anytime Exchange</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exanytime</title>
 
 <link rel="stylesheet"
 	href='<c:url value="/resources/bootstrap/css/bootstrap.min.css" />' />
@@ -51,9 +52,9 @@
 
 <body>
 	<div class="container">
-		<div class="row" style="height: 250px; width: 600px;">
-			<img src='<c:url value="/resources/img/ae_logo.png" />'
-				style="width: 200px; height: 100px" />
+		<div class="row" style="height: 250px; width: 500px;text-align:center">
+			<img src='<c:url value="/resources/img/ex_page_logo.png"/>' 
+				/>
 		</div>
 
 		<div class="row">

@@ -6,7 +6,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Anytime Exchange</title>
+		<title>Exanytime</title>
 		
 		<link rel="stylesheet" href='<c:url value="/resources/bootstrap/css/bootstrap.min.css" />' />
 		<link rel="stylesheet" href='<c:url value="/resources/bootstrap/css/bootstrap-table.css" />' />
@@ -23,8 +23,8 @@
 			</div>
 		
 			<div class="row well">
+			
 				<form id="saveSupervisor" action="<c:url value='/alarm/saveSupervisor' />" method="POST">
-				
 					<div class="col-lg-3 text-right">
 						<input class="form-control" name="supervisorName" id="name" placeholder="请填写姓名"/>
 					</div>
@@ -112,7 +112,21 @@
 				if(checkNotBlank(name) && checkNotBlank(mobile) && checkNotBlank(email)){
 					
 					if(checkEmail(email)){
-						$("#saveSupervisor").submit();
+// 						$("#saveSupervisor").submit();
+						$.ajax({
+							url:"<c:url value='/alarm/saveSupervisor' />",
+							type:"post",
+							async:false,
+							dataType:"JSON",
+							data:$("#saveSupervisor").serializeArray(),
+							success:function(data){
+								if(data.retCode == 'fail'){
+									alert("用户名，手机或者邮箱重复，请重新填写");
+								}else{
+									location.href="<c:url value='/alarm/getSupervisorList' />";
+								}
+							}
+						});
 					}else{
 						alert("邮箱格式不正确，请重新填写！");
 						return ;

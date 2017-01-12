@@ -233,6 +233,11 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		map = JsonBinder.getInstance().fromJson(result, HashMap.class);
 		String value = map.get(base);
 		logger.info("value : {}",value);
+		
+		if(value.contains("no protocol")){
+			return 0;
+		}
+
 		ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().
 				fromJson(value, ExchangeRate.class);
 		out = exchangeRate.getRates().get(outCurrency);
