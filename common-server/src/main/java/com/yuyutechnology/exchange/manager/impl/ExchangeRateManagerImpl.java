@@ -47,7 +47,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 	public static Logger logger = LoggerFactory.getLogger(ExchangeRateManagerImpl.class);
 	
 	private void updateExchangeRateNoGoldq(){
-		String exchangeRateUrl = ResourceUtils.getBundleValue4String("exchange.rate.url");
+		String exchangeRateUrl = ResourceUtils.getBundleValue4String("exchange.rate.url", "http://api.fixer.io/latest");
 		List<Currency> currencies = currencyDAO.getCurrencys();
 		if(currencies.isEmpty()){
 			return ;
@@ -66,7 +66,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 	private void updateGoldpayExchangeRate(){
 		Document doc = null;
 		try {
-			doc = Jsoup.connect(ResourceUtils.getBundleValue4String("gold.price.url")).get();
+			doc = Jsoup.connect(ResourceUtils.getBundleValue4String("gold.price.url", "http://www.kitco.com/charts/livegold.html")).get();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
