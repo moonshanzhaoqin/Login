@@ -61,7 +61,7 @@ public class CurrencyManagerImpl implements CurrencyManager {
 			return ServerConsts.RET_CODE_SUCCESS;
 		} else {
 			logger.info("Currency {} is exist", currencyId);
-			return ServerConsts.RET_CODE_FAILUE;
+			return ServerConsts.CURRENCY_IS_EXIST;
 		}
 	}
 

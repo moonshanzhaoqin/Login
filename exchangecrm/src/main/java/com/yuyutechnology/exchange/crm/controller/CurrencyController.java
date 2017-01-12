@@ -64,22 +64,34 @@ public class CurrencyController {
 	public BaseResponse addCurrency(@RequestBody AddCurrencyRequest addCurrencyRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
-		logger.info("add {}", addCurrencyRequest.getCurrency());
-		String retCode = currencyManager.addCurrency(addCurrencyRequest.getCurrency());
-		rep.setRetCode(retCode);
+		if (addCurrencyRequest.isEmpty()) {
+			logger.info("parameter is empty");
+			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+		} else {
+			logger.info("add {}", addCurrencyRequest.getCurrency());
+			String retCode = currencyManager.addCurrency(addCurrencyRequest.getCurrency());
+			rep.setRetCode(retCode);
+		}
 		return rep;
 	}
 
-	//TODO 修改币种状态
+	// TODO 修改币种状态
 	@ResponseBody
 	@RequestMapping(value = "/changeCurrencyStatus", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse changeCurrencyStatus(@RequestBody ChangeCurrencyStatusRequest changeCurrencyStatusRequest, HttpServletRequest request,
-			HttpServletResponse response) {
+	public BaseResponse changeCurrencyStatus(@RequestBody ChangeCurrencyStatusRequest changeCurrencyStatusRequest,
+			HttpServletRequest request, HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
-		logger.info("change {} Status {}", changeCurrencyStatusRequest.getCurrency(),changeCurrencyStatusRequest.getStatus());
-		String retCode = currencyManager.changeCurrencyStatus(changeCurrencyStatusRequest.getCurrency(),changeCurrencyStatusRequest.getStatus());
-		rep.setRetCode(retCode);
+		if (changeCurrencyStatusRequest.isEmpty()) {
+			logger.info("parameter is empty");
+			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+		} else {
+			logger.info("change {} Status {}", changeCurrencyStatusRequest.getCurrency(),
+					changeCurrencyStatusRequest.getStatus());
+			String retCode = currencyManager.changeCurrencyStatus(changeCurrencyStatusRequest.getCurrency(),
+					changeCurrencyStatusRequest.getStatus());
+			rep.setRetCode(retCode);
+		}
 		return rep;
 	}
-	
+
 }

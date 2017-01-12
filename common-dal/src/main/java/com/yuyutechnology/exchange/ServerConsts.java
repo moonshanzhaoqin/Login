@@ -166,6 +166,7 @@ public class ServerConsts {
 	public static final String TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY ="03018";
 	
 	public static final String TRANSFER_REQUEST_INFORMATION_NOT_MATCH ="03019";
+	
 	//crm 管理员04
 	/**
 	 * 管理员不存在
@@ -175,6 +176,27 @@ public class ServerConsts {
 	 * 用户名和密码不匹配
 	 */
 	public static final String PASSWORD_NOT_MATCH_NAME = "04002";
+	
+	//crm 币种05
+	/**
+	 * 币种已存在
+	 */
+	public static final String CURRENCY_IS_EXIST = "05001";
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	// 用户类型
 	/**
 	 * 普通用户
@@ -295,6 +317,7 @@ public class ServerConsts {
 	public static final int CURRENCY_UNAVAILABLE = 0;
 	
 	public static final String ADMIN_DEFAULT_PASSWORD = "12345678";
+	
 	
 	
 	static {

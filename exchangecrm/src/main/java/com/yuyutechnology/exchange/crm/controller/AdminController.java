@@ -84,7 +84,6 @@ public class AdminController {
 			default:
 				break;
 			}
-			
 			rep.setRetCode(retCode);
 		}
 		return rep;

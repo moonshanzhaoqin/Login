@@ -23,7 +23,8 @@
 						class="icon-bar"></span>
 				</button>
 				<a class="navbar-brand" href="#"><img alt="Anytime Exchange"
-					src='<c:url value="/resources/img/ex_page_logo_small.png"/>' height="30px"></a>
+					src='<c:url value="/resources/img/ex_page_logo_small.png"/>'
+					height="30px"></a>
 			</div>
 			<div class="collapse navbar-collapse"
 				id="bs-example-navbar-collapse-1">
@@ -45,11 +46,12 @@
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown"><a href="#" class="dropdown-toggle"
-						data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> ${sessionScope.adminName }
-							<span class="caret"></span></a>
+						data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span>
+							${sessionScope.adminName } <span class="caret"></span></a>
 						<ul class="dropdown-menu" role="menu">
 							<li><a href="#passwordModal" data-toggle="modal">修改密码</a></li>
-							<li><a href="<c:url value='/exit' />"><span class="glyphicon glyphicon-log-out"></span> 退出</a></li>
+							<li><a href="<c:url value='/exit' />"><span
+									class="glyphicon glyphicon-log-out"></span> 退出</a></li>
 						</ul></li>
 				</ul>
 			</div>
@@ -91,5 +93,8 @@
 			</div>
 		</div>
 	</div>
+	<script>
+		var loginUrl = "<c:url value='/login' />";
+	</script>
 </body>
 </html>

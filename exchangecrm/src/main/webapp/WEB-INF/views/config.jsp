@@ -70,13 +70,21 @@
 				dataType : 'json',
 				data : JSON.stringify(data),
 				success : function(data) {
-					console.log("success");
-					initConfig();
+					if(data.retCode=="00000"){
+						console.log("success");
+						initConfig();
+					}else if(data.retCode=="00002"){
+						location.href=loginUrl;
+					}else{
+						alert("Something is wrong!")
+					}
+					
 				},
 				error : function(xhr, err) {
 					console.log("error");
 					console.log(err);
 					console.log(xhr);
+					alert("Something is wrong!")
 				},
 				async : false
 			});

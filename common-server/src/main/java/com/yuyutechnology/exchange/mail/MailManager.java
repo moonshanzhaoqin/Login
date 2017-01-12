@@ -40,6 +40,12 @@ public class MailManager {
 	private final String MAIL_REPLACE_NAME = "[NAME]";
 	private final String MAIL_REPLACE_CATEGORY = "[CATEGORY]";
 	private final String MAIL_REPLACE_ENQUIRY = "[ENQUIRY]";
+	
+	private final String MAIL_REPLACE_DIFFERENCE = "[DIFFERENCE]";
+	private final String MAIL_REPLACE_LIMIT = "[LOWERLIMIT]";
+	private final String MAIL_REPLACE_GRADE = "[GRADE]";
+	private final String MAIL_REPLACE_TIME = "[TIME]";
+	
 
 	@PostConstruct
 	@Scheduled(cron = "0 1/10 * * * ?")
@@ -76,10 +82,10 @@ public class MailManager {
 	
 	public void mail4criticalAlarm(String email,BigDecimal difference,BigDecimal lowerLimit,String grade,String dateTime) {
 		String content = criticalAlarmContent.toString().
-				replace(MAIL_REPLACE_CATEGORY, difference.toString()).
-				replace(MAIL_REPLACE_EMAIL, lowerLimit.toString()).
-				replace(MAIL_REPLACE_ENQUIRY, grade).
-				replace(MAIL_REPLACE_NAME, dateTime);
+				replace(MAIL_REPLACE_DIFFERENCE, difference.toString()).
+				replace(MAIL_REPLACE_LIMIT, lowerLimit.toString()).
+				replace(MAIL_REPLACE_GRADE, grade).
+				replace(MAIL_REPLACE_TIME, dateTime);
 		logger.info("content : {}", content);
 		List<String> toMails = new ArrayList<>();
 		toMails.add(email);

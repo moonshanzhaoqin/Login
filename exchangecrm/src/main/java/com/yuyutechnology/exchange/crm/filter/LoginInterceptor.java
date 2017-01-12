@@ -1,6 +1,9 @@
 package com.yuyutechnology.exchange.crm.filter;
 
+import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -10,6 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.utils.JsonBinder;
 
 /**
  * 登录拦截器
@@ -23,12 +29,11 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
 	private static final Set<String> noMappingSet = new HashSet<String>();
 	private static final Set<String> noMappingSetUrl = new HashSet<String>();
-	
 
 	@PostConstruct
 	private void init() {
 		logger.info("=============initLoginInterceptor start===============");
-		
+
 		noMappingSet.add("/login");
 		noMappingSet.add("/dologin");
 		noMappingSet.add("/index");
@@ -54,6 +59,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		}
 
 	}
+
 	/**
 	 * 定义登录页面
 	 */
@@ -73,16 +79,25 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		// 允许跨域访问
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Headers", "accept, content-type");
-		
+
 		String requestURI = request.getRequestURI();
-		String adminName=(String) request.getSession().getAttribute("adminName");
+		String adminName = (String) request.getSession().getAttribute("adminName");
+		logger.info("request URI:" + requestURI + " adminName: " + adminName);
 		// 判断是否需要拦截或者是否登录
-		if (validURL(requestURI) || adminName!=null) {
-			logger.info("request URI:" + requestURI + " adminName: " + adminName);
+		if (validURL(requestURI) || adminName != null) {
 			return true;
 		} else {
-			logger.info("LOGIN_PAGE================"+LOGIN_PAGE);
-			response.sendRedirect(request.getContextPath() + LOGIN_PAGE);
+			logger.info("LOGIN_PAGE================" + LOGIN_PAGE);
+			if (request.getHeader("X-Requested-With") != null) {
+				logger.info("AJAX request");
+				PrintWriter out = response.getWriter();
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("retCode", ServerConsts.SESSION_TIMEOUT);
+				out.print(JsonBinder.getInstance().toJson(map));
+				return false;
+			} else {
+				response.sendRedirect(request.getContextPath() + LOGIN_PAGE);
+			}
 			return false;
 		}
 	}
