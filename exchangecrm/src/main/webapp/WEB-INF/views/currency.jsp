@@ -268,7 +268,6 @@
 								+ '</option>'
 					}
 					$('select').html(html);
-
 				},
 				error : function(xhr, err) {
 					console.log("error");
@@ -305,7 +304,9 @@
 							$('#myModal').modal('hide')
 							alert("修改成功！");
 							initCurrency();
-						} else {
+						} else if(data.retCode=="00002"){
+							location.href=loginUrl;
+						}else {
 							console.log("updateCurrency" + data.message);
 							alert(data.message);
 						}
@@ -314,6 +315,7 @@
 						console.log("error");
 						console.log(err);
 						console.log(xhr);
+						alert("something is wrong!");
 					},
 					async : false
 				});
@@ -351,7 +353,9 @@
 				success : function(data) {
 					if (data.retCode == "00000") {
 						initCurrency();
-					} else {
+					} else if(data.retCode=="00002"){
+						location.href=loginUrl;
+					}else{
 						alert("something is wrong!");
 					}
 				},
@@ -359,6 +363,7 @@
 					console.log("error");
 					console.log(err);
 					console.log(xhr);
+					alert("something is wrong!");
 				},
 				async : false
 			});
@@ -379,14 +384,19 @@
 						console.log("success");
 						alert("添加成功！");
 						initCurrency();
-					} else {
+					} else if(data.retCode=="00002"){
+						location.href=loginUrl;
+					}else if(data.retCode=="05001"){
 						alert("币种已存在")
+					}else{
+						alert("Something is wrong!");
 					}
+						
 				},
 				error : function(xhr, err) {
-					console.log("error");
 					console.log(err);
 					console.log(xhr);
+					alert("Something is wrong!");
 				},
 				async : false
 			});
