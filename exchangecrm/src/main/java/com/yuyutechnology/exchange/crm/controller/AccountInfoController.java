@@ -40,8 +40,8 @@ public class AccountInfoController {
 	@RequestMapping(value = "/account/getTotalAssetsDetails", method = RequestMethod.GET)
 	public ModelAndView getTotalAssetsDetails() {
 		mav = new ModelAndView();
-		HashMap<String, BigDecimal> systemTotalAssets = crmUserInfoManager.getSystemAccountTotalAssets();
 		HashMap<String, BigDecimal> userTotalAssets = crmUserInfoManager.getUserAccountTotalAssets();
+		HashMap<String, BigDecimal> systemTotalAssets = crmUserInfoManager.getSystemAccountTotalAssets();
 		List<Currency> currencies = commonManager.getAllCurrencies();
 		List<TotalAsset> totalAssets = new ArrayList<>();
 
