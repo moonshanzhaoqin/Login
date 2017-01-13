@@ -32,4 +32,7 @@ public interface TransferDAO {
 			String sql,String countSql,List<Object> values,int currentPage, int pageSize);
 	
 	public List<Transfer> findTransferByStatusAndTimeBefore(int transferStatus, int transferType, Date date);
+	
+	public BigDecimal sumGoldpayTransAmount(int transferType);
+	
 }

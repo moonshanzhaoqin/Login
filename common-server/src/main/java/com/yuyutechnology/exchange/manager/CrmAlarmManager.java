@@ -19,9 +19,7 @@ public interface CrmAlarmManager {
 	public void delAlarmConfig(int alarmId);
 	
 	public CrmAlarm getAlarmConfigById(int alarmId);
-	
-	public void autoAlarm(BigDecimal Difference);
-	
+
 	public List<CrmAlarm> getCrmAlarmConfigList();
 	
 	public List<CrmSupervisor> getCrmSupervisorList();
@@ -30,5 +28,7 @@ public interface CrmAlarmManager {
 	
 	public String saveSupervisor(String supervisorName,
 			String supervisorMobile,String supervisorEmail);
+
+	public void autoAlarm(BigDecimal userHoldingTotalAssets);
 
 }

@@ -36,19 +36,19 @@ public class AdminController {
 			logger.info("parameter is empty");
 			mav.setViewName("login");
 			mav.addObject("retCode", ServerConsts.PARAMETER_IS_EMPTY);
-			mav.addObject("message", "parameter is empty");
+			mav.addObject("message", "请输入用户名、密码");
 		} else {
 			String retCode = adminManager.login(loginRquest.getAdminName(), loginRquest.getAdminPassword());
 			switch (retCode) {
 			case ServerConsts.ADMIN_NOT_EXIST:
 				mav.setViewName("login");
 				mav.addObject("retCode", ServerConsts.ADMIN_NOT_EXIST);
-				mav.addObject("message", "ADMIN_NOT_EXIST");
+				mav.addObject("message", "Admin不存在");
 				break;
 			case ServerConsts.PASSWORD_NOT_MATCH_NAME:
 				mav.setViewName("login");
 				mav.addObject("retCode", ServerConsts.PASSWORD_NOT_MATCH_NAME);
-				mav.addObject("message", "PASSWORD_NOT_MATCH_NAME");
+				mav.addObject("message", "用户名密码不匹配");
 				break;
 			case ServerConsts.RET_CODE_SUCCESS:
 				// 写入session
