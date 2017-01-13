@@ -17,6 +17,7 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 			<tx:method name="*" propagation="REQUIRED" />
 		</tx:attributes>
 	</tx:advice>
+	
 	<aop:config>
 		<!-- 定义一个切入点 -->
 		<aop:pointcut
@@ -24,5 +25,23 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 			id="services" />
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="services" />
 	</aop:config>
+	
+	<bean id="druid-stat-interceptor"
+	    class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor">
+	</bean>
+	
+	<bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut"
+	    scope="prototype">
+	    <property name="patterns">
+	        <list>
+	            <value>com.yuyutechnology.exchange.manager.*</value>
+	        </list>
+	    </property>
+	</bean>
+	
+	<aop:config proxy-target-class="true">
+    	<aop:advisor advice-ref="druid-stat-interceptor" pointcut-ref="druid-stat-pointcut" />
+	</aop:config>
+	
 
 </beans>

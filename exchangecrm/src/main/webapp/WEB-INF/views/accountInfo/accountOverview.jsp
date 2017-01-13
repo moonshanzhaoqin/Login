@@ -54,7 +54,7 @@
         						<input type="text" value="${model.lowerLimit }" class="form-control" placeholder="总资产>=" name="lowerLimit" size="8">
         					</li>
         					<li>
-        						<input type="text" value="${model.upperLimit }" class="form-control" placeholder="总资产>=" name="upperLimit" size="8">
+        						<input type="text" value="${model.upperLimit }" class="form-control" placeholder="总资产<=" name="upperLimit" size="8">
         					</li>
 
         					<li>

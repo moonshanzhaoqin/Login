@@ -28,6 +28,7 @@ public class AutoAlarmTask {
 		HashMap<String, BigDecimal> userTotalAssets = crmUserInfoManager.getUserAccountTotalAssets();
 		
 		if(userTotalAssets != null){
+			logger.info("totalAssets : {}",userTotalAssets.get("totalAssets"));
 			crmAlarmManager.autoAlarm(userTotalAssets.get("totalAssets"));
 		}
 
