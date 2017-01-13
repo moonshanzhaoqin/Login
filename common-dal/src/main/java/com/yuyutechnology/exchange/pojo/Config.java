@@ -21,6 +21,8 @@ public class Config implements java.io.Serializable {
 	private String configValue;
 	private String configName;
 	private String configOrder;
+	private String configCanChange;
+
 
 	public Config() {
 	}
@@ -70,6 +72,14 @@ public class Config implements java.io.Serializable {
 
 	public void setConfigOrder(String configOrder) {
 		this.configOrder = configOrder;
+	}
+	@Column(name = "config_canChange")
+	public String getConfigCanChange() {
+		return configCanChange;
+	}
+
+	public void setConfigCanChange(String configCanChange) {
+		this.configCanChange = configCanChange;
 	}
 
 }

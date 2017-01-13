@@ -18,6 +18,15 @@
 	<%@ include file="common/header.jsp"%>
 
 	<div class="container">
+		<div class="row">
+			<div class="alert alert-info alert-dismissible" role="alert">
+				<button type="button" class="close" data-dismiss="alert">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<strong>注意!</strong> 所有操作将会在10分钟后起效。
+			</div>
+		</div>
+
 		<div class="row ">
 
 			<ul class="formbar pull-right">
@@ -304,9 +313,9 @@
 							$('#myModal').modal('hide')
 							alert("修改成功！");
 							initCurrency();
-						} else if(data.retCode=="00002"){
-							location.href=loginUrl;
-						}else {
+						} else if (data.retCode == "00002") {
+							location.href = loginUrl;
+						} else {
 							console.log("updateCurrency" + data.message);
 							alert(data.message);
 						}
@@ -353,9 +362,9 @@
 				success : function(data) {
 					if (data.retCode == "00000") {
 						initCurrency();
-					} else if(data.retCode=="00002"){
-						location.href=loginUrl;
-					}else{
+					} else if (data.retCode == "00002") {
+						location.href = loginUrl;
+					} else {
 						alert("something is wrong!");
 					}
 				},
@@ -384,14 +393,14 @@
 						console.log("success");
 						alert("添加成功！");
 						initCurrency();
-					} else if(data.retCode=="00002"){
-						location.href=loginUrl;
-					}else if(data.retCode=="05001"){
+					} else if (data.retCode == "00002") {
+						location.href = loginUrl;
+					} else if (data.retCode == "05001") {
 						alert("币种已存在")
-					}else{
+					} else {
 						alert("Something is wrong!");
 					}
-						
+
 				},
 				error : function(xhr, err) {
 					console.log(err);
