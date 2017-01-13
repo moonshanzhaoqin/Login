@@ -174,9 +174,9 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		
 		logger.info("ReserveAvailability : {}%",reserveAvailability);
 		
-		map.put("exHoldingTotalAssets", exHoldingTotalAssets.setScale(5, RoundingMode.FLOOR));
+		map.put("exHoldingTotalAssets", exHoldingTotalAssets.setScale(4, RoundingMode.FLOOR));
 		map.put("userHoldingTotalAssets", userHoldingTotalAssets);
-		map.put("reserveFunds", reserveFunds.setScale(5, RoundingMode.FLOOR));
+		map.put("reserveFunds", reserveFunds.setScale(4, RoundingMode.FLOOR));
 		map.put("reserveAvailability", reserveAvailability.setScale(2, RoundingMode.FLOOR));
 
 		return map;

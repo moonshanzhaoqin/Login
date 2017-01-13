@@ -68,8 +68,8 @@
 								<tr>
 									<td style="display:none">${alarmConfig.alarmId }</td>
 									<td>${alarmConfig.alarmGrade }</td>
-									<td>${alarmConfig.lowerLimit }</td>
-									<td>${alarmConfig.upperLimit }</td>
+									<td>${alarmConfig.lowerLimit }%</td>
+									<td>${alarmConfig.upperLimit }%</td>
 									<td>
 										<c:if test="${alarmConfig.alarmMode eq 1}">短信</c:if>
 						        		<c:if test="${alarmConfig.alarmMode eq 2}">邮件</c:if>
