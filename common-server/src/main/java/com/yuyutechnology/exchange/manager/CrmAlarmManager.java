@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.manager;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
@@ -30,5 +31,7 @@ public interface CrmAlarmManager {
 			String supervisorMobile,String supervisorEmail);
 
 	public void autoAlarm(BigDecimal userHoldingTotalAssets);
+
+	public HashMap<String, BigDecimal> getAccountInfo(BigDecimal userHoldingTotalAssets);
 
 }

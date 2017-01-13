@@ -41,19 +41,17 @@ public class AlarmController {
 	@RequestMapping(value="/alarm/getAlarmConfigList",method=RequestMethod.GET)
 	public ModelAndView getAlarmConfigList(){
 		mav = new ModelAndView();
-		
-		HashMap<String, BigDecimal> systemTotalAssets = crmUserInfoManager.getSystemAccountTotalAssets();
+	
 		HashMap<String, BigDecimal> userTotalAssets = crmUserInfoManager.getUserAccountTotalAssets();
 		
-		if(userTotalAssets !=null && systemTotalAssets != null){
-			BigDecimal difference = systemTotalAssets.get("totalAssets").subtract(userTotalAssets.get("totalAssets"));
-			List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
+		if(userTotalAssets !=null ){
 			List<CrmAlarm> list = crmAlarmManager.getCrmAlarmConfigList();
-			mav.addObject("supervisorList", supervisorList);
+			HashMap<String, BigDecimal> map =crmAlarmManager.getAccountInfo(userTotalAssets.get("totalAssets"));
+			mav.addObject("exHoldingTotalAssets", map.get("exHoldingTotalAssets"));
+			mav.addObject("userHoldingTotalAssets", map.get("userHoldingTotalAssets"));
+			mav.addObject("reserveFunds", map.get("reserveFunds"));
+			mav.addObject("reserveAvailability", map.get("reserveAvailability"));
 			mav.addObject("list", list);
-			mav.addObject("systemTotalAssets", systemTotalAssets.get("totalAssets"));
-			mav.addObject("userTotalAssets", userTotalAssets.get("totalAssets"));
-			mav.addObject("difference", difference);
 		}
 
 		mav.setViewName("/alarm/alarmConfigInfo");

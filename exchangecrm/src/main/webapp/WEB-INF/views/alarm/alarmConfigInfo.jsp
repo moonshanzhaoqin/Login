@@ -21,16 +21,18 @@
 				<table class = "table"> 
 					<thead>
 						<tr>
-							<th>系统总资产（USD）</th>
-							<th>用户总资产（USD）</th>
-							<th>差额（USD）</th>
+							<th>userHoldingTotalAssets（USD）</th>
+							<th>exHoldingTotalAssets（USD）</th>
+							<th>reserveFunds（USD）</th>
+							<th>reserveAvailability</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
-							<td>${systemTotalAssets }</td>
-							<td>${userTotalAssets }</td>
-							<td>${difference }</td>
+							<td>${userHoldingTotalAssets }</td>
+							<td>${exHoldingTotalAssets }</td>
+							<td>${reserveFunds }</td>
+							<td>${reserveAvailability }%</td>
 						</tr>
 					</tbody>
 				</table>

@@ -2,8 +2,8 @@ package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -151,25 +151,47 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	}
 	
 	@Override
-	public void autoAlarm(BigDecimal userHoldingTotalAssets){
+	public HashMap<String, BigDecimal> getAccountInfo(BigDecimal userHoldingTotalAssets){
+		
+		HashMap<String, BigDecimal> map = new HashMap<>();
+		
 //		Ex公司持有的总资产 = 用户充值Goldpay总额 - 用户提现Goldpay总额;
 //		预备金剩余量 = 1 - (Ex用户持有的总资产 - Ex公司持有的总资产) / 预备金;
-		
 		BigDecimal sumRecharge = transferDAO.sumGoldpayTransAmount(ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE);
 		BigDecimal sumWithdraw = transferDAO.sumGoldpayTransAmount(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
-		BigDecimal exHoldingTotalAssets = sumRecharge.subtract(sumWithdraw);
+		BigDecimal exHoldingTotalAssets = exchangeRateManager.getExchangeResult(ServerConsts.CURRENCY_OF_GOLDPAY, 
+				sumRecharge.subtract(sumWithdraw));
 		
-		logger.info("sumRecharge:{},sumWithdraw:{},exHoldingTotalAssets:{}",new Object[]{sumRecharge,sumWithdraw,exHoldingTotalAssets});
+		logger.info("sumRecharge:{},sumWithdraw:{},exHoldingTotalAssets(USD):{}",new Object[]{sumRecharge,sumWithdraw,exHoldingTotalAssets});
 		
-		BigDecimal reserveFunds = new BigDecimal("100000000");
+		BigDecimal reserveFunds = exchangeRateManager.getExchangeResult(ServerConsts.CURRENCY_OF_GOLDPAY, new BigDecimal("100000000"));
 		
-		BigDecimal ReserveAvailability =new BigDecimal("1").subtract(
-				(userHoldingTotalAssets.subtract(
-						exchangeRateManager.getExchangeResult(ServerConsts.CURRENCY_OF_GOLDPAY, exHoldingTotalAssets)
-						)
-						).divide(reserveFunds,5,RoundingMode.FLOOR));
+		logger.info("reserveFunds (USD) :{}",reserveFunds);
 		
-		logger.info("ReserveAvailability : {}",ReserveAvailability);
+		BigDecimal reserveAvailability =(new BigDecimal("1").subtract(
+				(userHoldingTotalAssets.subtract(exHoldingTotalAssets)).divide(reserveFunds,5,RoundingMode.FLOOR))).
+				multiply(new BigDecimal("100"));
+		
+		logger.info("ReserveAvailability : {}%",reserveAvailability);
+		
+		map.put("exHoldingTotalAssets", exHoldingTotalAssets.setScale(5, RoundingMode.FLOOR));
+		map.put("userHoldingTotalAssets", userHoldingTotalAssets);
+		map.put("reserveFunds", reserveFunds.setScale(5, RoundingMode.FLOOR));
+		map.put("reserveAvailability", reserveAvailability.setScale(2, RoundingMode.FLOOR));
+
+		return map;
+	}
+ 	
+	
+	
+	@Override
+	public void autoAlarm(BigDecimal userHoldingTotalAssets){
+
+		HashMap<String, BigDecimal> map = getAccountInfo(userHoldingTotalAssets);
+		
+		if(map == null){
+			return ;
+		}
 		
 		List<CrmAlarm> list = crmAlarmDAO.getCrmAlarmConfigListByType(1);
 		
@@ -180,33 +202,31 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		
 		for (CrmAlarm crmAlarm : list) {
 			if(
-				(crmAlarm.getLowerLimit().compareTo(ReserveAvailability.multiply(new BigDecimal("100"))) == 0 
-				||crmAlarm.getLowerLimit().compareTo(ReserveAvailability.multiply(new BigDecimal("100"))) == -1)&&
-				(crmAlarm.getUpperLimit().compareTo(ReserveAvailability.multiply(new BigDecimal("100"))) == 1)
+				(crmAlarm.getLowerLimit().compareTo(map.get("reserveAvailability")) == 0 
+				||crmAlarm.getLowerLimit().compareTo(map.get("reserveAvailability")) == -1)&&
+				(crmAlarm.getUpperLimit().compareTo(map.get("reserveAvailability")) == 1)
 			){
 				
 				logger.info("Initiate an alarm, alarmId : {},alarmMode: {}",new Object[]{crmAlarm.getAlarmId(),crmAlarm.getAlarmMode()});
-				
-				BigDecimal percent = ReserveAvailability.multiply(new BigDecimal("100"));
-				
+
 				//发短信
 				if(crmAlarm.getAlarmMode() == 1){
-					alarmBySMS(crmAlarm.getSupervisorIdArr(), percent.setScale(2, RoundingMode.FLOOR), 
+					alarmBySMS(crmAlarm.getSupervisorIdArr(), map.get("reserveAvailability"), 
 							crmAlarm.getLowerLimit(), crmAlarm.getAlarmGrade());
 				}
 				//发邮件
 				if(crmAlarm.getAlarmMode() == 2){
-					alarmByEmail(crmAlarm.getSupervisorIdArr(),percent.setScale(2, RoundingMode.FLOOR), 
+					alarmByEmail(crmAlarm.getSupervisorIdArr(),map.get("reserveAvailability"), 
 							crmAlarm.getLowerLimit(), crmAlarm.getAlarmGrade());
 				}
 				
 				//发邮件+发短信
 				if(crmAlarm.getAlarmMode() == 3){
 					
-					alarmByEmail(crmAlarm.getSupervisorIdArr(),percent.setScale(2, RoundingMode.FLOOR), 
+					alarmByEmail(crmAlarm.getSupervisorIdArr(),map.get("reserveAvailability"), 
 							crmAlarm.getLowerLimit(), crmAlarm.getAlarmGrade());
 					
-					alarmBySMS(crmAlarm.getSupervisorIdArr(),percent.setScale(2, RoundingMode.FLOOR), 
+					alarmBySMS(crmAlarm.getSupervisorIdArr(),map.get("reserveAvailability"), 
 							crmAlarm.getLowerLimit(), crmAlarm.getAlarmGrade());
 				}
 				
