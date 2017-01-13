@@ -29,7 +29,7 @@
 				<thead>
 					<tr>
 						<th>币种</th>
-						<th>系统总账</th>
+						<th>公司总账</th>
 						<th>用户总账</th>
 					</tr>
 				</thead>
