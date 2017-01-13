@@ -32,7 +32,19 @@
 							<td>${userHoldingTotalAssets }</td>
 							<td>${exHoldingTotalAssets }</td>
 							<td>${reserveFunds }</td>
-							<td>${reserveAvailability }%</td>
+							<td>
+								<c:if test="${reserveAvailability < 20}">
+									<font color="red">${reserveAvailability }%</font>
+								</c:if>
+								<c:if test="${reserveAvailability >= 20 &&  reserveAvailability<50}">
+									<font color="yellow">${reserveAvailability }%</font>
+								</c:if>
+								<c:if test="${reserveAvailability >= 50}">
+									<font color="green">${reserveAvailability }%</font>
+								</c:if>
+								
+								
+							</td>
 						</tr>
 					</tbody>
 				</table>

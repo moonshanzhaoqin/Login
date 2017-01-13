@@ -44,17 +44,21 @@ public class AccountInfoController {
 		HashMap<String, BigDecimal> systemTotalAssets = crmUserInfoManager.getSystemAccountTotalAssets();
 		List<Currency> currencies = commonManager.getAllCurrencies();
 		List<TotalAsset> totalAssets = new ArrayList<>();
-
-		for (Currency currency : currencies) {
-			totalAssets.add(new TotalAsset(currency,
-					systemTotalAssets.get(currency.getCurrency()) == null ? new BigDecimal("0.0000")
-							: systemTotalAssets.get(currency.getCurrency()),
-					userTotalAssets.get(currency.getCurrency()) == null ?  new BigDecimal("0.0000")
-							: userTotalAssets.get(currency.getCurrency())));
+		
+		
+		if(userTotalAssets != null && systemTotalAssets!= null){
+			for (Currency currency : currencies) {
+				totalAssets.add(new TotalAsset(currency,
+						systemTotalAssets.get(currency.getCurrency()) == null ? new BigDecimal("0.0000")
+								: systemTotalAssets.get(currency.getCurrency()),
+						userTotalAssets.get(currency.getCurrency()) == null ?  new BigDecimal("0.0000")
+								: userTotalAssets.get(currency.getCurrency())));
+			}
+			mav.addObject("totalAssets", totalAssets);
+			mav.addObject("systemAmount", systemTotalAssets.get("totalAssets"));
+			mav.addObject("usermAmount", userTotalAssets.get("totalAssets"));
 		}
-		mav.addObject("totalAssets", totalAssets);
-		mav.addObject("systemAmount", systemTotalAssets.get("totalAssets"));
-		mav.addObject("usermAmount", userTotalAssets.get("totalAssets"));
+
 		mav.setViewName("/accountInfo/totalAssetsDetails");
 		return mav;
 	}
