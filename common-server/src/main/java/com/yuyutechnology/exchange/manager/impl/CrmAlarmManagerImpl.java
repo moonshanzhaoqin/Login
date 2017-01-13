@@ -21,6 +21,7 @@ import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.pojo.CrmSupervisor;
 import com.yuyutechnology.exchange.sms.SmsManager;
+import com.yuyutechnology.exchange.utils.DateFormatUtils;
 
 @Service
 public class CrmAlarmManagerImpl implements CrmAlarmManager {
@@ -72,28 +73,22 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	}
 
 	private void alarmBySMS(String supervisorIdArr,BigDecimal difference,BigDecimal lowerLimit,String alarmGrade){
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
 		String[] arr = (supervisorIdArr.replace("[", "").replace("]", "")).split(",");
 		
 		for (String supervisorId : arr) {
 			CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId.trim()));
 			smsManager.sendSMS4CriticalAlarm(crmSupervisor.getSupervisorMobile(), 
-					difference, lowerLimit, alarmGrade, sdf.format(new Date()));
+					difference, lowerLimit, alarmGrade, DateFormatUtils.formatDateGMT8(new Date()));
 		}
 	}
 	
 	private void alarmByEmail(String supervisorIdArr,BigDecimal difference,BigDecimal lowerLimit,String alarmGrade){
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
 		String[] arr = (supervisorIdArr.replace("[", "").replace("]", "")).split(",");
 		
 		for (String supervisorId : arr) {
 			CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
 			mailManager.mail4criticalAlarm(crmSupervisor.getSupervisorEmail(),
-					difference, lowerLimit, alarmGrade, sdf.format(new Date()));
+					difference, lowerLimit, alarmGrade, DateFormatUtils.formatDateGMT8(new Date()));
 		}
 	}
 
