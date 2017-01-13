@@ -26,23 +26,35 @@
         			<form id="searchForm" action="<c:url value='/account/getTotalAssetsInfoByPage' />" method="POST">
         				<ul class="formbar">
         					<li>
-        						<input type="text" value="${model.userPhone }" class="form-control" placeholder="手机号" name="userPhone" size="8">
+        						<input type="text" value="${model.userPhone }" class="form-control" placeholder="手机号" name="userPhone" size="12">
         					</li>
         					<li>
-        						<input type="text" value="${model.userName }" class="form-control" placeholder="用户名" name="userName" size="8">
+        						<input type="text" value="${model.userName }" class="form-control" placeholder="用户名" name="userName" size="12">
         					</li>
         					<li>
         						<select name="isFrozen" class="form-control">
-        							<option value=3>账号状态</option>
-        							<option value=0>已冻结</option>
-        							<option value=1>未冻结</option>
+									<c:if test="${model.isFrozen == 0}">
+										<option value=3>账号状态</option>
+	        							<option value=0 selected>已冻结</option>
+	        							<option value=1>未冻结</option>
+									</c:if>
+									<c:if test="${model.isFrozen == 1}">
+										<option value=3>账号状态</option>
+	        							<option value=0>已冻结</option>
+	        							<option value=1 selected>未冻结</option>
+									</c:if>
+									<c:if test="${model.isFrozen == 3}">
+										<option value=3 selected>账号状态</option>
+	        							<option value=0>已冻结</option>
+	        							<option value=1>未冻结</option>
+									</c:if>
         						</select>
         					</li>
         					<li>
-        						<input type="text" value="${model.lowerLimit }" class="form-control" placeholder="下限" name="lowerLimit" size="8">
+        						<input type="text" value="${model.lowerLimit }" class="form-control" placeholder="总资产>=" name="lowerLimit" size="8">
         					</li>
         					<li>
-        						<input type="text" value="${model.upperLimit }" class="form-control" placeholder="上限" name="upperLimit" size="8">
+        						<input type="text" value="${model.upperLimit }" class="form-control" placeholder="总资产>=" name="upperLimit" size="8">
         					</li>
 
         					<li>
@@ -66,7 +78,7 @@
 				<table class = "table table-striped table-bordered">
 					<thead>
 						<tr>
-							<th>用户编号</th>
+							<th>国家码</th>
 							<th>手机号</th>
 							<th>用户名</th>
 							<th>用户类型</th>
@@ -80,7 +92,7 @@
 						<c:if test="${not empty model.pageBean.rows }">
 							<c:forEach var="userInfo" items="${model.pageBean.rows}">
 								<tr>
-									<td>${userInfo.userId }</td>
+									<td>${userInfo.areaCode }</td>
 									<td>${userInfo.userPhone }</td>
 									<td>${userInfo.userName }</td>
 									<td>
