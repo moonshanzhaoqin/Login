@@ -14,6 +14,14 @@
 <body>
 	<%@ include file="common/header.jsp"%>
 	<div class="container">
+	<div class="row">
+			<div class="alert alert-info alert-dismissible" role="alert">
+				<button type="button" class="close" data-dismiss="alert">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<strong>注意!</strong> 所有操作将会在10分钟后起效。
+			</div>
+		</div>
 		<form class="form-horizontal" id="config"></form>
 	</div>
 
@@ -38,11 +46,11 @@
 					html = "";
 					for (var i = 0; i < data.length; i++) {
 						html += '<div class="form-group" id="' + data[i].configKey + '">'
-							+ '<label  class="col-lg-2 control-label">'
+							+ '<label  class="col-sm-4 control-label">'
 							+ data[i].configName
 							+ '</label>'
-							+ '<div class="col-lg-8"><input type="text" class="form-control" value="' + data[i].configValue + '"></div>'
-							+ '<div class="col-lg-2"><button type="button" class="btn btn-primary" onclick="updateConfig()">保存</button></div>'
+							+ '<div class="col-sm-4"><input type="text" class="form-control" value="' + data[i].configValue + '"></div>'
+							+ '<div class="col-sm-2"><button type="button" class="btn btn-primary" onclick="updateConfig()">保存</button></div>'
 							+ '</div>'
 						}
 						$('#config').html(html);
