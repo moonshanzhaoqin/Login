@@ -114,8 +114,6 @@
 	</div>
 	<!--end of container-->
 
-	<div class="footer navbar-fixed-bottom" style="margin-left: -60px;">
-	</div>
 
 	<script type="text/javascript"
 		src="<c:url value="/resources/js/jquery.min.js" />"></script>
@@ -125,8 +123,8 @@
 		$(function() {
 			var retCode = $('#retCode').val();
 			var retMessage = $('#retMessage').val();
-
-			if (retCode == "04001" && retCode=="04002" ) {
+// 			alert(retCode);
+			if (retCode == "04001" || retCode=="04002" || retCode=="00003") {
 				alert(retMessage);
 			}
 
