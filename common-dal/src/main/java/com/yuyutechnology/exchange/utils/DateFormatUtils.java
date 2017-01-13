@@ -69,7 +69,7 @@ public class DateFormatUtils {
 	}
 	public static String formatDateGMT8(Date date)
 	{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		sdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
 		return sdf.format(date);
 	}
