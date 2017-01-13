@@ -9,7 +9,11 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -144,6 +148,29 @@ public class TransferDAOImpl implements TransferDAO {
 		
 		return map;
 		
+	}
+
+	@Override
+	public BigDecimal sumGoldpayTransAmount(final int transferType) {
+		
+		BigDecimal sum = hibernateTemplate.executeWithNativeSession(new HibernateCallback<BigDecimal>() {
+			@Override
+			public BigDecimal doInHibernate(Session session) throws HibernateException {
+				Query query = session.createSQLQuery("SELECT sum(transfer_amount) FROM `e_transfer` where transfer_type = ?");
+				query.setInteger(0, transferType);
+				
+				@SuppressWarnings("unchecked")
+				List<BigDecimal> list = query.list();
+				
+				if(list.isEmpty()){
+					return new BigDecimal("0");
+				}
+				
+				return new BigDecimal(list.get(0).toString());
+			}
+		});
+
+		return sum;
 	}
 
 }

@@ -3,11 +3,14 @@
  */
 package com.yuyutechnology.exchange.server.test;
 
+import java.math.BigDecimal;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
@@ -34,6 +37,10 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 	WalletManager walletManager;
 	
 	@Autowired
+	TransferDAO transferDAO;
+	
+	
+	@Autowired
 	UserDAO userDAO;
 
 	public static Logger logger = LoggerFactory.getLogger(TransferController.class);
@@ -41,29 +48,8 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 	@Test
 	public void testUpdateRate() {
 
-//		 exchangeRateManager.updateExchangeRate();
-
-		// String result = transferManager.transferInitiate(2,
-		// "+86","12312312336",
-		// "CNY", new BigDecimal(100),"test",0);
-		// logger.info("testResult : {}",result);
-		// String result = transferManager.payPwdConfirm(2, "201612140T000002",
-		// "123456");
-		// logger.info("testResult : {}",result);
-		// transferManager.systemRefundBatch();
-
-//		transferManager.getTransactionRecordByPage("today", 2, 1, 10);
-		
-//		exchangeManager.getExchangeRecordsByPage(2, "lastMonth", 1, 10);
-		
-//		 walletManager.getTotalAmoutGold(2);
-		 
-//		 exchangeRateManager.getTotalBalance(2);
-
-//		transferManager.getNotificationRecordsByPage(4, 1, 10);
-		 
-		 walletManager.getUserTotalBalance(1);
-		 
+		BigDecimal sum = transferDAO.sumGoldpayTransAmount(5);
+		logger.info("sum : {}",sum);
 		 
 	}
 

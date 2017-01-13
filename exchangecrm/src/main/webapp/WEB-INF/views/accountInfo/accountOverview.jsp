@@ -26,16 +26,28 @@
         			<form id="searchForm" action="<c:url value='/account/getTotalAssetsInfoByPage' />" method="POST">
         				<ul class="formbar">
         					<li>
-        						<input type="text" value="${model.userPhone }" class="form-control" placeholder="手机号" name="userPhone" size="8">
+        						<input type="text" value="${model.userPhone }" class="form-control" placeholder="手机号" name="userPhone" size="12">
         					</li>
         					<li>
-        						<input type="text" value="${model.userName }" class="form-control" placeholder="用户名" name="userName" size="8">
+        						<input type="text" value="${model.userName }" class="form-control" placeholder="用户名" name="userName" size="12">
         					</li>
         					<li>
         						<select name="isFrozen" class="form-control">
-        							<option value=3>账号状态</option>
-        							<option value=0>已冻结</option>
-        							<option value=1>未冻结</option>
+									<c:if test="${model.isFrozen == 0}">
+										<option value=3>账号状态</option>
+	        							<option value=0 selected>已冻结</option>
+	        							<option value=1>未冻结</option>
+									</c:if>
+									<c:if test="${model.isFrozen == 1}">
+										<option value=3>账号状态</option>
+	        							<option value=0>已冻结</option>
+	        							<option value=1 selected>未冻结</option>
+									</c:if>
+									<c:if test="${model.isFrozen == 3}">
+										<option value=3 selected>账号状态</option>
+	        							<option value=0>已冻结</option>
+	        							<option value=1>未冻结</option>
+									</c:if>
         						</select>
         					</li>
         					<li>
