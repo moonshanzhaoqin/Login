@@ -185,24 +185,28 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 				(crmAlarm.getUpperLimit().compareTo(ReserveAvailability.multiply(new BigDecimal("100"))) == 1)
 			){
 				
+				logger.info("Initiate an alarm, alarmId : {},alarmMode: {}",new Object[]{crmAlarm.getAlarmId(),crmAlarm.getAlarmMode()});
+				
+				BigDecimal percent = ReserveAvailability.multiply(new BigDecimal("100"));
+				
 				//发短信
 				if(crmAlarm.getAlarmMode() == 1){
-					alarmBySMS(crmAlarm.getSupervisorIdArr(), ReserveAvailability, 
+					alarmBySMS(crmAlarm.getSupervisorIdArr(), percent.setScale(2, RoundingMode.FLOOR), 
 							crmAlarm.getLowerLimit(), crmAlarm.getAlarmGrade());
 				}
 				//发邮件
 				if(crmAlarm.getAlarmMode() == 2){
-					alarmByEmail(crmAlarm.getSupervisorIdArr(), ReserveAvailability, 
+					alarmByEmail(crmAlarm.getSupervisorIdArr(),percent.setScale(2, RoundingMode.FLOOR), 
 							crmAlarm.getLowerLimit(), crmAlarm.getAlarmGrade());
 				}
 				
 				//发邮件+发短信
 				if(crmAlarm.getAlarmMode() == 3){
 					
-					alarmByEmail(crmAlarm.getSupervisorIdArr(), ReserveAvailability, 
+					alarmByEmail(crmAlarm.getSupervisorIdArr(),percent.setScale(2, RoundingMode.FLOOR), 
 							crmAlarm.getLowerLimit(), crmAlarm.getAlarmGrade());
 					
-					alarmBySMS(crmAlarm.getSupervisorIdArr(), ReserveAvailability, 
+					alarmBySMS(crmAlarm.getSupervisorIdArr(),percent.setScale(2, RoundingMode.FLOOR), 
 							crmAlarm.getLowerLimit(), crmAlarm.getAlarmGrade());
 				}
 				
