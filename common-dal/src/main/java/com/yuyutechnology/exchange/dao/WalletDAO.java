@@ -7,7 +7,7 @@ import java.util.List;
 import com.yuyutechnology.exchange.pojo.Wallet;
 
 public interface WalletDAO {
-	
+
 	/**
 	 * @Descrition : TODO
 	 * @author : nicholas.chi
@@ -16,13 +16,19 @@ public interface WalletDAO {
 	 * @return
 	 */
 	public List<Wallet> getWalletsByUserId(int userId);
-	
-	public Wallet getWalletByUserIdAndCurrency(int userId,String currency);
-	
-	public Integer updateWalletByUserIdAndCurrency(int userId,String currency,BigDecimal amount,String capitalFlows);
+
+	public Wallet getWalletByUserIdAndCurrency(int userId, String currency);
+
+	public Integer updateWalletByUserIdAndCurrency(int userId, String currency, BigDecimal amount, String capitalFlows);
 
 	public void addwallet(Wallet wallet);
-	
+
+	/**
+	 * 获取各个币种的用户资产总和
+	 * 
+	 * @param systemUserId
+	 * @return
+	 */
 	public HashMap<String, BigDecimal> getUserAccountTotalAssets(int systemUserId);
 
 }

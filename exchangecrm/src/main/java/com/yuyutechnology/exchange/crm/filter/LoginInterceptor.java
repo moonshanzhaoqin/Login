@@ -82,12 +82,12 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
 		String requestURI = request.getRequestURI();
 		String adminName = (String) request.getSession().getAttribute("adminName");
-		logger.info("request URI:" + requestURI + " adminName: " + adminName);
+		logger.info("request URI:" + requestURI + "======== adminName: " + adminName);
 		// 判断是否需要拦截或者是否登录
 		if (validURL(requestURI) || adminName != null) {
 			return true;
 		} else {
-			logger.info("LOGIN_PAGE================" + LOGIN_PAGE);
+			logger.info("Back to the login page : " + LOGIN_PAGE);
 			if (request.getHeader("X-Requested-With") != null) {
 				logger.info("AJAX request");
 				PrintWriter out = response.getWriter();
