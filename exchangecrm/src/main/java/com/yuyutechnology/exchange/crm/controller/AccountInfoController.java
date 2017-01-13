@@ -2,6 +2,7 @@ package com.yuyutechnology.exchange.crm.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -51,7 +52,6 @@ public class AccountInfoController {
 					userTotalAssets.get(currency.getCurrency()) == null ?  new BigDecimal("0.0000")
 							: userTotalAssets.get(currency.getCurrency())));
 		}
-		
 		mav.addObject("totalAssets", totalAssets);
 		mav.addObject("systemAmount", systemTotalAssets.get("totalAssets"));
 		mav.addObject("usermAmount", userTotalAssets.get("totalAssets"));
