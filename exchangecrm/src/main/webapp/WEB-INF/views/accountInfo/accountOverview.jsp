@@ -39,10 +39,10 @@
         						</select>
         					</li>
         					<li>
-        						<input type="text" value="${model.lowerLimit }" class="form-control" placeholder="下限" name="lowerLimit" size="8">
+        						<input type="text" value="${model.lowerLimit }" class="form-control" placeholder="总资产>=" name="lowerLimit" size="8">
         					</li>
         					<li>
-        						<input type="text" value="${model.upperLimit }" class="form-control" placeholder="上限" name="upperLimit" size="8">
+        						<input type="text" value="${model.upperLimit }" class="form-control" placeholder="总资产>=" name="upperLimit" size="8">
         					</li>
 
         					<li>
@@ -66,7 +66,7 @@
 				<table class = "table table-striped table-bordered">
 					<thead>
 						<tr>
-							<th>用户编号</th>
+							<th>国家码</th>
 							<th>手机号</th>
 							<th>用户名</th>
 							<th>用户类型</th>
@@ -80,7 +80,7 @@
 						<c:if test="${not empty model.pageBean.rows }">
 							<c:forEach var="userInfo" items="${model.pageBean.rows}">
 								<tr>
-									<td>${userInfo.userId }</td>
+									<td>${userInfo.areaCode }</td>
 									<td>${userInfo.userPhone }</td>
 									<td>${userInfo.userName }</td>
 									<td>
