@@ -45,13 +45,25 @@
 					console.log("success");
 					html = "";
 					for (var i = 0; i < data.length; i++) {
-						html += '<div class="form-group" id="' + data[i].configKey + '">'
+						if(data[i].configCanChange=="1"){
+							html += '<div class="form-group" id="' + data[i].configKey + '">'
 							+ '<label  class="col-sm-4 control-label">'
 							+ data[i].configName
 							+ '</label>'
 							+ '<div class="col-sm-4"><input type="text" class="form-control" value="' + data[i].configValue + '"></div>'
 							+ '<div class="col-sm-2"><button type="button" class="btn btn-primary" onclick="updateConfig()">保存</button></div>'
 							+ '</div>'
+						}else{
+							html += '<div class="form-group" id="' + data[i].configKey + '">'
+							+ '<label  class="col-sm-4 control-label">'
+							+ data[i].configName
+							+ '</label>'
+							+ '<div class="col-sm-4"><input type="text" class="form-control" value="' + data[i].configValue + '" disabled></div>'
+							+ '<div class="col-sm-2"><button type="button" class="btn btn-primary" onclick="updateConfig()" disabled>保存</button></div>'
+							+ '</div>'
+						}
+						
+						
 						}
 						$('#config').html(html);
 				},
