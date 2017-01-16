@@ -45,6 +45,10 @@ public class AccountInfoController {
 		List<Currency> currencies = commonManager.getAllCurrencies();
 		List<TotalAsset> totalAssets = new ArrayList<>();
 		
+		log.info("userTotalAssets={}",userTotalAssets);
+		log.info("systemTotalAssets={}",systemTotalAssets);
+//		log.info("currencies={}",currencies);
+//		log.info("{}",userTotalAssets.get(currencies.get(0).getCurrency()));
 		
 		if(userTotalAssets != null && systemTotalAssets!= null){
 			for (Currency currency : currencies) {
