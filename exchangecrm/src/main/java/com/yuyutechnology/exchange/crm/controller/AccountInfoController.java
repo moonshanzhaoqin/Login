@@ -128,9 +128,8 @@ public class AccountInfoController {
 	
 	public ModelAndView updateImmediately(){
 		mav = new ModelAndView();
-		
-		
-		
+		crmUserInfoManager.updateImmediately();
+		mav.setViewName("redirect:/account/accountOverview");
 		return mav;
 	}
 	
