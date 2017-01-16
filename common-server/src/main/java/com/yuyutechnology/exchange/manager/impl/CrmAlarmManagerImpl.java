@@ -15,7 +15,9 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CrmAlarmDAO;
 import com.yuyutechnology.exchange.dao.CrmSupervisorDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
+import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.mail.MailManager;
+import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
@@ -32,6 +34,8 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	CrmSupervisorDAO crmSupervisorDAO;
 	@Autowired
 	TransferDAO transferDAO;
+	@Autowired
+	ConfigManager configManager;
 	
 	@Autowired
 	SmsManager smsManager;
@@ -164,7 +168,10 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		
 		logger.info("sumRecharge:{},sumWithdraw:{},exHoldingTotalAssets(USD):{}",new Object[]{sumRecharge,sumWithdraw,exHoldingTotalAssets});
 		
-		BigDecimal reserveFunds = exchangeRateManager.getExchangeResult(ServerConsts.CURRENCY_OF_GOLDPAY, new BigDecimal("100000000"));
+		
+		String reserveFundsStr = configManager.getConfigStringValue(ConfigKeyEnum.RESERVEFUNDS, "100000000");
+		
+		BigDecimal reserveFunds = exchangeRateManager.getExchangeResult(ServerConsts.CURRENCY_OF_GOLDPAY, new BigDecimal(reserveFundsStr));
 		
 		logger.info("reserveFunds (USD) :{}",reserveFunds);
 		

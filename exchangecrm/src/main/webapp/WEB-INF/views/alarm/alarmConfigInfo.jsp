@@ -21,10 +21,10 @@
 				<table class = "table"> 
 					<thead>
 						<tr>
-							<th>userHoldingTotalAssets（USD）</th>
-							<th>exHoldingTotalAssets（USD）</th>
-							<th>reserveFunds（USD）</th>
-							<th>reserveAvailability</th>
+							<th>用户总账(USD)</th>
+							<th>公司入账 (USD)</th>
+							<th>预备金(USD)</th>
+							<th>准备率</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -42,8 +42,6 @@
 								<c:if test="${reserveAvailability >= 50}">
 									<font color="green">${reserveAvailability }%</font>
 								</c:if>
-								
-								
 							</td>
 						</tr>
 					</tbody>
@@ -51,7 +49,21 @@
 			</div><!--row 结束-->
 			
 			<div class="row">
-			
+				<h4 class="text-left">预备金设置</h4>	
+			</div>
+		
+			<div class="row well">
+				<form id="updateReserveFunds" action="<c:url value='/alarm/updateReserveFunds' />" method="POST">
+					<div class="col-lg-6 text-left">
+						<input class="form-control" name="reserveFunds" id="reserveFunds" placeholder="请填入预备金金额"/>
+					</div>
+				</form>
+				<div class="col-lg-6 text-right">
+					<button id="updateReserveFundsBtn" class="btn btn-default">确认</button>
+				</div>
+			</div>
+
+			<div class="row">
 				<div class="col-sm-6">
 					<h4 class="text-left">预警信息详情</h4>	
 				</div>
@@ -66,7 +78,6 @@
 					<thead>
 						<tr>
 							<th style="display:none">编号</th>
-<!-- 							<th>等级</th> -->
 							<th>下限</th>
 							<th>上限</th>
 							<th>预警方式</th>
@@ -241,12 +252,29 @@
 				}
 				$("#updateAlarmConfig").submit();
 			});
+			
+			$("#updateReserveFundsBtn").click(function(){
+				var reserveFunds = $("#reserveFunds").val();
+				
+				if(checkNotBlank(reserveFunds) && isNumeric(reserveFunds)){
+					$("#updateReserveFunds").submit();
+				}else{
+					alert("输入内容不符合要求！");
+					return ;
+				}
+				
+			});
+			
 
 			function checkNotBlank(param){
 				if(param == null ||(param == undefined || param == '')){
 					return false;
 				}
 				return true;
+			}
+			
+			function isNumeric(obj) {
+			    return !isNaN(parseFloat(obj)) && isFinite(obj);
 			}
 			
 			

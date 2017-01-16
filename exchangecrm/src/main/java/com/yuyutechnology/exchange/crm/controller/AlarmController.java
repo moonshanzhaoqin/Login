@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.yuyutechnology.exchange.crm.request.SaveAlarmConfigRequest;
 import com.yuyutechnology.exchange.crm.request.SaveSupervisorRequest;
 import com.yuyutechnology.exchange.crm.request.UpdateAlarmConfigInfoRequest;
+import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
@@ -33,6 +34,8 @@ public class AlarmController {
 	CrmAlarmManager crmAlarmManager;
 	@Autowired
 	CrmUserInfoManager crmUserInfoManager;
+	@Autowired
+	ConfigManager configManager;
 	
 	ModelAndView mav;
 	
@@ -150,5 +153,14 @@ public class AlarmController {
 		map.put("retCode", retCode);
 		out.print(JsonBinder.getInstanceNonNull().toJson(map));
 	}
+	
+	@RequestMapping(value="/alarm/updateReserveFunds",method=RequestMethod.POST)
+	public ModelAndView updateReserveFunds(String reserveFunds){
+		mav = new ModelAndView();
+		configManager.updateConfig("reserve_funds", reserveFunds);	
+		mav.setViewName("redirect:/alarm/getAlarmConfigList");
+		return mav;
+	}
+	
 
 }
