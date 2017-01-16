@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.List;
 
 import com.yuyutechnology.exchange.dto.UserInfo;
+import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Friend;
 import com.yuyutechnology.exchange.pojo.User;
@@ -227,5 +228,7 @@ public interface UserManager {
 	public List<User> getUserList();
 	
 	public void userFreeze(Integer userId,int userAvailable);
+	
+	public String getUserConfigAndUpdate(Integer userId, UserConfigKeyEnum key, String value);
 	
 }

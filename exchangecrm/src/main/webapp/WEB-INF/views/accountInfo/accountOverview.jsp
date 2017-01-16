@@ -7,7 +7,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Exanytime</title>
-		
+		<link rel='icon'  href='<c:url value="/resources/img/ex_28x28.ico" />' type='image/x-ico' />
 		<link rel="stylesheet" href='<c:url value="/resources/bootstrap/css/bootstrap.min.css" />' />
 		<link rel="stylesheet" href='<c:url value="/resources/bootstrap/css/bootstrap-table.css" />' />
 		<link rel="stylesheet" href='<c:url value="/resources/bootstrap/css/bootstrap-paginator.min.css" />' />
@@ -33,17 +33,17 @@
         					</li>
         					<li>
         						<select name="isFrozen" class="form-control">
-									<c:if test="${model.isFrozen == 0}">
+									<c:if test="${model.isFrozen == '0'}">
 										<option value=3>账号状态</option>
 	        							<option value=0 selected>已冻结</option>
 	        							<option value=1>未冻结</option>
 									</c:if>
-									<c:if test="${model.isFrozen == 1}">
+									<c:if test="${model.isFrozen == '1'}">
 										<option value=3>账号状态</option>
 	        							<option value=0>已冻结</option>
 	        							<option value=1 selected>未冻结</option>
 									</c:if>
-									<c:if test="${model.isFrozen == 3}">
+									<c:if test="${(model.isFrozen == '3') || (model.isFrozen != '0' && model.isFrozen != '1')}">
 										<option value=3 selected>账号状态</option>
 	        							<option value=0>已冻结</option>
 	        							<option value=1>未冻结</option>
@@ -51,10 +51,10 @@
         						</select>
         					</li>
         					<li>
-        						<input type="text" value="${model.lowerLimit }" class="form-control" placeholder="总资产>=" name="lowerLimit" size="8">
+        						<input type="text" value="${model.lowerLimit }" class="form-control" placeholder="总资产>=(USD)" name="lowerLimit" size="8">
         					</li>
         					<li>
-        						<input type="text" value="${model.upperLimit }" class="form-control" placeholder="总资产<=" name="upperLimit" size="8">
+        						<input type="text" value="${model.upperLimit }" class="form-control" placeholder="总资产<=(USD)" name="upperLimit" size="8">
         					</li>
 
         					<li>
@@ -70,7 +70,12 @@
         					</li>
         					
         					<li >
-        						<button type="button" class="btn btn-primary" id="updateImmediately">立即更新</button>
+        						<c:if test="${updateFlag == 0 }">
+        							<button type="button" class="btn btn-primary" id="updateImmediately">立即更新</button>
+        						</c:if>
+        						<c:if test="${updateFlag == 1 }">
+        							<button type="button" class="btn btn-primary" disabled>更新中...</button>
+        						</c:if>
         					</li>
         					
         				</ul>
@@ -196,7 +201,7 @@
 			}
 			
 			$("#updateImmediately").click(function(){
-				alert("点击立即更新按钮");
+// 				alert("点击立即更新按钮");
 				$("#updateImmediately").attr("disabled", true); 
 				$("#updateImmediately").text("更新中...");
 				

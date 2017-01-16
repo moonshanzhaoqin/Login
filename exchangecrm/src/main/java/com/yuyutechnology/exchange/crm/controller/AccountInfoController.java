@@ -46,8 +46,6 @@ public class AccountInfoController {
 		
 		log.info("userTotalAssets={}",userTotalAssets);
 		log.info("systemTotalAssets={}",systemTotalAssets);
-//		log.info("currencies={}",currencies);
-//		log.info("{}",userTotalAssets.get(currencies.get(0).getCurrency()));
 		
 		if(userTotalAssets != null && systemTotalAssets!= null){
 			for (Currency currency : currencies) {
@@ -79,7 +77,8 @@ public class AccountInfoController {
 		pageBean.setTotal((long) result.get("total"));
 		pageBean.setRows((List<?>) result.get("list"));
 		requst.setPageBean(pageBean);
-
+		
+		mav.addObject("updateFlag", crmUserInfoManager.getUpdateFlag());
 		mav.addObject("model", requst);
 
 		mav.setViewName("/accountInfo/accountOverview");
@@ -91,7 +90,7 @@ public class AccountInfoController {
 		mav = new ModelAndView();
 		PageBean pageBean = new PageBean();
 		HashMap<String, Object> result = crmUserInfoManager.getUserAccountInfoListByPage(requst.getUserPhone(),
-				requst.getUserName(), requst.getIsFrozen(), requst.getUpperLimit(), requst.getLowerLimit(),
+				requst.getUserName(), Integer.parseInt(requst.getIsFrozen()), requst.getUpperLimit(), requst.getLowerLimit(),
 				requst.getPageBean().getCurrentPage(), requst.getPageBean().getPageSize());
 
 		pageBean.setCurrentPage((int) result.get("currentPage"));
@@ -100,17 +99,8 @@ public class AccountInfoController {
 		pageBean.setTotal((long) result.get("total"));
 		pageBean.setRows((List<?>) result.get("list"));
 		requst.setPageBean(pageBean);
-//
-//		HashMap<String, BigDecimal> systemTotalAssets = crmUserInfoManager.getSystemAccountTotalAssets();
-//		HashMap<String, BigDecimal> userTotalAssets = crmUserInfoManager.getUserAccountTotalAssets();
-//
-//		if (systemTotalAssets != null && userTotalAssets != null) {
-//			log.info("systemTotalAssets : {}", systemTotalAssets.toString());
-//			log.info("userTotalAssets : {}", userTotalAssets.toString());
-//		}
-//
-//		mav.addObject("systemTotalAssets", systemTotalAssets);
-//		mav.addObject("userTotalAssets", userTotalAssets);
+
+		mav.addObject("updateFlag", crmUserInfoManager.getUpdateFlag());
 		mav.addObject("model", requst);
 
 		mav.setViewName("/accountInfo/accountOverview");
@@ -126,6 +116,7 @@ public class AccountInfoController {
 		return mav;
 	}
 	
+	@RequestMapping(value = "/account/updateImmediately", method = RequestMethod.GET)
 	public ModelAndView updateImmediately(){
 		mav = new ModelAndView();
 		crmUserInfoManager.updateImmediately();

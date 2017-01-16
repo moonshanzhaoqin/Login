@@ -6,7 +6,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Exanytime</title>
-		
+		<link rel='icon'  href='<c:url value="/resources/img/ex_28x28.ico" />' type='image/x-ico' />
 		<link rel="stylesheet" href='<c:url value="/resources/bootstrap/css/bootstrap.min.css" />' />
 		<link rel="stylesheet" href='<c:url value="/resources/bootstrap/css/bootstrap-table.css" />' />
 	</head>
@@ -170,8 +170,8 @@
 								$("#updateAlarmMode").html(optionStr);
 								
 								var supervisorGroup = '';
-								for(var i = 0; i<data.list.length;i++){
-									var supervisor = data.list[i];
+								for(var i = 0; i<data.supervisorList.length;i++){
+									var supervisor = data.supervisorList[i];
 									if((data.crmAlarm.supervisorIdArr).indexOf(supervisor.supervisorId) != -1){
 										supervisorGroup +='<div class="col-lg-4"><input class="panel-group" name="supervisorId" type="checkbox" value='+supervisor.supervisorId+' checked/>'+supervisor.supervisorName+'</div>';
 									}else{
