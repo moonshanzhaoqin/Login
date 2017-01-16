@@ -17,7 +17,7 @@ public class CrmAlarm {
 	
 	private Integer alarmId;
 	private int alarmType;
-	private String alarmGrade;
+//	private String alarmGrade;
 	private BigDecimal lowerLimit;
 	private BigDecimal upperLimit;
 	private int alarmMode;
@@ -42,13 +42,13 @@ public class CrmAlarm {
 	public void setAlarmType(int alarmType) {
 		this.alarmType = alarmType;
 	}
-	@Column(name = "alarm_grade")
-	public String getAlarmGrade() {
-		return alarmGrade;
-	}
-	public void setAlarmGrade(String alarmGrade) {
-		this.alarmGrade = alarmGrade;
-	}
+//	@Column(name = "alarm_grade")
+//	public String getAlarmGrade() {
+//		return alarmGrade;
+//	}
+//	public void setAlarmGrade(String alarmGrade) {
+//		this.alarmGrade = alarmGrade;
+//	}
 	@Column(name = "lower_limit")
 	public BigDecimal getLowerLimit() {
 		return lowerLimit;
