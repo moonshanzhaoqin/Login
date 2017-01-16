@@ -2,6 +2,7 @@ package com.yuyutechnology.exchange.crm.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -39,22 +40,25 @@ public class AccountInfoController {
 	@RequestMapping(value = "/account/getTotalAssetsDetails", method = RequestMethod.GET)
 	public ModelAndView getTotalAssetsDetails() {
 		mav = new ModelAndView();
-		HashMap<String, BigDecimal> systemTotalAssets = crmUserInfoManager.getSystemAccountTotalAssets();
 		HashMap<String, BigDecimal> userTotalAssets = crmUserInfoManager.getUserAccountTotalAssets();
+		HashMap<String, BigDecimal> systemTotalAssets = crmUserInfoManager.getSystemAccountTotalAssets();
 		List<Currency> currencies = commonManager.getAllCurrencies();
 		List<TotalAsset> totalAssets = new ArrayList<>();
-
-		for (Currency currency : currencies) {
-			totalAssets.add(new TotalAsset(currency,
-					systemTotalAssets.get(currency.getCurrency()) == null ? new BigDecimal("0.0000")
-							: systemTotalAssets.get(currency.getCurrency()),
-					userTotalAssets.get(currency.getCurrency()) == null ?  new BigDecimal("0.0000")
-							: userTotalAssets.get(currency.getCurrency())));
-		}
 		
-		mav.addObject("totalAssets", totalAssets);
-		mav.addObject("systemAmount", systemTotalAssets.get("totalAssets"));
-		mav.addObject("usermAmount", userTotalAssets.get("totalAssets"));
+		
+		if(userTotalAssets != null && systemTotalAssets!= null){
+			for (Currency currency : currencies) {
+				totalAssets.add(new TotalAsset(currency,
+						systemTotalAssets.get(currency.getCurrency()) == null ? new BigDecimal("0.0000")
+								: systemTotalAssets.get(currency.getCurrency()),
+						userTotalAssets.get(currency.getCurrency()) == null ?  new BigDecimal("0.0000")
+								: userTotalAssets.get(currency.getCurrency())));
+			}
+			mav.addObject("totalAssets", totalAssets);
+			mav.addObject("systemAmount", systemTotalAssets.get("totalAssets"));
+			mav.addObject("usermAmount", userTotalAssets.get("totalAssets"));
+		}
+
 		mav.setViewName("/accountInfo/totalAssetsDetails");
 		return mav;
 	}

@@ -23,7 +23,6 @@
 	<%@ include file="../common/header.jsp"%>
 
 	<div class="container">
-
 		<div class="row">
 			<table class="table table-striped table-bordered">
 				<thead>
@@ -36,9 +35,9 @@
 				<tbody>
 
 					<c:if test="${not empty totalAssets }">
-						<c:forEach var="totalAssets" items="${totalAssets }">
+						<c:forEach var="totalAssets" items="${totalAssets}">
 							<tr>
-								<td style="font-weight: bold;">${totalAssets.currency.nameCn}</td>
+								<td style="font-weight: bold;">${totalAssets.currency.currency} （${totalAssets.currency.nameCn}）</td>
 								<td>${totalAssets.systemTotalAsset}</td>
 								<td>${totalAssets.userTotalAsset}</td>
 							</tr>

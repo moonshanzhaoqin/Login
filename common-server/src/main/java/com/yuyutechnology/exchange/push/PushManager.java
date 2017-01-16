@@ -176,7 +176,7 @@ public class PushManager {
 	 */
 	@Async
 	public void push4TransferRuquest(User userFrom, User userTo, String currency, BigDecimal amount) {
-		String title = titleChoose("transfer_request", userTo.getPushTag());
+		String title = titleChoose("transfer_request", userFrom.getPushTag());
 		String transferRuquestBody = templateChoose("transfer_request", userFrom.getPushTag());
 		String body = transferRuquestBody.replace(PUSH_REPLACE_TO, userTo.getUserName());
 		Map<String, String> ext = new HashMap<>();

@@ -21,16 +21,30 @@
 				<table class = "table"> 
 					<thead>
 						<tr>
-							<th>系统总资产（USD）</th>
-							<th>用户总资产（USD）</th>
-							<th>差额（USD）</th>
+							<th>userHoldingTotalAssets（USD）</th>
+							<th>exHoldingTotalAssets（USD）</th>
+							<th>reserveFunds（USD）</th>
+							<th>reserveAvailability</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
-							<td>${systemTotalAssets }</td>
-							<td>${userTotalAssets }</td>
-							<td>${difference }</td>
+							<td>${userHoldingTotalAssets }</td>
+							<td>${exHoldingTotalAssets }</td>
+							<td>${reserveFunds }</td>
+							<td>
+								<c:if test="${reserveAvailability < 20}">
+									<font color="red">${reserveAvailability }%</font>
+								</c:if>
+								<c:if test="${reserveAvailability >= 20 &&  reserveAvailability<50}">
+									<font color="yellow">${reserveAvailability }%</font>
+								</c:if>
+								<c:if test="${reserveAvailability >= 50}">
+									<font color="green">${reserveAvailability }%</font>
+								</c:if>
+								
+								
+							</td>
 						</tr>
 					</tbody>
 				</table>
@@ -66,8 +80,8 @@
 								<tr>
 									<td style="display:none">${alarmConfig.alarmId }</td>
 									<td>${alarmConfig.alarmGrade }</td>
-									<td>${alarmConfig.lowerLimit }</td>
-									<td>${alarmConfig.upperLimit }</td>
+									<td>${alarmConfig.lowerLimit }%</td>
+									<td>${alarmConfig.upperLimit }%</td>
 									<td>
 										<c:if test="${alarmConfig.alarmMode eq 1}">短信</c:if>
 						        		<c:if test="${alarmConfig.alarmMode eq 2}">邮件</c:if>
