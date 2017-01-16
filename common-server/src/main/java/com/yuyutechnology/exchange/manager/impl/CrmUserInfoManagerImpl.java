@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.util.StringUtils;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CrmUserInfoDAO;
+import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
@@ -33,6 +35,10 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 	WalletDAO walletDAO;
 	@Autowired
 	CrmUserInfoDAO crmUserInfoDAO;
+	@Autowired
+	RedisDAO redisDAO;
+	
+	
 	@Autowired
 	ExchangeRateManager exchangeRateManager;
 
@@ -58,15 +64,6 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 		if (systemUser == null) {
 			return map;
 		}
-
-		// 获取系统账户总资产
-		// CrmUserInfo crmUserInfo =
-		// crmUserInfoDAO.getCrmUserInfoByUserId(systemUser.getUserId());
-		// if(crmUserInfo == null){
-		// return map;
-		// }
-		// BigDecimal totalAssets = crmUserInfo.getUserTotalAssets();
-
 		// 获取系统账户各个币种的资产
 		List<Wallet> list = walletDAO.getWalletsByUserId(systemUser.getUserId());
 		if (list.isEmpty()) {
@@ -94,7 +91,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 	@Override
 	public HashMap<String, BigDecimal> getUserAccountTotalAssets() {
 
-		HashMap<String, BigDecimal> map = null;
+		HashMap<String, BigDecimal> map = new HashMap<>();
 
 		// 获取各个币种的用户资产总和
 		User systemUser = userDAO.getSystemUser();
@@ -107,15 +104,16 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 
 		// 计算用户账户总金额
 		BigDecimal totalAssets = BigDecimal.ZERO;
-		if (map == null) {
+		if (map.isEmpty()) {
 			logger.warn("get all users' total assets by currency FAILURE!!!");
-			return map;
-		}
-		for (Entry<String, BigDecimal> entry : map.entrySet()) {
-			if (entry.getKey().equals(ServerConsts.STANDARD_CURRENCY)) {
-				totalAssets = totalAssets.add(entry.getValue());
-			} else {
-				totalAssets = totalAssets.add(exchangeRateManager.getExchangeResult(entry.getKey(), entry.getValue()));
+		} else {
+			for (Entry<String, BigDecimal> entry : map.entrySet()) {
+				if (entry.getKey().equals(ServerConsts.STANDARD_CURRENCY)) {
+					totalAssets = totalAssets.add(entry.getValue());
+				} else {
+					totalAssets = totalAssets
+							.add(exchangeRateManager.getExchangeResult(entry.getKey(), entry.getValue()));
+				}
 			}
 		}
 		map.put("totalAssets", totalAssets.setScale(4, RoundingMode.CEILING));
@@ -164,6 +162,23 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 	@Override
 	public void userFreeze(Integer userId, int userAvailable) {
 		crmUserInfoDAO.userFreeze(userId, userAvailable);
+	}
+
+	@Override
+	public void updateImmediately() {
+
+		redisDAO.saveData("updateImmediately", 1);
+		
+		List<User> list = userDAO.getUserList();
+		if(list.isEmpty()){
+			return ;
+		}
+		
+		for (User user : list) {
+			updateUserInfo(user);
+		}
+		
+		redisDAO.saveData("updateImmediately", 0);
 	}
 
 }

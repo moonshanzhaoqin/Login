@@ -2,6 +2,7 @@ package com.yuyutechnology.exchange.server.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -121,6 +122,7 @@ public class ExchangeController {
 		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		rep.setBase(reqMsg.getBase());
+		rep.setRateUpdateTime(new Date());
 		rep.setExchangeRates(map);
 
 		return rep;

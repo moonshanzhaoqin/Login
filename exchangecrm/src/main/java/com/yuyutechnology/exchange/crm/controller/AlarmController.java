@@ -148,15 +148,5 @@ public class AlarmController {
 		map.put("retCode", retCode);
 		out.print(JsonBinder.getInstanceNonNull().toJson(map));
 	}
-	
-//	@RequestMapping(value="/alarm/saveSupervisor",method=RequestMethod.POST)
-//	public ModelAndView saveSupervisor(SaveSupervisorRequest request){
-//		mav = new ModelAndView();
-//		String retCode = crmAlarmManager.saveSupervisor(request.getSupervisorName(), 
-//				request.getSupervisorMobile(), request.getSupervisorEmail());
-//		mav.addObject("retCode", retCode);
-//		mav.setViewName("redirect:/alarm/getSupervisorList");
-//		return mav;
-//	}
-	
+
 }

@@ -2,7 +2,6 @@ package com.yuyutechnology.exchange.crm.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -45,6 +44,10 @@ public class AccountInfoController {
 		List<Currency> currencies = commonManager.getAllCurrencies();
 		List<TotalAsset> totalAssets = new ArrayList<>();
 		
+		log.info("userTotalAssets={}",userTotalAssets);
+		log.info("systemTotalAssets={}",systemTotalAssets);
+//		log.info("currencies={}",currencies);
+//		log.info("{}",userTotalAssets.get(currencies.get(0).getCurrency()));
 		
 		if(userTotalAssets != null && systemTotalAssets!= null){
 			for (Currency currency : currencies) {
@@ -122,5 +125,16 @@ public class AccountInfoController {
 		mav.setViewName("redirect:/account/accountOverview");
 		return mav;
 	}
+	
+	public ModelAndView updateImmediately(){
+		mav = new ModelAndView();
+		
+		
+		
+		return mav;
+	}
+	
+	
+	
 
 }
