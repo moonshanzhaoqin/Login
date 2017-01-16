@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CrmUserInfoDAO;
+import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
@@ -33,6 +34,10 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 	WalletDAO walletDAO;
 	@Autowired
 	CrmUserInfoDAO crmUserInfoDAO;
+	@Autowired
+	RedisDAO redisDAO;
+	
+	
 	@Autowired
 	ExchangeRateManager exchangeRateManager;
 
@@ -58,15 +63,6 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 		if (systemUser == null) {
 			return map;
 		}
-
-		// 获取系统账户总资产
-		// CrmUserInfo crmUserInfo =
-		// crmUserInfoDAO.getCrmUserInfoByUserId(systemUser.getUserId());
-		// if(crmUserInfo == null){
-		// return map;
-		// }
-		// BigDecimal totalAssets = crmUserInfo.getUserTotalAssets();
-
 		// 获取系统账户各个币种的资产
 		List<Wallet> list = walletDAO.getWalletsByUserId(systemUser.getUserId());
 		if (list.isEmpty()) {
@@ -164,6 +160,23 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 	@Override
 	public void userFreeze(Integer userId, int userAvailable) {
 		crmUserInfoDAO.userFreeze(userId, userAvailable);
+	}
+
+	@Override
+	public void updateImmediately() {
+
+		redisDAO.saveData("updateImmediately", 1);
+		
+		List<User> list = userDAO.getUserList();
+		if(list.isEmpty()){
+			return ;
+		}
+		
+		for (User user : list) {
+			updateUserInfo(user);
+		}
+		
+		redisDAO.saveData("updateImmediately", 0);
 	}
 
 }
