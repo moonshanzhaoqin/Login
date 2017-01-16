@@ -20,9 +20,9 @@ public class AdminTest extends BaseSpringJunit4 {
 	@Autowired
 	ExchangeRateManager exchangeRateManager;
 
-	// @Test
-	// public void addAdminTEST() {
-	// adminManager.addAdmin("admin");
-	// }
+	 @Test
+	 public void addAdminTEST() {
+//	 adminManager.addAdmin("admin");
+	 }
 
 }

@@ -2,7 +2,7 @@ package com.yuyutechnology.exchange.manager;
 
 import java.util.List;
 
-import com.yuyutechnology.exchange.ConfigKeyEnum;
+import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.pojo.Config;
 
 public interface ConfigManager {

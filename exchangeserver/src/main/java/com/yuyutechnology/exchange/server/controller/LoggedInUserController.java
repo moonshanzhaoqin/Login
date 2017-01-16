@@ -21,6 +21,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.MsgFlagInfo;
+import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
 import com.yuyutechnology.exchange.mail.MailManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
@@ -31,6 +32,7 @@ import com.yuyutechnology.exchange.server.controller.request.CheckGoldpayPwdRequ
 import com.yuyutechnology.exchange.server.controller.request.CheckPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.CheckPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
+import com.yuyutechnology.exchange.server.controller.request.GetUserConfigRequest;
 import com.yuyutechnology.exchange.server.controller.request.LogoutRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByGoldpayRequest;
@@ -46,6 +48,7 @@ import com.yuyutechnology.exchange.server.controller.response.CheckPasswordRespo
 import com.yuyutechnology.exchange.server.controller.response.CheckPayPwdResponse;
 import com.yuyutechnology.exchange.server.controller.response.ContactUsResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetMsgFlagResponse;
+import com.yuyutechnology.exchange.server.controller.response.GetUserConfigResponse;
 import com.yuyutechnology.exchange.server.controller.response.LogoutResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPayPwdByGoldpayResponse;
@@ -593,5 +596,35 @@ public class LoggedInUserController {
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
-
+	
+	@ResponseBody
+	@ApiOperation(value = "获取用户配置参数", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/getUserConfig", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public GetUserConfigResponse getUserConfig(@PathVariable String token, @RequestBody GetUserConfigRequest getUserConfigRequest) {
+		GetUserConfigResponse rep = new GetUserConfigResponse();
+		if (getUserConfigRequest == null || StringUtils.isBlank(getUserConfigRequest.getKey())) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+		} else {
+			SessionData sessionData = SessionDataHolder.getSessionData();
+			UserConfigKeyEnum key = null;
+			try {
+				key = UserConfigKeyEnum.valueOf(getUserConfigRequest.getKey());
+			} catch (Exception e) {
+			}
+			if (key == null) {
+				logger.warn("No enum constant com.yuyutechnology.exchange.enums.UserConfigKeyEnum."+getUserConfigRequest.getKey());
+				rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+				rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+				return rep;
+			}
+			String value = userManager.getUserConfigAndUpdate(sessionData.getUserId(), UserConfigKeyEnum.valueOf(getUserConfigRequest.getKey()), getUserConfigRequest.getValue());
+			rep.setKey(getUserConfigRequest.getKey());
+			rep.setValue(value);
+			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		}
+		return rep;
+	}
 }

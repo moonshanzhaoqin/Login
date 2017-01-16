@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
@@ -15,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.yuyutechnology.exchange.ConfigKeyEnum;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.AppVersionDAO;
 import com.yuyutechnology.exchange.dao.BindDAO;
@@ -28,6 +28,8 @@ import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.dto.UserInfo;
+import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
+import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
 import com.yuyutechnology.exchange.goldpay.GoldpayManager;
 import com.yuyutechnology.exchange.goldpay.GoldpayUser;
 import com.yuyutechnology.exchange.manager.CommonManager;
@@ -40,9 +42,11 @@ import com.yuyutechnology.exchange.pojo.FriendId;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
+import com.yuyutechnology.exchange.pojo.UserConfig;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.sms.SmsManager;
+import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.LanguageUtils;
 import com.yuyutechnology.exchange.utils.MathUtils;
 import com.yuyutechnology.exchange.utils.PasswordUtils;
@@ -506,4 +510,39 @@ public class UserManagerImpl implements UserManager {
 	public void userFreeze(Integer userId, int userAvailable) {
 		userDAO.userFreeze(userId, userAvailable);
 	}
+	
+	@Override
+	public String getUserConfigAndUpdate(Integer userId, UserConfigKeyEnum key, String value) {
+		String returnValue = getUserConfig(userId, key);
+		if (key != null && StringUtils.isNotBlank(value)) {
+			saveUserConfig(userId, key, value);
+		}
+		return returnValue;
+	}
+
+	private String getUserConfig(Integer userId, UserConfigKeyEnum key) {
+		UserConfig userConfig = userDAO.getUserConfig(userId);
+		if (userConfig != null && StringUtils.isNotBlank(userConfig.getUserConfigValue())) {
+			Map<String, String> config = JsonBinder.getInstance().fromJson(userConfig.getUserConfigValue(), HashMap.class);
+			return config.get(key.ordinal()+"") == null ? "" : config.get(key.ordinal()+"");
+		}
+		return "";
+	}
+
+	private void saveUserConfig(Integer userId, UserConfigKeyEnum key, String value) {
+		UserConfig userConfig = userDAO.getUserConfig(userId);
+		if (userConfig != null && StringUtils.isNotBlank(userConfig.getUserConfigValue())) {
+			Map<String, String> config = JsonBinder.getInstance().fromJson(userConfig.getUserConfigValue(), HashMap.class);
+			config.put(key.ordinal()+"", value);
+			userConfig.setUserConfigValue(JsonBinder.getInstance().toJson(config));
+		}else{
+			userConfig = new UserConfig();
+			userConfig.setUserId(userId);
+			Map<String, String> config = new HashMap<String, String>();
+			config.put(key.ordinal()+"", value);
+			userConfig.setUserConfigValue(JsonBinder.getInstance().toJson(config));
+		}
+		userDAO.saveUserConfig(userConfig);
+	}
+
 }

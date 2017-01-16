@@ -6,6 +6,7 @@ package com.yuyutechnology.exchange.dao;
 import java.util.List;
 
 import com.yuyutechnology.exchange.pojo.User;
+import com.yuyutechnology.exchange.pojo.UserConfig;
 
 /**
  * @author suzan.wu
@@ -26,5 +27,9 @@ public interface UserDAO {
 	public List<User> getUserList();
 	
 	public void userFreeze(Integer userId,int userAvailable);
+	
+	public UserConfig getUserConfig(Integer userId);
+	
+	public void saveUserConfig(UserConfig userConfig);
 
 }
