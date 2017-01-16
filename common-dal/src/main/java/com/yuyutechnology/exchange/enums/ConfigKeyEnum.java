@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.yuyutechnology.exchange;
+package com.yuyutechnology.exchange.enums;
 
 /**
  * @author silent.sun

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.pojo.User;
+import com.yuyutechnology.exchange.pojo.UserConfig;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
@@ -77,6 +78,16 @@ public class UserDAOImpl implements UserDAO {
 		User user = hibernateTemplate.get(User.class, userId);
 		user.setUserAvailable(userAvailable);
 		hibernateTemplate.update(user);
+	}
+
+	@Override
+	public UserConfig getUserConfig(Integer userId) {
+		return hibernateTemplate.get(UserConfig.class, userId);
+	}
+
+	@Override
+	public void saveUserConfig(UserConfig userConfig) {
+		hibernateTemplate.saveOrUpdate(userConfig);
 	}
 
 }
