@@ -81,7 +81,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 				totalAssets = totalAssets.add(exchangeRateManager.getExchangeResult(entry.getKey(), entry.getValue()));
 			}
 		}
-		map.put("totalAssets", totalAssets.setScale(4, RoundingMode.CEILING));
+		map.put("totalAssets", totalAssets.setScale(4, RoundingMode.DOWN));
 
 		logger.info("System Account Total Assets : {}", map.toString());
 		return map;
@@ -115,7 +115,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 				}
 			}
 		}
-		map.put("totalAssets", totalAssets.setScale(4, RoundingMode.CEILING));
+		map.put("totalAssets", totalAssets.setScale(4, RoundingMode.DOWN));
 
 		logger.info("User Account Total Assets : {}", map.toString());
 		return map;
