@@ -162,7 +162,7 @@ public class TransferDAOImpl implements TransferDAO {
 				@SuppressWarnings("unchecked")
 				List<BigDecimal> list = query.list();
 				
-				if(list != null && !list.isEmpty()){
+				if((list != null && !list.isEmpty())&& list.get(0)!=null){
 					return new BigDecimal(list.get(0).toString());
 				}
 				

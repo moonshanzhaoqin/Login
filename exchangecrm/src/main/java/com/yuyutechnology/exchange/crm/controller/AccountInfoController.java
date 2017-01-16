@@ -100,17 +100,17 @@ public class AccountInfoController {
 		pageBean.setTotal((long) result.get("total"));
 		pageBean.setRows((List<?>) result.get("list"));
 		requst.setPageBean(pageBean);
-
-		HashMap<String, BigDecimal> systemTotalAssets = crmUserInfoManager.getSystemAccountTotalAssets();
-		HashMap<String, BigDecimal> userTotalAssets = crmUserInfoManager.getUserAccountTotalAssets();
-
-		if (systemTotalAssets != null && userTotalAssets != null) {
-			log.info("systemTotalAssets : {}", systemTotalAssets.toString());
-			log.info("userTotalAssets : {}", userTotalAssets.toString());
-		}
-
-		mav.addObject("systemTotalAssets", systemTotalAssets);
-		mav.addObject("userTotalAssets", userTotalAssets);
+//
+//		HashMap<String, BigDecimal> systemTotalAssets = crmUserInfoManager.getSystemAccountTotalAssets();
+//		HashMap<String, BigDecimal> userTotalAssets = crmUserInfoManager.getUserAccountTotalAssets();
+//
+//		if (systemTotalAssets != null && userTotalAssets != null) {
+//			log.info("systemTotalAssets : {}", systemTotalAssets.toString());
+//			log.info("userTotalAssets : {}", userTotalAssets.toString());
+//		}
+//
+//		mav.addObject("systemTotalAssets", systemTotalAssets);
+//		mav.addObject("userTotalAssets", userTotalAssets);
 		mav.addObject("model", requst);
 
 		mav.setViewName("/accountInfo/accountOverview");
@@ -128,9 +128,8 @@ public class AccountInfoController {
 	
 	public ModelAndView updateImmediately(){
 		mav = new ModelAndView();
-		
-		
-		
+		crmUserInfoManager.updateImmediately();
+		mav.setViewName("redirect:/account/accountOverview");
 		return mav;
 	}
 	

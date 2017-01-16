@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.slf4j.Logger;
@@ -131,8 +130,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 		StringBuilder sb = new StringBuilder("from CrmUserInfo where userType = 0 ");
 
 		if (!StringUtils.isEmpty(userPhone)) {
-			sb.append("and userPhone= ? ");
-			values.add(userPhone);
+			sb.append("and userPhone like '" + userPhone + "%' ");
 		}
 		if (isFrozen != 3) {
 			sb.append("and userAvailable = ? ");
