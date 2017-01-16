@@ -2,7 +2,6 @@ package com.yuyutechnology.exchange.crm.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -126,5 +125,16 @@ public class AccountInfoController {
 		mav.setViewName("redirect:/account/accountOverview");
 		return mav;
 	}
+	
+	public ModelAndView updateImmediately(){
+		mav = new ModelAndView();
+		
+		
+		
+		return mav;
+	}
+	
+	
+	
 
 }

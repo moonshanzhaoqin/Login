@@ -17,5 +17,7 @@ public interface CrmUserInfoManager {
 			int isFrozen, BigDecimal upperLimit, BigDecimal lowerLimit,int currentPage, int pageSize);
 	
 	public void userFreeze(Integer userId,int userAvailable);
+	
+	public void updateImmediately();
 
 }

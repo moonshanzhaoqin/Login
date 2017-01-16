@@ -68,6 +68,11 @@
         					<li >
         						<button type="submit" class="btn btn-primary">搜索</button>
         					</li>
+        					
+        					<li >
+        						<button type="button" class="btn btn-primary" id="updateImmediately">立即更新</button>
+        					</li>
+        					
         				</ul>
         			</form>
         		</div>
@@ -189,6 +194,16 @@
 				var userFreezeUrl = "<c:url value='/account/userFreeze' />";
 				location.href=userFreezeUrl+'?userId='+userId+'&operate='+operate;
 			}
+			
+			$("#updateImmediately").click(function(){
+				alert("点击立即更新按钮");
+				$("#updateImmediately").attr("disabled", true); 
+				$("#updateImmediately").text("更新中...");
+				
+				location.href="<c:url value='/account/updateImmediately' />";
+				
+			});
+			
 			
 		</script>
 		<%@ include file="../common/footer.jsp"%>
