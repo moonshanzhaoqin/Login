@@ -66,7 +66,7 @@
 					<thead>
 						<tr>
 							<th style="display:none">编号</th>
-							<th>等级</th>
+<!-- 							<th>等级</th> -->
 							<th>下限</th>
 							<th>上限</th>
 							<th>预警方式</th>
@@ -79,7 +79,7 @@
 							<c:forEach var="alarmConfig" items="${list}">
 								<tr>
 									<td style="display:none">${alarmConfig.alarmId }</td>
-									<td>${alarmConfig.alarmGrade }</td>
+<%-- 									<td>${alarmConfig.alarmGrade }</td> --%>
 									<td>${alarmConfig.lowerLimit }%</td>
 									<td>${alarmConfig.upperLimit }%</td>
 									<td>
@@ -152,7 +152,7 @@
 							if(data.retCode == 1){
 								$('#updateAlarmModal').modal('show');
 								$("#updateAlarmId").val(data.crmAlarm.alarmId);
-								$("#updateAlarmGrade").val(data.crmAlarm.alarmGrade);
+// 								$("#updateAlarmGrade").val(data.crmAlarm.alarmGrade);
 								$("#updateLowerLimit").val(data.crmAlarm.lowerLimit);
 								$("#updateUpperLimit").val(data.crmAlarm.upperLimit);
 								
@@ -208,11 +208,11 @@
 			
 			
 			$("#addAlarmConfigBtn").click(function(){				
-				var alarmGrade = $("#alarmGrade").val().trim();
+// 				var alarmGrade = $("#alarmGrade").val().trim();
 				var lowerLimit = $("#criticalThresholdLowerLimit").val().trim();
 				var upperLimit = $("#criticalThresholdUpperLimit").val().trim();
 				
-				if( checkNotBlank(alarmGrade) && checkNotBlank(lowerLimit) && checkNotBlank(upperLimit)){
+				if( checkNotBlank(lowerLimit) && checkNotBlank(upperLimit)){
 					if(parseInt(lowerLimit) > parseInt(upperLimit)){
 						alert("下限不能大于上限！");
 						return ;
@@ -226,11 +226,11 @@
 			
 			
 			$("#updateAlarmConfigBtn").click(function(){		
-				var alarmGrade = $("#updateAlarmGrade").val().trim();
+// 				var alarmGrade = $("#updateAlarmGrade").val().trim();
 				var lowerLimit = $("#updateLowerLimit").val().trim();
 				var upperLimit = $("#updateUpperLimit").val().trim();
 				
-				if( checkNotBlank(alarmGrade) && checkNotBlank(lowerLimit) && checkNotBlank(upperLimit)){
+				if(checkNotBlank(lowerLimit) && checkNotBlank(upperLimit)){
 					if(parseInt(lowerLimit) > parseInt(upperLimit)){
 						alert("下限不能大于上限！");
 						return ;

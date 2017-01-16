@@ -22,14 +22,14 @@
 					
 					
 						<div class="modal-body">
-							<div class="row">
-								<div class="col-md-4">
-			            			<h4 class="text-right">预警等级:</h4>	
-			            		</div>
-			            		<div class="col-md-4">
-			            			<input class="form-control" name="alarmGrade" id="updateAlarmGrade"/>
-			            		</div>
-							</div>
+<!-- 							<div class="row"> -->
+<!-- 								<div class="col-md-4"> -->
+<!-- 			            			<h4 class="text-right">预警等级:</h4>	 -->
+<!-- 			            		</div> -->
+<!-- 			            		<div class="col-md-4"> -->
+<!-- 			            			<input class="form-control" name="alarmGrade" id="updateAlarmGrade"/> -->
+<!-- 			            		</div> -->
+<!-- 							</div> -->
 							
 							<div class="row">
 								<div class="col-md-4">

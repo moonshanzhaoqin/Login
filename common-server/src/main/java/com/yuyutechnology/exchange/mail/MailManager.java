@@ -43,7 +43,7 @@ public class MailManager {
 	
 	private final String MAIL_REPLACE_DIFFERENCE = "[DIFFERENCE]";
 	private final String MAIL_REPLACE_LIMIT = "[LOWERLIMIT]";
-	private final String MAIL_REPLACE_GRADE = "[GRADE]";
+//	private final String MAIL_REPLACE_GRADE = "[GRADE]";
 	private final String MAIL_REPLACE_TIME = "[TIME]";
 	
 
@@ -80,11 +80,10 @@ public class MailManager {
 		sendMail(toMails, contactTital.toString(), content);
 	}
 	
-	public void mail4criticalAlarm(String email,BigDecimal difference,BigDecimal lowerLimit,String grade,String dateTime) {
+	public void mail4criticalAlarm(String email,BigDecimal difference,BigDecimal lowerLimit,String dateTime) {
 		String content = criticalAlarmContent.toString().
 				replace(MAIL_REPLACE_DIFFERENCE, difference.toString()).
 				replace(MAIL_REPLACE_LIMIT, lowerLimit.toString()).
-				replace(MAIL_REPLACE_GRADE, grade).
 				replace(MAIL_REPLACE_TIME, dateTime);
 		logger.info("content : {}", content);
 		List<String> toMails = new ArrayList<>();
