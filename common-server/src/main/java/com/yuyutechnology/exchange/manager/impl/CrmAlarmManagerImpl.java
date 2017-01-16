@@ -223,11 +223,12 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 				//发邮件+发短信
 				if(crmAlarm.getAlarmMode() == 3){
 					
-					alarmByEmail(crmAlarm.getSupervisorIdArr(),map.get("reserveAvailability"), 
-							crmAlarm.getLowerLimit());
-					
 					alarmBySMS(crmAlarm.getSupervisorIdArr(),map.get("reserveAvailability"), 
 							crmAlarm.getLowerLimit());
+					
+					alarmByEmail(crmAlarm.getSupervisorIdArr(),map.get("reserveAvailability"), 
+							crmAlarm.getLowerLimit());
+
 				}
 				
 				//生成警报记录

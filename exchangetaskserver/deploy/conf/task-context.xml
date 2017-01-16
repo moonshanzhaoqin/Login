@@ -38,25 +38,25 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 	    method="autoUpdateExchangeRateTask" 
  	    fixed-delay="60000" initial-delay="1000"/> <!--程序启动后1s调用autoUpdateExchangeRateTask方法，然后小时执行一次 -->
 	    
-	    <task:scheduled 
-	    ref="autoUpdateExchangeRateTask" 
-	    method="autoSystemRefundBatch" 
-	    fixed-delay="1800000" initial-delay="5000"/>
+<!-- 	    <task:scheduled  -->
+<!-- 	    ref="autoUpdateExchangeRateTask"  -->
+<!-- 	    method="autoSystemRefundBatch"  -->
+<!-- 	    fixed-delay="1800000" initial-delay="5000"/> -->
 	    
-	   	<task:scheduled 
-	    ref="autoCalculateUserAssetsTask" 
-	    method="autoUpdateExchangeRateTask" 
-	    fixed-delay="900000" initial-delay="1000"/>
+<!-- 	   	<task:scheduled  -->
+<!-- 	    ref="autoCalculateUserAssetsTask"  -->
+<!-- 	    method="autoUpdateExchangeRateTask"  -->
+<!-- 	    fixed-delay="900000" initial-delay="1000"/> -->
 	    
 	    <task:scheduled 
 	    ref="autoAlarmTask" 
 	    method="autoAlarmTask" 
 	    fixed-delay="600000" initial-delay="1000"/>
 	    
-	   	<task:scheduled 
-	    ref="autoTransferRefundTask" 
-	    method="autoWithdrawRefund" 
-	    fixed-delay="600000" initial-delay="1000"/>
+<!-- 	   	<task:scheduled  -->
+<!-- 	    ref="autoTransferRefundTask"  -->
+<!-- 	    method="autoWithdrawRefund"  -->
+<!-- 	    fixed-delay="600000" initial-delay="1000"/> -->
 	    
 	    
 <!-- 	    <task:scheduled ref="beanC" method="methodC" cron="*/5 * * * * MON-FRI"/> -->

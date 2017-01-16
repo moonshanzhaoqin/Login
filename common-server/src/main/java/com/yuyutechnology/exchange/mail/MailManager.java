@@ -85,7 +85,7 @@ public class MailManager {
 				replace(MAIL_REPLACE_DIFFERENCE, difference.toString()).
 				replace(MAIL_REPLACE_LIMIT, lowerLimit.toString()).
 				replace(MAIL_REPLACE_TIME, dateTime);
-		logger.info("content : {}", content);
+		logger.info("content : {},tital : {}", content,criticalAlarmTital.toString());
 		List<String> toMails = new ArrayList<>();
 		toMails.add(email);
 		sendMail(toMails, criticalAlarmTital.toString(), content);
@@ -98,7 +98,7 @@ public class MailManager {
 			sendMessageRequest.setContent(content);
 			sendMessageRequest.setFromMailAddress(ResourceUtils.getBundleValue4String("contact.from"));
 			sendMessageRequest.setFromName(ResourceUtils.getBundleValue4String("contact.from"));
-			sendMessageRequest.setSubject(contactTital.toString());
+			sendMessageRequest.setSubject(tital);
 			sendMessageRequest.setToMails(toMails);
 			String param = JsonBinder.getInstance().toJson(sendMessageRequest);
 			logger.info("sendMailRequest : {}", param);
