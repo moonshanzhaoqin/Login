@@ -19,6 +19,9 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 		<context:include-filter expression="org.springframework.stereotype.Controller"
 			type="annotation" />
 	</context:component-scan>
+	
+	<aop:aspectj-autoproxy proxy-target-class="true" /> 
+	
 	<!-- Default ViewResolver -->
 	<!-- scan spring bean for IOC -->
 	<bean id="viewResolver"
