@@ -97,6 +97,7 @@ public class ExchangeController {
 		if (result.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)) {
 			rep.setAmountIn(Double.parseDouble(result.get("in")));
 			rep.setAmountOut(Double.parseDouble(result.get("out")));
+			rep.setRateUpdateTime(new Date());
 		}
 
 		return rep;

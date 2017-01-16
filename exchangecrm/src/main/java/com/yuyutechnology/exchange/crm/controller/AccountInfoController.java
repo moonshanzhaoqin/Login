@@ -90,7 +90,7 @@ public class AccountInfoController {
 		mav = new ModelAndView();
 		PageBean pageBean = new PageBean();
 		HashMap<String, Object> result = crmUserInfoManager.getUserAccountInfoListByPage(requst.getUserPhone(),
-				requst.getUserName(), requst.getIsFrozen(), requst.getUpperLimit(), requst.getLowerLimit(),
+				requst.getUserName(), Integer.parseInt(requst.getIsFrozen()), requst.getUpperLimit(), requst.getLowerLimit(),
 				requst.getPageBean().getCurrentPage(), requst.getPageBean().getPageSize());
 
 		pageBean.setCurrentPage((int) result.get("currentPage"));
@@ -100,6 +100,7 @@ public class AccountInfoController {
 		pageBean.setRows((List<?>) result.get("list"));
 		requst.setPageBean(pageBean);
 
+		mav.addObject("updateFlag", crmUserInfoManager.getUpdateFlag());
 		mav.addObject("model", requst);
 
 		mav.setViewName("/accountInfo/accountOverview");

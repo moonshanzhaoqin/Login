@@ -3,17 +3,14 @@ package com.yuyutechnology.exchange.server.test;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.yuyutechnology.exchange.ConfigKeyEnum;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.manager.ConfigManager;
-import com.yuyutechnology.exchange.utils.LanguageUtils;
-import com.yuyutechnology.exchange.utils.LanguageUtils.Language;
 
 /**
  * 
