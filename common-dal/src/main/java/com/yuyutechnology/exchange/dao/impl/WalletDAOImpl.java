@@ -114,15 +114,12 @@ public class WalletDAOImpl implements WalletDAO {
 			}
 		});
 
-		if (list.isEmpty()) {
-			return null;
+		if (!list.isEmpty()) {
+			for (Object object : list) {
+				Object[] obj = (Object[]) object;
+				map.put(new String((String) obj[0]), new BigDecimal(obj[1] + ""));
+			}
 		}
-
-		for (Object object : list) {
-			Object[] obj = (Object[]) object;
-			map.put(new String((String) obj[0]), new BigDecimal(obj[1] + ""));
-		}
-
 		// logger.info("Map content : {}",map.toString());
 
 		return map;

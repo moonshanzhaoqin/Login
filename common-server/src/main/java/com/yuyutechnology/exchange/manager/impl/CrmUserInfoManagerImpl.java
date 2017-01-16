@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.slf4j.Logger;
@@ -90,7 +91,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 	@Override
 	public HashMap<String, BigDecimal> getUserAccountTotalAssets() {
 
-		HashMap<String, BigDecimal> map = null;
+		HashMap<String, BigDecimal> map = new HashMap<>();
 
 		// 获取各个币种的用户资产总和
 		User systemUser = userDAO.getSystemUser();
@@ -103,15 +104,16 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 
 		// 计算用户账户总金额
 		BigDecimal totalAssets = BigDecimal.ZERO;
-		if (map == null) {
+		if (map.isEmpty()) {
 			logger.warn("get all users' total assets by currency FAILURE!!!");
-			return map;
-		}
-		for (Entry<String, BigDecimal> entry : map.entrySet()) {
-			if (entry.getKey().equals(ServerConsts.STANDARD_CURRENCY)) {
-				totalAssets = totalAssets.add(entry.getValue());
-			} else {
-				totalAssets = totalAssets.add(exchangeRateManager.getExchangeResult(entry.getKey(), entry.getValue()));
+		} else {
+			for (Entry<String, BigDecimal> entry : map.entrySet()) {
+				if (entry.getKey().equals(ServerConsts.STANDARD_CURRENCY)) {
+					totalAssets = totalAssets.add(entry.getValue());
+				} else {
+					totalAssets = totalAssets
+							.add(exchangeRateManager.getExchangeResult(entry.getKey(), entry.getValue()));
+				}
 			}
 		}
 		map.put("totalAssets", totalAssets.setScale(4, RoundingMode.CEILING));
