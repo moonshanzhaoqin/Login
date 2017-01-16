@@ -201,7 +201,7 @@
 			}
 			
 			$("#updateImmediately").click(function(){
-				alert("点击立即更新按钮");
+// 				alert("点击立即更新按钮");
 				$("#updateImmediately").attr("disabled", true); 
 				$("#updateImmediately").text("更新中...");
 				
