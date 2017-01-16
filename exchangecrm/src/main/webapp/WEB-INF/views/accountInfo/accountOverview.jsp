@@ -33,17 +33,17 @@
         					</li>
         					<li>
         						<select name="isFrozen" class="form-control">
-									<c:if test="${model.isFrozen == 0}">
+									<c:if test="${model.isFrozen == '0'}">
 										<option value=3>账号状态</option>
 	        							<option value=0 selected>已冻结</option>
 	        							<option value=1>未冻结</option>
 									</c:if>
-									<c:if test="${model.isFrozen == 1}">
+									<c:if test="${model.isFrozen == '1'}">
 										<option value=3>账号状态</option>
 	        							<option value=0>已冻结</option>
 	        							<option value=1 selected>未冻结</option>
 									</c:if>
-									<c:if test="${model.isFrozen == 3}">
+									<c:if test="${(model.isFrozen == '3') || (model.isFrozen != '0' && model.isFrozen != '1')}">
 										<option value=3 selected>账号状态</option>
 	        							<option value=0>已冻结</option>
 	        							<option value=1>未冻结</option>
