@@ -47,13 +47,15 @@ public class AlarmController {
 		if(userTotalAssets !=null ){
 			List<CrmAlarm> list = crmAlarmManager.getCrmAlarmConfigList();
 			HashMap<String, BigDecimal> map =crmAlarmManager.getAccountInfo(userTotalAssets.get("totalAssets"));
+			
 			mav.addObject("exHoldingTotalAssets", map.get("exHoldingTotalAssets"));
 			mav.addObject("userHoldingTotalAssets", map.get("userHoldingTotalAssets"));
 			mav.addObject("reserveFunds", map.get("reserveFunds"));
 			mav.addObject("reserveAvailability", map.get("reserveAvailability"));
 			mav.addObject("list", list);
 		}
-
+		List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
+		mav.addObject("supervisorList", supervisorList);
 		mav.setViewName("/alarm/alarmConfigInfo");
 		return mav;
 	}
@@ -82,7 +84,7 @@ public class AlarmController {
 		
 		map.put("retCode", 1);
 		map.put("crmAlarm", crmAlarm);
-		map.put("list", supervisorList);
+		map.put("supervisorList", supervisorList);
 		out.print(JsonBinder.getInstance().toJson(map));
 
 	}
@@ -118,8 +120,8 @@ public class AlarmController {
 	@RequestMapping(value="/alarm/getSupervisorList",method=RequestMethod.GET)
 	public ModelAndView getSupervisorList(){
 		mav = new ModelAndView();
-		List<CrmSupervisor> list = crmAlarmManager.getCrmSupervisorList();
-		mav.addObject("list", list);
+		List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
+		mav.addObject("supervisorList", supervisorList);
 		mav.setViewName("/alarm/supervisorInfo");
 		return mav;
 	}
@@ -148,15 +150,5 @@ public class AlarmController {
 		map.put("retCode", retCode);
 		out.print(JsonBinder.getInstanceNonNull().toJson(map));
 	}
-	
-//	@RequestMapping(value="/alarm/saveSupervisor",method=RequestMethod.POST)
-//	public ModelAndView saveSupervisor(SaveSupervisorRequest request){
-//		mav = new ModelAndView();
-//		String retCode = crmAlarmManager.saveSupervisor(request.getSupervisorName(), 
-//				request.getSupervisorMobile(), request.getSupervisorEmail());
-//		mav.addObject("retCode", retCode);
-//		mav.setViewName("redirect:/alarm/getSupervisorList");
-//		return mav;
-//	}
-	
+
 }

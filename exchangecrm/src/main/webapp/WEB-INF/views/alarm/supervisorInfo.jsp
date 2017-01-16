@@ -61,8 +61,8 @@
 						</tr>
 					</thead>
 					<tbody>
-						<c:if test="${not empty list }">
-							<c:forEach var="supervisor" items="${list}">
+						<c:if test="${not empty supervisorList }">
+							<c:forEach var="supervisor" items="${supervisorList}">
 								<tr>
 									<td>${supervisor.supervisorId }</td>
 									<td>${supervisor.supervisorName }</td>

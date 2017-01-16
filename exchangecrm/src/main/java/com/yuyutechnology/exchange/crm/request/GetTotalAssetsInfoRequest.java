@@ -8,7 +8,7 @@ public class GetTotalAssetsInfoRequest {
 
 	private String userPhone;
 	private String userName;
-	private int isFrozen;
+	private String isFrozen;
 	private BigDecimal upperLimit;
 	private BigDecimal lowerLimit;
 	
@@ -30,11 +30,11 @@ public class GetTotalAssetsInfoRequest {
 		this.userName = userName;
 	}
 
-	public int getIsFrozen() {
+	public String getIsFrozen() {
 		return isFrozen;
 	}
 
-	public void setIsFrozen(int isFrozen) {
+	public void setIsFrozen(String isFrozen) {
 		this.isFrozen = isFrozen;
 	}
 

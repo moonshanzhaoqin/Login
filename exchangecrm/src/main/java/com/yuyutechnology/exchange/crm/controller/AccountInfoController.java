@@ -2,7 +2,6 @@ package com.yuyutechnology.exchange.crm.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -45,6 +44,8 @@ public class AccountInfoController {
 		List<Currency> currencies = commonManager.getAllCurrencies();
 		List<TotalAsset> totalAssets = new ArrayList<>();
 		
+		log.info("userTotalAssets={}",userTotalAssets);
+		log.info("systemTotalAssets={}",systemTotalAssets);
 		
 		if(userTotalAssets != null && systemTotalAssets!= null){
 			for (Currency currency : currencies) {
@@ -76,7 +77,8 @@ public class AccountInfoController {
 		pageBean.setTotal((long) result.get("total"));
 		pageBean.setRows((List<?>) result.get("list"));
 		requst.setPageBean(pageBean);
-
+		
+		mav.addObject("updateFlag", crmUserInfoManager.getUpdateFlag());
 		mav.addObject("model", requst);
 
 		mav.setViewName("/accountInfo/accountOverview");
@@ -88,7 +90,7 @@ public class AccountInfoController {
 		mav = new ModelAndView();
 		PageBean pageBean = new PageBean();
 		HashMap<String, Object> result = crmUserInfoManager.getUserAccountInfoListByPage(requst.getUserPhone(),
-				requst.getUserName(), requst.getIsFrozen(), requst.getUpperLimit(), requst.getLowerLimit(),
+				requst.getUserName(), Integer.parseInt(requst.getIsFrozen()), requst.getUpperLimit(), requst.getLowerLimit(),
 				requst.getPageBean().getCurrentPage(), requst.getPageBean().getPageSize());
 
 		pageBean.setCurrentPage((int) result.get("currentPage"));
@@ -98,16 +100,7 @@ public class AccountInfoController {
 		pageBean.setRows((List<?>) result.get("list"));
 		requst.setPageBean(pageBean);
 
-		HashMap<String, BigDecimal> systemTotalAssets = crmUserInfoManager.getSystemAccountTotalAssets();
-		HashMap<String, BigDecimal> userTotalAssets = crmUserInfoManager.getUserAccountTotalAssets();
-
-		if (systemTotalAssets != null && userTotalAssets != null) {
-			log.info("systemTotalAssets : {}", systemTotalAssets.toString());
-			log.info("userTotalAssets : {}", userTotalAssets.toString());
-		}
-
-		mav.addObject("systemTotalAssets", systemTotalAssets);
-		mav.addObject("userTotalAssets", userTotalAssets);
+		mav.addObject("updateFlag", crmUserInfoManager.getUpdateFlag());
 		mav.addObject("model", requst);
 
 		mav.setViewName("/accountInfo/accountOverview");
@@ -122,5 +115,16 @@ public class AccountInfoController {
 		mav.setViewName("redirect:/account/accountOverview");
 		return mav;
 	}
+	
+	@RequestMapping(value = "/account/updateImmediately", method = RequestMethod.GET)
+	public ModelAndView updateImmediately(){
+		mav = new ModelAndView();
+		crmUserInfoManager.updateImmediately();
+		mav.setViewName("redirect:/account/accountOverview");
+		return mav;
+	}
+	
+	
+	
 
 }
