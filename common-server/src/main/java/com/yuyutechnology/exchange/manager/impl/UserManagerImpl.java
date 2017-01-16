@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.pattern.LogEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -508,7 +509,13 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void userFreeze(Integer userId, int userAvailable) {
-		userDAO.userFreeze(userId, userAvailable);
+		User user=userDAO.getUser(userId);
+		if (user==null) {
+			logger.warn("{} is not exist!!!",userId);
+		}else{
+			user.setUserAvailable(userAvailable);
+			userDAO.updateUser(user);
+		}
 	}
 	
 	@Override

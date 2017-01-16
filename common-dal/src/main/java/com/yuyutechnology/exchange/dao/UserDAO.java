@@ -26,8 +26,6 @@ public interface UserDAO {
 	
 	public List<User> getUserList();
 	
-	public void userFreeze(Integer userId,int userAvailable);
-	
 	public UserConfig getUserConfig(Integer userId);
 	
 	public void saveUserConfig(UserConfig userConfig);
