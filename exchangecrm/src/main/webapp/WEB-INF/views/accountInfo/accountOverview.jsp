@@ -7,7 +7,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Exanytime</title>
-		
+		<link rel='icon'  href='<c:url value="/resources/img/ex_28x28.ico" />' type='image/x-ico' />
 		<link rel="stylesheet" href='<c:url value="/resources/bootstrap/css/bootstrap.min.css" />' />
 		<link rel="stylesheet" href='<c:url value="/resources/bootstrap/css/bootstrap-table.css" />' />
 		<link rel="stylesheet" href='<c:url value="/resources/bootstrap/css/bootstrap-paginator.min.css" />' />
@@ -51,10 +51,10 @@
         						</select>
         					</li>
         					<li>
-        						<input type="text" value="${model.lowerLimit }" class="form-control" placeholder="总资产>=(USD)" name="lowerLimit" size="8">
+        						<input type="text" value="${model.lowerLimit }" class="form-control" placeholder="总资产>=(USD)" name="lowerLimit" size="12">
         					</li>
         					<li>
-        						<input type="text" value="${model.upperLimit }" class="form-control" placeholder="总资产<=(USD)" name="upperLimit" size="8">
+        						<input type="text" value="${model.upperLimit }" class="form-control" placeholder="总资产<=(USD)" name="upperLimit" size="12">
         					</li>
 
         					<li>
@@ -101,7 +101,7 @@
 					<tbody>
 						<c:if test="${not empty model.pageBean.rows }">
 							<c:forEach var="userInfo" items="${model.pageBean.rows}">
-								<tr>
+								<tr id=${userInfo.userId }>
 									<td>${userInfo.areaCode }</td>
 									<td>${userInfo.userPhone }</td>
 									<td>${userInfo.userName }</td>
@@ -193,8 +193,8 @@
 					}
 				}
 
-				var tds=$(obj).parent().parent().find('td');
-				var userId = tds.eq(0).text();
+				var tds=$(obj).parent().parent();
+				var userId = tds.attr('id');
 				
 				var userFreezeUrl = "<c:url value='/account/userFreeze' />";
 				location.href=userFreezeUrl+'?userId='+userId+'&operate='+operate;

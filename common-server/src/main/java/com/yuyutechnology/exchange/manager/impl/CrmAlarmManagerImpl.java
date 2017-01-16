@@ -15,7 +15,9 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CrmAlarmDAO;
 import com.yuyutechnology.exchange.dao.CrmSupervisorDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
+import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.mail.MailManager;
+import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
@@ -32,6 +34,8 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	CrmSupervisorDAO crmSupervisorDAO;
 	@Autowired
 	TransferDAO transferDAO;
+	@Autowired
+	ConfigManager configManager;
 	
 	@Autowired
 	SmsManager smsManager;
@@ -48,7 +52,7 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 			BigDecimal upperLimit, int alarmMode, int editorid,String supervisorId) {
 		CrmAlarm crmAlarm = new CrmAlarm();
 		
-		crmAlarm.setAlarmGrade(alarmGrade);
+//		crmAlarm.setAlarmGrade(alarmGrade);
 		crmAlarm.setAlarmMode(alarmMode);
 		crmAlarm.setCreateAt(new Date());
 		crmAlarm.setLowerLimit(lowerLimit);
@@ -72,23 +76,23 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		return crmAlarmDAO.getCrmAlarmConfig(alarmId);
 	}
 
-	private void alarmBySMS(String supervisorIdArr,BigDecimal difference,BigDecimal lowerLimit,String alarmGrade){
+	private void alarmBySMS(String supervisorIdArr,BigDecimal difference,BigDecimal lowerLimit){
 		String[] arr = (supervisorIdArr.replace("[", "").replace("]", "")).split(",");
 		
 		for (String supervisorId : arr) {
 			CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId.trim()));
 			smsManager.sendSMS4CriticalAlarm(crmSupervisor.getSupervisorMobile(), 
-					difference, lowerLimit, alarmGrade, DateFormatUtils.formatDateGMT8(new Date()));
+					difference, lowerLimit,DateFormatUtils.formatDateGMT8(new Date()));
 		}
 	}
 	
-	private void alarmByEmail(String supervisorIdArr,BigDecimal difference,BigDecimal lowerLimit,String alarmGrade){
+	private void alarmByEmail(String supervisorIdArr,BigDecimal difference,BigDecimal lowerLimit){
 		String[] arr = (supervisorIdArr.replace("[", "").replace("]", "")).split(",");
 		
 		for (String supervisorId : arr) {
 			CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
 			mailManager.mail4criticalAlarm(crmSupervisor.getSupervisorEmail(),
-					difference, lowerLimit, alarmGrade, DateFormatUtils.formatDateGMT8(new Date()));
+					difference, lowerLimit, DateFormatUtils.formatDateGMT8(new Date()));
 		}
 	}
 
@@ -133,7 +137,7 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 			int alarmMode, int editorid, String adminIdArr) {
 		CrmAlarm crmAlarm = crmAlarmDAO.getCrmAlarmConfig(alarmId);
 		crmAlarm.setAlarmId(alarmId);
-		crmAlarm.setAlarmGrade(alarmGrade);
+//		crmAlarm.setAlarmGrade(alarmGrade);
 		crmAlarm.setLowerLimit(lowerLimit);
 		crmAlarm.setUpperLimit(upperLimit);
 		crmAlarm.setAlarmMode(alarmMode);
@@ -164,7 +168,10 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		
 		logger.info("sumRecharge:{},sumWithdraw:{},exHoldingTotalAssets(USD):{}",new Object[]{sumRecharge,sumWithdraw,exHoldingTotalAssets});
 		
-		BigDecimal reserveFunds = exchangeRateManager.getExchangeResult(ServerConsts.CURRENCY_OF_GOLDPAY, new BigDecimal("100000000"));
+		
+		String reserveFundsStr = configManager.getConfigStringValue(ConfigKeyEnum.RESERVEFUNDS, "100000000");
+		
+		BigDecimal reserveFunds = exchangeRateManager.getExchangeResult(ServerConsts.CURRENCY_OF_GOLDPAY, new BigDecimal(reserveFundsStr));
 		
 		logger.info("reserveFunds (USD) :{}",reserveFunds);
 		
@@ -212,22 +219,23 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 				//发短信
 				if(crmAlarm.getAlarmMode() == 1){
 					alarmBySMS(crmAlarm.getSupervisorIdArr(), map.get("reserveAvailability"), 
-							crmAlarm.getLowerLimit(), crmAlarm.getAlarmGrade());
+							crmAlarm.getLowerLimit());
 				}
 				//发邮件
 				if(crmAlarm.getAlarmMode() == 2){
 					alarmByEmail(crmAlarm.getSupervisorIdArr(),map.get("reserveAvailability"), 
-							crmAlarm.getLowerLimit(), crmAlarm.getAlarmGrade());
+							crmAlarm.getLowerLimit());
 				}
 				
 				//发邮件+发短信
 				if(crmAlarm.getAlarmMode() == 3){
 					
-					alarmByEmail(crmAlarm.getSupervisorIdArr(),map.get("reserveAvailability"), 
-							crmAlarm.getLowerLimit(), crmAlarm.getAlarmGrade());
-					
 					alarmBySMS(crmAlarm.getSupervisorIdArr(),map.get("reserveAvailability"), 
-							crmAlarm.getLowerLimit(), crmAlarm.getAlarmGrade());
+							crmAlarm.getLowerLimit());
+					
+					alarmByEmail(crmAlarm.getSupervisorIdArr(),map.get("reserveAvailability"), 
+							crmAlarm.getLowerLimit());
+
 				}
 				
 				//生成警报记录

@@ -49,7 +49,7 @@ public class SmsManager {
 	
 	private final String SMS_REPLACE_DIFFERENCE = "[DIFFERENCE]";
 	private final String SMS_REPLACE_LOWERLIMIT = "[LOWERLIMIT]";
-	private final String SMS_REPLACE_GRADE = "[GRADE]";
+//	private final String SMS_REPLACE_GRADE = "[GRADE]";
 	
 
 	// en
@@ -130,12 +130,11 @@ public class SmsManager {
 	}
 	
 	@Async
-	public void sendSMS4CriticalAlarm(String phone,BigDecimal difference,BigDecimal lowerLimit,String grade,String dateTime){
+	public void sendSMS4CriticalAlarm(String phone,BigDecimal difference,BigDecimal lowerLimit,String dateTime){
 		String transferContent = criticalAlarm_cn.toString();
 		String content = transferContent
 				.replace(SMS_REPLACE_DIFFERENCE,difference.toString())
 				.replace(SMS_REPLACE_LOWERLIMIT,lowerLimit.toString())
-				.replace(SMS_REPLACE_GRADE,grade)
 				.replace(SMS_REPLACE_TIME,dateTime);
 		sendSMS(phone, content);
 	}

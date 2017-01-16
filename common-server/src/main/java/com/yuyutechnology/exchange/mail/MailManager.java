@@ -43,7 +43,7 @@ public class MailManager {
 	
 	private final String MAIL_REPLACE_DIFFERENCE = "[DIFFERENCE]";
 	private final String MAIL_REPLACE_LIMIT = "[LOWERLIMIT]";
-	private final String MAIL_REPLACE_GRADE = "[GRADE]";
+//	private final String MAIL_REPLACE_GRADE = "[GRADE]";
 	private final String MAIL_REPLACE_TIME = "[TIME]";
 	
 
@@ -80,13 +80,12 @@ public class MailManager {
 		sendMail(toMails, contactTital.toString(), content);
 	}
 	
-	public void mail4criticalAlarm(String email,BigDecimal difference,BigDecimal lowerLimit,String grade,String dateTime) {
+	public void mail4criticalAlarm(String email,BigDecimal difference,BigDecimal lowerLimit,String dateTime) {
 		String content = criticalAlarmContent.toString().
 				replace(MAIL_REPLACE_DIFFERENCE, difference.toString()).
 				replace(MAIL_REPLACE_LIMIT, lowerLimit.toString()).
-				replace(MAIL_REPLACE_GRADE, grade).
 				replace(MAIL_REPLACE_TIME, dateTime);
-		logger.info("content : {}", content);
+		logger.info("content : {},tital : {}", content,criticalAlarmTital.toString());
 		List<String> toMails = new ArrayList<>();
 		toMails.add(email);
 		sendMail(toMails, criticalAlarmTital.toString(), content);
@@ -99,7 +98,7 @@ public class MailManager {
 			sendMessageRequest.setContent(content);
 			sendMessageRequest.setFromMailAddress(ResourceUtils.getBundleValue4String("contact.from"));
 			sendMessageRequest.setFromName(ResourceUtils.getBundleValue4String("contact.from"));
-			sendMessageRequest.setSubject(contactTital.toString());
+			sendMessageRequest.setSubject(tital);
 			sendMessageRequest.setToMails(toMails);
 			String param = JsonBinder.getInstance().toJson(sendMessageRequest);
 			logger.info("sendMailRequest : {}", param);

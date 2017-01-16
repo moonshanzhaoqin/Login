@@ -14,7 +14,8 @@ public enum ConfigKeyEnum {
 					"enter_maximum_amount"), TPPSCLIENTID(
 							"tpps_client_id"), TPPSCLIENTKEY("tpps_client_key"), TPPSTRANSTOKEN(
 									"tpps_trans_token"), REFUNTIME("refund_time"), DOWNLOADLINK(
-											"download_link"), CHANGEPHONETIME("change_phone_time"), VERIFYTIME("verify_time");
+											"download_link"), CHANGEPHONETIME("change_phone_time"), VERIFYTIME("verify_time")
+												,RESERVEFUNDS("reserve_funds");
 
 	private String key;
 
