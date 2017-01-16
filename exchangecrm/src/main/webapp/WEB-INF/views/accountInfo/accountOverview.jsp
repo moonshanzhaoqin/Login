@@ -70,7 +70,12 @@
         					</li>
         					
         					<li >
-        						<button type="button" class="btn btn-primary" id="updateImmediately">立即更新</button>
+        						<c:if test="${updateFlag == 0 }">
+        							<button type="button" class="btn btn-primary" id="updateImmediately">立即更新</button>
+        						</c:if>
+        						<c:if test="${updateFlag == 1 }">
+        							<button type="button" class="btn btn-primary" disabled>更新中...</button>
+        						</c:if>
         					</li>
         					
         				</ul>

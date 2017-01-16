@@ -8,11 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CrmUserInfoDAO;
@@ -177,6 +177,17 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 		}
 		
 		redisDAO.saveData("updateImmediately", 0);
+	}
+
+	@Override
+	public int getUpdateFlag() {
+		String updateFlag = redisDAO.getValueByKey("updateImmediately");
+		
+		if(StringUtils.isNotBlank(updateFlag)){
+			return Integer.parseInt(updateFlag);
+		}
+		
+		return 0;
 	}
 
 }

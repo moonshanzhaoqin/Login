@@ -19,5 +19,7 @@ public interface CrmUserInfoManager {
 	public void userFreeze(Integer userId,int userAvailable);
 	
 	public void updateImmediately();
+	
+	public int getUpdateFlag();
 
 }
