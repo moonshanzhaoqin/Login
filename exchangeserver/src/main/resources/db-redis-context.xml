@@ -35,11 +35,6 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 	<bean id="stringRedisSerializer" class="com.yuyutechnology.exchange.redis.StringRedisSerializer">
 	</bean>
 	
-	<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
-    	<property name="slowSqlMillis" value="10000" />
-    	<property name="logSlowSql" value="true" />
-	</bean>
-	
 	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
 		destroy-method="close">
 		
@@ -78,6 +73,11 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 	            <ref bean="stat-filter" />
 	        </list>
 	    </property>
+	</bean>
+	
+	<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+    	<property name="slowSqlMillis" value="10000" />
+    	<property name="logSlowSql" value="true" />
 	</bean>
 
 	<!-- mysql hibernate and transaction manager
@@ -126,7 +126,7 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 				<prop key="hibernate.dialect">
 					org.hibernate.dialect.MySQLDialect
 				</prop>
-				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.show_sql">false</prop>
 				<prop key="hibernate.hbm2ddl.auto">none</prop>
 				<!-- 
 				<prop key="hibernate.multiTenancy">SCHEMA</prop>
