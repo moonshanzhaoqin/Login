@@ -24,6 +24,7 @@
 							<th>用户总账(USD)</th>
 							<th>公司入账 (USD)</th>
 							<th>预备金(USD)</th>
+							<th>可用预备金(USD)</th>
 							<th>准备率</th>
 						</tr>
 					</thead>
@@ -32,6 +33,7 @@
 							<td>${userHoldingTotalAssets }</td>
 							<td>${exHoldingTotalAssets }</td>
 							<td>${reserveFunds }</td>
+							<td>${remaining }</td>
 							<td>
 								<c:if test="${reserveAvailability < 20}">
 									<font color="red">${reserveAvailability }%</font>
