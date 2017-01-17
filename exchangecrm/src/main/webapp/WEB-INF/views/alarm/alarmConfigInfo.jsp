@@ -49,7 +49,7 @@
 			</div><!--row 结束-->
 			
 			<div class="row">
-				<h4 class="text-left">预备金设置</h4>	
+				<h4 class="text-left">预备金设置(GDQ)</h4>	
 			</div>
 		
 			<div class="row well">
