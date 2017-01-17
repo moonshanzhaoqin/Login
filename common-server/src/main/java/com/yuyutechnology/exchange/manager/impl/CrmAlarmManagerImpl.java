@@ -175,10 +175,15 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		
 		logger.info("reserveFunds (USD) :{}",reserveFunds);
 		
-		BigDecimal reserveAvailability =(new BigDecimal("1").subtract(
-				(userHoldingTotalAssets.subtract(exHoldingTotalAssets)).divide(reserveFunds,5,RoundingMode.DOWN ))).
-				multiply(new BigDecimal("100"));
 		
+		BigDecimal reserveAvailability  = new BigDecimal("0");
+		
+		if(reserveFunds.compareTo(new BigDecimal("0")) != 0){
+			reserveAvailability =(new BigDecimal("1").subtract(
+					(userHoldingTotalAssets.subtract(exHoldingTotalAssets)).divide(reserveFunds,5,RoundingMode.DOWN ))).
+					multiply(new BigDecimal("100"));
+		}
+
 		logger.info("ReserveAvailability : {}%",reserveAvailability);
 		
 		map.put("exHoldingTotalAssets", exHoldingTotalAssets.setScale(4, RoundingMode.DOWN ));

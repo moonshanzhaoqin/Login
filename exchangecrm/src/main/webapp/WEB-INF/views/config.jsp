@@ -93,6 +93,7 @@
 				success : function(data) {
 					if(data.retCode=="00000"){
 						console.log("success");
+						alert("修改成功！");
 						initConfig();
 					}else if(data.retCode=="00002"){
 						location.href=loginUrl;

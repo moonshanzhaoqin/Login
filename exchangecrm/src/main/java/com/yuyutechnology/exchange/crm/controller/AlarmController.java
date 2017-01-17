@@ -51,8 +51,12 @@ public class AlarmController {
 			List<CrmAlarm> list = crmAlarmManager.getCrmAlarmConfigList();
 			HashMap<String, BigDecimal> map =crmAlarmManager.getAccountInfo(userTotalAssets.get("totalAssets"));
 			
-			BigDecimal remaining = (map.get("reserveFunds")).subtract((map.get("exHoldingTotalAssets")).subtract(map.get("userHoldingTotalAssets")));
 			
+			BigDecimal difference = (map.get("userHoldingTotalAssets")).subtract(map.get("exHoldingTotalAssets"));
+			BigDecimal remaining = (map.get("reserveFunds")).subtract(difference);
+			
+			logger.info("reserveFunds : {},difference: {},remaining : {}",new Object[]{map.get("reserveFunds"),difference,remaining});
+
 			mav.addObject("exHoldingTotalAssets", map.get("exHoldingTotalAssets"));
 			mav.addObject("userHoldingTotalAssets", map.get("userHoldingTotalAssets"));
 			mav.addObject("reserveFunds", map.get("reserveFunds"));
