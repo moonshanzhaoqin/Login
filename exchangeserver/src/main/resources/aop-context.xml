@@ -23,8 +23,18 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 		<aop:pointcut
 			expression="execution (* com.yuyutechnology.exchange.*.*Manager.*(..)) || execution (* com.yuyutechnology.exchange.server.*.*Manager*.*(..))"
 			id="services" />
+		<aop:pointcut
+			expression="execution (* com.yuyutechnology.exchange.server.controller.*Controller.*(..))"
+			id="controllers" />
+	
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="services" />
+		<aop:advisor advice-ref="securityInterceptor" pointcut-ref="controllers" />
 	</aop:config>
+	
+	<bean id="securityInterceptor"
+	    class="com.yuyutechnology.exchange.server.filter.SecurityInterceptor">
+	</bean>
+	
 	
 	<bean id="druid-stat-interceptor"
 	    class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor">
