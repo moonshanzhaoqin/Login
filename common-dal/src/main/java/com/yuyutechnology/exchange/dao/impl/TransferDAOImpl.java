@@ -156,7 +156,7 @@ public class TransferDAOImpl implements TransferDAO {
 		BigDecimal sum = hibernateTemplate.executeWithNativeSession(new HibernateCallback<BigDecimal>() {
 			@Override
 			public BigDecimal doInHibernate(Session session) throws HibernateException {
-				Query query = session.createSQLQuery("SELECT sum(transfer_amount) FROM `e_transfer` where transfer_type = ?");
+				Query query = session.createSQLQuery("SELECT sum(transfer_amount) FROM `e_transfer` where transfer_type = ? and transfer_status = 2");
 				query.setInteger(0, transferType);
 				
 				@SuppressWarnings("unchecked")
