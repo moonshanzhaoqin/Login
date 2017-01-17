@@ -22,19 +22,17 @@ public class ConfigController {
 	@Autowired
 	ConfigManager configManager;
 
-	// TODO updateConfig
 	@ResponseBody
 	@RequestMapping(value = "/updateConfig", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse updateConfig(@RequestBody Config config) {
 		BaseResponse rep = new BaseResponse();
 		logger.info("updateConfig({}, {})",config.getConfigKey(),config.getConfigValue());
 		String retCode=configManager.updateConfig(config.getConfigKey(), config.getConfigValue());
+		configManager.refreshConfig();
 		rep.setRetCode(retCode);
 		return rep;
 	}
 
-
-	// TODO getConfigList
 	@ResponseBody
 	@RequestMapping(value = "/getConfigList", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public List<Config> getConfigList() {
