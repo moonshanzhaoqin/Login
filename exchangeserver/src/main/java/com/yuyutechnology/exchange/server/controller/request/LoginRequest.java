@@ -2,7 +2,11 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 import org.apache.commons.lang.StringUtils;
 
-public class LoginRequest {
+public class LoginRequest extends BaseRequest{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5329553920054389131L;
 	private String areaCode;
 	private String userPhone;
 	private String userPassword;

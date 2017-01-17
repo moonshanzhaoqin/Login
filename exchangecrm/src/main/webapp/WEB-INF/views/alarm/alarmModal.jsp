@@ -20,13 +20,6 @@
 				<form class="form-horizontal" id="addAlarmConfig" method="POST"
 					action="<c:url value="/alarm/saveAlarmConfig" />">
 					<div class="modal-body">
-<!-- 						<div class="form-group"> -->
-<!-- 							<lable class="col-md-4 control-label"> 预警等级 </lable> -->
-<!-- 							<div class="col-md-6"> -->
-<!-- 								<input class="form-control" name="alarmGrade" id="alarmGrade" /> -->
-<!-- 							</div> -->
-<!-- 						</div> -->
-
 						<div class="form-group">
 							<lable class="col-md-4 control-label"> 预警范围 </lable>
 							<div class="col-md-3">
