@@ -22,7 +22,6 @@ public class ConfigController {
 	@Autowired
 	ConfigManager configManager;
 
-	// TODO updateConfig
 	@ResponseBody
 	@RequestMapping(value = "/updateConfig", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse updateConfig(@RequestBody Config config) {
@@ -34,8 +33,6 @@ public class ConfigController {
 		return rep;
 	}
 
-
-	// TODO getConfigList
 	@ResponseBody
 	@RequestMapping(value = "/getConfigList", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public List<Config> getConfigList() {
