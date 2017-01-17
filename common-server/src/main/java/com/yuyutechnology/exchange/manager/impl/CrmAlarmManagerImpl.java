@@ -27,7 +27,7 @@ import com.yuyutechnology.exchange.utils.DateFormatUtils;
 
 @Service
 public class CrmAlarmManagerImpl implements CrmAlarmManager {
-	
+
 	@Autowired
 	CrmAlarmDAO crmAlarmDAO;
 	@Autowired
@@ -36,23 +36,22 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	TransferDAO transferDAO;
 	@Autowired
 	ConfigManager configManager;
-	
+
 	@Autowired
 	SmsManager smsManager;
 	@Autowired
 	MailManager mailManager;
 	@Autowired
 	ExchangeRateManager exchangeRateManager;
-	
 
 	private static Logger logger = LoggerFactory.getLogger(CrmAlarmManagerImpl.class);
 
 	@Override
-	public void addAlarmConfig(String alarmGrade, BigDecimal lowerLimit,
-			BigDecimal upperLimit, int alarmMode, int editorid,String supervisorId) {
+	public void addAlarmConfig(String alarmGrade, BigDecimal lowerLimit, BigDecimal upperLimit, int alarmMode,
+			int editorid, String supervisorId) {
 		CrmAlarm crmAlarm = new CrmAlarm();
-		
-//		crmAlarm.setAlarmGrade(alarmGrade);
+
+		// crmAlarm.setAlarmGrade(alarmGrade);
 		crmAlarm.setAlarmMode(alarmMode);
 		crmAlarm.setCreateAt(new Date());
 		crmAlarm.setLowerLimit(lowerLimit);
@@ -60,14 +59,14 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		crmAlarm.setSupervisorIdArr(supervisorId);
 		crmAlarm.setEditorid(editorid);
 		crmAlarm.setAlarmAvailable(1);
-		
+
 		crmAlarmDAO.addCrmAlarmConfig(crmAlarm);
-		
+
 	}
 
 	@Override
 	public void delAlarmConfig(int alarmId) {
-		logger.info("delete alarmId : {}",alarmId);
+		logger.info("delete alarmId : {}", alarmId);
 		crmAlarmDAO.delCrmAlarmConfig(alarmId);
 	}
 
@@ -76,23 +75,23 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		return crmAlarmDAO.getCrmAlarmConfig(alarmId);
 	}
 
-	private void alarmBySMS(String supervisorIdArr,BigDecimal difference,BigDecimal lowerLimit){
+	private void alarmBySMS(String supervisorIdArr, BigDecimal difference, BigDecimal lowerLimit) {
 		String[] arr = (supervisorIdArr.replace("[", "").replace("]", "")).split(",");
-		
+
 		for (String supervisorId : arr) {
 			CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId.trim()));
-			smsManager.sendSMS4CriticalAlarm(crmSupervisor.getSupervisorMobile(), 
-					difference, lowerLimit,DateFormatUtils.formatDateGMT8(new Date()));
+			smsManager.sendSMS4CriticalAlarm(crmSupervisor.getSupervisorMobile(), difference, lowerLimit,
+					DateFormatUtils.formatDateGMT8(new Date()));
 		}
 	}
-	
-	private void alarmByEmail(String supervisorIdArr,BigDecimal difference,BigDecimal lowerLimit){
+
+	private void alarmByEmail(String supervisorIdArr, BigDecimal difference, BigDecimal lowerLimit) {
 		String[] arr = (supervisorIdArr.replace("[", "").replace("]", "")).split(",");
-		
+
 		for (String supervisorId : arr) {
 			CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
-			mailManager.mail4criticalAlarm(crmSupervisor.getSupervisorEmail(),
-					difference, lowerLimit, DateFormatUtils.formatDateGMT8(new Date()));
+			mailManager.mail4criticalAlarm(crmSupervisor.getSupervisorEmail(), difference, lowerLimit,
+					DateFormatUtils.formatDateGMT8(new Date()));
 		}
 	}
 
@@ -113,23 +112,23 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 
 	@Override
 	public String saveSupervisor(String supervisorName, String supervisorMobile, String supervisorEmail) {
-		
-		List<CrmSupervisor> list = crmSupervisorDAO.
-				getCrmSupervisorByCondition(supervisorName, supervisorMobile, supervisorEmail);
-		
-		if(list == null || list.isEmpty()){
+
+		List<CrmSupervisor> list = crmSupervisorDAO.getCrmSupervisorByCondition(supervisorName, supervisorMobile,
+				supervisorEmail);
+
+		if (list == null || list.isEmpty()) {
 			CrmSupervisor crmSupervisor = new CrmSupervisor();
 			crmSupervisor.setSupervisorName(supervisorName);
 			crmSupervisor.setSupervisorMobile(supervisorMobile);
 			crmSupervisor.setSupervisorEmail(supervisorEmail);
 			crmSupervisor.setUpdateAt(new Date());
-			
+
 			crmSupervisorDAO.saveCrmSupervisor(crmSupervisor);
-			
+
 			return "success";
 		}
 		return "fail";
-		
+
 	}
 
 	@Override
@@ -137,115 +136,111 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 			int alarmMode, int editorid, String adminIdArr) {
 		CrmAlarm crmAlarm = crmAlarmDAO.getCrmAlarmConfig(alarmId);
 		crmAlarm.setAlarmId(alarmId);
-//		crmAlarm.setAlarmGrade(alarmGrade);
+		// crmAlarm.setAlarmGrade(alarmGrade);
 		crmAlarm.setLowerLimit(lowerLimit);
 		crmAlarm.setUpperLimit(upperLimit);
 		crmAlarm.setAlarmMode(alarmMode);
 		crmAlarm.setSupervisorIdArr(adminIdArr);
 		crmAlarm.setEditorid(editorid);
-		
+
 		crmAlarmDAO.addCrmAlarmConfig(crmAlarm);
 	}
-	
+
 	@Override
-	public void updateAlarmAvailable(Integer alarmId,int  alarmAvailable){
+	public void updateAlarmAvailable(Integer alarmId, int alarmAvailable) {
 		CrmAlarm crmAlarm = crmAlarmDAO.getCrmAlarmConfig(alarmId);
 		crmAlarm.setAlarmAvailable(alarmAvailable);
 		crmAlarmDAO.addCrmAlarmConfig(crmAlarm);
 	}
-	
+
 	@Override
-	public HashMap<String, BigDecimal> getAccountInfo(BigDecimal userHoldingTotalAssets){
-		
+	public HashMap<String, BigDecimal> getAccountInfo(BigDecimal userHoldingTotalAssets) {
+
 		HashMap<String, BigDecimal> map = new HashMap<>();
-		
-//		Ex公司持有的总资产 = 用户充值Goldpay总额 - 用户提现Goldpay总额;
-//		预备金剩余量 = 1 - (Ex用户持有的总资产 - Ex公司持有的总资产) / 预备金;
+
+		// Ex公司持有的总资产 = 用户充值Goldpay总额 - 用户提现Goldpay总额;
+		// 预备金剩余量 = 1 - (Ex用户持有的总资产 - Ex公司持有的总资产) / 预备金;
 		BigDecimal sumRecharge = transferDAO.sumGoldpayTransAmount(ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE);
 		BigDecimal sumWithdraw = transferDAO.sumGoldpayTransAmount(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
-		BigDecimal exHoldingTotalAssets = exchangeRateManager.getExchangeResult(ServerConsts.CURRENCY_OF_GOLDPAY, 
+		BigDecimal exHoldingTotalAssets = exchangeRateManager.getExchangeResult(ServerConsts.CURRENCY_OF_GOLDPAY,
 				sumRecharge.subtract(sumWithdraw));
-		
-		logger.info("sumRecharge:{},sumWithdraw:{},exHoldingTotalAssets(USD):{}",new Object[]{sumRecharge,sumWithdraw,exHoldingTotalAssets});
-		
-		
-		String reserveFundsStr = configManager.getConfigStringValue(ConfigKeyEnum.RESERVEFUNDS, "100000000");
-		
-		BigDecimal reserveFunds = exchangeRateManager.getExchangeResult(ServerConsts.CURRENCY_OF_GOLDPAY, new BigDecimal(reserveFundsStr));
-		
-		logger.info("reserveFunds (USD) :{}",reserveFunds);
-		
-		
-		BigDecimal reserveAvailability  = new BigDecimal("0");
-		
-		if(reserveFunds.compareTo(new BigDecimal("0")) != 0){
-			reserveAvailability =(new BigDecimal("1").subtract(
-					(userHoldingTotalAssets.subtract(exHoldingTotalAssets)).divide(reserveFunds,5,RoundingMode.DOWN ))).
-					multiply(new BigDecimal("100"));
-		}
 
-		logger.info("ReserveAvailability : {}%",reserveAvailability);
-		
-		map.put("exHoldingTotalAssets", exHoldingTotalAssets.setScale(4, RoundingMode.DOWN ));
+		logger.info("sumRecharge:{},sumWithdraw:{},exHoldingTotalAssets(USD):{}",
+				new Object[] { sumRecharge, sumWithdraw, exHoldingTotalAssets });
+
+		String reserveFundsStr = configManager.getConfigStringValue(ConfigKeyEnum.RESERVEFUNDS, "100000000");
+		BigDecimal reserveFunds = exchangeRateManager.getExchangeResult(ServerConsts.CURRENCY_OF_GOLDPAY,
+				new BigDecimal(reserveFundsStr));
+
+		logger.info("reserveFunds (USD) :{}", reserveFunds);
+
+		BigDecimal reserveAvailability = BigDecimal.ZERO;
+
+		if (reserveFunds.compareTo(BigDecimal.ZERO) != 0) {
+			reserveAvailability = (BigDecimal.ONE.subtract(
+					(userHoldingTotalAssets.subtract(exHoldingTotalAssets)).divide(reserveFunds, 5, RoundingMode.DOWN)))
+							.multiply(new BigDecimal("100"));
+		}
+		logger.info("userHoldingTotalAssets:{} ", userHoldingTotalAssets);
+		logger.info("exHoldingTotalAssets:{} ", exHoldingTotalAssets);
+		logger.info("reserveFunds:{}", reserveFunds);
+		logger.info("ReserveAvailability : {}%", reserveAvailability);
+
+		map.put("exHoldingTotalAssets", exHoldingTotalAssets.setScale(4, RoundingMode.DOWN));
 		map.put("userHoldingTotalAssets", userHoldingTotalAssets);
 		map.put("reserveFunds", reserveFunds.setScale(4, RoundingMode.DOWN));
 		map.put("reserveAvailability", reserveAvailability.setScale(2, RoundingMode.DOWN));
 
 		return map;
 	}
- 	
-	
-	
+
 	@Override
-	public void autoAlarm(BigDecimal userHoldingTotalAssets){
+	public void autoAlarm(BigDecimal userHoldingTotalAssets) {
 
 		HashMap<String, BigDecimal> map = getAccountInfo(userHoldingTotalAssets);
-		
-		if(map == null){
-			return ;
+
+		if (map == null) {
+			return;
 		}
-		
+
 		List<CrmAlarm> list = crmAlarmDAO.getCrmAlarmConfigListByType(1);
-		
-		if(list == null){
-			logger.warn("No related alarm information is configured ! {}",new Date());
-			return ;
+
+		if (list == null) {
+			logger.warn("No related alarm information is configured ! {}", new Date());
+			return;
 		}
-		
+
 		for (CrmAlarm crmAlarm : list) {
-			if(
-				(crmAlarm.getLowerLimit().compareTo(map.get("reserveAvailability")) == 0 
-				||crmAlarm.getLowerLimit().compareTo(map.get("reserveAvailability")) == -1)&&
-				(crmAlarm.getUpperLimit().compareTo(map.get("reserveAvailability")) == 1)
-			){
-				
-				logger.info("Initiate an alarm, alarmId : {},alarmMode: {}",new Object[]{crmAlarm.getAlarmId(),crmAlarm.getAlarmMode()});
+			if ((crmAlarm.getLowerLimit().compareTo(map.get("reserveAvailability")) == 0
+					|| crmAlarm.getLowerLimit().compareTo(map.get("reserveAvailability")) == -1)
+					&& (crmAlarm.getUpperLimit().compareTo(map.get("reserveAvailability")) == 1)) {
 
-				//发短信
-				if(crmAlarm.getAlarmMode() == 1){
-					alarmBySMS(crmAlarm.getSupervisorIdArr(), map.get("reserveAvailability"), 
+				logger.info("Initiate an alarm, alarmId : {},alarmMode: {}",
+						new Object[] { crmAlarm.getAlarmId(), crmAlarm.getAlarmMode() });
+
+				// 发短信
+				if (crmAlarm.getAlarmMode() == 1) {
+					alarmBySMS(crmAlarm.getSupervisorIdArr(), map.get("reserveAvailability"), crmAlarm.getLowerLimit());
+				}
+				// 发邮件
+				if (crmAlarm.getAlarmMode() == 2) {
+					alarmByEmail(crmAlarm.getSupervisorIdArr(), map.get("reserveAvailability"),
 							crmAlarm.getLowerLimit());
 				}
-				//发邮件
-				if(crmAlarm.getAlarmMode() == 2){
-					alarmByEmail(crmAlarm.getSupervisorIdArr(),map.get("reserveAvailability"), 
-							crmAlarm.getLowerLimit());
-				}
-				
-				//发邮件+发短信
-				if(crmAlarm.getAlarmMode() == 3){
-					
-					alarmBySMS(crmAlarm.getSupervisorIdArr(),map.get("reserveAvailability"), 
-							crmAlarm.getLowerLimit());
-					
-					alarmByEmail(crmAlarm.getSupervisorIdArr(),map.get("reserveAvailability"), 
+
+				// 发邮件+发短信
+				if (crmAlarm.getAlarmMode() == 3) {
+
+					alarmBySMS(crmAlarm.getSupervisorIdArr(), map.get("reserveAvailability"), crmAlarm.getLowerLimit());
+
+					alarmByEmail(crmAlarm.getSupervisorIdArr(), map.get("reserveAvailability"),
 							crmAlarm.getLowerLimit());
 
 				}
-				
-				//生成警报记录
+
+				// 生成警报记录
 			}
 		}
 	}
-	
+
 }

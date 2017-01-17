@@ -70,7 +70,7 @@ public class AccountInfoController {
 		mav = new ModelAndView();
 		PageBean pageBean = new PageBean();
 		HashMap<String, Object> result = crmUserInfoManager.getUserAccountInfoListByPage(null, null, 3,
-				new BigDecimal(0), new BigDecimal(0), 1, 10);
+				BigDecimal.ZERO,BigDecimal.ZERO, 1, 10);
 		pageBean.setCurrentPage((int) result.get("currentPage"));
 		pageBean.setPageSize((int) result.get("pageSize"));
 		pageBean.setPageTotal((int) result.get("pageTotal"));
