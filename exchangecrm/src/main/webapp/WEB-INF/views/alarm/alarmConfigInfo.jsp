@@ -50,20 +50,20 @@
 				</table>
 			</div><!--row 结束-->
 			
-			<div class="row">
-				<h4 class="text-left">预备金设置(GDQ)</h4>	
-			</div>
+<!-- 			<div class="row"> -->
+<!-- 				<h4 class="text-left">预备金设置(GDQ)</h4>	 -->
+<!-- 			</div> -->
 		
-			<div class="row well">
-				<form id="updateReserveFunds" action="<c:url value='/alarm/updateReserveFunds' />" method="POST">
-					<div class="col-lg-6 text-left">
-						<input class="form-control" name="reserveFunds" id="reserveFunds" placeholder="请填入预备金金额"/>
-					</div>
-				</form>
-				<div class="col-lg-6 text-right">
-					<button id="updateReserveFundsBtn" class="btn btn-default">确认</button>
-				</div>
-			</div>
+<!-- 			<div class="row well"> -->
+<%-- 				<form id="updateReserveFunds" action="<c:url value='/alarm/updateReserveFunds' />" method="POST"> --%>
+<!-- 					<div class="col-lg-6 text-left"> -->
+<!-- 						<input class="form-control" name="reserveFunds" id="reserveFunds" placeholder="请填入预备金金额"/> -->
+<!-- 					</div> -->
+<!-- 				</form> -->
+<!-- 				<div class="col-lg-6 text-right"> -->
+<!-- 					<button id="updateReserveFundsBtn" class="btn btn-default">确认</button> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
 
 			<div class="row">
 				<div class="col-sm-6">
@@ -255,17 +255,17 @@
 				$("#updateAlarmConfig").submit();
 			});
 			
-			$("#updateReserveFundsBtn").click(function(){
-				var reserveFunds = $("#reserveFunds").val();
+// 			$("#updateReserveFundsBtn").click(function(){
+// 				var reserveFunds = $("#reserveFunds").val();
 				
-				if(checkNotBlank(reserveFunds) && isNumeric(reserveFunds)){
-					$("#updateReserveFunds").submit();
-				}else{
-					alert("输入内容不符合要求！");
-					return ;
-				}
+// 				if(checkNotBlank(reserveFunds) && isNumeric(reserveFunds)){
+// 					$("#updateReserveFunds").submit();
+// 				}else{
+// 					alert("输入内容不符合要求！");
+// 					return ;
+// 				}
 				
-			});
+// 			});
 			
 
 			function checkNotBlank(param){

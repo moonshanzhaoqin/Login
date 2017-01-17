@@ -136,11 +136,11 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 			sb.append("and userAvailable = ? ");
 			values.add(isFrozen);
 		}
-		if (upperLimit != null && upperLimit.compareTo(new BigDecimal(0)) == 1) {
+		if (upperLimit != null && upperLimit.compareTo(BigDecimal.ZERO) != -1) {
 			sb.append("and userTotalAssets <= ? ");
 			values.add(upperLimit);
 		}
-		if (lowerLimit != null && lowerLimit.compareTo(new BigDecimal(0)) == 1) {
+		if (lowerLimit != null && lowerLimit.compareTo(BigDecimal.ZERO) != -1) {
 			sb.append("and userTotalAssets >= ? ");
 			values.add(lowerLimit);
 		}
