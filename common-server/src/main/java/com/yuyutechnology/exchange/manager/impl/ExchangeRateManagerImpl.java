@@ -199,6 +199,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		} else {
 			double exchangeRate = getExchangeRate(transCurrency, ServerConsts.STANDARD_CURRENCY);
 			result = transAmount.multiply(new BigDecimal(Double.toString(exchangeRate)));
+			logger.info("exchange to USD , transCurrency : {} , amount : {}, rate : {}, result : {}", new Object[]{transCurrency, transAmount, exchangeRate, result});
 		}
 		return result;
 	}
@@ -237,15 +238,13 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 		// logger.info("result : {}",result);
 		map = JsonBinder.getInstance().fromJson(result, HashMap.class);
 		String value = map.get(base);
-		logger.info("value : {}", value);
-
+//		logger.info("value : {}", value);
 		if (value.contains("no protocol")) {
 			return 0;
 		}
-
 		ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().fromJson(value, ExchangeRate.class);
 		out = exchangeRate.getRates().get(outCurrency);
-		logger.info("base : {},out : {}", base, out);
+//		logger.info("base : {},out : {}", base, out);
 		return out;
 	}
 
