@@ -157,7 +157,8 @@ public class AlarmController {
 	@RequestMapping(value="/alarm/updateReserveFunds",method=RequestMethod.POST)
 	public ModelAndView updateReserveFunds(String reserveFunds){
 		mav = new ModelAndView();
-		configManager.updateConfig("reserve_funds", reserveFunds);	
+		configManager.updateConfig("reserve_funds", reserveFunds);
+		configManager.refreshConfig();
 		mav.setViewName("redirect:/alarm/getAlarmConfigList");
 		return mav;
 	}
