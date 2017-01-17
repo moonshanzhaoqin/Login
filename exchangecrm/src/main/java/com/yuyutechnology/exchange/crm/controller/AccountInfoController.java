@@ -43,16 +43,16 @@ public class AccountInfoController {
 		HashMap<String, BigDecimal> systemTotalAssets = crmUserInfoManager.getSystemAccountTotalAssets();
 		List<Currency> currencies = commonManager.getAllCurrencies();
 		List<TotalAsset> totalAssets = new ArrayList<>();
-		
-		log.info("userTotalAssets={}",userTotalAssets);
-		log.info("systemTotalAssets={}",systemTotalAssets);
-		
-		if(userTotalAssets != null && systemTotalAssets!= null){
+
+		log.info("userTotalAssets={}", userTotalAssets);
+		log.info("systemTotalAssets={}", systemTotalAssets);
+
+		if (userTotalAssets != null && systemTotalAssets != null) {
 			for (Currency currency : currencies) {
 				totalAssets.add(new TotalAsset(currency,
 						systemTotalAssets.get(currency.getCurrency()) == null ? new BigDecimal("0.0000")
 								: systemTotalAssets.get(currency.getCurrency()),
-						userTotalAssets.get(currency.getCurrency()) == null ?  new BigDecimal("0.0000")
+						userTotalAssets.get(currency.getCurrency()) == null ? new BigDecimal("0.0000")
 								: userTotalAssets.get(currency.getCurrency())));
 			}
 			mav.addObject("totalAssets", totalAssets);
@@ -69,15 +69,15 @@ public class AccountInfoController {
 
 		mav = new ModelAndView();
 		PageBean pageBean = new PageBean();
-		HashMap<String, Object> result = crmUserInfoManager.getUserAccountInfoListByPage(null, null, 3,
-				BigDecimal.ZERO,BigDecimal.ZERO, 1, 10);
+		HashMap<String, Object> result = crmUserInfoManager.getUserAccountInfoListByPage(null, null, 3, null, null, 1,
+				10);
 		pageBean.setCurrentPage((int) result.get("currentPage"));
 		pageBean.setPageSize((int) result.get("pageSize"));
 		pageBean.setPageTotal((int) result.get("pageTotal"));
 		pageBean.setTotal((long) result.get("total"));
 		pageBean.setRows((List<?>) result.get("list"));
 		requst.setPageBean(pageBean);
-		
+
 		mav.addObject("updateFlag", crmUserInfoManager.getUpdateFlag());
 		mav.addObject("model", requst);
 
@@ -90,8 +90,8 @@ public class AccountInfoController {
 		mav = new ModelAndView();
 		PageBean pageBean = new PageBean();
 		HashMap<String, Object> result = crmUserInfoManager.getUserAccountInfoListByPage(requst.getUserPhone(),
-				requst.getUserName(), Integer.parseInt(requst.getIsFrozen()), requst.getUpperLimit(), requst.getLowerLimit(),
-				requst.getPageBean().getCurrentPage(), requst.getPageBean().getPageSize());
+				requst.getUserName(), Integer.parseInt(requst.getIsFrozen()), requst.getUpperLimit(),
+				requst.getLowerLimit(), requst.getPageBean().getCurrentPage(), requst.getPageBean().getPageSize());
 
 		pageBean.setCurrentPage((int) result.get("currentPage"));
 		pageBean.setPageSize((int) result.get("pageSize"));
@@ -115,16 +115,13 @@ public class AccountInfoController {
 		mav.setViewName("redirect:/account/accountOverview");
 		return mav;
 	}
-	
+
 	@RequestMapping(value = "/account/updateImmediately", method = RequestMethod.GET)
-	public ModelAndView updateImmediately(){
+	public ModelAndView updateImmediately() {
 		mav = new ModelAndView();
 		crmUserInfoManager.updateImmediately();
 		mav.setViewName("redirect:/account/accountOverview");
 		return mav;
 	}
-	
-	
-	
 
 }
