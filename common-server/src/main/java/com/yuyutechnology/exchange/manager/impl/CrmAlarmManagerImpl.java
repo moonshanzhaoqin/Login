@@ -188,6 +188,8 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		
 		map.put("exHoldingTotalAssets", exHoldingTotalAssets.setScale(4, RoundingMode.DOWN ));
 		map.put("userHoldingTotalAssets", userHoldingTotalAssets);
+//		map.put("exHoldingTotalAssets", new BigDecimal("273.1973"));
+//		map.put("userHoldingTotalAssets", new BigDecimal("273.0218"));
 		map.put("reserveFunds", reserveFunds.setScale(4, RoundingMode.DOWN));
 		map.put("reserveAvailability", reserveAvailability.setScale(2, RoundingMode.DOWN));
 
