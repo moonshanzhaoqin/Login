@@ -21,25 +21,31 @@
 					action="<c:url value="/alarm/saveAlarmConfig" />">
 					<div class="modal-body">
 						<div class="form-group">
-							<lable class="col-md-4 control-label"> 预警范围 </lable>
-							<div class="col-md-3">
-								<input class="form-control" name="criticalThresholdLowerLimit"
-									id="criticalThresholdLowerLimit" />
+							<label class="col-sm-3 control-label">预警范围</label>
+							<div class="col-sm-3 ">
+								<div class="input-group">
+									<input type="text" class="form-control"
+										name="criticalThresholdLowerLimit"
+										id="criticalThresholdLowerLimit" /> <span
+										class="input-group-addon">%</span>
+								</div>
 							</div>
-							<div class="col-md-1"
-								style="padding: 15px 0; text-align: center; line-height: 50%; display: table; width: 8px">
+							<div class="col-sm-1"
+								style="padding: 15px 0; text-align: center; line-height: 50%; display: table;">
 								<Strong>~</Strong>
 							</div>
-							<div class="col-md-3">
+							<div class="col-sm-3 ">
+							<div class="input-group">
 								<input class="form-control" name="criticalThresholdUpperLimit"
-									id="criticalThresholdUpperLimit" />
-							</div>
+									id="criticalThresholdUpperLimit" /> <span
+									class="input-group-addon">%</span>
+							</div></div>
 						</div>
 
 
 						<div class="form-group">
-							<lable class="col-md-4 control-label"> 预警方式 </lable>
-							<div class="col-md-6">
+							<label class="col-sm-3 control-label">预警方式</label>
+							<div class="col-sm-7">
 								<select class="form-control" name="alarmMode" id="alarmMode">
 									<option value="1">短信</option>
 									<option value="2">邮件</option>
@@ -49,11 +55,11 @@
 						</div>
 
 						<div class="form-group">
-							<lable class="col-md-4 control-label"> 预警人添加 </lable>
-							<div class="col-md-6 checkbox">
+							<label class="col-sm-3 control-label">预警人添加</label>
+							<div class="col-sm-7 checkbox">
 								<c:if test="${not empty supervisorList }">
 									<c:forEach var="supervisor" items="${supervisorList}">
-										<div class="col-lg-4">
+										<div class="col-sm-4">
 											<input class="panel-group" name="supervisorId"
 												type="checkbox" value="${supervisor.supervisorId}" />
 											${supervisor.supervisorName }
