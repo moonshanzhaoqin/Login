@@ -155,8 +155,8 @@ public class AlarmController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
-		String retCode = crmAlarmManager.saveSupervisor(request.getSupervisorName(), 
-				request.getSupervisorMobile(), request.getSupervisorEmail());
+		String retCode = crmAlarmManager.saveSupervisor(request.getSupervisorName().trim(), 
+				request.getSupervisorMobile().trim(), request.getSupervisorEmail().trim());
 		map.put("retCode", retCode);
 		out.print(JsonBinder.getInstanceNonNull().toJson(map));
 	}
