@@ -46,8 +46,7 @@ public class CrmSupervisorDAOImpl implements CrmSupervisorDAO {
 	@Override
 	public List<CrmSupervisor> getCrmSupervisorByCondition(String supervisorName, 
 			String supervisorMobile,String supervisorEmail) {
-		List<?> list = hibernateTemplate.find("from CrmSupervisor where 1 = 1 "
-				+ "or supervisorName = ? or supervisorMobile = ? or supervisorEmail = ?",
+		List<?> list = hibernateTemplate.find("from CrmSupervisor where supervisorName = ? or supervisorMobile = ? or supervisorEmail = ?",
 				supervisorName,supervisorMobile,supervisorEmail);
 		if(list.isEmpty()){
 			return null;
