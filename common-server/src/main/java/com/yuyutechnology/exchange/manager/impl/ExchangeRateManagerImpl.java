@@ -171,6 +171,14 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 
 		return out;
 	}
+	
+	@Override
+	public Date getExchangeRateUpdateDate() {
+		String goldpayER = redisDAO.getValueByKey("redis_goldpay_exchangerate");
+		GoldpayExchangeRate goldpayExchangeRate = JsonBinder.getInstance().fromJson(goldpayER,
+				GoldpayExchangeRate.class);
+		return goldpayExchangeRate == null ? new Date() : goldpayExchangeRate.getDate();
+	}
 
 	@Override
 	public HashMap<String, Double> getExchangeRate(String base) {
