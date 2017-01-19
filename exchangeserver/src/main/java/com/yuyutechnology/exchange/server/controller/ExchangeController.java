@@ -97,7 +97,7 @@ public class ExchangeController {
 		if (result.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)) {
 			rep.setAmountIn(Double.parseDouble(result.get("in")));
 			rep.setAmountOut(Double.parseDouble(result.get("out")));
-			rep.setRateUpdateTime(new Date());
+			rep.setRateUpdateTime(exchangeRateManager.getExchangeRateUpdateDate());
 		}
 
 		return rep;
@@ -123,7 +123,7 @@ public class ExchangeController {
 		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		rep.setBase(reqMsg.getBase());
-		rep.setRateUpdateTime(new Date());
+		rep.setRateUpdateTime(exchangeRateManager.getExchangeRateUpdateDate());
 		rep.setExchangeRates(map);
 
 		return rep;
