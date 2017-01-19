@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.yuyutechnology.exchange.ServerException;
 /**
  * HTTP工具箱
  */
@@ -123,8 +125,7 @@ public final class HttpTookit
 		String body = "";
 		try {
 			URL url = new URL(link);// 创建连接
-			HttpURLConnection connection = (HttpURLConnection) url
-					.openConnection();
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setDoOutput(true);
 			connection.setDoInput(true);
 			connection.setUseCaches(false);
@@ -137,18 +138,22 @@ public final class HttpTookit
 			out.write(param);
 			out.flush();
 			// 读取响应
-			InputStream jnn = connection.getInputStream();
-			in = new BufferedReader(new InputStreamReader(jnn, "UTF-8"));
+			if (connection.getResponseCode() != 200) {
+				in = new BufferedReader(new InputStreamReader(connection.getErrorStream(), "UTF-8"));
+			}else{
+				in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+			}
 			String line = "";
 			while ((line = in.readLine()) != null) {
 				body += "" + line;
 			}
 			if (connection.getResponseCode() == 200) {
 				return body;
+			}else{
+				throw new ServerException(body);
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.error("send to request is failed: {}",e);
-			e.printStackTrace();
 		} finally { // 关闭流
 			try {
 				if (out != null) {
@@ -156,7 +161,6 @@ public final class HttpTookit
 				}
 			} catch (IOException ex) {
 				logger.error("close in or out io failed");
-				ex.printStackTrace();
 			}
 		}
 		return body;
