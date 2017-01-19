@@ -178,7 +178,7 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 
 		if (reserveFunds.compareTo(BigDecimal.ZERO) != 0) {
 			reserveAvailability = (BigDecimal.ONE.subtract(
-					(userHoldingTotalAssets.subtract(exHoldingTotalAssets)).divide(reserveFunds, 5, RoundingMode.DOWN)))
+					(userHoldingTotalAssets.subtract(exHoldingTotalAssets.setScale(4, RoundingMode.DOWN))).divide(reserveFunds, 5, RoundingMode.DOWN)))
 							.multiply(new BigDecimal("100"));
 		}
 		logger.info("userHoldingTotalAssets:{} ", userHoldingTotalAssets);
