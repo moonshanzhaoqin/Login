@@ -72,14 +72,22 @@ public class WalletDAOImpl implements WalletDAO {
 			public Integer doInHibernate(Session session) throws HibernateException {
 				Query query = null;
 				if (capitalFlows.equals("+")) {
+//					query = session.createSQLQuery("update e_wallet set update_time = ? ,balance = balance+" + amount.abs()
+//					+ " where user_id = ? and currency = ?");
 					query = session.createQuery("update Wallet set updateTime = ? ,balance = balance+" + amount.abs()
 							+ " where userId = ? and currency.currency = ?");
 				} else {
 					if (userId != systemUserId) {
+//						query = session.createSQLQuery("update e_wallet set update_time = ? ,balance = balance-"
+//								+ amount.abs() + " where user_id = ? and currency = ? and balance-"
+//								+ amount.abs() + ">=0");
 						query = session.createQuery("update Wallet set updateTime = ? ,balance = balance-"
 								+ amount.abs() + " where userId = ? and currency.currency = ? and balance-"
 								+ amount.abs() + ">=0");
+						
 					} else {
+//						query = session.createSQLQuery("update e_wallet set update_time = ? ,balance = balance-"
+//								+ amount.abs() + " where user_id = ? and currency = ?");
 						query = session.createQuery("update Wallet set updateTime = ? ,balance = balance-"
 								+ amount.abs() + " where userId = ? and currency.currency = ?");
 					}
