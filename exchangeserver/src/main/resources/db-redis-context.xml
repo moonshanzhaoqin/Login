@@ -67,7 +67,7 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 		<property name="maxPoolPreparedStatementPerConnectionSize" value="${jdbc.pool.maxStatements}" />
 		
 		<!-- 配置监控统计拦截的filters -->
-		<property name="filters" value="stat" />
+		<property name="filters" value="stat,wall" />
 	    <property name="proxyFilters">
 	        <list>
 	            <ref bean="stat-filter" />
