@@ -39,7 +39,7 @@
 									<font color="red">${reserveAvailability }%</font>
 								</c:if>
 								<c:if test="${reserveAvailability >= 20 &&  reserveAvailability<50}">
-									<font color="yellow">${reserveAvailability }%</font>
+									<font color="#EC971F">${reserveAvailability }%</font>
 								</c:if>
 								<c:if test="${reserveAvailability >= 50}">
 									<font color="green">${reserveAvailability }%</font>
