@@ -151,6 +151,8 @@
 				form.nameHk.value = currency.nameHk;
 				if (currency.currency == 'GDQ') {
 					form.currencyOrder.readOnly=true;
+				}else{
+					form.currencyOrder.readOnly=false;
 				}
 			})
 
@@ -203,7 +205,7 @@
 							},
 							regexp : {/* 只需加此键值对，包含正则表达式，和提示 */
 								regexp : /^[1-9]/,
-								message : '只能是数字'
+								message : '只能是大于1的数字'
 							},
 							stringLength : {
 								max : 6,
