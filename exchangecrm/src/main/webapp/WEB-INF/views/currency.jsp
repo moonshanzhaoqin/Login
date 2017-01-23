@@ -142,13 +142,16 @@
 				var currency = tr.data('whatever') // Extract info from data-* attributes
 				console.log(currency);
 				form = document.getElementById("updateCurrency");
-				form.currency.value = currency.currency
-				form.currencyOrder.value = currency.currencyOrder
-				form.currencyStatus.value = currency.currencyStatus
-				form.currencyUnit.value = currency.currencyUnit
-				form.nameCn.value = currency.nameCn
-				form.nameEn.value = currency.nameEn
-				form.nameHk.value = currency.nameHk
+				form.currency.value = currency.currency;
+				form.currencyOrder.value = currency.currencyOrder;
+				form.currencyStatus.value = currency.currencyStatus;
+				form.currencyUnit.value = currency.currencyUnit;
+				form.nameCn.value = currency.nameCn;
+				form.nameEn.value = currency.nameEn;
+				form.nameHk.value = currency.nameHk;
+				if (currency.currency == 'GDQ') {
+					form.currencyOrder.readOnly=true;
+				}
 			})
 
 			$('#updateCurrency').bootstrapValidator({
@@ -199,7 +202,7 @@
 								message : '顺序不能为空'
 							},
 							regexp : {/* 只需加此键值对，包含正则表达式，和提示 */
-								regexp : /^[0-9]/,
+								regexp : /^[1-9]/,
 								message : '只能是数字'
 							},
 							stringLength : {
