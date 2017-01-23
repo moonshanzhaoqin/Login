@@ -142,13 +142,18 @@
 				var currency = tr.data('whatever') // Extract info from data-* attributes
 				console.log(currency);
 				form = document.getElementById("updateCurrency");
-				form.currency.value = currency.currency
-				form.currencyOrder.value = currency.currencyOrder
-				form.currencyStatus.value = currency.currencyStatus
-				form.currencyUnit.value = currency.currencyUnit
-				form.nameCn.value = currency.nameCn
-				form.nameEn.value = currency.nameEn
-				form.nameHk.value = currency.nameHk
+				form.currency.value = currency.currency;
+				form.currencyOrder.value = currency.currencyOrder;
+				form.currencyStatus.value = currency.currencyStatus;
+				form.currencyUnit.value = currency.currencyUnit;
+				form.nameCn.value = currency.nameCn;
+				form.nameEn.value = currency.nameEn;
+				form.nameHk.value = currency.nameHk;
+				if (currency.currency == 'GDQ') {
+					form.currencyOrder.readOnly=true;
+				}else{
+					form.currencyOrder.readOnly=false;
+				}
 			})
 
 			$('#updateCurrency').bootstrapValidator({
@@ -199,8 +204,8 @@
 								message : '顺序不能为空'
 							},
 							regexp : {/* 只需加此键值对，包含正则表达式，和提示 */
-								regexp : /^[0-9]/,
-								message : '只能是数字'
+								regexp : /^[1-9]/,
+								message : '只能是大于1的数字'
 							},
 							stringLength : {
 								max : 6,
@@ -245,13 +250,13 @@
 										+ '<td>'
 										+ data[i].currencyOrder
 										+ '</td>'
-										+ '<td><a data-toggle="modal" data-target="#myModal" data-whatever='
+										+ '<td><a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" data-whatever='
 										+ "'"
 										+ JSON.stringify(data[i])
 										+ "'"
 										+ '>编辑</a> '
-										+ (data[i].currencyStatus == 0 ? '<a onclick=" changeCurrencyStatus(this,1)">上架</a>'
-												: '<a style="color:red" onclick=" changeCurrencyStatus(this,0)">下架</td>')
+										+ (data[i].currencyStatus == 0 ? '<a href="javascript:void(0)" onclick=" changeCurrencyStatus(this,1)">上架</a>'
+												: '<a href="javascript:void(0)" style="color:red" onclick=" changeCurrencyStatus(this,0)">下架</td>')
 										+ '</td>' + '</tr>'
 							}
 							$('#currency tbody').html(html);
