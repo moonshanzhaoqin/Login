@@ -26,12 +26,14 @@ import com.yuyutechnology.exchange.server.controller.request.AppVersionRequest;
 import com.yuyutechnology.exchange.server.controller.request.ForgetPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetVerificationCodeRequest;
 import com.yuyutechnology.exchange.server.controller.request.LoginRequest;
+import com.yuyutechnology.exchange.server.controller.request.LoginValidateRequest;
 import com.yuyutechnology.exchange.server.controller.request.RegisterRequest;
 import com.yuyutechnology.exchange.server.controller.request.TestCodeRequest;
 import com.yuyutechnology.exchange.server.controller.response.AppVersionResponse;
 import com.yuyutechnology.exchange.server.controller.response.ForgetPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetVerificationCodeResponse;
 import com.yuyutechnology.exchange.server.controller.response.LoginResponse;
+import com.yuyutechnology.exchange.server.controller.response.LoginValidateResponse;
 import com.yuyutechnology.exchange.server.controller.response.RegisterResponse;
 import com.yuyutechnology.exchange.server.controller.response.TestCodeResponse;
 import com.yuyutechnology.exchange.server.session.SessionData;
@@ -191,22 +193,23 @@ public class UserController {
 				rep.setRetCode(ServerConsts.TOKEN_NOT_MATCH);
 				rep.setMessage(MessageConsts.TOKEN_NOT_MATCH);
 			} else {
-				// 记录登录信息
-				userManager.updateUser(userId, HttpTookit.getIp(request), loginRequest.getPushId(),
-						loginRequest.getLanguage());
-				// 更新钱包
-				userManager.updateWallet(userId);
 				// 生成session Token
 				SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 				sessionManager.saveSessionData(sessionData);
 				rep.setSessionToken(sessionData.getSessionId());
 				rep.setLoginToken(sessionManager.createLoginToken(userId));
+				// 记录登录信息
+				userManager.updateUser(userId, HttpTookit.getIp(request), loginRequest.getPushId(),
+						loginRequest.getLanguage());
+				// 更新钱包
+				userManager.updateWallet(userId);
 				// 获取用户信息
 				rep.setUser(userManager.getUserInfo(userId));
 
 				logger.info(MessageConsts.RET_CODE_SUCCESS);
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+
 			}
 			break;
 		case 2:
@@ -221,22 +224,29 @@ public class UserController {
 				rep.setRetCode(ServerConsts.USER_BLOCKED);
 				rep.setMessage(MessageConsts.USER_BLOCKED);
 			} else if (userManager.checkUserPassword(userId, loginRequest.getUserPassword())) {
-				// 记录登录信息
-				userManager.updateUser(userId, HttpTookit.getIp(request), loginRequest.getPushId(),
-						loginRequest.getLanguage());
-				// 更新钱包
-				userManager.updateWallet(userId);
-				// 生成session Token
-				SessionData sessionData = new SessionData(userId, UidUtils.genUid());
-				sessionManager.saveSessionData(sessionData);
-				rep.setSessionToken(sessionData.getSessionId());
-				rep.setLoginToken(sessionManager.createLoginToken(userId));
-				// 获取用户信息
-				rep.setUser(userManager.getUserInfo(userId));
+				if (userManager.isNewDevice(userId, loginRequest.getDeviceId(), loginRequest.getDeviceName())) {
+					// TODO:设备更换，需要手机验证
+					logger.info(MessageConsts.DEVICE_CHANGED);
+					rep.setRetCode(ServerConsts.DEVICE_CHANGED);
+					rep.setMessage(MessageConsts.DEVICE_CHANGED);
+				} else {
+					// 记录登录信息
+					userManager.updateUser(userId, HttpTookit.getIp(request), loginRequest.getPushId(),
+							loginRequest.getLanguage());
+					// 更新钱包
+					userManager.updateWallet(userId);
+					// 生成session Token
+					SessionData sessionData = new SessionData(userId, UidUtils.genUid());
+					sessionManager.saveSessionData(sessionData);
+					rep.setSessionToken(sessionData.getSessionId());
+					rep.setLoginToken(sessionManager.createLoginToken(userId));
+					// 获取用户信息
+					rep.setUser(userManager.getUserInfo(userId));
 
-				logger.info(MessageConsts.RET_CODE_SUCCESS);
-				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+					logger.info(MessageConsts.RET_CODE_SUCCESS);
+					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+				}
 			} else {
 				logger.info(MessageConsts.PASSWORD_NOT_MATCH);
 				rep.setRetCode(ServerConsts.PASSWORD_NOT_MATCH);
@@ -250,6 +260,7 @@ public class UserController {
 			break;
 		}
 		return rep;
+
 	}
 
 	/**
@@ -378,7 +389,7 @@ public class UserController {
 			AppVersion appVersion = commonManager.getAppVersion(appVersionRequest.getPlatformType(),
 					appVersionRequest.getUpdateWay());
 			if (appVersion == null) {
-				logger.warn("No this appVersion : {}",appVersionRequest.toString());
+				logger.warn("No this appVersion : {}", appVersionRequest.toString());
 				rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
 				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 			} else if (appVersion.getAppVersionNum().equals(appVersionRequest.getAppVersionNum())) {
@@ -390,6 +401,69 @@ public class UserController {
 				logger.info(MessageConsts.RET_CODE_SUCCESS);
 				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
 				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+			}
+		}
+		return rep;
+	}
+
+	// TODO 登录验证 loginValidate
+	@ResponseBody
+	@ApiOperation(value = "登录验证", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/loginValidate", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public LoginValidateResponse loginValidate(@RequestBody LoginValidateRequest loginValidateRequest,
+			HttpServletRequest request, HttpServletResponse response) {
+		logger.info("loginValidate : ");
+		LoginValidateResponse rep = new LoginValidateResponse();
+		if (loginValidateRequest.isEmpty()) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+		} else {
+			Integer userId = userManager.getUserId(loginValidateRequest.getAreaCode(),
+					loginValidateRequest.getUserPhone());
+			if (userId == null) {
+				logger.info(MessageConsts.PHONE_NOT_EXIST);
+				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
+				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
+			} else if (userId == 0) {
+				logger.info(MessageConsts.USER_BLOCKED);
+				rep.setRetCode(ServerConsts.USER_BLOCKED);
+				rep.setMessage(MessageConsts.USER_BLOCKED);
+			} else if (userManager.checkUserPassword(userId, loginValidateRequest.getUserPassword())) {
+				// TODO 验证短信验证码
+				if (userManager.testPinCode(ServerConsts.PIN_FUNC_NEWDEVICE, loginValidateRequest.getAreaCode(),
+						loginValidateRequest.getUserPhone(), loginValidateRequest.getVerificationCode())) {
+					// TODO 设备登记
+					userManager.addDevice(userId, loginValidateRequest.getDeviceId(),
+							loginValidateRequest.getDeviceName());
+					// 记录登录信息
+					userManager.updateUser(userId, HttpTookit.getIp(request), loginValidateRequest.getPushId(),
+							loginValidateRequest.getLanguage());
+					// 更新钱包
+					userManager.updateWallet(userId);
+					// 生成session Token
+					SessionData sessionData = new SessionData(userId, UidUtils.genUid());
+					sessionManager.saveSessionData(sessionData);
+					rep.setSessionToken(sessionData.getSessionId());
+					rep.setLoginToken(sessionManager.createLoginToken(userId));
+					// 获取用户信息
+					rep.setUser(userManager.getUserInfo(userId));
+
+					logger.info(MessageConsts.RET_CODE_SUCCESS);
+					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+
+					userManager.clearPinCode(ServerConsts.PIN_FUNC_REGISTER, loginValidateRequest.getAreaCode(),
+							loginValidateRequest.getUserPhone());
+				} else {
+					logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
+					rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
+					rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
+				}
+			} else {
+				logger.info(MessageConsts.PASSWORD_NOT_MATCH);
+				rep.setRetCode(ServerConsts.PASSWORD_NOT_MATCH);
+				rep.setMessage(MessageConsts.PASSWORD_NOT_MATCH);
 			}
 		}
 		return rep;

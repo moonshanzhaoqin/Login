@@ -23,7 +23,7 @@ public class FriendDAOImpl implements FriendDAO {
 	}
 
 	@Override
-	public void addfriend(Friend friend) {
+	public void addFriend(Friend friend) {
 		hibernateTemplate.saveOrUpdate(friend);
 	}
 

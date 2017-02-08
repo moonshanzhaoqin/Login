@@ -15,10 +15,10 @@ public interface FriendDAO {
 
 	public List<Friend> getFriendsByUserId(Integer userId);
 
-	public void addfriend(Friend friend);
+	public void addFriend(Friend friend);
 
 	public Friend getFriendByUserIdAndFrindId(Integer userId, Integer friendId);
 
-	public void deleteFriend(Friend friend2);
+	public void deleteFriend(Friend friend);
 
 }

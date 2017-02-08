@@ -111,7 +111,7 @@ public interface UserManager {
 	 * @param oldPassword
 	 */
 	public boolean checkUserPassword(Integer userId, String oldPassword);
-	
+
 	/**
 	 * @param userId
 	 * @param goldpayPassword
@@ -222,13 +222,31 @@ public interface UserManager {
 	 * @return
 	 */
 	public String deleteFriend(Integer userId, String areaCode, String phone);
-	
+
 	public User getSystemUser();
-	
+
 	public List<User> getUserList();
-	
-	public void userFreeze(Integer userId,int userAvailable);
-	
+
+	public void userFreeze(Integer userId, int userAvailable);
+
 	public String getUserConfigAndUpdate(Integer userId, UserConfigKeyEnum key, String value);
-	
+
+	/**
+	 * 判断是否为新设备
+	 * 
+	 * @param userId
+	 * @param deviceId
+	 * @return
+	 */
+	public boolean isNewDevice(Integer userId, String deviceId, String deviceName);
+
+	/**
+	 * 添加新设备
+	 * 
+	 * @param userId
+	 * @param deviceId
+	 * @param deviceName
+	 */
+	void addDevice(Integer userId, String deviceId, String deviceName);
+
 }

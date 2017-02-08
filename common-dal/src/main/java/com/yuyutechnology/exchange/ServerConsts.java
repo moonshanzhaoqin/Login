@@ -99,6 +99,12 @@ public class ServerConsts {
 	 * Goldpay未绑定
 	 */
 	public static final String GOLDPAY_NOT_BIND = "01018";
+	/**
+	 *更换设备登录
+	 */
+	public static final String DEVICE_CHANGED = "01019";
+	
+	
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息
@@ -308,6 +314,10 @@ public class ServerConsts {
 	 */
 	public static final String PIN_FUNC_MODIFYPAYPWD = "MODIFYPAYPWD";
 	/**
+	 * 短信验证码功能——新设备登录
+	 */
+	public static final String PIN_FUNC_NEWDEVICE = "NEWDEVICE";
+	/**
 	 * 币种状态——可用
 	 */
 	public static final int CURRENCY_AVAILABLE = 1;
@@ -317,6 +327,7 @@ public class ServerConsts {
 	public static final int CURRENCY_UNAVAILABLE = 0;
 	
 	public static final String ADMIN_DEFAULT_PASSWORD = "12345678";
+	
 	
 	
 	

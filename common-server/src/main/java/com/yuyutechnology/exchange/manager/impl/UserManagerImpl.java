@@ -11,7 +11,6 @@ import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.pattern.LogEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +25,7 @@ import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
+import com.yuyutechnology.exchange.dao.UserDeviceDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.dto.UserInfo;
@@ -44,6 +44,8 @@ import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.UserConfig;
+import com.yuyutechnology.exchange.pojo.UserDevice;
+import com.yuyutechnology.exchange.pojo.UserDeviceId;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.sms.SmsManager;
@@ -54,7 +56,7 @@ import com.yuyutechnology.exchange.utils.PasswordUtils;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
 
 @Service
-public class UserManagerImpl implements UserManager {
+public  class UserManagerImpl implements UserManager {
 	public static Logger logger = LoggerFactory.getLogger(UserManagerImpl.class);
 	public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	@Autowired
@@ -78,6 +80,8 @@ public class UserManagerImpl implements UserManager {
 	@Autowired
 	FriendDAO friendDAO;
 	@Autowired
+	UserDeviceDAO userDeviceDAO;
+	@Autowired
 	SmsManager smsManager;
 	@Autowired
 	GoldpayManager goldpayManager;
@@ -99,7 +103,7 @@ public class UserManagerImpl implements UserManager {
 		} else if (friendDAO.getFriendByUserIdAndFrindId(userId, friend.getUserId()) != null) {
 			return ServerConsts.FRIEND_HAS_ADDED;
 		} else {
-			friendDAO.addfriend(new Friend(new FriendId(userId, friend.getUserId()), friend, new Date()));
+			friendDAO.addFriend(new Friend(new FriendId(userId, friend.getUserId()), friend, new Date()));
 			return ServerConsts.RET_CODE_SUCCESS;
 		}
 	}
@@ -362,7 +366,7 @@ public class UserManagerImpl implements UserManager {
 		user.setLoginIp(loginIp);
 		user.setLoginTime(new Date());
 		if (StringUtils.isNotBlank(pushId) && !pushId.equals(user.getPushId())) {
-			// 推送消息：设备已下线
+			// 更换设备 推送消息：设备已下线
 			logger.info("Push message: device offline==> oldPushId : {} , newPushId : {} ",
 					new Object[] { user.getPushId(), pushId });
 			pushManager.push4Offline(user.getPushId(), user.getPushTag(), String.valueOf(new Date().getTime()));
@@ -509,15 +513,15 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void userFreeze(Integer userId, int userAvailable) {
-		User user=userDAO.getUser(userId);
-		if (user==null) {
-			logger.warn("{} is not exist!!!",userId);
-		}else{
+		User user = userDAO.getUser(userId);
+		if (user == null) {
+			logger.warn("{} is not exist!!!", userId);
+		} else {
 			user.setUserAvailable(userAvailable);
 			userDAO.updateUser(user);
 		}
 	}
-	
+
 	@Override
 	public String getUserConfigAndUpdate(Integer userId, UserConfigKeyEnum key, String value) {
 		String returnValue = getUserConfig(userId, key);
@@ -530,8 +534,9 @@ public class UserManagerImpl implements UserManager {
 	private String getUserConfig(Integer userId, UserConfigKeyEnum key) {
 		UserConfig userConfig = userDAO.getUserConfig(userId);
 		if (userConfig != null && StringUtils.isNotBlank(userConfig.getUserConfigValue())) {
-			Map<String, String> config = JsonBinder.getInstance().fromJson(userConfig.getUserConfigValue(), HashMap.class);
-			return config.get(key.ordinal()+"") == null ? "" : config.get(key.ordinal()+"");
+			Map<String, String> config = JsonBinder.getInstance().fromJson(userConfig.getUserConfigValue(),
+					HashMap.class);
+			return config.get(key.ordinal() + "") == null ? "" : config.get(key.ordinal() + "");
 		}
 		return "";
 	}
@@ -539,17 +544,31 @@ public class UserManagerImpl implements UserManager {
 	private void saveUserConfig(Integer userId, UserConfigKeyEnum key, String value) {
 		UserConfig userConfig = userDAO.getUserConfig(userId);
 		if (userConfig != null && StringUtils.isNotBlank(userConfig.getUserConfigValue())) {
-			Map<String, String> config = JsonBinder.getInstance().fromJson(userConfig.getUserConfigValue(), HashMap.class);
-			config.put(key.ordinal()+"", value);
+			Map<String, String> config = JsonBinder.getInstance().fromJson(userConfig.getUserConfigValue(),
+					HashMap.class);
+			config.put(key.ordinal() + "", value);
 			userConfig.setUserConfigValue(JsonBinder.getInstance().toJson(config));
-		}else{
+		} else {
 			userConfig = new UserConfig();
 			userConfig.setUserId(userId);
 			Map<String, String> config = new HashMap<String, String>();
-			config.put(key.ordinal()+"", value);
+			config.put(key.ordinal() + "", value);
 			userConfig.setUserConfigValue(JsonBinder.getInstance().toJson(config));
 		}
 		userDAO.saveUserConfig(userConfig);
 	}
 
+	@Override
+	public boolean isNewDevice(Integer userId, String deviceId,String deviceName) {
+		if(userDeviceDAO.getUserDeviceByUserIdAndDeviceId(userId, deviceId)==null){
+			userDeviceDAO.addUserDevice(new UserDevice(new UserDeviceId(userId, deviceId), deviceName));
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public void addDevice(Integer userId, String deviceId,String deviceName) {
+			userDeviceDAO.addUserDevice(new UserDevice(new UserDeviceId(userId, deviceId), deviceName));
+	}
 }
