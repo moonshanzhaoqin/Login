@@ -100,9 +100,9 @@ public class ServerConsts {
 	 */
 	public static final String GOLDPAY_NOT_BIND = "01018";
 	/**
-	 *更换设备登录
+	 *新设备登录
 	 */
-	public static final String DEVICE_CHANGED = "01019";
+	public static final String NEW_DEVICE = "01019";
 	
 	
 	// 兑换 02

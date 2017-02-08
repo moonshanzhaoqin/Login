@@ -225,10 +225,10 @@ public class UserController {
 				rep.setMessage(MessageConsts.USER_BLOCKED);
 			} else if (userManager.checkUserPassword(userId, loginRequest.getUserPassword())) {
 				if (userManager.isNewDevice(userId, loginRequest.getDeviceId(), loginRequest.getDeviceName())) {
-					// TODO:设备更换，需要手机验证
-					logger.info(MessageConsts.DEVICE_CHANGED);
-					rep.setRetCode(ServerConsts.DEVICE_CHANGED);
-					rep.setMessage(MessageConsts.DEVICE_CHANGED);
+					// 新设备，需要手机验证
+					logger.info(MessageConsts.NEW_DEVICE);
+					rep.setRetCode(ServerConsts.NEW_DEVICE);
+					rep.setMessage(MessageConsts.NEW_DEVICE);
 				} else {
 					// 记录登录信息
 					userManager.updateUser(userId, HttpTookit.getIp(request), loginRequest.getPushId(),
@@ -298,6 +298,9 @@ public class UserController {
 						rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
 						rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 					} else {
+						// 设备登记
+						userManager.addDevice(userId, registerRequest.getDeviceId(),
+								registerRequest.getDeviceName());
 						// 记录登录信息
 						userManager.updateUser(userId, HttpTookit.getIp(request), registerRequest.getPushId(),
 								registerRequest.getLanguage());
@@ -406,7 +409,7 @@ public class UserController {
 		return rep;
 	}
 
-	// TODO 登录验证 loginValidate
+	//  登录验证 loginValidate
 	@ResponseBody
 	@ApiOperation(value = "登录验证", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/loginValidate", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
@@ -430,10 +433,10 @@ public class UserController {
 				rep.setRetCode(ServerConsts.USER_BLOCKED);
 				rep.setMessage(MessageConsts.USER_BLOCKED);
 			} else if (userManager.checkUserPassword(userId, loginValidateRequest.getUserPassword())) {
-				// TODO 验证短信验证码
+				// 验证短信验证码
 				if (userManager.testPinCode(ServerConsts.PIN_FUNC_NEWDEVICE, loginValidateRequest.getAreaCode(),
 						loginValidateRequest.getUserPhone(), loginValidateRequest.getVerificationCode())) {
-					// TODO 设备登记
+					// 设备登记
 					userManager.addDevice(userId, loginValidateRequest.getDeviceId(),
 							loginValidateRequest.getDeviceName());
 					// 记录登录信息

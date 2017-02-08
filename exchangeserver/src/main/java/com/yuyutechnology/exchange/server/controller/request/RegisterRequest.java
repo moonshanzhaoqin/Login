@@ -8,6 +8,8 @@ public class RegisterRequest {
 	private String registrationCode;
 	private String userName;
 	private String userPassword;
+	private String deviceName;
+	private String deviceId;
 	private String language;
 	private String pushId;
 	
@@ -26,6 +28,22 @@ public class RegisterRequest {
 
 	public void setUserPassword(String userPassword) {
 		this.userPassword = userPassword;
+	}
+
+	public String getDeviceId() {
+		return deviceId;
+	}
+
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
+	}
+
+	public String getDeviceName() {
+		return deviceName;
+	}
+
+	public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
 	}
 
 	public String getUserName() {
@@ -74,6 +92,9 @@ public class RegisterRequest {
 	 * @return
 	 */
 	public boolean isEmpty() {
+		if (StringUtils.isEmpty(this.language)) {
+			this.language = "zh_CN";
+		}
 		if (StringUtils.isEmpty(this.areaCode)) {
 			return true;
 		}
@@ -89,8 +110,11 @@ public class RegisterRequest {
 		if (StringUtils.isEmpty(this.userPassword)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.language)) {
-			this.language = "zh_CN";
+		if (StringUtils.isBlank(this.deviceId)) {
+			return true;
+		}
+		if (StringUtils.isBlank(this.deviceName)) {
+			return true;
 		}
 		return false;
 	}

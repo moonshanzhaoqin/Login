@@ -92,9 +92,9 @@ public class MessageConsts {
 	 */
 	public static final String GOLDPAY_PASSWORD_NOT_MATCH = "GOLDPAY_PASSWORD_NOT_MATCH";
 	/**
-	 *更换设备登录
+	 *新设备登录
 	 */
-	public static final String DEVICE_CHANGED = "DEVICE_CHANGED";
+	public static final String NEW_DEVICE = "NEW_DEVICE";
 	
 	// 兑换 02
 	/**
