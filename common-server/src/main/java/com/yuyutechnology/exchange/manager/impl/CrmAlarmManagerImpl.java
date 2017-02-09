@@ -47,11 +47,11 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	private static Logger logger = LoggerFactory.getLogger(CrmAlarmManagerImpl.class);
 
 	@Override
-	public void addAlarmConfig(String alarmGrade, BigDecimal lowerLimit, BigDecimal upperLimit, int alarmMode,
+	public void addAlarmConfig(int alarmType, BigDecimal lowerLimit, BigDecimal upperLimit, int alarmMode,
 			int editorid, String supervisorId) {
 		CrmAlarm crmAlarm = new CrmAlarm();
 
-		// crmAlarm.setAlarmGrade(alarmGrade);
+		crmAlarm.setAlarmType(alarmType);
 		crmAlarm.setAlarmMode(alarmMode);
 		crmAlarm.setCreateAt(new Date());
 		crmAlarm.setLowerLimit(lowerLimit);
@@ -65,9 +65,9 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	}
 
 	@Override
-	public void delAlarmConfig(int alarmId) {
+	public int delAlarmConfig(int alarmId) {
 		logger.info("delete alarmId : {}", alarmId);
-		crmAlarmDAO.delCrmAlarmConfig(alarmId);
+		return crmAlarmDAO.delCrmAlarmConfig(alarmId);
 	}
 
 	@Override
@@ -132,11 +132,11 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	}
 
 	@Override
-	public void updateAlarmConfig(Integer alarmId, String alarmGrade, BigDecimal lowerLimit, BigDecimal upperLimit,
+	public void updateAlarmConfig(Integer alarmId, int alarmType, BigDecimal lowerLimit, BigDecimal upperLimit,
 			int alarmMode, int editorid, String adminIdArr) {
 		CrmAlarm crmAlarm = crmAlarmDAO.getCrmAlarmConfig(alarmId);
 		crmAlarm.setAlarmId(alarmId);
-		// crmAlarm.setAlarmGrade(alarmGrade);
+		crmAlarm.setAlarmType(alarmType);
 		crmAlarm.setLowerLimit(lowerLimit);
 		crmAlarm.setUpperLimit(upperLimit);
 		crmAlarm.setAlarmMode(alarmMode);
@@ -147,10 +147,11 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	}
 
 	@Override
-	public void updateAlarmAvailable(Integer alarmId, int alarmAvailable) {
+	public int updateAlarmAvailable(Integer alarmId, int alarmAvailable) {
 		CrmAlarm crmAlarm = crmAlarmDAO.getCrmAlarmConfig(alarmId);
 		crmAlarm.setAlarmAvailable(alarmAvailable);
 		crmAlarmDAO.addCrmAlarmConfig(crmAlarm);
+		return crmAlarm.getAlarmType();
 	}
 
 	@Override

@@ -4,19 +4,26 @@ import java.math.BigDecimal;
 
 public class SaveAlarmConfigRequest {
 	
-	private String alarmGrade;
+//	private String alarmGrade;
+	private int alarmType;
 	private BigDecimal criticalThresholdLowerLimit;
 	private BigDecimal criticalThresholdUpperLimit;
 	private int alarmMode;
 	private int[] supervisorId;
 	
-	public String getAlarmGrade() {
-		return alarmGrade;
-	}
-	public void setAlarmGrade(String alarmGrade) {
-		this.alarmGrade = alarmGrade;
-	}
+//	public String getAlarmGrade() {
+//		return alarmGrade;
+//	}
+//	public void setAlarmGrade(String alarmGrade) {
+//		this.alarmGrade = alarmGrade;
+//	}
 
+	public int getAlarmType() {
+		return alarmType;
+	}
+	public void setAlarmType(int alarmType) {
+		this.alarmType = alarmType;
+	}
 	public BigDecimal getCriticalThresholdLowerLimit() {
 		return criticalThresholdLowerLimit;
 	}

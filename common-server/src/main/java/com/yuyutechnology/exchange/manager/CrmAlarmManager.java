@@ -9,15 +9,15 @@ import com.yuyutechnology.exchange.pojo.CrmSupervisor;
 
 public interface CrmAlarmManager {
 	
-	public void addAlarmConfig(String alarmGrade,BigDecimal lowerLimit,
+	public void addAlarmConfig(int alarmTypeString,BigDecimal lowerLimit,
 			BigDecimal upperLimit,int alarmMode,int editorid,String adminIdArr);
 	
-	public void updateAlarmConfig(Integer alarmId,String alarmGrade,BigDecimal lowerLimit,
+	public void updateAlarmConfig(Integer alarmId,int alarmType,BigDecimal lowerLimit,
 			BigDecimal upperLimit,int alarmMode,int editorid,String adminIdArr);
 	
-	public void updateAlarmAvailable(Integer alarmId, int alarmAvailable);
+	public int updateAlarmAvailable(Integer alarmId, int alarmAvailable);
 	
-	public void delAlarmConfig(int alarmId);
+	public int delAlarmConfig(int alarmId);
 	
 	public CrmAlarm getAlarmConfigById(int alarmId);
 

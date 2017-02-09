@@ -22,9 +22,10 @@ public class CrmAlarmDAOImpl implements CrmAlarmDAO {
 	}
 
 	@Override
-	public void delCrmAlarmConfig(int alarmId) {
+	public int delCrmAlarmConfig(int alarmId) {
 		CrmAlarm crmAlarm = hibernateTemplate.get(CrmAlarm.class, alarmId);
 		hibernateTemplate.delete(crmAlarm);
+		return crmAlarm.getAlarmType();
 	}
 	
 

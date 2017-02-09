@@ -8,7 +8,7 @@ public interface CrmAlarmDAO {
 	
 	public void addCrmAlarmConfig(CrmAlarm crmAlarm);
 	
-	public void delCrmAlarmConfig(int alarmId);
+	public int delCrmAlarmConfig(int alarmId);
 	
 	public CrmAlarm getCrmAlarmConfig(int alarmId);
 	

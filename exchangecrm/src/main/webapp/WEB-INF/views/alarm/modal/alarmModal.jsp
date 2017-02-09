@@ -20,6 +20,9 @@
 				<form class="form-horizontal" id="addAlarmConfig" method="POST"
 					action="<c:url value="/alarm/saveAlarmConfig" />">
 					<div class="modal-body">
+					
+						<input type="hidden" value="0" name="alarmType" id="alarmType" />
+					
 						<div class="form-group">
 							<label class="col-sm-3 control-label">预警范围</label>
 							<div class="col-sm-3 ">

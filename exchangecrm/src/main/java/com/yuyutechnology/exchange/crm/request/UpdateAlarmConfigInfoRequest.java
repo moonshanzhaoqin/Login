@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 public class UpdateAlarmConfigInfoRequest {
 
 	private Integer alarmId;
-	private String alarmGrade;
+	private int alarmType;
 	private BigDecimal criticalThresholdLowerLimit;
 	private BigDecimal criticalThresholdUpperLimit;
 	private int alarmMode;
@@ -17,11 +17,12 @@ public class UpdateAlarmConfigInfoRequest {
 	public void setAlarmId(Integer alarmId) {
 		this.alarmId = alarmId;
 	}
-	public String getAlarmGrade() {
-		return alarmGrade;
+
+	public int getAlarmType() {
+		return alarmType;
 	}
-	public void setAlarmGrade(String alarmGrade) {
-		this.alarmGrade = alarmGrade;
+	public void setAlarmType(int alarmType) {
+		this.alarmType = alarmType;
 	}
 	public BigDecimal getCriticalThresholdLowerLimit() {
 		return criticalThresholdLowerLimit;

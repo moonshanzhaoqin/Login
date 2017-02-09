@@ -49,21 +49,6 @@
 					</tbody>
 				</table>
 			</div><!--row 结束-->
-			
-<!-- 			<div class="row"> -->
-<!-- 				<h4 class="text-left">预备金设置(GDQ)</h4>	 -->
-<!-- 			</div> -->
-		
-<!-- 			<div class="row well"> -->
-<%-- 				<form id="updateReserveFunds" action="<c:url value='/alarm/updateReserveFunds' />" method="POST"> --%>
-<!-- 					<div class="col-lg-6 text-left"> -->
-<!-- 						<input class="form-control" name="reserveFunds" id="reserveFunds" placeholder="请填入预备金金额"/> -->
-<!-- 					</div> -->
-<!-- 				</form> -->
-<!-- 				<div class="col-lg-6 text-right"> -->
-<!-- 					<button id="updateReserveFundsBtn" class="btn btn-default">确认</button> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
 
 			<div class="row">
 				<div class="col-sm-6">
@@ -90,6 +75,7 @@
 					<tbody>
 						<c:if test="${not empty list }">
 							<c:forEach var="alarmConfig" items="${list}">
+								<c:if test="${alarmConfig.alarmType eq 0 }">
 								<tr>
 									<td style="display:none">${alarmConfig.alarmId }</td>
 <%-- 									<td>${alarmConfig.alarmGrade }</td> --%>
@@ -119,6 +105,7 @@
 										
 									</td>
 								</tr>
+								</c:if>
 							</c:forEach>
 						</c:if>
 					</tbody>
@@ -126,8 +113,8 @@
 			</div><!--row 结束-->
 			
 			
-			<%@ include file="alarmModal.jsp"%>
-			<%@ include file="updateAlarmModal.jsp"%>
+			<%@ include file="modal/alarmModal.jsp"%>
+			<%@ include file="modal/updateAlarmModal.jsp"%>
 
 		</div>
 		
@@ -136,151 +123,8 @@
 		<script type="text/javascript" src="<c:url value="/resources/js/jquery.min.js" />" ></script>
 		<script type="text/javascript" src="<c:url value="/resources/bootstrap/js/bootstrap.min.js" />" ></script>
 		<script type="text/javascript" src="<c:url value="/resources/bootstrap/js/bootstrap-table.js" />" ></script>
-		<script type="text/javascript">
-			function delAlarmConfig(obj){
-				var r = confirm("确定要删除该信息？");
-				if(r != true){
-					return ;
-				}
-				var tds=$(obj).parent().parent().find('td');
-				var alarmId = tds.eq(0).text();
-				var delAlarmConfigUrl = "<c:url value='/alarm/delAlarmConfig' />";
-				location.href=delAlarmConfigUrl+'?alarmId='+alarmId;
-			}
-			
-			
-			function updateAlarmConfig(obj){
-				var tds=$(obj).parent().parent().find('td');
-				var alarmId = tds.eq(0).text();
-				
-				$.ajax({
-						url:"<c:url value='/alarm/updateAlarmConfig' />",
-						type:"post",
-						async:false,
-						dataType:"JSON",
-						data:{
-							alarmId:alarmId,
-						},
-						success:function(data){
-							if(data.retCode == 1){
-								$('#updateAlarmModal').modal('show');
-								$("#updateAlarmId").val(data.crmAlarm.alarmId);
-// 								$("#updateAlarmGrade").val(data.crmAlarm.alarmGrade);
-								$("#updateLowerLimit").val(data.crmAlarm.lowerLimit);
-								$("#updateUpperLimit").val(data.crmAlarm.upperLimit);
-								
-								//拼接html
-								
-								var optionStr="";
-								if(data.crmAlarm.alarmMode == 1){
-									optionStr='<option value="1" selected>短信</option><option value="2" >邮件</option><option value="3" >短信+邮件</option>';
-								}else if(data.crmAlarm.alarmMode == 2){
-									optionStr='<option value="1">短信</option><option value="2"  selected>邮件</option><option value="3" >短信+邮件</option>';
-								}else{
-									optionStr='<option value="1">短信</option><option value="2">邮件</option><option value="3" selected>短信+邮件</option>';
-								}
-								
-								$("#updateAlarmMode").html(optionStr);
-								
-								var supervisorGroup = '';
-								for(var i = 0; i<data.supervisorList.length;i++){
-									var supervisor = data.supervisorList[i];
-									if((data.crmAlarm.supervisorIdArr).indexOf(supervisor.supervisorId) != -1){
-										supervisorGroup +='<div class="col-lg-4"><input class="panel-group" name="supervisorId" type="checkbox" value='+supervisor.supervisorId+' checked/>'+supervisor.supervisorName+'</div>';
-									}else{
-										supervisorGroup +='<div class="col-lg-4"><input class="panel-group" name="supervisorId" type="checkbox" value='+supervisor.supervisorId+' />'+supervisor.supervisorName+'</div>';
-									}
-								}
-								
-								$("#updateSupervisorGroup").html(supervisorGroup);
-								
-							}
-						}
-					});
-			}
-			
-			function updateAlarmAvailable(obj,alarmAvailable){
-				
-				if(alarmAvailable == 0){
-					var r = confirm("确定要将该预警状态置为不可用状态么？");
-					if(r != true){
-						return ;
-					}
-				}else{
-					var r = confirm("确定要将该预警状态置为可用状态么？");
-					if(r != true){
-						return ;
-					}
-				}
-				var tds=$(obj).parent().parent().find('td');
-				var alarmId = tds.eq(0).text();
-				
-				var updateAlarmAvailableUrl = "<c:url value='/alarm/updateAlarmAvailable' />";
-				location.href=updateAlarmAvailableUrl+'?alarmId='+alarmId+'&alarmAvailable='+alarmAvailable;
-			}
-			
-			
-			$("#addAlarmConfigBtn").click(function(){				
-// 				var alarmGrade = $("#alarmGrade").val().trim();
-				var lowerLimit = $("#criticalThresholdLowerLimit").val().trim();
-				var upperLimit = $("#criticalThresholdUpperLimit").val().trim();
-				
-				if( checkNotBlank(lowerLimit) && checkNotBlank(upperLimit)){
-					if(parseInt(lowerLimit) > parseInt(upperLimit)){
-						alert("下限不能大于上限！");
-						return ;
-					}
-				}else{
-					alert("有未填写完整的信息，请填写完善后再提交！");
-					return ;
-				}
-				$("#addAlarmConfig").submit();
-			});
-			
-			
-			$("#updateAlarmConfigBtn").click(function(){		
-// 				var alarmGrade = $("#updateAlarmGrade").val().trim();
-				var lowerLimit = $("#updateLowerLimit").val().trim();
-				var upperLimit = $("#updateUpperLimit").val().trim();
-				
-				if(checkNotBlank(lowerLimit) && checkNotBlank(upperLimit)){
-					if(parseInt(lowerLimit) > parseInt(upperLimit)){
-						alert("下限不能大于上限！");
-						return ;
-					}
-				}else{
-					alert("有未填写完整的信息，请填写完善后再提交！");
-					return ;
-				}
-				$("#updateAlarmConfig").submit();
-			});
-			
-// 			$("#updateReserveFundsBtn").click(function(){
-// 				var reserveFunds = $("#reserveFunds").val();
-				
-// 				if(checkNotBlank(reserveFunds) && isNumeric(reserveFunds)){
-// 					$("#updateReserveFunds").submit();
-// 				}else{
-// 					alert("输入内容不符合要求！");
-// 					return ;
-// 				}
-				
-// 			});
-			
+		<script type="text/javascript" src="<c:url value="/resources/js/alarm/alarmConfig.js" />" ></script>
 
-			function checkNotBlank(param){
-				if(param == null ||(param == undefined || param == '')){
-					return false;
-				}
-				return true;
-			}
-			
-			function isNumeric(obj) {
-			    return !isNaN(parseFloat(obj)) && isFinite(obj);
-			}
-			
-			
-		</script>
 		<%@ include file="../common/footer.jsp"%>
 	</body>
 </html>

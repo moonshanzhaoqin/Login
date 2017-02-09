@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yuyutechnology.exchange.crm.request.SaveAlarmConfigRequest;
-import com.yuyutechnology.exchange.crm.request.SaveSupervisorRequest;
 import com.yuyutechnology.exchange.crm.request.UpdateAlarmConfigInfoRequest;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
@@ -70,11 +69,27 @@ public class AlarmController {
 		return mav;
 	}
 	
+	
+	@RequestMapping(value="/alarm/getLargeTransAlarmConfigList",method=RequestMethod.GET)
+	public ModelAndView getLargeTransAlarmConfigList(){
+		mav = new ModelAndView();
+		List<CrmAlarm> list = crmAlarmManager.getCrmAlarmConfigList();
+		List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
+		mav.addObject("supervisorList", supervisorList);
+		mav.addObject("list", list);
+		mav.setViewName("/alarm/largeTransAlarmConfig");
+		return mav;
+	}
+
 	@RequestMapping(value="/alarm/delAlarmConfig",method=RequestMethod.GET)
 	public ModelAndView delAlarmConfig(Integer alarmId){
 		mav = new ModelAndView();
-		crmAlarmManager.delAlarmConfig(alarmId);
-		mav.setViewName("redirect:/alarm/getAlarmConfigList");
+		int alarmType = crmAlarmManager.delAlarmConfig(alarmId);
+		if(alarmType == 0){
+			mav.setViewName("redirect:/alarm/getAlarmConfigList");
+		}else{
+			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
+		}
 		return mav;
 	}
 	
@@ -102,73 +117,44 @@ public class AlarmController {
 	@RequestMapping(value="/alarm/updateAlarmConfigInfo",method=RequestMethod.POST)
 	public ModelAndView updateAlarmConfigInfo(UpdateAlarmConfigInfoRequest request){
 		mav = new ModelAndView();
-		crmAlarmManager.updateAlarmConfig(request.getAlarmId(), request.getAlarmGrade(), 
+		crmAlarmManager.updateAlarmConfig(request.getAlarmId(), request.getAlarmType(), 
 				request.getCriticalThresholdLowerLimit(), request.getCriticalThresholdUpperLimit(),
 				request.getAlarmMode(), 0,JsonBinder.getInstance().toJson(request.getSupervisorId()));
-		mav.setViewName("redirect:/alarm/getAlarmConfigList");
+		
+		if(request.getAlarmType() == 0){
+			mav.setViewName("redirect:/alarm/getAlarmConfigList");
+		}else{
+			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
+		}
 		return mav;
 	}
 	
 	@RequestMapping(value="/alarm/saveAlarmConfig",method=RequestMethod.POST)
 	public ModelAndView saveAlarmConfig(HttpServletResponse response,SaveAlarmConfigRequest request){
 		mav = new ModelAndView();
-		crmAlarmManager.addAlarmConfig(request.getAlarmGrade(), request.getCriticalThresholdLowerLimit()
+		crmAlarmManager.addAlarmConfig(request.getAlarmType(), request.getCriticalThresholdLowerLimit()
 				,request.getCriticalThresholdUpperLimit(),
 				request.getAlarmMode(), 0,JsonBinder.getInstance().toJson(request.getSupervisorId()));
-		mav.setViewName("redirect:/alarm/getAlarmConfigList");
+		
+		if(request.getAlarmType() == 0){
+			mav.setViewName("redirect:/alarm/getAlarmConfigList");
+		}else{
+			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
+		}
 		return mav;
 	}
 	
 	@RequestMapping(value="/alarm/updateAlarmAvailable",method=RequestMethod.GET)
 	public ModelAndView updateAlarmAvailable(Integer alarmId,int alarmAvailable){
 		mav = new ModelAndView();
-		crmAlarmManager.updateAlarmAvailable(alarmId, alarmAvailable);
-		mav.setViewName("redirect:/alarm/getAlarmConfigList");
+		int alarmType = crmAlarmManager.updateAlarmAvailable(alarmId, alarmAvailable);
+		if(alarmType == 0){
+			mav.setViewName("redirect:/alarm/getAlarmConfigList");
+		}else{
+			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
+		}
+//		mav.setViewName("redirect:/alarm/getAlarmConfigList");
 		return mav;
 	}
 	
-	@RequestMapping(value="/alarm/getSupervisorList",method=RequestMethod.GET)
-	public ModelAndView getSupervisorList(){
-		mav = new ModelAndView();
-		List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
-		mav.addObject("supervisorList", supervisorList);
-		mav.setViewName("/alarm/supervisorInfo");
-		return mav;
-	}
-	
-	@RequestMapping(value="/alarm/delSupervisor",method=RequestMethod.GET)
-	public ModelAndView delSupervisor(Integer supervisorId){
-		mav = new ModelAndView();
-		crmAlarmManager.delSupervisorById(supervisorId);
-		mav.setViewName("redirect:/alarm/getSupervisorList");
-		return mav;
-	}
-	
-	@RequestMapping(value="/alarm/saveSupervisor",method=RequestMethod.POST)
-	public void saveSupervisor(HttpServletResponse response,SaveSupervisorRequest request){
-
-		Map<String, Object> map = new HashMap<String, Object>();
-		PrintWriter out = null;
-		try {
-			out = response.getWriter();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
-		String retCode = crmAlarmManager.saveSupervisor(request.getSupervisorName().trim(), 
-				request.getSupervisorMobile().trim(), request.getSupervisorEmail().trim());
-		map.put("retCode", retCode);
-		out.print(JsonBinder.getInstanceNonNull().toJson(map));
-	}
-	
-	@RequestMapping(value="/alarm/updateReserveFunds",method=RequestMethod.POST)
-	public ModelAndView updateReserveFunds(String reserveFunds){
-		mav = new ModelAndView();
-		configManager.updateConfig("reserve_funds", reserveFunds);
-		configManager.refreshConfig();
-		mav.setViewName("redirect:/alarm/getAlarmConfigList");
-		return mav;
-	}
-	
-
 }
