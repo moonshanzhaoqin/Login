@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
@@ -62,7 +63,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		User user = userDAO.getUser(userId);
 		if(user ==null || user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
 			logger.warn("The user does not exist or the account is blocked");
-			map.put("retCode", ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
+			map.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
 			map.put("msg", "The user does not exist or the account is blocked");
 			return map;
 		}
@@ -70,7 +71,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		if(bind == null){
 			logger.warn("The account is not tied to goldpay");
 			map.put("msg", "The account is not tied to goldpay");
-			map.put("retCode", ServerConsts.GOLDPAY_NOT_BIND);
+			map.put("retCode", RetCodeConsts.GOLDPAY_NOT_BIND);
 			return map;
 		}
 		//生成TransId
@@ -100,7 +101,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 			//错误处理
 			if(payModel!=null && !payModel.getResultCode().equals(1)){
 				map.put("msg", "something wrong!");
-				map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+				map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 				if(payModel.getResultCode().equals(0)){
 					logger.warn("goldpayPurchase tpps callback: fail");
 				}else if(payModel.getResultCode().equals(-1)){
@@ -112,11 +113,11 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 				}else if(payModel.getResultCode().equals(200001)){
 					logger.warn("goldpayPurchase tpps callback: NOT_ENOUGH_GOLDPAY");
 					map.put("msg", "not enough goldpay!");
-					map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH);
+					map.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH);
 				}else if(payModel.getResultCode().equals(1016)){
 					logger.warn("goldpay account not vaild phone!");
 					map.put("msg", "goldpay account not vaild phone!");
-					map.put("retCode", ServerConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
+					map.put("retCode", RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
 				}
 				return map;
 			}
@@ -137,12 +138,12 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 			//保存
 			transferDAO.addTransfer(transfer);
 			
-			map.put("retCode", ServerConsts.RET_CODE_SUCCESS);
+			map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 			map.put("msg", "ok");
 			map.put("transferId", transferId);
 		}else{
 			map.put("msg", "something wrong!");
-			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 		}
 
 		return map;
@@ -158,7 +159,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		if(transfer == null || transfer.getTransferType() != ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE){
 			logger.warn("The transaction order does not exist");
 			map.put("msg", "The transaction order does not exist");
-			map.put("retCode", ServerConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST);
+			map.put("retCode", RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST);
 			return map;
 		}
 		
@@ -184,17 +185,17 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 			if(payModel != null && !payModel.getResultCode().equals(1)){      //1:成功
 				logger.warn("requestPin tpps callback: {}",payModel.getResultMessage());
 				map.put("msg", "something wrong!");
-				map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+				map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 				return map;
 			}
 			
-			map.put("retCode", ServerConsts.RET_CODE_SUCCESS);
+			map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 			map.put("msg", "ok");
 			map.put("transferId", transferId);
 		}else{
 			logger.warn("tpps callback result : null");
 			map.put("msg", "something wrong!");
-			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 		}
 
 		return map;
@@ -208,7 +209,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		
 		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		if(transfer == null || transfer.getTransferType() != ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE){
-			map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST);
+			map.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST);
 			map.put("msg", "Order does not exist or has completed");
 			return map;
 		}
@@ -245,21 +246,21 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 				//更改订单状态
 				transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 				
-				map.put("retCode", ServerConsts.RET_CODE_SUCCESS);
+				map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 				map.put("msg", "ok");
 				return map;
 			}else{
-				map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+				map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 				map.put("msg", "fail");
 				if (payConfirm != null && payConfirm.getResultCode() == 307) {
 					logger.warn("goldpayTransConfirm tpps callback  error ! {}  CHECK_PIN_CODE_FAIL");
-					map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_CHECK_PIN_CODE_FAIL);
+					map.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_CHECK_PIN_CODE_FAIL);
 					map.put("msg", "CHECK_PIN_CODE_FAIL");
 				}
 				return map;
 			}
 		}else{
-			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 			map.put("msg", "fail");
 			return map;
 		}
@@ -276,7 +277,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		User payer = userDAO.getUser(userId);
 		if(payer ==null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
 			logger.warn("The user does not exist or the account is blocked");
-			map.put("retCode", ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
+			map.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
 			map.put("msg", "The user does not exist or the account is blocked");
 			return map;
 		}
@@ -284,7 +285,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		if(bind == null){
 			logger.warn("The account is not tied to goldpay");
 			map.put("msg", "The account is not tied to goldpay");
-			map.put("retCode", ServerConsts.GOLDPAY_NOT_BIND);
+			map.put("retCode", RetCodeConsts.GOLDPAY_NOT_BIND);
 			return map;
 		}
 		
@@ -292,7 +293,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, ServerConsts.CURRENCY_OF_GOLDPAY);
 		if(wallet == null || wallet.getBalance().compareTo(new BigDecimal(Double.toString(amount))) == -1){
 			logger.warn("Current balance is insufficient");
-			map.put("retCode", ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+			map.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
 			map.put("msg", "Current balance is insufficient");
 			return map;
 		}
@@ -316,7 +317,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		//保存
 		transferDAO.addTransfer(transfer);
 		
-		map.put("retCode", ServerConsts.RET_CODE_SUCCESS);
+		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");
 		map.put("transferId", transferId);
 		
@@ -474,20 +475,20 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		if(user ==null || user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
 			logger.warn("The user does not exist or the account is blocked");
 			map.put("msg", "The user does not exist or the account is blocked");
-			map.put("retCode", ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
+			map.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
 			return map;
 		}
 		if(!PasswordUtils.check(payPwd, user.getUserPayPwd(), user.getPasswordSalt())){
 			logger.warn("The payment password is incorrect");
 			map.put("msg", "The payment password is incorrect");
-			map.put("retCode", ServerConsts.TRANSFER_PAYMENTPWD_INCORRECT);
+			map.put("retCode", RetCodeConsts.TRANSFER_PAYMENTPWD_INCORRECT);
 			return map;
 		}
 		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		if(transfer == null || transfer.getTransferType() != ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW){
 			logger.warn("The transaction order does not exist");
 			map.put("msg", "The transaction order does not exist");
-			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 			return map;
 		}
 		//用户扣款
@@ -496,7 +497,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		
 		if(updateCount == 0){
 			logger.warn("Current balance is insufficient");
-			map.put("retCode", ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+			map.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
 			return map;
 		}
 		//系统加款
@@ -510,7 +511,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 				ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, transfer.getTransferId(), 
 				transfer.getCurrency(), transfer.getTransferAmount());	
 		
-		map.put("retCode", ServerConsts.RET_CODE_SUCCESS);
+		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");
 		return map;
 		
@@ -539,7 +540,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		if(bind == null){
 			logger.warn("The account is not tied to goldpay");
 			map.put("msg", "The account is not tied to goldpay");
-			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 			return map;
 		}
 //		User systemUser = userDAO.getSystemUser();
@@ -556,7 +557,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 		if(transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_PROCESSING){
 			logger.warn("The transaction status is not processing!");
 			map.put("msg", "The transaction order does not exist");
-			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 			return map;
 		}
 
@@ -593,12 +594,12 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 					transfer.setFinishTime(new Date());
 					transferDAO.updateTransfer(transfer);
 
-					map.put("retCode", ServerConsts.RET_CODE_SUCCESS);
+					map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 					map.put("msg", "ok");
 					return map;
 				}else{
 					map.put("msg", "something wrong!");
-					map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+					map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 					if(payModel.getResultCode().equals(0)){
 						logger.warn("goldpayPurchase tpps callback: fail");
 					}else if(payModel.getResultCode().equals(-1)){
@@ -612,25 +613,25 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 					else if(payModel.getResultCode().equals(200001)){
 						logger.warn("goldpayPurchase tpps callback: NOT_ENOUGH_GOLDPAY");
 						map.put("msg", "not enough goldpay!");
-						map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH);
+						map.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH);
 					}else if(payModel.getResultCode().equals(1016)){
 						logger.warn("goldpayPurchase tpps callback: GOLDPAY_PHONE_IS_NOT_EXIST");
 						map.put("msg", "goldpay account not vaild phone!");
-						map.put("retCode", ServerConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
+						map.put("retCode", RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
 					}
 					return map;
 				}
 			}else{
 				logger.warn("withdrawConfirm tpps callback result : null");
 				map.put("msg", "something wrong!");
-				map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+				map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 				return map;
 			}
 
 		}else{
 			logger.warn("withdrawConfirm tpps callback result : null");
 			map.put("msg", "withdrawConfirm tpps callback result : null");
-			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 		}
 		return map;
 	}

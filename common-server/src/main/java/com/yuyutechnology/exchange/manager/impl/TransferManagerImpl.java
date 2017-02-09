@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.NotificationDAO;
@@ -82,7 +83,7 @@ public class TransferManagerImpl implements TransferManager{
 		
 		if(!commonManager.verifyCurrency(currency)){
 			logger.warn("This currency is not a tradable currency");
-			map.put("retCode", ServerConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
+			map.put("retCode", RetCodeConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
 			map.put("msg", "This currency is not a tradable currency");
 			return map;
 		}
@@ -90,7 +91,7 @@ public class TransferManagerImpl implements TransferManager{
 		User payer = userDAO.getUser(userId);
 		if(payer ==null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
 			logger.warn("The user does not exist or the account is blocked");
-			map.put("retCode", ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
+			map.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
 			map.put("msg", "The user does not exist or the account is blocked");
 			return map;
 		}
@@ -98,7 +99,7 @@ public class TransferManagerImpl implements TransferManager{
 		//不用给自己转账
 		if(receiver!= null && userId == receiver.getUserId()){
 			logger.warn("Prohibit transfers to yourself");
-			map.put("retCode", ServerConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
+			map.put("retCode", RetCodeConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
 			map.put("msg", "Prohibit transfers to yourself");
 			return map;
 		}
@@ -108,7 +109,7 @@ public class TransferManagerImpl implements TransferManager{
 		logger.info("wallet info , balance : {}, userId : {}, transAmount : {}", new Object[]{wallet.getBalance().doubleValue(), wallet.getUserId(), amount});
 		if(wallet == null || wallet.getBalance().compareTo(amount) == -1){
 			logger.warn("Current balance is insufficient");
-			map.put("retCode", ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+			map.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
 			map.put("msg", "Current balance is insufficient");
 			return map;
 		}
@@ -142,7 +143,7 @@ public class TransferManagerImpl implements TransferManager{
 		//保存
 		transferDAO.addTransfer(transfer);
 		
-		map.put("retCode", ServerConsts.RET_CODE_SUCCESS);
+		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");
 		map.put("transferId", transferId);
 		
@@ -155,15 +156,15 @@ public class TransferManagerImpl implements TransferManager{
 		User user = userDAO.getUser(userId);
 		if(user ==null || user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
 			logger.warn("The user does not exist or the account is blocked");
-			return ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED;
+			return RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED;
 		}
 		if(!PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())){
-			return ServerConsts.TRANSFER_PAYMENTPWD_INCORRECT;
+			return RetCodeConsts.TRANSFER_PAYMENTPWD_INCORRECT;
 		}
 		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		if(transfer == null){
 			logger.warn("The transaction order does not exist");
-			return ServerConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST;
+			return RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST;
 		}
 		
 		//总账大于设置安全基数，弹出需要短信验证框===============================================
@@ -186,7 +187,7 @@ public class TransferManagerImpl implements TransferManager{
 				( accumulatedAmount.compareTo(accumulatedAmountMax) == 1 || 
 						singleTransferAmount.compareTo(singleTransferAmountMax) == 1)){
 			logger.warn("The transaction amount exceeds the limit");
-			return ServerConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION;
+			return RetCodeConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION;
 			
 		}else{
 			return transferConfirm(userId,transferId);
@@ -199,13 +200,13 @@ public class TransferManagerImpl implements TransferManager{
 		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		if(transfer == null){
 			logger.warn("The transaction order does not exist");
-			return ServerConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST;
+			return RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST;
 		}
 		
 		User payer = userDAO.getUser(userId);
 		if(payer ==null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
 			logger.warn("The user does not exist or the account is blocked");
-			return ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED;
+			return RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED;
 		}
 		
 		//获取系统账号
@@ -217,7 +218,7 @@ public class TransferManagerImpl implements TransferManager{
 					transfer.getCurrency(), transfer.getTransferAmount(), "-");
 			
 			if(updateCount == 0){
-				return ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT;
+				return RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT;
 			}
 			
 			//加款
@@ -260,7 +261,7 @@ public class TransferManagerImpl implements TransferManager{
 					transfer.getCurrency(), transfer.getTransferAmount(), "-");
 			
 			if(updateCount == 0){
-				return ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT;
+				return RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT;
 			}
 			
 			//加款
@@ -291,7 +292,7 @@ public class TransferManagerImpl implements TransferManager{
 		BigDecimal exchangeResult = exchangeRateManager.getExchangeResult(transfer.getCurrency(),transfer.getTransferAmount());
 		transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
 		
-		return ServerConsts.RET_CODE_SUCCESS;
+		return RetCodeConsts.RET_CODE_SUCCESS;
 	}
 	
 
@@ -393,10 +394,10 @@ public class TransferManagerImpl implements TransferManager{
 			//推送请求付款
 			User payee = userDAO.getUser(userId);
 			pushManager.push4TransferRuquest( payer,payee, currency, amountFormatByCurrency(currency,amount));
-			return ServerConsts.RET_CODE_SUCCESS;
+			return RetCodeConsts.RET_CODE_SUCCESS;
 			
 		}
-		return ServerConsts.RET_CODE_FAILUE;
+		return RetCodeConsts.RET_CODE_FAILUE;
 	}
 
 
@@ -500,20 +501,20 @@ public class TransferManagerImpl implements TransferManager{
 		
 		if(notification == null){
 			logger.warn("Can not find the corresponding notification information");
-			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 			map.put("msg", "Can not find the corresponding notification information");
 			return map;
 		}
 		if(notification.getPayerId()!=userId || notification.getTradingStatus() 
 				== ServerConsts.NOTIFICATION_STATUS_OF_ALREADY_PAID){
 			logger.warn("Order status exception");
-			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 			map.put("msg", "Order status exception");
 			return map;
 		}
 		if(StringUtils.isBlank(currency) || amount.compareTo(new BigDecimal("0"))==0){
 			logger.warn("The requestor currency and amount information is blank");
-			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 			map.put("msg", "The requestor currency and amount information is blank");
 			return map;
 		}
@@ -521,13 +522,13 @@ public class TransferManagerImpl implements TransferManager{
 				&& notification.getAmount().compareTo(new BigDecimal("0"))!=0) 
 				&& (!notification.getCurrency().equals(currency) || notification.getAmount().compareTo(amount) != 0)){
 			logger.warn("The input and order information do not match");
-			map.put("retCode", ServerConsts.TRANSFER_REQUEST_INFORMATION_NOT_MATCH);
+			map.put("retCode", RetCodeConsts.TRANSFER_REQUEST_INFORMATION_NOT_MATCH);
 			map.put("msg", "The input and order information do not match");
 			return map;
 		}
 		if(!commonManager.verifyCurrency(currency)){
 			logger.warn("This currency is not a tradable currency");
-			map.put("retCode", ServerConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
+			map.put("retCode", RetCodeConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
 			map.put("msg", "This currency is not a tradable currency");
 			return map;
 		}
@@ -535,7 +536,7 @@ public class TransferManagerImpl implements TransferManager{
 		User payer = userDAO.getUser(userId);
 		if(payer ==null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
 			logger.warn("The user does not exist or the account is blocked");
-			map.put("retCode", ServerConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
+			map.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
 			map.put("msg", "The user does not exist or the account is blocked");
 			return map;
 		}
@@ -544,13 +545,13 @@ public class TransferManagerImpl implements TransferManager{
 		//不用给自己转账
 		if(receiver!= null && userId == receiver.getUserId()){
 			logger.warn("Prohibit transfers to yourself");
-			map.put("retCode", ServerConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
+			map.put("retCode", RetCodeConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
 			map.put("msg", "Prohibit transfers to yourself");
 			return map;
 		}
 		if(!receiver.getAreaCode().equals(areaCode) || !receiver.getUserPhone().equals(userPhone)){
 			logger.warn("Payee phone information does not match");
-			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
+			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 			map.put("msg", "Payee phone information does not match");
 			return map;
 		}
@@ -559,7 +560,7 @@ public class TransferManagerImpl implements TransferManager{
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
 		if(wallet == null || wallet.getBalance().compareTo(amount) == -1){
 			logger.warn("Current balance is insufficient");
-			map.put("retCode", ServerConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+			map.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
 			map.put("msg", "Current balance is insufficient");
 			return map;
 		}
@@ -583,7 +584,7 @@ public class TransferManagerImpl implements TransferManager{
 		//保存
 		transferDAO.addTransfer(transfer);
 		
-		map.put("retCode", ServerConsts.RET_CODE_SUCCESS);
+		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");
 		map.put("transferId", transferId);
 		

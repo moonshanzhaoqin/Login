@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
-import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
@@ -52,19 +52,19 @@ public class GoldpayTransController {
 		
 		if(reqMsg.getAmount() < 1 ){
 			logger.warn("The input amount is less than the minimum amount");
-			rep.setRetCode(ServerConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
+			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The input amount is less than the minimum amount");
 			return rep;
 		}else if(reqMsg.getAmount() > configManager.getConfigLongValue(ConfigKeyEnum.ENTERMAXIMUMAMOUNT, 1000000000L)){
 			logger.warn("Fill out the allowable amount");
-			rep.setRetCode(ServerConsts.TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT);
+			rep.setRetCode(RetCodeConsts.TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT);
 			rep.setMessage("Fill out the allowable amount");
 			return rep;
 		}
 		
 		HashMap<String, String> map = goldpayTransManager.goldpayPurchase(sessionData.getUserId(), new BigDecimal(reqMsg.getAmount()));
 		
-		if(map != null && map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
+		if(map != null && map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)){
 			rep.setTransferId(map.get("transferId"));
 		}
 		
@@ -85,7 +85,7 @@ public class GoldpayTransController {
 		RequestPinResponse rep = new RequestPinResponse();
 		
 		HashMap<String, String> map = goldpayTransManager.requestPin(sessionData.getUserId(),reqMsg.getTransferId());
-		if(map != null && map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
+		if(map != null && map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)){
 			rep.setTransferId(map.get("transferId"));
 		}
 		
@@ -122,19 +122,19 @@ public class GoldpayTransController {
 		
 		if(reqMsg.getAmount() < 1 ){
 			logger.warn("The input amount is less than the minimum amount");
-			rep.setRetCode(ServerConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
+			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The input amount is less than the minimum amount");
 			return rep;
 		}else if(reqMsg.getAmount() > configManager.getConfigLongValue(ConfigKeyEnum.ENTERMAXIMUMAMOUNT, 1000000000L)){
 			logger.warn("Fill out the allowable amount");
-			rep.setRetCode(ServerConsts.TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT);
+			rep.setRetCode(RetCodeConsts.TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT);
 			rep.setMessage("Fill out the allowable amount");
 			return rep;
 		}
 		
 		HashMap<String, String> map = goldpayTransManager.goldpayWithdraw(sessionData.getUserId(), reqMsg.getAmount());
 		
-		if(map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
+		if(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)){
 			rep.setTransferId(map.get("transferId"));
 		}
 		
@@ -152,13 +152,13 @@ public class GoldpayTransController {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		WithdrawConfirmResponse rep = new WithdrawConfirmResponse();
 		if(StringUtils.isEmpty(reqMsg.getPayPwd())){
-			rep.setRetCode(ServerConsts.TRANSFER_PAYMENTPWD_INCORRECT);
+			rep.setRetCode(RetCodeConsts.TRANSFER_PAYMENTPWD_INCORRECT);
 			rep.setMessage("The payment password is incorrect");
 			return rep;
 		}
 		HashMap<String, String> map = goldpayTransManager.withdrawConfirm1(sessionData.getUserId(),
 				reqMsg.getPayPwd(), reqMsg.getTransferId());
-		if(map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
+		if(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)){
 			HashMap<String, String> map2 = goldpayTransManager.withdrawConfirm2(sessionData.getUserId(), reqMsg.getTransferId());
 			rep.setRetCode(map2.get("retCode"));
 			rep.setMessage(map2.get("msg"));

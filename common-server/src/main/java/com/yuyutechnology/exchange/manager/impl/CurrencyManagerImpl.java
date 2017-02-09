@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
@@ -58,10 +59,10 @@ public class CurrencyManagerImpl implements CurrencyManager {
 			walletDAO.addwallet(new Wallet(currency, userDAO.getSystemUser().getUserId(), BigDecimal.ZERO, new Date()));
 			// 强制刷新汇率缓存
 			exchangeRateManager.updateExchangeRate(true);
-			return ServerConsts.RET_CODE_SUCCESS;
+			return RetCodeConsts.RET_CODE_SUCCESS;
 		} else {
 			logger.info("Currency {} is exist", currencyId);
-			return ServerConsts.CURRENCY_IS_EXIST;
+			return RetCodeConsts.CURRENCY_IS_EXIST;
 		}
 	}
 
@@ -70,11 +71,11 @@ public class CurrencyManagerImpl implements CurrencyManager {
 		Currency currency = currencyDAO.getCurrency(currencyId);
 		if (currency == null) {
 			logger.warn("Currency {} is not exist", currencyId);
-			return ServerConsts.RET_CODE_FAILUE;
+			return RetCodeConsts.RET_CODE_FAILUE;
 		} else {
 			currency.setCurrencyStatus(status);
 			currencyDAO.updateCurrency(currency);
-			return ServerConsts.RET_CODE_SUCCESS;
+			return RetCodeConsts.RET_CODE_SUCCESS;
 		}
 	}
 }

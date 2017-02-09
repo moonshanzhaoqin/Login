@@ -3,6 +3,7 @@ package com.yuyutechnology.exchange.manager;
 import java.text.ParseException;
 import java.util.List;
 
+import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
 import com.yuyutechnology.exchange.pojo.Currency;
@@ -110,7 +111,7 @@ public interface UserManager {
 	 * @param userId
 	 * @param oldPassword
 	 */
-	public boolean checkUserPassword(Integer userId, String oldPassword);
+	public boolean checkUserPassword(Integer userId, String oldPassword) ;
 
 	/**
 	 * @param userId
@@ -248,5 +249,13 @@ public interface UserManager {
 	 * @param deviceName
 	 */
 	void addDevice(Integer userId, String deviceId, String deviceName);
+/**
+ * 是否登录冻结
+ * @param userId
+ * @return
+ */
+	public boolean isLoginAvailiable(Integer userId);
+
+CheckPwdResult checkLoginPassword(Integer userId, String userPassword);
 
 }

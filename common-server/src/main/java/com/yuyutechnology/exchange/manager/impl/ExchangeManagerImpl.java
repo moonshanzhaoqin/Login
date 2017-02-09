@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.ExchangeDAO;
@@ -73,20 +74,20 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		
 		if(!commonManager.verifyCurrency(currencyOut) || !commonManager.verifyCurrency(currencyIn)){
 			logger.warn("This currency is not a tradable currency");
-			map.put("retCode", ServerConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
+			map.put("retCode", RetCodeConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
 			map.put("msg", "This currency is not a tradable currency");
 			return map;
 		}
 
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currencyOut);
 		if (wallet == null) {
-			map.put("retCode", ServerConsts.EXCHANGE_WALLET_CAN_NOT_BE_QUERIED);
+			map.put("retCode", RetCodeConsts.EXCHANGE_WALLET_CAN_NOT_BE_QUERIED);
 			map.put("msg", "The user's information can not be queried");
 			return map;
 		}
 		// 首先判断输入金额是否超过余额
 		if (amountOut.compareTo(wallet.getBalance()) == 1) {
-			map.put("retCode", ServerConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
+			map.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
 			map.put("msg", "The output amount is greater than the balance");
 			return map;
 		}
@@ -100,13 +101,13 @@ public class ExchangeManagerImpl implements ExchangeManager {
 				&& result.compareTo(new BigDecimal("0.0001")) == 1) {
 
 		} else {
-			map.put("retCode", ServerConsts.EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT);
+			map.put("retCode", RetCodeConsts.EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT);
 			map.put("msg", "The amount of the conversion is less than the minimum transaction amount");
 			return map;
 		}
 
 		HashMap<String, BigDecimal> map2 = exchangeCalculation(currencyOut, currencyIn, amountOut, 0);
-		map.put("retCode", ServerConsts.RET_CODE_SUCCESS);
+		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");
 		map.put("out", map2.get("out").toString());
 		map.put("in", map2.get("in").toString());
@@ -117,12 +118,12 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	public HashMap<String, String> exchangeConfirm(int userId, String currencyOut, String currencyIn, BigDecimal amountOut,
 			BigDecimal amountIn) {
 		HashMap<String, String> result = exchangeCalculation(userId, currencyOut, currencyIn, amountOut);
-		if (result.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)) {
+		if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			// 用户账户
 			// 扣款
 			int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut, new BigDecimal(result.get("out")), "-");
 			if(updateCount == 0){//余额不足
-				result.put("retCode", ServerConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
+				result.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
 				result.put("msg", "Insufficient balance");
 				return result;
 			}

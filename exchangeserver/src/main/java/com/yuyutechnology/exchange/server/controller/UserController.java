@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
@@ -76,7 +78,7 @@ public class UserController {
 		ForgetPasswordResponse rep = new ForgetPasswordResponse();
 		if (forgetPasswordRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			// 验证码校验
@@ -86,25 +88,25 @@ public class UserController {
 						forgetPasswordRequest.getUserPhone());
 				if (userId == null) {
 					logger.info(MessageConsts.PHONE_NOT_EXIST);
-					rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
+					rep.setRetCode(RetCodeConsts.PHONE_NOT_EXIST);
 					rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
 				} else if (userId == 0) {
 					logger.info(MessageConsts.USER_BLOCKED);
-					rep.setRetCode(ServerConsts.USER_BLOCKED);
+					rep.setRetCode(RetCodeConsts.USER_BLOCKED);
 					rep.setMessage(MessageConsts.USER_BLOCKED);
 				} else {
 					// 修改密码
 					userManager.updatePassword(userId, forgetPasswordRequest.getNewPassword());
 					sessionManager.delLoginToken(userId);
 					logger.info(MessageConsts.RET_CODE_SUCCESS);
-					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 				}
 				userManager.clearPinCode(ServerConsts.PIN_FUNC_FORGETPASSWORD, forgetPasswordRequest.getAreaCode(),
 						forgetPasswordRequest.getUserPhone());
 			} else {
 				logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
-				rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
+				rep.setRetCode(RetCodeConsts.PHONE_AND_CODE_NOT_MATCH);
 				rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 			}
 		}
@@ -129,7 +131,7 @@ public class UserController {
 		GetVerificationCodeResponse rep = new GetVerificationCodeResponse();
 		if (getVerificationCodeRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			// 检验手机号是否存在
@@ -139,29 +141,29 @@ public class UserController {
 					|| getVerificationCodeRequest.getPurpose().equals(ServerConsts.PIN_FUNC_CHANGEPHONE)) {
 				if (userId != null) {
 					logger.info(MessageConsts.PHONE_IS_REGISTERED);
-					rep.setRetCode(ServerConsts.PHONE_IS_REGISTERED);
+					rep.setRetCode(RetCodeConsts.PHONE_IS_REGISTERED);
 					rep.setMessage(MessageConsts.PHONE_IS_REGISTERED);
 				} else {
 					userManager.getPinCode(getVerificationCodeRequest.getPurpose(),
 							getVerificationCodeRequest.getAreaCode(), getVerificationCodeRequest.getUserPhone());
 					logger.info(MessageConsts.RET_CODE_SUCCESS);
-					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 				}
 			} else {
 				if (userId == null) {
 					logger.info(MessageConsts.PHONE_NOT_EXIST);
-					rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
+					rep.setRetCode(RetCodeConsts.PHONE_NOT_EXIST);
 					rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
 				} else if (userId == 0) {
 					logger.info(MessageConsts.USER_BLOCKED);
-					rep.setRetCode(ServerConsts.USER_BLOCKED);
+					rep.setRetCode(RetCodeConsts.USER_BLOCKED);
 					rep.setMessage(MessageConsts.USER_BLOCKED);
 				} else {
 					userManager.getPinCode(getVerificationCodeRequest.getPurpose(),
 							getVerificationCodeRequest.getAreaCode(), getVerificationCodeRequest.getUserPhone());
 					logger.info(MessageConsts.RET_CODE_SUCCESS);
-					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 				}
 			}
@@ -190,7 +192,7 @@ public class UserController {
 			Integer userId = sessionManager.validateLoginToken(loginRequest.getLoginToken());
 			if (userId == 0) {
 				logger.info(MessageConsts.TOKEN_NOT_MATCH);
-				rep.setRetCode(ServerConsts.TOKEN_NOT_MATCH);
+				rep.setRetCode(RetCodeConsts.TOKEN_NOT_MATCH);
 				rep.setMessage(MessageConsts.TOKEN_NOT_MATCH);
 			} else {
 				// 生成session Token
@@ -207,7 +209,7 @@ public class UserController {
 				rep.setUser(userManager.getUserInfo(userId));
 
 				logger.info(MessageConsts.RET_CODE_SUCCESS);
-				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 
 			}
@@ -217,45 +219,58 @@ public class UserController {
 			userId = userManager.getUserId(loginRequest.getAreaCode(), loginRequest.getUserPhone());
 			if (userId == null) {
 				logger.info(MessageConsts.PHONE_NOT_EXIST);
-				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
+				rep.setRetCode(RetCodeConsts.PHONE_NOT_EXIST);
 				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
 			} else if (userId == 0) {
 				logger.info(MessageConsts.USER_BLOCKED);
-				rep.setRetCode(ServerConsts.USER_BLOCKED);
+				rep.setRetCode(RetCodeConsts.USER_BLOCKED);
 				rep.setMessage(MessageConsts.USER_BLOCKED);
-			} else if (userManager.checkUserPassword(userId, loginRequest.getUserPassword())) {
-				if (userManager.isNewDevice(userId, loginRequest.getDeviceId(), loginRequest.getDeviceName())) {
-					// 新设备，需要手机验证
-					logger.info(MessageConsts.NEW_DEVICE);
-					rep.setRetCode(ServerConsts.NEW_DEVICE);
-					rep.setMessage(MessageConsts.NEW_DEVICE);
-				} else {
-					// 记录登录信息
-					userManager.updateUser(userId, HttpTookit.getIp(request), loginRequest.getPushId(),
-							loginRequest.getLanguage());
-					// 更新钱包
-					userManager.updateWallet(userId);
-					// 生成session Token
-					SessionData sessionData = new SessionData(userId, UidUtils.genUid());
-					sessionManager.saveSessionData(sessionData);
-					rep.setSessionToken(sessionData.getSessionId());
-					rep.setLoginToken(sessionManager.createLoginToken(userId));
-					// 获取用户信息
-					rep.setUser(userManager.getUserInfo(userId));
-
-					logger.info(MessageConsts.RET_CODE_SUCCESS);
-					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-				}
 			} else {
-				logger.info(MessageConsts.PASSWORD_NOT_MATCH);
-				rep.setRetCode(ServerConsts.PASSWORD_NOT_MATCH);
-				rep.setMessage(MessageConsts.PASSWORD_NOT_MATCH);
+				CheckPwdResult result = userManager.checkLoginPassword(userId, loginRequest.getUserPassword());
+				switch (result.getStatus()) {
+				case ServerConsts.CHECKPWD_STATUS_CORRECT:
+					if (userManager.isNewDevice(userId, loginRequest.getDeviceId(), loginRequest.getDeviceName())) {
+						// 新设备，需要手机验证
+						logger.info(MessageConsts.NEW_DEVICE);
+						rep.setRetCode(RetCodeConsts.NEW_DEVICE);
+						rep.setMessage(MessageConsts.NEW_DEVICE);
+					} else {
+						// 记录登录信息
+						userManager.updateUser(userId, HttpTookit.getIp(request), loginRequest.getPushId(),
+								loginRequest.getLanguage());
+						// 更新钱包
+						userManager.updateWallet(userId);
+						// 生成session Token
+						SessionData sessionData = new SessionData(userId, UidUtils.genUid());
+						sessionManager.saveSessionData(sessionData);
+						rep.setSessionToken(sessionData.getSessionId());
+						rep.setLoginToken(sessionManager.createLoginToken(userId));
+						// 获取用户信息
+						rep.setUser(userManager.getUserInfo(userId));
+
+						logger.info(MessageConsts.RET_CODE_SUCCESS);
+						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+					}
+					break;
+				case ServerConsts.CHECKPWD_STATUS_INCORRECT:
+					logger.info(MessageConsts.PASSWORD_NOT_MATCH);
+					rep.setRetCode(RetCodeConsts.PASSWORD_NOT_MATCH);
+					rep.setMessage(String.valueOf(result.getInfo()));
+					break;
+				case ServerConsts.CHECKPWD_STATUS_FREEZE:
+					logger.info(MessageConsts.LOGIN_FREEZE);
+					rep.setRetCode(RetCodeConsts.LOGIN_FREEZE);
+					rep.setMessage(String.valueOf(result.getInfo()));
+					break;
+				default:
+					break;
+				}
 			}
 			break;
 		default:
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 			break;
 		}
@@ -280,7 +295,7 @@ public class UserController {
 		RegisterResponse rep = new RegisterResponse();
 		if (registerRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			// 判断用户是否已注册
@@ -295,12 +310,11 @@ public class UserController {
 					logger.info("userId==={}", userId);
 					if (userId == null) {
 						logger.info(MessageConsts.RET_CODE_FAILUE);
-						rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
+						rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 						rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 					} else {
 						// 设备登记
-						userManager.addDevice(userId, registerRequest.getDeviceId(),
-								registerRequest.getDeviceName());
+						userManager.addDevice(userId, registerRequest.getDeviceId(), registerRequest.getDeviceName());
 						// 记录登录信息
 						userManager.updateUser(userId, HttpTookit.getIp(request), registerRequest.getPushId(),
 								registerRequest.getLanguage());
@@ -313,7 +327,7 @@ public class UserController {
 						rep.setUser(userManager.getUserInfo(userId));
 
 						logger.info(MessageConsts.RET_CODE_SUCCESS);
-						rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 					}
 
@@ -321,12 +335,12 @@ public class UserController {
 							registerRequest.getUserPhone());
 				} else {
 					logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
-					rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
+					rep.setRetCode(RetCodeConsts.PHONE_AND_CODE_NOT_MATCH);
 					rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 				}
 			} else {
 				logger.info(MessageConsts.PHONE_IS_REGISTERED);
-				rep.setRetCode(ServerConsts.PHONE_IS_REGISTERED);
+				rep.setRetCode(RetCodeConsts.PHONE_IS_REGISTERED);
 				rep.setMessage(MessageConsts.PHONE_IS_REGISTERED);
 			}
 
@@ -351,18 +365,18 @@ public class UserController {
 		TestCodeResponse rep = new TestCodeResponse();
 		if (testRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			// 校验验证码
 			if (userManager.testPinCode(testRequest.getPurpose(), testRequest.getAreaCode(), testRequest.getUserPhone(),
 					testRequest.getVerificationCode())) {
 				logger.info(MessageConsts.RET_CODE_SUCCESS);
-				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			} else {
 				logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
-				rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
+				rep.setRetCode(RetCodeConsts.PHONE_AND_CODE_NOT_MATCH);
 				rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 			}
 		}
@@ -386,30 +400,30 @@ public class UserController {
 		AppVersionResponse rep = new AppVersionResponse();
 		if (appVersionRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			AppVersion appVersion = commonManager.getAppVersion(appVersionRequest.getPlatformType(),
 					appVersionRequest.getUpdateWay());
 			if (appVersion == null) {
 				logger.warn("No this appVersion : {}", appVersionRequest.toString());
-				rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
+				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 			} else if (appVersion.getAppVersionNum().equals(appVersionRequest.getAppVersionNum())) {
 				logger.info(MessageConsts.VERSION_NUM_IS_LATEST);
-				rep.setRetCode(ServerConsts.VERSION_NUM_IS_LATEST);
+				rep.setRetCode(RetCodeConsts.VERSION_NUM_IS_LATEST);
 				rep.setMessage(MessageConsts.VERSION_NUM_IS_LATEST);
 			} else {
 				rep.setAppVersion(appVersion);
 				logger.info(MessageConsts.RET_CODE_SUCCESS);
-				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			}
 		}
 		return rep;
 	}
 
-	//  登录验证 loginValidate
+	// 登录验证 loginValidate
 	@ResponseBody
 	@ApiOperation(value = "登录验证", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/loginValidate", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
@@ -419,54 +433,67 @@ public class UserController {
 		LoginValidateResponse rep = new LoginValidateResponse();
 		if (loginValidateRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			Integer userId = userManager.getUserId(loginValidateRequest.getAreaCode(),
 					loginValidateRequest.getUserPhone());
 			if (userId == null) {
 				logger.info(MessageConsts.PHONE_NOT_EXIST);
-				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
+				rep.setRetCode(RetCodeConsts.PHONE_NOT_EXIST);
 				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
 			} else if (userId == 0) {
 				logger.info(MessageConsts.USER_BLOCKED);
-				rep.setRetCode(ServerConsts.USER_BLOCKED);
+				rep.setRetCode(RetCodeConsts.USER_BLOCKED);
 				rep.setMessage(MessageConsts.USER_BLOCKED);
-			} else if (userManager.checkUserPassword(userId, loginValidateRequest.getUserPassword())) {
-				// 验证短信验证码
-				if (userManager.testPinCode(ServerConsts.PIN_FUNC_NEWDEVICE, loginValidateRequest.getAreaCode(),
-						loginValidateRequest.getUserPhone(), loginValidateRequest.getVerificationCode())) {
-					// 设备登记
-					userManager.addDevice(userId, loginValidateRequest.getDeviceId(),
-							loginValidateRequest.getDeviceName());
-					// 记录登录信息
-					userManager.updateUser(userId, HttpTookit.getIp(request), loginValidateRequest.getPushId(),
-							loginValidateRequest.getLanguage());
-					// 更新钱包
-					userManager.updateWallet(userId);
-					// 生成session Token
-					SessionData sessionData = new SessionData(userId, UidUtils.genUid());
-					sessionManager.saveSessionData(sessionData);
-					rep.setSessionToken(sessionData.getSessionId());
-					rep.setLoginToken(sessionManager.createLoginToken(userId));
-					// 获取用户信息
-					rep.setUser(userManager.getUserInfo(userId));
-
-					logger.info(MessageConsts.RET_CODE_SUCCESS);
-					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
-					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-
-					userManager.clearPinCode(ServerConsts.PIN_FUNC_REGISTER, loginValidateRequest.getAreaCode(),
-							loginValidateRequest.getUserPhone());
-				} else {
-					logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
-					rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
-					rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
-				}
 			} else {
-				logger.info(MessageConsts.PASSWORD_NOT_MATCH);
-				rep.setRetCode(ServerConsts.PASSWORD_NOT_MATCH);
-				rep.setMessage(MessageConsts.PASSWORD_NOT_MATCH);
+				CheckPwdResult result = userManager.checkLoginPassword(userId, loginValidateRequest.getUserPassword());
+				switch (result.getStatus()) {
+				case ServerConsts.CHECKPWD_STATUS_CORRECT:
+					// 验证短信验证码
+					if (userManager.testPinCode(ServerConsts.PIN_FUNC_NEWDEVICE, loginValidateRequest.getAreaCode(),
+							loginValidateRequest.getUserPhone(), loginValidateRequest.getVerificationCode())) {
+						// 设备登记
+						userManager.addDevice(userId, loginValidateRequest.getDeviceId(),
+								loginValidateRequest.getDeviceName());
+						// 记录登录信息
+						userManager.updateUser(userId, HttpTookit.getIp(request), loginValidateRequest.getPushId(),
+								loginValidateRequest.getLanguage());
+						// 更新钱包
+						userManager.updateWallet(userId);
+						// 生成session Token
+						SessionData sessionData = new SessionData(userId, UidUtils.genUid());
+						sessionManager.saveSessionData(sessionData);
+						rep.setSessionToken(sessionData.getSessionId());
+						rep.setLoginToken(sessionManager.createLoginToken(userId));
+						// 获取用户信息
+						rep.setUser(userManager.getUserInfo(userId));
+
+						logger.info(MessageConsts.RET_CODE_SUCCESS);
+						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+
+						userManager.clearPinCode(ServerConsts.PIN_FUNC_REGISTER, loginValidateRequest.getAreaCode(),
+								loginValidateRequest.getUserPhone());
+					} else {
+						logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
+						rep.setRetCode(RetCodeConsts.PHONE_AND_CODE_NOT_MATCH);
+						rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
+					}
+					break;
+				case ServerConsts.CHECKPWD_STATUS_INCORRECT:
+					logger.info(MessageConsts.PASSWORD_NOT_MATCH);
+					rep.setRetCode(RetCodeConsts.PASSWORD_NOT_MATCH);
+					rep.setMessage(String.valueOf(result.getInfo()));
+					break;
+				case ServerConsts.CHECKPWD_STATUS_FREEZE:
+					logger.info(MessageConsts.LOGIN_FREEZE);
+					rep.setRetCode(RetCodeConsts.LOGIN_FREEZE);
+					rep.setMessage(String.valueOf(result.getInfo()));
+					break;
+				default:
+					break;
+				}
 			}
 		}
 		return rep;

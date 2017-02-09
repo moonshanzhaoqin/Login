@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 
@@ -92,7 +93,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 				logger.info("AJAX request");
 				PrintWriter out = response.getWriter();
 				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("retCode", ServerConsts.SESSION_TIMEOUT);
+				map.put("retCode", RetCodeConsts.SESSION_TIMEOUT);
 				out.print(JsonBinder.getInstance().toJson(map));
 				return false;
 			} else {
