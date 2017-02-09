@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.MsgFlagInfo;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
@@ -94,27 +95,27 @@ public class LoggedInUserController {
 		BindGoldpayResponse rep = new BindGoldpayResponse();
 		if (bindGoldpayRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			String retCode = userManager.bindGoldpay(sessionData.getUserId(), bindGoldpayRequest.getGoldpayToken());
 			switch (retCode) {
-			case ServerConsts.RET_CODE_SUCCESS:
+			case RetCodeConsts.RET_CODE_SUCCESS:
 				// 获取用户信息
 				rep.setUser(userManager.getUserInfo(sessionData.getUserId()));
 				logger.info("********Operation succeeded********");
-				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 				break;
-			case ServerConsts.GOLDPAY_PHONE_IS_NOT_EXIST:
+			case RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST:
 				logger.info(MessageConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
-				rep.setRetCode(ServerConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
+				rep.setRetCode(RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
 				rep.setMessage(MessageConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
 				break;
 			default:
 				logger.info(MessageConsts.RET_CODE_FAILUE);
-				rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
+				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 				break;
 			}
@@ -139,7 +140,7 @@ public class LoggedInUserController {
 		ChangePhoneResponse rep = new ChangePhoneResponse();
 		if (changePhoneRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
@@ -155,23 +156,23 @@ public class LoggedInUserController {
 						sessionManager.cleanSession(sessionData.getSessionId());
 						sessionManager.delLoginToken(sessionData.getUserId());
 						logger.info("********Operation succeeded********");
-						rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 						userManager.clearPinCode(ServerConsts.PIN_FUNC_CHANGEPHONE, changePhoneRequest.getAreaCode(),
 								changePhoneRequest.getUserPhone());
 					} else {
 						logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
-						rep.setRetCode(ServerConsts.PHONE_AND_CODE_NOT_MATCH);
+						rep.setRetCode(RetCodeConsts.PHONE_AND_CODE_NOT_MATCH);
 						rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 					}
 				} else {
 					logger.info(MessageConsts.PAY_PWD_NOT_MATCH);
-					rep.setRetCode(ServerConsts.PAY_PWD_NOT_MATCH);
+					rep.setRetCode(RetCodeConsts.PAY_PWD_NOT_MATCH);
 					rep.setMessage(MessageConsts.PAY_PWD_NOT_MATCH);
 				}
 			} else {
 				logger.info(MessageConsts.TIME_NOT_ARRIVED);
-				rep.setRetCode(ServerConsts.TIME_NOT_ARRIVED);
+				rep.setRetCode(RetCodeConsts.TIME_NOT_ARRIVED);
 				rep.setMessage(MessageConsts.TIME_NOT_ARRIVED);
 			}
 			rep.setTime(time);
@@ -196,11 +197,11 @@ public class LoggedInUserController {
 		long time = userManager.checkChangePhoneTime(sessionData.getUserId());
 		if (time <= new Date().getTime()) {
 			logger.info("********Operation succeeded********");
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		} else {
 			logger.info(MessageConsts.TIME_NOT_ARRIVED);
-			rep.setRetCode(ServerConsts.TIME_NOT_ARRIVED);
+			rep.setRetCode(RetCodeConsts.TIME_NOT_ARRIVED);
 			rep.setMessage(MessageConsts.TIME_NOT_ARRIVED);
 		}
 		rep.setTime(time);
@@ -224,11 +225,11 @@ public class LoggedInUserController {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		if (userManager.checkUserPassword(sessionData.getUserId(), checkPasswordRequest.getUserPassword())) {
 			logger.info("********Operation succeeded********");
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		} else {
 			logger.info(MessageConsts.PASSWORD_NOT_MATCH);
-			rep.setRetCode(ServerConsts.PASSWORD_NOT_MATCH);
+			rep.setRetCode(RetCodeConsts.PASSWORD_NOT_MATCH);
 			rep.setMessage(MessageConsts.PASSWORD_NOT_MATCH);
 		}
 		return rep;
@@ -252,11 +253,11 @@ public class LoggedInUserController {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		if (userManager.checkUserPayPwd(sessionData.getUserId(), checkPayPwdRequest.getUserPayPwd())) {
 			logger.info("********Operation succeeded********");
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		} else {
 			logger.info(MessageConsts.PAY_PWD_NOT_MATCH);
-			rep.setRetCode(ServerConsts.PAY_PWD_NOT_MATCH);
+			rep.setRetCode(RetCodeConsts.PAY_PWD_NOT_MATCH);
 			rep.setMessage(MessageConsts.PAY_PWD_NOT_MATCH);
 		}
 		return rep;
@@ -278,17 +279,17 @@ public class LoggedInUserController {
 		CheckGoldpayPwdResponse rep = new CheckGoldpayPwdResponse();
 		if (checkPayGoldpayRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			if (userManager.checkUserPayPwd(sessionData.getUserId(), checkPayGoldpayRequest.getGoldpayPwd())) {
 				logger.info("********Operation succeeded********");
-				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			} else {
 				logger.info(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
-				rep.setRetCode(ServerConsts.GOLDPAY_PASSWORD_NOT_MATCH);
+				rep.setRetCode(RetCodeConsts.GOLDPAY_PASSWORD_NOT_MATCH);
 				rep.setMessage(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
 			}
 		}
@@ -311,26 +312,26 @@ public class LoggedInUserController {
 		ModifyPasswordResponse rep = new ModifyPasswordResponse();
 		if (modifyPasswordRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			if (userManager.checkUserPassword(sessionData.getUserId(), modifyPasswordRequest.getOldPassword())) {
 				if (modifyPasswordRequest.getOldPassword().equals(modifyPasswordRequest.getNewPassword())) {
 					logger.info(MessageConsts.NEW_PWD_EQUALS_OLD);
-					rep.setRetCode(ServerConsts.NEW_PWD_EQUALS_OLD);
+					rep.setRetCode(RetCodeConsts.NEW_PWD_EQUALS_OLD);
 					rep.setMessage(MessageConsts.NEW_PWD_EQUALS_OLD);
 				} else {
 					userManager.updatePassword(sessionData.getUserId(), modifyPasswordRequest.getNewPassword());
 					sessionManager.cleanSession(sessionData.getSessionId());
 					sessionManager.delLoginToken(sessionData.getUserId());
 					logger.info("********Operation succeeded********");
-					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 				}
 			} else {
 				logger.info(MessageConsts.PASSWORD_NOT_MATCH);
-				rep.setRetCode(ServerConsts.PASSWORD_NOT_MATCH);
+				rep.setRetCode(RetCodeConsts.PASSWORD_NOT_MATCH);
 				rep.setMessage(MessageConsts.PASSWORD_NOT_MATCH);
 			}
 		}
@@ -354,13 +355,13 @@ public class LoggedInUserController {
 
 		if (modifyUserNameRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			userManager.updateUserName(sessionData.getUserId(), modifyUserNameRequest.getNewUserName());
 			logger.info("********Operation succeeded********");
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		}
 		return rep;
@@ -382,7 +383,7 @@ public class LoggedInUserController {
 		SetUserPayPwdResponse rep = new SetUserPayPwdResponse();
 		if (setUserPayPwdRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
@@ -391,11 +392,11 @@ public class LoggedInUserController {
 					&& StringUtils.isNumeric(setUserPayPwdRequest.getUserPayPwd())) {
 				userManager.updateUserPayPwd(sessionData.getUserId(), setUserPayPwdRequest.getUserPayPwd());
 				logger.info("********Operation succeeded********");
-				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			} else {
 				logger.info(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
-				rep.setRetCode(ServerConsts.PAY_PASSWORD_IS_ILLEGAL);
+				rep.setRetCode(RetCodeConsts.PAY_PASSWORD_IS_ILLEGAL);
 				rep.setMessage(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
 			}
 		}
@@ -418,7 +419,7 @@ public class LoggedInUserController {
 		ModifyPayPwdByOldResponse rep = new ModifyPayPwdByOldResponse();
 		if (modifyPayPwdByOldRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
@@ -429,25 +430,25 @@ public class LoggedInUserController {
 					if (modifyPayPwdByOldRequest.getNewUserPayPwd()
 							.equals(modifyPayPwdByOldRequest.getOldUserPayPwd())) {
 						logger.info(MessageConsts.NEW_PWD_EQUALS_OLD);
-						rep.setRetCode(ServerConsts.NEW_PWD_EQUALS_OLD);
+						rep.setRetCode(RetCodeConsts.NEW_PWD_EQUALS_OLD);
 						rep.setMessage(MessageConsts.NEW_PWD_EQUALS_OLD);
 					} else {
 						userManager.updateUserPayPwd(sessionData.getUserId(),
 								modifyPayPwdByOldRequest.getNewUserPayPwd());
 						logger.info("********Operation succeeded********");
-						rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 					}
 
 				} else {
 					logger.info(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
-					rep.setRetCode(ServerConsts.PAY_PASSWORD_IS_ILLEGAL);
+					rep.setRetCode(RetCodeConsts.PAY_PASSWORD_IS_ILLEGAL);
 					rep.setMessage(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
 				}
 
 			} else {
 				logger.info(MessageConsts.PAY_PWD_NOT_MATCH);
-				rep.setRetCode(ServerConsts.PAY_PWD_NOT_MATCH);
+				rep.setRetCode(RetCodeConsts.PAY_PWD_NOT_MATCH);
 				rep.setMessage(MessageConsts.PAY_PWD_NOT_MATCH);
 			}
 
@@ -471,7 +472,7 @@ public class LoggedInUserController {
 		ModifyPayPwdByGoldpayResponse rep = new ModifyPayPwdByGoldpayResponse();
 		if (modifyPayPwdByGoldRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
@@ -481,16 +482,16 @@ public class LoggedInUserController {
 						&& StringUtils.isNumeric(modifyPayPwdByGoldRequest.getNewUserPayPwd())) {
 					userManager.updateUserPayPwd(sessionData.getUserId(), modifyPayPwdByGoldRequest.getNewUserPayPwd());
 					logger.info("********Operation succeeded********");
-					rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 				} else {
 					logger.info(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
-					rep.setRetCode(ServerConsts.PAY_PASSWORD_IS_ILLEGAL);
+					rep.setRetCode(RetCodeConsts.PAY_PASSWORD_IS_ILLEGAL);
 					rep.setMessage(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
 				}
 			} else {
 				logger.info(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
-				rep.setRetCode(ServerConsts.GOLDPAY_PASSWORD_NOT_MATCH);
+				rep.setRetCode(RetCodeConsts.GOLDPAY_PASSWORD_NOT_MATCH);
 				rep.setMessage(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
 			}
 		}
@@ -514,13 +515,13 @@ public class LoggedInUserController {
 
 		if (switchLanguageRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			userManager.switchLanguage(sessionData.getUserId(), switchLanguageRequest.getLanguage());
 			logger.info("********Operation succeeded********");
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		}
 
@@ -552,7 +553,7 @@ public class LoggedInUserController {
 		sessionManager.delLoginToken(userId);
 		userManager.logout(userId);
 		logger.info("********Operation succeeded********");
-		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
@@ -572,13 +573,13 @@ public class LoggedInUserController {
 		ContactUsResponse rep = new ContactUsResponse();
 		if (contactUsRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			mailManager.mail4contact(contactUsRequest.getName(), contactUsRequest.getEmail(),
 					contactUsRequest.getCategory(), contactUsRequest.getEnquiry());
 			logger.info("********Operation succeeded********");
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		}
 		return rep;
@@ -592,7 +593,7 @@ public class LoggedInUserController {
 		MsgFlagInfo msgFlagInfo = commonManager.getMsgFlag(sessionData.getUserId());
 		rep.setNewRequestTrans(msgFlagInfo.isNewRequestTrans());
 		rep.setNewTrans(msgFlagInfo.isNewTrans());
-		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
@@ -604,7 +605,7 @@ public class LoggedInUserController {
 		GetUserConfigResponse rep = new GetUserConfigResponse();
 		if (getUserConfigRequest == null || StringUtils.isBlank(getUserConfigRequest.getKey())) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
@@ -615,14 +616,14 @@ public class LoggedInUserController {
 			}
 			if (key == null) {
 				logger.warn("No enum constant com.yuyutechnology.exchange.enums.UserConfigKeyEnum."+getUserConfigRequest.getKey());
-				rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+				rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 				rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 				return rep;
 			}
 			String value = userManager.getUserConfigAndUpdate(sessionData.getUserId(), UserConfigKeyEnum.valueOf(getUserConfigRequest.getKey()), getUserConfigRequest.getValue());
 			rep.setKey(getUserConfigRequest.getKey());
 			rep.setValue(value);
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		}
 		return rep;

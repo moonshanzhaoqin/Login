@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Friend;
@@ -53,36 +54,36 @@ public class FriendController {
 
 		if (addFriendRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			String retCode = userManager.addfriend(sessionData.getUserId(), addFriendRequest.getAreaCode(),
 					addFriendRequest.getUserPhone());
 			switch (retCode) {
-			case ServerConsts.RET_CODE_SUCCESS:
+			case RetCodeConsts.RET_CODE_SUCCESS:
 				logger.info("********Operation succeeded********");
-				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 				break;
-			case ServerConsts.PHONE_NOT_EXIST:
+			case RetCodeConsts.PHONE_NOT_EXIST:
 				logger.info(MessageConsts.PHONE_NOT_EXIST);
-				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
+				rep.setRetCode(RetCodeConsts.PHONE_NOT_EXIST);
 				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
 				break;
-			case ServerConsts.PHONE_ID_YOUR_OWEN:
+			case RetCodeConsts.PHONE_ID_YOUR_OWEN:
 				logger.info(MessageConsts.PHONE_ID_YOUR_OWEN);
-				rep.setRetCode(ServerConsts.PHONE_ID_YOUR_OWEN);
+				rep.setRetCode(RetCodeConsts.PHONE_ID_YOUR_OWEN);
 				rep.setMessage(MessageConsts.PHONE_ID_YOUR_OWEN);
 				break;
-			case ServerConsts.FRIEND_HAS_ADDED:
+			case RetCodeConsts.FRIEND_HAS_ADDED:
 				logger.info(MessageConsts.FRIEND_HAS_ADDED);
-				rep.setRetCode(ServerConsts.FRIEND_HAS_ADDED);
+				rep.setRetCode(RetCodeConsts.FRIEND_HAS_ADDED);
 				rep.setMessage(MessageConsts.FRIEND_HAS_ADDED);
 				break;
 			default:
 				logger.info(MessageConsts.RET_CODE_FAILUE);
-				rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
+				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 				break;
 			}
@@ -112,7 +113,7 @@ public class FriendController {
 		}
 		rep.setFriends(friendInfos);
 		logger.info("********Operation succeeded********");
-		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
@@ -134,35 +135,35 @@ public class FriendController {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		if (deleteFriendRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			String retCode = userManager.deleteFriend(sessionData.getUserId(), deleteFriendRequest.getAreaCode(),
 					deleteFriendRequest.getPhone());
 			switch (retCode) {
-			case ServerConsts.RET_CODE_SUCCESS:
+			case RetCodeConsts.RET_CODE_SUCCESS:
 				logger.info("********Operation succeeded********");
-				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 				break;
-			case ServerConsts.PHONE_NOT_EXIST:
+			case RetCodeConsts.PHONE_NOT_EXIST:
 				logger.info(MessageConsts.PHONE_NOT_EXIST);
-				rep.setRetCode(ServerConsts.PHONE_NOT_EXIST);
+				rep.setRetCode(RetCodeConsts.PHONE_NOT_EXIST);
 				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
 				break;
-			case ServerConsts.PHONE_ID_YOUR_OWEN:
+			case RetCodeConsts.PHONE_ID_YOUR_OWEN:
 				logger.info(MessageConsts.PHONE_ID_YOUR_OWEN);
-				rep.setRetCode(ServerConsts.PHONE_ID_YOUR_OWEN);
+				rep.setRetCode(RetCodeConsts.PHONE_ID_YOUR_OWEN);
 				rep.setMessage(MessageConsts.PHONE_ID_YOUR_OWEN);
 				break;
-			case ServerConsts.PHONE_IS_NOT_FRIEND:
+			case RetCodeConsts.PHONE_IS_NOT_FRIEND:
 				logger.info(MessageConsts.PHONE_IS_NOT_FRIEND);
-				rep.setRetCode(ServerConsts.PHONE_IS_NOT_FRIEND);
+				rep.setRetCode(RetCodeConsts.PHONE_IS_NOT_FRIEND);
 				rep.setMessage(MessageConsts.PHONE_IS_NOT_FRIEND);
 				break;
 			default:
 				logger.info(MessageConsts.RET_CODE_FAILUE);
-				rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
+				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 				break;
 			}

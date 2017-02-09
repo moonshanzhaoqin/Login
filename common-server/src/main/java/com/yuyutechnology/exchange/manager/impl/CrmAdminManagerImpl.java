@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.AdminDAO;
 import com.yuyutechnology.exchange.manager.CrmAdminManager;
@@ -27,13 +28,13 @@ public class CrmAdminManagerImpl implements CrmAdminManager {
 		Admin admin = adminDAO.getAdminByName(adminName);
 		if (admin == null) {
 			logger.info("no admin!");
-			return ServerConsts.ADMIN_NOT_EXIST;
+			return RetCodeConsts.ADMIN_NOT_EXIST;
 		} else if (PasswordUtils.check(adminPassword, admin.getAdminPassword(), admin.getPasswordSalt())) {
 			logger.info("login successs");
-			return ServerConsts.RET_CODE_SUCCESS;
+			return RetCodeConsts.RET_CODE_SUCCESS;
 		} else {
 			logger.info("password not match name");
-			return ServerConsts.PASSWORD_NOT_MATCH_NAME;
+			return RetCodeConsts.PASSWORD_NOT_MATCH_NAME;
 		}
 	}
 
@@ -58,10 +59,10 @@ public class CrmAdminManagerImpl implements CrmAdminManager {
 		if (PasswordUtils.check(oldPassword, admin.getAdminPassword(), admin.getPasswordSalt())) {
 			admin.setAdminPassword(PasswordUtils.encrypt(newPassword, admin.getPasswordSalt()));
 			logger.info("modifyPassword sucess");
-			return ServerConsts.RET_CODE_SUCCESS;
+			return RetCodeConsts.RET_CODE_SUCCESS;
 		}else{
 			logger.info("oldPassword is wrong");
-			return ServerConsts.PASSWORD_NOT_MATCH_NAME;
+			return RetCodeConsts.PASSWORD_NOT_MATCH_NAME;
 		}
 	}
 	

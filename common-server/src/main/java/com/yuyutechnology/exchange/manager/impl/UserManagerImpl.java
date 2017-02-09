@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.AppVersionDAO;
 import com.yuyutechnology.exchange.dao.BindDAO;
@@ -28,6 +29,7 @@ import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.UserDeviceDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
+import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
@@ -56,7 +58,7 @@ import com.yuyutechnology.exchange.utils.PasswordUtils;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
 
 @Service
-public  class UserManagerImpl implements UserManager {
+public class UserManagerImpl implements UserManager {
 	public static Logger logger = LoggerFactory.getLogger(UserManagerImpl.class);
 	public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	@Autowired
@@ -97,14 +99,14 @@ public  class UserManagerImpl implements UserManager {
 		logger.info("Find friend==>");
 		User friend = userDAO.getUserByUserPhone(areaCode, userPhone);
 		if (friend == null) {
-			return ServerConsts.PHONE_NOT_EXIST;
+			return RetCodeConsts.PHONE_NOT_EXIST;
 		} else if (friend.getUserId() == userId) {
-			return ServerConsts.PHONE_ID_YOUR_OWEN;
+			return RetCodeConsts.PHONE_ID_YOUR_OWEN;
 		} else if (friendDAO.getFriendByUserIdAndFrindId(userId, friend.getUserId()) != null) {
-			return ServerConsts.FRIEND_HAS_ADDED;
+			return RetCodeConsts.FRIEND_HAS_ADDED;
 		} else {
 			friendDAO.addFriend(new Friend(new FriendId(userId, friend.getUserId()), friend, new Date()));
-			return ServerConsts.RET_CODE_SUCCESS;
+			return RetCodeConsts.RET_CODE_SUCCESS;
 		}
 	}
 
@@ -114,12 +116,12 @@ public  class UserManagerImpl implements UserManager {
 		GoldpayUser goldpayUser = goldpayManager.getGoldpayInfo(goldpayToken);
 		if (goldpayUser == null) {
 			logger.warn("goldpay account does not exist.");
-			return ServerConsts.RET_CODE_FAILUE;
+			return RetCodeConsts.RET_CODE_FAILUE;
 		} else {
 			logger.info("goldpayUser=", goldpayUser.toString());
 			if (StringUtils.isBlank(goldpayUser.getAreaCode()) || StringUtils.isBlank(goldpayUser.getMobile())) {
 				logger.info("Goldpay account does not bind phone number.");
-				return ServerConsts.GOLDPAY_PHONE_IS_NOT_EXIST;
+				return RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST;
 			} else {
 				Bind bind = bindDAO.getBindByUserId(userId);
 				if (bind == null) {
@@ -132,7 +134,7 @@ public  class UserManagerImpl implements UserManager {
 					bind.setToken(goldpayToken);
 				}
 				bindDAO.updateBind(bind);
-				return ServerConsts.RET_CODE_SUCCESS;
+				return RetCodeConsts.RET_CODE_SUCCESS;
 			}
 		}
 	}
@@ -161,15 +163,76 @@ public  class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public boolean checkUserPassword(Integer userId, String userPassword) {
+	public CheckPwdResult checkLoginPassword(Integer userId, String userPassword) {
 		logger.info("Check {}  user's password {} ==>", userId, userPassword);
+		CheckPwdResult result = new CheckPwdResult();
+
 		User user = userDAO.getUser(userId);
+		if (user.getLoginAvailable() == ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE) {
+			String timeString = redisDAO.getValueByKey(ServerConsts.LOGIN_FREEZE + userId);
+			if (timeString != null) {
+				long millis=Long.valueOf(timeString).longValue();
+				
+				Calendar time = Calendar.getInstance();
+				time.setTimeInMillis(millis);
+				time.add(Calendar.HOUR_OF_DAY,
+						configManager.getConfigLongValue(ConfigKeyEnum.LOGIN_UNAVAILIABLE_TIME, 24l).intValue());
+				if (new Date().before(time.getTime())) {
+					result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
+					result.setInfo(time.getTime().getTime());
+					return result;
+				} else {
+					user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE);
+					redisDAO.deleteKey(ServerConsts.LOGIN_FREEZE + userId);
+				}
+			} else {
+				user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE);
+			}
+		}
+
 		if (PasswordUtils.check(userPassword, user.getUserPassword(), user.getPasswordSalt())) {
 			logger.info("***match***");
+			
+			redisDAO.deleteKey(ServerConsts.WRONG_PASSWORD + userId);
+			result.setStatus(ServerConsts.CHECKPWD_STATUS_CORRECT);
+			return result;
+		} else {
+			// 记录错误次数
+			long t = 1;
+			String times = redisDAO.getValueByKey(ServerConsts.WRONG_PASSWORD + userId);
+			if (times != null) {
+				t += Long.valueOf(times);
+				if (t >= configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PASSWORD_FREQUENCY, 3l).longValue()) {
+					// 登录冻结
+					redisDAO.saveData(ServerConsts.LOGIN_FREEZE + userId, new Date().getTime());
+					user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE);
+					redisDAO.deleteKey(ServerConsts.WRONG_PASSWORD + userId);
+					logger.info("***Does not match, login is frozen!***");
+					
+					Calendar time = Calendar.getInstance();
+					time.add(Calendar.HOUR_OF_DAY,
+							configManager.getConfigLongValue(ConfigKeyEnum.LOGIN_UNAVAILIABLE_TIME, 24l).intValue());
+					result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
+					result.setInfo(time.getTime().getTime());
+					return result;
+				} 
+			}
+			redisDAO.saveData(ServerConsts.WRONG_PASSWORD + userId, t);
+			logger.info("***Does not match,{}***",t);
+			result.setStatus(ServerConsts.CHECKPWD_STATUS_INCORRECT);
+			result.setInfo(t);
+			return result;
+		}
+	}
+	
+	@Override
+	public boolean checkUserPassword(Integer userId, String userPayPwd) {
+		User user = userDAO.getUser(userId);
+		if (PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())) {
 			return true;
 		}
-		logger.info("***Does not match***");
 		return false;
+		
 	}
 
 	@Override
@@ -180,6 +243,7 @@ public  class UserManagerImpl implements UserManager {
 			logger.info("***match***");
 			return true;
 		}
+
 		logger.info("***Does not match***");
 		return false;
 	}
@@ -315,7 +379,8 @@ public  class UserManagerImpl implements UserManager {
 		// 添加用户
 		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName,
 				PasswordUtils.encrypt(userPassword, passwordSalt), new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER,
-				ServerConsts.USER_AVAILABLE_OF_AVAILABLE, passwordSalt, LanguageUtils.standard(language)));
+				ServerConsts.USER_AVAILABLE_OF_AVAILABLE, ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE,
+				ServerConsts.PAY_AVAILABLE_OF_AVAILABLE, passwordSalt, LanguageUtils.standard(language)));
 		logger.info("Add user complete!");
 		redisDAO.saveData("changephonetime" + userId, simpleDateFormat.format(new Date()));
 		// 添加钱包信息
@@ -487,16 +552,16 @@ public  class UserManagerImpl implements UserManager {
 		logger.info("Find friend==>");
 		User friend = userDAO.getUserByUserPhone(areaCode, phone);
 		if (friend == null) {
-			return ServerConsts.PHONE_NOT_EXIST;
+			return RetCodeConsts.PHONE_NOT_EXIST;
 		} else if (friend.getUserId() == userId) {
-			return ServerConsts.PHONE_ID_YOUR_OWEN;
+			return RetCodeConsts.PHONE_ID_YOUR_OWEN;
 		} else {
 			Friend friend2 = friendDAO.getFriendByUserIdAndFrindId(userId, friend.getUserId());
 			if (friend2 == null) {
-				return ServerConsts.PHONE_IS_NOT_FRIEND;
+				return RetCodeConsts.PHONE_IS_NOT_FRIEND;
 			} else {
 				friendDAO.deleteFriend(friend2);
-				return ServerConsts.RET_CODE_SUCCESS;
+				return RetCodeConsts.RET_CODE_SUCCESS;
 			}
 		}
 	}
@@ -559,16 +624,25 @@ public  class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public boolean isNewDevice(Integer userId, String deviceId,String deviceName) {
-		if(userDeviceDAO.getUserDeviceByUserIdAndDeviceId(userId, deviceId)==null){
+	public boolean isNewDevice(Integer userId, String deviceId, String deviceName) {
+		if (userDeviceDAO.getUserDeviceByUserIdAndDeviceId(userId, deviceId) == null) {
 			userDeviceDAO.addUserDevice(new UserDevice(new UserDeviceId(userId, deviceId), deviceName));
 			return true;
 		}
 		return false;
 	}
-	
+
 	@Override
-	public void addDevice(Integer userId, String deviceId,String deviceName) {
-			userDeviceDAO.addUserDevice(new UserDevice(new UserDeviceId(userId, deviceId), deviceName));
+	public void addDevice(Integer userId, String deviceId, String deviceName) {
+		userDeviceDAO.addUserDevice(new UserDevice(new UserDeviceId(userId, deviceId), deviceName));
+	}
+
+	@Override
+	public boolean isLoginAvailiable(Integer userId) {
+		User user = userDAO.getUser(userId);
+		if (user.getLoginAvailable() == ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE) {
+
+		}
+		return false;
 	}
 }

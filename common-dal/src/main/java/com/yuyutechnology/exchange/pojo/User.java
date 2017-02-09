@@ -37,6 +37,8 @@ public class User implements java.io.Serializable {
 	private String loginIp;
 	private int userType;
 	private int userAvailable;
+	private int loginAvailable;
+	private int payAvailable;
 	private String passwordSalt;
 	private String pushId;
 	private Language pushTag;
@@ -45,7 +47,7 @@ public class User implements java.io.Serializable {
 	}
 
 	public User(String areaCode, String userPhone, String userName, String userPassword, Date createTime, int userType,
-			int userAvailable, String passwordSalt,Language pushTag) {
+			int userAvailable, int loginAvailable, int payAvailable, String passwordSalt, Language pushTag) {
 		this.areaCode = areaCode;
 		this.userPhone = userPhone;
 		this.userName = userName;
@@ -53,13 +55,15 @@ public class User implements java.io.Serializable {
 		this.createTime = createTime;
 		this.userType = userType;
 		this.userAvailable = userAvailable;
+		this.loginAvailable = loginAvailable;
+		this.payAvailable = payAvailable;
 		this.passwordSalt = passwordSalt;
 		this.pushTag = pushTag;
 	}
 
 	public User(String areaCode, String userPhone, String userName, String userPassword, String userPayPwd,
-			Date createTime, Date loginTime, String loginIp, int userType, int userAvailable, String passwordSalt,
-			String pushId, Language pushTag) {
+			Date createTime, Date loginTime, String loginIp, int userType, int userAvailable, int loginAvailable,
+			int payAvailable, String passwordSalt, String pushId, Language pushTag) {
 		this.areaCode = areaCode;
 		this.userPhone = userPhone;
 		this.userName = userName;
@@ -70,6 +74,8 @@ public class User implements java.io.Serializable {
 		this.loginIp = loginIp;
 		this.userType = userType;
 		this.userAvailable = userAvailable;
+		this.loginAvailable = loginAvailable;
+		this.payAvailable = payAvailable;
 		this.passwordSalt = passwordSalt;
 		this.pushId = pushId;
 		this.pushTag = pushTag;
@@ -77,7 +83,6 @@ public class User implements java.io.Serializable {
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-
 	@Column(name = "user_id", unique = true, nullable = false)
 	public Integer getUserId() {
 		return this.userId;
@@ -177,6 +182,24 @@ public class User implements java.io.Serializable {
 
 	public void setUserAvailable(int userAvailable) {
 		this.userAvailable = userAvailable;
+	}
+
+	@Column(name = "login_available", nullable = false)
+	public int getLoginAvailable() {
+		return loginAvailable;
+	}
+
+	public void setLoginAvailable(int loginAvailable) {
+		this.loginAvailable = loginAvailable;
+	}
+
+	@Column(name = "pay_available", nullable = false)
+	public int getPayAvailable() {
+		return payAvailable;
+	}
+
+	public void setPayAvailable(int payAvailable) {
+		this.payAvailable = payAvailable;
 	}
 
 	@Column(name = "password_salt", nullable = false)

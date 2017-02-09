@@ -9,13 +9,22 @@ package com.yuyutechnology.exchange.enums;
  */
 public enum ConfigKeyEnum {
 
-	DAILYTRANSFERTHRESHOLD("daily_transfer_threshold"), EACHTRANSFERTHRESHOLD(
-			"each_transfer_threshold"), TOTALBALANCETHRESHOLD("total_balance_threshold"), ENTERMAXIMUMAMOUNT(
-					"enter_maximum_amount"), TPPSCLIENTID(
-							"tpps_client_id"), TPPSCLIENTKEY("tpps_client_key"), TPPSTRANSTOKEN(
-									"tpps_trans_token"), REFUNTIME("refund_time"), DOWNLOADLINK(
-											"download_link"), CHANGEPHONETIME("change_phone_time"), VERIFYTIME("verify_time")
-												,RESERVEFUNDS("reserve_funds");
+	DAILYTRANSFERTHRESHOLD("daily_transfer_threshold"), 
+	EACHTRANSFERTHRESHOLD("each_transfer_threshold"), 
+	TOTALBALANCETHRESHOLD("total_balance_threshold"), 
+	ENTERMAXIMUMAMOUNT("enter_maximum_amount"), 
+	TPPSCLIENTID("tpps_client_id"), 
+	TPPSCLIENTKEY("tpps_client_key"), 
+	TPPSTRANSTOKEN("tpps_trans_token"), 
+	REFUNTIME("refund_time"), 
+	DOWNLOADLINK("download_link"), 
+	CHANGEPHONETIME("change_phone_time"), 
+	VERIFYTIME("verify_time"), 
+	RESERVEFUNDS("reserve_funds"), 
+	LOGIN_UNAVAILIABLE_TIME("login_unavailiable_time"), 
+	WRONG_PAYPWD_FREQUENCY("wrong_paypwd_frequency"),
+	PAY_UNAVAILIABLE_TIME("pay_unavailiable_time"),
+	WRONG_PASSWORD_FREQUENCY("wrong_password_frequency");
 
 	private String key;
 

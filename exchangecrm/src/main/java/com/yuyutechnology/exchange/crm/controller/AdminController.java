@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
 import com.yuyutechnology.exchange.crm.request.LoginRquest;
 import com.yuyutechnology.exchange.crm.request.ModifyPasswordRquest;
@@ -35,22 +35,22 @@ public class AdminController {
 		if (loginRquest.isEmpty()) {
 			logger.info("parameter is empty");
 			mav.setViewName("login");
-			mav.addObject("retCode", ServerConsts.PARAMETER_IS_EMPTY);
+			mav.addObject("retCode", RetCodeConsts.PARAMETER_IS_EMPTY);
 			mav.addObject("message", "请输入用户名、密码");
 		} else {
 			String retCode = adminManager.login(loginRquest.getAdminName(), loginRquest.getAdminPassword());
 			switch (retCode) {
-			case ServerConsts.ADMIN_NOT_EXIST:
+			case RetCodeConsts.ADMIN_NOT_EXIST:
 				mav.setViewName("login");
-				mav.addObject("retCode", ServerConsts.ADMIN_NOT_EXIST);
+				mav.addObject("retCode", RetCodeConsts.ADMIN_NOT_EXIST);
 				mav.addObject("message", "Admin不存在");
 				break;
-			case ServerConsts.PASSWORD_NOT_MATCH_NAME:
+			case RetCodeConsts.PASSWORD_NOT_MATCH_NAME:
 				mav.setViewName("login");
-				mav.addObject("retCode", ServerConsts.PASSWORD_NOT_MATCH_NAME);
+				mav.addObject("retCode", RetCodeConsts.PASSWORD_NOT_MATCH_NAME);
 				mav.addObject("message", "用户名密码不匹配");
 				break;
-			case ServerConsts.RET_CODE_SUCCESS:
+			case RetCodeConsts.RET_CODE_SUCCESS:
 				// 写入session
 				request.getSession().setAttribute("adminName", loginRquest.getAdminName());
 				mav.setViewName("redirect:/account/getTotalAssetsDetails");
@@ -69,16 +69,16 @@ public class AdminController {
 		BaseResponse rep=new  BaseResponse();
 		if (modifyPasswordRquest.isEmpty()) {
 			logger.info("parameter is empty");
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 		} else {
 			String adminName = (String) request.getSession().getAttribute("adminName");
 			String retCode = adminManager.modifyPassword(adminName, modifyPasswordRquest.getOldPassword(),
 					modifyPasswordRquest.getNewPassword());
 			switch (retCode) {
-			case ServerConsts.RET_CODE_SUCCESS:
+			case RetCodeConsts.RET_CODE_SUCCESS:
 				rep.setMessage("modifyPassword sucess");
 				break;
-			case ServerConsts.PASSWORD_NOT_MATCH_NAME:
+			case RetCodeConsts.PASSWORD_NOT_MATCH_NAME:
 				rep.setMessage("oldPassword is wrong");
 				break;
 			default:

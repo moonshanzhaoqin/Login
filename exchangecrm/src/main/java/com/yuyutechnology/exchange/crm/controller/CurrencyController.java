@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
 import com.yuyutechnology.exchange.crm.request.AddCurrencyRequest;
 import com.yuyutechnology.exchange.crm.request.ChangeCurrencyStatusRequest;
@@ -47,7 +47,7 @@ public class CurrencyController {
 		logger.info("{}", currency.toString());
 		currencyManager.updateCurrency(currency);
 		logger.info("ok");
-		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
 
@@ -66,7 +66,7 @@ public class CurrencyController {
 		BaseResponse rep = new BaseResponse();
 		if (addCurrencyRequest.isEmpty()) {
 			logger.info("parameter is empty");
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 		} else {
 			logger.info("add {}", addCurrencyRequest.getCurrency());
 			String retCode = currencyManager.addCurrency(addCurrencyRequest.getCurrency());
@@ -83,7 +83,7 @@ public class CurrencyController {
 		BaseResponse rep = new BaseResponse();
 		if (changeCurrencyStatusRequest.isEmpty()) {
 			logger.info("parameter is empty");
-			rep.setRetCode(ServerConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 		} else {
 			logger.info("change {} Status {}", changeCurrencyStatusRequest.getCurrency(),
 					changeCurrencyStatusRequest.getStatus());
