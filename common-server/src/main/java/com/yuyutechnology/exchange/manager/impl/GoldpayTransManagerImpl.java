@@ -258,22 +258,6 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager{
 				}
 				return map;
 			}
-//			if(payConfirm == null || (payConfirm.getResultCode() != 1 && payConfirm.getResultCode() != 307)){
-//				map.put("retCode", ServerConsts.RET_CODE_FAILUE);
-//				map.put("msg", "fail");
-//				return map;
-//			} else if (payConfirm.getResultCode()==307){
-//				logger.warn("goldpayTransConfirm tpps callback  error ! {}  CHECK_PIN_CODE_FAIL");
-//				map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_CHECK_PIN_CODE_FAIL);
-//				map.put("msg", "CHECK_PIN_CODE_FAIL");
-//				return map;
-//			} 
-//			else if (payConfirm.getResultCode()==70002){
-//				logger.warn("goldpayTransConfirm status has completed");
-//				map.put("retCode", ServerConsts.TRANSFER_GOLDPAYTRANS_HAS_COMPLETED);
-//				map.put("msg", "CHECK_PIN_CODE_FAIL");
-//				return map;
-//			} 
 		}else{
 			map.put("retCode", ServerConsts.RET_CODE_FAILUE);
 			map.put("msg", "fail");

@@ -16,6 +16,25 @@
 		<%@ include file="../common/header.jsp"%>
 		
 		<div class="container">
+		
+			<div class="row">
+				<table class = "table table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>transferLimitPerPay</th>
+							<th>exchangeLimitPerPay</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>${transferLimitPerPay }</td>
+							<td>${exchangeLimitPerPay }</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+		
 			<!--大额支付-->
 			<div class="row">
 				<div class="col-sm-6">

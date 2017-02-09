@@ -246,4 +246,17 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		}
 	}
 
+	@Override
+	public HashMap<String, BigDecimal> getLargeTransLimit() {
+		HashMap<String, BigDecimal> map = new HashMap<>();
+		
+		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 10000d));
+		BigDecimal exchangeLimitPerPay =  BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITPERPAY, 100000d));
+		
+		map.put("transferLimitPerPay", transferLimitPerPay);
+		map.put("exchangeLimitPerPay", exchangeLimitPerPay);
+		
+		return map;
+	}
+
 }

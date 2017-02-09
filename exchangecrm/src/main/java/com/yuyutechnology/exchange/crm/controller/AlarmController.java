@@ -75,8 +75,13 @@ public class AlarmController {
 		mav = new ModelAndView();
 		List<CrmAlarm> list = crmAlarmManager.getCrmAlarmConfigList();
 		List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
+		
+		HashMap<String, BigDecimal> map = crmAlarmManager.getLargeTransLimit();
+		
 		mav.addObject("supervisorList", supervisorList);
 		mav.addObject("list", list);
+		mav.addObject("transferLimitPerPay", map.get("transferLimitPerPay"));
+		mav.addObject("exchangeLimitPerPay", map.get("exchangeLimitPerPay"));
 		mav.setViewName("/alarm/largeTransAlarmConfig");
 		return mav;
 	}

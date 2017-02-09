@@ -33,5 +33,7 @@ public interface CrmAlarmManager {
 	public void autoAlarm(BigDecimal userHoldingTotalAssets);
 
 	public HashMap<String, BigDecimal> getAccountInfo(BigDecimal userHoldingTotalAssets);
+	
+	public HashMap<String, BigDecimal> getLargeTransLimit();
 
 }
