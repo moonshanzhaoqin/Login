@@ -171,8 +171,8 @@ public class UserManagerImpl implements UserManager {
 		if (user.getLoginAvailable() == ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE) {
 			String timeString = redisDAO.getValueByKey(ServerConsts.LOGIN_FREEZE + userId);
 			if (timeString != null) {
-				long millis=Long.valueOf(timeString).longValue();
-				
+				long millis = Long.valueOf(timeString).longValue();
+
 				Calendar time = Calendar.getInstance();
 				time.setTimeInMillis(millis);
 				time.add(Calendar.HOUR_OF_DAY,
@@ -182,17 +182,16 @@ public class UserManagerImpl implements UserManager {
 					result.setInfo(time.getTime().getTime());
 					return result;
 				} else {
-					user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE);
 					redisDAO.deleteKey(ServerConsts.LOGIN_FREEZE + userId);
 				}
-			} else {
-				user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE);
 			}
+			user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE);
+			userDAO.updateUser(user);
 		}
 
 		if (PasswordUtils.check(userPassword, user.getUserPassword(), user.getPasswordSalt())) {
 			logger.info("***match***");
-			
+
 			redisDAO.deleteKey(ServerConsts.WRONG_PASSWORD + userId);
 			result.setStatus(ServerConsts.CHECKPWD_STATUS_CORRECT);
 			return result;
@@ -206,25 +205,26 @@ public class UserManagerImpl implements UserManager {
 					// 登录冻结
 					redisDAO.saveData(ServerConsts.LOGIN_FREEZE + userId, new Date().getTime());
 					user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE);
+					userDAO.updateUser(user);
 					redisDAO.deleteKey(ServerConsts.WRONG_PASSWORD + userId);
 					logger.info("***Does not match, login is frozen!***");
-					
+
 					Calendar time = Calendar.getInstance();
 					time.add(Calendar.HOUR_OF_DAY,
 							configManager.getConfigLongValue(ConfigKeyEnum.LOGIN_UNAVAILIABLE_TIME, 24l).intValue());
 					result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
 					result.setInfo(time.getTime().getTime());
 					return result;
-				} 
+				}
 			}
 			redisDAO.saveData(ServerConsts.WRONG_PASSWORD + userId, t);
-			logger.info("***Does not match,{}***",t);
+			logger.info("***Does not match,{}***", t);
 			result.setStatus(ServerConsts.CHECKPWD_STATUS_INCORRECT);
 			result.setInfo(t);
 			return result;
 		}
 	}
-	
+
 	@Override
 	public boolean checkUserPassword(Integer userId, String userPayPwd) {
 		User user = userDAO.getUser(userId);
@@ -232,7 +232,7 @@ public class UserManagerImpl implements UserManager {
 			return true;
 		}
 		return false;
-		
+
 	}
 
 	@Override
