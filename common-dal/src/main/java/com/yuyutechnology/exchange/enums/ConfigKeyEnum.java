@@ -26,7 +26,11 @@ public enum ConfigKeyEnum {
 	TRANSFERLIMITNUMBEROFPAYPERDAY("transfer_limit_number_of_pay_per_day"),
 	EXCHANGELIMITPERPAY("exchange_limit_per_pay"),
 	EXCHANGELIMITDAILYPAY("exchange_limit_daily_pay"),
-	EXCHANGELIMITNUMBEROFPAYPERDAY("exchange_limit_number_of_pay_per_day");
+	EXCHANGELIMITNUMBEROFPAYPERDAY("exchange_limit_number_of_pay_per_day"),
+	LOGIN_UNAVAILIABLE_TIME("login_unavailiable_time"), 
+	WRONG_PAYPWD_FREQUENCY("wrong_paypwd_frequency"),
+	PAY_UNAVAILIABLE_TIME("pay_unavailiable_time"),
+	WRONG_PASSWORD_FREQUENCY("wrong_password_frequency");
 
 	private String key;
 
