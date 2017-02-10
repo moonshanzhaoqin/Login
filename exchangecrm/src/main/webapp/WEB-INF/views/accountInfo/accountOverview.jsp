@@ -92,7 +92,9 @@
 							<th>手机号</th>
 							<th>用户名</th>
 							<th>用户类型</th>
-							<th>是否冻结</th>
+							<th>账户冻结</th>
+							<th>登录冻结</th>
+							<th>支付冻结</th>
 							<th>总资产（USD）</th>
 							<th>更新时间（UTC）</th>
 							<th>操作</th>
@@ -112,6 +114,14 @@
 									<td>
 										<c:if test="${userInfo.userAvailable eq 1}">未冻结</c:if>
 						        		<c:if test="${userInfo.userAvailable eq 0}">已冻结</c:if>
+									</td>
+									<td>
+										<c:if test="${userInfo.loginAvailable eq 1}">未冻结</c:if>
+						        		<c:if test="${userInfo.loginAvailable eq 0}">已冻结</c:if>
+									</td>
+									<td>
+										<c:if test="${userInfo.payAvailable eq 1}">未冻结</c:if>
+						        		<c:if test="${userInfo.payAvailable eq 0}">已冻结</c:if>
 									</td>
 									<td>${userInfo.userTotalAssets }</td>
 									<td><fmt:formatDate value="${userInfo.updateAt }" pattern="yyyy-MM-dd HH:mm:ss"/></td>
