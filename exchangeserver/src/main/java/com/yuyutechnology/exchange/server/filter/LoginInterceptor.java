@@ -43,6 +43,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		sessionManager = ServerContext.getBean(SessionManager.class);
 		
 		noMappingSet.add("/login");
+		noMappingSet.add("/loginValidate");
 		noMappingSet.add("/logout");
 		noMappingSet.add("/register");
 		noMappingSet.add("/getVerificationCode");
