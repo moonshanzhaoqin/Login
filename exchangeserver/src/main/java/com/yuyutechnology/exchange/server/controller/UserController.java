@@ -229,7 +229,7 @@ public class UserController {
 				CheckPwdResult result = userManager.checkLoginPassword(userId, loginRequest.getUserPassword());
 				switch (result.getStatus()) {
 				case ServerConsts.CHECKPWD_STATUS_CORRECT:
-					if (userManager.isNewDevice(userId, loginRequest.getDeviceId(), loginRequest.getDeviceName())) {
+					if (userManager.isNewDevice(userId, loginRequest.getDeviceId())){
 						// 新设备，需要手机验证
 						logger.info(MessageConsts.NEW_DEVICE);
 						rep.setRetCode(RetCodeConsts.NEW_DEVICE);

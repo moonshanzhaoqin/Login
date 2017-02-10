@@ -423,6 +423,7 @@ public class UserManagerImpl implements UserManager {
 		User user = userDAO.getUser(userId);
 		user.setUserPassword(PasswordUtils.encrypt(newPassword, user.getPasswordSalt()));
 		userDAO.updateUser(user);
+		redisDAO.deleteKey(ServerConsts.WRONG_PASSWORD + userId);
 	}
 
 	public void updateUser(Integer userId, String loginIp, String pushId, String language) {
@@ -624,9 +625,8 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public boolean isNewDevice(Integer userId, String deviceId, String deviceName) {
+	public boolean isNewDevice(Integer userId, String deviceId) {
 		if (userDeviceDAO.getUserDeviceByUserIdAndDeviceId(userId, deviceId) == null) {
-			userDeviceDAO.addUserDevice(new UserDevice(new UserDeviceId(userId, deviceId), deviceName));
 			return true;
 		}
 		return false;

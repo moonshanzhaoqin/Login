@@ -239,7 +239,7 @@ public interface UserManager {
 	 * @param deviceId
 	 * @return
 	 */
-	public boolean isNewDevice(Integer userId, String deviceId, String deviceName);
+	public boolean isNewDevice(Integer userId, String deviceId);
 
 	/**
 	 * 添加新设备
