@@ -21,6 +21,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.MsgFlagInfo;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
 import com.yuyutechnology.exchange.mail.MailManager;
@@ -60,6 +61,8 @@ import com.yuyutechnology.exchange.server.controller.response.SwitchLanguageResp
 import com.yuyutechnology.exchange.server.session.SessionData;
 import com.yuyutechnology.exchange.server.session.SessionDataHolder;
 import com.yuyutechnology.exchange.server.session.SessionManager;
+import com.yuyutechnology.exchange.utils.HttpTookit;
+import com.yuyutechnology.exchange.utils.UidUtils;
 
 /**
  * @author suzan.wu
@@ -145,9 +148,30 @@ public class LoggedInUserController {
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			long time = userManager.checkChangePhoneTime(sessionData.getUserId());
-			if (time <= new Date().getTime()) {
+			if (time < new Date().getTime()) {
+				logger.info(MessageConsts.TIME_NOT_ARRIVED);
+				rep.setRetCode(RetCodeConsts.TIME_NOT_ARRIVED);
+				rep.setMessage(MessageConsts.TIME_NOT_ARRIVED);
+				rep.setTime(time);
+			} else {
 				// 检验支付密码
-				if (userManager.checkUserPayPwd(sessionData.getUserId(), changePhoneRequest.getUserPayPwd())) {
+				CheckPwdResult result = userManager.checkPayPassword(sessionData.getUserId(),
+						changePhoneRequest.getUserPayPwd());
+
+				switch (result.getStatus()) {
+				case ServerConsts.CHECKPWD_STATUS_FREEZE:
+					logger.info(MessageConsts.PAY_FREEZE);
+					rep.setRetCode(RetCodeConsts.PAY_FREEZE);
+					rep.setMessage(String.valueOf(result.getInfo()));
+					break;
+
+				case ServerConsts.CHECKPWD_STATUS_INCORRECT:
+					logger.info(MessageConsts.PAY_PWD_NOT_MATCH);
+					rep.setRetCode(RetCodeConsts.PAY_PWD_NOT_MATCH);
+					rep.setMessage(String.valueOf(result.getInfo()));
+					break;
+
+				case ServerConsts.CHECKPWD_STATUS_CORRECT:
 					// 校验手机验证码
 					if (userManager.testPinCode(ServerConsts.PIN_FUNC_CHANGEPHONE, changePhoneRequest.getAreaCode(),
 							changePhoneRequest.getUserPhone(), changePhoneRequest.getVerificationCode())) {
@@ -165,17 +189,9 @@ public class LoggedInUserController {
 						rep.setRetCode(RetCodeConsts.PHONE_AND_CODE_NOT_MATCH);
 						rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 					}
-				} else {
-					logger.info(MessageConsts.PAY_PWD_NOT_MATCH);
-					rep.setRetCode(RetCodeConsts.PAY_PWD_NOT_MATCH);
-					rep.setMessage(MessageConsts.PAY_PWD_NOT_MATCH);
+					break;
 				}
-			} else {
-				logger.info(MessageConsts.TIME_NOT_ARRIVED);
-				rep.setRetCode(RetCodeConsts.TIME_NOT_ARRIVED);
-				rep.setMessage(MessageConsts.TIME_NOT_ARRIVED);
 			}
-			rep.setTime(time);
 		}
 		return rep;
 	}
@@ -195,16 +211,16 @@ public class LoggedInUserController {
 		CheckChangePhoneResponse rep = new CheckChangePhoneResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		long time = userManager.checkChangePhoneTime(sessionData.getUserId());
-		if (time <= new Date().getTime()) {
-			logger.info("********Operation succeeded********");
-			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-		} else {
+		if (time > new Date().getTime()) {
 			logger.info(MessageConsts.TIME_NOT_ARRIVED);
 			rep.setRetCode(RetCodeConsts.TIME_NOT_ARRIVED);
 			rep.setMessage(MessageConsts.TIME_NOT_ARRIVED);
+			rep.setTime(time);
+		} else {
+			logger.info("********Operation succeeded********");
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		}
-		rep.setTime(time);
 		return rep;
 	}
 
@@ -215,25 +231,27 @@ public class LoggedInUserController {
 	 * @param checkPasswordRequest
 	 * @return
 	 */
-	@ResponseBody
-	@ApiOperation(value = "校验登录密码", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/user/checkPassword", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public CheckPasswordResponse checkPassword(@PathVariable String token,
-			@RequestBody CheckPasswordRequest checkPasswordRequest) {
-		logger.info("========checkPassword : {}============", token);
-		CheckPasswordResponse rep = new CheckPasswordResponse();
-		SessionData sessionData = SessionDataHolder.getSessionData();
-		if (userManager.checkUserPassword(sessionData.getUserId(), checkPasswordRequest.getUserPassword())) {
-			logger.info("********Operation succeeded********");
-			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-		} else {
-			logger.info(MessageConsts.PASSWORD_NOT_MATCH);
-			rep.setRetCode(RetCodeConsts.PASSWORD_NOT_MATCH);
-			rep.setMessage(MessageConsts.PASSWORD_NOT_MATCH);
-		}
-		return rep;
-	}
+	// @ResponseBody
+	// @ApiOperation(value = "校验登录密码", httpMethod = "POST", notes = "")
+	// @RequestMapping(value = "/token/{token}/user/checkPassword", method =
+	// RequestMethod.POST, produces = "application/json; charset=utf-8")
+	// public CheckPasswordResponse checkPassword(@PathVariable String token,
+	// @RequestBody CheckPasswordRequest checkPasswordRequest) {
+	// logger.info("========checkPassword : {}============", token);
+	// CheckPasswordResponse rep = new CheckPasswordResponse();
+	// SessionData sessionData = SessionDataHolder.getSessionData();
+	// if (userManager.checkUserPassword(sessionData.getUserId(),
+	// checkPasswordRequest.getUserPassword())) {
+	// logger.info("********Operation succeeded********");
+	// rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+	// rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+	// } else {
+	// logger.info(MessageConsts.PASSWORD_NOT_MATCH);
+	// rep.setRetCode(RetCodeConsts.PASSWORD_NOT_MATCH);
+	// rep.setMessage(MessageConsts.PASSWORD_NOT_MATCH);
+	// }
+	// return rep;
+	// }
 
 	/**
 	 * checkPayPwd 校验支付密码
@@ -249,20 +267,38 @@ public class LoggedInUserController {
 			@RequestBody CheckPayPwdRequest checkPayPwdRequest) {
 		logger.info("========checkPassword : {}============", token);
 		CheckPayPwdResponse rep = new CheckPayPwdResponse();
-
-		SessionData sessionData = SessionDataHolder.getSessionData();
-		if (userManager.checkUserPayPwd(sessionData.getUserId(), checkPayPwdRequest.getUserPayPwd())) {
-			logger.info("********Operation succeeded********");
-			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		if (checkPayPwdRequest.isEmpty()) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
-			logger.info(MessageConsts.PAY_PWD_NOT_MATCH);
-			rep.setRetCode(RetCodeConsts.PAY_PWD_NOT_MATCH);
-			rep.setMessage(MessageConsts.PAY_PWD_NOT_MATCH);
+			SessionData sessionData = SessionDataHolder.getSessionData();
+			CheckPwdResult result = userManager.checkPayPassword(sessionData.getUserId(),
+					checkPayPwdRequest.getUserPayPwd());
+			switch (result.getStatus()) {
+			case ServerConsts.CHECKPWD_STATUS_FREEZE:
+				logger.info(MessageConsts.PAY_FREEZE);
+				rep.setRetCode(RetCodeConsts.PAY_FREEZE);
+				rep.setMessage(String.valueOf(result.getInfo()));
+				break;
+
+			case ServerConsts.CHECKPWD_STATUS_INCORRECT:
+				logger.info(MessageConsts.PAY_PWD_NOT_MATCH);
+				rep.setRetCode(RetCodeConsts.PAY_PWD_NOT_MATCH);
+				rep.setMessage(String.valueOf(result.getInfo()));
+				break;
+
+			case ServerConsts.CHECKPWD_STATUS_CORRECT:
+				logger.info("********Operation succeeded********");
+				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+				break;
+			}
 		}
 		return rep;
 	}
 
+	// TODO
 	/**
 	 * checkGoldpayPwd 校验Goldpay密码
 	 * 
@@ -270,31 +306,34 @@ public class LoggedInUserController {
 	 * @param checkPayPwdRequest
 	 * @return
 	 */
-	@ResponseBody
-	@ApiOperation(value = "校验Goldpay密码", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/user/checkGoldpayPwd", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public CheckGoldpayPwdResponse checkGoldpayPwd(@PathVariable String token,
-			@RequestBody CheckGoldpayPwdRequest checkPayGoldpayRequest) {
-		logger.info("========checkPassword : {}============", token);
-		CheckGoldpayPwdResponse rep = new CheckGoldpayPwdResponse();
-		if (checkPayGoldpayRequest.isEmpty()) {
-			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
-		} else {
-			SessionData sessionData = SessionDataHolder.getSessionData();
-			if (userManager.checkUserPayPwd(sessionData.getUserId(), checkPayGoldpayRequest.getGoldpayPwd())) {
-				logger.info("********Operation succeeded********");
-				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-			} else {
-				logger.info(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
-				rep.setRetCode(RetCodeConsts.GOLDPAY_PASSWORD_NOT_MATCH);
-				rep.setMessage(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
-			}
-		}
-		return rep;
-	}
+	// @ResponseBody
+	// @ApiOperation(value = "校验Goldpay密码", httpMethod = "POST", notes = "")
+	// @RequestMapping(value = "/token/{token}/user/checkGoldpayPwd", method =
+	// RequestMethod.POST, produces = "application/json; charset=utf-8")
+	// public CheckGoldpayPwdResponse checkGoldpayPwd(@PathVariable String
+	// token,
+	// @RequestBody CheckGoldpayPwdRequest checkPayGoldpayRequest) {
+	// logger.info("========checkPassword : {}============", token);
+	// CheckGoldpayPwdResponse rep = new CheckGoldpayPwdResponse();
+	// if (checkPayGoldpayRequest.isEmpty()) {
+	// logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+	// rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
+	// rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+	// } else {
+	// SessionData sessionData = SessionDataHolder.getSessionData();
+	// if (userManager.checkUserPayPwd(sessionData.getUserId(),
+	// checkPayGoldpayRequest.getGoldpayPwd())) {
+	// logger.info("********Operation succeeded********");
+	// rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+	// rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+	// } else {
+	// logger.info(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
+	// rep.setRetCode(RetCodeConsts.GOLDPAY_PASSWORD_NOT_MATCH);
+	// rep.setMessage(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
+	// }
+	// }
+	// return rep;
+	// }
 
 	/**
 	 * Modify password 修改用户密码
@@ -316,7 +355,20 @@ public class LoggedInUserController {
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
-			if (userManager.checkUserPassword(sessionData.getUserId(), modifyPasswordRequest.getOldPassword())) {
+			CheckPwdResult result = userManager.checkLoginPassword(sessionData.getUserId(),
+					modifyPasswordRequest.getOldPassword());
+			switch (result.getStatus()) {
+			case ServerConsts.CHECKPWD_STATUS_FREEZE:
+				logger.info(MessageConsts.LOGIN_FREEZE);
+				rep.setRetCode(RetCodeConsts.LOGIN_FREEZE);
+				rep.setMessage(String.valueOf(result.getInfo()));
+				break;
+			case ServerConsts.CHECKPWD_STATUS_INCORRECT:
+				logger.info(MessageConsts.PASSWORD_NOT_MATCH);
+				rep.setRetCode(RetCodeConsts.PASSWORD_NOT_MATCH);
+				rep.setMessage(String.valueOf(result.getInfo()));
+				break;
+			case ServerConsts.CHECKPWD_STATUS_CORRECT:
 				if (modifyPasswordRequest.getOldPassword().equals(modifyPasswordRequest.getNewPassword())) {
 					logger.info(MessageConsts.NEW_PWD_EQUALS_OLD);
 					rep.setRetCode(RetCodeConsts.NEW_PWD_EQUALS_OLD);
@@ -329,10 +381,7 @@ public class LoggedInUserController {
 					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 				}
-			} else {
-				logger.info(MessageConsts.PASSWORD_NOT_MATCH);
-				rep.setRetCode(RetCodeConsts.PASSWORD_NOT_MATCH);
-				rep.setMessage(MessageConsts.PASSWORD_NOT_MATCH);
+				break;
 			}
 		}
 		return rep;
@@ -423,7 +472,21 @@ public class LoggedInUserController {
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
-			if (userManager.checkUserPayPwd(sessionData.getUserId(), modifyPayPwdByOldRequest.getOldUserPayPwd())) {
+			CheckPwdResult result = userManager.checkPayPassword(sessionData.getUserId(), modifyPayPwdByOldRequest.getOldUserPayPwd());
+			switch (result.getStatus()) {
+			case ServerConsts.CHECKPWD_STATUS_FREEZE:
+				logger.info(MessageConsts.PAY_FREEZE);
+				rep.setRetCode(RetCodeConsts.PAY_FREEZE);
+				rep.setMessage(String.valueOf(result.getInfo()));
+				break;
+
+			case ServerConsts.CHECKPWD_STATUS_INCORRECT:
+				logger.info(MessageConsts.PAY_PWD_NOT_MATCH);
+				rep.setRetCode(RetCodeConsts.PAY_PWD_NOT_MATCH);
+				rep.setMessage(String.valueOf(result.getInfo()));
+				break;
+
+			case ServerConsts.CHECKPWD_STATUS_CORRECT:
 				// PayPwd 6位数字
 				if (modifyPayPwdByOldRequest.getNewUserPayPwd().length() == 6
 						&& StringUtils.isNumeric(modifyPayPwdByOldRequest.getNewUserPayPwd())) {
@@ -439,23 +502,20 @@ public class LoggedInUserController {
 						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 					}
-
 				} else {
 					logger.info(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
 					rep.setRetCode(RetCodeConsts.PAY_PASSWORD_IS_ILLEGAL);
 					rep.setMessage(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
 				}
 
-			} else {
-				logger.info(MessageConsts.PAY_PWD_NOT_MATCH);
-				rep.setRetCode(RetCodeConsts.PAY_PWD_NOT_MATCH);
-				rep.setMessage(MessageConsts.PAY_PWD_NOT_MATCH);
+				break;
 			}
 
 		}
 		return rep;
 	}
-
+	
+//TODO
 	/**
 	 * modifyPayPwdByGoldpay 通过Goldpay密码更换支付密码
 	 * 
@@ -463,40 +523,40 @@ public class LoggedInUserController {
 	 * @param modifyPayPwdByGoldRequest
 	 * @return
 	 */
-	@ResponseBody
-	@ApiOperation(value = "通过Goldpay密码更换支付密码", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/user/modifyPayPwdByPIN", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public ModifyPayPwdByGoldpayResponse modifyPayPwdByGoldpay(@PathVariable String token,
-			@RequestBody ModifyPayPwdByGoldpayRequest modifyPayPwdByGoldRequest) {
-		logger.info("========modifyPayPwdByOld : {}============", token);
-		ModifyPayPwdByGoldpayResponse rep = new ModifyPayPwdByGoldpayResponse();
-		if (modifyPayPwdByGoldRequest.isEmpty()) {
-			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
-		} else {
-			SessionData sessionData = SessionDataHolder.getSessionData();
-			if (userManager.checkGoldpayPwd(sessionData.getUserId(), modifyPayPwdByGoldRequest.getGoldpayPwd())) {
-				// PayPwd 6位数字
-				if (modifyPayPwdByGoldRequest.getNewUserPayPwd().length() == 6
-						&& StringUtils.isNumeric(modifyPayPwdByGoldRequest.getNewUserPayPwd())) {
-					userManager.updateUserPayPwd(sessionData.getUserId(), modifyPayPwdByGoldRequest.getNewUserPayPwd());
-					logger.info("********Operation succeeded********");
-					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-				} else {
-					logger.info(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
-					rep.setRetCode(RetCodeConsts.PAY_PASSWORD_IS_ILLEGAL);
-					rep.setMessage(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
-				}
-			} else {
-				logger.info(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
-				rep.setRetCode(RetCodeConsts.GOLDPAY_PASSWORD_NOT_MATCH);
-				rep.setMessage(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
-			}
-		}
-		return rep;
-	}
+//	@ResponseBody
+//	@ApiOperation(value = "通过Goldpay密码更换支付密码", httpMethod = "POST", notes = "")
+//	@RequestMapping(value = "/token/{token}/user/modifyPayPwdByGoldpay", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+//	public ModifyPayPwdByGoldpayResponse modifyPayPwdByGoldpay(@PathVariable String token,
+//			@RequestBody ModifyPayPwdByGoldpayRequest modifyPayPwdByGoldRequest) {
+//		logger.info("========modifyPayPwdByOld : {}============", token);
+//		ModifyPayPwdByGoldpayResponse rep = new ModifyPayPwdByGoldpayResponse();
+//		if (modifyPayPwdByGoldRequest.isEmpty()) {
+//			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+//			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
+//			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+//		} else {
+//			SessionData sessionData = SessionDataHolder.getSessionData();
+//			if (userManager.checkGoldpayPwd(sessionData.getUserId(), modifyPayPwdByGoldRequest.getGoldpayPwd())) {
+//				// PayPwd 6位数字
+//				if (modifyPayPwdByGoldRequest.getNewUserPayPwd().length() == 6
+//						&& StringUtils.isNumeric(modifyPayPwdByGoldRequest.getNewUserPayPwd())) {
+//					userManager.updateUserPayPwd(sessionData.getUserId(), modifyPayPwdByGoldRequest.getNewUserPayPwd());
+//					logger.info("********Operation succeeded********");
+//					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+//					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+//				} else {
+//					logger.info(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
+//					rep.setRetCode(RetCodeConsts.PAY_PASSWORD_IS_ILLEGAL);
+//					rep.setMessage(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
+//				}
+//			} else {
+//				logger.info(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
+//				rep.setRetCode(RetCodeConsts.GOLDPAY_PASSWORD_NOT_MATCH);
+//				rep.setMessage(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
+//			}
+//		}
+//		return rep;
+//	}
 
 	/**
 	 * switchLanguage切换语言
@@ -512,7 +572,7 @@ public class LoggedInUserController {
 			@RequestBody SwitchLanguageRequest switchLanguageRequest) {
 		logger.info("========switchLanguage : {}============", token);
 		SwitchLanguageResponse rep = new SwitchLanguageResponse();
-
+		
 		if (switchLanguageRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
@@ -524,9 +584,8 @@ public class LoggedInUserController {
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		}
-
+		
 		return rep;
-
 	}
 
 	/**
@@ -597,11 +656,12 @@ public class LoggedInUserController {
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
-	
+
 	@ResponseBody
 	@ApiOperation(value = "获取用户配置参数", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/getUserConfig", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public GetUserConfigResponse getUserConfig(@PathVariable String token, @RequestBody GetUserConfigRequest getUserConfigRequest) {
+	public GetUserConfigResponse getUserConfig(@PathVariable String token,
+			@RequestBody GetUserConfigRequest getUserConfigRequest) {
 		GetUserConfigResponse rep = new GetUserConfigResponse();
 		if (getUserConfigRequest == null || StringUtils.isBlank(getUserConfigRequest.getKey())) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
@@ -615,12 +675,14 @@ public class LoggedInUserController {
 			} catch (Exception e) {
 			}
 			if (key == null) {
-				logger.warn("No enum constant com.yuyutechnology.exchange.enums.UserConfigKeyEnum."+getUserConfigRequest.getKey());
+				logger.warn("No enum constant com.yuyutechnology.exchange.enums.UserConfigKeyEnum."
+						+ getUserConfigRequest.getKey());
 				rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 				rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 				return rep;
 			}
-			String value = userManager.getUserConfigAndUpdate(sessionData.getUserId(), UserConfigKeyEnum.valueOf(getUserConfigRequest.getKey()), getUserConfigRequest.getValue());
+			String value = userManager.getUserConfigAndUpdate(sessionData.getUserId(),
+					UserConfigKeyEnum.valueOf(getUserConfigRequest.getKey()), getUserConfigRequest.getValue());
 			rep.setKey(getUserConfigRequest.getKey());
 			rep.setValue(value);
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);

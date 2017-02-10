@@ -87,14 +87,14 @@ public interface UserManager {
 	 */
 	public void updateUserPayPwd(Integer userId, String userPayPwd);
 
-	/**
-	 * 校验支付密码
-	 * 
-	 * @param userId
-	 * @param userPayPwd
-	 * @return
-	 */
-	public boolean checkUserPayPwd(Integer userId, String userPayPwd);
+//	/**
+//	 * 校验支付密码
+//	 * 
+//	 * @param userId
+//	 * @param userPayPwd
+//	 * @return
+//	 */
+//	public boolean checkUserPayPwd(Integer userId, String userPayPwd);
 
 	/**
 	 * 绑定goldpay
@@ -104,14 +104,14 @@ public interface UserManager {
 	 * @return
 	 */
 	public String bindGoldpay(Integer userId, String goldpayToken);
-
-	/**
-	 * 校验用户密码
-	 * 
-	 * @param userId
-	 * @param oldPassword
-	 */
-	public boolean checkUserPassword(Integer userId, String oldPassword) ;
+//
+//	/**
+//	 * 校验用户密码
+//	 * 
+//	 * @param userId
+//	 * @param oldPassword
+//	 */
+//	public boolean checkUserPassword(Integer userId, String oldPassword) ;
 
 	/**
 	 * @param userId
@@ -257,5 +257,7 @@ public interface UserManager {
 	public boolean isLoginAvailiable(Integer userId);
 
 CheckPwdResult checkLoginPassword(Integer userId, String userPassword);
+
+CheckPwdResult checkPayPassword(Integer userId, String userPayPwd);
 
 }
