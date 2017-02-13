@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -75,26 +76,26 @@ public class TransferManagerImpl implements TransferManager{
 	
 	public static Logger logger = LoggerFactory.getLogger(TransferManagerImpl.class);
 
+	@SuppressWarnings("serial")
 	@Override
-	public HashMap<String, String> transferInitiate(int userId,String areaCode,String userPhone, String currency, 
-			BigDecimal amount, String transferComment,int noticeId) {
-	
-		HashMap<String, String> map = new HashMap<String, String>();
-		
-		if(!commonManager.verifyCurrency(currency)){
-			logger.warn("This currency is not a tradable currency");
-			map.put("retCode", RetCodeConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
-			map.put("msg", "This currency is not a tradable currency");
-			return map;
-		}
+	public HashMap<String, String> transferInitiate(final int userId,String areaCode,String userPhone, final String currency, 
+			final BigDecimal amount, String transferComment,int noticeId) {
 
-		User payer = userDAO.getUser(userId);
-		if(payer ==null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
-			logger.warn("The user does not exist or the account is blocked");
-			map.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
-			map.put("msg", "The user does not exist or the account is blocked");
+		//干扰条件过滤
+		HashMap<String, Object> args = new HashMap<>();		
+		args.put("isTradableCurrency", currency);
+		args.put("isAccountFrozened", userId);
+		args.put("isInsufficientBalance",new HashMap<String,Object>(){{
+			put("userId", userId);
+			put("currency", currency);
+			put("amount", amount);
+		}} );
+		HashMap<String, String> map = test(args);
+		if(!map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)){
 			return map;
 		}
+		//end
+		
 		User receiver = userDAO.getUserByUserPhone(areaCode, userPhone);
 		//不用给自己转账
 		if(receiver!= null && userId == receiver.getUserId()){
@@ -103,16 +104,30 @@ public class TransferManagerImpl implements TransferManager{
 			map.put("msg", "Prohibit transfers to yourself");
 			return map;
 		}
-		
+	
+//		if(!commonManager.verifyCurrency(currency)){
+//			logger.warn("This currency is not a tradable currency");
+//			map.put("retCode", RetCodeConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
+//			map.put("msg", "This currency is not a tradable currency");
+//			return map;
+//		}
+//
+//		User payer = userDAO.getUser(userId);
+//		if(payer ==null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
+//			logger.warn("The user does not exist or the account is blocked");
+//			map.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
+//			map.put("msg", "The user does not exist or the account is blocked");
+//			return map;
+//		}
 		//判断余额是否足够支付
-		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
-		logger.info("wallet info , balance : {}, userId : {}, transAmount : {}", new Object[]{wallet.getBalance().doubleValue(), wallet.getUserId(), amount});
-		if(wallet == null || wallet.getBalance().compareTo(amount) == -1){
-			logger.warn("Current balance is insufficient");
-			map.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-			map.put("msg", "Current balance is insufficient");
-			return map;
-		}
+//		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
+//		logger.info("wallet info , balance : {}, userId : {}, transAmount : {}", new Object[]{wallet.getBalance().doubleValue(), wallet.getUserId(), amount});
+//		if(wallet == null || wallet.getBalance().compareTo(amount) == -1){
+//			logger.warn("Current balance is insufficient");
+//			map.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+//			map.put("msg", "Current balance is insufficient");
+//			return map;
+//		}
 		
 		//生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
@@ -300,14 +315,11 @@ public class TransferManagerImpl implements TransferManager{
 	public void systemRefund(Unregistered unregistered) {
 		
 		Transfer transfer = transferDAO.getTransferById(unregistered.getTransferId());
-		
 		if(transfer == null || transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_COMPLETED){
 			logger.warn("Did not find the corresponding transfer information");
 			return ;
 		}
-		
 		User systemUser = userDAO.getSystemUser();
-		
 		//系统扣款
 		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), 
 				transfer.getCurrency(), transfer.getTransferAmount(), "-");
@@ -461,7 +473,6 @@ public class TransferManagerImpl implements TransferManager{
 			}
 		}
 		
-		
 		sb.append(" order by t1.finish_time desc");
 
 		HashMap<String, Object> map = transferDAO.getTransactionRecordByPage(sql+sb.toString(),
@@ -491,79 +502,62 @@ public class TransferManagerImpl implements TransferManager{
 		return map;
 	}
 	
+	@SuppressWarnings("serial")
 	@Override
-	public HashMap<String, String> respond2Request(int userId,String areaCode,String userPhone, 
-			String currency,BigDecimal amount, String transferComment,int noticeId){
+	public HashMap<String, String> respond2Request(final int userId,final String areaCode,final String userPhone, 
+			final String currency,final BigDecimal amount, String transferComment,int noticeId){
+
+		HashMap<String, Object> args = new HashMap<>();		
+		final TransactionNotification notification = notificationDAO.getNotificationById(noticeId);
+		args.put("verifyNotificationStatus", new HashMap<String,Object>(){{
+			put("notification", notification);
+			put("userId", userId);
+			put("currency", currency);
+			put("amount", amount);
+		}});
+		args.put("isTradableCurrency", currency);
+		args.put("isAccountFrozened", userId);
+		args.put("verifyRecevierStatus",new HashMap<String,Object>(){{
+			put("sponsorId", notification.getSponsorId());
+			put("userId", userId);
+			put("areaCode", areaCode);
+			put("userPhone", userPhone);
+		}} );
+		args.put("isInsufficientBalance",new HashMap<String,Object>(){{
+			put("userId", userId);
+			put("currency", currency);
+			put("amount", amount);
+		}} );
 		
-		HashMap<String, String> map = new HashMap<String, String>();
+		HashMap<String, String> map = test(args);
 		
-		TransactionNotification notification = notificationDAO.getNotificationById(noticeId);
-		
-		if(notification == null){
-			logger.warn("Can not find the corresponding notification information");
-			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
-			map.put("msg", "Can not find the corresponding notification information");
-			return map;
-		}
-		if(notification.getPayerId()!=userId || notification.getTradingStatus() 
-				== ServerConsts.NOTIFICATION_STATUS_OF_ALREADY_PAID){
-			logger.warn("Order status exception");
-			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
-			map.put("msg", "Order status exception");
-			return map;
-		}
-		if(StringUtils.isBlank(currency) || amount.compareTo(new BigDecimal("0"))==0){
-			logger.warn("The requestor currency and amount information is blank");
-			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
-			map.put("msg", "The requestor currency and amount information is blank");
-			return map;
-		}
-		if((StringUtils.isNotBlank(notification.getCurrency())
-				&& notification.getAmount().compareTo(new BigDecimal("0"))!=0) 
-				&& (!notification.getCurrency().equals(currency) || notification.getAmount().compareTo(amount) != 0)){
-			logger.warn("The input and order information do not match");
-			map.put("retCode", RetCodeConsts.TRANSFER_REQUEST_INFORMATION_NOT_MATCH);
-			map.put("msg", "The input and order information do not match");
-			return map;
-		}
-		if(!commonManager.verifyCurrency(currency)){
-			logger.warn("This currency is not a tradable currency");
-			map.put("retCode", RetCodeConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
-			map.put("msg", "This currency is not a tradable currency");
-			return map;
-		}
-		//账号冻结
-		User payer = userDAO.getUser(userId);
-		if(payer ==null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
-			logger.warn("The user does not exist or the account is blocked");
-			map.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
-			map.put("msg", "The user does not exist or the account is blocked");
+		if(!map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)){
 			return map;
 		}
 		
-		User receiver = userDAO.getUser(notification.getSponsorId());
-		//不用给自己转账
-		if(receiver!= null && userId == receiver.getUserId()){
-			logger.warn("Prohibit transfers to yourself");
-			map.put("retCode", RetCodeConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
-			map.put("msg", "Prohibit transfers to yourself");
-			return map;
-		}
-		if(!receiver.getAreaCode().equals(areaCode) || !receiver.getUserPhone().equals(userPhone)){
-			logger.warn("Payee phone information does not match");
-			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
-			map.put("msg", "Payee phone information does not match");
-			return map;
-		}
-		
-		//判断余额是否足够支付
-		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
-		if(wallet == null || wallet.getBalance().compareTo(amount) == -1){
-			logger.warn("Current balance is insufficient");
-			map.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-			map.put("msg", "Current balance is insufficient");
-			return map;
-		}
+//		User receiver = userDAO.getUser(notification.getSponsorId());
+//		//不用给自己转账
+//		if(receiver!= null && userId == receiver.getUserId()){
+//			logger.warn("Prohibit transfers to yourself");
+//			map.put("retCode", RetCodeConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
+//			map.put("msg", "Prohibit transfers to yourself");
+//			return map;
+//		}
+//		if(!receiver.getAreaCode().equals(areaCode) || !receiver.getUserPhone().equals(userPhone)){
+//			logger.warn("Payee phone information does not match");
+//			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+//			map.put("msg", "Payee phone information does not match");
+//			return map;
+//		}
+//		
+//		//判断余额是否足够支付
+//		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
+//		if(wallet == null || wallet.getBalance().compareTo(amount) == -1){
+//			logger.warn("Current balance is insufficient");
+//			map.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+//			map.put("msg", "Current balance is insufficient");
+//			return map;
+//		}
 		
 		//生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
@@ -601,5 +595,120 @@ public class TransferManagerImpl implements TransferManager{
 		}
 		
 		return new BigDecimal(df1.format(amoumt));  
+	}
+	
+	public HashMap<String, String> test(HashMap<String, Object> map){
+		
+		HashMap<String, String> result = new HashMap<>();
+		
+		for (Entry<String, Object> entry : map.entrySet()) {
+			
+			switch (entry.getKey()) {
+				//检验传入Currency是否可用
+				case "isTradableCurrency":
+					if(!commonManager.verifyCurrency((String) entry.getValue())){
+						logger.warn("This currency is not a tradable currency");
+						result.put("retCode", RetCodeConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
+						result.put("msg", "This currency is not a tradable currency");
+						return result;
+					}
+					break;
+				//检验当前用的账户是否被冻结
+				case "isAccountFrozened":
+					User payer = userDAO.getUser((Integer) entry.getValue());
+					if(payer ==null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
+						logger.warn("The user does not exist or the account is blocked");
+						result.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
+						result.put("msg", "The user does not exist or the account is blocked");
+						return result;
+					}
+					break;
+				//检验Notification的状态
+				case "verifyNotificationStatus":
+					@SuppressWarnings("unchecked")
+					HashMap<String, Object> args = (HashMap<String, Object>) entry.getValue();
+					
+					TransactionNotification notification = (TransactionNotification) args.get("notification");
+					int userId = (int) args.get("userId");
+					String currency = (String) args.get("currency");
+					BigDecimal amount = (BigDecimal) args.get("amount");
+					
+					if(notification == null){
+						logger.warn("Can not find the corresponding notification information");
+						result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+						result.put("msg", "Can not find the corresponding notification information");
+						return result;
+					}
+					if(notification.getPayerId()!=userId || notification.getTradingStatus() 
+							== ServerConsts.NOTIFICATION_STATUS_OF_ALREADY_PAID){
+						logger.warn("Order status exception");
+						result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+						result.put("msg", "Order status exception");
+						return result;
+					}
+					if(StringUtils.isBlank(currency) || amount.compareTo(new BigDecimal("0"))==0){
+						logger.warn("The requestor currency and amount information is blank");
+						result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+						result.put("msg", "The requestor currency and amount information is blank");
+						return result;
+					}
+					if((StringUtils.isNotBlank(notification.getCurrency())
+							&& notification.getAmount().compareTo(new BigDecimal("0"))!=0) 
+							&& (!notification.getCurrency().equals(currency) || notification.getAmount().compareTo(amount) != 0)){
+						logger.warn("The input and order information do not match");
+						result.put("retCode", RetCodeConsts.TRANSFER_REQUEST_INFORMATION_NOT_MATCH);
+						result.put("msg", "The input and order information do not match");
+						return result;
+					}
+					break;
+				//检验接收人的状态	
+				case "verifyRecevierStatus":
+					@SuppressWarnings("unchecked")
+					HashMap<String, Object>  recevierArgs = (HashMap<String, Object>) entry.getValue();
+					
+					int sponsorId = (int) recevierArgs.get("sponsorId");
+					userId = (int) recevierArgs.get("userId");
+					String areaCode = (String) recevierArgs.get("areaCode");
+					String userPhone = (String) recevierArgs.get("userId");
+					
+					User receiver = userDAO.getUser(sponsorId);
+					//不用给自己转账
+					if(receiver!= null && userId == receiver.getUserId()){
+						logger.warn("Prohibit transfers to yourself");
+						result.put("retCode", RetCodeConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
+						result.put("msg", "Prohibit transfers to yourself");
+						return result;
+					}
+					if(!receiver.getAreaCode().equals(areaCode) || !receiver.getUserPhone().equals(userPhone)){
+						logger.warn("Payee phone information does not match");
+						result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+						result.put("msg", "Payee phone information does not match");
+						return result;
+					}
+					break;
+				//判断余额是否足够支付
+				case "isInsufficientBalance":
+					@SuppressWarnings("unchecked")
+					HashMap<String, Object>  insufficientBalanceArgs = (HashMap<String, Object>) entry.getValue();
+					userId = (int) insufficientBalanceArgs.get("userId");
+					currency = (String) insufficientBalanceArgs.get("currency");
+					amount = (BigDecimal) insufficientBalanceArgs.get("amount");
+					Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
+					if(wallet == null || wallet.getBalance().compareTo(amount) == -1){
+						logger.warn("Current balance is insufficient");
+						result.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+						result.put("msg", "Current balance is insufficient");
+						return result;
+					}
+					break;
+					
+				default:
+					break;
+			}
+			
+		}
+		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
+		return result;
+		
 	}
 }
