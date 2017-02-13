@@ -175,7 +175,7 @@ public class SmsManager {
 
 	private void sendSMS(String phoneNum, String content) {
 		logger.info("sendSMS , phoneNum : {} , content : {}", phoneNum, content);
-		if (StringUtils.isNotBlank(phoneNum) && StringUtils.isNotBlank(content)) {
+		if (ResourceUtils.getBundleValue4Boolean("sms.switch") && StringUtils.isNotBlank(phoneNum) && StringUtils.isNotBlank(content)) {
 			SendMessageRequest sendMessageRequest = new SendMessageRequest();
 			sendMessageRequest.setTo(phoneNum);
 			sendMessageRequest.setContent(content);
