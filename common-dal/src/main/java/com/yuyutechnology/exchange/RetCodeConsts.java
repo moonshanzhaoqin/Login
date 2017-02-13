@@ -209,6 +209,7 @@ public class RetCodeConsts {
 		successCodeList.add(TRANSFER_HISTORY_NOT_ACQUIRED);
 		// successCodeList.add(TRANSFER_NOTIFICATION_NOT_ACQUIRED);
 		successCodeList.add(TIME_NOT_ARRIVED);
+		successCodeList.add(NEW_DEVICE);
 		sessionCodeList.add(SESSION_TIMEOUT);
 	}
 }
