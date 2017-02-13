@@ -133,7 +133,7 @@ public class TransferManagerImpl implements TransferManager{
 		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
 		
-		if(amount.compareTo(transferLimitPerPay) == 1){
+		if((exchangeRateManager.getExchangeResult(currency, amount)).compareTo(transferLimitPerPay) == 1){
 			logger.warn("Exceeds the maximum amount of each transaction");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_PER_PAY);
 			map.put("msg", "Exceeds the maximum amount of each transaction");
@@ -145,7 +145,7 @@ public class TransferManagerImpl implements TransferManager{
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITDAILYPAY, 100000d));
 		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount(userId+"");
 		
-		if((accumulatedAmount.add(amount)).compareTo(transferLimitDailyPay) == 1){
+		if((accumulatedAmount.add(exchangeRateManager.getExchangeResult(currency, amount))).compareTo(transferLimitDailyPay) == 1){
 			logger.warn("More than the maximum daily transaction limit");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY);
 			map.put("msg", "More than the maximum daily transaction limit");
