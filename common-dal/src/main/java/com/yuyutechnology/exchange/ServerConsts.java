@@ -153,5 +153,18 @@ public class ServerConsts {
 	public static final String PAY_FREEZE = "PAY_FREEZE";
 	
 	
+	
+	/**
+	 * 校验支付密码功能——换绑手机
+	 */
+	public static final String PAYPWD_CHANGEPHONE = "PAYPWD_CHANGEPHONE";
+	/**
+	 * 校验支付密码功能——换绑Goldpay
+	 */
+	public static final String PAYPWD_CHANGEGOLDPAY = "PAYPWD_CHANGEGOLDPAY";
+	/**
+	 * 校验支付密码功能——修改支付密码
+	 */
+	public static final String PAYPWD_MODIFYPAYPWD = "PAYPWD_MODIFYPAYPWD";
 
 }
