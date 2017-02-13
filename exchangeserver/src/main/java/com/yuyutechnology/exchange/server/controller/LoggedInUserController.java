@@ -30,14 +30,11 @@ import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.BindGoldpayRequest;
 import com.yuyutechnology.exchange.server.controller.request.ChangePhoneRequest;
-import com.yuyutechnology.exchange.server.controller.request.CheckGoldpayPwdRequest;
-import com.yuyutechnology.exchange.server.controller.request.CheckPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.CheckPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetUserConfigRequest;
 import com.yuyutechnology.exchange.server.controller.request.LogoutRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
-import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByGoldpayRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByOldRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyUserNameRequest;
 import com.yuyutechnology.exchange.server.controller.request.SetUserPayPwdRequest;
@@ -45,15 +42,12 @@ import com.yuyutechnology.exchange.server.controller.request.SwitchLanguageReque
 import com.yuyutechnology.exchange.server.controller.response.BindGoldpayResponse;
 import com.yuyutechnology.exchange.server.controller.response.ChangePhoneResponse;
 import com.yuyutechnology.exchange.server.controller.response.CheckChangePhoneResponse;
-import com.yuyutechnology.exchange.server.controller.response.CheckGoldpayPwdResponse;
-import com.yuyutechnology.exchange.server.controller.response.CheckPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.CheckPayPwdResponse;
 import com.yuyutechnology.exchange.server.controller.response.ContactUsResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetMsgFlagResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetUserConfigResponse;
 import com.yuyutechnology.exchange.server.controller.response.LogoutResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPasswordResponse;
-import com.yuyutechnology.exchange.server.controller.response.ModifyPayPwdByGoldpayResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPayPwdByOldResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyUserNameResponse;
 import com.yuyutechnology.exchange.server.controller.response.SetUserPayPwdResponse;
@@ -61,8 +55,6 @@ import com.yuyutechnology.exchange.server.controller.response.SwitchLanguageResp
 import com.yuyutechnology.exchange.server.session.SessionData;
 import com.yuyutechnology.exchange.server.session.SessionDataHolder;
 import com.yuyutechnology.exchange.server.session.SessionManager;
-import com.yuyutechnology.exchange.utils.HttpTookit;
-import com.yuyutechnology.exchange.utils.UidUtils;
 
 /**
  * @author suzan.wu

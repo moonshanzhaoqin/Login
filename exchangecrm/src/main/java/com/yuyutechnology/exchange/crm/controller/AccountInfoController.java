@@ -69,8 +69,8 @@ public class AccountInfoController {
 
 		mav = new ModelAndView();
 		PageBean pageBean = new PageBean();
-		HashMap<String, Object> result = crmUserInfoManager.getUserAccountInfoListByPage(null, null, 3, null, null, 1,
-				10);
+		HashMap<String, Object> result = crmUserInfoManager.getUserAccountInfoListByPage(null, null, 3, 3, 3, null,
+				null, 1, 10);
 		pageBean.setCurrentPage((int) result.get("currentPage"));
 		pageBean.setPageSize((int) result.get("pageSize"));
 		pageBean.setPageTotal((int) result.get("pageTotal"));
@@ -90,8 +90,10 @@ public class AccountInfoController {
 		mav = new ModelAndView();
 		PageBean pageBean = new PageBean();
 		HashMap<String, Object> result = crmUserInfoManager.getUserAccountInfoListByPage(requst.getUserPhone(),
-				requst.getUserName(), Integer.parseInt(requst.getIsFrozen()), requst.getUpperLimit(),
-				requst.getLowerLimit(), requst.getPageBean().getCurrentPage(), requst.getPageBean().getPageSize());
+				requst.getUserName(), Integer.parseInt(requst.getUserAvailable()),
+				Integer.parseInt(requst.getLoginAvailable()), Integer.parseInt(requst.getPayAvailable()),
+				requst.getUpperLimit(), requst.getLowerLimit(), requst.getPageBean().getCurrentPage(),
+				requst.getPageBean().getPageSize());
 
 		pageBean.setCurrentPage((int) result.get("currentPage"));
 		pageBean.setPageSize((int) result.get("pageSize"));

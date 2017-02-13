@@ -17,7 +17,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.yuyutechnology.exchange.RetCodeConsts;
-import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.ConfigDAO;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.ConfigManager;

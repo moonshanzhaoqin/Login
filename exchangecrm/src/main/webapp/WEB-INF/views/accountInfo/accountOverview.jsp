@@ -32,19 +32,57 @@
         						<input type="text" value="${model.userName }" class="form-control" placeholder="用户名" name="userName" size="12">
         					</li>
         					<li>
-        						<select name="isFrozen" class="form-control">
-									<c:if test="${model.isFrozen == '0'}">
+        						<select name="userAvailable" class="form-control">
+									<c:if test="${model.userAvailable == '0'}">
 										<option value=3>账号状态</option>
 	        							<option value=0 selected>已冻结</option>
 	        							<option value=1>未冻结</option>
 									</c:if>
-									<c:if test="${model.isFrozen == '1'}">
+									<c:if test="${model.userAvailable == '1'}">
 										<option value=3>账号状态</option>
 	        							<option value=0>已冻结</option>
 	        							<option value=1 selected>未冻结</option>
 									</c:if>
-									<c:if test="${(model.isFrozen == '3') || (model.isFrozen != '0' && model.isFrozen != '1')}">
+									<c:if test="${(model.userAvailable == '3') || (model.userAvailable != '0' && model.userAvailable != '1')}">
 										<option value=3 selected>账号状态</option>
+	        							<option value=0>已冻结</option>
+	        							<option value=1>未冻结</option>
+									</c:if>
+        						</select>
+        					</li>
+        					<li>
+        						<select name="loginAvailable" class="form-control">
+									<c:if test="${model.loginAvailable == '0'}">
+										<option value=3>登录冻结</option>
+	        							<option value=0 selected>已冻结</option>
+	        							<option value=1>未冻结</option>
+									</c:if>
+									<c:if test="${model.loginAvailable == '1'}">
+										<option value=3>登录冻结</option>
+	        							<option value=0>已冻结</option>
+	        							<option value=1 selected>未冻结</option>
+									</c:if>
+									<c:if test="${(model.loginAvailable == '3') || (model.loginAvailable != '0' && model.loginAvailable != '1')}">
+										<option value=3 selected>登录冻结</option>
+	        							<option value=0>已冻结</option>
+	        							<option value=1>未冻结</option>
+									</c:if>
+        						</select>
+        					</li>
+        					<li>
+        						<select name="payAvailable" class="form-control">
+									<c:if test="${model.payAvailable == '0'}">
+										<option value=3>支付冻结</option>
+	        							<option value=0 selected>已冻结</option>
+	        							<option value=1>未冻结</option>
+									</c:if>
+									<c:if test="${model.payAvailable == '1'}">
+										<option value=3>支付冻结</option>
+	        							<option value=0>已冻结</option>
+	        							<option value=1 selected>未冻结</option>
+									</c:if>
+									<c:if test="${(model.payAvailable == '3') || (model.payAvailable != '0' && model.payAvailable != '1')}">
+										<option value=3 selected>支付冻结</option>
 	        							<option value=0>已冻结</option>
 	        							<option value=1>未冻结</option>
 									</c:if>
