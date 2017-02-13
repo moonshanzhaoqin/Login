@@ -421,8 +421,16 @@ public class TransferManagerImpl implements TransferManager{
 	@Override
 	public String makeRequest(int userId, String payerAreaCode, String payerPhone, String currency, BigDecimal amount) {
 		
+		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
+				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
+		
+		if((exchangeRateManager.getExchangeResult(currency, amount)).compareTo(transferLimitPerPay) == 1){
+			logger.warn("Exceeds the maximum amount of each transaction");
+			return RetCodeConsts.TRANSFER_LIMIT_PER_PAY;
+		}
+		
 		User payer = userDAO.getUserByUserPhone(payerAreaCode, payerPhone);
-		if(payer != null){
+		if(payer != null){			
 			TransactionNotification transactionNotification = new TransactionNotification();
 			transactionNotification.setSponsorId(userId);
 			transactionNotification.setPayerId(payer.getUserId());

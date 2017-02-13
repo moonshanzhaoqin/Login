@@ -195,8 +195,11 @@ public class TransferController {
 		MakeRequestResponse rep = new MakeRequestResponse();
 		String result = transferManager.makeRequest(sessionData.getUserId(), reqMsg.getAreaCode(), reqMsg.getPhone(),
 				reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()));
+
 		if(result.equals(RetCodeConsts.RET_CODE_FAILUE)){
 			rep.setMessage("Sharing failed");
+		}else if(result.equals(RetCodeConsts.TRANSFER_LIMIT_PER_PAY)){
+			rep.setMessage("Exceeds the maximum amount of each transaction");
 		}else{
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		}
