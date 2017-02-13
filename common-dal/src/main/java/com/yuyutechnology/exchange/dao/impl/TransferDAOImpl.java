@@ -156,7 +156,8 @@ public class TransferDAOImpl implements TransferDAO {
 		BigDecimal sum = hibernateTemplate.executeWithNativeSession(new HibernateCallback<BigDecimal>() {
 			@Override
 			public BigDecimal doInHibernate(Session session) throws HibernateException {
-				Query query = session.createSQLQuery("SELECT sum(transfer_amount) FROM `e_transfer` where transfer_type = ? and transfer_status = 2");
+				Query query = session.createSQLQuery("SELECT sum(transfer_amount) "
+						+ "FROM `e_transfer` where transfer_type = ? and transfer_status = 2");
 				query.setInteger(0, transferType);
 				
 				@SuppressWarnings("unchecked")
@@ -167,6 +168,31 @@ public class TransferDAOImpl implements TransferDAO {
 				}
 				
 				return new BigDecimal("0");
+			}
+		});
+
+		return sum;
+	}
+
+	@Override
+	public Integer getDayTradubgVolume(final int transferType) {
+		Integer sum = hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
+			@Override
+			public Integer doInHibernate(Session session) throws HibernateException {
+				Query query = session.createSQLQuery("SELECT COUNT(*) FROM `e_transfer` "
+						+ "where transfer_type = ? "
+						+ "and transfer_status = 2 "
+						+ "and TO_DAYS(`finish_time`) = TO_DAYS(NOW());");
+				query.setInteger(0, transferType);
+				
+
+				List list = query.list();
+				
+				if((list != null && !list.isEmpty())&& list.get(0)!=null){
+					return Integer.parseInt((list.get(0).toString()));
+				}
+				
+				return new Integer(-1);
 			}
 		});
 

@@ -178,6 +178,13 @@ public class RetCodeConsts {
 	public static final String TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY = "03018";
 
 	public static final String TRANSFER_REQUEST_INFORMATION_NOT_MATCH = "03019";
+	
+	public static final String TRANSFER_LIMIT_PER_PAY = "03020";
+	
+	public static final String TRANSFER_LIMIT_DAILY_PAY = "03021";
+	
+	public static final String TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY = "03022";
+	
 
 	// crm 管理员04
 	/**

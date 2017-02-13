@@ -129,6 +129,40 @@ public class TransferManagerImpl implements TransferManager{
 //			return map;
 //		}
 		
+		//每次支付金额限制
+		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
+				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
+		
+		if(amount.compareTo(transferLimitPerPay) == 1){
+			logger.warn("Exceeds the maximum amount of each transaction");
+			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_PER_PAY);
+			map.put("msg", "Exceeds the maximum amount of each transaction");
+			return map;
+		}
+
+		//每天累计金额限制
+		BigDecimal transferLimitDailyPay =  BigDecimal.valueOf(configManager.
+				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITDAILYPAY, 100000d));
+		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount(userId+"");
+		
+		if((accumulatedAmount.add(amount)).compareTo(transferLimitDailyPay) == 1){
+			logger.warn("More than the maximum daily transaction limit");
+			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY);
+			map.put("msg", "More than the maximum daily transaction limit");
+			return map;
+		}
+		//每天累计给付次数限制
+		Double transferLimitNumOfPayPerDay =  configManager.
+				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITNUMBEROFPAYPERDAY, 100000d);
+		Integer dayTradubgVolume = transferDAO.getDayTradubgVolume(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+		
+		if(transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)){
+			logger.warn("Exceeds the maximum number of transactions per day");
+			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY);
+			map.put("msg", "Exceeds the maximum number of transactions per day");
+			return map;
+		}
+
 		//生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		
@@ -191,9 +225,7 @@ public class TransferManagerImpl implements TransferManager{
 		//单笔转出金额大于设置安全基数，弹出需要短信验证框
 		BigDecimal singleTransferAmount = exchangeRateManager.getExchangeResult(transfer.getCurrency(), transfer.getTransferAmount());
 		BigDecimal singleTransferAmountMax = BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.EACHTRANSFERTHRESHOLD, 100000d));
-		
-		
-		
+
 		logger.info("totalBalance : {},totalBalanceMax: {} ",totalBalance,totalBalanceMax);
 		logger.info("accumulatedAmount : {},accumulatedAmountMax: {} ",accumulatedAmount,accumulatedAmountMax);
 		logger.info("singleTransferAmount : {},singleTransferAmountMax: {} ",singleTransferAmount,singleTransferAmountMax);

@@ -3,8 +3,6 @@
  */
 package com.yuyutechnology.exchange.server.test;
 
-import java.math.BigDecimal;
-
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,8 +46,11 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 	@Test
 	public void testUpdateRate() {
 
-		BigDecimal sum = transferDAO.sumGoldpayTransAmount(5);
-		logger.info("sum : {}",sum);
+//		BigDecimal sum = transferDAO.sumGoldpayTransAmount(5);
+//		logger.info("sum : {}",sum);
+		
+		int count = transferDAO.getDayTradubgVolume(5);
+		logger.info("count : {}",count);
 		 
 	}
 
