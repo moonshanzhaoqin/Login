@@ -13,10 +13,12 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dao.CrmAlarmDAO;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.NotificationDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
@@ -28,9 +30,11 @@ import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
+import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
+import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.pojo.TransactionNotification;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
@@ -60,6 +64,8 @@ public class TransferManagerImpl implements TransferManager{
 	UnregisteredDAO unregisteredDAO;
 	@Autowired
 	NotificationDAO notificationDAO;
+	@Autowired
+	CrmAlarmDAO crmAlarmDAO;
 	
 	@Autowired
 	ExchangeRateManager exchangeRateManager;
@@ -73,6 +79,8 @@ public class TransferManagerImpl implements TransferManager{
 	CommonManager commonManager;
 	@Autowired
 	ConfigManager configManager;
+	@Autowired
+	CrmAlarmManager crmAlarmManager;
 	
 	public static Logger logger = LoggerFactory.getLogger(TransferManagerImpl.class);
 
@@ -339,6 +347,10 @@ public class TransferManagerImpl implements TransferManager{
 		BigDecimal exchangeResult = exchangeRateManager.getExchangeResult(transfer.getCurrency(),transfer.getTransferAmount());
 		transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
 		
+		
+		//预警
+		largeTransWarn(payer,transfer);
+
 		return RetCodeConsts.RET_CODE_SUCCESS;
 	}
 	
@@ -751,4 +763,41 @@ public class TransferManagerImpl implements TransferManager{
 		return result;
 		
 	}
+	
+	@SuppressWarnings("serial")
+	@Async
+	private void largeTransWarn(final User payer,final Transfer transfer){
+		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
+				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
+		BigDecimal percentage = (exchangeRateManager.getExchangeResult(transfer.getCurrency(), transfer.getTransferAmount()))
+				.divide(transferLimitPerPay).multiply(new BigDecimal("100"));
+		
+		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(1, 1);
+		
+		if(!list.isEmpty()){
+			for (int i = 0; i < list.size(); i++) {
+				CrmAlarm crmAlarm = list.get(i);
+				
+				if((crmAlarm.getLowerLimit().compareTo(percentage)==0 || 
+						crmAlarm.getLowerLimit().compareTo(percentage)==-1) && 
+						crmAlarm.getUpperLimit().compareTo(percentage) == 1){
+					
+					crmAlarmManager.alarmNotice(crmAlarm.getSupervisorIdArr(),"largeTransactionWarning",
+							crmAlarm.getAlarmMode(),new HashMap<String,Object>(){
+						{
+							put("payerMobile", payer.getAreaCode()+payer.getUserPhone());
+							put("payeeMobile", transfer.getAreaCode()+transfer.getPhone());
+							put("amount", transfer.getTransferAmount().toString());
+							put("currency", transfer.getCurrency());
+						}
+					});
+					
+					
+				}
+				
+			}
+		}
+	}
+	
+	
 }

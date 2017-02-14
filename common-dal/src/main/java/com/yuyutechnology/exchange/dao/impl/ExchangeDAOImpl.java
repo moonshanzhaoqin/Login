@@ -7,7 +7,11 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -67,5 +71,25 @@ public class ExchangeDAOImpl implements ExchangeDAO {
 		map.put("list",list);
 		
 		return map;
+	}
+
+	@Override
+	public Integer getTotalNumOfDailyExchange() {
+		Integer sum = hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
+			@Override
+			public Integer doInHibernate(Session session) throws HibernateException {
+				Query query = session.createSQLQuery(" select COUNT(*) "
+						+ "FROM `e_exchange` "
+						+ "where TO_DAYS(`finish_time`) = TO_DAYS(NOW())");
+				List list = query.list();
+				if((list != null && !list.isEmpty())&& list.get(0)!=null){
+					return Integer.parseInt((list.get(0).toString()));
+				}
+				
+				return new Integer(-1);
+			}
+		});
+
+		return sum;
 	}
 }
