@@ -36,4 +36,7 @@ public interface CrmAlarmManager {
 	
 	public HashMap<String, BigDecimal> getLargeTransLimit();
 
+	public void alarmNotice(String supervisorIdArr, String features, 
+			int earlyWarningMode, HashMap<String, Object> params);
+
 }

@@ -49,8 +49,9 @@ public class SmsManager {
 	
 	private final String SMS_REPLACE_DIFFERENCE = "[DIFFERENCE]";
 	private final String SMS_REPLACE_LOWERLIMIT = "[LOWERLIMIT]";
-//	private final String SMS_REPLACE_GRADE = "[GRADE]";
 	
+	private final String SMS_REPLACE_PAYER = "[PAYER]";
+	private final String SMS_REPLACE_PAYEE = "[PAYEE]";
 
 	// en
 	private StringBuffer phoneVerify_en = new StringBuffer();
@@ -68,6 +69,10 @@ public class SmsManager {
 	
 	// zh_CN
 	private StringBuffer criticalAlarm_cn = new StringBuffer();
+	
+	// zh_CN
+	private StringBuffer largeTrans_cn = new StringBuffer();
+	
 
 	@PostConstruct
 	@Scheduled(cron = "0 1/2 * * * ?")
@@ -81,6 +86,8 @@ public class SmsManager {
 		readTemplate("template/sms/zh_HK/transfer.template", transfer_hk);
 		
 		readTemplate("template/sms/zh_CN/criticalAlarm.template", criticalAlarm_cn);
+		
+		readTemplate("template/sms/zh_CN/largeTrans.template", largeTrans_cn);
 	}
 	
 	private void readTemplate(String filePath, StringBuffer content) {
@@ -135,6 +142,19 @@ public class SmsManager {
 		String content = transferContent
 				.replace(SMS_REPLACE_DIFFERENCE,difference.toString())
 				.replace(SMS_REPLACE_LOWERLIMIT,lowerLimit.toString())
+				.replace(SMS_REPLACE_TIME,dateTime);
+		sendSMS(phone, content);
+	}
+	
+	@Async
+	public void sendSMS4LargeTrans(String phone,String payerMobile,String payeeMobile,
+			BigDecimal amount,String currency,String dateTime){
+		String largeTransContent = largeTrans_cn.toString();
+		String content = largeTransContent
+				.replace(SMS_REPLACE_PAYER,payerMobile)
+				.replace(SMS_REPLACE_PAYEE,payeeMobile)
+				.replace(SMS_REPLACE_AMOUNT,amount.toString())
+				.replace(SMS_REPLACE_CURRENCY,currency)
 				.replace(SMS_REPLACE_TIME,dateTime);
 		sendSMS(phone, content);
 	}
