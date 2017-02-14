@@ -11,7 +11,7 @@
 DROP TABLE IF EXISTS `e_user_device`;
 CREATE TABLE `e_user_device` (
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
-  `device_id` varchar(255) NOT NULL DEFAULT '' COMMENT '设备名',
+  `device_id` varchar(255) NOT NULL DEFAULT '' COMMENT '设备ID',
   `device_name` varchar(255) NOT NULL DEFAULT '' COMMENT '设备名',
   PRIMARY KEY (`user_id`,`device_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户设备';
