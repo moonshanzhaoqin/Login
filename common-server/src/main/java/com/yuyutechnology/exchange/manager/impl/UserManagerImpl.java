@@ -321,7 +321,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public boolean checkGoldpayPwd(Integer userId, String goldpayPassword) {
-		logger.info("Check {}  user's PAY password {} ==>", userId, goldpayPassword);
+		logger.info("Check {}  user's Goldpay password {} ==>", userId, goldpayPassword);
 		Bind bind = bindDAO.getBindByUserId(userId);
 		if (bind != null && goldpayManager.checkGoldpay(bind.getGoldpayName(), goldpayPassword)) {
 			return true;
