@@ -335,6 +335,57 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 			}
 			
 			break;
+			
+		case "largeExchangeWarning":
+			//短信
+			if(earlyWarningMode == 1){
+				for (String supervisorId : arr) {
+					CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
+					smsManager.sendSMS4LargeExchange(crmSupervisor.getSupervisorMobile(), 
+							params.get("payerMobile").toString(), 
+							DateFormatUtils.formatDateGMT8(new Date()), 
+							new BigDecimal(params.get("amountOut").toString()), 
+							params.get("currencyOut").toString(), 
+							new BigDecimal(params.get("amountIn").toString()), 
+							params.get("currencyIn").toString());
+					
+				}
+			}
+			//邮件
+			if(earlyWarningMode == 2){
+				for (String supervisorId : arr) {
+					CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId.trim()));
+					mailManager.mail4LargeExchange(crmSupervisor.getSupervisorEmail(), 
+							params.get("payerMobile").toString(), 
+							DateFormatUtils.formatDateGMT8(new Date()), 
+							new BigDecimal(params.get("amountOut").toString()), 
+							params.get("currencyOut").toString(), 
+							new BigDecimal(params.get("amountIn").toString()), 
+							params.get("currencyIn").toString());
+				}
+			}
+			//短信邮件
+			if(earlyWarningMode == 3){
+				for (String supervisorId : arr) {
+					CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
+					mailManager.mail4LargeExchange(crmSupervisor.getSupervisorEmail(), 
+							params.get("payerMobile").toString(), 
+							DateFormatUtils.formatDateGMT8(new Date()), 
+							new BigDecimal(params.get("amountOut").toString()), 
+							params.get("currencyOut").toString(), 
+							new BigDecimal(params.get("amountIn").toString()), 
+							params.get("currencyIn").toString());
+					smsManager.sendSMS4LargeExchange(crmSupervisor.getSupervisorMobile(), 
+							params.get("payerMobile").toString(), 
+							DateFormatUtils.formatDateGMT8(new Date()), 
+							new BigDecimal(params.get("amountOut").toString()), 
+							params.get("currencyOut").toString(), 
+							new BigDecimal(params.get("amountIn").toString()), 
+							params.get("currencyIn").toString());
+				}
+			}
+			
+			break;
 
 		default:
 			break;
