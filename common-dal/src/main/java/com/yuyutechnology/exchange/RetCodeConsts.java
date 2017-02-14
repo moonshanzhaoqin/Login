@@ -130,6 +130,13 @@ public class RetCodeConsts {
 	public static final String EXCHANGE_ENTER_THE_AMOUNT_OF_VIOLATION = "02005";
 
 	public static final String EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY = "02006";
+	
+	public static final String EXCHANGE_LIMIT_PER_PAY = "02007";
+	
+	public static final String EXCHANGE_LIMIT_DAILY_PAY = "02008";
+	
+	public static final String EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY = "02009";
+	
 
 	// 交易03
 	/**

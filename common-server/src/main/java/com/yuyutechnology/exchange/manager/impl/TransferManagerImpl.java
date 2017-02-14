@@ -764,6 +764,7 @@ public class TransferManagerImpl implements TransferManager{
 		
 	}
 	
+	@SuppressWarnings("serial")
 	@Async
 	private void largeTransWarn(final User payer,final Transfer transfer){
 		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.

@@ -16,11 +16,14 @@ import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.ExchangeDAO;
+import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.dto.WalletInfo;
+import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
+import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.UserManager;
@@ -42,12 +45,17 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	@Autowired
 	WalletSeqDAO walletSeqDAO;
 	@Autowired
+	TransferDAO transferDAO;
+	@Autowired
 	ExchangeRateManager exchangeRateManager;
 	@Autowired
 	UserManager userManager;
 	@Autowired
 	CommonManager commonManager;
-
+	@Autowired
+	ConfigManager configManager;
+	
+	
 	public static Logger logger = LoggerFactory.getLogger(ExchangeManagerImpl.class);
 
 	@Override
@@ -72,13 +80,43 @@ public class ExchangeManagerImpl implements ExchangeManager {
 
 		HashMap<String, String> map = new HashMap<String, String>();
 		
+		
+		//每次兑换金额限制
+		BigDecimal exchangeLimitPerPay =  BigDecimal.valueOf(configManager.
+				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITPERPAY, 100000d));
+		if((exchangeRateManager.getExchangeResult(currencyOut, amountOut)).compareTo(exchangeLimitPerPay) == 1){
+			logger.warn("Exceeds the maximum amount of each exchange");
+			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_PER_PAY);
+			map.put("msg", "Exceeds the maximum amount of each exchange");
+			return map;
+		}
+		//每天累计兑换金额限制
+		BigDecimal exchangeLimitDailyPay =  BigDecimal.valueOf(configManager.
+				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITDAILYPAY, 100000d));
+		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount("exchange"+userId);
+		if((accumulatedAmount.add(exchangeRateManager.getExchangeResult(currencyOut, amountOut))).compareTo(exchangeLimitDailyPay) == 1){
+			logger.warn("More than the maximum daily exchange limit");
+			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_DAILY_PAY);
+			map.put("msg", "More than the maximum daily exchange limit");
+			return map;
+		}
+		//每天累计兑换次数限制
+		Double exchangeLimitNumOfPayPerDay =  configManager.
+				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITNUMBEROFPAYPERDAY, 100000d);
+		Integer totalNumOfDailyExchange = exchangeDAO.getTotalNumOfDailyExchange();
+		if(exchangeLimitNumOfPayPerDay <= new Double(totalNumOfDailyExchange)){
+			logger.warn("Exceeds the maximum number of exchange per day");
+			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY);
+			map.put("msg", "Exceeds the maximum number of exchange per day");
+			return map;
+		}
+
 		if(!commonManager.verifyCurrency(currencyOut) || !commonManager.verifyCurrency(currencyIn)){
 			logger.warn("This currency is not a tradable currency");
 			map.put("retCode", RetCodeConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
 			map.put("msg", "This currency is not a tradable currency");
 			return map;
 		}
-
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currencyOut);
 		if (wallet == null) {
 			map.put("retCode", RetCodeConsts.EXCHANGE_WALLET_CAN_NOT_BE_QUERIED);
@@ -160,6 +198,11 @@ public class ExchangeManagerImpl implements ExchangeManager {
 					amountOut, currencyIn, amountIn);
 			walletSeqDAO.addWalletSeq4Exchange(systemUserId, ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId,
 					currencyIn, amountIn, currencyOut, amountOut);
+			
+			//添加累计金额
+			BigDecimal exchangeResult = exchangeRateManager.getExchangeResult(currencyOut,amountOut);
+			transferDAO.updateAccumulatedAmount("exchange"+userId, exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
+			
 		}
 
 		return result;
@@ -174,7 +217,6 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		
 		List<Object> values = new ArrayList<Object>();
 		values.add(userId);
-		/////////////////////////////////////////////////////////////
 		values.add(0);
 		
 		if(!period.equals("all")){
@@ -212,8 +254,6 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		
 		sb.append(" order by createTime desc");
 		
-//		logger.info("生成SQL:{}",sb.toString());
-
 		HashMap<String, Object> map = exchangeDAO.getExchangeRecordsByPage(sb.toString(), values, currentPage, pageSize);
 		
 		return map;
