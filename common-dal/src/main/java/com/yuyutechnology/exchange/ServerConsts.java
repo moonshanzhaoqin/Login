@@ -34,7 +34,7 @@ public class ServerConsts {
 	 * 支付冻结
 	 */
 	public static final int PAY_AVAILABLE_OF_UNAVAILABLE = 0;
-	//检查密码
+	//检查密码，返回状态
 	public static final int CHECKPWD_STATUS_CORRECT = 0;
 	public static final int CHECKPWD_STATUS_INCORRECT  = 1;
 	public static final int CHECKPWD_STATUS_FREEZE = 2;
@@ -150,5 +150,18 @@ public class ServerConsts {
 	public static final String PAY_FREEZE = "PAY_FREEZE";
 	
 	
+	
+	/**
+	 * 校验支付密码功能——换绑手机
+	 */
+	public static final String PAYPWD_CHANGEPHONE = "PAYPWD_CHANGEPHONE";
+	/**
+	 * 校验支付密码功能——换绑Goldpay
+	 */
+	public static final String PAYPWD_CHANGEGOLDPAY = "PAYPWD_CHANGEGOLDPAY";
+	/**
+	 * 校验支付密码功能——修改支付密码
+	 */
+	public static final String PAYPWD_MODIFYPAYPWD = "PAYPWD_MODIFYPAYPWD";
 
 }

@@ -84,8 +84,9 @@ public interface UserManager {
 	 * 
 	 * @param userId
 	 * @param userPayPwd
+	 * @return 
 	 */
-	public void updateUserPayPwd(Integer userId, String userPayPwd);
+	public boolean updateUserPayPwd(Integer userId, String userPayPwd);
 
 	// /**
 	// * 校验支付密码

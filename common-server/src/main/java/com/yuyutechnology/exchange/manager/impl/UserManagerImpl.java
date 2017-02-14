@@ -206,6 +206,7 @@ public class UserManagerImpl implements UserManager {
 			logger.info("***match***");
 
 			redisDAO.deleteKey(ServerConsts.WRONG_PASSWORD + userId);
+//			redisDAO.deleteKey(ServerConsts.LOGIN_FREEZE  + userId);
 			result.setStatus(ServerConsts.CHECKPWD_STATUS_CORRECT);
 			return result;
 		} else {
@@ -545,11 +546,17 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public void updateUserPayPwd(Integer userId, String userPayPwd) {
+	public boolean updateUserPayPwd(Integer userId, String userPayPwd) {
 		logger.info("Update user {} pay password {}", userId, userPayPwd);
 		User user = userDAO.getUser(userId);
-		user.setUserPayPwd(PasswordUtils.encrypt(userPayPwd, user.getPasswordSalt()));
-		userDAO.updateUser(user);
+		
+		
+		if(StringUtils.isEmpty(user.getUserPayPwd()) || !user.getUserPayPwd().equals(userPayPwd)){
+			user.setUserPayPwd(PasswordUtils.encrypt(userPayPwd, user.getPasswordSalt()));
+			userDAO.updateUser(user);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
