@@ -1,8 +1,5 @@
 package com.yuyutechnology.exchange;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ServerConsts {
 	// 用户类型
 	/**
@@ -28,7 +25,7 @@ public class ServerConsts {
 	/**
 	 * 登录冻结
 	 */
-	public static final int LOGIN_AVAILABLE_OF_UNAVAILABLE = 0;
+	public static final int LOGIN_AVAILABLE_OF_UNAVAILABLE  = 0;
 	/**
 	 * 支付可用
 	 */
