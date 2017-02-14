@@ -9,8 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.print.attribute.standard.RequestingUserName;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.loader.custom.Return;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,6 +143,16 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
+	public boolean checkGoldpay(Integer userId, String goldpayToken) {
+		logger.info("checkGoldpay==>");
+		Bind bind = bindDAO.getBindByUserId(userId);
+		if (bind != null && bind.getToken().equals(goldpayToken)) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
 	public void changePhone(Integer userId, String areaCode, String userPhone) {
 		logger.info("changePhone {}==>", areaCode + userPhone);
 		User user = userDAO.getUser(userId);
@@ -181,10 +194,10 @@ public class UserManagerImpl implements UserManager {
 					result.setInfo(time.getTime().getTime());
 					return result;
 				}
-				
+
 				redisDAO.deleteKey(ServerConsts.LOGIN_FREEZE + userId);
 			}
-			
+
 			user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE);
 			userDAO.updateUser(user);
 		}
@@ -248,10 +261,10 @@ public class UserManagerImpl implements UserManager {
 					result.setInfo(time.getTime().getTime());
 					return result;
 				}
-				
+
 				redisDAO.deleteKey(ServerConsts.PAY_FREEZE + userId);
 			}
-			
+
 			user.setLoginAvailable(ServerConsts.PAY_AVAILABLE_OF_AVAILABLE);
 			userDAO.updateUser(user);
 		}
@@ -290,34 +303,35 @@ public class UserManagerImpl implements UserManager {
 			redisDAO.saveData(ServerConsts.WRONG_PAYPWD + userId, t);
 			logger.info("***Does not match,{}***", t);
 			result.setStatus(ServerConsts.CHECKPWD_STATUS_INCORRECT);
-			result.setInfo(
-					configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PAYPWD_FREQUENCY, 3l).longValue() - t);
+			result.setInfo(configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PAYPWD_FREQUENCY, 3l).longValue() - t);
 			return result;
 		}
 	}
-	
-//	@Override
-//	public boolean checkUserPassword(Integer userId, String userPayPwd) {
-//		User user = userDAO.getUser(userId);
-//		if (PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())) {
-//			return true;
-//		}
-//		return false;
-//
-//	}
-//
-//	@Override
-//	public boolean checkUserPayPwd(Integer userId, String userPayPwd) {
-//		logger.info("Check {}  user's PAY password {} ==>", userId, userPayPwd);
-//		User user = userDAO.getUser(userId);
-//		if (PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())) {
-//			logger.info("***match***");
-//			return true;
-//		}
-//
-//		logger.info("***Does not match***");
-//		return false;
-//	}
+
+	// @Override
+	// public boolean checkUserPassword(Integer userId, String userPayPwd) {
+	// User user = userDAO.getUser(userId);
+	// if (PasswordUtils.check(userPayPwd, user.getUserPayPwd(),
+	// user.getPasswordSalt())) {
+	// return true;
+	// }
+	// return false;
+	//
+	// }
+	//
+	// @Override
+	// public boolean checkUserPayPwd(Integer userId, String userPayPwd) {
+	// logger.info("Check {} user's PAY password {} ==>", userId, userPayPwd);
+	// User user = userDAO.getUser(userId);
+	// if (PasswordUtils.check(userPayPwd, user.getUserPayPwd(),
+	// user.getPasswordSalt())) {
+	// logger.info("***match***");
+	// return true;
+	// }
+	//
+	// logger.info("***Does not match***");
+	// return false;
+	// }
 
 	@Override
 	public boolean checkGoldpayPwd(Integer userId, String goldpayPassword) {
