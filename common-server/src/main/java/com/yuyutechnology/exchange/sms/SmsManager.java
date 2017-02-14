@@ -43,8 +43,6 @@ public class SmsManager {
 	private final String SMS_REPLACE_PIN = "[PIN]";
 	private final String SMS_REPLACE_TIME = "[TIME]";
 	private final String SMS_REPLACE_FROM = "[FROM]";
-	private final String SMS_REPLACE_CURRENCY = "[CURRENCY]";
-	private final String SMS_REPLACE_AMOUNT = "[AMOUNT]";
 	private final String SMS_REPLACE_LINK = "[LINK]";
 	
 	private final String SMS_REPLACE_DIFFERENCE = "[DIFFERENCE]";
@@ -52,6 +50,12 @@ public class SmsManager {
 	
 	private final String SMS_REPLACE_PAYER = "[PAYER]";
 	private final String SMS_REPLACE_PAYEE = "[PAYEE]";
+	
+	private final String SMS_REPLACE_CURRENCY = "[CURRENCY]";
+	private final String SMS_REPLACE_AMOUNT = "[AMOUNT]";
+	private final String SMS_REPLACE_CURRENCYIN = "[CURRENCYIN]";
+	private final String SMS_REPLACE_AMOUNTIN = "[AMOUNTIN]";
+	
 
 	// en
 	private StringBuffer phoneVerify_en = new StringBuffer();
@@ -72,6 +76,8 @@ public class SmsManager {
 	
 	// zh_CN
 	private StringBuffer largeTrans_cn = new StringBuffer();
+	// zh_CN
+	private StringBuffer largeExchange_cn = new StringBuffer();
 	
 
 	@PostConstruct
@@ -88,6 +94,7 @@ public class SmsManager {
 		readTemplate("template/sms/zh_CN/criticalAlarm.template", criticalAlarm_cn);
 		
 		readTemplate("template/sms/zh_CN/largeTrans.template", largeTrans_cn);
+		readTemplate("template/sms/zh_CN/largeExchangeWarn.template", largeExchange_cn);
 	}
 	
 	private void readTemplate(String filePath, StringBuffer content) {
@@ -156,6 +163,21 @@ public class SmsManager {
 				.replace(SMS_REPLACE_AMOUNT,amount.toString())
 				.replace(SMS_REPLACE_CURRENCY,currency)
 				.replace(SMS_REPLACE_TIME,dateTime);
+		sendSMS(phone, content);
+	}
+	
+	@Async
+	public void sendSMS4LargeExchange(String phone,String payerMobile,String dateTime,BigDecimal amountOut,String currencyOut,
+			BigDecimal amountIn,String currencyIn){
+		String largeExchangeContent = largeExchange_cn.toString();
+		String content = largeExchangeContent
+				.replace(SMS_REPLACE_PAYER,payerMobile)
+				.replace(SMS_REPLACE_TIME,dateTime)
+				.replace(SMS_REPLACE_AMOUNT,amountOut.toString())
+				.replace(SMS_REPLACE_CURRENCY,currencyOut)
+				.replace(SMS_REPLACE_AMOUNTIN,amountIn.toString())
+				.replace(SMS_REPLACE_CURRENCYIN,currencyIn);
+				
 		sendSMS(phone, content);
 	}
 

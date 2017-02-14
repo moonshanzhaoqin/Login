@@ -38,6 +38,9 @@ public class MailManager {
 	
 	private StringBuffer largeTransWarnTital = new StringBuffer();
 	private StringBuffer largeTransWarnContent = new StringBuffer();
+	
+	private StringBuffer largeExchangeWarnTital = new StringBuffer();
+	private StringBuffer largeExchangeWarnContent = new StringBuffer();
 
 	private final String MAIL_REPLACE_EMAIL = "[EMAIL]";
 	private final String MAIL_REPLACE_NAME = "[NAME]";
@@ -53,7 +56,8 @@ public class MailManager {
 	private final String MAIL_REPLACE_AMOUNT = "[AMOUNT]";
 	private final String MAIL_REPLACE_CURRENCY = "[CURRENCY]";
 	
-	
+	private final String MAIL_REPLACE_AMOUNTIN = "[AMOUNTIN]";
+	private final String MAIL_REPLACE_CURRENCYIN = "[CURRENCYIN]";
 
 	@PostConstruct
 	@Scheduled(cron = "0 1/10 * * * ?")
@@ -112,6 +116,21 @@ public class MailManager {
 		List<String> toMails = new ArrayList<>();
 		toMails.add(email);
 		sendMail(toMails, largeTransWarnTital.toString(), content);
+	}
+	
+	public void mail4LargeExchange(String email,String payerMobile,String dateTime,
+			BigDecimal amountOut,String currencyOut,BigDecimal amountIn,String currencyIn) {
+		String content = largeExchangeWarnContent.toString()
+				.replace(MAIL_REPLACE_PAYER,payerMobile)
+				.replace(MAIL_REPLACE_TIME,dateTime)
+				.replace(MAIL_REPLACE_AMOUNT,amountOut.toString())
+				.replace(MAIL_REPLACE_CURRENCY,currencyOut)
+				.replace(MAIL_REPLACE_AMOUNTIN,amountIn.toString())
+				.replace(MAIL_REPLACE_CURRENCYIN,currencyIn);
+		logger.info("content : {},tital : {}", content,largeExchangeWarnTital.toString());
+		List<String> toMails = new ArrayList<>();
+		toMails.add(email);
+		sendMail(toMails, largeExchangeWarnTital.toString(), content);
 	}
 	
 	

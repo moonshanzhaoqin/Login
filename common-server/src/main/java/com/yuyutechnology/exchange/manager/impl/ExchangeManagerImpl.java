@@ -10,10 +10,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dao.CrmAlarmDAO;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.ExchangeDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
@@ -24,11 +26,17 @@ import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
+import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.UserManager;
+import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.pojo.Exchange;
+import com.yuyutechnology.exchange.pojo.Transfer;
+import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.push.PushManager;
+import com.yuyutechnology.exchange.sms.SmsManager;
 import com.yuyutechnology.exchange.utils.DateFormatUtils;
 
 @Service
@@ -47,6 +55,9 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	@Autowired
 	TransferDAO transferDAO;
 	@Autowired
+	CrmAlarmDAO crmAlarmDAO;
+	
+	@Autowired
 	ExchangeRateManager exchangeRateManager;
 	@Autowired
 	UserManager userManager;
@@ -54,7 +65,8 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	CommonManager commonManager;
 	@Autowired
 	ConfigManager configManager;
-	
+	@Autowired
+	CrmAlarmManager crmAlarmManager;
 	
 	public static Logger logger = LoggerFactory.getLogger(ExchangeManagerImpl.class);
 
@@ -203,6 +215,8 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			BigDecimal exchangeResult = exchangeRateManager.getExchangeResult(currencyOut,amountOut);
 			transferDAO.updateAccumulatedAmount("exchange"+userId, exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
 			
+			//预警
+			
 		}
 
 		return result;
@@ -293,6 +307,42 @@ public class ExchangeManagerImpl implements ExchangeManager {
 
 		return map;
 
+	}
+	
+	
+	@SuppressWarnings("serial")
+	@Async
+	private void largeExchangeWarn(final User payer,final Transfer transfer){
+		BigDecimal exchangeLimitPerPay =  BigDecimal.valueOf(configManager.
+				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITPERPAY, 100000d));
+		BigDecimal percentage = (exchangeRateManager.getExchangeResult(transfer.getCurrency(), transfer.getTransferAmount()))
+				.divide(exchangeLimitPerPay).multiply(new BigDecimal("100"));
+		
+		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(1, 1);
+		
+		if(!list.isEmpty()){
+			for (int i = 0; i < list.size(); i++) {
+				CrmAlarm crmAlarm = list.get(i);
+				
+				if((crmAlarm.getLowerLimit().compareTo(percentage)==0 || 
+						crmAlarm.getLowerLimit().compareTo(percentage)==-1) && 
+						crmAlarm.getUpperLimit().compareTo(percentage) == 1){
+					
+//					crmAlarmManager.alarmNotice(crmAlarm.getSupervisorIdArr(),"largeTransactionWarning",
+//							crmAlarm.getAlarmMode(),new HashMap<String,Object>(){
+//						{
+//							put("payerMobile", payer.getAreaCode()+payer.getUserPhone());
+//							put("payeeMobile", transfer.getAreaCode()+transfer.getPhone());
+//							put("amount", transfer.getTransferAmount().toString());
+//							put("currency", transfer.getCurrency());
+//						}
+//					});
+					
+					
+				}
+				
+			}
+		}
 	}
 
 }
