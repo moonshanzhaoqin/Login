@@ -143,16 +143,6 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public boolean checkGoldpay(Integer userId, String goldpayToken) {
-		logger.info("checkGoldpay==>");
-		Bind bind = bindDAO.getBindByUserId(userId);
-		if (bind != null && bind.getToken().equals(goldpayToken)) {
-			return true;
-		}
-		return false;
-	}
-
-	@Override
 	public void changePhone(Integer userId, String areaCode, String userPhone) {
 		logger.info("changePhone {}==>", areaCode + userPhone);
 		User user = userDAO.getUser(userId);
@@ -206,7 +196,7 @@ public class UserManagerImpl implements UserManager {
 			logger.info("***match***");
 
 			redisDAO.deleteKey(ServerConsts.WRONG_PASSWORD + userId);
-//			redisDAO.deleteKey(ServerConsts.LOGIN_FREEZE  + userId);
+			// redisDAO.deleteKey(ServerConsts.LOGIN_FREEZE + userId);
 			result.setStatus(ServerConsts.CHECKPWD_STATUS_CORRECT);
 			return result;
 		} else {
@@ -309,36 +299,12 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
-	// @Override
-	// public boolean checkUserPassword(Integer userId, String userPayPwd) {
-	// User user = userDAO.getUser(userId);
-	// if (PasswordUtils.check(userPayPwd, user.getUserPayPwd(),
-	// user.getPasswordSalt())) {
-	// return true;
-	// }
-	// return false;
-	//
-	// }
-	//
-	// @Override
-	// public boolean checkUserPayPwd(Integer userId, String userPayPwd) {
-	// logger.info("Check {} user's PAY password {} ==>", userId, userPayPwd);
-	// User user = userDAO.getUser(userId);
-	// if (PasswordUtils.check(userPayPwd, user.getUserPayPwd(),
-	// user.getPasswordSalt())) {
-	// logger.info("***match***");
-	// return true;
-	// }
-	//
-	// logger.info("***Does not match***");
-	// return false;
-	// }
-
 	@Override
-	public boolean checkGoldpayPwd(Integer userId, String goldpayPassword) {
+	public boolean checkGoldpay(Integer userId, String goldpayName, String goldpayPassword) {
 		logger.info("Check {}  user's Goldpay password {} ==>", userId, goldpayPassword);
 		Bind bind = bindDAO.getBindByUserId(userId);
-		if (bind != null && goldpayManager.checkGoldpay(bind.getGoldpayName(), goldpayPassword)) {
+		if (bind != null && bind.getGoldpayName().equals(goldpayName)
+				&& goldpayManager.checkGoldpay(goldpayName, goldpayPassword)) {
 			return true;
 		}
 		return false;
@@ -546,17 +512,11 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public boolean updateUserPayPwd(Integer userId, String userPayPwd) {
+	public void updateUserPayPwd(Integer userId, String userPayPwd) {
 		logger.info("Update user {} pay password {}", userId, userPayPwd);
 		User user = userDAO.getUser(userId);
-		
-		
-		if(StringUtils.isEmpty(user.getUserPayPwd()) || !user.getUserPayPwd().equals(userPayPwd)){
-			user.setUserPayPwd(PasswordUtils.encrypt(userPayPwd, user.getPasswordSalt()));
-			userDAO.updateUser(user);
-			return true;
-		}
-		return false;
+		user.setUserPayPwd(PasswordUtils.encrypt(userPayPwd, user.getPasswordSalt()));
+		userDAO.updateUser(user);
 	}
 
 	@Override
@@ -729,11 +689,21 @@ public class UserManagerImpl implements UserManager {
 		userDeviceDAO.addUserDevice(new UserDevice(new UserDeviceId(userId, deviceId), deviceName));
 	}
 
-	@Override
-	public boolean isLoginAvailiable(Integer userId) {
-		User user = userDAO.getUser(userId);
-		if (user.getLoginAvailable() == ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE) {
+	// @Override
+	// public boolean isLoginAvailiable(Integer userId) {
+	// User user = userDAO.getUser(userId);
+	// if (user.getLoginAvailable() ==
+	// ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE) {
+	//
+	// }
+	// return false;
+	// }
 
+	@Override
+	public boolean isUserPayPwdEqualsOld(Integer userId, String newUserPayPwd) {
+		User user = userDAO.getUser(userId);
+		if (PasswordUtils.check(newUserPayPwd, user.getUserPassword(), user.getPasswordSalt())) {
+			return true;
 		}
 		return false;
 	}

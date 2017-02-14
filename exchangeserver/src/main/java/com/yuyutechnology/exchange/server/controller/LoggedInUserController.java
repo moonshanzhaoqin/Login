@@ -31,7 +31,7 @@ import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.BindGoldpayRequest;
 import com.yuyutechnology.exchange.server.controller.request.ChangeGoldpayRequest;
 import com.yuyutechnology.exchange.server.controller.request.ChangePhoneRequest;
-import com.yuyutechnology.exchange.server.controller.request.CheckGoldpayPwdRequest;
+import com.yuyutechnology.exchange.server.controller.request.CheckGoldpayRequest;
 import com.yuyutechnology.exchange.server.controller.request.CheckPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetUserConfigRequest;
@@ -46,7 +46,7 @@ import com.yuyutechnology.exchange.server.controller.response.BindGoldpayRespons
 import com.yuyutechnology.exchange.server.controller.response.ChangeGoldpayResponse;
 import com.yuyutechnology.exchange.server.controller.response.ChangePhoneResponse;
 import com.yuyutechnology.exchange.server.controller.response.CheckChangePhoneResponse;
-import com.yuyutechnology.exchange.server.controller.response.CheckGoldpayPwdResponse;
+import com.yuyutechnology.exchange.server.controller.response.CheckGoldpayResponse;
 import com.yuyutechnology.exchange.server.controller.response.CheckPayPwdResponse;
 import com.yuyutechnology.exchange.server.controller.response.ContactUsResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetMsgFlagResponse;
@@ -134,7 +134,7 @@ public class LoggedInUserController {
 	@ResponseBody
 	@ApiOperation(value = "换绑goldpay", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/changeGoldpay", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public ChangeGoldpayResponse bindGoldpay(@PathVariable String token,
+	public ChangeGoldpayResponse changeGoldpay(@PathVariable String token,
 			@RequestBody ChangeGoldpayRequest changeGoldpayRequest) {
 		logger.info("========bindGoldpay : {}============", token);
 		ChangeGoldpayResponse rep = new ChangeGoldpayResponse();
@@ -146,7 +146,8 @@ public class LoggedInUserController {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_CHANGEGOLDPAY,
 					changeGoldpayRequest.getCheckToken())) {
-				String retCode = userManager.bindGoldpay(sessionData.getUserId(), changeGoldpayRequest.getGoldpayToken());
+				String retCode = userManager.bindGoldpay(sessionData.getUserId(),
+						changeGoldpayRequest.getGoldpayToken());
 				switch (retCode) {
 				case RetCodeConsts.RET_CODE_SUCCESS:
 					// 获取用户信息
@@ -336,35 +337,36 @@ public class LoggedInUserController {
 		return rep;
 	}
 
-	// TODO
 	/**
-	 * checkGoldpayPwd 校验Goldpay密码
+	 * checkGoldpayPwd 校验Goldpay
 	 * 
 	 * @param token
 	 * @param checkPayPwdRequest
 	 * @return
 	 */
 	@ResponseBody
-	@ApiOperation(value = "校验Goldpay密码", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/user/checkGoldpayPwd", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public CheckGoldpayPwdResponse checkGoldpayPwd(@PathVariable String token,
-			@RequestBody CheckGoldpayPwdRequest checkPayGoldpayRequest) {
+	@ApiOperation(value = "校验Goldpay", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/checkGoldpay", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public CheckGoldpayResponse checkGoldpay(@PathVariable String token,
+			@RequestBody CheckGoldpayRequest checkPayGoldpayRequest) {
 		logger.info("========checkPassword : {}============", token);
-		CheckGoldpayPwdResponse rep = new CheckGoldpayPwdResponse();
+		CheckGoldpayResponse rep = new CheckGoldpayResponse();
 		if (checkPayGoldpayRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
-			if (userManager.checkGoldpayPwd(sessionData.getUserId(), checkPayGoldpayRequest.getGoldpayPwd())) {
+			if (userManager.checkGoldpay(sessionData.getUserId(), checkPayGoldpayRequest.getGoldpayName(),checkPayGoldpayRequest.getGoldpayPwd())) {
+				String checkToken = sessionManager.createCheckToken(sessionData.getUserId(),
+						ServerConsts.GOLDPAYPWD_MODIFYPAYPWD);
 				logger.info("********Operation succeeded********");
 				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+				rep.setMessage(checkToken);
 			} else {
-				logger.info(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
-				rep.setRetCode(RetCodeConsts.GOLDPAY_PASSWORD_NOT_MATCH);
-				rep.setMessage(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
+				logger.info(MessageConsts.GOLDPAY_IS_INCORRECT);
+				rep.setRetCode(RetCodeConsts.GOLDPAY_IS_INCORRECT);
+				rep.setMessage(MessageConsts.GOLDPAY_IS_INCORRECT);
 			}
 		}
 		return rep;
@@ -512,15 +514,17 @@ public class LoggedInUserController {
 				// PayPwd 6位数字
 				if (modifyPayPwdByOldRequest.getNewUserPayPwd().length() == 6
 						&& StringUtils.isNumeric(modifyPayPwdByOldRequest.getNewUserPayPwd())) {
-					if (userManager.updateUserPayPwd(sessionData.getUserId(),
+					if (userManager.isUserPayPwdEqualsOld(sessionData.getUserId(),
 							modifyPayPwdByOldRequest.getNewUserPayPwd())) {
-						logger.info("********Operation succeeded********");
-						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-					} else {
 						logger.info(MessageConsts.NEW_PWD_EQUALS_OLD);
 						rep.setRetCode(RetCodeConsts.NEW_PWD_EQUALS_OLD);
 						rep.setMessage(MessageConsts.NEW_PWD_EQUALS_OLD);
+					} else {
+						userManager.updateUserPayPwd(sessionData.getUserId(),
+								modifyPayPwdByOldRequest.getNewUserPayPwd());
+						logger.info("********Operation succeeded********");
+						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 					}
 				} else {
 					logger.info(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
@@ -547,7 +551,7 @@ public class LoggedInUserController {
 	 * @return
 	 */
 	@ResponseBody
-	@ApiOperation(value = "通过Goldpay密码更换支付密码", httpMethod = "POST", notes = "")
+	@ApiOperation(value = "通过Goldpay重置支付密码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/modifyPayPwdByGoldpay", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public ModifyPayPwdByGoldpayResponse modifyPayPwdByGoldpay(@PathVariable String token,
 			@RequestBody ModifyPayPwdByGoldpayRequest modifyPayPwdByGoldRequest) {
@@ -559,7 +563,8 @@ public class LoggedInUserController {
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
-			if (userManager.checkGoldpay(sessionData.getUserId(), modifyPayPwdByGoldRequest.getGoldpayToken())) {
+			if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.GOLDPAYPWD_MODIFYPAYPWD,
+					modifyPayPwdByGoldRequest.getCheckToken())) {
 				// PayPwd 6位数字
 				if (modifyPayPwdByGoldRequest.getNewUserPayPwd().length() == 6
 						&& StringUtils.isNumeric(modifyPayPwdByGoldRequest.getNewUserPayPwd())) {
@@ -572,10 +577,11 @@ public class LoggedInUserController {
 					rep.setRetCode(RetCodeConsts.PAY_PASSWORD_IS_ILLEGAL);
 					rep.setMessage(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
 				}
+				sessionManager.delCheckToken(sessionData.getUserId(), ServerConsts.GOLDPAYPWD_MODIFYPAYPWD);
 			} else {
-				logger.info(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
-				rep.setRetCode(RetCodeConsts.GOLDPAY_PASSWORD_NOT_MATCH);
-				rep.setMessage(MessageConsts.GOLDPAY_PASSWORD_NOT_MATCH);
+				logger.info(MessageConsts.RET_CODE_FAILUE);
+				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 			}
 		}
 		return rep;

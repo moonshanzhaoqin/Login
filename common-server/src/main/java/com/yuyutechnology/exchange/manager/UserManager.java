@@ -84,9 +84,9 @@ public interface UserManager {
 	 * 
 	 * @param userId
 	 * @param userPayPwd
-	 * @return 
+	 * @return
 	 */
-	public boolean updateUserPayPwd(Integer userId, String userPayPwd);
+	public void updateUserPayPwd(Integer userId, String userPayPwd);
 
 	// /**
 	// * 校验支付密码
@@ -115,11 +115,13 @@ public interface UserManager {
 	// public boolean checkUserPassword(Integer userId, String oldPassword) ;
 
 	/**
+	 * 校验Goldpay
+	 * 
 	 * @param userId
 	 * @param goldpayPassword
 	 * @return
 	 */
-	public boolean checkGoldpayPwd(Integer userId, String goldpayPassword);
+	public boolean checkGoldpay(Integer userId, String goldpayName, String goldpayPassword);
 
 	/**
 	 * 获取好友列表
@@ -257,12 +259,19 @@ public interface UserManager {
 	 * @param userId
 	 * @return
 	 */
-	public boolean isLoginAvailiable(Integer userId);
+	// public boolean isLoginAvailiable(Integer userId);
 
 	CheckPwdResult checkLoginPassword(Integer userId, String userPassword);
 
 	CheckPwdResult checkPayPassword(Integer userId, String userPayPwd);
 
-	boolean checkGoldpay(Integer userId, String goldpayToken);
+	/**
+	 * 判断新支付密码是否与旧支付密码相同
+	 * 
+	 * @param userId
+	 * @param newUserPayPwd
+	 * @return
+	 */
+	public boolean isUserPayPwdEqualsOld(Integer userId, String newUserPayPwd);
 
 }

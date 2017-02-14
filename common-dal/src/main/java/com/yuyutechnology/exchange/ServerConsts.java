@@ -163,5 +163,8 @@ public class ServerConsts {
 	 * 校验支付密码功能——修改支付密码
 	 */
 	public static final String PAYPWD_MODIFYPAYPWD = "PAYPWD_MODIFYPAYPWD";
-
+	/**
+	 * 校验Goldpay密码——修改支付密码
+	 */
+	public static final String GOLDPAYPWD_MODIFYPAYPWD = "GOLDPAYPWD_MODIFYPAYPWD";
 }

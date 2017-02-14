@@ -92,9 +92,9 @@ public class RetCodeConsts {
 	 */
 	public static final String PHONE_IS_NOT_FRIEND = "01016";
 	/**
-	 * Goldpay密码错误
+	 * Goldpay校验错误
 	 */
-	public static final String GOLDPAY_PASSWORD_NOT_MATCH = "01017";
+	public static final String GOLDPAY_IS_INCORRECT = "01017";
 	/**
 	 * Goldpay未绑定
 	 */

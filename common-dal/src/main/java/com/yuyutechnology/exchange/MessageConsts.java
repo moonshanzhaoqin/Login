@@ -88,9 +88,9 @@ public class MessageConsts {
 	 */
 	public static final String PHONE_IS_NOT_FRIEND = "PHONE_IS_NOT_FRIEND";
 	/**
-	 * Goldpay密码错误
+	 *  Goldpay校验错误
 	 */
-	public static final String GOLDPAY_PASSWORD_NOT_MATCH = "GOLDPAY_PASSWORD_NOT_MATCH";
+	public static final String GOLDPAY_IS_INCORRECT = "GOLDPAY_IS_INCORRECT";
 	/**
 	 *新设备登录
 	 */
