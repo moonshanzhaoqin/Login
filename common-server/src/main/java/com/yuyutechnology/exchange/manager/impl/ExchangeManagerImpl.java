@@ -156,9 +156,9 @@ public class ExchangeManagerImpl implements ExchangeManager {
 
 			// 添加seq记录
 			walletSeqDAO.addWalletSeq4Exchange(userId, ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId, currencyOut,
-					amountOut, currencyIn, amountIn);
+					new BigDecimal(result.get("out")), currencyIn, new BigDecimal(result.get("in")));
 			walletSeqDAO.addWalletSeq4Exchange(systemUserId, ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId,
-					currencyIn, amountIn, currencyOut, amountOut);
+					currencyIn, new BigDecimal(result.get("in")), currencyOut, new BigDecimal(result.get("out")));
 		}
 
 		return result;
