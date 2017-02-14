@@ -34,7 +34,7 @@ public class ServerConsts {
 	 * 支付冻结
 	 */
 	public static final int PAY_AVAILABLE_OF_UNAVAILABLE = 0;
-	//检查密码
+	//检查密码，返回状态
 	public static final int CHECKPWD_STATUS_CORRECT = 0;
 	public static final int CHECKPWD_STATUS_INCORRECT  = 1;
 	public static final int CHECKPWD_STATUS_FREEZE = 2;
