@@ -66,6 +66,7 @@ public class MailManager {
 		readTemplate("template/mail/zh_CN/contactUs.template", contactTital, contactContent);
 		readTemplate("template/mail/zh_CN/criticalAlarm.template", criticalAlarmTital, criticalAlarmContent);
 		readTemplate("template/mail/zh_CN/largeTransWarn.template", largeTransWarnTital, largeTransWarnContent);
+		readTemplate("template/mail/zh_CN/largeExchangeWarn.template", largeExchangeWarnTital, largeExchangeWarnContent);
 	}
 	
 	private void readTemplate(String filePath, StringBuffer tital, StringBuffer content) {

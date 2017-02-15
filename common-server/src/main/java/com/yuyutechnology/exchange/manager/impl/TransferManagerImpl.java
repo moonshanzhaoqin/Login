@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -144,7 +145,7 @@ public class TransferManagerImpl implements TransferManager{
 		if((exchangeRateManager.getExchangeResult(currency, amount)).compareTo(transferLimitPerPay) == 1){
 			logger.warn("Exceeds the maximum amount of each transaction");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_PER_PAY);
-			map.put("msg", "Exceeds the maximum amount of each transaction");
+			map.put("msg", transferLimitPerPay.toString());
 			return map;
 		}
 
@@ -156,7 +157,7 @@ public class TransferManagerImpl implements TransferManager{
 		if((accumulatedAmount.add(exchangeRateManager.getExchangeResult(currency, amount))).compareTo(transferLimitDailyPay) == 1){
 			logger.warn("More than the maximum daily transaction limit");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY);
-			map.put("msg", "More than the maximum daily transaction limit");
+			map.put("msg", transferLimitDailyPay.toString());
 			return map;
 		}
 		//每天累计给付次数限制
@@ -167,7 +168,7 @@ public class TransferManagerImpl implements TransferManager{
 		if(transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)){
 			logger.warn("Exceeds the maximum number of transactions per day");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY);
-			map.put("msg", "Exceeds the maximum number of transactions per day");
+			map.put("msg", transferLimitNumOfPayPerDay.toString());
 			return map;
 		}
 
@@ -765,12 +766,12 @@ public class TransferManagerImpl implements TransferManager{
 	}
 	
 	@SuppressWarnings("serial")
-	@Async
+//	@Async
 	private void largeTransWarn(final User payer,final Transfer transfer){
 		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
 		BigDecimal percentage = (exchangeRateManager.getExchangeResult(transfer.getCurrency(), transfer.getTransferAmount()))
-				.divide(transferLimitPerPay).multiply(new BigDecimal("100"));
+				.divide(transferLimitPerPay,2,RoundingMode.DOWN).multiply(new BigDecimal("100"));
 		
 		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(1, 1);
 		
