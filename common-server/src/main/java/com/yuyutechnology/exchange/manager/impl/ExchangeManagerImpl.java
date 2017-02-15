@@ -216,6 +216,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			transferDAO.updateAccumulatedAmount("exchange"+userId, exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
 			
 			//预警
+			largeExchangeWarn(exchange);
 			
 		}
 
@@ -312,10 +313,10 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	
 	@SuppressWarnings("serial")
 	@Async
-	private void largeExchangeWarn(final User payer,final Transfer transfer){
+	private void largeExchangeWarn(final Exchange exchange){
 		BigDecimal exchangeLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITPERPAY, 100000d));
-		BigDecimal percentage = (exchangeRateManager.getExchangeResult(transfer.getCurrency(), transfer.getTransferAmount()))
+		BigDecimal percentage = (exchangeRateManager.getExchangeResult(exchange.getCurrencyOut(), exchange.getAmountOut()))
 				.divide(exchangeLimitPerPay).multiply(new BigDecimal("100"));
 		
 		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(1, 1);
@@ -327,18 +328,17 @@ public class ExchangeManagerImpl implements ExchangeManager {
 				if((crmAlarm.getLowerLimit().compareTo(percentage)==0 || 
 						crmAlarm.getLowerLimit().compareTo(percentage)==-1) && 
 						crmAlarm.getUpperLimit().compareTo(percentage) == 1){
-					
-//					crmAlarmManager.alarmNotice(crmAlarm.getSupervisorIdArr(),"largeTransactionWarning",
-//							crmAlarm.getAlarmMode(),new HashMap<String,Object>(){
-//						{
-//							put("payerMobile", payer.getAreaCode()+payer.getUserPhone());
-//							put("payeeMobile", transfer.getAreaCode()+transfer.getPhone());
-//							put("amount", transfer.getTransferAmount().toString());
-//							put("currency", transfer.getCurrency());
-//						}
-//					});
-					
-					
+
+					crmAlarmManager.alarmNotice(crmAlarm.getSupervisorIdArr(), "largeExchangeWarning", crmAlarm.getAlarmMode(),new HashMap<String,Object>(){
+						{
+							put("payerMobile", exchange.getUserId());
+							put("amountOut", exchange.getAmountOut());
+							put("currencyOut", exchange.getCurrencyOut());
+							put("amountIn", exchange.getAmountIn());
+							put("currencyIn", exchange.getCurrencyIn());
+						}
+					});
+
 				}
 				
 			}
