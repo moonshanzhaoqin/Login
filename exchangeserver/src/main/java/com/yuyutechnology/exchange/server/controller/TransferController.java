@@ -133,11 +133,21 @@ public class TransferController {
 //			rep.setMessage("The payment password is incorrect");
 //		}
 //		rep.setRetCode(result);
+
+		HashMap<String,String> result = transferManager.payPwdConfirm(sessionData.getUserId(), 
+				reqMsg.getTransferId(), reqMsg.getUserPayPwd());
 		
-		HashMap<String,String> result = new HashMap<>();
-		
-		
-		
+		if(result.get("retCode").equals(RetCodeConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION)){
+			//发PIN码
+			UserInfo user = userManager.getUserInfo(sessionData.getUserId());
+			userManager.getPinCode(reqMsg.getTransferId(),user.getAreaCode(), user.getPhone());
+			rep.setRetCode(result.get("retCode"));
+			rep.setMessage("Need to send pin code verification");
+		}else{
+			rep.setRetCode(result.get("retCode"));
+			rep.setMessage(result.get("msg"));
+		}
+
 		return rep;
 	}
 	
