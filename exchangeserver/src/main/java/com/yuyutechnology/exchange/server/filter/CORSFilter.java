@@ -19,5 +19,6 @@ public class CORSFilter extends OncePerRequestFilter
 	{
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Headers", "accept, content-type");
+		filterChain.doFilter(request, response);
 	}
 }
