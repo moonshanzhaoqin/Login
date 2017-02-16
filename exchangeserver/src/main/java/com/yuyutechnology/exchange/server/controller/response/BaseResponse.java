@@ -1,6 +1,6 @@
 package com.yuyutechnology.exchange.server.controller.response;
 
-import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.RetCodeConsts;
 
 public class BaseResponse {
 	//success, failure, session
@@ -23,9 +23,9 @@ public class BaseResponse {
 
 	public void setRetCode(String retCode) {
 		this.retCode = retCode;
-		if (ServerConsts.successCodeList.contains(retCode)) {
+		if (RetCodeConsts.successCodeList.contains(retCode)) {
 			this.retStatus = "success";
-		}else if (ServerConsts.sessionCodeList.contains(retCode)) {
+		}else if (RetCodeConsts.sessionCodeList.contains(retCode)) {
 			this.retStatus = "session";
 		}
 	}

@@ -61,19 +61,35 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 		<property name="poolPreparedStatements" value="true" />
 		<property name="maxPoolPreparedStatementPerConnectionSize" value="${jdbc.pool.maxStatements}" />
 		
-		<!-- 配置监控统计拦截的filters -->
-		<property name="filters" value="stat,wall" />
+		<!-- 配置监控统计拦截的filters
+		<property name="filters" value="stat,wall" /> -->
 	    <property name="proxyFilters">
 	        <list>
 	            <ref bean="stat-filter" />
+	            <ref bean="wall-filter" />
 	        </list>
 	    </property>
 	</bean>
 	
 	<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
-    	<property name="slowSqlMillis" value="10000" />
-    	<property name="logSlowSql" value="true" />
-	</bean>	
+        <!--慢SQL统计，如果SQL执行时间超过一定时间则记录为慢SQL  -->
+        <property name="slowSqlMillis" value="10000" />
+        <!--慢SQL统计日志输出  -->
+        <property name="logSlowSql" value="true" />
+        <!--合并SQL统计 例如select * from table t where t.id =1，会被变为select * from table t where t.id =？来统计  -->
+        <property name="mergeSql" value="false" />
+    </bean>
+
+    <bean id="wall-filter-config" class="com.alibaba.druid.wall.WallConfig" init-method="init">
+        <!-- 指定配置装载的目录  -->
+        <property name="dir" value="META-INF/druid/wall/mysql" />
+        <property name="strictSyntaxCheck" value="false" />
+    </bean>
+
+    <bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter">
+        <property name="dbType" value="mysql" />
+        <property name="config" ref="wall-filter-config" />
+    </bean>
 	<!-- 
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
 		destroy-method="close">

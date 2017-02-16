@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
@@ -77,7 +78,7 @@ public class TransferController {
 		
 		if(StringUtils.isEmpty(reqMsg.getAreaCode()) || StringUtils.isEmpty(reqMsg.getUserPhone())){
 			logger.warn("Phone number is empty");
-			rep.setRetCode(ServerConsts.TRANSFER_PHONE_NUMBER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.TRANSFER_PHONE_NUMBER_IS_EMPTY);
 			rep.setMessage("Phone number is empty");
 			return rep;
 		}
@@ -85,12 +86,12 @@ public class TransferController {
 		if((reqMsg.getCurrency() != ServerConsts.CURRENCY_OF_GOLDPAY && reqMsg.getAmount() < 0.0001)
 				||(reqMsg.getCurrency() == ServerConsts.CURRENCY_OF_GOLDPAY && reqMsg.getAmount() < 1)){
 			logger.warn("The input amount is less than the minimum amount");
-			rep.setRetCode(ServerConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
+			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The input amount is less than the minimum amount");
 			return rep;
 		}else if(reqMsg.getAmount() > configManager.getConfigLongValue(ConfigKeyEnum.ENTERMAXIMUMAMOUNT, 1000000000L)){
 			logger.warn("Fill out the allowable amount");
-			rep.setRetCode(ServerConsts.TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT);
+			rep.setRetCode(RetCodeConsts.TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT);
 			rep.setMessage("Fill out the allowable amount");
 			return rep;
 		}
@@ -99,7 +100,7 @@ public class TransferController {
 				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())), 
 				reqMsg.getTransferComment(),0);
 		
-		if(map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
+		if(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)){
 			rep.setTransferId(map.get("transferId"));
 		}
 		
@@ -119,14 +120,14 @@ public class TransferController {
 		TransPwdConfirmResponse rep = new TransPwdConfirmResponse();
 		String result = transferManager.payPwdConfirm(sessionData.getUserId(), reqMsg.getTransferId(), reqMsg.getUserPayPwd());
 		
-		if(result.equals(ServerConsts.RET_CODE_SUCCESS)){
+		if(result.equals(RetCodeConsts.RET_CODE_SUCCESS)){
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-		}else if(result.equals(ServerConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION)){
+		}else if(result.equals(RetCodeConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION)){
 			//发PIN码
 			UserInfo user = userManager.getUserInfo(sessionData.getUserId());
 			userManager.getPinCode(reqMsg.getTransferId(),user.getAreaCode(), user.getPhone());
 			rep.setMessage("Need to send pin code verification");
-		}else if(result.equals(ServerConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST)){
+		}else if(result.equals(RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST)){
 			rep.setMessage("The transaction order does not exist");
 		}else{
 			rep.setMessage("The payment password is incorrect");
@@ -143,7 +144,7 @@ public class TransferController {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		ResendTransferPinResponse rep = new ResendTransferPinResponse();
 		
-		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		
 		try {
@@ -151,7 +152,7 @@ public class TransferController {
 			userManager.getPinCode(reqMsg.getTransferId(),user.getAreaCode(), user.getPhone());
 		} catch (Exception e) {
 			e.printStackTrace();
-			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
+			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 			rep.setMessage("Re-sending the phone pin failed");
 		}
 		return rep;
@@ -170,8 +171,8 @@ public class TransferController {
 		if(userManager.testPinCode(reqMsg.getTransferId(), user.getAreaCode(), user.getPhone(),reqMsg.getPinCode())){
 			String result = transferManager.transferConfirm(sessionData.getUserId(),reqMsg.getTransferId());
 			
-			if(result.equals(ServerConsts.RET_CODE_SUCCESS)){
-				rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			if(result.equals(RetCodeConsts.RET_CODE_SUCCESS)){
+				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			}else{
 				rep.setRetCode(result);
@@ -179,7 +180,7 @@ public class TransferController {
 			}
 
 		}else{
-			rep.setRetCode(ServerConsts.PIN_CODE_INCORRECT);
+			rep.setRetCode(RetCodeConsts.PIN_CODE_INCORRECT);
 			rep.setMessage("The pin code is incorrect");
 		}
 		return rep;
@@ -194,8 +195,11 @@ public class TransferController {
 		MakeRequestResponse rep = new MakeRequestResponse();
 		String result = transferManager.makeRequest(sessionData.getUserId(), reqMsg.getAreaCode(), reqMsg.getPhone(),
 				reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()));
-		if(result.equals(ServerConsts.RET_CODE_FAILUE)){
+
+		if(result.equals(RetCodeConsts.RET_CODE_FAILUE)){
 			rep.setMessage("Sharing failed");
+		}else if(result.equals(RetCodeConsts.TRANSFER_LIMIT_PER_PAY)){
+			rep.setMessage("Exceeds the maximum amount of each transaction");
 		}else{
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		}
@@ -216,12 +220,12 @@ public class TransferController {
 		//装张金额上限
 		if(reqMsg.getCurrency() != ServerConsts.CURRENCY_OF_GOLDPAY && reqMsg.getAmount() < 0.01){
 			logger.warn("The input amount is less than the minimum amount");
-			rep.setRetCode(ServerConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
+			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The input amount is less than the minimum amount");
 			return rep;
 		}else if (reqMsg.getCurrency() == ServerConsts.CURRENCY_OF_GOLDPAY && reqMsg.getAmount() < 1){
 			logger.warn("The input amount is less than the minimum amount");
-			rep.setRetCode(ServerConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
+			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The input amount is less than the minimum amount");
 			return rep;
 		}
@@ -230,7 +234,7 @@ public class TransferController {
 				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())), 
 				null,reqMsg.getNoticeId());
 		
-		if(map.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)){
+		if(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)){
 			rep.setTransferId(map.get("transferId"));
 		}
 		
@@ -256,7 +260,7 @@ public class TransferController {
 		ArrayList<TransferDTO> dtos = new ArrayList<>();
 		rep.setList(dtos);
 		if(((ArrayList<?>)map.get("list")).isEmpty()){
-			rep.setRetCode(ServerConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
+			rep.setRetCode(RetCodeConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
 			rep.setMessage("Transaction history not acquired");
 		}else{
 			List<?> list = (ArrayList<?>)map.get("list");
@@ -305,7 +309,7 @@ public class TransferController {
 				dtos.add(dto);
 			}
 			
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			rep.setCurrentPage((int) map.get("currentPage"));
 			rep.setPageSize((int) map.get("pageSize"));
@@ -332,7 +336,7 @@ public class TransferController {
 		ArrayList<NotificationDTO> dtos = new ArrayList<>();
 		rep.setList(dtos);
 		if(((ArrayList<?>)map.get("list")).isEmpty()){
-			rep.setRetCode(ServerConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
+			rep.setRetCode(RetCodeConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
 			rep.setMessage("Notification Records not acquired");
 		}else{
 			
@@ -357,7 +361,7 @@ public class TransferController {
 				}
 				dtos.add(dto);
 			}
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			rep.setCurrentPage((int) map.get("currentPage"));
 			rep.setPageSize((int) map.get("pageSize"));

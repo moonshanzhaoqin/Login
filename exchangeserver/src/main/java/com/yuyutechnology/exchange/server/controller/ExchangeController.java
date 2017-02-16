@@ -2,7 +2,6 @@ package com.yuyutechnology.exchange.server.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.manager.CommonManager;
@@ -57,10 +57,10 @@ public class ExchangeController {
 		GetCurrentBalanceResponse rep = new GetCurrentBalanceResponse();
 		List<WalletInfo> wallets = exchangeManager.getWalletsByUserId(sessionData.getUserId());
 		if (wallets.isEmpty()) {
-			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
+			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 			rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 		} else {
-			rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			rep.setWallets(wallets);
 		}
@@ -76,14 +76,14 @@ public class ExchangeController {
 		ExchangeCalculationResponse rep = new ExchangeCalculationResponse();
 
 		if (reqMsg.getCurrencyIn().equals(reqMsg.getCurrencyOut())) {
-			rep.setRetCode(ServerConsts.EXCHANGE_THE_SAME_CURRENCY_CAN_NOT_BE_EXCHANGED);
+			rep.setRetCode(RetCodeConsts.EXCHANGE_THE_SAME_CURRENCY_CAN_NOT_BE_EXCHANGED);
 			rep.setMessage("The same currency can not be exchanged");
 			return rep;
 		}
 		if ((reqMsg.getCurrencyOut().equals(ServerConsts.CURRENCY_OF_GOLDPAY) && reqMsg.getAmountOut() < 1)
 				|| (!reqMsg.getCurrencyOut().equals(ServerConsts.CURRENCY_OF_GOLDPAY)
 						&& reqMsg.getAmountOut() < 0.0001)) {
-			rep.setRetCode(ServerConsts.EXCHANGE_ENTER_THE_AMOUNT_OF_VIOLATION);
+			rep.setRetCode(RetCodeConsts.EXCHANGE_ENTER_THE_AMOUNT_OF_VIOLATION);
 			rep.setMessage("Enter the amount of violation");
 			return rep;
 		}
@@ -94,7 +94,7 @@ public class ExchangeController {
 		rep.setRetCode(result.get("retCode"));
 		rep.setMessage(result.get("msg"));
 
-		if (result.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)) {
+		if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			rep.setAmountIn(Double.parseDouble(result.get("in")));
 			rep.setAmountOut(Double.parseDouble(result.get("out")));
 			rep.setRateUpdateTime(exchangeRateManager.getExchangeRateUpdateDate());
@@ -110,17 +110,17 @@ public class ExchangeController {
 		GetExchangeRateResponse rep = new GetExchangeRateResponse();
 		if (!commonManager.verifyCurrency(reqMsg.getBase())) {
 			logger.warn("This currency is not a tradable currency");
-			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
+			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 			rep.setMessage("This currency is not a tradable currency");
 			return rep;
 		}
 		HashMap<String, Double> map = exchangeRateManager.getExchangeRate(reqMsg.getBase());
 		if (map.isEmpty()) {
-			rep.setRetCode(ServerConsts.RET_CODE_FAILUE);
+			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 			rep.setMessage("Failed to get exchange rate");
 			return rep;
 		}
-		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		rep.setBase(reqMsg.getBase());
 		rep.setRateUpdateTime(exchangeRateManager.getExchangeRateUpdateDate());
@@ -144,7 +144,7 @@ public class ExchangeController {
 		rep.setRetCode(result.get("retCode"));
 		rep.setMessage(result.get("msg"));
 
-		if (result.get("retCode").equals(ServerConsts.RET_CODE_SUCCESS)) {
+		if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			rep.setAmountIn(Double.parseDouble(result.get("in")));
 			rep.setAmountOut(Double.parseDouble(result.get("out")));
 		}
@@ -165,7 +165,7 @@ public class ExchangeController {
 		@SuppressWarnings("unchecked")
 		List<Exchange> list = (List<Exchange>) map.get("list");
 		if (list.isEmpty()) {
-			rep.setRetCode(ServerConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
+			rep.setRetCode(RetCodeConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
 			rep.setMessage("No data is available");
 			rep.setList(exs);
 			return rep;
@@ -183,7 +183,7 @@ public class ExchangeController {
 			dto.setExchangeStatus(exchange.getExchangeStatus());
 			exs.add(dto);
 		}
-		rep.setRetCode(ServerConsts.RET_CODE_SUCCESS);
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		rep.setCurrentPage((int) map.get("currentPage"));
 		rep.setPageSize((int) map.get("pageSize"));

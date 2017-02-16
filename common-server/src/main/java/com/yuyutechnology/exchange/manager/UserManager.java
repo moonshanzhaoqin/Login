@@ -3,6 +3,7 @@ package com.yuyutechnology.exchange.manager;
 import java.text.ParseException;
 import java.util.List;
 
+import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
 import com.yuyutechnology.exchange.pojo.Currency;
@@ -83,17 +84,18 @@ public interface UserManager {
 	 * 
 	 * @param userId
 	 * @param userPayPwd
+	 * @return
 	 */
 	public void updateUserPayPwd(Integer userId, String userPayPwd);
 
-	/**
-	 * 校验支付密码
-	 * 
-	 * @param userId
-	 * @param userPayPwd
-	 * @return
-	 */
-	public boolean checkUserPayPwd(Integer userId, String userPayPwd);
+	// /**
+	// * 校验支付密码
+	// *
+	// * @param userId
+	// * @param userPayPwd
+	// * @return
+	// */
+	// public boolean checkUserPayPwd(Integer userId, String userPayPwd);
 
 	/**
 	 * 绑定goldpay
@@ -103,21 +105,23 @@ public interface UserManager {
 	 * @return
 	 */
 	public String bindGoldpay(Integer userId, String goldpayToken);
+	//
+	// /**
+	// * 校验用户密码
+	// *
+	// * @param userId
+	// * @param oldPassword
+	// */
+	// public boolean checkUserPassword(Integer userId, String oldPassword) ;
 
 	/**
-	 * 校验用户密码
+	 * 校验Goldpay
 	 * 
-	 * @param userId
-	 * @param oldPassword
-	 */
-	public boolean checkUserPassword(Integer userId, String oldPassword);
-	
-	/**
 	 * @param userId
 	 * @param goldpayPassword
 	 * @return
 	 */
-	public boolean checkGoldpayPwd(Integer userId, String goldpayPassword);
+	public boolean checkGoldpay(Integer userId, String goldpayName, String goldpayPassword);
 
 	/**
 	 * 获取好友列表
@@ -222,13 +226,52 @@ public interface UserManager {
 	 * @return
 	 */
 	public String deleteFriend(Integer userId, String areaCode, String phone);
-	
+
 	public User getSystemUser();
-	
+
 	public List<User> getUserList();
-	
-	public void userFreeze(Integer userId,int userAvailable);
-	
+
+	public void userFreeze(Integer userId, int userAvailable);
+
 	public String getUserConfigAndUpdate(Integer userId, UserConfigKeyEnum key, String value);
-	
+
+	/**
+	 * 判断是否为新设备
+	 * 
+	 * @param userId
+	 * @param deviceId
+	 * @return
+	 */
+	public boolean isNewDevice(Integer userId, String deviceId);
+
+	/**
+	 * 添加新设备
+	 * 
+	 * @param userId
+	 * @param deviceId
+	 * @param deviceName
+	 */
+	void addDevice(Integer userId, String deviceId, String deviceName);
+
+	/**
+	 * 是否登录冻结
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	// public boolean isLoginAvailiable(Integer userId);
+
+	CheckPwdResult checkLoginPassword(Integer userId, String userPassword);
+
+	CheckPwdResult checkPayPassword(Integer userId, String userPayPwd);
+
+	/**
+	 * 判断新支付密码是否与旧支付密码相同
+	 * 
+	 * @param userId
+	 * @param newUserPayPwd
+	 * @return
+	 */
+	public boolean isUserPayPwdEqualsOld(Integer userId, String newUserPayPwd);
+
 }

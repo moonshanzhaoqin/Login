@@ -13,7 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.yuyutechnology.exchange.MessageConsts;
-import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
 import com.yuyutechnology.exchange.server.session.SessionData;
 import com.yuyutechnology.exchange.server.session.SessionDataHolder;
@@ -43,6 +43,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		sessionManager = ServerContext.getBean(SessionManager.class);
 		
 		noMappingSet.add("/login");
+		noMappingSet.add("/loginValidate");
 		noMappingSet.add("/logout");
 		noMappingSet.add("/register");
 		noMappingSet.add("/getVerificationCode");
@@ -123,7 +124,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		} else {
 			logger.info("request URI:" + requestURI + " session : " + sessionId + " " +MessageConsts.SESSION_TIMEOUT);
 			BaseResponse re = new BaseResponse();
-			re.setRetCode(ServerConsts.SESSION_TIMEOUT);
+			re.setRetCode(RetCodeConsts.SESSION_TIMEOUT);
 			re.setMessage(MessageConsts.SESSION_TIMEOUT);
 			response.getOutputStream().print(JsonBinder.getInstance().toJson(re));
 			response.getOutputStream().close();

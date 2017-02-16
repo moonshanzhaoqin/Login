@@ -35,6 +35,12 @@ public class MailManager {
 	
 	private StringBuffer criticalAlarmTital = new StringBuffer();
 	private StringBuffer criticalAlarmContent = new StringBuffer();
+	
+	private StringBuffer largeTransWarnTital = new StringBuffer();
+	private StringBuffer largeTransWarnContent = new StringBuffer();
+	
+	private StringBuffer largeExchangeWarnTital = new StringBuffer();
+	private StringBuffer largeExchangeWarnContent = new StringBuffer();
 
 	private final String MAIL_REPLACE_EMAIL = "[EMAIL]";
 	private final String MAIL_REPLACE_NAME = "[NAME]";
@@ -43,9 +49,15 @@ public class MailManager {
 	
 	private final String MAIL_REPLACE_DIFFERENCE = "[DIFFERENCE]";
 	private final String MAIL_REPLACE_LIMIT = "[LOWERLIMIT]";
-//	private final String MAIL_REPLACE_GRADE = "[GRADE]";
 	private final String MAIL_REPLACE_TIME = "[TIME]";
 	
+	private final String MAIL_REPLACE_PAYER = "[PAYER]";
+	private final String MAIL_REPLACE_PAYEE = "[PAYEE]";
+	private final String MAIL_REPLACE_AMOUNT = "[AMOUNT]";
+	private final String MAIL_REPLACE_CURRENCY = "[CURRENCY]";
+	
+	private final String MAIL_REPLACE_AMOUNTIN = "[AMOUNTIN]";
+	private final String MAIL_REPLACE_CURRENCYIN = "[CURRENCYIN]";
 
 	@PostConstruct
 	@Scheduled(cron = "0 1/10 * * * ?")
@@ -53,6 +65,8 @@ public class MailManager {
 		logger.info("==========init MailManager==========");
 		readTemplate("template/mail/zh_CN/contactUs.template", contactTital, contactContent);
 		readTemplate("template/mail/zh_CN/criticalAlarm.template", criticalAlarmTital, criticalAlarmContent);
+		readTemplate("template/mail/zh_CN/largeTransWarn.template", largeTransWarnTital, largeTransWarnContent);
+		readTemplate("template/mail/zh_CN/largeExchangeWarn.template", largeExchangeWarnTital, largeExchangeWarnContent);
 	}
 	
 	private void readTemplate(String filePath, StringBuffer tital, StringBuffer content) {
@@ -90,6 +104,37 @@ public class MailManager {
 		toMails.add(email);
 		sendMail(toMails, criticalAlarmTital.toString(), content);
 	}
+	
+	public void mail4LargeTrans(String email,String payerMobile,String payeeMobile,
+			BigDecimal amount,String currency,String dateTime) {
+		String content = largeTransWarnContent.toString().
+				replace(MAIL_REPLACE_PAYER, payerMobile).
+				replace(MAIL_REPLACE_TIME, dateTime).
+				replace(MAIL_REPLACE_AMOUNT, amount.toString()).
+				replace(MAIL_REPLACE_CURRENCY, currency).
+				replace(MAIL_REPLACE_PAYEE, payeeMobile);
+		logger.info("content : {},tital : {}", content,largeTransWarnTital.toString());
+		List<String> toMails = new ArrayList<>();
+		toMails.add(email);
+		sendMail(toMails, largeTransWarnTital.toString(), content);
+	}
+	
+	public void mail4LargeExchange(String email,String payerMobile,String dateTime,
+			BigDecimal amountOut,String currencyOut,BigDecimal amountIn,String currencyIn) {
+		String content = largeExchangeWarnContent.toString()
+				.replace(MAIL_REPLACE_PAYER,payerMobile)
+				.replace(MAIL_REPLACE_TIME,dateTime)
+				.replace(MAIL_REPLACE_AMOUNT,amountOut.toString())
+				.replace(MAIL_REPLACE_CURRENCY,currencyOut)
+				.replace(MAIL_REPLACE_AMOUNTIN,amountIn.toString())
+				.replace(MAIL_REPLACE_CURRENCYIN,currencyIn);
+		logger.info("content : {},tital : {}", content,largeExchangeWarnTital.toString());
+		List<String> toMails = new ArrayList<>();
+		toMails.add(email);
+		sendMail(toMails, largeExchangeWarnTital.toString(), content);
+	}
+	
+	
 	
 	public void sendMail(List<String> toMails, String tital, String content){
 		logger.info("sendMail,tital : {}, content : {}",tital, content);

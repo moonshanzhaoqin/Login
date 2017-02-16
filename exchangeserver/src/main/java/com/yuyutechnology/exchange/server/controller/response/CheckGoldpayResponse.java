@@ -1,5 +1,5 @@
 package com.yuyutechnology.exchange.server.controller.response;
 
-public class CheckGoldpayPwdResponse extends BaseResponse{
+public class CheckGoldpayResponse extends BaseResponse{
 
 }

@@ -11,6 +11,9 @@ public interface ExchangeDAO {
 	
 	public void addExchange(Exchange exchange);
 	
-	public HashMap<String, Object> getExchangeRecordsByPage(String sql,List<Object> values,int currentPage, int pageSize);
+	public HashMap<String, Object> getExchangeRecordsByPage(
+			String sql,List<Object> values,int currentPage, int pageSize);
+	
+	public Integer getTotalNumOfDailyExchange();
 
 }

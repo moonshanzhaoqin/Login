@@ -88,10 +88,21 @@ public class MessageConsts {
 	 */
 	public static final String PHONE_IS_NOT_FRIEND = "PHONE_IS_NOT_FRIEND";
 	/**
-	 * Goldpay密码错误
+	 *  Goldpay校验错误
 	 */
-	public static final String GOLDPAY_PASSWORD_NOT_MATCH = "GOLDPAY_PASSWORD_NOT_MATCH";
-	
+	public static final String GOLDPAY_IS_INCORRECT = "GOLDPAY_IS_INCORRECT";
+	/**
+	 *新设备登录
+	 */
+	public static final String NEW_DEVICE = "NEW_DEVICE";
+	/**
+	 * 登录冻结
+	 */
+	public static final String LOGIN_FREEZE = "LOGIN_FREEZE";
+	/**
+	 * 支付冻结
+	 */
+	public static final String PAY_FREEZE = "PAY_FREEZE";
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息

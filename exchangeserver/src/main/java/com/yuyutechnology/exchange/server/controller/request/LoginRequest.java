@@ -10,6 +10,8 @@ public class LoginRequest extends BaseRequest{
 	private String areaCode;
 	private String userPhone;
 	private String userPassword;
+	private String deviceName;
+	private String deviceId;
 	private String loginToken;
 	private String language;
 	private String pushId;
@@ -36,6 +38,22 @@ public class LoginRequest extends BaseRequest{
 
 	public void setUserPassword(String userPassword) {
 		this.userPassword = userPassword;
+	}
+
+	public String getDeviceName() {
+		return deviceName;
+	}
+
+	public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
+	}
+
+	public String getDeviceId() {
+		return deviceId;
+	}
+
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
 	}
 
 	public String getLoginToken() {
@@ -83,6 +101,12 @@ public class LoginRequest extends BaseRequest{
 			return 0;
 		}
 		if (StringUtils.isBlank(this.userPhone)) {
+			return 0;
+		}
+		if (StringUtils.isBlank(this.deviceId)) {
+			return 0;
+		}
+		if (StringUtils.isBlank(this.deviceName)) {
 			return 0;
 		}
 		return 2;

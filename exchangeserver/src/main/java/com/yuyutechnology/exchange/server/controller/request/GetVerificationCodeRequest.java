@@ -8,15 +8,16 @@ import com.yuyutechnology.exchange.ServerConsts;
 public class GetVerificationCodeRequest {
 	@Override
 	public String toString() {
-		return "[purpose=" + purpose + ", areaCode=" + areaCode + ", userPhone=" + userPhone
-				+ "]";
+		return "[purpose=" + purpose + ", areaCode=" + areaCode + ", userPhone=" + userPhone + "]";
 	}
 
 	private String purpose;
 	private String areaCode;
 	private String userPhone;
 
-	@ApiModelProperty(allowableValues = ServerConsts.PIN_FUNC_REGISTER+","+ServerConsts.PIN_FUNC_CHANGEPHONE+","+ServerConsts.PIN_FUNC_FORGETPASSWORD+","+ServerConsts.PIN_FUNC_MODIFYPAYPWD)
+	@ApiModelProperty(allowableValues = ServerConsts.PIN_FUNC_REGISTER + "," + ServerConsts.PIN_FUNC_CHANGEPHONE + ","
+			+ ServerConsts.PIN_FUNC_FORGETPASSWORD + "," + ServerConsts.PIN_FUNC_MODIFYPAYPWD + ","
+			+ ServerConsts.PIN_FUNC_NEWDEVICE)
 	public String getPurpose() {
 		return purpose;
 	}

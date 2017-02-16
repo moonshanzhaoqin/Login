@@ -9,14 +9,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.print.attribute.standard.RequestingUserName;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.pattern.LogEvent;
+import org.hibernate.loader.custom.Return;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.AppVersionDAO;
 import com.yuyutechnology.exchange.dao.BindDAO;
@@ -26,8 +29,10 @@ import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
+import com.yuyutechnology.exchange.dao.UserDeviceDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
+import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
@@ -44,6 +49,8 @@ import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.UserConfig;
+import com.yuyutechnology.exchange.pojo.UserDevice;
+import com.yuyutechnology.exchange.pojo.UserDeviceId;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.sms.SmsManager;
@@ -78,6 +85,8 @@ public class UserManagerImpl implements UserManager {
 	@Autowired
 	FriendDAO friendDAO;
 	@Autowired
+	UserDeviceDAO userDeviceDAO;
+	@Autowired
 	SmsManager smsManager;
 	@Autowired
 	GoldpayManager goldpayManager;
@@ -93,14 +102,14 @@ public class UserManagerImpl implements UserManager {
 		logger.info("Find friend==>");
 		User friend = userDAO.getUserByUserPhone(areaCode, userPhone);
 		if (friend == null) {
-			return ServerConsts.PHONE_NOT_EXIST;
+			return RetCodeConsts.PHONE_NOT_EXIST;
 		} else if (friend.getUserId() == userId) {
-			return ServerConsts.PHONE_ID_YOUR_OWEN;
+			return RetCodeConsts.PHONE_ID_YOUR_OWEN;
 		} else if (friendDAO.getFriendByUserIdAndFrindId(userId, friend.getUserId()) != null) {
-			return ServerConsts.FRIEND_HAS_ADDED;
+			return RetCodeConsts.FRIEND_HAS_ADDED;
 		} else {
-			friendDAO.addfriend(new Friend(new FriendId(userId, friend.getUserId()), friend, new Date()));
-			return ServerConsts.RET_CODE_SUCCESS;
+			friendDAO.addFriend(new Friend(new FriendId(userId, friend.getUserId()), friend, new Date()));
+			return RetCodeConsts.RET_CODE_SUCCESS;
 		}
 	}
 
@@ -110,12 +119,12 @@ public class UserManagerImpl implements UserManager {
 		GoldpayUser goldpayUser = goldpayManager.getGoldpayInfo(goldpayToken);
 		if (goldpayUser == null) {
 			logger.warn("goldpay account does not exist.");
-			return ServerConsts.RET_CODE_FAILUE;
+			return RetCodeConsts.RET_CODE_FAILUE;
 		} else {
 			logger.info("goldpayUser=", goldpayUser.toString());
 			if (StringUtils.isBlank(goldpayUser.getAreaCode()) || StringUtils.isBlank(goldpayUser.getMobile())) {
 				logger.info("Goldpay account does not bind phone number.");
-				return ServerConsts.GOLDPAY_PHONE_IS_NOT_EXIST;
+				return RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST;
 			} else {
 				Bind bind = bindDAO.getBindByUserId(userId);
 				if (bind == null) {
@@ -128,7 +137,7 @@ public class UserManagerImpl implements UserManager {
 					bind.setToken(goldpayToken);
 				}
 				bindDAO.updateBind(bind);
-				return ServerConsts.RET_CODE_SUCCESS;
+				return RetCodeConsts.RET_CODE_SUCCESS;
 			}
 		}
 	}
@@ -157,34 +166,145 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public boolean checkUserPassword(Integer userId, String userPassword) {
+	public CheckPwdResult checkLoginPassword(Integer userId, String userPassword) {
 		logger.info("Check {}  user's password {} ==>", userId, userPassword);
+		CheckPwdResult result = new CheckPwdResult();
+
 		User user = userDAO.getUser(userId);
+		if (user.getLoginAvailable() == ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE) {
+			String timeString = redisDAO.getValueByKey(ServerConsts.LOGIN_FREEZE + userId);
+			if (timeString != null) {
+				Calendar time = Calendar.getInstance();
+				time.setTimeInMillis(Long.valueOf(timeString).longValue());
+				time.add(Calendar.HOUR_OF_DAY,
+						configManager.getConfigLongValue(ConfigKeyEnum.LOGIN_UNAVAILIABLE_TIME, 24l).intValue());
+
+				if (new Date().before(time.getTime())) {
+					result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
+					result.setInfo(time.getTime().getTime());
+					return result;
+				}
+
+				redisDAO.deleteKey(ServerConsts.LOGIN_FREEZE + userId);
+			}
+
+			user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE);
+			userDAO.updateUser(user);
+		}
+
 		if (PasswordUtils.check(userPassword, user.getUserPassword(), user.getPasswordSalt())) {
 			logger.info("***match***");
-			return true;
+
+			redisDAO.deleteKey(ServerConsts.WRONG_PASSWORD + userId);
+			// redisDAO.deleteKey(ServerConsts.LOGIN_FREEZE + userId);
+			result.setStatus(ServerConsts.CHECKPWD_STATUS_CORRECT);
+			return result;
+		} else {
+			// 记录错误次数
+			long t = 1;
+			String times = redisDAO.getValueByKey(ServerConsts.WRONG_PASSWORD + userId);
+			if (times != null) {
+				t += Long.valueOf(times).longValue();
+				if (t >= configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PASSWORD_FREQUENCY, 3l).longValue()) {
+					// 输出超过次数，冻结
+					logger.info("***Does not match, login is frozen!***");
+
+					redisDAO.saveData(ServerConsts.LOGIN_FREEZE + userId, new Date().getTime());
+					user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE);
+					userDAO.updateUser(user);
+
+					redisDAO.deleteKey(ServerConsts.WRONG_PASSWORD + userId);
+
+					Calendar time = Calendar.getInstance();
+					time.add(Calendar.HOUR_OF_DAY,
+							configManager.getConfigLongValue(ConfigKeyEnum.LOGIN_UNAVAILIABLE_TIME, 24l).intValue());
+
+					result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
+					result.setInfo(time.getTime().getTime());
+					return result;
+				}
+			}
+			redisDAO.saveData(ServerConsts.WRONG_PASSWORD + userId, t);
+			logger.info("***Does not match,{}***", t);
+			result.setStatus(ServerConsts.CHECKPWD_STATUS_INCORRECT);
+			result.setInfo(
+					configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PASSWORD_FREQUENCY, 3l).longValue() - t);
+			return result;
 		}
-		logger.info("***Does not match***");
-		return false;
 	}
 
 	@Override
-	public boolean checkUserPayPwd(Integer userId, String userPayPwd) {
-		logger.info("Check {}  user's PAY password {} ==>", userId, userPayPwd);
+	public CheckPwdResult checkPayPassword(Integer userId, String userPayPwd) {
+		logger.info("Check {}  user's Pay  password {} ==>", userId, userPayPwd);
+		CheckPwdResult result = new CheckPwdResult();
+
 		User user = userDAO.getUser(userId);
-		if (PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())) {
-			logger.info("***match***");
-			return true;
+		if (user.getLoginAvailable() == ServerConsts.PAY_AVAILABLE_OF_UNAVAILABLE) {
+			String timeString = redisDAO.getValueByKey(ServerConsts.PAY_FREEZE + userId);
+			if (timeString != null) {
+				Calendar time = Calendar.getInstance();
+				time.setTimeInMillis(Long.valueOf(timeString).longValue());
+				time.add(Calendar.HOUR_OF_DAY,
+						configManager.getConfigLongValue(ConfigKeyEnum.PAY_UNAVAILIABLE_TIME, 24l).intValue());
+
+				if (new Date().before(time.getTime())) {
+					result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
+					result.setInfo(time.getTime().getTime());
+					return result;
+				}
+
+				redisDAO.deleteKey(ServerConsts.PAY_FREEZE + userId);
+			}
+
+			user.setLoginAvailable(ServerConsts.PAY_AVAILABLE_OF_AVAILABLE);
+			userDAO.updateUser(user);
 		}
-		logger.info("***Does not match***");
-		return false;
+
+		if (PasswordUtils.check(userPayPwd, user.getUserPassword(), user.getPasswordSalt())) {
+			logger.info("***match***");
+
+			redisDAO.deleteKey(ServerConsts.WRONG_PAYPWD + userId);
+			result.setStatus(ServerConsts.CHECKPWD_STATUS_CORRECT);
+			return result;
+		} else {
+			// 记录错误次数
+			long t = 1;
+			String times = redisDAO.getValueByKey(ServerConsts.WRONG_PAYPWD + userId);
+			if (times != null) {
+				t += Long.valueOf(times).longValue();
+				if (t >= configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PAYPWD_FREQUENCY, 3l).longValue()) {
+					// 输出超过次数，冻结
+					logger.info("***Does not match, login is frozen!***");
+
+					redisDAO.saveData(ServerConsts.LOGIN_FREEZE + userId, new Date().getTime());
+					user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE);
+					userDAO.updateUser(user);
+
+					redisDAO.deleteKey(ServerConsts.WRONG_PAYPWD + userId);
+
+					Calendar time = Calendar.getInstance();
+					time.add(Calendar.HOUR_OF_DAY,
+							configManager.getConfigLongValue(ConfigKeyEnum.PAY_UNAVAILIABLE_TIME, 24l).intValue());
+
+					result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
+					result.setInfo(time.getTime().getTime());
+					return result;
+				}
+			}
+			redisDAO.saveData(ServerConsts.WRONG_PAYPWD + userId, t);
+			logger.info("***Does not match,{}***", t);
+			result.setStatus(ServerConsts.CHECKPWD_STATUS_INCORRECT);
+			result.setInfo(configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PAYPWD_FREQUENCY, 3l).longValue() - t);
+			return result;
+		}
 	}
 
 	@Override
-	public boolean checkGoldpayPwd(Integer userId, String goldpayPassword) {
-		logger.info("Check {}  user's PAY password {} ==>", userId, goldpayPassword);
+	public boolean checkGoldpay(Integer userId, String goldpayName, String goldpayPassword) {
+		logger.info("Check {}  user's Goldpay password {} ==>", userId, goldpayPassword);
 		Bind bind = bindDAO.getBindByUserId(userId);
-		if (bind != null && goldpayManager.checkGoldpay(bind.getGoldpayName(), goldpayPassword)) {
+		if (bind != null && bind.getGoldpayName().equals(goldpayName)
+				&& goldpayManager.checkGoldpay(goldpayName, goldpayPassword)) {
 			return true;
 		}
 		return false;
@@ -311,7 +431,8 @@ public class UserManagerImpl implements UserManager {
 		// 添加用户
 		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName,
 				PasswordUtils.encrypt(userPassword, passwordSalt), new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER,
-				ServerConsts.USER_AVAILABLE_OF_AVAILABLE, passwordSalt, LanguageUtils.standard(language)));
+				ServerConsts.USER_AVAILABLE_OF_AVAILABLE, ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE,
+				ServerConsts.PAY_AVAILABLE_OF_AVAILABLE, passwordSalt, LanguageUtils.standard(language)));
 		logger.info("Add user complete!");
 		redisDAO.saveData("changephonetime" + userId, simpleDateFormat.format(new Date()));
 		// 添加钱包信息
@@ -354,6 +475,7 @@ public class UserManagerImpl implements UserManager {
 		User user = userDAO.getUser(userId);
 		user.setUserPassword(PasswordUtils.encrypt(newPassword, user.getPasswordSalt()));
 		userDAO.updateUser(user);
+		redisDAO.deleteKey(ServerConsts.WRONG_PASSWORD + userId);
 	}
 
 	public void updateUser(Integer userId, String loginIp, String pushId, String language) {
@@ -362,7 +484,7 @@ public class UserManagerImpl implements UserManager {
 		user.setLoginIp(loginIp);
 		user.setLoginTime(new Date());
 		if (StringUtils.isNotBlank(pushId) && !pushId.equals(user.getPushId())) {
-			// 推送消息：设备已下线
+			// 更换设备 推送消息：设备已下线
 			logger.info("Push message: device offline==> oldPushId : {} , newPushId : {} ",
 					new Object[] { user.getPushId(), pushId });
 			pushManager.push4Offline(user.getPushId(), user.getPushTag(), String.valueOf(new Date().getTime()));
@@ -483,16 +605,16 @@ public class UserManagerImpl implements UserManager {
 		logger.info("Find friend==>");
 		User friend = userDAO.getUserByUserPhone(areaCode, phone);
 		if (friend == null) {
-			return ServerConsts.PHONE_NOT_EXIST;
+			return RetCodeConsts.PHONE_NOT_EXIST;
 		} else if (friend.getUserId() == userId) {
-			return ServerConsts.PHONE_ID_YOUR_OWEN;
+			return RetCodeConsts.PHONE_ID_YOUR_OWEN;
 		} else {
 			Friend friend2 = friendDAO.getFriendByUserIdAndFrindId(userId, friend.getUserId());
 			if (friend2 == null) {
-				return ServerConsts.PHONE_IS_NOT_FRIEND;
+				return RetCodeConsts.PHONE_IS_NOT_FRIEND;
 			} else {
 				friendDAO.deleteFriend(friend2);
-				return ServerConsts.RET_CODE_SUCCESS;
+				return RetCodeConsts.RET_CODE_SUCCESS;
 			}
 		}
 	}
@@ -509,15 +631,15 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void userFreeze(Integer userId, int userAvailable) {
-		User user=userDAO.getUser(userId);
-		if (user==null) {
-			logger.warn("{} is not exist!!!",userId);
-		}else{
+		User user = userDAO.getUser(userId);
+		if (user == null) {
+			logger.warn("{} is not exist!!!", userId);
+		} else {
 			user.setUserAvailable(userAvailable);
 			userDAO.updateUser(user);
 		}
 	}
-	
+
 	@Override
 	public String getUserConfigAndUpdate(Integer userId, UserConfigKeyEnum key, String value) {
 		String returnValue = getUserConfig(userId, key);
@@ -530,8 +652,9 @@ public class UserManagerImpl implements UserManager {
 	private String getUserConfig(Integer userId, UserConfigKeyEnum key) {
 		UserConfig userConfig = userDAO.getUserConfig(userId);
 		if (userConfig != null && StringUtils.isNotBlank(userConfig.getUserConfigValue())) {
-			Map<String, String> config = JsonBinder.getInstance().fromJson(userConfig.getUserConfigValue(), HashMap.class);
-			return config.get(key.ordinal()+"") == null ? "" : config.get(key.ordinal()+"");
+			Map<String, String> config = JsonBinder.getInstance().fromJson(userConfig.getUserConfigValue(),
+					HashMap.class);
+			return config.get(key.ordinal() + "") == null ? "" : config.get(key.ordinal() + "");
 		}
 		return "";
 	}
@@ -539,17 +662,49 @@ public class UserManagerImpl implements UserManager {
 	private void saveUserConfig(Integer userId, UserConfigKeyEnum key, String value) {
 		UserConfig userConfig = userDAO.getUserConfig(userId);
 		if (userConfig != null && StringUtils.isNotBlank(userConfig.getUserConfigValue())) {
-			Map<String, String> config = JsonBinder.getInstance().fromJson(userConfig.getUserConfigValue(), HashMap.class);
-			config.put(key.ordinal()+"", value);
+			Map<String, String> config = JsonBinder.getInstance().fromJson(userConfig.getUserConfigValue(),
+					HashMap.class);
+			config.put(key.ordinal() + "", value);
 			userConfig.setUserConfigValue(JsonBinder.getInstance().toJson(config));
-		}else{
+		} else {
 			userConfig = new UserConfig();
 			userConfig.setUserId(userId);
 			Map<String, String> config = new HashMap<String, String>();
-			config.put(key.ordinal()+"", value);
+			config.put(key.ordinal() + "", value);
 			userConfig.setUserConfigValue(JsonBinder.getInstance().toJson(config));
 		}
 		userDAO.saveUserConfig(userConfig);
 	}
 
+	@Override
+	public boolean isNewDevice(Integer userId, String deviceId) {
+		if (userDeviceDAO.getUserDeviceByUserIdAndDeviceId(userId, deviceId) == null) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void addDevice(Integer userId, String deviceId, String deviceName) {
+		userDeviceDAO.addUserDevice(new UserDevice(new UserDeviceId(userId, deviceId), deviceName));
+	}
+
+	// @Override
+	// public boolean isLoginAvailiable(Integer userId) {
+	// User user = userDAO.getUser(userId);
+	// if (user.getLoginAvailable() ==
+	// ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE) {
+	//
+	// }
+	// return false;
+	// }
+
+	@Override
+	public boolean isUserPayPwdEqualsOld(Integer userId, String newUserPayPwd) {
+		User user = userDAO.getUser(userId);
+		if (PasswordUtils.check(newUserPayPwd, user.getUserPassword(), user.getPasswordSalt())) {
+			return true;
+		}
+		return false;
+	}
 }

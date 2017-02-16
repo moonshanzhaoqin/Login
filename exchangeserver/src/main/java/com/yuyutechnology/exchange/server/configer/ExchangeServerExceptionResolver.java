@@ -14,7 +14,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yuyutechnology.exchange.MessageConsts;
-import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 /**
@@ -28,7 +28,7 @@ public class ExchangeServerExceptionResolver implements HandlerExceptionResolver
 			Exception ex) {
 		logger.error("request URI Exception:", ex);
 		BaseResponse re = new BaseResponse();
-		re.setRetCode(ServerConsts.RET_CODE_FAILUE);
+		re.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 		re.setMessage(MessageConsts.RET_CODE_FAILUE + " : " + ex.toString());
 		try {
 			response.getOutputStream().print(JsonBinder.getInstance().toJson(re));

@@ -8,7 +8,9 @@ public class GetTotalAssetsInfoRequest {
 
 	private String userPhone;
 	private String userName;
-	private String isFrozen;
+	private String userAvailable;
+	private String loginAvailable;
+	private String payAvailable;
 	private BigDecimal upperLimit;
 	private BigDecimal lowerLimit;
 	
@@ -30,12 +32,29 @@ public class GetTotalAssetsInfoRequest {
 		this.userName = userName;
 	}
 
-	public String getIsFrozen() {
-		return isFrozen;
+	public String getUserAvailable() {
+		return userAvailable;
 	}
 
-	public void setIsFrozen(String isFrozen) {
-		this.isFrozen = isFrozen;
+	public void setUserAvailable(String userAvailable) {
+		this.userAvailable = userAvailable;
+	}
+
+
+	public String getLoginAvailable() {
+		return loginAvailable;
+	}
+
+	public void setLoginAvailable(String loginAvailable) {
+		this.loginAvailable = loginAvailable;
+	}
+
+	public String getPayAvailable() {
+		return payAvailable;
+	}
+
+	public void setPayAvailable(String payAvailable) {
+		this.payAvailable = payAvailable;
 	}
 
 	public BigDecimal getUpperLimit() {

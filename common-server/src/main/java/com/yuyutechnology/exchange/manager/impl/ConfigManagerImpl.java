@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.dao.ConfigDAO;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.ConfigManager;
@@ -95,11 +95,11 @@ public class ConfigManagerImpl implements ConfigManager {
 		logger.info("{},{}", configKey, configValue);
 		Config config = configDAO.getConfig(configKey);
 		if (config == null) {
-			return ServerConsts.RET_CODE_FAILUE;
+			return RetCodeConsts.RET_CODE_FAILUE;
 		} else {
 			config.setConfigValue(configValue);
 			configDAO.saveOrUpdateConfig(config);
-			return ServerConsts.RET_CODE_SUCCESS;
+			return RetCodeConsts.RET_CODE_SUCCESS;
 		}
 	}
 

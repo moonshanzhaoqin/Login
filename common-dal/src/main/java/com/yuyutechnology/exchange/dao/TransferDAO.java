@@ -35,4 +35,6 @@ public interface TransferDAO {
 	
 	public BigDecimal sumGoldpayTransAmount(int transferType);
 	
+	public Integer getDayTradubgVolume(final int transferType);
+	
 }

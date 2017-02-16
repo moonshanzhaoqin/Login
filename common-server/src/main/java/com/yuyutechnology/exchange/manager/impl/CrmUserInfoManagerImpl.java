@@ -36,8 +36,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 	CrmUserInfoDAO crmUserInfoDAO;
 	@Autowired
 	RedisDAO redisDAO;
-	
-	
+
 	@Autowired
 	ExchangeRateManager exchangeRateManager;
 
@@ -123,8 +122,9 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 	}
 
 	@Override
-	public HashMap<String, Object> getUserAccountInfoListByPage(String userPhone, String userName, int isFrozen,
-			BigDecimal upperLimit, BigDecimal lowerLimit, int currentPage, int pageSize) {
+	public HashMap<String, Object> getUserAccountInfoListByPage(String userPhone, String userName, int userAvailable,
+			int loginAvailable, int payAvailable, BigDecimal upperLimit, BigDecimal lowerLimit, int currentPage,
+			int pageSize) {
 
 		List<Object> values = new ArrayList<Object>();
 		StringBuilder sb = new StringBuilder("from CrmUserInfo where userType = 0 ");
@@ -132,9 +132,17 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 		if (!StringUtils.isEmpty(userPhone)) {
 			sb.append("and userPhone like '" + userPhone + "%' ");
 		}
-		if (isFrozen != 3) {
+		if (userAvailable != 3) {
 			sb.append("and userAvailable = ? ");
-			values.add(isFrozen);
+			values.add(userAvailable);
+		}
+		if (loginAvailable != 3) {
+			sb.append("and loginAvailable = ? ");
+			values.add(loginAvailable);
+		}
+		if (payAvailable != 3) {
+			sb.append("and payAvailable = ? ");
+			values.add(payAvailable);
 		}
 		if (upperLimit != null && upperLimit.compareTo(BigDecimal.ZERO) != -1) {
 			sb.append("and userTotalAssets <= ? ");
@@ -166,27 +174,27 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 	public void updateImmediately() {
 
 		redisDAO.saveData("updateImmediately", 1);
-		
+
 		List<User> list = userDAO.getUserList();
-		if(list.isEmpty()){
-			return ;
+		if (list.isEmpty()) {
+			return;
 		}
-		
+
 		for (User user : list) {
 			updateUserInfo(user);
 		}
-		
+
 		redisDAO.saveData("updateImmediately", 0);
 	}
 
 	@Override
 	public int getUpdateFlag() {
 		String updateFlag = redisDAO.getValueByKey("updateImmediately");
-		
-		if(StringUtils.isNotBlank(updateFlag)){
+
+		if (StringUtils.isNotBlank(updateFlag)) {
 			return Integer.parseInt(updateFlag);
 		}
-		
+
 		return 0;
 	}
 

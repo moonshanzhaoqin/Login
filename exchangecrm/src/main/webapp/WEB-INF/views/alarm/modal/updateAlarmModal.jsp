@@ -19,6 +19,9 @@
 					<form id="updateAlarmConfig" method="POST" action="<c:url value="/alarm/updateAlarmConfigInfo" />">
 					
 						<input class="form-control" name="alarmId" type="hidden" id="updateAlarmId"/>
+						
+						<input class="form-control" name="alarmType" type="hidden" id="updateAlarmType"/>
+					
 					
 						<div class="modal-body">
 							<div class="row">
