@@ -31,7 +31,8 @@ public interface TransferManager {
 	 * @param userPayPwd
 	 * @return
 	 */
-	public String payPwdConfirm(int userId,String transferId,String userPayPwd);
+//	public String payPwdConfirm(int userId,String transferId,String userPayPwd);
+	public HashMap<String, String> payPwdConfirm(int userId,String transferId,String userPayPwd);
 	
 	/**
 	 * @Descrition : 交易确认
