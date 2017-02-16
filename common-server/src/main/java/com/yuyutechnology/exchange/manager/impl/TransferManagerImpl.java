@@ -140,7 +140,7 @@ public class TransferManagerImpl implements TransferManager{
 		//每次支付金额限制
 		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
-		
+		logger.warn("transferLimitPerPay : {}",transferLimitPerPay);
 		if((exchangeRateManager.getExchangeResult(currency, amount)).compareTo(transferLimitPerPay) == 1){
 			logger.warn("Exceeds the maximum amount of each transaction");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_PER_PAY);
@@ -152,7 +152,7 @@ public class TransferManagerImpl implements TransferManager{
 		BigDecimal transferLimitDailyPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITDAILYPAY, 100000d));
 		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount(userId+"");
-		
+		logger.warn("transferLimitDailyPay : {},accumulatedAmount : {} ",transferLimitDailyPay,accumulatedAmount);
 		if((accumulatedAmount.add(exchangeRateManager.getExchangeResult(currency, amount))).compareTo(transferLimitDailyPay) == 1){
 			logger.warn("More than the maximum daily transaction limit");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY);
@@ -163,7 +163,7 @@ public class TransferManagerImpl implements TransferManager{
 		Double transferLimitNumOfPayPerDay =  configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITNUMBEROFPAYPERDAY, 100000d);
 		Integer dayTradubgVolume = transferDAO.getDayTradubgVolume(ServerConsts.TRANSFER_TYPE_TRANSACTION);
-		
+		logger.warn("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ",transferLimitNumOfPayPerDay,dayTradubgVolume);
 		if(transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)){
 			logger.warn("Exceeds the maximum number of transactions per day");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY);
@@ -649,7 +649,7 @@ public class TransferManagerImpl implements TransferManager{
 		return new BigDecimal(df1.format(amoumt));  
 	}
 	
-	public HashMap<String, String> test(HashMap<String, Object> map){
+	private HashMap<String, String> test(HashMap<String, Object> map){
 		
 		HashMap<String, String> result = new HashMap<>();
 		
@@ -771,6 +771,8 @@ public class TransferManagerImpl implements TransferManager{
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
 		BigDecimal percentage = (exchangeRateManager.getExchangeResult(transfer.getCurrency(), transfer.getTransferAmount()))
 				.divide(transferLimitPerPay,2,RoundingMode.DOWN).multiply(new BigDecimal("100"));
+		
+		logger.info("percentage : {}",percentage);
 		
 		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(1, 1);
 		
