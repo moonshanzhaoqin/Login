@@ -10,12 +10,13 @@ import org.apache.commons.lang.time.DateFormatUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.dao.ExchangeDAO;
+import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.pojo.Exchange;
 import com.yuyutechnology.exchange.utils.page.PageUtils;
 
@@ -24,14 +25,14 @@ public class ExchangeDAOImpl implements ExchangeDAO {
 	
 	@Resource
 	HibernateTemplate hibernateTemplate;
-	@Resource
-	RedisTemplate<String, String> commonRedisTemplate;
+	@Autowired
+	RedisDAO redisDAO;
 	
-	private final String anytime_exechange_assign_exchangeid = "anytimeExechangeAssignExchangeid";
+	private final String ANYTIME_EXECHANGE_ASSIGN_EXCHANGEID = "anytimeExechangeAssignExchangeid";
 
 	@Override
 	public String createExchangeId(int transferType) {
-		Long id = commonRedisTemplate.opsForValue().increment(anytime_exechange_assign_exchangeid, 1);
+		Long id = redisDAO.incrementValue(ANYTIME_EXECHANGE_ASSIGN_EXCHANGEID, 1);
 		StringBuilder sb = new StringBuilder();
 		sb.append(DateFormatUtils.format(new Date(), "yyyyMMddHHmm")).append(transferType).append("E");
 		String idStr = String.valueOf(id);

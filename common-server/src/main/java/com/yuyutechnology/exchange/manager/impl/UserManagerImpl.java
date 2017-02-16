@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.print.attribute.standard.RequestingUserName;
 
@@ -184,8 +185,7 @@ public class UserManagerImpl implements UserManager {
 					result.setInfo(time.getTime().getTime());
 					return result;
 				}
-
-				redisDAO.deleteKey(ServerConsts.LOGIN_FREEZE + userId);
+				redisDAO.deleteData(ServerConsts.LOGIN_FREEZE + userId);
 			}
 
 			user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE);
@@ -195,7 +195,7 @@ public class UserManagerImpl implements UserManager {
 		if (PasswordUtils.check(userPassword, user.getUserPassword(), user.getPasswordSalt())) {
 			logger.info("***match***");
 
-			redisDAO.deleteKey(ServerConsts.WRONG_PASSWORD + userId);
+			redisDAO.deleteData(ServerConsts.WRONG_PASSWORD + userId);
 			// redisDAO.deleteKey(ServerConsts.LOGIN_FREEZE + userId);
 			result.setStatus(ServerConsts.CHECKPWD_STATUS_CORRECT);
 			return result;
@@ -213,7 +213,7 @@ public class UserManagerImpl implements UserManager {
 					user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE);
 					userDAO.updateUser(user);
 
-					redisDAO.deleteKey(ServerConsts.WRONG_PASSWORD + userId);
+					redisDAO.deleteData(ServerConsts.WRONG_PASSWORD + userId);
 
 					Calendar time = Calendar.getInstance();
 					time.add(Calendar.HOUR_OF_DAY,
@@ -253,7 +253,7 @@ public class UserManagerImpl implements UserManager {
 					return result;
 				}
 
-				redisDAO.deleteKey(ServerConsts.PAY_FREEZE + userId);
+				redisDAO.deleteData(ServerConsts.PAY_FREEZE + userId);
 			}
 
 			user.setLoginAvailable(ServerConsts.PAY_AVAILABLE_OF_AVAILABLE);
@@ -263,7 +263,7 @@ public class UserManagerImpl implements UserManager {
 		if (PasswordUtils.check(userPayPwd, user.getUserPassword(), user.getPasswordSalt())) {
 			logger.info("***match***");
 
-			redisDAO.deleteKey(ServerConsts.WRONG_PAYPWD + userId);
+			redisDAO.deleteData(ServerConsts.WRONG_PAYPWD + userId);
 			result.setStatus(ServerConsts.CHECKPWD_STATUS_CORRECT);
 			return result;
 		} else {
@@ -280,7 +280,7 @@ public class UserManagerImpl implements UserManager {
 					user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE);
 					userDAO.updateUser(user);
 
-					redisDAO.deleteKey(ServerConsts.WRONG_PAYPWD + userId);
+					redisDAO.deleteData(ServerConsts.WRONG_PAYPWD + userId);
 
 					Calendar time = Calendar.getInstance();
 					time.add(Calendar.HOUR_OF_DAY,
@@ -323,7 +323,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void clearPinCode(String func, String areaCode, String userPhone) {
-		redisDAO.deleteKey(func + areaCode + userPhone);
+		redisDAO.deleteData(func + areaCode + userPhone);
 	}
 
 	/**
@@ -358,7 +358,7 @@ public class UserManagerImpl implements UserManager {
 		final String md5random = DigestUtils.md5Hex(random);
 		// 存入redis userPhone:md5random
 		redisDAO.saveData(func + areaCode + userPhone, md5random,
-				configManager.getConfigLongValue(ConfigKeyEnum.VERIFYTIME, 10l).intValue());
+				configManager.getConfigLongValue(ConfigKeyEnum.VERIFYTIME, 10l).intValue(), TimeUnit.MINUTES);
 		// 发送验证码
 		smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random);
 	}
@@ -424,7 +424,7 @@ public class UserManagerImpl implements UserManager {
 	public Integer register(String areaCode, String userPhone, String userName, String userPassword, String loginIp,
 			String pushId, String language) {
 		// 清除验证码
-		redisDAO.deleteKey(ServerConsts.PIN_FUNC_REGISTER + areaCode + userPhone);
+		redisDAO.deleteData(ServerConsts.PIN_FUNC_REGISTER + areaCode + userPhone);
 		// 随机生成盐值
 		String passwordSalt = DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(6));
 		logger.info("Randomly generated salt values===salt={}", passwordSalt);
@@ -475,7 +475,7 @@ public class UserManagerImpl implements UserManager {
 		User user = userDAO.getUser(userId);
 		user.setUserPassword(PasswordUtils.encrypt(newPassword, user.getPasswordSalt()));
 		userDAO.updateUser(user);
-		redisDAO.deleteKey(ServerConsts.WRONG_PASSWORD + userId);
+		redisDAO.deleteData(ServerConsts.WRONG_PASSWORD + userId);
 	}
 
 	public void updateUser(Integer userId, String loginIp, String pushId, String language) {
