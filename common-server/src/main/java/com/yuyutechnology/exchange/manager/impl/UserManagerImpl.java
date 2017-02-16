@@ -245,19 +245,18 @@ public class UserManagerImpl implements UserManager {
 						configManager.getConfigLongValue(ConfigKeyEnum.PAY_UNAVAILIABLE_TIME, 24l).intValue());
 
 				if (new Date().before(time.getTime())) {
+					logger.info("***login is frozen!***");
 					result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
 					result.setInfo(time.getTime().getTime());
 					return result;
 				}
-
 				redisDAO.deleteData(ServerConsts.PAY_FREEZE + userId);
 			}
-
 			user.setLoginAvailable(ServerConsts.PAY_AVAILABLE_OF_AVAILABLE);
 			userDAO.updateUser(user);
 		}
 
-		if (PasswordUtils.check(userPayPwd, user.getUserPassword(), user.getPasswordSalt())) {
+		if (PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())) {
 			logger.info("***match***");
 
 			redisDAO.deleteData(ServerConsts.WRONG_PAYPWD + userId);
@@ -634,9 +633,6 @@ public class UserManagerImpl implements UserManager {
 		} else {
 			user.setUserAvailable(userAvailable);
 			userDAO.updateUser(user);
-			if (userAvailable == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
-				logout(userId);
-			}
 		}
 	}
 
