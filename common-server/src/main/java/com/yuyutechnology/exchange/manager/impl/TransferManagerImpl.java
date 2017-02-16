@@ -27,6 +27,7 @@ import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
+import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
@@ -264,6 +265,15 @@ public class TransferManagerImpl implements TransferManager{
 			return result;
 		}
 
+		//验证支付密码
+		CheckPwdResult checkPwdResult = userManager.checkPayPassword(userId, userPayPwd);
+		if(checkPwdResult.getStatus() != ServerConsts.CHECKPWD_STATUS_CORRECT){
+			logger.warn("payPwd is wrong !");
+			result.put("msg", checkPwdResult.getInfo()+"");
+			result.put("retCode", checkPwdResult.getStatus()+"");
+			return result;
+		}
+				
 		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		if(transfer == null){
 			logger.warn("The transaction order does not exist");
