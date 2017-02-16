@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import com.yuyutechnology.exchange.dao.RedisDAO;
@@ -29,7 +28,6 @@ public class SessionManager {
 	@Autowired
 	RedisDAO redisDAO;
 
-	@Resource
 	public static String SESSION_DATA_KEY = "session_data[sessionid]";
 	public static String SESSION_DATA_KEY_USERID = "session_data[userid]";
 	public static String LOGIN_TOKEN_USERID_KEY = "loginTokenUserId[:userid]";
