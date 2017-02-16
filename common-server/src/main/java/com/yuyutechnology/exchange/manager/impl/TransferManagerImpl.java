@@ -269,9 +269,22 @@ public class TransferManagerImpl implements TransferManager{
 		CheckPwdResult checkPwdResult = userManager.checkPayPassword(userId, userPayPwd);
 		if(checkPwdResult.getStatus() != ServerConsts.CHECKPWD_STATUS_CORRECT){
 			logger.warn("payPwd is wrong !");
-			result.put("msg", checkPwdResult.getInfo()+"");
-			result.put("retCode", checkPwdResult.getStatus()+"");
-			return result;
+//			result.put("msg", checkPwdResult.getInfo()+"");
+//			result.put("retCode", checkPwdResult.getStatus()+"");
+//			return result;
+			switch (checkPwdResult.getStatus()) {
+				case ServerConsts.CHECKPWD_STATUS_FREEZE:
+					result.put("msg", String.valueOf(checkPwdResult.getInfo()));
+					result.put("retCode", RetCodeConsts.PAY_FREEZE);
+					return result;
+	
+				case ServerConsts.CHECKPWD_STATUS_INCORRECT:
+					result.put("msg", String.valueOf(checkPwdResult.getInfo()));
+					result.put("retCode", RetCodeConsts.PAY_PWD_NOT_MATCH);
+					return result;
+				default :
+					break;
+			}
 		}
 				
 		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
