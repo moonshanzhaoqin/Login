@@ -637,6 +637,9 @@ public class UserManagerImpl implements UserManager {
 		} else {
 			user.setUserAvailable(userAvailable);
 			userDAO.updateUser(user);
+			if (userAvailable == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
+				logout(userId);
+			}
 		}
 	}
 

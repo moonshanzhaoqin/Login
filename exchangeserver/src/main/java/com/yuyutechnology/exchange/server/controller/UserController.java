@@ -194,7 +194,7 @@ public class UserController {
 				logger.info(MessageConsts.TOKEN_NOT_MATCH);
 				rep.setRetCode(RetCodeConsts.TOKEN_NOT_MATCH);
 				rep.setMessage(MessageConsts.TOKEN_NOT_MATCH);
-			} else {
+			}else{
 				// 生成session Token
 				SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 				sessionManager.saveSessionData(sessionData);
