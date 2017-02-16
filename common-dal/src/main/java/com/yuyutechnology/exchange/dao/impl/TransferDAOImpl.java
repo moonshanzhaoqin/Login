@@ -12,12 +12,13 @@ import org.apache.commons.lang.time.DateFormatUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.utils.page.PageUtils;
@@ -27,16 +28,16 @@ public class TransferDAOImpl implements TransferDAO {
 	
 	@Resource
 	HibernateTemplate hibernateTemplate;
-	@Resource
-	RedisTemplate<String, String> commonRedisTemplate;
+	@Autowired
+	RedisDAO redisDAO;
 	
-	private final String anytime_exechange_assign_transid = "anytimeExechangeAssignTransid";
+	private final String ANYTIME_EXECHANGE_ASSIGN_TRANSID = "anytimeExechangeAssignTransid";
 	//用户累加交易金额
-	private final String accumulated_amount_key = "accumulated_amount_[key]";
+	private final String ACCUMULATED_AMOUNT_KEY = "accumulated_amount_[key]";
 
 	@Override
 	public String createTransId(int transferType) {
-		Long id = commonRedisTemplate.opsForValue().increment(anytime_exechange_assign_transid, 1);
+		Long id = redisDAO.incrementValue(ANYTIME_EXECHANGE_ASSIGN_TRANSID, 1);
 		StringBuilder sb = new StringBuilder();
 		sb.append(DateFormatUtils.format(new Date(), "yyyyMMddHHmm")).append(transferType).append("T");
 		String idStr = String.valueOf(id);
@@ -112,14 +113,13 @@ public class TransferDAOImpl implements TransferDAO {
 
 	@Override
 	public void updateAccumulatedAmount(String key,BigDecimal amoumt) {
-		commonRedisTemplate.opsForValue().increment(accumulated_amount_key.replace("[key]", key),amoumt.doubleValue());
-		commonRedisTemplate.expireAt(accumulated_amount_key.replace("[key]", key), 
-				com.yuyutechnology.exchange.utils.DateFormatUtils.getIntervalDay(new Date(),1));
+		redisDAO.incrementValue(ACCUMULATED_AMOUNT_KEY.replace("[key]", key),amoumt.doubleValue());
+		redisDAO.expireAtData(ACCUMULATED_AMOUNT_KEY.replace("[key]", key), com.yuyutechnology.exchange.utils.DateFormatUtils.getIntervalDay(new Date(),1));
 	}
 
 	@Override
 	public BigDecimal getAccumulatedAmount(String key) {
-		String result = commonRedisTemplate.opsForValue().get(accumulated_amount_key.replace("[key]", key));
+		String result = redisDAO.getValueByKey(ACCUMULATED_AMOUNT_KEY.replace("[key]", key));
 		if (StringUtils.isEmpty(result)){
 			return new BigDecimal(0);
 		}else{
