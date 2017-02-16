@@ -27,6 +27,7 @@ import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
+import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
@@ -43,7 +44,6 @@ import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.sms.SmsManager;
 import com.yuyutechnology.exchange.utils.DateFormatUtils;
-import com.yuyutechnology.exchange.utils.PasswordUtils;
 
 @Service
 public class TransferManagerImpl implements TransferManager{
@@ -207,21 +207,79 @@ public class TransferManagerImpl implements TransferManager{
 		return map;
 	}
 
+//	@Override
+//	public String payPwdConfirm(int userId, String transferId, String userPayPwd) {
+//		
+//		User user = userDAO.getUser(userId);
+//		if(user ==null || user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
+//			logger.warn("The user does not exist or the account is blocked");
+//			return RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED;
+//		}
+//		
+//		CheckPwdResult CheckPwdResult = userManager.checkLoginPassword(userId, user.getUserPayPwd()); 
+//		
+//		
+////		if(!PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())){
+////			return RetCodeConsts.TRANSFER_PAYMENTPWD_INCORRECT;
+////		}
+//		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
+//		if(transfer == null){
+//			logger.warn("The transaction order does not exist");
+//			return RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST;
+//		}
+//		
+//		//总账大于设置安全基数，弹出需要短信验证框===============================================
+//		BigDecimal totalBalance =  exchangeRateManager.getTotalBalance(userId);
+//		BigDecimal totalBalanceMax =  BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TOTALBALANCETHRESHOLD, 100000d));
+//		//当天累计转出总金额大于设置安全基数，弹出需要短信验证框
+//		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount(userId+"");
+//		BigDecimal accumulatedAmountMax =  BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.DAILYTRANSFERTHRESHOLD, 100000d));
+//		//单笔转出金额大于设置安全基数，弹出需要短信验证框
+//		BigDecimal singleTransferAmount = exchangeRateManager.getExchangeResult(transfer.getCurrency(), transfer.getTransferAmount());
+//		BigDecimal singleTransferAmountMax = BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.EACHTRANSFERTHRESHOLD, 100000d));
+//
+//		logger.info("totalBalance : {},totalBalanceMax: {} ",totalBalance,totalBalanceMax);
+//		logger.info("accumulatedAmount : {},accumulatedAmountMax: {} ",accumulatedAmount,accumulatedAmountMax);
+//		logger.info("singleTransferAmount : {},singleTransferAmountMax: {} ",singleTransferAmount,singleTransferAmountMax);
+//		
+//		if(totalBalance.compareTo(totalBalanceMax) == 1 || 
+//				( accumulatedAmount.compareTo(accumulatedAmountMax) == 1 || 
+//						singleTransferAmount.compareTo(singleTransferAmountMax) == 1)){
+//			logger.warn("The transaction amount exceeds the limit");
+//			return RetCodeConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION;
+//			
+//		}else{
+//			return transferConfirm(userId,transferId);
+//		}
+//	}
+	
 	@Override
-	public String payPwdConfirm(int userId, String transferId, String userPayPwd) {
+	public HashMap<String, String> payPwdConfirm(int userId, String transferId, String userPayPwd) {
 		
+		HashMap<String, String> result = new HashMap<>();		
 		User user = userDAO.getUser(userId);
 		if(user ==null || user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
 			logger.warn("The user does not exist or the account is blocked");
-			return RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED;
+			result.put("msg", "The user does not exist or the account is blocked");
+			result.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
+			return result;
 		}
-		if(!PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())){
-			return RetCodeConsts.TRANSFER_PAYMENTPWD_INCORRECT;
+
+		//验证支付密码
+		CheckPwdResult checkPwdResult = userManager.checkPayPassword(userId, userPayPwd);
+		if(checkPwdResult.getStatus() != ServerConsts.CHECKPWD_STATUS_CORRECT){
+			logger.warn("payPwd is wrong !");
+			result.put("msg", checkPwdResult.getInfo()+"");
+			result.put("retCode", checkPwdResult.getStatus()+"");
+			return result;
 		}
+				
 		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		if(transfer == null){
 			logger.warn("The transaction order does not exist");
-			return RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST;
+			result.put("msg", "The transaction order does not exist");
+			result.put("retCode", RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST);
+			return result;
 		}
 		
 		//总账大于设置安全基数，弹出需要短信验证框===============================================
@@ -242,10 +300,14 @@ public class TransferManagerImpl implements TransferManager{
 				( accumulatedAmount.compareTo(accumulatedAmountMax) == 1 || 
 						singleTransferAmount.compareTo(singleTransferAmountMax) == 1)){
 			logger.warn("The transaction amount exceeds the limit");
-			return RetCodeConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION;
-			
+			result.put("msg", "The transaction amount exceeds the limit");
+			result.put("retCode", RetCodeConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION);
+			return result;
 		}else{
-			return transferConfirm(userId,transferId);
+			String retCode = transferConfirm(userId,transferId);
+			result.put("msg", retCode);
+			result.put("retCode", retCode);
+			return result;
 		}
 	}
 
@@ -776,7 +838,7 @@ public class TransferManagerImpl implements TransferManager{
 		
 		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(1, 1);
 		
-		if(!list.isEmpty()){
+		if(list!= null && !list.isEmpty()){
 			for (int i = 0; i < list.size(); i++) {
 				CrmAlarm crmAlarm = list.get(i);
 				

@@ -108,7 +108,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		 logger.info("interceptor excute order:1.preHandle================");
+        //logger.info("interceptor excute order:1.preHandle================");
 		// 允许跨域访问
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Headers", "accept, content-type");

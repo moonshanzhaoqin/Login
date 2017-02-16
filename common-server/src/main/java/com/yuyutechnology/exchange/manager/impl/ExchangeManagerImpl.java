@@ -323,7 +323,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		
 		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(2, 1);
 		
-		if(!list.isEmpty()){
+		if(list != null && !list.isEmpty()){
 			for (int i = 0; i < list.size(); i++) {
 				CrmAlarm crmAlarm = list.get(i);
 				
