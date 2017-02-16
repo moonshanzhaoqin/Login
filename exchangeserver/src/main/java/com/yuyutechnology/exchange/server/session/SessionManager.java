@@ -8,9 +8,11 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
 import com.yuyutechnology.exchange.utils.UidUtils;
@@ -23,15 +25,16 @@ import com.yuyutechnology.exchange.utils.UidUtils;
 @Component
 public class SessionManager {
 	public static Logger logger = LoggerFactory.getLogger(SessionManager.class);
+	
+	@Autowired
+	RedisDAO redisDAO;
 
 	@Resource
-	RedisTemplate<String, String> sessionRedisTemplate;
 	public static String SESSION_DATA_KEY = "session_data[sessionid]";
-	// public static String REPEAT_LOGIN_SESSION_DATA_KEY =
-	// "repeat_login_session_data[:sessionid]";
 	public static String SESSION_DATA_KEY_USERID = "session_data[userid]";
 	public static String LOGIN_TOKEN_USERID_KEY = "loginTokenUserId[:userid]";
 	public static String LOGIN_TOKEN_TOKEN_KEY = "loginToken[:token]";
+	public static String CHECK_TOKEN_KEY = "checkToken[:purpose][:userid]";
 
 	/**
 	 * 
@@ -48,9 +51,7 @@ public class SessionManager {
 	public void saveSessionData(SessionData sessionData, boolean allowRepeatLogin) {
 		String json = JsonBinder.getInstance().toJson(sessionData);
 		String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", sessionData.getSessionId());
-		sessionRedisTemplate.opsForValue().set(key, json);
-		sessionRedisTemplate.expire(key, ResourceUtils.getBundleValue4Long("session.timeout.minuate", 15l).intValue(),
-				TimeUnit.MINUTES);
+		redisDAO.saveData(key, json, ResourceUtils.getBundleValue4Long("session.timeout.minuate", 15l), TimeUnit.MINUTES);
 		if (sessionData.getUserId() != null) {
 			if (!allowRepeatLogin) {
 				repeatLogin(sessionData.getUserId());
@@ -65,8 +66,7 @@ public class SessionManager {
 	 */
 	public void refreshSessionDataExpireTime(String sessionId) {
 		String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", sessionId);
-		sessionRedisTemplate.expire(key, ResourceUtils.getBundleValue4Long("session.timeout.minuate", 15l).intValue(),
-				TimeUnit.MINUTES);
+		redisDAO.expireData(key, ResourceUtils.getBundleValue4Long("session.timeout.minuate", 15l), TimeUnit.MINUTES);
 	}
 
 	/**
@@ -76,9 +76,7 @@ public class SessionManager {
 	public void saveSessionDataToUserId(SessionData sessionData) {
 		String json = JsonBinder.getInstance().toJson(sessionData);
 		String useridkey = StringUtils.replace(SESSION_DATA_KEY_USERID, "userid", sessionData.getUserId().toString());
-		sessionRedisTemplate.opsForValue().set(useridkey, json);
-		sessionRedisTemplate.expire(useridkey,
-				ResourceUtils.getBundleValue4Long("session.timeout.minuate", 15l).intValue(), TimeUnit.MINUTES);
+		redisDAO.saveData(useridkey, json, ResourceUtils.getBundleValue4Long("session.timeout.minuate", 15l), TimeUnit.MINUTES);
 	}
 
 	/**
@@ -88,7 +86,7 @@ public class SessionManager {
 	 */
 	public SessionData get(String sessionId) {
 		String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", sessionId);
-		String jsonContent = sessionRedisTemplate.opsForValue().get(key);
+		String jsonContent = redisDAO.getValueByKey(key);
 		if (StringUtils.isEmpty(jsonContent)) {
 			return null;
 		} else {
@@ -102,7 +100,7 @@ public class SessionManager {
 	 */
 	public void cleanSession(String sessionId) {
 		String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", sessionId);
-		sessionRedisTemplate.delete(key);
+		redisDAO.deleteData(key);
 	}
 
 	/**
@@ -112,7 +110,7 @@ public class SessionManager {
 		SessionData session = getByUserid(userId);
 		if (session != null && StringUtils.isNotEmpty(session.getSessionId())) {
 			String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", session.getSessionId());
-			sessionRedisTemplate.delete(key);
+			redisDAO.deleteData(key);
 		}
 	}
 
@@ -123,7 +121,7 @@ public class SessionManager {
 	 */
 	public SessionData getByUserid(int userId) {
 		String key = StringUtils.replace(SESSION_DATA_KEY_USERID, "userid", userId + "");
-		String jsonContent = sessionRedisTemplate.opsForValue().get(key);
+		String jsonContent = redisDAO.getValueByKey(key);
 		if (StringUtils.isEmpty(jsonContent)) {
 			return null;
 		} else {
@@ -136,19 +134,15 @@ public class SessionManager {
 		String userIdKey = StringUtils.replace(LOGIN_TOKEN_USERID_KEY, ":userid", userId + "");
 		String loginToken = DigestUtils.md5Hex(UidUtils.genUid());
 		String key = StringUtils.replace(LOGIN_TOKEN_TOKEN_KEY, ":token", loginToken);
-		sessionRedisTemplate.opsForValue().set(userIdKey, loginToken);
-		sessionRedisTemplate.opsForValue().set(key, userId + "");
-		sessionRedisTemplate.expire(userIdKey, ResourceUtils.getBundleValue4Long("login.token.timeout.day", 7l),
-				TimeUnit.DAYS);
-		sessionRedisTemplate.expire(key, ResourceUtils.getBundleValue4Long("login.token.timeout.day", 7l),
-				TimeUnit.DAYS);
+		redisDAO.saveData(userIdKey, loginToken, ResourceUtils.getBundleValue4Long("login.token.timeout.day", 7l), TimeUnit.DAYS);
+		redisDAO.saveData(key, userId + "", ResourceUtils.getBundleValue4Long("login.token.timeout.day", 7l), TimeUnit.DAYS);
 		return loginToken;
 	}
 
 	public int validateLoginToken(String loginToken) {
 		int userId = 0;
 		String tokenKey = StringUtils.replace(LOGIN_TOKEN_TOKEN_KEY, ":token", loginToken);
-		String userIdString = sessionRedisTemplate.opsForValue().get(tokenKey);
+		String userIdString = redisDAO.getValueByKey(tokenKey);
 		try {
 			userId = Integer.valueOf(userIdString);
 			delLoginToken(userId);
@@ -160,29 +154,35 @@ public class SessionManager {
 	public void delLoginToken(int userId) {
 		if (userId != 0) {
 			String userIdKey = StringUtils.replace(LOGIN_TOKEN_USERID_KEY, ":userid", userId + "");
-			String token = sessionRedisTemplate.opsForValue().get(userIdKey);
+			String token = redisDAO.getValueByKey(userIdKey);
 			if (StringUtils.isNotBlank(token)) {
-				sessionRedisTemplate.delete(userIdKey);
+				redisDAO.deleteData(userIdKey);
 				String tokenKey = StringUtils.replace(LOGIN_TOKEN_TOKEN_KEY, ":token", token);
-				sessionRedisTemplate.delete(tokenKey);
+				redisDAO.deleteData(tokenKey);
 			}
 		}
 	}
 
 	public String createCheckToken(Integer userId, String purpose) {
 		String checkToken = DigestUtils.md5Hex(UidUtils.genUid());
-		sessionRedisTemplate.opsForValue().set(purpose + userId, checkToken);
+		String key = StringUtils.replace(CHECK_TOKEN_KEY, ":userid", userId + "");
+		key = StringUtils.replace(key, ":purpose", purpose);
+		redisDAO.saveData(key, checkToken, ResourceUtils.getBundleValue4Long("session.timeout.minuate", 15l).intValue(), TimeUnit.MINUTES);
 		return checkToken;
 	}
 
 	public boolean validateCheckToken(Integer userId, String purpose, String checkToken) {
-		if (checkToken.equals(sessionRedisTemplate.opsForValue().get(purpose + userId))) {
+		String key = StringUtils.replace(CHECK_TOKEN_KEY, ":userid", userId + "");
+		key = StringUtils.replace(key, ":purpose", purpose);
+		if (checkToken.equals(redisDAO.getValueByKey(key))) {
 			return true;
 		}
 		return false;
 	}
 
 	public void delCheckToken(Integer userId, String purpose) {
-		sessionRedisTemplate.delete(purpose + userId);
+		String key = StringUtils.replace(CHECK_TOKEN_KEY, ":userid", userId + "");
+		key = StringUtils.replace(key, ":purpose", purpose);
+		redisDAO.deleteData(key);
 	}
 }
