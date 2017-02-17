@@ -147,18 +147,21 @@ public class UserManagerImpl implements UserManager {
 		user.setAreaCode(areaCode);
 		user.setUserPhone(userPhone);
 		userDAO.updateUser(user);
-		redisDAO.saveData("changephonetime" + userId, simpleDateFormat.format(new Date()));
+		redisDAO.saveData("changephonetime" + userId, new Date().getTime());
 	}
 
 	@Override
 	public long checkChangePhoneTime(Integer userId) throws ParseException {
+		logger.info("checkChangePhoneTime ==>");
 		String timeString = redisDAO.getValueByKey("changephonetime" + userId);
 		if (timeString != null) {
 			Calendar time = Calendar.getInstance();
-			time.setTime(simpleDateFormat.parse(timeString));
+			time.setTimeInMillis(Long.valueOf(timeString).longValue());
 			time.add(Calendar.DATE, configManager.getConfigLongValue(ConfigKeyEnum.CHANGEPHONETIME, 10l).intValue());
+			logger.info("{}",time.getTime());
 			return time.getTime().getTime();
 		}
+		logger.info("{}",new Date());
 		return new Date().getTime();
 
 	}

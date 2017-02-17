@@ -171,7 +171,7 @@ public class LoggedInUserController {
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			long time = userManager.checkChangePhoneTime(sessionData.getUserId());
-			if (time < new Date().getTime()) {
+			if (time > new Date().getTime()) {
 				logger.info(MessageConsts.TIME_NOT_ARRIVED);
 				rep.setRetCode(RetCodeConsts.TIME_NOT_ARRIVED);
 				rep.setMessage(MessageConsts.TIME_NOT_ARRIVED);
