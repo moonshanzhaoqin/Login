@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.crm.dto.TotalAsset;
 import com.yuyutechnology.exchange.crm.request.GetTotalAssetsInfoRequest;
 import com.yuyutechnology.exchange.crm.request.UserFreezeRequest;
+import com.yuyutechnology.exchange.crm.session.SessionData;
+import com.yuyutechnology.exchange.crm.session.SessionManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
 import com.yuyutechnology.exchange.manager.UserManager;
@@ -31,6 +34,8 @@ public class AccountInfoController {
 	CrmUserInfoManager crmUserInfoManager;
 	@Autowired
 	CommonManager commonManager;
+	@Autowired
+	SessionManager sessionManager;
 
 	ModelAndView mav;
 
@@ -112,6 +117,14 @@ public class AccountInfoController {
 	@RequestMapping(value = "/account/userFreeze", method = RequestMethod.GET)
 	public ModelAndView userFreeze(UserFreezeRequest request) {
 		mav = new ModelAndView();
+		
+		if (request.getOperate() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
+			SessionData sessionData = sessionManager.getByUserid(request.getUserId());
+			sessionManager.cleanSession(sessionData.getSessionId());
+			sessionManager.delLoginToken(request.getUserId());
+			userManager.logout(request.getUserId());
+		}
+		
 		userManager.userFreeze(request.getUserId(), request.getOperate());
 		crmUserInfoManager.userFreeze(request.getUserId(), request.getOperate());
 		mav.setViewName("redirect:/account/accountOverview");

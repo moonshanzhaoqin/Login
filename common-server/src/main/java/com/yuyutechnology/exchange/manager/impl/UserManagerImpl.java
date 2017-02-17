@@ -10,11 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.print.attribute.standard.RequestingUserName;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.loader.custom.Return;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -248,19 +245,18 @@ public class UserManagerImpl implements UserManager {
 						configManager.getConfigLongValue(ConfigKeyEnum.PAY_UNAVAILIABLE_TIME, 24l).intValue());
 
 				if (new Date().before(time.getTime())) {
+					logger.info("***login is frozen!***");
 					result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
 					result.setInfo(time.getTime().getTime());
 					return result;
 				}
-
 				redisDAO.deleteData(ServerConsts.PAY_FREEZE + userId);
 			}
-
 			user.setLoginAvailable(ServerConsts.PAY_AVAILABLE_OF_AVAILABLE);
 			userDAO.updateUser(user);
 		}
 
-		if (PasswordUtils.check(userPayPwd, user.getUserPassword(), user.getPasswordSalt())) {
+		if (PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())) {
 			logger.info("***match***");
 
 			redisDAO.deleteData(ServerConsts.WRONG_PAYPWD + userId);

@@ -11,7 +11,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.RetCodeConsts;
@@ -323,7 +322,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		
 		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(2, 1);
 		
-		if(!list.isEmpty()){
+		if(list != null && !list.isEmpty()){
 			for (int i = 0; i < list.size(); i++) {
 				CrmAlarm crmAlarm = list.get(i);
 				

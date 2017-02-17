@@ -28,36 +28,8 @@ import com.yuyutechnology.exchange.mail.MailManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
-import com.yuyutechnology.exchange.server.controller.request.BindGoldpayRequest;
-import com.yuyutechnology.exchange.server.controller.request.ChangeGoldpayRequest;
-import com.yuyutechnology.exchange.server.controller.request.ChangePhoneRequest;
-import com.yuyutechnology.exchange.server.controller.request.CheckGoldpayRequest;
-import com.yuyutechnology.exchange.server.controller.request.CheckPayPwdRequest;
-import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
-import com.yuyutechnology.exchange.server.controller.request.GetUserConfigRequest;
-import com.yuyutechnology.exchange.server.controller.request.LogoutRequest;
-import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
-import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByGoldpayRequest;
-import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByOldRequest;
-import com.yuyutechnology.exchange.server.controller.request.ModifyUserNameRequest;
-import com.yuyutechnology.exchange.server.controller.request.SetUserPayPwdRequest;
-import com.yuyutechnology.exchange.server.controller.request.SwitchLanguageRequest;
-import com.yuyutechnology.exchange.server.controller.response.BindGoldpayResponse;
-import com.yuyutechnology.exchange.server.controller.response.ChangeGoldpayResponse;
-import com.yuyutechnology.exchange.server.controller.response.ChangePhoneResponse;
-import com.yuyutechnology.exchange.server.controller.response.CheckChangePhoneResponse;
-import com.yuyutechnology.exchange.server.controller.response.CheckGoldpayResponse;
-import com.yuyutechnology.exchange.server.controller.response.CheckPayPwdResponse;
-import com.yuyutechnology.exchange.server.controller.response.ContactUsResponse;
-import com.yuyutechnology.exchange.server.controller.response.GetMsgFlagResponse;
-import com.yuyutechnology.exchange.server.controller.response.GetUserConfigResponse;
-import com.yuyutechnology.exchange.server.controller.response.LogoutResponse;
-import com.yuyutechnology.exchange.server.controller.response.ModifyPasswordResponse;
-import com.yuyutechnology.exchange.server.controller.response.ModifyPayPwdByGoldpayResponse;
-import com.yuyutechnology.exchange.server.controller.response.ModifyPayPwdByOldResponse;
-import com.yuyutechnology.exchange.server.controller.response.ModifyUserNameResponse;
-import com.yuyutechnology.exchange.server.controller.response.SetUserPayPwdResponse;
-import com.yuyutechnology.exchange.server.controller.response.SwitchLanguageResponse;
+import com.yuyutechnology.exchange.server.controller.request.*;
+import com.yuyutechnology.exchange.server.controller.response.*;
 import com.yuyutechnology.exchange.server.session.SessionData;
 import com.yuyutechnology.exchange.server.session.SessionDataHolder;
 import com.yuyutechnology.exchange.server.session.SessionManager;
@@ -359,7 +331,7 @@ public class LoggedInUserController {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			if (userManager.checkGoldpay(sessionData.getUserId(), checkPayGoldpayRequest.getGoldpayName(),checkPayGoldpayRequest.getGoldpayPwd())) {
 				String checkToken = sessionManager.createCheckToken(sessionData.getUserId(),
-						ServerConsts.GOLDPAYPWD_MODIFYPAYPWD);
+						ServerConsts.RESETPAYPWD);
 				logger.info("********Operation succeeded********");
 				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(checkToken);
@@ -542,33 +514,32 @@ public class LoggedInUserController {
 		return rep;
 	}
 
-	// TODO
 	/**
-	 * modifyPayPwdByGoldpay 通过Goldpay重置支付密码
+	 * ResetPayPwd 通过第三方重置支付密码
 	 * 
 	 * @param token
 	 * @param modifyPayPwdByGoldRequest
 	 * @return
 	 */
 	@ResponseBody
-	@ApiOperation(value = "通过Goldpay重置支付密码", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/user/modifyPayPwdByGoldpay", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public ModifyPayPwdByGoldpayResponse modifyPayPwdByGoldpay(@PathVariable String token,
-			@RequestBody ModifyPayPwdByGoldpayRequest modifyPayPwdByGoldRequest) {
+	@ApiOperation(value = "通过第三方重置支付密码", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/resetPayPwd", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public ResetPayPwdResponse resetPayPwd(@PathVariable String token,
+			@RequestBody ResetPayPwdRequest resetPayPwdRequest) {
 		logger.info("========modifyPayPwdByOld : {}============", token);
-		ModifyPayPwdByGoldpayResponse rep = new ModifyPayPwdByGoldpayResponse();
-		if (modifyPayPwdByGoldRequest.isEmpty()) {
+		ResetPayPwdResponse rep = new ResetPayPwdResponse();
+		if (resetPayPwdRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
-			if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.GOLDPAYPWD_MODIFYPAYPWD,
-					modifyPayPwdByGoldRequest.getCheckToken())) {
+			if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.RESETPAYPWD,
+					resetPayPwdRequest.getCheckToken())) {
 				// PayPwd 6位数字
-				if (modifyPayPwdByGoldRequest.getNewUserPayPwd().length() == 6
-						&& StringUtils.isNumeric(modifyPayPwdByGoldRequest.getNewUserPayPwd())) {
-					userManager.updateUserPayPwd(sessionData.getUserId(), modifyPayPwdByGoldRequest.getNewUserPayPwd());
+				if (resetPayPwdRequest.getNewUserPayPwd().length() == 6
+						&& StringUtils.isNumeric(resetPayPwdRequest.getNewUserPayPwd())) {
+					userManager.updateUserPayPwd(sessionData.getUserId(), resetPayPwdRequest.getNewUserPayPwd());
 					logger.info("********Operation succeeded********");
 					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
@@ -577,7 +548,7 @@ public class LoggedInUserController {
 					rep.setRetCode(RetCodeConsts.PAY_PASSWORD_IS_ILLEGAL);
 					rep.setMessage(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
 				}
-				sessionManager.delCheckToken(sessionData.getUserId(), ServerConsts.GOLDPAYPWD_MODIFYPAYPWD);
+				sessionManager.delCheckToken(sessionData.getUserId(), ServerConsts.RESETPAYPWD);
 			} else {
 				logger.info(MessageConsts.RET_CODE_FAILUE);
 				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);

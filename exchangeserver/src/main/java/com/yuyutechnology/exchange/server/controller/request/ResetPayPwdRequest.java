@@ -2,7 +2,7 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 import org.apache.commons.lang.StringUtils;
 
-public class ModifyPayPwdByGoldpayRequest {
+public class ResetPayPwdRequest {
 	private String checkToken;
 	private String newUserPayPwd;
 
