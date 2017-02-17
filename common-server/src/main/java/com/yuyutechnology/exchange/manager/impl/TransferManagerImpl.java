@@ -439,7 +439,7 @@ public class TransferManagerImpl implements TransferManager{
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
 		
 		
-		if(StringUtils.isNotBlank(currency)||StringUtils.isNotBlank(amount.toString())){
+		if(StringUtils.isNotBlank(currency)&&StringUtils.isNotBlank(amount.toString())){
 			if((exchangeRateManager.getExchangeResult(currency, amount)).compareTo(transferLimitPerPay) == 1){
 				logger.warn("Exceeds the maximum amount of each transaction");
 				return RetCodeConsts.TRANSFER_LIMIT_EACH_TIME;
