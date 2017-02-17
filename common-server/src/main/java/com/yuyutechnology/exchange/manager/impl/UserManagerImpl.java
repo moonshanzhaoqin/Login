@@ -113,13 +113,13 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public String bindGoldpay(Integer userId, String goldpayToken) {
-		logger.info("getGoldpay==>");
+		logger.info("get Goldpay==>");
 		GoldpayUser goldpayUser = goldpayManager.getGoldpayInfo(goldpayToken);
 		if (goldpayUser == null) {
 			logger.warn("goldpay account does not exist.");
 			return RetCodeConsts.RET_CODE_FAILUE;
 		} else {
-			logger.info("goldpayUser=", goldpayUser.toString());
+			logger.info("goldpayUser = ", goldpayUser.toString());
 			if (StringUtils.isBlank(goldpayUser.getAreaCode()) || StringUtils.isBlank(goldpayUser.getMobile())) {
 				logger.info("Goldpay account does not bind phone number.");
 				return RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST;
