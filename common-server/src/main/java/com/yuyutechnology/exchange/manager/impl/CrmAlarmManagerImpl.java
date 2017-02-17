@@ -210,27 +210,6 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 						put("lowerLimit", map.get("crmAlarm.getLowerLimit()"));
 					}
 				});
-
-				// 发短信
-//				if (crmAlarm.getAlarmMode() == 1) {
-//					alarmBySMS(crmAlarm.getSupervisorIdArr(), map.get("reserveAvailability"), crmAlarm.getLowerLimit());
-//				}
-//				// 发邮件
-//				if (crmAlarm.getAlarmMode() == 2) {
-//					alarmByEmail(crmAlarm.getSupervisorIdArr(), map.get("reserveAvailability"),
-//							crmAlarm.getLowerLimit());
-//				}
-//
-//				// 发邮件+发短信
-//				if (crmAlarm.getAlarmMode() == 3) {
-//
-//					alarmBySMS(crmAlarm.getSupervisorIdArr(), map.get("reserveAvailability"), crmAlarm.getLowerLimit());
-//
-//					alarmByEmail(crmAlarm.getSupervisorIdArr(), map.get("reserveAvailability"),
-//							crmAlarm.getLowerLimit());
-//
-//				}
-
 				// 生成警报记录
 			}
 		}
@@ -258,34 +237,40 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 			if(earlyWarningMode == 1){
 				for (String supervisorId : arr) {
 					CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
-					smsManager.sendSMS4CriticalAlarm(crmSupervisor.getSupervisorMobile(), 
-							new BigDecimal(params.get("difference").toString()), 
-							new BigDecimal(params.get("lowerLimit").toString()),
-							DateFormatUtils.formatDateGMT8(new Date()));
+					if(crmSupervisor != null){
+						smsManager.sendSMS4CriticalAlarm(crmSupervisor.getSupervisorMobile(), 
+								new BigDecimal(params.get("difference").toString()), 
+								new BigDecimal(params.get("lowerLimit").toString()),
+								DateFormatUtils.formatDateGMT8(new Date()));
+					}
 				}
 			}
 			//邮件
 			if(earlyWarningMode == 2){
 				for (String supervisorId : arr) {
 					CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId.trim()));
-					mailManager.mail4criticalAlarm(crmSupervisor.getSupervisorEmail(), 
-							new BigDecimal(params.get("difference").toString()), 
-							new BigDecimal(params.get("lowerLimit").toString()),
-							DateFormatUtils.formatDateGMT8(new Date()));
+					if(crmSupervisor != null){
+						mailManager.mail4criticalAlarm(crmSupervisor.getSupervisorEmail(), 
+								new BigDecimal(params.get("difference").toString()), 
+								new BigDecimal(params.get("lowerLimit").toString()),
+								DateFormatUtils.formatDateGMT8(new Date()));
+					}
 				}
 			}
 			//短信邮件
 			if(earlyWarningMode == 3){
 				for (String supervisorId : arr) {
 					CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
-					mailManager.mail4criticalAlarm(crmSupervisor.getSupervisorEmail(), 
-							new BigDecimal(params.get("difference").toString()), 
-							new BigDecimal(params.get("lowerLimit").toString()),
-							DateFormatUtils.formatDateGMT8(new Date()));
-					smsManager.sendSMS4CriticalAlarm(crmSupervisor.getSupervisorMobile(), 
-							new BigDecimal(params.get("difference").toString()), 
-							new BigDecimal(params.get("lowerLimit").toString()),
-							DateFormatUtils.formatDateGMT8(new Date()));
+					if(crmSupervisor != null){
+						mailManager.mail4criticalAlarm(crmSupervisor.getSupervisorEmail(), 
+								new BigDecimal(params.get("difference").toString()), 
+								new BigDecimal(params.get("lowerLimit").toString()),
+								DateFormatUtils.formatDateGMT8(new Date()));
+						smsManager.sendSMS4CriticalAlarm(crmSupervisor.getSupervisorMobile(), 
+								new BigDecimal(params.get("difference").toString()), 
+								new BigDecimal(params.get("lowerLimit").toString()),
+								DateFormatUtils.formatDateGMT8(new Date()));
+					}
 				}
 			}
 			
@@ -295,42 +280,48 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 			if(earlyWarningMode == 1){
 				for (String supervisorId : arr) {
 					CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
-					smsManager.sendSMS4LargeTrans(crmSupervisor.getSupervisorMobile(), 
-							params.get("payerMobile").toString(),
-							params.get("payeeMobile").toString(), 
-							new BigDecimal(params.get("amount").toString()),
-							params.get("currency").toString(), 
-							DateFormatUtils.formatDateGMT8(new Date()));
+					if(crmSupervisor != null){
+						smsManager.sendSMS4LargeTrans(crmSupervisor.getSupervisorMobile(), 
+								params.get("payerMobile").toString(),
+								params.get("payeeMobile").toString(), 
+								new BigDecimal(params.get("amount").toString()),
+								params.get("currency").toString(), 
+								DateFormatUtils.formatDateGMT8(new Date()));
+					}
 				}
 			}
 			//邮件
 			if(earlyWarningMode == 2){
 				for (String supervisorId : arr) {
 					CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId.trim()));
-					mailManager.mail4LargeTrans(crmSupervisor.getSupervisorEmail(), 
-							params.get("payerMobile").toString(),
-							params.get("payeeMobile").toString(), 
-							new BigDecimal(params.get("amount").toString()),
-							params.get("currency").toString(), 
-							DateFormatUtils.formatDateGMT8(new Date()));
+					if(crmSupervisor != null){
+						mailManager.mail4LargeTrans(crmSupervisor.getSupervisorEmail(), 
+								params.get("payerMobile").toString(),
+								params.get("payeeMobile").toString(), 
+								new BigDecimal(params.get("amount").toString()),
+								params.get("currency").toString(), 
+								DateFormatUtils.formatDateGMT8(new Date()));
+					}
 				}
 			}
 			//短信邮件
 			if(earlyWarningMode == 3){
 				for (String supervisorId : arr) {
 					CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
-					mailManager.mail4LargeTrans(crmSupervisor.getSupervisorEmail(), 
-							params.get("payerMobile").toString(),
-							params.get("payeeMobile").toString(), 
-							new BigDecimal(params.get("amount").toString()),
-							params.get("currency").toString(), 
-							DateFormatUtils.formatDateGMT8(new Date()));
-					smsManager.sendSMS4LargeTrans(crmSupervisor.getSupervisorMobile(), 
-							params.get("payerMobile").toString(),
-							params.get("payeeMobile").toString(), 
-							new BigDecimal(params.get("amount").toString()),
-							params.get("currency").toString(), 
-							DateFormatUtils.formatDateGMT8(new Date()));
+					if(crmSupervisor != null){
+						mailManager.mail4LargeTrans(crmSupervisor.getSupervisorEmail(), 
+								params.get("payerMobile").toString(),
+								params.get("payeeMobile").toString(), 
+								new BigDecimal(params.get("amount").toString()),
+								params.get("currency").toString(), 
+								DateFormatUtils.formatDateGMT8(new Date()));
+						smsManager.sendSMS4LargeTrans(crmSupervisor.getSupervisorMobile(), 
+								params.get("payerMobile").toString(),
+								params.get("payeeMobile").toString(), 
+								new BigDecimal(params.get("amount").toString()),
+								params.get("currency").toString(), 
+								DateFormatUtils.formatDateGMT8(new Date()));
+					}
 				}
 			}
 			
@@ -341,13 +332,15 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 			if(earlyWarningMode == 1){
 				for (String supervisorId : arr) {
 					CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
-					smsManager.sendSMS4LargeExchange(crmSupervisor.getSupervisorMobile(), 
-							params.get("payerMobile").toString(), 
-							DateFormatUtils.formatDateGMT8(new Date()), 
-							new BigDecimal(params.get("amountOut").toString()), 
-							params.get("currencyOut").toString(), 
-							new BigDecimal(params.get("amountIn").toString()), 
-							params.get("currencyIn").toString());
+					if(crmSupervisor != null){
+						smsManager.sendSMS4LargeExchange(crmSupervisor.getSupervisorMobile(), 
+								params.get("payerMobile").toString(), 
+								DateFormatUtils.formatDateGMT8(new Date()), 
+								new BigDecimal(params.get("amountOut").toString()), 
+								params.get("currencyOut").toString(), 
+								new BigDecimal(params.get("amountIn").toString()), 
+								params.get("currencyIn").toString());
+					}
 					
 				}
 			}
@@ -355,33 +348,37 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 			if(earlyWarningMode == 2){
 				for (String supervisorId : arr) {
 					CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId.trim()));
-					mailManager.mail4LargeExchange(crmSupervisor.getSupervisorEmail(), 
-							params.get("payerMobile").toString(), 
-							DateFormatUtils.formatDateGMT8(new Date()), 
-							new BigDecimal(params.get("amountOut").toString()), 
-							params.get("currencyOut").toString(), 
-							new BigDecimal(params.get("amountIn").toString()), 
-							params.get("currencyIn").toString());
+					if(crmSupervisor != null){
+						mailManager.mail4LargeExchange(crmSupervisor.getSupervisorEmail(), 
+								params.get("payerMobile").toString(), 
+								DateFormatUtils.formatDateGMT8(new Date()), 
+								new BigDecimal(params.get("amountOut").toString()), 
+								params.get("currencyOut").toString(), 
+								new BigDecimal(params.get("amountIn").toString()), 
+								params.get("currencyIn").toString());
+					}
 				}
 			}
 			//短信邮件
 			if(earlyWarningMode == 3){
 				for (String supervisorId : arr) {
 					CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
-					mailManager.mail4LargeExchange(crmSupervisor.getSupervisorEmail(), 
-							params.get("payerMobile").toString(), 
-							DateFormatUtils.formatDateGMT8(new Date()), 
-							new BigDecimal(params.get("amountOut").toString()), 
-							params.get("currencyOut").toString(), 
-							new BigDecimal(params.get("amountIn").toString()), 
-							params.get("currencyIn").toString());
-					smsManager.sendSMS4LargeExchange(crmSupervisor.getSupervisorMobile(), 
-							params.get("payerMobile").toString(), 
-							DateFormatUtils.formatDateGMT8(new Date()), 
-							new BigDecimal(params.get("amountOut").toString()), 
-							params.get("currencyOut").toString(), 
-							new BigDecimal(params.get("amountIn").toString()), 
-							params.get("currencyIn").toString());
+					if(crmSupervisor != null){
+						mailManager.mail4LargeExchange(crmSupervisor.getSupervisorEmail(), 
+								params.get("payerMobile").toString(), 
+								DateFormatUtils.formatDateGMT8(new Date()), 
+								new BigDecimal(params.get("amountOut").toString()), 
+								params.get("currencyOut").toString(), 
+								new BigDecimal(params.get("amountIn").toString()), 
+								params.get("currencyIn").toString());
+						smsManager.sendSMS4LargeExchange(crmSupervisor.getSupervisorMobile(), 
+								params.get("payerMobile").toString(), 
+								DateFormatUtils.formatDateGMT8(new Date()), 
+								new BigDecimal(params.get("amountOut").toString()), 
+								params.get("currencyOut").toString(), 
+								new BigDecimal(params.get("amountIn").toString()), 
+								params.get("currencyIn").toString());
+					}
 				}
 			}
 			
@@ -391,28 +388,4 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 			break;
 		}
 	}
-	
-	
-
-//	private void alarmBySMS(String supervisorIdArr, BigDecimal difference, BigDecimal lowerLimit) {
-//		String[] arr = (supervisorIdArr.replace("[", "").replace("]", "")).split(",");
-//
-//		for (String supervisorId : arr) {
-//			CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId.trim()));
-//			smsManager.sendSMS4CriticalAlarm(crmSupervisor.getSupervisorMobile(), difference, lowerLimit,
-//					DateFormatUtils.formatDateGMT8(new Date()));
-//		}
-//	}
-//
-//	private void alarmByEmail(String supervisorIdArr, BigDecimal difference, BigDecimal lowerLimit) {
-//		String[] arr = (supervisorIdArr.replace("[", "").replace("]", "")).split(",");
-//
-//		for (String supervisorId : arr) {
-//			CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
-//			mailManager.mail4criticalAlarm(crmSupervisor.getSupervisorEmail(), difference, lowerLimit,
-//					DateFormatUtils.formatDateGMT8(new Date()));
-//		}
-//	}
-
-
 }
