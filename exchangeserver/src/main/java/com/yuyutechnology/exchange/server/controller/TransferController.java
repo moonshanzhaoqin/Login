@@ -118,22 +118,6 @@ public class TransferController {
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		TransPwdConfirmResponse rep = new TransPwdConfirmResponse();
-//		String result = transferManager.payPwdConfirm(sessionData.getUserId(), reqMsg.getTransferId(), reqMsg.getUserPayPwd());
-//		
-//		if(result.equals(RetCodeConsts.RET_CODE_SUCCESS)){
-//			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-//		}else if(result.equals(RetCodeConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION)){
-//			//发PIN码
-//			UserInfo user = userManager.getUserInfo(sessionData.getUserId());
-//			userManager.getPinCode(reqMsg.getTransferId(),user.getAreaCode(), user.getPhone());
-//			rep.setMessage("Need to send pin code verification");
-//		}else if(result.equals(RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST)){
-//			rep.setMessage("The transaction order does not exist");
-//		}else{
-//			rep.setMessage("The payment password is incorrect");
-//		}
-//		rep.setRetCode(result);
-
 		HashMap<String,String> result = transferManager.payPwdConfirm(sessionData.getUserId(), 
 				reqMsg.getTransferId(), reqMsg.getUserPayPwd());
 		
@@ -158,10 +142,8 @@ public class TransferController {
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		ResendTransferPinResponse rep = new ResendTransferPinResponse();
-		
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-		
 		try {
 			UserInfo user = userManager.getUserInfo(sessionData.getUserId());
 			userManager.getPinCode(reqMsg.getTransferId(),user.getAreaCode(), user.getPhone());

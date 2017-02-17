@@ -20,8 +20,12 @@ public interface TransferDAO {
 	public Transfer getTranByIdAndStatus(String transferId,int transferStatus);
 
 	public void updateAccumulatedAmount(String key, BigDecimal amoumt);
+	
+	public void updateCumulativeNumofTimes(String key, BigDecimal amoumt);
 
 	public BigDecimal getAccumulatedAmount(String key);
+	
+	public int getCumulativeNumofTimes(String key);
 
 	public void updateTransferStatus(String transferId, int transferStatus);
 

@@ -34,6 +34,8 @@ public class TransferDAOImpl implements TransferDAO {
 	private final String ANYTIME_EXECHANGE_ASSIGN_TRANSID = "anytimeExechangeAssignTransid";
 	//用户累加交易金额
 	private final String ACCUMULATED_AMOUNT_KEY = "accumulated_amount_[key]";
+	
+	private final String ACCUMULATED_CUMULATIVENUM_KEY = "accumulated_cumulativenum_[key]";
 
 	@Override
 	public String createTransId(int transferType) {
@@ -116,6 +118,12 @@ public class TransferDAOImpl implements TransferDAO {
 		redisDAO.incrementValue(ACCUMULATED_AMOUNT_KEY.replace("[key]", key),amoumt.doubleValue());
 		redisDAO.expireAtData(ACCUMULATED_AMOUNT_KEY.replace("[key]", key), com.yuyutechnology.exchange.utils.DateFormatUtils.getIntervalDay(new Date(),1));
 	}
+	
+	@Override
+	public void updateCumulativeNumofTimes(String key,BigDecimal amoumt) {
+		redisDAO.incrementValue(ACCUMULATED_CUMULATIVENUM_KEY.replace("[key]", key),amoumt.doubleValue());
+		redisDAO.expireAtData(ACCUMULATED_CUMULATIVENUM_KEY.replace("[key]", key), com.yuyutechnology.exchange.utils.DateFormatUtils.getIntervalDay(new Date(),1));
+	}
 
 	@Override
 	public BigDecimal getAccumulatedAmount(String key) {
@@ -124,6 +132,16 @@ public class TransferDAOImpl implements TransferDAO {
 			return new BigDecimal(0);
 		}else{
 			return new BigDecimal(result);
+		}
+	}
+	
+	@Override
+	public int getCumulativeNumofTimes(String key) {
+		String result = redisDAO.getValueByKey(ACCUMULATED_CUMULATIVENUM_KEY.replace("[key]", key));
+		if (StringUtils.isEmpty(result)){
+			return 0;
+		}else{
+			return Integer.parseInt(result);
 		}
 	}
 
