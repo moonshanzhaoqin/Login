@@ -32,6 +32,7 @@ import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.pojo.Exchange;
+import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.utils.DateFormatUtils;
 
@@ -87,7 +88,13 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			BigDecimal amountOut) {
 
 		HashMap<String, String> map = new HashMap<String, String>();
-	
+		
+		if(!commonManager.verifyCurrency(currencyOut) || !commonManager.verifyCurrency(currencyIn)){
+			logger.warn("This currency is not a tradable currency");
+			map.put("retCode", RetCodeConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
+			map.put("msg", "This currency is not a tradable currency");
+			return map;
+		}
 		//每次兑换金额限制
 		BigDecimal exchangeLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITPERPAY, 100000d));
@@ -102,7 +109,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		BigDecimal exchangeLimitDailyPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITDAILYPAY, 100000d));
 		logger.info("exchangeLimitDailyPay : {}",exchangeLimitDailyPay.toString());
-		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount("exchange"+userId);
+		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount("exchange_"+userId);
 		if((accumulatedAmount.add(exchangeRateManager.getExchangeResult(currencyOut, amountOut))).compareTo(exchangeLimitDailyPay) == 1){
 			logger.warn("More than the maximum daily exchange limit");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_DAILY_PAY);
@@ -114,18 +121,11 @@ public class ExchangeManagerImpl implements ExchangeManager {
 				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITNUMBEROFPAYPERDAY, 100000d);
 		logger.info("exchangeLimitNumOfPayPerDay : {}",exchangeLimitNumOfPayPerDay.toString());
 //		Integer totalNumOfDailyExchange = exchangeDAO.getTotalNumOfDailyExchange();
-		Integer totalNumOfDailyExchange = transferDAO.getCumulativeNumofTimes(userId+"exchangeTimes");
+		Integer totalNumOfDailyExchange = transferDAO.getCumulativeNumofTimes("exchange_"+userId);
 		if(exchangeLimitNumOfPayPerDay <= new Double(totalNumOfDailyExchange)){
 			logger.warn("Exceeds the maximum number of exchange per day");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY);
 			map.put("msg", exchangeLimitNumOfPayPerDay.toString());
-			return map;
-		}
-
-		if(!commonManager.verifyCurrency(currencyOut) || !commonManager.verifyCurrency(currencyIn)){
-			logger.warn("This currency is not a tradable currency");
-			map.put("retCode", RetCodeConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
-			map.put("msg", "This currency is not a tradable currency");
 			return map;
 		}
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currencyOut);
@@ -212,9 +212,9 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			
 			//添加累计金额
 			BigDecimal exchangeResult = exchangeRateManager.getExchangeResult(currencyOut,amountOut);
-			transferDAO.updateAccumulatedAmount("exchange"+userId, exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
+			transferDAO.updateAccumulatedAmount("exchange_"+userId, exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
 			//更改累计次数
-			transferDAO.updateCumulativeNumofTimes(userId+"exchangeTimes", new BigDecimal("1"));
+			transferDAO.updateCumulativeNumofTimes("exchange_"+userId, new BigDecimal("1"));
 			
 			//预警
 			largeExchangeWarn(exchange);
@@ -322,6 +322,8 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		
 		logger.info("exchangeLimitPerPay : {},percentage : {}",exchangeLimitPerPay.toString(),percentage.toString());
 		
+		final User user = userDAO.getUser(exchange.getUserId());
+		
 		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(2, 1);
 		
 		if(list != null && !list.isEmpty()){
@@ -334,7 +336,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 
 					crmAlarmManager.alarmNotice(crmAlarm.getSupervisorIdArr(), "largeExchangeWarning", crmAlarm.getAlarmMode(),new HashMap<String,Object>(){
 						{
-							put("payerMobile", exchange.getUserId());
+							put("payerMobile", user.getAreaCode()+user.getUserPhone());
 							put("amountOut", exchange.getAmountOut());
 							put("currencyOut", exchange.getCurrencyOut());
 							put("amountIn", exchange.getAmountIn());

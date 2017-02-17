@@ -126,7 +126,7 @@ public class TransferManagerImpl implements TransferManager{
 		//每天累计金额限制
 		BigDecimal transferLimitDailyPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITDAILYPAY, 100000d));
-		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount(userId+"");
+		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount("transfer_"+userId);
 		logger.warn("transferLimitDailyPay : {},accumulatedAmount : {} ",transferLimitDailyPay,accumulatedAmount);
 		if((accumulatedAmount.add(exchangeRateManager.getExchangeResult(currency, amount))).compareTo(transferLimitDailyPay) == 1){
 			logger.warn("More than the maximum daily transaction limit");
@@ -138,7 +138,7 @@ public class TransferManagerImpl implements TransferManager{
 		Double transferLimitNumOfPayPerDay =  configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITNUMBEROFPAYPERDAY, 100000d);
 //		Integer dayTradubgVolume = transferDAO.getDayTradubgVolume(ServerConsts.TRANSFER_TYPE_TRANSACTION);
-		Integer dayTradubgVolume = transferDAO.getCumulativeNumofTimes(userId+"transferTimes");
+		Integer dayTradubgVolume = transferDAO.getCumulativeNumofTimes("transfer_"+userId);
 		logger.warn("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ",transferLimitNumOfPayPerDay,dayTradubgVolume);
 		if(transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)){
 			logger.warn("Exceeds the maximum number of transactions per day");
@@ -225,7 +225,7 @@ public class TransferManagerImpl implements TransferManager{
 		BigDecimal totalBalance =  exchangeRateManager.getTotalBalance(userId);
 		BigDecimal totalBalanceMax =  BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TOTALBALANCETHRESHOLD, 100000d));
 		//当天累计转出总金额大于设置安全基数，弹出需要短信验证框
-		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount(userId+"");
+		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount("transfer_"+userId);
 		BigDecimal accumulatedAmountMax =  BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.DAILYTRANSFERTHRESHOLD, 100000d));
 		//单笔转出金额大于设置安全基数，弹出需要短信验证框
 		BigDecimal singleTransferAmount = exchangeRateManager.getExchangeResult(transfer.getCurrency(), transfer.getTransferAmount());
@@ -346,9 +346,9 @@ public class TransferManagerImpl implements TransferManager{
 
 		//转换金额
 		BigDecimal exchangeResult = exchangeRateManager.getExchangeResult(transfer.getCurrency(),transfer.getTransferAmount());
-		transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
+		transferDAO.updateAccumulatedAmount("transfer_"+transfer.getUserFrom(), exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
 		//更改累计次数
-		transferDAO.updateCumulativeNumofTimes(transfer.getUserFrom()+"transferTimes", new BigDecimal("1"));
+		transferDAO.updateCumulativeNumofTimes("transfer_"+transfer.getUserFrom(), new BigDecimal("1"));
 		
 		//预警
 		largeTransWarn(payer,transfer);
