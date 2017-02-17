@@ -283,7 +283,7 @@ public class LoggedInUserController {
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			CheckPwdResult result = userManager.checkPayPassword(sessionData.getUserId(),
-					checkPayPwdRequest.getPurpose());
+					checkPayPwdRequest.getUserPayPwd());
 			switch (result.getStatus()) {
 			case ServerConsts.CHECKPWD_STATUS_FREEZE:
 				logger.info(MessageConsts.PAY_FREEZE);
