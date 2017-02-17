@@ -87,15 +87,14 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			BigDecimal amountOut) {
 
 		HashMap<String, String> map = new HashMap<String, String>();
-		
-		
+	
 		//每次兑换金额限制
 		BigDecimal exchangeLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITPERPAY, 100000d));
 		logger.info("exchangeLimitPerPay : {}",exchangeLimitPerPay.toString());
 		if((exchangeRateManager.getExchangeResult(currencyOut, amountOut)).compareTo(exchangeLimitPerPay) == 1){
 			logger.warn("Exceeds the maximum amount of each exchange");
-			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_PER_PAY);
+			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_EACH_TIME);
 			map.put("msg", exchangeLimitPerPay.toString());
 			return map;
 		}
@@ -114,7 +113,8 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		Double exchangeLimitNumOfPayPerDay =  configManager.
 				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITNUMBEROFPAYPERDAY, 100000d);
 		logger.info("exchangeLimitNumOfPayPerDay : {}",exchangeLimitNumOfPayPerDay.toString());
-		Integer totalNumOfDailyExchange = exchangeDAO.getTotalNumOfDailyExchange();
+//		Integer totalNumOfDailyExchange = exchangeDAO.getTotalNumOfDailyExchange();
+		Integer totalNumOfDailyExchange = transferDAO.getCumulativeNumofTimes(userId+"exchangeTimes");
 		if(exchangeLimitNumOfPayPerDay <= new Double(totalNumOfDailyExchange)){
 			logger.warn("Exceeds the maximum number of exchange per day");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY);
@@ -213,6 +213,8 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			//添加累计金额
 			BigDecimal exchangeResult = exchangeRateManager.getExchangeResult(currencyOut,amountOut);
 			transferDAO.updateAccumulatedAmount("exchange"+userId, exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
+			//更改累计次数
+			transferDAO.updateCumulativeNumofTimes(userId+"exchangeTimes", new BigDecimal("1"));
 			
 			//预警
 			largeExchangeWarn(exchange);

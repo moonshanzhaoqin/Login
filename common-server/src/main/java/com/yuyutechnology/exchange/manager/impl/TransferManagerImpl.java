@@ -112,38 +112,13 @@ public class TransferManagerImpl implements TransferManager{
 			map.put("msg", "Prohibit transfers to yourself");
 			return map;
 		}
-	
-//		if(!commonManager.verifyCurrency(currency)){
-//			logger.warn("This currency is not a tradable currency");
-//			map.put("retCode", RetCodeConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
-//			map.put("msg", "This currency is not a tradable currency");
-//			return map;
-//		}
-//
-//		User payer = userDAO.getUser(userId);
-//		if(payer ==null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
-//			logger.warn("The user does not exist or the account is blocked");
-//			map.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
-//			map.put("msg", "The user does not exist or the account is blocked");
-//			return map;
-//		}
-		//判断余额是否足够支付
-//		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
-//		logger.info("wallet info , balance : {}, userId : {}, transAmount : {}", new Object[]{wallet.getBalance().doubleValue(), wallet.getUserId(), amount});
-//		if(wallet == null || wallet.getBalance().compareTo(amount) == -1){
-//			logger.warn("Current balance is insufficient");
-//			map.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-//			map.put("msg", "Current balance is insufficient");
-//			return map;
-//		}
-		
 		//每次支付金额限制
 		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
 		logger.warn("transferLimitPerPay : {}",transferLimitPerPay);
 		if((exchangeRateManager.getExchangeResult(currency, amount)).compareTo(transferLimitPerPay) == 1){
 			logger.warn("Exceeds the maximum amount of each transaction");
-			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_PER_PAY);
+			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
 			map.put("msg", transferLimitPerPay.toString());
 			return map;
 		}
@@ -162,7 +137,8 @@ public class TransferManagerImpl implements TransferManager{
 		//每天累计给付次数限制
 		Double transferLimitNumOfPayPerDay =  configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITNUMBEROFPAYPERDAY, 100000d);
-		Integer dayTradubgVolume = transferDAO.getDayTradubgVolume(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+//		Integer dayTradubgVolume = transferDAO.getDayTradubgVolume(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+		Integer dayTradubgVolume = transferDAO.getCumulativeNumofTimes(userId+"transferTimes");
 		logger.warn("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ",transferLimitNumOfPayPerDay,dayTradubgVolume);
 		if(transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)){
 			logger.warn("Exceeds the maximum number of transactions per day");
@@ -206,52 +182,6 @@ public class TransferManagerImpl implements TransferManager{
 		
 		return map;
 	}
-
-//	@Override
-//	public String payPwdConfirm(int userId, String transferId, String userPayPwd) {
-//		
-//		User user = userDAO.getUser(userId);
-//		if(user ==null || user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE){
-//			logger.warn("The user does not exist or the account is blocked");
-//			return RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED;
-//		}
-//		
-//		CheckPwdResult CheckPwdResult = userManager.checkLoginPassword(userId, user.getUserPayPwd()); 
-//		
-//		
-////		if(!PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())){
-////			return RetCodeConsts.TRANSFER_PAYMENTPWD_INCORRECT;
-////		}
-//		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
-//		if(transfer == null){
-//			logger.warn("The transaction order does not exist");
-//			return RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST;
-//		}
-//		
-//		//总账大于设置安全基数，弹出需要短信验证框===============================================
-//		BigDecimal totalBalance =  exchangeRateManager.getTotalBalance(userId);
-//		BigDecimal totalBalanceMax =  BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TOTALBALANCETHRESHOLD, 100000d));
-//		//当天累计转出总金额大于设置安全基数，弹出需要短信验证框
-//		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount(userId+"");
-//		BigDecimal accumulatedAmountMax =  BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.DAILYTRANSFERTHRESHOLD, 100000d));
-//		//单笔转出金额大于设置安全基数，弹出需要短信验证框
-//		BigDecimal singleTransferAmount = exchangeRateManager.getExchangeResult(transfer.getCurrency(), transfer.getTransferAmount());
-//		BigDecimal singleTransferAmountMax = BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.EACHTRANSFERTHRESHOLD, 100000d));
-//
-//		logger.info("totalBalance : {},totalBalanceMax: {} ",totalBalance,totalBalanceMax);
-//		logger.info("accumulatedAmount : {},accumulatedAmountMax: {} ",accumulatedAmount,accumulatedAmountMax);
-//		logger.info("singleTransferAmount : {},singleTransferAmountMax: {} ",singleTransferAmount,singleTransferAmountMax);
-//		
-//		if(totalBalance.compareTo(totalBalanceMax) == 1 || 
-//				( accumulatedAmount.compareTo(accumulatedAmountMax) == 1 || 
-//						singleTransferAmount.compareTo(singleTransferAmountMax) == 1)){
-//			logger.warn("The transaction amount exceeds the limit");
-//			return RetCodeConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION;
-//			
-//		}else{
-//			return transferConfirm(userId,transferId);
-//		}
-//	}
 	
 	@Override
 	public HashMap<String, String> payPwdConfirm(int userId, String transferId, String userPayPwd) {
@@ -417,7 +347,8 @@ public class TransferManagerImpl implements TransferManager{
 		//转换金额
 		BigDecimal exchangeResult = exchangeRateManager.getExchangeResult(transfer.getCurrency(),transfer.getTransferAmount());
 		transferDAO.updateAccumulatedAmount(transfer.getUserFrom()+"", exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
-		
+		//更改累计次数
+		transferDAO.updateCumulativeNumofTimes(transfer.getUserFrom()+"transferTimes", new BigDecimal("1"));
 		
 		//预警
 		largeTransWarn(payer,transfer);
@@ -509,7 +440,7 @@ public class TransferManagerImpl implements TransferManager{
 		
 		if((exchangeRateManager.getExchangeResult(currency, amount)).compareTo(transferLimitPerPay) == 1){
 			logger.warn("Exceeds the maximum amount of each transaction");
-			return RetCodeConsts.TRANSFER_LIMIT_PER_PAY;
+			return RetCodeConsts.TRANSFER_LIMIT_EACH_TIME;
 		}
 		
 		User payer = userDAO.getUserByUserPhone(payerAreaCode, payerPhone);

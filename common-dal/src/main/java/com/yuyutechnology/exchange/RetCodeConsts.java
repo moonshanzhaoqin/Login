@@ -131,7 +131,7 @@ public class RetCodeConsts {
 
 	public static final String EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY = "02006";
 	
-	public static final String EXCHANGE_LIMIT_PER_PAY = "02007";
+	public static final String EXCHANGE_LIMIT_EACH_TIME = "02007";
 	
 	public static final String EXCHANGE_LIMIT_DAILY_PAY = "02008";
 	
@@ -186,7 +186,7 @@ public class RetCodeConsts {
 
 	public static final String TRANSFER_REQUEST_INFORMATION_NOT_MATCH = "03019";
 	
-	public static final String TRANSFER_LIMIT_PER_PAY = "03020";
+	public static final String TRANSFER_LIMIT_EACH_TIME = "03020";
 	
 	public static final String TRANSFER_LIMIT_DAILY_PAY = "03021";
 	
