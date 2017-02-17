@@ -444,7 +444,13 @@ public class TransferManagerImpl implements TransferManager{
 		}
 		
 		User payer = userDAO.getUserByUserPhone(payerAreaCode, payerPhone);
-		if(payer != null){			
+		if(payer != null){
+			
+			if(userId == payer.getUserId()){
+				logger.info("bu neng gei zi ji fa qi qingqiu");
+				return RetCodeConsts.RET_CODE_FAILUE;
+			}
+			
 			TransactionNotification transactionNotification = new TransactionNotification();
 			transactionNotification.setSponsorId(userId);
 			transactionNotification.setPayerId(payer.getUserId());
