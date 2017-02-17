@@ -109,7 +109,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		BigDecimal exchangeLimitDailyPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITDAILYPAY, 100000d));
 		logger.info("exchangeLimitDailyPay : {}",exchangeLimitDailyPay.toString());
-		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount("exchange"+userId);
+		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount("exchange_"+userId);
 		if((accumulatedAmount.add(exchangeRateManager.getExchangeResult(currencyOut, amountOut))).compareTo(exchangeLimitDailyPay) == 1){
 			logger.warn("More than the maximum daily exchange limit");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_DAILY_PAY);
@@ -121,7 +121,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITNUMBEROFPAYPERDAY, 100000d);
 		logger.info("exchangeLimitNumOfPayPerDay : {}",exchangeLimitNumOfPayPerDay.toString());
 //		Integer totalNumOfDailyExchange = exchangeDAO.getTotalNumOfDailyExchange();
-		Integer totalNumOfDailyExchange = transferDAO.getCumulativeNumofTimes(userId+"exchangeTimes");
+		Integer totalNumOfDailyExchange = transferDAO.getCumulativeNumofTimes("exchange_"+userId);
 		if(exchangeLimitNumOfPayPerDay <= new Double(totalNumOfDailyExchange)){
 			logger.warn("Exceeds the maximum number of exchange per day");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY);
@@ -212,9 +212,9 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			
 			//添加累计金额
 			BigDecimal exchangeResult = exchangeRateManager.getExchangeResult(currencyOut,amountOut);
-			transferDAO.updateAccumulatedAmount("exchange"+userId, exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
+			transferDAO.updateAccumulatedAmount("exchange_"+userId, exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
 			//更改累计次数
-			transferDAO.updateCumulativeNumofTimes(userId+"exchangeTimes", new BigDecimal("1"));
+			transferDAO.updateCumulativeNumofTimes("exchange_"+userId, new BigDecimal("1"));
 			
 			//预警
 			largeExchangeWarn(exchange);
