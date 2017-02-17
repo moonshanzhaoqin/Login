@@ -190,7 +190,8 @@ public class TransferController {
 	MakeRequestResponse makeRequest(@PathVariable String token,@RequestBody MakeRequestRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		MakeRequestResponse rep = new MakeRequestResponse();
+		MakeRequestResponse rep = new MakeRequestResponse();		
+
 		String result = transferManager.makeRequest(sessionData.getUserId(), reqMsg.getAreaCode(), reqMsg.getPhone(),
 				reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()));
 
