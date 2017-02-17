@@ -330,8 +330,7 @@ public class LoggedInUserController {
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			if (userManager.checkGoldpay(sessionData.getUserId(), checkPayGoldpayRequest.getGoldpayName(),checkPayGoldpayRequest.getGoldpayPwd())) {
-				String checkToken = sessionManager.createCheckToken(sessionData.getUserId(),
-						ServerConsts.RESETPAYPWD);
+				String checkToken = sessionManager.createCheckToken(sessionData.getUserId(),ServerConsts.RESETPAYPWD);
 				logger.info("********Operation succeeded********");
 				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(checkToken);
@@ -534,8 +533,7 @@ public class LoggedInUserController {
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
-			if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.RESETPAYPWD,
-					resetPayPwdRequest.getCheckToken())) {
+			if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.RESETPAYPWD,resetPayPwdRequest.getCheckToken())) {
 				// PayPwd 6位数字
 				if (resetPayPwdRequest.getNewUserPayPwd().length() == 6
 						&& StringUtils.isNumeric(resetPayPwdRequest.getNewUserPayPwd())) {

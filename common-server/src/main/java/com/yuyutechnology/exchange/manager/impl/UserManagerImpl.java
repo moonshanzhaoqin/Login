@@ -152,16 +152,15 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public long checkChangePhoneTime(Integer userId) throws ParseException {
-		logger.info("checkChangePhoneTime ==>");
 		String timeString = redisDAO.getValueByKey("changephonetime" + userId);
 		if (timeString != null) {
 			Calendar time = Calendar.getInstance();
 			time.setTimeInMillis(Long.valueOf(timeString).longValue());
 			time.add(Calendar.DATE, configManager.getConfigLongValue(ConfigKeyEnum.CHANGEPHONETIME, 10l).intValue());
-			logger.info("{}",time.getTime());
+			logger.info("checkChangePhoneTime ==>{}",time.getTime());
 			return time.getTime().getTime();
 		}
-		logger.info("{}",new Date());
+		logger.info("checkChangePhoneTime ==>{}",new Date());
 		return new Date().getTime();
 
 	}
@@ -181,6 +180,7 @@ public class UserManagerImpl implements UserManager {
 						configManager.getConfigLongValue(ConfigKeyEnum.LOGIN_UNAVAILIABLE_TIME, 24l).intValue());
 
 				if (new Date().before(time.getTime())) {
+					logger.info("***Login is frozen!***");
 					result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
 					result.setInfo(time.getTime().getTime());
 					return result;
@@ -264,30 +264,30 @@ public class UserManagerImpl implements UserManager {
 			result.setStatus(ServerConsts.CHECKPWD_STATUS_CORRECT);
 			return result;
 		} else {
-			// 记录错误次数
+			
 			long t = 1;
 			String times = redisDAO.getValueByKey(ServerConsts.WRONG_PAYPWD + userId);
 			if (times != null) {
 				t += Long.valueOf(times).longValue();
-				if (t >= configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PAYPWD_FREQUENCY, 3l).longValue()) {
-					// 输出超过次数，冻结
-					logger.info("***Does not match, pay is frozen!***");
-
-					redisDAO.saveData(ServerConsts.PAY_FREEZE + userId, new Date().getTime());
-					user.setPayAvailable(ServerConsts.PAY_AVAILABLE_OF_UNAVAILABLE);
-					userDAO.updateUser(user);
-
-					redisDAO.deleteData(ServerConsts.WRONG_PAYPWD + userId);
-
-					Calendar time = Calendar.getInstance();
-					time.add(Calendar.HOUR_OF_DAY,
-							configManager.getConfigLongValue(ConfigKeyEnum.PAY_UNAVAILIABLE_TIME, 24l).intValue());
-
-					result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
-					result.setInfo(time.getTime().getTime());
-					return result;
-				}
 			}
+			if (t >= configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PAYPWD_FREQUENCY, 3l).longValue()) {
+				// 输出超过次数，冻结
+				logger.info("***Does not match, pay is frozen!***");
+				redisDAO.saveData(ServerConsts.PAY_FREEZE + userId, new Date().getTime());
+				user.setPayAvailable(ServerConsts.PAY_AVAILABLE_OF_UNAVAILABLE);
+				userDAO.updateUser(user);
+				//次数清零
+				redisDAO.deleteData(ServerConsts.WRONG_PAYPWD + userId);
+				//计算到期时间
+				Calendar time = Calendar.getInstance();
+				time.add(Calendar.HOUR_OF_DAY,
+						configManager.getConfigLongValue(ConfigKeyEnum.PAY_UNAVAILIABLE_TIME, 24l).intValue());
+
+				result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
+				result.setInfo(time.getTime().getTime());
+				return result;
+			}
+			// 记录错误次数
 			redisDAO.saveData(ServerConsts.WRONG_PAYPWD + userId, t);
 			logger.info("***Does not match,{}***", t);
 			result.setStatus(ServerConsts.CHECKPWD_STATUS_INCORRECT);
