@@ -108,7 +108,7 @@ public class LoggedInUserController {
 	@RequestMapping(value = "/token/{token}/user/changeGoldpay", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public ChangeGoldpayResponse changeGoldpay(@PathVariable String token,
 			@RequestBody ChangeGoldpayRequest changeGoldpayRequest) {
-		logger.info("========bindGoldpay : {}============", token);
+		logger.info("========changeGoldpay : {}============", token);
 		ChangeGoldpayResponse rep = new ChangeGoldpayResponse();
 		if (changeGoldpayRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
@@ -274,7 +274,7 @@ public class LoggedInUserController {
 	@RequestMapping(value = "/token/{token}/user/checkPayPwd", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public CheckPayPwdResponse checkPayPwd(@PathVariable String token,
 			@RequestBody CheckPayPwdRequest checkPayPwdRequest) {
-		logger.info("========checkPassword : {}============", token);
+		logger.info("========checkPayPwd : {}============", token);
 		CheckPayPwdResponse rep = new CheckPayPwdResponse();
 		if (checkPayPwdRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
