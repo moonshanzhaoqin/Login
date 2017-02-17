@@ -165,6 +165,7 @@ public class SessionManager {
 		String checkToken = DigestUtils.md5Hex(UidUtils.genUid());
 		String key = StringUtils.replace(CHECK_TOKEN_KEY, ":userid", userId + "");
 		key = StringUtils.replace(key, ":purpose", purpose);
+		redisDAO.saveData(key, checkToken, ResourceUtils.getBundleValue4Long("check.token.timeout.minutes", 5l), TimeUnit.MINUTES);
 		return checkToken;
 	}
 
