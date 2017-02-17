@@ -236,7 +236,7 @@ public class UserManagerImpl implements UserManager {
 		CheckPwdResult result = new CheckPwdResult();
 
 		User user = userDAO.getUser(userId);
-		if (user.getLoginAvailable() == ServerConsts.PAY_AVAILABLE_OF_UNAVAILABLE) {
+		if (user.getPayAvailable() == ServerConsts.PAY_AVAILABLE_OF_UNAVAILABLE) {
 			String timeString = redisDAO.getValueByKey(ServerConsts.PAY_FREEZE + userId);
 			if (timeString != null) {
 				Calendar time = Calendar.getInstance();
@@ -245,14 +245,14 @@ public class UserManagerImpl implements UserManager {
 						configManager.getConfigLongValue(ConfigKeyEnum.PAY_UNAVAILIABLE_TIME, 24l).intValue());
 
 				if (new Date().before(time.getTime())) {
-					logger.info("***login is frozen!***");
+					logger.info("***Pay is frozen!***");
 					result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
 					result.setInfo(time.getTime().getTime());
 					return result;
 				}
 				redisDAO.deleteData(ServerConsts.PAY_FREEZE + userId);
 			}
-			user.setLoginAvailable(ServerConsts.PAY_AVAILABLE_OF_AVAILABLE);
+			user.setPayAvailable(ServerConsts.PAY_AVAILABLE_OF_AVAILABLE);
 			userDAO.updateUser(user);
 		}
 
@@ -270,10 +270,10 @@ public class UserManagerImpl implements UserManager {
 				t += Long.valueOf(times).longValue();
 				if (t >= configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PAYPWD_FREQUENCY, 3l).longValue()) {
 					// 输出超过次数，冻结
-					logger.info("***Does not match, login is frozen!***");
+					logger.info("***Does not match, pay is frozen!***");
 
-					redisDAO.saveData(ServerConsts.LOGIN_FREEZE + userId, new Date().getTime());
-					user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE);
+					redisDAO.saveData(ServerConsts.PAY_FREEZE + userId, new Date().getTime());
+					user.setPayAvailable(ServerConsts.PAY_AVAILABLE_OF_UNAVAILABLE);
 					userDAO.updateUser(user);
 
 					redisDAO.deleteData(ServerConsts.WRONG_PAYPWD + userId);
