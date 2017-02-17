@@ -214,7 +214,7 @@ public class TransferController {
 
 		if(result.equals(RetCodeConsts.RET_CODE_FAILUE)){
 			rep.setMessage("Sharing failed");
-		}else if(result.equals(RetCodeConsts.TRANSFER_LIMIT_PER_PAY)){
+		}else if(result.equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)){
 			rep.setMessage("Exceeds the maximum amount of each transaction");
 		}else{
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);

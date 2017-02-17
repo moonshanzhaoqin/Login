@@ -95,7 +95,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		logger.info("exchangeLimitPerPay : {}",exchangeLimitPerPay.toString());
 		if((exchangeRateManager.getExchangeResult(currencyOut, amountOut)).compareTo(exchangeLimitPerPay) == 1){
 			logger.warn("Exceeds the maximum amount of each exchange");
-			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_PER_PAY);
+			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_EACH_TIME);
 			map.put("msg", exchangeLimitPerPay.toString());
 			return map;
 		}

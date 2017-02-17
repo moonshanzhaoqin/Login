@@ -143,7 +143,7 @@ public class TransferManagerImpl implements TransferManager{
 		logger.warn("transferLimitPerPay : {}",transferLimitPerPay);
 		if((exchangeRateManager.getExchangeResult(currency, amount)).compareTo(transferLimitPerPay) == 1){
 			logger.warn("Exceeds the maximum amount of each transaction");
-			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_PER_PAY);
+			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
 			map.put("msg", transferLimitPerPay.toString());
 			return map;
 		}
@@ -509,7 +509,7 @@ public class TransferManagerImpl implements TransferManager{
 		
 		if((exchangeRateManager.getExchangeResult(currency, amount)).compareTo(transferLimitPerPay) == 1){
 			logger.warn("Exceeds the maximum amount of each transaction");
-			return RetCodeConsts.TRANSFER_LIMIT_PER_PAY;
+			return RetCodeConsts.TRANSFER_LIMIT_EACH_TIME;
 		}
 		
 		User payer = userDAO.getUserByUserPhone(payerAreaCode, payerPhone);
