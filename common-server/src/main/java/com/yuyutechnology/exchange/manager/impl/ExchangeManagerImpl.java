@@ -88,7 +88,13 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			BigDecimal amountOut) {
 
 		HashMap<String, String> map = new HashMap<String, String>();
-	
+		
+		if(!commonManager.verifyCurrency(currencyOut) || !commonManager.verifyCurrency(currencyIn)){
+			logger.warn("This currency is not a tradable currency");
+			map.put("retCode", RetCodeConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
+			map.put("msg", "This currency is not a tradable currency");
+			return map;
+		}
 		//每次兑换金额限制
 		BigDecimal exchangeLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITPERPAY, 100000d));
@@ -120,13 +126,6 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			logger.warn("Exceeds the maximum number of exchange per day");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY);
 			map.put("msg", exchangeLimitNumOfPayPerDay.toString());
-			return map;
-		}
-
-		if(!commonManager.verifyCurrency(currencyOut) || !commonManager.verifyCurrency(currencyIn)){
-			logger.warn("This currency is not a tradable currency");
-			map.put("retCode", RetCodeConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
-			map.put("msg", "This currency is not a tradable currency");
 			return map;
 		}
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currencyOut);
