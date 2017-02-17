@@ -231,7 +231,7 @@ public class UserController {
 				case ServerConsts.CHECKPWD_STATUS_CORRECT:
 					if (userManager.isNewDevice(userId, loginRequest.getDeviceId())){
 						// 新设备，需要手机验证
-						userManager.getPinCode(ServerConsts.PIN_FUNC_NEWDEVICE, loginRequest.getAreaCode(), loginRequest.getUserPhone());
+//						userManager.getPinCode(ServerConsts.PIN_FUNC_NEWDEVICE, loginRequest.getAreaCode(), loginRequest.getUserPhone());
 						logger.info(MessageConsts.NEW_DEVICE);
 						rep.setRetCode(RetCodeConsts.NEW_DEVICE);
 						rep.setMessage(MessageConsts.NEW_DEVICE);
