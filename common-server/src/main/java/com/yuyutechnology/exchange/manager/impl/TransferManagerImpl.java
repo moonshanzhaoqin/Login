@@ -792,7 +792,7 @@ public class TransferManagerImpl implements TransferManager{
 					int sponsorId = (int) recevierArgs.get("sponsorId");
 					userId = (int) recevierArgs.get("userId");
 					String areaCode = (String) recevierArgs.get("areaCode");
-					String userPhone = (String) recevierArgs.get("userId");
+					String userPhone = (String) recevierArgs.get("userPhone");
 					
 					User receiver = userDAO.getUser(sponsorId);
 					//不用给自己转账

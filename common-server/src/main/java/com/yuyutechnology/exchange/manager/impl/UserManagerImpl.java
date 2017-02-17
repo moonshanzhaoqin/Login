@@ -147,18 +147,21 @@ public class UserManagerImpl implements UserManager {
 		user.setAreaCode(areaCode);
 		user.setUserPhone(userPhone);
 		userDAO.updateUser(user);
-		redisDAO.saveData("changephonetime" + userId, simpleDateFormat.format(new Date()));
+		redisDAO.saveData("changephonetime" + userId, new Date().getTime());
 	}
 
 	@Override
 	public long checkChangePhoneTime(Integer userId) throws ParseException {
+		logger.info("checkChangePhoneTime ==>");
 		String timeString = redisDAO.getValueByKey("changephonetime" + userId);
 		if (timeString != null) {
 			Calendar time = Calendar.getInstance();
-			time.setTime(simpleDateFormat.parse(timeString));
+			time.setTimeInMillis(Long.valueOf(timeString).longValue());
 			time.add(Calendar.DATE, configManager.getConfigLongValue(ConfigKeyEnum.CHANGEPHONETIME, 10l).intValue());
+			logger.info("{}",time.getTime());
 			return time.getTime().getTime();
 		}
+		logger.info("{}",new Date());
 		return new Date().getTime();
 
 	}
@@ -167,8 +170,8 @@ public class UserManagerImpl implements UserManager {
 	public CheckPwdResult checkLoginPassword(Integer userId, String userPassword) {
 		logger.info("Check {}  user's password {} ==>", userId, userPassword);
 		CheckPwdResult result = new CheckPwdResult();
-
 		User user = userDAO.getUser(userId);
+		// 判断冻结
 		if (user.getLoginAvailable() == ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE) {
 			String timeString = redisDAO.getValueByKey(ServerConsts.LOGIN_FREEZE + userId);
 			if (timeString != null) {
@@ -188,39 +191,37 @@ public class UserManagerImpl implements UserManager {
 			user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE);
 			userDAO.updateUser(user);
 		}
-
+		//校验密码
 		if (PasswordUtils.check(userPassword, user.getUserPassword(), user.getPasswordSalt())) {
 			logger.info("***match***");
-
 			redisDAO.deleteData(ServerConsts.WRONG_PASSWORD + userId);
-			// redisDAO.deleteKey(ServerConsts.LOGIN_FREEZE + userId);
+			redisDAO.deleteData(ServerConsts.LOGIN_FREEZE + userId);
 			result.setStatus(ServerConsts.CHECKPWD_STATUS_CORRECT);
 			return result;
 		} else {
-			// 记录错误次数
 			long t = 1;
 			String times = redisDAO.getValueByKey(ServerConsts.WRONG_PASSWORD + userId);
 			if (times != null) {
 				t += Long.valueOf(times).longValue();
-				if (t >= configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PASSWORD_FREQUENCY, 3l).longValue()) {
-					// 输出超过次数，冻结
-					logger.info("***Does not match, login is frozen!***");
-
-					redisDAO.saveData(ServerConsts.LOGIN_FREEZE + userId, new Date().getTime());
-					user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE);
-					userDAO.updateUser(user);
-
-					redisDAO.deleteData(ServerConsts.WRONG_PASSWORD + userId);
-
-					Calendar time = Calendar.getInstance();
-					time.add(Calendar.HOUR_OF_DAY,
-							configManager.getConfigLongValue(ConfigKeyEnum.LOGIN_UNAVAILIABLE_TIME, 24l).intValue());
-
-					result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
-					result.setInfo(time.getTime().getTime());
-					return result;
-				}
 			}
+			if (t >= configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PASSWORD_FREQUENCY, 3l).longValue()) {
+				// 输出超过次数，冻结
+				logger.info("***Does not match, login is frozen!***");
+				redisDAO.saveData(ServerConsts.LOGIN_FREEZE + userId, new Date().getTime());
+				user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE);
+				userDAO.updateUser(user);
+				//次数清零
+				redisDAO.deleteData(ServerConsts.WRONG_PASSWORD + userId);
+				//计算到期时间
+				Calendar time = Calendar.getInstance();
+				time.add(Calendar.HOUR_OF_DAY,
+						configManager.getConfigLongValue(ConfigKeyEnum.LOGIN_UNAVAILIABLE_TIME, 24l).intValue());
+
+				result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
+				result.setInfo(time.getTime().getTime());
+				return result;
+			}
+			// 记录错误次数
 			redisDAO.saveData(ServerConsts.WRONG_PASSWORD + userId, t);
 			logger.info("***Does not match,{}***", t);
 			result.setStatus(ServerConsts.CHECKPWD_STATUS_INCORRECT);
@@ -236,7 +237,7 @@ public class UserManagerImpl implements UserManager {
 		CheckPwdResult result = new CheckPwdResult();
 
 		User user = userDAO.getUser(userId);
-		if (user.getLoginAvailable() == ServerConsts.PAY_AVAILABLE_OF_UNAVAILABLE) {
+		if (user.getPayAvailable() == ServerConsts.PAY_AVAILABLE_OF_UNAVAILABLE) {
 			String timeString = redisDAO.getValueByKey(ServerConsts.PAY_FREEZE + userId);
 			if (timeString != null) {
 				Calendar time = Calendar.getInstance();
@@ -245,14 +246,14 @@ public class UserManagerImpl implements UserManager {
 						configManager.getConfigLongValue(ConfigKeyEnum.PAY_UNAVAILIABLE_TIME, 24l).intValue());
 
 				if (new Date().before(time.getTime())) {
-					logger.info("***login is frozen!***");
+					logger.info("***Pay is frozen!***");
 					result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
 					result.setInfo(time.getTime().getTime());
 					return result;
 				}
 				redisDAO.deleteData(ServerConsts.PAY_FREEZE + userId);
 			}
-			user.setLoginAvailable(ServerConsts.PAY_AVAILABLE_OF_AVAILABLE);
+			user.setPayAvailable(ServerConsts.PAY_AVAILABLE_OF_AVAILABLE);
 			userDAO.updateUser(user);
 		}
 
@@ -270,10 +271,10 @@ public class UserManagerImpl implements UserManager {
 				t += Long.valueOf(times).longValue();
 				if (t >= configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PAYPWD_FREQUENCY, 3l).longValue()) {
 					// 输出超过次数，冻结
-					logger.info("***Does not match, login is frozen!***");
+					logger.info("***Does not match, pay is frozen!***");
 
-					redisDAO.saveData(ServerConsts.LOGIN_FREEZE + userId, new Date().getTime());
-					user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE);
+					redisDAO.saveData(ServerConsts.PAY_FREEZE + userId, new Date().getTime());
+					user.setPayAvailable(ServerConsts.PAY_AVAILABLE_OF_UNAVAILABLE);
 					userDAO.updateUser(user);
 
 					redisDAO.deleteData(ServerConsts.WRONG_PAYPWD + userId);
