@@ -191,6 +191,17 @@ public class TransferController {
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		MakeRequestResponse rep = new MakeRequestResponse();
+		if((StringUtils.isBlank(reqMsg.getAreaCode())
+				||StringUtils.isBlank(reqMsg.getPhone()))
+				||(StringUtils.isBlank(reqMsg.getCurrency())
+						||StringUtils.isBlank(reqMsg.getAmount()+""))){
+			
+			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+			rep.setMessage("Parameter is empty");
+			return rep;
+		}
+		
+
 		String result = transferManager.makeRequest(sessionData.getUserId(), reqMsg.getAreaCode(), reqMsg.getPhone(),
 				reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()));
 
