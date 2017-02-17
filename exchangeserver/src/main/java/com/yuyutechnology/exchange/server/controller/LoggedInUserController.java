@@ -141,7 +141,7 @@ public class LoggedInUserController {
 				}
 				sessionManager.delCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_CHANGEGOLDPAY);
 			} else {
-				logger.info(MessageConsts.RET_CODE_FAILUE);
+				logger.info("***checkToken is wrong!***");
 				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 			}
@@ -283,7 +283,7 @@ public class LoggedInUserController {
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			CheckPwdResult result = userManager.checkPayPassword(sessionData.getUserId(),
-					checkPayPwdRequest.getUserPayPwd());
+					checkPayPwdRequest.getPurpose());
 			switch (result.getStatus()) {
 			case ServerConsts.CHECKPWD_STATUS_FREEZE:
 				logger.info(MessageConsts.PAY_FREEZE);
