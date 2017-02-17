@@ -32,6 +32,7 @@ import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.pojo.Exchange;
+import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.utils.DateFormatUtils;
 
@@ -87,7 +88,13 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			BigDecimal amountOut) {
 
 		HashMap<String, String> map = new HashMap<String, String>();
-	
+		
+		if(!commonManager.verifyCurrency(currencyOut) || !commonManager.verifyCurrency(currencyIn)){
+			logger.warn("This currency is not a tradable currency");
+			map.put("retCode", RetCodeConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
+			map.put("msg", "This currency is not a tradable currency");
+			return map;
+		}
 		//每次兑换金额限制
 		BigDecimal exchangeLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITPERPAY, 100000d));
@@ -119,13 +126,6 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			logger.warn("Exceeds the maximum number of exchange per day");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY);
 			map.put("msg", exchangeLimitNumOfPayPerDay.toString());
-			return map;
-		}
-
-		if(!commonManager.verifyCurrency(currencyOut) || !commonManager.verifyCurrency(currencyIn)){
-			logger.warn("This currency is not a tradable currency");
-			map.put("retCode", RetCodeConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
-			map.put("msg", "This currency is not a tradable currency");
 			return map;
 		}
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currencyOut);
@@ -322,6 +322,8 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		
 		logger.info("exchangeLimitPerPay : {},percentage : {}",exchangeLimitPerPay.toString(),percentage.toString());
 		
+		final User user = userDAO.getUser(exchange.getUserId());
+		
 		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(2, 1);
 		
 		if(list != null && !list.isEmpty()){
@@ -334,7 +336,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 
 					crmAlarmManager.alarmNotice(crmAlarm.getSupervisorIdArr(), "largeExchangeWarning", crmAlarm.getAlarmMode(),new HashMap<String,Object>(){
 						{
-							put("payerMobile", exchange.getUserId());
+							put("payerMobile", user.getAreaCode()+user.getUserPhone());
 							put("amountOut", exchange.getAmountOut());
 							put("currencyOut", exchange.getCurrencyOut());
 							put("amountIn", exchange.getAmountIn());
