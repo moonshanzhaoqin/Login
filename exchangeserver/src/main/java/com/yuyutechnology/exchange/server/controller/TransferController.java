@@ -35,6 +35,7 @@ import com.yuyutechnology.exchange.server.controller.dto.TransferDTO;
 import com.yuyutechnology.exchange.server.controller.request.GetNotificationRecordsRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetTransactionRecordRequest;
 import com.yuyutechnology.exchange.server.controller.request.MakeRequestRequest;
+import com.yuyutechnology.exchange.server.controller.request.RegenerateQRCodeRequest;
 import com.yuyutechnology.exchange.server.controller.request.ResendTransferPinRequest;
 import com.yuyutechnology.exchange.server.controller.request.Respond2RequestRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransPwdConfirmRequest;
@@ -211,11 +212,16 @@ public class TransferController {
 	@ApiOperation(value = "重新生成二维码")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/regenerateQRCode")
 	public  @ResponseBody 
-	RegenerateQRCodeResponse regenerateQRCode(){
+	RegenerateQRCodeResponse regenerateQRCode(@PathVariable String token,@RequestBody RegenerateQRCodeRequest reqMsg){
 		RegenerateQRCodeResponse rep = new RegenerateQRCodeResponse();
-		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-		rep.setTransferLimitPerPay(transferManager.regenerateQRCode());
+		if(StringUtils.isEmpty(reqMsg.getCurrency())){
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+			return rep;
+		}
+		HashMap<String, String> result = transferManager.regenerateQRCode(reqMsg.getCurrency(), reqMsg.getAmount());
+		rep.setRetCode(result.get("retCode"));
+		rep.setMessage(result.get("msg"));
 		return rep;
 	}
 	
