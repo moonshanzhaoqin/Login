@@ -136,6 +136,7 @@ public class GoldpayTransController {
 		
 		if(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)){
 			rep.setTransferId(map.get("transferId"));
+			rep.setFee((Long.valueOf(map.get("charge")).doubleValue()));
 		}
 		
 		rep.setRetCode(map.get("retCode"));
