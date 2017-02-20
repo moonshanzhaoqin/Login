@@ -43,6 +43,7 @@ import com.yuyutechnology.exchange.server.controller.request.TransferInitiateReq
 import com.yuyutechnology.exchange.server.controller.response.GetNotificationRecordsResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetTransactionRecordResponse;
 import com.yuyutechnology.exchange.server.controller.response.MakeRequestResponse;
+import com.yuyutechnology.exchange.server.controller.response.RegenerateQRCodeResponse;
 import com.yuyutechnology.exchange.server.controller.response.ResendTransferPinResponse;
 import com.yuyutechnology.exchange.server.controller.response.Respond2RequestResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransPwdConfirmResponse;
@@ -205,8 +206,19 @@ public class TransferController {
 		rep.setRetCode(result);
 		
 		return rep;
-		
 	}
+	
+	@ApiOperation(value = "重新生成二维码")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/regenerateQRCode")
+	public  @ResponseBody 
+	RegenerateQRCodeResponse regenerateQRCode(){
+		RegenerateQRCodeResponse rep = new RegenerateQRCodeResponse();
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		rep.setTransferLimitPerPay(transferManager.regenerateQRCode());
+		return rep;
+	}
+	
 	
 	@ApiOperation(value = "请求转账回应")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/requestATransfer")

@@ -110,4 +110,7 @@ public interface TransferManager {
 	 */
 	public HashMap<String, String> respond2Request(int userId, String areaCode, String userPhone, String currency,
 			BigDecimal amount, String transferComment, int noticeId);
+	
+	
+	public BigDecimal regenerateQRCode();
 }
