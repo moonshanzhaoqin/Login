@@ -157,10 +157,10 @@ public class UserManagerImpl implements UserManager {
 			Calendar time = Calendar.getInstance();
 			time.setTimeInMillis(Long.valueOf(timeString).longValue());
 			time.add(Calendar.DATE, configManager.getConfigLongValue(ConfigKeyEnum.CHANGEPHONETIME, 10l).intValue());
-			logger.info("checkChangePhoneTime ==>{}",time.getTime());
+			logger.info("checkChangePhoneTime ==>{}", time.getTime());
 			return time.getTime().getTime();
 		}
-		logger.info("checkChangePhoneTime ==>{}",new Date());
+		logger.info("checkChangePhoneTime ==>{}", new Date());
 		return new Date().getTime();
 
 	}
@@ -191,7 +191,7 @@ public class UserManagerImpl implements UserManager {
 			user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE);
 			userDAO.updateUser(user);
 		}
-		//校验密码
+		// 校验密码
 		if (PasswordUtils.check(userPassword, user.getUserPassword(), user.getPasswordSalt())) {
 			logger.info("***match***");
 			redisDAO.deleteData(ServerConsts.WRONG_PASSWORD + userId);
@@ -210,9 +210,9 @@ public class UserManagerImpl implements UserManager {
 				redisDAO.saveData(ServerConsts.LOGIN_FREEZE + userId, new Date().getTime());
 				user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE);
 				userDAO.updateUser(user);
-				//次数清零
+				// 次数清零
 				redisDAO.deleteData(ServerConsts.WRONG_PASSWORD + userId);
-				//计算到期时间
+				// 计算到期时间
 				Calendar time = Calendar.getInstance();
 				time.add(Calendar.HOUR_OF_DAY,
 						configManager.getConfigLongValue(ConfigKeyEnum.LOGIN_UNAVAILIABLE_TIME, 24l).intValue());
@@ -221,8 +221,14 @@ public class UserManagerImpl implements UserManager {
 				result.setInfo(time.getTime().getTime());
 				return result;
 			}
+			// 每日24点错误次数清零
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.HOUR_OF_DAY, 24);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.MILLISECOND, 0);
 			// 记录错误次数
-			redisDAO.saveData(ServerConsts.WRONG_PASSWORD + userId, t);
+			redisDAO.saveData(ServerConsts.WRONG_PASSWORD + userId, t, cal.getTime());
 			logger.info("***Does not match,{}***", t);
 			result.setStatus(ServerConsts.CHECKPWD_STATUS_INCORRECT);
 			result.setInfo(
@@ -264,7 +270,7 @@ public class UserManagerImpl implements UserManager {
 			result.setStatus(ServerConsts.CHECKPWD_STATUS_CORRECT);
 			return result;
 		} else {
-			
+
 			long t = 1;
 			String times = redisDAO.getValueByKey(ServerConsts.WRONG_PAYPWD + userId);
 			if (times != null) {
@@ -276,9 +282,9 @@ public class UserManagerImpl implements UserManager {
 				redisDAO.saveData(ServerConsts.PAY_FREEZE + userId, new Date().getTime());
 				user.setPayAvailable(ServerConsts.PAY_AVAILABLE_OF_UNAVAILABLE);
 				userDAO.updateUser(user);
-				//次数清零
+				// 次数清零
 				redisDAO.deleteData(ServerConsts.WRONG_PAYPWD + userId);
-				//计算到期时间
+				// 计算到期时间
 				Calendar time = Calendar.getInstance();
 				time.add(Calendar.HOUR_OF_DAY,
 						configManager.getConfigLongValue(ConfigKeyEnum.PAY_UNAVAILIABLE_TIME, 24l).intValue());
@@ -287,8 +293,14 @@ public class UserManagerImpl implements UserManager {
 				result.setInfo(time.getTime().getTime());
 				return result;
 			}
+			// 每日24点错误次数清零
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.HOUR_OF_DAY, 24);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.MILLISECOND, 0);
 			// 记录错误次数
-			redisDAO.saveData(ServerConsts.WRONG_PAYPWD + userId, t);
+			redisDAO.saveData(ServerConsts.WRONG_PAYPWD + userId, t, cal.getTime());
 			logger.info("***Does not match,{}***", t);
 			result.setStatus(ServerConsts.CHECKPWD_STATUS_INCORRECT);
 			result.setInfo(configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PAYPWD_FREQUENCY, 3l).longValue() - t);

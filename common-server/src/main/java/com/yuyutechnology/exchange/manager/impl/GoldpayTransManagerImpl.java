@@ -514,7 +514,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 			return map;
 		}
 		// 验证支付密码
-		CheckPwdResult checkPwdResult = userManager.checkPayPassword(userId, user.getUserPayPwd());
+		CheckPwdResult checkPwdResult = userManager.checkPayPassword(userId, payPwd);
 		switch (checkPwdResult.getStatus()) {
 		case ServerConsts.CHECKPWD_STATUS_FREEZE:
 			map.put("msg", String.valueOf(checkPwdResult.getInfo()));
