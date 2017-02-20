@@ -265,6 +265,11 @@ public class TransferManagerImpl implements TransferManager{
 			return RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED;
 		}
 		
+		if(userId != transfer.getUserFrom()){
+			logger.warn("userId is different from UserFromId");
+			return RetCodeConsts.RET_CODE_FAILUE; 
+		}
+		
 		//获取系统账号
 		User systemUser = userDAO.getSystemUser();
 		
