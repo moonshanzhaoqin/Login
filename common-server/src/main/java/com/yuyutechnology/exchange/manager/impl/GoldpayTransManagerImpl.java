@@ -21,6 +21,8 @@ import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
+import com.yuyutechnology.exchange.goldpay.transaction.CalculateCharge;
+import com.yuyutechnology.exchange.goldpay.transaction.CalculateChargeReturnModel;
 import com.yuyutechnology.exchange.goldpay.transaction.ClientComfirmPay;
 import com.yuyutechnology.exchange.goldpay.transaction.ClientPayOrder;
 import com.yuyutechnology.exchange.goldpay.transaction.ClientPin;
@@ -36,7 +38,6 @@ import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.JsonBinder;
-import com.yuyutechnology.exchange.utils.PasswordUtils;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
 
 @Service
@@ -300,7 +301,28 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 			map.put("msg", "Current balance is insufficient");
 			return map;
 		}
+		
+		map.put("charge", "0");
+		CalculateCharge calculateCharge = new CalculateCharge();
+		calculateCharge.setClientId(configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTID, ""));
+		calculateCharge.setAmount(Double.valueOf(amount).longValue());
+		calculateCharge.setAccountNum(bind.getGoldpayAcount());
+		calculateCharge.setTo(true);
+		String sign = DigestUtils.md5Hex(JsonBinder.getInstanceNonEmpty().toJson(calculateCharge)
+				+ configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTKEY, ""));
+		calculateCharge.setSign(sign.toUpperCase());
 
+		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue4String("tpps.url") + "calculateCharge.do",
+				JsonBinder.getInstance().toJson(calculateCharge));
+		CalculateChargeReturnModel calculateChargeReturnModel;
+		if (StringUtils.isNotBlank(result)) {
+			logger.info("calculateCharge tpps callback {} ", result);
+			calculateChargeReturnModel = JsonBinder.getInstance().fromJson(result, CalculateChargeReturnModel.class);
+			if (calculateChargeReturnModel.getResultCode() == 1) {
+				map.put("charge", calculateChargeReturnModel.getChargeAmount()+"");
+			}
+		}
+		
 		// 生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 
