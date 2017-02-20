@@ -61,7 +61,6 @@ import com.yuyutechnology.exchange.utils.ResourceUtils;
 @Service
 public class UserManagerImpl implements UserManager {
 	public static Logger logger = LoggerFactory.getLogger(UserManagerImpl.class);
-	public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	@Autowired
 	UserDAO userDAO;
 	@Autowired
@@ -443,7 +442,7 @@ public class UserManagerImpl implements UserManager {
 				ServerConsts.USER_AVAILABLE_OF_AVAILABLE, ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE,
 				ServerConsts.PAY_AVAILABLE_OF_AVAILABLE, passwordSalt, LanguageUtils.standard(language)));
 		logger.info("Add user complete!");
-		redisDAO.saveData("changephonetime" + userId, simpleDateFormat.format(new Date()));
+		redisDAO.saveData("changephonetime" + userId, new Date().getTime());
 		// 添加钱包信息
 		createWallets4NewUser(userId);
 		// 根据UNregistered 更新新用户钱包 将资金从系统帐户划给新用户

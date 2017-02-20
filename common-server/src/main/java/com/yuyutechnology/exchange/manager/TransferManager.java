@@ -112,5 +112,5 @@ public interface TransferManager {
 			BigDecimal amount, String transferComment, int noticeId);
 	
 	
-	public BigDecimal regenerateQRCode();
+	public HashMap<String, String> regenerateQRCode(String currency,BigDecimal amount);
 }
