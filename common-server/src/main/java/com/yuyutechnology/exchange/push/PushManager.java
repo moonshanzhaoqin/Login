@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.push;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +36,8 @@ import com.yuyutechnology.exchange.utils.ResourceUtils;
 @Service
 public class PushManager {
 	public static Logger logger = LoggerFactory.getLogger(PushManager.class);
-
+	public static DecimalFormat CURRENCY = new DecimalFormat(",##0.0000");
+	public static DecimalFormat GDQ = new DecimalFormat(",##0");
 	@Autowired
 	CommonManager commonManager;
 	@Autowired
@@ -157,7 +159,7 @@ public class PushManager {
 		String transferBody = templateChoose("transfer", userTo.getPushTag());
 		String body = transferBody.replace(PUSH_REPLACE_FROM, userFrom.getUserName())
 				.replace(PUSH_REPLACE_CURRENCY, commonManager.getCurreny(currency).getCurrencyUnit()).replace(PUSH_REPLACE_AMOUNT,
-						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? new BigDecimal(amount.intValue()).toString() : amount.toString());
+						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ?  GDQ.format(amount) :CURRENCY.format(amount));
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "transfer");
 		pushToCustom(userTo.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
@@ -202,7 +204,7 @@ public class PushManager {
 		logger.info("refund,{}=={}", userFrom.getPushTag(), refundBody);
 		String body = refundBody.replace(PUSH_REPLACE_TO, areaCode + phone).replace(PUSH_REPLACE_CURRENCY, commonManager.getCurreny(currency).getCurrencyUnit())
 				.replace(PUSH_REPLACE_AMOUNT,
-						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? new BigDecimal(amount.intValue()).toString() : amount.toString())
+						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? GDQ.format(amount) :CURRENCY.format(amount))
 				.replace(PUSH_REPLACE_DAY, configManager.getConfigStringValue(ConfigKeyEnum.REFUNTIME, "7"));
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "refund");

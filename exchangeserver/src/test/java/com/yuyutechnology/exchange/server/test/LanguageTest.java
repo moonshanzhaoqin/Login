@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.server.test;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -27,6 +28,7 @@ public class LanguageTest extends BaseSpringJunit4{
 	
 	public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
+	@SuppressWarnings("null")
 	@Test	
 	public void enumTEST() throws ParseException{
 		
@@ -52,14 +54,18 @@ public class LanguageTest extends BaseSpringJunit4{
 //		System.out.println(cal1.getTime());
 //        cal1.add(Calendar.DATE,2);
 //        System.out.println(cal1.getTime());
+		
+		
 //		System.out.println(new BigDecimal(12.00));
-//		System.out.println(new BigDecimal("12.00"));
+//		System.out.println(new BigDecimal("121,212.00").toString());
 //		System.out.println(new BigDecimal("12.00").intValue());
 //		logger.info(new BigDecimal(12.00).toString());
 //		logger.info(new BigDecimal("12.00").toString());
 //		logger.info(new BigDecimal(new BigDecimal("12.00").intValue()).toString());
 //		logger.info(new BigDecimal(new BigDecimal("12.12").intValue()).toString());
-		System.out.println(BigDecimal.ZERO);
+//		System.out.println(BigDecimal.ZERO);
+//		DecimalFormat df = new DecimalFormat(",###.0000");
+//		System.out.println(df.format(new BigDecimal("123425465464556.0000")));
 		
 //		System.out.println(configManager.getConfigStringValue(ConfigKeyEnum.VERIFYTIME, "10"));
 //		System.out.println(configManager.getConfigStringValue(ConfigKeyEnum.REFUNTIME, "7"));
