@@ -4,6 +4,7 @@
 package com.yuyutechnology.exchange.sms;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 import javax.annotation.PostConstruct;
 
@@ -34,7 +35,8 @@ import com.yuyutechnology.exchange.utils.ResourceUtils;
 @Service
 public class SmsManager {
 	public static Logger logger = LoggerFactory.getLogger(SmsManager.class);
-	
+	public static DecimalFormat CURRENCY = new DecimalFormat(",##0.0000");
+	public static DecimalFormat GDQ = new DecimalFormat(",##0");
 	@Autowired
 	ConfigManager configManager;
 	@Autowired
@@ -137,7 +139,7 @@ public class SmsManager {
 		String content = transferContent.replace(SMS_REPLACE_FROM, from.getAreaCode() + from.getUserPhone())
 				.replace(SMS_REPLACE_CURRENCY, commonManager.getCurreny(currency).getCurrencyUnit())
 				.replace(SMS_REPLACE_AMOUNT,
-						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? new BigDecimal(amount.intValue()).toString() : amount.toString())
+						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? GDQ.format(amount) :CURRENCY.format(amount))
 				.replace(SMS_REPLACE_LINK, configManager.getConfigStringValue(ConfigKeyEnum.DOWNLOADLINK, ""))
 				.replace(SMS_REPLACE_TIME, configManager.getConfigStringValue(ConfigKeyEnum.REFUNTIME, "7"));
 		sendSMS(areaCode + userPhone, content);
