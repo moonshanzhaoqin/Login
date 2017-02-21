@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.utils.HttpTookit;
@@ -14,7 +14,7 @@ import com.yuyutechnology.exchange.utils.ResourceUtils;
 
 @Service
 public class GoldpayManager {
-	public static Logger logger = LoggerFactory.getLogger(GoldpayManager.class);
+	public static Logger logger = LogManager.getLogger(GoldpayManager.class);
 
 	public GoldpayUser getGoldpayInfo(String accessToken) {
 		String result = HttpTookit.sendGet(ResourceUtils.getBundleValue4String("goldpayUas.url") + "unity/userInfo.do?access_token=" + accessToken, null);

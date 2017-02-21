@@ -3,8 +3,8 @@ package com.yuyutechnology.exchange.server.controller;
 import java.math.BigDecimal;
 import java.util.HashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -40,7 +40,7 @@ public class GoldpayTransController {
 	@Autowired
 	ConfigManager configManager;
 	
-	public static Logger logger = LoggerFactory.getLogger(GoldpayTransController.class);
+	public static Logger logger = LogManager.getLogger(GoldpayTransController.class);
 	
 	@ApiOperation(value = "goldpay 买入")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/goldpayTrans/goldpayPurchase")

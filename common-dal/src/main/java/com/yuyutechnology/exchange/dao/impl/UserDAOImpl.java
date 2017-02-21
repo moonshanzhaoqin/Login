@@ -4,8 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +16,7 @@ import com.yuyutechnology.exchange.pojo.UserConfig;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
-	public static Logger logger = LoggerFactory.getLogger(UserDAOImpl.class);
+	public static Logger logger = LogManager.getLogger(UserDAOImpl.class);
 	@Resource
 	HibernateTemplate hibernateTemplate;
 

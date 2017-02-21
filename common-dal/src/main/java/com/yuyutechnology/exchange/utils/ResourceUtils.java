@@ -2,12 +2,12 @@ package com.yuyutechnology.exchange.utils;
 
 import java.util.ResourceBundle;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class ResourceUtils {
 	
-	public static Logger logger = LoggerFactory.getLogger(ResourceUtils.class);
+	public static Logger logger = LogManager.getLogger(ResourceUtils.class);
 	
 	private final static String configfileName = "server-conf";
 	

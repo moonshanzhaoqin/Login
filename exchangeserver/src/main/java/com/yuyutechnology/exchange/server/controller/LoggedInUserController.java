@@ -7,8 +7,8 @@ import java.text.ParseException;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,7 +39,7 @@ import com.yuyutechnology.exchange.server.session.SessionManager;
  */
 @Controller
 public class LoggedInUserController {
-	public static Logger logger = LoggerFactory.getLogger(LoggedInUserController.class);
+	public static Logger logger = LogManager.getLogger(LoggedInUserController.class);
 
 	@Autowired
 	UserManager userManager;

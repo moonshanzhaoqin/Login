@@ -10,8 +10,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,7 @@ import com.yuyutechnology.exchange.pojo.Config;
  */
 @Component
 public class ConfigManagerImpl implements ConfigManager {
-	private static Logger logger = LoggerFactory.getLogger(ConfigManagerImpl.class);
+	private static Logger logger = LogManager.getLogger(ConfigManagerImpl.class);
 
 	@Autowired
 	ConfigDAO configDAO;

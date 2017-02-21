@@ -3,8 +3,8 @@ package com.yuyutechnology.exchange.manager.impl;
 import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ import com.yuyutechnology.exchange.utils.PasswordUtils;
 
 @Service
 public class CrmAdminManagerImpl implements CrmAdminManager {
-	private static Logger logger = LoggerFactory.getLogger(CrmAdminManagerImpl.class);
+	private static Logger logger = LogManager.getLogger(CrmAdminManagerImpl.class);
 
 	@Autowired
 	AdminDAO adminDAO;

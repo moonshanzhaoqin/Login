@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class BigDecimalTEST extends BaseSpringJunit4 {
-	public static Logger logger = LoggerFactory.getLogger(AdminTest.class);
+	public static Logger logger = LogManager.getLogger(AdminTest.class);
 
 	@Test
 	public void divideTEST() {

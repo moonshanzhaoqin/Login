@@ -10,8 +10,8 @@
 package com.yuyutechnology.exchange.init.listener;
 import javax.servlet.ServletContextEvent;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -26,7 +26,7 @@ import com.yuyutechnology.exchange.startup.ServerContext;
  */
 public class ServerInit extends ContextLoaderListener
 {
-	public static Logger logger = LoggerFactory.getLogger(ServerInit.class);
+	public static Logger logger = LogManager.getLogger(ServerInit.class);
 	@Override
 	public void contextInitialized(ServletContextEvent sce)
 	{

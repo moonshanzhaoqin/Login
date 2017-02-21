@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ import com.yuyutechnology.exchange.pojo.Wallet;
 @Service
 public class CurrencyManagerImpl implements CurrencyManager {
 
-	private static Logger logger = LoggerFactory.getLogger(CurrencyManagerImpl.class);
+	private static Logger logger = LogManager.getLogger(CurrencyManagerImpl.class);
 
 	@Autowired
 	CurrencyDAO currencyDAO;

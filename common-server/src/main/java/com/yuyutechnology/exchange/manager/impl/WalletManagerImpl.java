@@ -3,8 +3,8 @@ package com.yuyutechnology.exchange.manager.impl;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,7 @@ public class WalletManagerImpl implements WalletManager {
 	@Autowired
 	ExchangeRateManager exchangeRateManager;
 	
-	public static Logger logger = LoggerFactory.getLogger(WalletManagerImpl.class);
+	public static Logger logger = LogManager.getLogger(WalletManagerImpl.class);
 	
 	@Override
 	public double getTotalAmoutGold(int userId) {
