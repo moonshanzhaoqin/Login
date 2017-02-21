@@ -1,5 +1,8 @@
 package com.yuyutechnology.exchange.server.controller;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +37,12 @@ public class WalletController {
 		GetTotalAmontGoldResponse rep = new GetTotalAmontGoldResponse();
 		double amount = walletManager.getTotalAmoutGold(sessionData.getUserId());
 		
+		BigDecimal amoutOz = new BigDecimal(amount).divide(new BigDecimal("28.3495231"),2, RoundingMode.DOWN);
+		
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		rep.setAmountOfGold(amount);
+		rep.setAmountOfGoldOz(amoutOz.doubleValue());
 		
 		return rep;
 	}
