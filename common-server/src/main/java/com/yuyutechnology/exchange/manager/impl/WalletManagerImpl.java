@@ -1,7 +1,6 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.List;
 
 import org.slf4j.Logger;
