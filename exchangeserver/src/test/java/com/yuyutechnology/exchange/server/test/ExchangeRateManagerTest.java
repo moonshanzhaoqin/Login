@@ -3,18 +3,15 @@
  */
 package com.yuyutechnology.exchange.server.test;
 
+import java.math.BigDecimal;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.yuyutechnology.exchange.dao.TransferDAO;
-import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
-import com.yuyutechnology.exchange.manager.ExchangeManager;
-import com.yuyutechnology.exchange.manager.ExchangeRateManager;
-import com.yuyutechnology.exchange.manager.TransferManager;
-import com.yuyutechnology.exchange.manager.WalletManager;
+import com.yuyutechnology.exchange.manager.OandaExchangeRateManager;
 import com.yuyutechnology.exchange.server.controller.TransferController;
 
 /**
@@ -24,19 +21,7 @@ import com.yuyutechnology.exchange.server.controller.TransferController;
 public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 
 	@Autowired
-	UnregisteredDAO unregisteredDAO;
-	@Autowired
-	ExchangeManager exchangeManager;
-	@Autowired
-	ExchangeRateManager exchangeRateManager;
-	@Autowired
-	TransferManager transferManager;
-	@Autowired
-	WalletManager walletManager;
-	
-	@Autowired
-	TransferDAO transferDAO;
-	
+	OandaExchangeRateManager oandaExchangeRateManager;
 	
 	@Autowired
 	UserDAO userDAO;
@@ -45,13 +30,7 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 
 	@Test
 	public void testUpdateRate() {
-
-//		BigDecimal sum = transferDAO.sumGoldpayTransAmount(5);
-//		logger.info("sum : {}",sum);
-		
-		int count = transferDAO.getDayTradubgVolume(5);
-		logger.info("count : {}",count);
-		 
+		oandaExchangeRateManager.getExchangeResult("USD", new BigDecimal("1"));
 	}
 
 }
