@@ -8,8 +8,8 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -22,7 +22,7 @@ import com.yuyutechnology.exchange.utils.JsonBinder;
  *
  */
 public class ExchangeServerExceptionResolver implements HandlerExceptionResolver{
-	private static Logger logger = LoggerFactory.getLogger(ExchangeServerExceptionResolver.class);
+	private static Logger logger = LogManager.getLogger(ExchangeServerExceptionResolver.class);
 	@Override
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
 			Exception ex) {

@@ -3,8 +3,8 @@ package com.yuyutechnology.exchange.server.controller;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +26,7 @@ public class WalletController {
 	@Autowired
 	WalletManager walletManager;
 	
-	public static Logger logger = LoggerFactory.getLogger(TransferController.class);
+	public static Logger logger = LogManager.getLogger(TransferController.class);
 
 	@ApiOperation(value = "获取黄金总量")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/wallet/getTotalAmontGold")

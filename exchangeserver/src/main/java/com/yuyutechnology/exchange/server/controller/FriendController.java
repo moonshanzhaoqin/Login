@@ -3,8 +3,8 @@ package com.yuyutechnology.exchange.server.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +32,7 @@ import com.yuyutechnology.exchange.server.session.SessionDataHolder;
  */
 @Controller
 public class FriendController {
-	public static Logger logger = LoggerFactory.getLogger(FriendController.class);
+	public static Logger logger = LogManager.getLogger(FriendController.class);
 
 	@Autowired
 	UserManager userManager;
