@@ -28,7 +28,7 @@ public class StartTask{
 		}
 		else
 		{
-			String logCfgPath = home + "/conf/log4j.properties";
+			String logCfgPath = home + "/conf/log4j2.xml";
 			String contextCfgPath = home + "/conf/task-context.xml";
 			System.out.println("home=" + home);
 			System.out.println("contextCfgPath=" + contextCfgPath);

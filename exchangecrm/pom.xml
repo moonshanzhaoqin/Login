@@ -115,6 +115,7 @@
 								<resource>
 									<directory>src/main/resources/${env}</directory>
 									<includes>
+										<include>*.xml</include>
 										<include>*.properties</include>
 									</includes>
 									<filtering>true</filtering>

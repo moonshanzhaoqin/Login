@@ -93,6 +93,7 @@
 								</copy>
 								<copy todir="${basedir}/deploy/conf">
 									<fileset dir="src/main/resources/${env}">
+										<include name="**/*.xml" />
 										<include name="*.properties" />
 									</fileset>
 								</copy>
@@ -102,6 +103,7 @@
 										<include name="*.properties" />
 									</fileset>
 									<fileset dir="src/main/resources/${env}">
+										<include name="**/*.xml" />
 										<include name="*.properties" />
 									</fileset>
 								</copy>
@@ -111,6 +113,7 @@
 										<include name="*.properties" />
 									</fileset>
 									<fileset dir="src/main/resources/${env}">
+										<include name="**/*.xml" />
 										<include name="*.properties" />
 									</fileset>
 								</copy>
@@ -120,6 +123,7 @@
 										<include name="*.properties" />
 									</fileset>
 									<fileset dir="src/main/resources/${env}">
+										<include name="**/*.xml" />
 										<include name="*.properties" />
 									</fileset>
 								</copy>
