@@ -214,7 +214,7 @@ public class TransferController {
 	public  @ResponseBody 
 	RegenerateQRCodeResponse regenerateQRCode(@PathVariable String token,@RequestBody RegenerateQRCodeRequest reqMsg){
 		RegenerateQRCodeResponse rep = new RegenerateQRCodeResponse();
-		if(StringUtils.isEmpty(reqMsg.getCurrency())){
+		if(reqMsg == null || StringUtils.isEmpty(reqMsg.getCurrency())){
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			return rep;
