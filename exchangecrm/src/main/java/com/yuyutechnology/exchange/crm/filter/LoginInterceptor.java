@@ -10,12 +10,12 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.yuyutechnology.exchange.RetCodeConsts;
-import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 
 /**
@@ -26,7 +26,7 @@ import com.yuyutechnology.exchange.utils.JsonBinder;
  */
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
-	private final Logger logger = Logger.getLogger(this.getClass());
+	private final Logger logger = LogManager.getLogger(this.getClass());
 
 	private static final Set<String> noMappingSet = new HashSet<String>();
 	private static final Set<String> noMappingSetUrl = new HashSet<String>();
