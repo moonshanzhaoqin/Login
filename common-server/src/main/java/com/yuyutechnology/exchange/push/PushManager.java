@@ -36,7 +36,7 @@ import com.yuyutechnology.exchange.utils.ResourceUtils;
 @Service
 public class PushManager {
 	public static Logger logger = LoggerFactory.getLogger(PushManager.class);
-	public static DecimalFormat CURRENCY = new DecimalFormat(",##0.0000");
+	public static DecimalFormat CURRENCY = new DecimalFormat(",##0.00");
 	public static DecimalFormat GDQ = new DecimalFormat(",##0");
 	@Autowired
 	CommonManager commonManager;

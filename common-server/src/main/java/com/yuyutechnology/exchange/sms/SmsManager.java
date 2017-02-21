@@ -35,7 +35,7 @@ import com.yuyutechnology.exchange.utils.ResourceUtils;
 @Service
 public class SmsManager {
 	public static Logger logger = LoggerFactory.getLogger(SmsManager.class);
-	public static DecimalFormat CURRENCY = new DecimalFormat(",##0.0000");
+	public static DecimalFormat CURRENCY = new DecimalFormat(",##0.00");
 	public static DecimalFormat GDQ = new DecimalFormat(",##0");
 	@Autowired
 	ConfigManager configManager;
