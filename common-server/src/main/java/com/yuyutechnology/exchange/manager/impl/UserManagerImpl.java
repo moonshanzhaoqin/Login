@@ -2,7 +2,6 @@ package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -660,6 +659,7 @@ public class UserManagerImpl implements UserManager {
 	private String getUserConfig(Integer userId, UserConfigKeyEnum key) {
 		UserConfig userConfig = userDAO.getUserConfig(userId);
 		if (userConfig != null && StringUtils.isNotBlank(userConfig.getUserConfigValue())) {
+			@SuppressWarnings("unchecked")
 			Map<String, String> config = JsonBinder.getInstance().fromJson(userConfig.getUserConfigValue(),
 					HashMap.class);
 			return config.get(key.ordinal() + "") == null ? "" : config.get(key.ordinal() + "");
@@ -670,6 +670,7 @@ public class UserManagerImpl implements UserManager {
 	private void saveUserConfig(Integer userId, UserConfigKeyEnum key, String value) {
 		UserConfig userConfig = userDAO.getUserConfig(userId);
 		if (userConfig != null && StringUtils.isNotBlank(userConfig.getUserConfigValue())) {
+			@SuppressWarnings("unchecked")
 			Map<String, String> config = JsonBinder.getInstance().fromJson(userConfig.getUserConfigValue(),
 					HashMap.class);
 			config.put(key.ordinal() + "", value);

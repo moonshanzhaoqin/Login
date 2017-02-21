@@ -37,7 +37,7 @@ public class WalletController {
 		GetTotalAmontGoldResponse rep = new GetTotalAmontGoldResponse();
 		double amount = walletManager.getTotalAmoutGold(sessionData.getUserId());
 		
-		BigDecimal amoutOz = new BigDecimal(amount).divide(new BigDecimal("28.3495231"),2, RoundingMode.DOWN);
+		BigDecimal amoutOz = new BigDecimal(amount).divide(new BigDecimal("31.1034768"),2, RoundingMode.DOWN);
 		
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
