@@ -720,10 +720,13 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public boolean isUserPayPwdEqualsOld(Integer userId, String newUserPayPwd) {
+		logger.info("is UserPayPwd Equals Old==>");
 		User user = userDAO.getUser(userId);
 		if (PasswordUtils.check(newUserPayPwd, user.getUserPassword(), user.getPasswordSalt())) {
+			logger.info("UserPayPwd Equals Old");
 			return true;
 		}
+		logger.info("UserPayPwd not Equals Old");
 		return false;
 	}
 }
