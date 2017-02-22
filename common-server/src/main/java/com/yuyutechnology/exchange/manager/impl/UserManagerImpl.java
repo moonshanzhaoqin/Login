@@ -309,12 +309,21 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public boolean checkGoldpay(Integer userId, String goldpayName, String goldpayPassword) {
 		logger.info("Check {}  user's Goldpay password {} ==>", userId, goldpayPassword);
-		Bind bind = bindDAO.getBindByUserId(userId);
-		if (bind != null && bind.getGoldpayName().equals(goldpayName)
-				&& goldpayManager.checkGoldpay(goldpayName, goldpayPassword)) {
-			return true;
+		GoldpayUser goldpayUser=goldpayManager.checkGoldpay(goldpayName, goldpayPassword);
+		if(goldpayUser==null){
+			logger.info("goldpayName goldpayPassword not match");
+			return false;
 		}
-		return false;
+		Bind bind = bindDAO.getBindByUserId(userId);
+		if (bind == null ) {
+			logger.info("goldpay not bind");
+			return false;
+		}
+		if(!goldpayUser.getUsername().equals(bind.getGoldpayName())){
+			logger.info("goldpay not match bind");
+			return false;
+		 }
+		return true;
 	}
 
 	@Override
