@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
+import org.aspectj.apache.bcel.generic.RET;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -307,23 +308,23 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public boolean checkGoldpay(Integer userId, String goldpayName, String goldpayPassword) {
+	public String checkGoldpay(Integer userId, String goldpayName, String goldpayPassword) {
 		logger.info("Check {}  user's Goldpay password {} ==>", userId, goldpayPassword);
-		GoldpayUser goldpayUser=goldpayManager.checkGoldpay(goldpayName, goldpayPassword);
-		if(goldpayUser==null){
+		GoldpayUser goldpayUser = goldpayManager.checkGoldpay(goldpayName, goldpayPassword);
+		if (goldpayUser == null) {
 			logger.info("goldpayName goldpayPassword not match");
-			return false;
+			return RetCodeConsts.GOLDPAY_IS_INCORRECT;
 		}
 		Bind bind = bindDAO.getBindByUserId(userId);
-		if (bind == null ) {
+		if (bind == null) {
 			logger.info("goldpay not bind");
-			return false;
+			return RetCodeConsts.GOLDPAY_NOT_BIND;
 		}
-		if(!goldpayUser.getUsername().equals(bind.getGoldpayName())){
+		if (!goldpayUser.getUsername().equals(bind.getGoldpayName())) {
 			logger.info("goldpay not match bind");
-			return false;
-		 }
-		return true;
+			return RetCodeConsts.GOLDPAY_NOT_MATCH_BIND;
+		}
+		return RetCodeConsts.RET_CODE_SUCCESS;
 	}
 
 	@Override

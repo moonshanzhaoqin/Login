@@ -92,6 +92,10 @@ public class MessageConsts {
 	 */
 	public static final String GOLDPAY_IS_INCORRECT = "GOLDPAY_IS_INCORRECT";
 	/**
+	 * Goldpay未绑定
+	 */
+	public static final String GOLDPAY_NOT_BIND = "GOLDPAY_NOT_BIND";
+	/**
 	 *新设备登录
 	 */
 	public static final String NEW_DEVICE = "NEW_DEVICE";
@@ -103,6 +107,16 @@ public class MessageConsts {
 	 * 支付冻结
 	 */
 	public static final String PAY_FREEZE = "PAY_FREEZE";
+	/**
+	 * Goldpay与已绑定账号不符
+	 */
+	public static final String GOLDPAY_NOT_MATCH_BIND = "GOLDPAY_NOT_MATCH_BIND";
+	
+	
+	
+	
+	
+	
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息
