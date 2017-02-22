@@ -1,10 +1,11 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.WalletManager;
 import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.utils.ResourceUtils;
 
 @Service
 public class WalletManagerImpl implements WalletManager {
@@ -27,14 +29,14 @@ public class WalletManagerImpl implements WalletManager {
 	public static Logger logger = LogManager.getLogger(WalletManagerImpl.class);
 	
 	@Override
-	public double getTotalAmoutGold(int userId) {
+	public HashMap<String, BigDecimal> getTotalAmoutGold(int userId) {
 		
 		BigDecimal goldpayAmount = new BigDecimal("0");
 
 		List<Wallet> list = walletDAO.getWalletsByUserId(userId);
 		
 		if(list.isEmpty()){
-			return 0;
+			return null;
 		}
 		
 		for (Wallet wallet : list) {
@@ -54,10 +56,20 @@ public class WalletManagerImpl implements WalletManager {
 		}
 
 		logger.info("user id : {} ,Currently has total goldpay : {}",userId,goldpayAmount);
-		BigDecimal goldAmount = goldpayAmount.divide(new BigDecimal("10000"),2,BigDecimal.ROUND_FLOOR);
+		final BigDecimal goldAmount = goldpayAmount.divide(new BigDecimal("10000"),2,BigDecimal.ROUND_FLOOR);
 		logger.info("user id : {} ,Currently has total gold : {}",userId ,goldAmount);
-		
-		return goldAmount.doubleValue();
+		String oz4g = ResourceUtils.getBundleValue4String("exchange.oz4g");
+		logger.info("oz4g : {}",oz4g);
+		final BigDecimal goldAmountOz = goldpayAmount.divide(new BigDecimal("10000").multiply(new BigDecimal(oz4g)),2,BigDecimal.ROUND_FLOOR);
+		logger.info("user id : {} ,Currently has total gold oz : {}",userId ,goldAmountOz);
+		@SuppressWarnings("serial")
+		HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>(){
+			{
+				put("goldAmount",goldAmount);
+				put("goldAmountOz",goldAmountOz);
+			}
+		};
+		return map;
 	}
 
 	@Override

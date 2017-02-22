@@ -1,10 +1,10 @@
 package com.yuyutechnology.exchange.server.controller;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.util.HashMap;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +19,6 @@ import com.yuyutechnology.exchange.manager.WalletManager;
 import com.yuyutechnology.exchange.server.controller.response.GetTotalAmontGoldResponse;
 import com.yuyutechnology.exchange.server.session.SessionData;
 import com.yuyutechnology.exchange.server.session.SessionDataHolder;
-import com.yuyutechnology.exchange.utils.ResourceUtils;
 
 @Controller
 public class WalletController {
@@ -36,16 +35,18 @@ public class WalletController {
 		
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		GetTotalAmontGoldResponse rep = new GetTotalAmontGoldResponse();
-		double amount = walletManager.getTotalAmoutGold(sessionData.getUserId());
+
+		HashMap<String, BigDecimal> result = walletManager.getTotalAmoutGold(sessionData.getUserId());
 		
-		String oz4g = ResourceUtils.getBundleValue4String("exchange.oz4g");
-		logger.info("oz4g : {}",oz4g);
-		BigDecimal amoutOz = new BigDecimal(amount).divide(new BigDecimal(oz4g),2, RoundingMode.DOWN);
-		
-		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-		rep.setAmountOfGold(amount);
-		rep.setAmountOfGoldOz(amoutOz.doubleValue());
+		if(result != null){
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+			rep.setAmountOfGold(result.get("goldAmount").doubleValue());
+			rep.setAmountOfGoldOz(result.get("goldAmountOz").doubleValue());
+		}else{
+			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+			rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+		}
 		
 		return rep;
 	}
