@@ -140,7 +140,6 @@ public class LoggedInUserController {
 					rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 					break;
 				}
-				
 			} else {
 				logger.info("***checkToken is wrong!***");
 				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
@@ -198,7 +197,7 @@ public class LoggedInUserController {
 					rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 				}
 			} else {
-				logger.info(MessageConsts.RET_CODE_FAILUE);
+				logger.info("***checkToken is wrong!***");
 				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 			}
@@ -505,7 +504,7 @@ public class LoggedInUserController {
 					rep.setMessage(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
 				}
 			} else {
-				logger.info(MessageConsts.RET_CODE_FAILUE);
+				logger.info("***checkToken is wrong!***");
 				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 			}
@@ -549,7 +548,7 @@ public class LoggedInUserController {
 					rep.setMessage(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
 				}
 			} else {
-				logger.info(MessageConsts.RET_CODE_FAILUE);
+				logger.info("***checkToken is wrong!***");
 				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 			}
