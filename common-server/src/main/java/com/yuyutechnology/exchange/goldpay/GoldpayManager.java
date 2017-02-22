@@ -29,7 +29,7 @@ public class GoldpayManager {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public boolean checkGoldpay(String userName, String password) {
+	public GoldpayUser checkGoldpay(String userName, String password) {
 		StringBuilder param = new StringBuilder();
 		param.append("client_id=").append(ResourceUtils.getBundleValue4String("goldpayUas.client.id", "exchange-client")).append("&");
 		param.append("client_secret=").append(ResourceUtils.getBundleValue4String("goldpayUas.client.key", "exchange")).append("&");
@@ -41,9 +41,9 @@ public class GoldpayManager {
 		if (StringUtils.isNotEmpty(result)) {
 			Map<String, String> resultMap = JsonBinder.getInstance().fromJson(result, HashMap.class);
 			if (StringUtils.isNotBlank(resultMap.get("access_token"))) {
-				return true;
+				return getGoldpayInfo(resultMap.get("access_token"));
 			}
 		}
-		return false;
+		return null;
 	}
 }
