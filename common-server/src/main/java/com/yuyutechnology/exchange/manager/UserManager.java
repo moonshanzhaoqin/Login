@@ -121,7 +121,7 @@ public interface UserManager {
 	 * @param goldpayPassword
 	 * @return
 	 */
-	public boolean checkGoldpay(Integer userId, String goldpayName, String goldpayPassword);
+	public String checkGoldpay(Integer userId, String goldpayName, String goldpayPassword);
 
 	/**
 	 * 获取好友列表

@@ -329,15 +329,30 @@ public class LoggedInUserController {
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
-			if (userManager.checkGoldpay(sessionData.getUserId(), checkPayGoldpayRequest.getGoldpayName(),checkPayGoldpayRequest.getGoldpayPwd())) {
-				String checkToken = sessionManager.createCheckToken(sessionData.getUserId(),ServerConsts.RESETPAYPWD);
+			String retCode = userManager.checkGoldpay(sessionData.getUserId(), checkPayGoldpayRequest.getGoldpayName(),
+					checkPayGoldpayRequest.getGoldpayPwd());
+			switch (retCode) {
+			case RetCodeConsts.RET_CODE_SUCCESS:
+				String checkToken = sessionManager.createCheckToken(sessionData.getUserId(), ServerConsts.RESETPAYPWD);
 				logger.info("********Operation succeeded********");
 				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(checkToken);
-			} else {
+				break;
+			case RetCodeConsts.GOLDPAY_IS_INCORRECT:
 				logger.info(MessageConsts.GOLDPAY_IS_INCORRECT);
 				rep.setRetCode(RetCodeConsts.GOLDPAY_IS_INCORRECT);
 				rep.setMessage(MessageConsts.GOLDPAY_IS_INCORRECT);
+				break;
+			case RetCodeConsts.GOLDPAY_NOT_BIND:
+				logger.info(MessageConsts.GOLDPAY_NOT_BIND);
+				rep.setRetCode(RetCodeConsts.GOLDPAY_NOT_BIND);
+				rep.setMessage(MessageConsts.GOLDPAY_NOT_BIND);
+				break;
+			case RetCodeConsts.GOLDPAY_NOT_MATCH_BIND:
+				logger.info(MessageConsts.GOLDPAY_NOT_MATCH_BIND);
+				rep.setRetCode(RetCodeConsts.GOLDPAY_NOT_MATCH_BIND);
+				rep.setMessage(MessageConsts.GOLDPAY_NOT_MATCH_BIND);
+				break;
 			}
 		}
 		return rep;
@@ -533,7 +548,8 @@ public class LoggedInUserController {
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
-			if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.RESETPAYPWD,resetPayPwdRequest.getCheckToken())) {
+			if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.RESETPAYPWD,
+					resetPayPwdRequest.getCheckToken())) {
 				// PayPwd 6位数字
 				if (resetPayPwdRequest.getNewUserPayPwd().length() == 6
 						&& StringUtils.isNumeric(resetPayPwdRequest.getNewUserPayPwd())) {
