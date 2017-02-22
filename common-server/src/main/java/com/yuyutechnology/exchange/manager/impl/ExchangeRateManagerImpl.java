@@ -12,8 +12,8 @@ import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +45,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 
 	private static int scale = 20;
 
-	public static Logger logger = LoggerFactory.getLogger(ExchangeRateManagerImpl.class);
+	public static Logger logger = LogManager.getLogger(ExchangeRateManagerImpl.class);
 
 	private void updateExchangeRateNoGoldq() {
 		String exchangeRateUrl = ResourceUtils.getBundleValue4String("exchange.rate.url", "http://api.fixer.io/latest");

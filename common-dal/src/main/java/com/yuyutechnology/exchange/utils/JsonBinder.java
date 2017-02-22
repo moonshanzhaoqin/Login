@@ -28,8 +28,8 @@ import org.codehaus.jackson.map.ser.BeanSerializerFactory;
 import org.codehaus.jackson.map.ser.impl.SimpleBeanPropertyFilter;
 import org.codehaus.jackson.map.ser.impl.SimpleFilterProvider;
 import org.codehaus.jackson.type.JavaType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.yuyutechnology.exchange.pojo.Bind;
 
@@ -42,7 +42,7 @@ import com.yuyutechnology.exchange.pojo.Bind;
  */
 public class JsonBinder
 {
-	private static Logger logger = LoggerFactory.getLogger(JsonBinder.class);
+	private static Logger logger = LogManager.getLogger(JsonBinder.class);
 	private static Object lock = new Object();
 	private static JsonBinder jsonBinder;
 	private static JsonBinder jsonBinderNonNull;

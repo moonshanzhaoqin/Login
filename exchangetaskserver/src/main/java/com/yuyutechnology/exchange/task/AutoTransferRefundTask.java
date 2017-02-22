@@ -3,8 +3,8 @@ package com.yuyutechnology.exchange.task;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +18,7 @@ public class AutoTransferRefundTask {
 	@Autowired
 	GoldpayTransManager goldpayTransManager;
 	
-	public static Logger logger = LoggerFactory.getLogger(AutoTransferRefundTask.class);
+	public static Logger logger = LogManager.getLogger(AutoTransferRefundTask.class);
 	
 	public void autoWithdrawRefund(){
 		logger.info("=============autoWithdrawRefund Start=================={}",new Date());

@@ -5,8 +5,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +24,7 @@ import com.yuyutechnology.exchange.pojo.Currency;
 
 @Controller
 public class CurrencyController {
-	private static Logger logger = LoggerFactory.getLogger(CurrencyController.class);
+	private static Logger logger = LogManager.getLogger(CurrencyController.class);
 
 	@Autowired
 	CurrencyManager currencyManager;

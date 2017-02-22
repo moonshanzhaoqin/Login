@@ -11,8 +11,8 @@ import javax.annotation.Resource;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
@@ -30,7 +30,7 @@ public class WalletDAOImpl implements WalletDAO {
 	@Resource
 	HibernateTemplate hibernateTemplate;
 
-	public static Logger logger = LoggerFactory.getLogger(WalletDAOImpl.class);
+	public static Logger logger = LogManager.getLogger(WalletDAOImpl.class);
 
 	@PostConstruct
 	public void updateSystemUserId() {

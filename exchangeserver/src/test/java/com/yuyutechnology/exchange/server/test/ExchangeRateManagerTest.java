@@ -3,15 +3,12 @@
  */
 package com.yuyutechnology.exchange.server.test;
 
-import java.math.BigDecimal;
-
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.yuyutechnology.exchange.dao.UserDAO;
-import com.yuyutechnology.exchange.manager.OandaExchangeRateManager;
 import com.yuyutechnology.exchange.server.controller.TransferController;
 
 /**
@@ -21,16 +18,13 @@ import com.yuyutechnology.exchange.server.controller.TransferController;
 public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 
 	@Autowired
-	OandaExchangeRateManager oandaExchangeRateManager;
-	
-	@Autowired
 	UserDAO userDAO;
 
-	public static Logger logger = LoggerFactory.getLogger(TransferController.class);
+	public static Logger logger = LogManager.getLogger(TransferController.class);
 
 	@Test
 	public void testUpdateRate() {
-		oandaExchangeRateManager.getExchangeResult("USD", new BigDecimal("1"));
+		
 	}
 
 }

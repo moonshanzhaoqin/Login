@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ public class AutoAlarmTask {
 	@Autowired
 	CrmAlarmManager crmAlarmManager;
 	
-	public static Logger logger = LoggerFactory.getLogger(AutoAlarmTask.class);
+	public static Logger logger = LogManager.getLogger(AutoAlarmTask.class);
 	
 	public void autoAlarmTask(){
 		

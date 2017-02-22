@@ -6,8 +6,8 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.hibernate.ReplicationMode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +21,7 @@ public class CrmUserInfoDAOImpl implements CrmUserInfoDAO {
 	@Resource
 	HibernateTemplate hibernateTemplate;
 	
-	public static Logger logger = LoggerFactory.getLogger(CrmUserInfoDAOImpl.class);
+	public static Logger logger = LogManager.getLogger(CrmUserInfoDAOImpl.class);
 	
 	@Override
 	public void updateUserInfo(CrmUserInfo crmUserInfo){

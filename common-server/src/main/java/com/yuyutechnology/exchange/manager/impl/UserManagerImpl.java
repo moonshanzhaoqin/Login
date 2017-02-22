@@ -2,7 +2,6 @@ package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,8 +11,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +59,7 @@ import com.yuyutechnology.exchange.utils.ResourceUtils;
 
 @Service
 public class UserManagerImpl implements UserManager {
-	public static Logger logger = LoggerFactory.getLogger(UserManagerImpl.class);
+	public static Logger logger = LogManager.getLogger(UserManagerImpl.class);
 	@Autowired
 	UserDAO userDAO;
 	@Autowired
@@ -660,6 +659,7 @@ public class UserManagerImpl implements UserManager {
 	private String getUserConfig(Integer userId, UserConfigKeyEnum key) {
 		UserConfig userConfig = userDAO.getUserConfig(userId);
 		if (userConfig != null && StringUtils.isNotBlank(userConfig.getUserConfigValue())) {
+			@SuppressWarnings("unchecked")
 			Map<String, String> config = JsonBinder.getInstance().fromJson(userConfig.getUserConfigValue(),
 					HashMap.class);
 			return config.get(key.ordinal() + "") == null ? "" : config.get(key.ordinal() + "");
@@ -670,6 +670,7 @@ public class UserManagerImpl implements UserManager {
 	private void saveUserConfig(Integer userId, UserConfigKeyEnum key, String value) {
 		UserConfig userConfig = userDAO.getUserConfig(userId);
 		if (userConfig != null && StringUtils.isNotBlank(userConfig.getUserConfigValue())) {
+			@SuppressWarnings("unchecked")
 			Map<String, String> config = JsonBinder.getInstance().fromJson(userConfig.getUserConfigValue(),
 					HashMap.class);
 			config.put(key.ordinal() + "", value);
