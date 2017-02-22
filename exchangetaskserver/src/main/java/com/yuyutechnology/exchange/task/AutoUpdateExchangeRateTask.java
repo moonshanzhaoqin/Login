@@ -2,8 +2,8 @@ package com.yuyutechnology.exchange.task;
 
 import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +18,7 @@ public class AutoUpdateExchangeRateTask {
 	@Autowired
 	TransferManager transferManager;
 	
-	public static Logger logger = LoggerFactory.getLogger(AutoUpdateExchangeRateTask.class);
+	public static Logger logger = LogManager.getLogger(AutoUpdateExchangeRateTask.class);
 	
 	public void autoUpdateExchangeRateTask(){
 		logger.info("=============autoUpdateExchangeRateTask Start==================");

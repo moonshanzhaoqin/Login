@@ -60,7 +60,8 @@ public class Bootstrap
 		try
 		{
 			// initialize log
-			Log4jConfigurer.initLogging("file:" + logCfgPath);
+//			Log4jConfigurer.initLogging("file:" + logCfgPath);
+			
 			System.out.println("init log ok......");
 			// initialize spring
 			ApplicationContext applicationContext = new FileSystemXmlApplicationContext(

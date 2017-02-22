@@ -10,8 +10,8 @@ import javax.annotation.PostConstruct;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -34,7 +34,7 @@ import com.yuyutechnology.exchange.utils.ResourceUtils;
  */
 @Service
 public class SmsManager {
-	public static Logger logger = LoggerFactory.getLogger(SmsManager.class);
+	public static Logger logger = LogManager.getLogger(SmsManager.class);
 	public static DecimalFormat CURRENCY = new DecimalFormat(",##0.00");
 	public static DecimalFormat GDQ = new DecimalFormat(",##0");
 	@Autowired

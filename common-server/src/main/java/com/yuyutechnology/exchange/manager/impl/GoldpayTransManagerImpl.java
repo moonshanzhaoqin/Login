@@ -7,8 +7,8 @@ import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -58,7 +58,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	@Autowired
 	UserManager userManager;
 
-	public static Logger logger = LoggerFactory.getLogger(GoldpayTransManagerImpl.class);
+	public static Logger logger = LogManager.getLogger(GoldpayTransManagerImpl.class);
 
 	@Override
 	public HashMap<String, String> goldpayPurchase(int userId, BigDecimal amount) {

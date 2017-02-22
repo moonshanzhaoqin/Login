@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -82,7 +82,7 @@ public class TransferManagerImpl implements TransferManager{
 	@Autowired
 	CrmAlarmManager crmAlarmManager;
 	
-	public static Logger logger = LoggerFactory.getLogger(TransferManagerImpl.class);
+	public static Logger logger = LogManager.getLogger(TransferManagerImpl.class);
 
 	@SuppressWarnings("serial")
 	@Override
@@ -835,7 +835,7 @@ public class TransferManagerImpl implements TransferManager{
 		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
 		BigDecimal percentage = (exchangeRateManager.getExchangeResult(transfer.getCurrency(), transfer.getTransferAmount()))
-				.divide(transferLimitPerPay,2,RoundingMode.DOWN).multiply(new BigDecimal("100"));
+				.divide(transferLimitPerPay,5,RoundingMode.DOWN).multiply(new BigDecimal("100"));
 		
 		logger.info("percentage : {}",percentage);
 		

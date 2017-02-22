@@ -2,8 +2,8 @@ package com.yuyutechnology.exchange.crm.controller;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +17,7 @@ import com.yuyutechnology.exchange.pojo.Config;
 
 @Controller
 public class ConfigController {
-	private static Logger logger = LoggerFactory.getLogger(ConfigController.class);
+	private static Logger logger = LogManager.getLogger(ConfigController.class);
 
 	@Autowired
 	ConfigManager configManager;

@@ -6,8 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +44,7 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	@Autowired
 	ExchangeRateManager exchangeRateManager;
 
-	private static Logger logger = LoggerFactory.getLogger(CrmAlarmManagerImpl.class);
+	private static Logger logger = LogManager.getLogger(CrmAlarmManagerImpl.class);
 
 	@Override
 	public void addAlarmConfig(int alarmType, BigDecimal lowerLimit, BigDecimal upperLimit, int alarmMode,

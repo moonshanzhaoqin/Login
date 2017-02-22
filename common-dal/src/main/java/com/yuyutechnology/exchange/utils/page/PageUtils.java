@@ -7,8 +7,8 @@ import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 
@@ -21,7 +21,7 @@ import org.springframework.orm.hibernate4.HibernateTemplate;
 */
 public class PageUtils {
 
-	private static final Logger log = LoggerFactory.getLogger(PageUtils.class);
+	private static final Logger log = LogManager.getLogger(PageUtils.class);
 	/** 
 	* @Title: getBulletinList 
 	* @Description: TODO(这里用一句话描述这个方法的作用) 

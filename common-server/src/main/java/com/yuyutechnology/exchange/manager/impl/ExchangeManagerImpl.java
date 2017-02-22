@@ -8,8 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -65,7 +65,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	@Autowired
 	CrmAlarmManager crmAlarmManager;
 	
-	public static Logger logger = LoggerFactory.getLogger(ExchangeManagerImpl.class);
+	public static Logger logger = LogManager.getLogger(ExchangeManagerImpl.class);
 
 	@Override
 	public List<WalletInfo> getWalletsByUserId(int userId) {

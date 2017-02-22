@@ -6,8 +6,8 @@ package com.yuyutechnology.exchange.server.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,7 +50,7 @@ import com.yuyutechnology.exchange.utils.UidUtils;
 @Controller
 @RequestMapping
 public class UserController {
-	public static Logger logger = LoggerFactory.getLogger(UserController.class);
+	public static Logger logger = LogManager.getLogger(UserController.class);
 
 	@Autowired
 	ExchangeManager exchangeManager;

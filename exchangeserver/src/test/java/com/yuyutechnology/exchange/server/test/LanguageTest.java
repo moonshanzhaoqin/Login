@@ -6,8 +6,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.yuyutechnology.exchange.dao.RedisDAO;
@@ -19,7 +19,7 @@ import com.yuyutechnology.exchange.manager.ConfigManager;
  *
  */
 public class LanguageTest extends BaseSpringJunit4{
-	public static Logger logger = LoggerFactory.getLogger(LanguageTest.class);
+	public static Logger logger = LogManager.getLogger(LanguageTest.class);
 	
 	@Autowired
 	RedisDAO redisDAO;

@@ -1,5 +1,8 @@
 package com.yuyutechnology.exchange.manager;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
+
 public interface WalletManager {
 	
 	/**
@@ -9,7 +12,7 @@ public interface WalletManager {
 	 * @param userId
 	 * @return
 	 */
-	public double getTotalAmoutGold(int userId);
+	public HashMap<String, BigDecimal> getTotalAmoutGold(int userId);
 	
 	public void getUserTotalBalance(int systemUserId);
 	

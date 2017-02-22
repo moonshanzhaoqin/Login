@@ -11,8 +11,8 @@ import javax.annotation.PostConstruct;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -28,7 +28,7 @@ import com.yuyutechnology.exchange.utils.ResourceUtils;
  */
 @Service
 public class MailManager {
-	public static Logger logger = LoggerFactory.getLogger(MailManager.class);
+	public static Logger logger = LogManager.getLogger(MailManager.class);
 	
 	private StringBuffer contactTital = new StringBuffer();
 	private StringBuffer contactContent = new StringBuffer();

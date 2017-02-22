@@ -12,8 +12,8 @@ import java.net.URLConnection;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.yuyutechnology.exchange.ServerException;
 /**
@@ -21,7 +21,7 @@ import com.yuyutechnology.exchange.ServerException;
  */
 public final class HttpTookit
 {
-	public static Logger logger = LoggerFactory.getLogger(HttpTookit.class);
+	public static Logger logger = LogManager.getLogger(HttpTookit.class);
 	
 	public static String sendGet(String url, String param){
 		String result = "";
