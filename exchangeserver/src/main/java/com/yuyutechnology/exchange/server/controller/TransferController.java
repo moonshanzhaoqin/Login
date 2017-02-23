@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -85,11 +85,15 @@ public class TransferController {
 			return rep;
 		}
 		//装张金额上限
-		if((reqMsg.getCurrency() != ServerConsts.CURRENCY_OF_GOLDPAY && reqMsg.getAmount() < 0.0001)
-				||(reqMsg.getCurrency() == ServerConsts.CURRENCY_OF_GOLDPAY && reqMsg.getAmount() < 1)){
+		if(!reqMsg.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY) && reqMsg.getAmount() < 0.0001){
 			logger.warn("The input amount is less than the minimum amount");
 			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The input amount is less than the minimum amount");
+			return rep;
+		}else if((reqMsg.getCurrency()).equals(ServerConsts.CURRENCY_OF_GOLDPAY) && reqMsg.getAmount()%1 > 0){
+			logger.warn("The GDQ must be an integer value");
+			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
+			rep.setMessage("The GDQ must be an integer value");
 			return rep;
 		}else if(reqMsg.getAmount() > configManager.getConfigLongValue(ConfigKeyEnum.ENTERMAXIMUMAMOUNT, 1000000000L)){
 			logger.warn("Fill out the allowable amount");
