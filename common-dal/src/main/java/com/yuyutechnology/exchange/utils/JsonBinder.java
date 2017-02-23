@@ -9,7 +9,6 @@
  */
 package com.yuyutechnology.exchange.utils;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -17,20 +16,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.DeserializationConfig.Feature;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
-import org.codehaus.jackson.map.introspect.BasicBeanDescription;
-import org.codehaus.jackson.map.ser.BeanSerializerFactory;
-import org.codehaus.jackson.map.ser.impl.SimpleBeanPropertyFilter;
-import org.codehaus.jackson.map.ser.impl.SimpleFilterProvider;
-import org.codehaus.jackson.type.JavaType;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuyutechnology.exchange.pojo.Bind;
 
 /**
@@ -48,8 +41,6 @@ public class JsonBinder
 	private static JsonBinder jsonBinderNonNull;
 	private static JsonBinder jsonBinderNonEmpty;
 	private ObjectMapper mapper;
-	private ObjectMapper mapperFileter;
-	private JsonFactory jsonFactory;
 	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	/**
@@ -64,7 +55,7 @@ public class JsonBinder
 			{
 				if (jsonBinder == null)
 				{
-					jsonBinder = new JsonBinder(Inclusion.NON_DEFAULT);
+					jsonBinder = new JsonBinder(Include.NON_DEFAULT);
 				}
 			}
 		}
@@ -83,7 +74,7 @@ public class JsonBinder
 			{
 				if (jsonBinderNonNull == null)
 				{
-					jsonBinderNonNull = new JsonBinder(Inclusion.NON_NULL);
+					jsonBinderNonNull = new JsonBinder(Include.NON_NULL);
 				}
 			}
 		}
@@ -98,42 +89,22 @@ public class JsonBinder
 			{
 				if (jsonBinderNonEmpty == null)
 				{
-					jsonBinderNonEmpty = new JsonBinder(Inclusion.NON_EMPTY);
+					jsonBinderNonEmpty = new JsonBinder(Include.NON_EMPTY);
 				}
 			}
 		}
 		return jsonBinderNonEmpty;
 	}
 	
-	@SuppressWarnings("deprecation")
-	protected JsonBinder(Inclusion inclusion)
+	protected JsonBinder(Include inclusion)
 	{
 		mapper = new ObjectMapper();
-		// 设置输出包含的属性
-		mapper.getSerializationConfig().setSerializationInclusion(inclusion);
-		// 设置输入时忽略JSON字符串中存在而Java对象实际没有的属性
-		mapper.getDeserializationConfig().set(
-				Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		mapper.setSerializationInclusion(inclusion);
+//		mapper.getDeserializationConfig().set(
+//				Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		mapper.setDateFormat(df);
-		mapperFileter = new ObjectMapper();
-		// 设置输出包含的属性
-		mapperFileter.getSerializationConfig().setSerializationInclusion(inclusion);
-		// 设置输入时忽略JSON字符串中存在而Java对象实际没有的属性
-		mapperFileter.getDeserializationConfig().set(
-				Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		mapperFileter.setDateFormat(df);
-		BidBeanSerializerFactory bidBeanFactory = new BidBeanSerializerFactory(null);
-		bidBeanFactory.setFilterId("executeFilter");
-		mapperFileter.setSerializerFactory(bidBeanFactory);
-		jsonFactory = new JsonFactory();
 	}
-	/**
-	 * 如果JSON字符串为Null或"null"字符串,返回Null. 如果JSON字符串为"[]",返回空集合.
-	 * 
-	 * 如需读取集合如List/Map,且不是List<String>这种简单类型时使用如下语句: List<MyBean> beanList =
-	 * binder.getMapper().readValue(listString, new
-	 * TypeReference<List<MyBean>>() {});
-	 */
+	
 	public <T> T fromJson(String jsonString, Class<T> clazz)
 	{
 		if (StringUtils.isEmpty(jsonString))
@@ -151,6 +122,7 @@ public class JsonBinder
 			return null;
 		}
 	}
+	
 	public Object fromJsonToList(String jsonString, Class clazz)
 	{
 		if (StringUtils.isEmpty(jsonString))
@@ -170,8 +142,6 @@ public class JsonBinder
 		}
 	}
 	
-	
-	
 	/**
 	 * 如果对象为Null,返回"null". 如果集合为空集合,返回"[]".
 	 */
@@ -179,90 +149,15 @@ public class JsonBinder
 	{
 		try
 		{
-			StringWriter sw = new StringWriter();
-			JsonGenerator gen = jsonFactory.createJsonGenerator(sw);
-			mapper.writeValue(gen, object);
-			gen.close();
-			return sw.toString();
+			return mapper.writeValueAsString(object);
 		}
-		catch (IOException e)
-		{
-			logger.warn("write to json string error:" + object, e);
-			return null;
-		}
-	}
-	
-	/**
-	 * @param object
-	 * @param except 排除字段
-	 * @return
-	 */
-	public String toJsonAllExcept(Object object, String... except)
-	{
-		try
-		{
-			StringWriter sw = new StringWriter();
-			JsonGenerator gen = jsonFactory.createJsonGenerator(sw);
-			SimpleFilterProvider fileter = new SimpleFilterProvider();
-			fileter.addFilter(
-					"executeFilter",
-					SimpleBeanPropertyFilter.serializeAllExcept(except));
-			mapperFileter.setFilters(fileter);
-			mapperFileter.writeValue(gen, object);
-			gen.close();
-			return sw.toString();
-		}
-		catch (IOException e)
-		{
-			logger.warn("write to json string error:" + object, e);
-			return null;
-		}
-	}
-	
-	/**
-	 * @param object
-	 * @param except 仅包含字段
-	 * @return
-	 */
-	public String toJsonOutAllExcept(Object object, String... except)
-	{
-		try
-		{
-			StringWriter sw = new StringWriter();
-			JsonGenerator gen = jsonFactory.createJsonGenerator(sw);
-			SimpleFilterProvider fileter = new SimpleFilterProvider();
-			fileter.addFilter(
-					"executeFilter",
-					SimpleBeanPropertyFilter.filterOutAllExcept(except));
-			mapperFileter.setFilters(fileter);
-			mapperFileter.writeValue(gen, object);
-			gen.close();
-			return sw.toString();
-		}
-		catch (IOException e)
+		catch (JsonProcessingException e)
 		{
 			logger.warn("write to json string error:" + object, e);
 			return null;
 		}
 	}
 
-	public class BidBeanSerializerFactory extends BeanSerializerFactory {
-		private Object filterId;
-		public BidBeanSerializerFactory(Config config) {
-			super(config);
-		}
-		    @Override
-		    protected Object findFilterId(SerializationConfig config,
-		    BasicBeanDescription beanDesc) {
-		    	return getFilterId();
-		    }
-			public Object getFilterId() {
-				return filterId;
-			}
-			public void setFilterId(Object filterId) {
-				this.filterId = filterId;
-			}
-	}
 	
 	public static void main(String[] args) {
 		Map<String, Bind> map = new HashMap<String, Bind>();
