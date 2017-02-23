@@ -117,16 +117,16 @@ public class AccountInfoController {
 	@RequestMapping(value = "/account/userFreeze", method = RequestMethod.GET)
 	public ModelAndView userFreeze(UserFreezeRequest request) {
 		mav = new ModelAndView();
-		
+
 		if (request.getOperate() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
 			SessionData sessionData = sessionManager.getByUserid(request.getUserId());
-			if (sessionData!=null) {
+			if (sessionData != null) {
 				sessionManager.cleanSession(sessionData.getSessionId());
-				sessionManager.delLoginToken(request.getUserId());
-				userManager.logout(request.getUserId());
 			}
+			sessionManager.delLoginToken(request.getUserId());
+			userManager.logout(request.getUserId());
 		}
-		
+
 		userManager.userFreeze(request.getUserId(), request.getOperate());
 		crmUserInfoManager.userFreeze(request.getUserId(), request.getOperate());
 		mav.setViewName("redirect:/account/accountOverview");
