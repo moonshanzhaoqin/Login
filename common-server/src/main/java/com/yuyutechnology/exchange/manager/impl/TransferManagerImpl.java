@@ -461,8 +461,10 @@ public class TransferManagerImpl implements TransferManager{
 			long deadline = configManager.getConfigLongValue(ConfigKeyEnum.REFUNTIME, 3l)*24*60*60*1000;
 			if(new Date().getTime() - unregistered.getCreateTime().getTime() >= deadline){
 				
+				logger.info("deadline : {},Difference : {}",deadline,new Date().getTime() - unregistered.getCreateTime().getTime());
+				
 				logger.info("Invitation ID: {}, The invitee has not registered for the due "
-						+ "date and the system is being refunded",unregistered.getUnregisteredId());
+						+ "date and the system is being refunded ,{}",unregistered.getUnregisteredId(),new SimpleDateFormat("HH:mm:ss").format(new Date()));
 				
 				systemRefund(unregistered);
 			} 

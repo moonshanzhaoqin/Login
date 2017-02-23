@@ -43,20 +43,20 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 	    method="autoSystemRefundBatch" 
 	    fixed-delay="1800000" initial-delay="5000"/>
 	    
-	   	<task:scheduled 
-	    ref="autoCalculateUserAssetsTask" 
-	    method="autoUpdateExchangeRateTask" 
-	    fixed-delay="900000" initial-delay="1000"/>
+<!-- 	   	<task:scheduled  -->
+<!-- 	    ref="autoCalculateUserAssetsTask"  -->
+<!-- 	    method="autoUpdateExchangeRateTask"  -->
+<!-- 	    fixed-delay="900000" initial-delay="1000"/> -->
 	    
-	    <task:scheduled 
-	    ref="autoAlarmTask" 
-	    method="autoAlarmTask" 
-	    fixed-delay="600000" initial-delay="1000"/>
+<!-- 	    <task:scheduled  -->
+<!-- 	    ref="autoAlarmTask"  -->
+<!-- 	    method="autoAlarmTask"  -->
+<!-- 	    fixed-delay="600000" initial-delay="1000"/> -->
 	    
-	   	<task:scheduled 
-	    ref="autoTransferRefundTask" 
-	    method="autoWithdrawRefund" 
-	    fixed-delay="600000" initial-delay="1000"/>
+<!-- 	   	<task:scheduled  -->
+<!-- 	    ref="autoTransferRefundTask"  -->
+<!-- 	    method="autoWithdrawRefund"  -->
+<!-- 	    fixed-delay="600000" initial-delay="1000"/> -->
 	    
 	    
 <!-- 	    <task:scheduled ref="beanC" method="methodC" cron="*/5 * * * * MON-FRI"/> -->
