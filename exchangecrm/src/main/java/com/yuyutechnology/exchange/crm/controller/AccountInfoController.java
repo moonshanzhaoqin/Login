@@ -120,9 +120,11 @@ public class AccountInfoController {
 		
 		if (request.getOperate() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
 			SessionData sessionData = sessionManager.getByUserid(request.getUserId());
-			sessionManager.cleanSession(sessionData.getSessionId());
-			sessionManager.delLoginToken(request.getUserId());
-			userManager.logout(request.getUserId());
+			if (sessionData!=null) {
+				sessionManager.cleanSession(sessionData.getSessionId());
+				sessionManager.delLoginToken(request.getUserId());
+				userManager.logout(request.getUserId());
+			}
 		}
 		
 		userManager.userFreeze(request.getUserId(), request.getOperate());

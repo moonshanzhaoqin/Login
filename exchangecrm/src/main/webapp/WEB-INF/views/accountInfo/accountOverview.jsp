@@ -98,13 +98,13 @@
         					<li>
 		        				<div style="display:none">
 									<input name="pageBean.pageSize" value="${model.pageBean.pageSize}">
-									<input class="currentPage" name="pageBean.currentPage" value="${model.pageBean.currentPage}">
+									<input class="currentPage" id="currentPage" name="pageBean.currentPage" value="${model.pageBean.currentPage}">
 									<input name="pageBean.pageTotal" value="${model.pageBean.pageTotal}">
 								</div>
         					</li>
         					
         					<li >
-        						<button type="submit" class="btn btn-primary">搜索</button>
+        						<button type="button" id="searchBtn" class="btn btn-primary">搜索</button>
         					</li>
         					
         					<li >
@@ -256,6 +256,12 @@
 				location.href="<c:url value='/account/updateImmediately' />";
 				
 			});
+			
+			
+			$("#searchBtn").click(function(){
+				$("#currentPage").val(1);
+				 $("#searchForm").submit();
+			})
 			
 			
 		</script>
