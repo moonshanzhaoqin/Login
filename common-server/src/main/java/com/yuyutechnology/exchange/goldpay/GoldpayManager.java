@@ -21,7 +21,7 @@ public class GoldpayManager {
 		logger.info("result==={}", result);
 		if (StringUtils.isNotEmpty(result)) {
 			GoldpayInfo goldpayInfo = JsonBinder.getInstance().fromJson(result, GoldpayInfo.class);
-			if (goldpayInfo.getRetCode() == 1) {// 成功
+			if (goldpayInfo!=null && goldpayInfo.getRetCode() == 1) {// 成功
 				return goldpayInfo.getOauthGoldqUser();
 			}
 		}

@@ -103,6 +103,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			logger.warn("Exceeds the maximum amount of each exchange");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_EACH_TIME);
 			map.put("msg", exchangeLimitPerPay.toString());
+			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
 			return map;
 		}
 		//每天累计兑换金额限制
@@ -114,6 +115,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			logger.warn("More than the maximum daily exchange limit");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_DAILY_PAY);
 			map.put("msg", exchangeLimitDailyPay.toString());
+			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
 			return map;
 		}
 		//每天累计兑换次数限制
@@ -126,6 +128,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			logger.warn("Exceeds the maximum number of exchange per day");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY);
 			map.put("msg", exchangeLimitNumOfPayPerDay.toString());
+			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
 			return map;
 		}
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currencyOut);
