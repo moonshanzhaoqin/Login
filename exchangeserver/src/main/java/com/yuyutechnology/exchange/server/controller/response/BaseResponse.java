@@ -8,6 +8,7 @@ public class BaseResponse {
 	private String retStatus = "failure";
 	private String retCode;
 	private String message;
+	private String[] opts;//提示信息动态参数
 
 	public BaseResponse() {
 		super();
@@ -52,5 +53,13 @@ public class BaseResponse {
 
 	public void setApiName(String apiName) {
 		this.apiName = apiName;
+	}
+
+	public String[] getOpts() {
+		return opts;
+	}
+
+	public void setOpts(String[] opts) {
+		this.opts = opts;
 	}
 }
