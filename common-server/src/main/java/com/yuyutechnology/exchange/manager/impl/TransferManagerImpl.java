@@ -132,6 +132,7 @@ public class TransferManagerImpl implements TransferManager{
 			logger.warn("More than the maximum daily transaction limit");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY);
 			map.put("msg", transferLimitDailyPay.toString());
+			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
 			return map;
 		}
 		//每天累计给付次数限制
@@ -144,6 +145,7 @@ public class TransferManagerImpl implements TransferManager{
 			logger.warn("Exceeds the maximum number of transactions per day");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY);
 			map.put("msg", transferLimitNumOfPayPerDay.toString());
+			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
 			return map;
 		}
 
