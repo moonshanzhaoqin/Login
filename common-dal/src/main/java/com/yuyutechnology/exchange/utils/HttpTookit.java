@@ -52,8 +52,8 @@ public final class HttpTookit
 			}
 		}
 		catch (Exception e){
-			result = e.getMessage();
-			e.printStackTrace();
+//			result = e.getMessage();
+			logger.error("sendGet error : {}", e.getMessage(), e);
 		}
 		// 使用finally块来关闭输入流
 		finally
@@ -105,7 +105,6 @@ public final class HttpTookit
 			}
 		} catch (IOException e) {
 			logger.error("send to request is failed: {}",e);
-			e.printStackTrace();
 		} finally { // 关闭流
 			try {
 				if (out != null) {
