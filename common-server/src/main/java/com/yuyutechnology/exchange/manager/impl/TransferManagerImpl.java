@@ -7,7 +7,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
@@ -90,7 +92,7 @@ public class TransferManagerImpl implements TransferManager{
 			final BigDecimal amount, String transferComment,int noticeId) {
 
 		//干扰条件过滤
-		HashMap<String, Object> args = new HashMap<>();		
+		LinkedHashMap<String, Object> args = new LinkedHashMap<>();		
 		args.put("isTradableCurrency", currency);
 		args.put("isAccountFrozened", userId);
 		args.put("isInsufficientBalance",new HashMap<String,Object>(){{
@@ -610,7 +612,7 @@ public class TransferManagerImpl implements TransferManager{
 	public HashMap<String, String> respond2Request(final int userId,final String areaCode,final String userPhone, 
 			final String currency,final BigDecimal amount, String transferComment,int noticeId){
 
-		HashMap<String, Object> args = new HashMap<>();		
+		LinkedHashMap<String, Object> args = new LinkedHashMap<>();		
 		HashMap<String, String> map  = new HashMap<>();
 		final TransactionNotification notification = notificationDAO.getNotificationById(noticeId);
 		if(notification == null){
@@ -718,7 +720,7 @@ public class TransferManagerImpl implements TransferManager{
 		return new BigDecimal(df1.format(amoumt));  
 	}
 	
-	private HashMap<String, String> test(HashMap<String, Object> map){
+	private HashMap<String, String> test(Map<String, Object> map){
 		
 		HashMap<String, String> result = new HashMap<>();
 		
@@ -727,6 +729,7 @@ public class TransferManagerImpl implements TransferManager{
 			switch (entry.getKey()) {
 				//检验传入Currency是否可用
 				case "isTradableCurrency":
+					logger.info("Currency : {}", (String) entry.getValue());
 					if(!commonManager.verifyCurrency((String) entry.getValue())){
 						logger.warn("This currency is not a tradable currency");
 						result.put("retCode", RetCodeConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
