@@ -835,7 +835,7 @@ public class TransferManagerImpl implements TransferManager{
 		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
 		BigDecimal percentage = (exchangeRateManager.getExchangeResult(transfer.getCurrency(), transfer.getTransferAmount()))
-				.divide(transferLimitPerPay,2,RoundingMode.DOWN).multiply(new BigDecimal("100"));
+				.divide(transferLimitPerPay,5,RoundingMode.DOWN).multiply(new BigDecimal("100"));
 		
 		logger.info("percentage : {}",percentage);
 		

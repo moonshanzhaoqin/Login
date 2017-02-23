@@ -127,6 +127,7 @@ public class LoggedInUserController {
 					logger.info("********Operation succeeded********");
 					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+					sessionManager.delCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_CHANGEGOLDPAY);
 					break;
 				case RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST:
 					logger.info(MessageConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
@@ -139,7 +140,6 @@ public class LoggedInUserController {
 					rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 					break;
 				}
-				sessionManager.delCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_CHANGEGOLDPAY);
 			} else {
 				logger.info("***checkToken is wrong!***");
 				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
@@ -190,14 +190,14 @@ public class LoggedInUserController {
 					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 					userManager.clearPinCode(ServerConsts.PIN_FUNC_CHANGEPHONE, changePhoneRequest.getAreaCode(),
 							changePhoneRequest.getUserPhone());
+					sessionManager.delCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_CHANGEPHONE);
 				} else {
 					logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 					rep.setRetCode(RetCodeConsts.PHONE_AND_CODE_NOT_MATCH);
 					rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 				}
-				sessionManager.delCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_CHANGEPHONE);
 			} else {
-				logger.info(MessageConsts.RET_CODE_FAILUE);
+				logger.info("***checkToken is wrong!***");
 				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 			}
@@ -329,15 +329,30 @@ public class LoggedInUserController {
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
-			if (userManager.checkGoldpay(sessionData.getUserId(), checkPayGoldpayRequest.getGoldpayName(),checkPayGoldpayRequest.getGoldpayPwd())) {
-				String checkToken = sessionManager.createCheckToken(sessionData.getUserId(),ServerConsts.RESETPAYPWD);
+			String retCode = userManager.checkGoldpay(sessionData.getUserId(), checkPayGoldpayRequest.getGoldpayName(),
+					checkPayGoldpayRequest.getGoldpayPwd());
+			switch (retCode) {
+			case RetCodeConsts.RET_CODE_SUCCESS:
+				String checkToken = sessionManager.createCheckToken(sessionData.getUserId(), ServerConsts.RESETPAYPWD);
 				logger.info("********Operation succeeded********");
 				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(checkToken);
-			} else {
+				break;
+			case RetCodeConsts.GOLDPAY_IS_INCORRECT:
 				logger.info(MessageConsts.GOLDPAY_IS_INCORRECT);
 				rep.setRetCode(RetCodeConsts.GOLDPAY_IS_INCORRECT);
 				rep.setMessage(MessageConsts.GOLDPAY_IS_INCORRECT);
+				break;
+			case RetCodeConsts.GOLDPAY_NOT_BIND:
+				logger.info(MessageConsts.GOLDPAY_NOT_BIND);
+				rep.setRetCode(RetCodeConsts.GOLDPAY_NOT_BIND);
+				rep.setMessage(MessageConsts.GOLDPAY_NOT_BIND);
+				break;
+			case RetCodeConsts.GOLDPAY_NOT_MATCH_BIND:
+				logger.info(MessageConsts.GOLDPAY_NOT_MATCH_BIND);
+				rep.setRetCode(RetCodeConsts.GOLDPAY_NOT_MATCH_BIND);
+				rep.setMessage(MessageConsts.GOLDPAY_NOT_MATCH_BIND);
+				break;
 			}
 		}
 		return rep;
@@ -496,15 +511,15 @@ public class LoggedInUserController {
 						logger.info("********Operation succeeded********");
 						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+						sessionManager.delCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_MODIFYPAYPWD);
 					}
 				} else {
 					logger.info(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
 					rep.setRetCode(RetCodeConsts.PAY_PASSWORD_IS_ILLEGAL);
 					rep.setMessage(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
 				}
-				sessionManager.delCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_MODIFYPAYPWD);
 			} else {
-				logger.info(MessageConsts.RET_CODE_FAILUE);
+				logger.info("***checkToken is wrong!***");
 				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 			}
@@ -533,7 +548,8 @@ public class LoggedInUserController {
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
-			if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.RESETPAYPWD,resetPayPwdRequest.getCheckToken())) {
+			if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.RESETPAYPWD,
+					resetPayPwdRequest.getCheckToken())) {
 				// PayPwd 6位数字
 				if (resetPayPwdRequest.getNewUserPayPwd().length() == 6
 						&& StringUtils.isNumeric(resetPayPwdRequest.getNewUserPayPwd())) {
@@ -541,14 +557,14 @@ public class LoggedInUserController {
 					logger.info("********Operation succeeded********");
 					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+					sessionManager.delCheckToken(sessionData.getUserId(), ServerConsts.RESETPAYPWD);
 				} else {
 					logger.info(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
 					rep.setRetCode(RetCodeConsts.PAY_PASSWORD_IS_ILLEGAL);
 					rep.setMessage(MessageConsts.PAY_PASSWORD_IS_ILLEGAL);
 				}
-				sessionManager.delCheckToken(sessionData.getUserId(), ServerConsts.RESETPAYPWD);
 			} else {
-				logger.info(MessageConsts.RET_CODE_FAILUE);
+				logger.info("***checkToken is wrong!***");
 				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 			}

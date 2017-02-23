@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
+import org.aspectj.apache.bcel.generic.RET;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -307,14 +308,23 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public boolean checkGoldpay(Integer userId, String goldpayName, String goldpayPassword) {
+	public String checkGoldpay(Integer userId, String goldpayName, String goldpayPassword) {
 		logger.info("Check {}  user's Goldpay password {} ==>", userId, goldpayPassword);
-		Bind bind = bindDAO.getBindByUserId(userId);
-		if (bind != null && bind.getGoldpayName().equals(goldpayName)
-				&& goldpayManager.checkGoldpay(goldpayName, goldpayPassword)) {
-			return true;
+		GoldpayUser goldpayUser = goldpayManager.checkGoldpay(goldpayName, goldpayPassword);
+		if (goldpayUser == null) {
+			logger.info("goldpayName goldpayPassword not match");
+			return RetCodeConsts.GOLDPAY_IS_INCORRECT;
 		}
-		return false;
+		Bind bind = bindDAO.getBindByUserId(userId);
+		if (bind == null) {
+			logger.info("goldpay not bind");
+			return RetCodeConsts.GOLDPAY_NOT_BIND;
+		}
+		if (!goldpayUser.getUsername().equals(bind.getGoldpayName())) {
+			logger.info("goldpay not match bind");
+			return RetCodeConsts.GOLDPAY_NOT_MATCH_BIND;
+		}
+		return RetCodeConsts.RET_CODE_SUCCESS;
 	}
 
 	@Override
@@ -710,10 +720,13 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public boolean isUserPayPwdEqualsOld(Integer userId, String newUserPayPwd) {
+		logger.info("is UserPayPwd Equals Old==>");
 		User user = userDAO.getUser(userId);
-		if (PasswordUtils.check(newUserPayPwd, user.getUserPassword(), user.getPasswordSalt())) {
+		if (PasswordUtils.check(newUserPayPwd, user.getUserPayPwd(), user.getPasswordSalt())) {
+			logger.info("UserPayPwd Equals Old");
 			return true;
 		}
+		logger.info("UserPayPwd not Equals Old");
 		return false;
 	}
 }
