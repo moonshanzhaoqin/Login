@@ -101,9 +101,9 @@ public class ExchangeController {
 		}else if(result.get("retCode").equals(RetCodeConsts.EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY)){
 			rep.setOpts(new String[]{result.get("msg"),result.get("thawTime")});
 		}else if(result.get("retCode").equals(RetCodeConsts.EXCHANGE_LIMIT_EACH_TIME)){
-			rep.setOpts(new String[]{result.get("msg"),result.get("unit")});
+			rep.setOpts(new String[]{result.get("msg")+result.get("unit")});
 		}else if(result.get("retCode").equals(RetCodeConsts.EXCHANGE_LIMIT_DAILY_PAY)){
-			rep.setOpts(new String[]{result.get("msg"),result.get("unit"),result.get("thawTime")});
+			rep.setOpts(new String[]{result.get("msg")+result.get("unit"),result.get("thawTime")});
 		}
 
 		return rep;
