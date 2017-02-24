@@ -108,10 +108,11 @@ public class TransferController {
 		
 		if(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)){
 			rep.setTransferId(map.get("transferId"));
-		}else if((map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)||
-				map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY))||
-				map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY)){
+		}else if((map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY)||
+				map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY))){
 			rep.setOpts(new String[]{map.get("msg"),map.get("thawTime")});
+		}else if(map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)){
+			rep.setOpts(new String[]{map.get("msg")});
 		}
 		
 		rep.setRetCode(map.get("retCode"));
