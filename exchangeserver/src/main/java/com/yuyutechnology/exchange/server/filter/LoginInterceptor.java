@@ -117,12 +117,15 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		String sessionId = getToeknFromURI(request.getRequestURI());
 		SessionData sessionData = sessionManager.get(sessionId);
 		// 判断是否需要拦截或者是否登录
-		if (validURL(requestURI) || sessionData!= null) {
-			logger.info("request URI:" + requestURI + " session : " + sessionId + "session ok");
-			sessionManager.refreshSessionDataExpireTime(sessionId);
+		if (sessionData!= null) {
+			logger.info("request URI:" + requestURI + " session : " + sessionId + "==>session ok");
+			sessionManager.refreshSessionDataExpireTime(sessionData);
 			SessionDataHolder.setSessionData(sessionData);
 			return true;
-		} else {
+		} else if (validURL(requestURI) ) {
+			logger.info("request URI:" + requestURI + "==>validURL");
+			return true;
+		}else{
 			logger.info("request URI:" + requestURI + " session : " + sessionId + " " +MessageConsts.SESSION_TIMEOUT);
 			BaseResponse re = new BaseResponse();
 			re.setRetCode(RetCodeConsts.SESSION_TIMEOUT);
