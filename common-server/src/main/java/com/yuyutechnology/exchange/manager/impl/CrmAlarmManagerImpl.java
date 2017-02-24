@@ -196,7 +196,7 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 			return;
 		}
 
-		for (CrmAlarm crmAlarm : list) {
+		for (final CrmAlarm crmAlarm : list) {
 			if ((crmAlarm.getLowerLimit().compareTo(map.get("reserveAvailability")) == 0
 					|| crmAlarm.getLowerLimit().compareTo(map.get("reserveAvailability")) == -1)
 					&& (crmAlarm.getUpperLimit().compareTo(map.get("reserveAvailability")) == 1)) {
@@ -207,7 +207,7 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 				alarmNotice(crmAlarm.getSupervisorIdArr(),"reserveEarlyWarning",crmAlarm.getAlarmMode(),new HashMap<String,Object>(){
 					{
 						put("difference", map.get("reserveAvailability"));
-						put("lowerLimit", map.get("crmAlarm.getLowerLimit()"));
+						put("lowerLimit", crmAlarm.getLowerLimit());
 					}
 				});
 				// 生成警报记录

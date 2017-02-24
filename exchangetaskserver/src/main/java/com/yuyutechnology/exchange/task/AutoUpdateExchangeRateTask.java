@@ -1,5 +1,6 @@
 package com.yuyutechnology.exchange.task;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.logging.log4j.Logger;
@@ -27,9 +28,9 @@ public class AutoUpdateExchangeRateTask {
 	}
 	
 	public void autoSystemRefundBatch(){
-		logger.info("=============autoSystemRefundBatch Start==================");
+		logger.info("=============autoSystemRefundBatch Start=============={}",new SimpleDateFormat("HH:mm:ss").format(new Date()) );
 		transferManager.systemRefundBatch();
-		logger.info("=============End at {}==================",new Date());
+		logger.info("=============End at {}==================",new SimpleDateFormat("HH:mm:ss").format(new Date()));
 	}
 	
 }
