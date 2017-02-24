@@ -4,15 +4,16 @@ public class UserInfo {
 
 	@Override
 	public String toString() {
-		return "UserInfo [areaCode=" + areaCode + ", phone=" + phone + ", name=" + name + ", goldpayName=" + goldpayName
-				+ ", isPayPwd=" + isPayPwd + "]";
+		return "UserInfo [userId=" + userId + ", areaCode=" + areaCode + ", phone=" + phone + ", name=" + name
+				+ ", goldpayName=" + goldpayName + ", PayPwd=" + PayPwd + "]";
 	}
+
 	private int userId;
 	private String areaCode;
 	private String phone;
 	private String name;
 	private String goldpayName;
-	private boolean isPayPwd;
+	private boolean PayPwd;
 
 	public String getAreaCode() {
 		return areaCode;
@@ -47,11 +48,11 @@ public class UserInfo {
 	}
 
 	public boolean isPayPwd() {
-		return isPayPwd;
+		return PayPwd;
 	}
 
-	public void setPayPwd(boolean isPayPwd) {
-		this.isPayPwd = isPayPwd;
+	public void setPayPwd(boolean PayPwd) {
+		this.PayPwd = PayPwd;
 	}
 
 	public int getUserId() {
