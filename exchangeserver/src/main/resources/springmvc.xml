@@ -38,7 +38,7 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 			</bean>
 	        <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">  
 	            <property name="objectMapper">  
-	                <bean class="com.yuyutechnology.exchange.cfg.JsonObjectMapper4Null"></bean>  
+	                <bean class="com.yuyutechnology.exchange.cfg.JsonObjectMapper"></bean>  
 	            </property>  
 	        </bean> 
 		</mvc:message-converters>
