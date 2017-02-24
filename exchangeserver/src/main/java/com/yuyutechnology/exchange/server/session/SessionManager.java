@@ -64,9 +64,12 @@ public class SessionManager {
 	 * 
 	 * @param sessionData
 	 */
-	public void refreshSessionDataExpireTime(String sessionId) {
-		String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", sessionId);
+	public void refreshSessionDataExpireTime(SessionData sessionData) {
+		String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", sessionData.getSessionId());
 		logger.info("expireData : {}",key);
+		redisDAO.expireData(key, ResourceUtils.getBundleValue4Long("session.timeout.minuate", 15l), TimeUnit.MINUTES);
+		String userkey=StringUtils.replace(SESSION_DATA_KEY_USERID, "userid", sessionData.getUserId().toString());
+		logger.info("expireData : {}",userkey);
 		redisDAO.expireData(key, ResourceUtils.getBundleValue4Long("session.timeout.minuate", 15l), TimeUnit.MINUTES);
 	}
 
