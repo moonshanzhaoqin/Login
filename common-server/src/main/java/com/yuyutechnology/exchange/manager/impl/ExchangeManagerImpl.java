@@ -127,7 +127,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		if(exchangeLimitNumOfPayPerDay <= new Double(totalNumOfDailyExchange)){
 			logger.warn("Exceeds the maximum number of exchange per day");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY);
-			map.put("msg", exchangeLimitNumOfPayPerDay.toString());
+			map.put("msg", exchangeLimitNumOfPayPerDay.intValue()+"");
 			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
 			return map;
 		}

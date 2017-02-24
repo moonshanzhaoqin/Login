@@ -146,7 +146,7 @@ public class TransferManagerImpl implements TransferManager{
 		if(transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)){
 			logger.warn("Exceeds the maximum number of transactions per day");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY);
-			map.put("msg", transferLimitNumOfPayPerDay.toString());
+			map.put("msg", (transferLimitNumOfPayPerDay).intValue()+"");
 			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
 			return map;
 		}

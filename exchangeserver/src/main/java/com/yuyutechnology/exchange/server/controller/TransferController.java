@@ -90,7 +90,7 @@ public class TransferController {
 			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The input amount is less than the minimum amount");
 			return rep;
-		}else if((reqMsg.getCurrency()).equals(ServerConsts.CURRENCY_OF_GOLDPAY) && reqMsg.getAmount()%1 > 0){
+		}else if((reqMsg.getCurrency()).equals(ServerConsts.CURRENCY_OF_GOLDPAY) &&( reqMsg.getAmount()%1 > 0 || reqMsg.getAmount()==0)){
 			logger.warn("The GDQ must be an integer value");
 			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The GDQ must be an integer value");
