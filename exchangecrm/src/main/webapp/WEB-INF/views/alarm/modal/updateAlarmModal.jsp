@@ -30,29 +30,18 @@
 			            		</div>
 								<div class="col-md-3">
 									<div class="input-group">
-										<input type="text" class="form-control"
-											name="criticalThresholdLowerLimit"
-											id="updateLowerLimit" /> <span
-											class="input-group-addon">%</span>
+										<input type="text" class="form-control" name="criticalThresholdLowerLimit" id="updateLowerLimit" /> 
+										<span class="input-group-addon">%</span>
 									</div>
-								
-								
-<!-- 									<input class="form-control" name="criticalThresholdLowerLimit" -->
-<!-- 										id="updateLowerLimit" />% -->
 								</div>
 								<div class="col-md-1"
 									style="padding: 15px 0; text-align: center; line-height: 50%; display: table; width: 8px">
 									<Strong>~</Strong>
 								</div>
 								<div class="col-md-3">
-<!-- 									<input class="form-control" name="criticalThresholdUpperLimit" -->
-<!-- 										id="updateUpperLimit" />% -->
-										
 									<div class="input-group">
-										<input type="text" class="form-control"
-											name="criticalThresholdUpperLimit"
-											id="updateUpperLimit" /> <span
-											class="input-group-addon">%</span>
+										<input type="text" class="form-control" name="criticalThresholdUpperLimit" id="updateUpperLimit" /> 
+										<span class="input-group-addon">%</span>
 									</div>	
 										
 								</div>

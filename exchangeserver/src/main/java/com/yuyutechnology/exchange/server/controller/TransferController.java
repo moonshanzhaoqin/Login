@@ -230,6 +230,9 @@ public class TransferController {
 		HashMap<String, String> result = transferManager.regenerateQRCode(reqMsg.getCurrency(), reqMsg.getAmount());
 		rep.setRetCode(result.get("retCode"));
 		rep.setMessage(result.get("msg"));
+		if(result.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)){
+			rep.setOpts(new String[]{result.get("msg")});
+		}
 		return rep;
 	}
 	
