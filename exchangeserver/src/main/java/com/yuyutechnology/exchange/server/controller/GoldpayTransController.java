@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 
 import org.apache.logging.log4j.Logger;
+import org.aspectj.apache.bcel.generic.IINC;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,7 +51,7 @@ public class GoldpayTransController {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		GoldpayPurchaseResponse rep = new GoldpayPurchaseResponse();
 		
-		if(reqMsg.getAmount() < 1 ){
+		if(reqMsg.getAmount() == 0 || reqMsg.getAmount()%1 > 0 ){
 			logger.warn("The input amount is less than the minimum amount");
 			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The input amount is less than the minimum amount");
@@ -120,7 +121,7 @@ public class GoldpayTransController {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		GoldpayWithdrawResponse rep = new GoldpayWithdrawResponse();
 		
-		if(reqMsg.getAmount() < 1 ){
+		if(reqMsg.getAmount() == 0 || reqMsg.getAmount()%1 > 0  ){
 			logger.warn("The input amount is less than the minimum amount");
 			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The input amount is less than the minimum amount");
