@@ -38,6 +38,7 @@ import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
+import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.TransactionNotification;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
@@ -114,6 +115,9 @@ public class TransferManagerImpl implements TransferManager{
 			map.put("msg", "Prohibit transfers to yourself");
 			return map;
 		}
+		
+		Currency unit = currencyDAO.getCurrency("USD");
+		
 		//每次支付金额限制
 		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
@@ -121,7 +125,8 @@ public class TransferManagerImpl implements TransferManager{
 		if((exchangeRateManager.getExchangeResult(currency, amount)).compareTo(transferLimitPerPay) == 1){
 			logger.warn("Exceeds the maximum amount of each transaction");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
-			map.put("msg", transferLimitPerPay.toString());
+			map.put("msg", transferLimitPerPay.setScale(2).toString());
+			map.put("unit", unit.getCurrencyUnit());
 			return map;
 		}
 
@@ -133,8 +138,9 @@ public class TransferManagerImpl implements TransferManager{
 		if((accumulatedAmount.add(exchangeRateManager.getExchangeResult(currency, amount))).compareTo(transferLimitDailyPay) == 1){
 			logger.warn("More than the maximum daily transaction limit");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY);
-			map.put("msg", transferLimitDailyPay.toString());
+			map.put("msg", transferLimitDailyPay.setScale(2).toString());
 			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
+			map.put("unit", unit.getCurrencyUnit());
 			return map;
 		}
 		//每天累计给付次数限制

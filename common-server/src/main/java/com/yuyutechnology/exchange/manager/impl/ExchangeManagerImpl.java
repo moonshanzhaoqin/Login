@@ -2,14 +2,15 @@ package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,7 @@ import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
+import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Exchange;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
@@ -89,12 +91,17 @@ public class ExchangeManagerImpl implements ExchangeManager {
 
 		HashMap<String, String> map = new HashMap<String, String>();
 		
+
+		
 		if(!commonManager.verifyCurrency(currencyOut) || !commonManager.verifyCurrency(currencyIn)){
 			logger.warn("This currency is not a tradable currency");
 			map.put("retCode", RetCodeConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
 			map.put("msg", "This currency is not a tradable currency");
 			return map;
 		}
+		
+		Currency unit = currencyDAO.getCurrency("USD");
+		
 		//每次兑换金额限制
 		BigDecimal exchangeLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITPERPAY, 100000d));
@@ -102,8 +109,9 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		if((exchangeRateManager.getExchangeResult(currencyOut, amountOut)).compareTo(exchangeLimitPerPay) == 1){
 			logger.warn("Exceeds the maximum amount of each exchange");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_EACH_TIME);
-			map.put("msg", exchangeLimitPerPay.toString());
+			map.put("msg", exchangeLimitPerPay.setScale(2).toString());
 			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
+			map.put("unit", unit.getCurrencyUnit());
 			return map;
 		}
 		//每天累计兑换金额限制
@@ -114,8 +122,9 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		if((accumulatedAmount.add(exchangeRateManager.getExchangeResult(currencyOut, amountOut))).compareTo(exchangeLimitDailyPay) == 1){
 			logger.warn("More than the maximum daily exchange limit");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_DAILY_PAY);
-			map.put("msg", exchangeLimitDailyPay.toString());
+			map.put("msg", exchangeLimitDailyPay.setScale(2).toString());
 			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
+			map.put("unit", unit.getCurrencyUnit());
 			return map;
 		}
 		//每天累计兑换次数限制
