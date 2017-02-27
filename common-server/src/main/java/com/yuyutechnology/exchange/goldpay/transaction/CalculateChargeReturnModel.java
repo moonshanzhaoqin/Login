@@ -7,7 +7,7 @@ public class CalculateChargeReturnModel {
 	private String resultMessage;
 	private Object resultData;
 	private long chargeAmount;
-	private int chargeType;
+	private int chargeType;//1=发款方,2=收款方
 	public long getChargeAmount() {
 		return chargeAmount;
 	}
