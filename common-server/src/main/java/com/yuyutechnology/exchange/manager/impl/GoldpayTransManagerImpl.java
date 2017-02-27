@@ -318,8 +318,10 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		if (StringUtils.isNotBlank(result)) {
 			logger.info("calculateCharge tpps callback {} ", result);
 			calculateChargeReturnModel = JsonBinder.getInstance().fromJson(result, CalculateChargeReturnModel.class);
-			if (calculateChargeReturnModel.getResultCode() == 1) {
+			if (calculateChargeReturnModel != null && calculateChargeReturnModel.getResultCode() == 1 && calculateChargeReturnModel.getChargeAmount() == 2) {
 				map.put("charge", calculateChargeReturnModel.getChargeAmount()+"");
+			}else{
+				map.put("charge", "0");
 			}
 		}
 		
