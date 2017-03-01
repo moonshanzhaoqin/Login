@@ -6,7 +6,6 @@ package com.yuyutechnology.exchange.manager;
 import java.util.List;
 
 import com.yuyutechnology.exchange.dto.MsgFlagInfo;
-import com.yuyutechnology.exchange.pojo.AppVersion;
 import com.yuyutechnology.exchange.pojo.Currency;
 
 /**
@@ -16,8 +15,6 @@ import com.yuyutechnology.exchange.pojo.Currency;
 public interface CommonManager {
 	
 	public void refreshConfig();
-	
-	public AppVersion getAppVersion(String platformType, String updateWay);
 	
 	public List<Currency> getAllCurrencies();
 
