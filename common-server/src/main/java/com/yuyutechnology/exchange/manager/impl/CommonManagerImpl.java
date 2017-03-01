@@ -13,21 +13,19 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
-import com.yuyutechnology.exchange.dao.AppVersionDAO;
 import com.yuyutechnology.exchange.dao.ConfigDAO;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dto.MsgFlagInfo;
 import com.yuyutechnology.exchange.manager.CommonManager;
-import com.yuyutechnology.exchange.pojo.AppVersion;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.utils.JsonBinder;
@@ -43,8 +41,6 @@ public class CommonManagerImpl implements CommonManager {
 
 	public static Logger logger = LogManager.getLogger(CommonManagerImpl.class);
 
-	@Autowired
-	AppVersionDAO appVersionDAO;
 	@Autowired
 	WalletDAO walletDAO;
 	@Autowired
@@ -80,11 +76,6 @@ public class CommonManagerImpl implements CommonManager {
 			}
 		}
 		currentCurrencies = currentCurrenciesTmp;
-	}
-
-	@Override
-	public AppVersion getAppVersion(String platformType, String updateWay) {
-		return appVersionDAO.getAppVersionInfo(platformType, updateWay);
 	}
 
 	@Override
