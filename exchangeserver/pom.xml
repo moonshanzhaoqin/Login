@@ -166,9 +166,9 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-				<version>7.1.6.v20100715</version>
+			    <groupId>org.eclipse.jetty</groupId>
+			    <artifactId>jetty-maven-plugin</artifactId>
+				<version>9.2.21.v20170120</version>
 				<configuration>
 					<stopKey>stop</stopKey>
 					<stopPort>5598</stopPort>
