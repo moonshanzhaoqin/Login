@@ -233,7 +233,7 @@ public class TransferController {
 		rep.setRetCode(result.get("retCode"));
 		rep.setMessage(result.get("msg"));
 		if(result.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)){
-			rep.setOpts(new String[]{result.get("msg")});
+			rep.setOpts(new String[]{result.get("msg")+" "+result.get("unit")});
 		}
 		return rep;
 	}

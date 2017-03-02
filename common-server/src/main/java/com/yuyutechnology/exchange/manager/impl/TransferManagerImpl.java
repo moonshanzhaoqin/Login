@@ -882,14 +882,24 @@ public class TransferManagerImpl implements TransferManager{
 	@Override
 	public HashMap<String, String> regenerateQRCode(String currency,BigDecimal amount) {
 		
+		HashMap<String, String> map = new HashMap<>();
+		
 		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
-		HashMap<String, String> map = new HashMap<>();
+		Currency unit = currencyDAO.getCurrency("USD");
+		
+		if(unit == null){
+			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+			map.put("msg", "fail");
+			return map;
+		}
+
 		logger.warn("transferLimitPerPay : {}",transferLimitPerPay);
 		if((exchangeRateManager.getExchangeResult(currency, amount)).compareTo(transferLimitPerPay) == 1){
 			logger.warn("Exceeds the maximum amount of each transaction");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
-			map.put("msg", transferLimitPerPay.toString());
+			map.put("msg", transferLimitPerPay.setScale(2).toString());
+			map.put("unit", unit.getCurrencyUnit());
 			return map;
 		}
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
