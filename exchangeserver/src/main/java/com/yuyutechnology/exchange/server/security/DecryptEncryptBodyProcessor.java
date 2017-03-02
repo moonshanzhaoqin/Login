@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 
@@ -16,7 +16,7 @@ import org.springframework.http.HttpInputMessage;
  */
 public abstract class DecryptEncryptBodyProcessor {
 
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+	public static Logger logger = LogManager.getLogger(DecryptEncryptBodyProcessor.class);
     
     private Charset charset = Charset.forName("UTF-8");
 

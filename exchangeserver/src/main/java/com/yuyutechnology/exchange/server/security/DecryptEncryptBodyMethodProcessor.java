@@ -6,8 +6,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -19,6 +19,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
 
+import com.yuyutechnology.exchange.server.controller.ExchangeController;
 import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
 import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 
@@ -28,7 +29,7 @@ import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBod
  */
 public class DecryptEncryptBodyMethodProcessor extends RequestResponseBodyMethodProcessor {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+	public static Logger logger = LogManager.getLogger(DecryptEncryptBodyMethodProcessor.class);
 
     public DecryptEncryptBodyMethodProcessor(List<HttpMessageConverter<?>> converters) {
         super(converters);
@@ -47,13 +48,13 @@ public class DecryptEncryptBodyMethodProcessor extends RequestResponseBodyMethod
 
     @Override
     public void handleReturnValue(Object returnValue, MethodParameter returnType, ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws IOException, HttpMediaTypeNotAcceptableException, HttpMessageNotWritableException {
-        log.info("RequestURI:{}", webRequest.getNativeRequest(HttpServletRequest.class).getRequestURI());
+    	logger.info("RequestURI:{}", webRequest.getNativeRequest(HttpServletRequest.class).getRequestURI());
         super.handleReturnValue(returnValue, returnType, mavContainer, webRequest);
     }
 
     @Override
     protected <T> Object readWithMessageConverters(NativeWebRequest webRequest, MethodParameter methodParam, Type paramType) throws IOException, HttpMediaTypeNotSupportedException, HttpMessageNotReadableException {
-        log.info("RequestURI:{}", webRequest.getNativeRequest(HttpServletRequest.class).getRequestURI());
+    	logger.info("RequestURI:{}", webRequest.getNativeRequest(HttpServletRequest.class).getRequestURI());
         return super.readWithMessageConverters(webRequest, methodParam, paramType);
     }
 
