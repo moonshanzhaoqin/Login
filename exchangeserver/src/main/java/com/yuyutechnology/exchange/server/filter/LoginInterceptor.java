@@ -43,19 +43,19 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		
 		sessionManager = ServerContext.getBean(SessionManager.class);
 		
-		noMappingSet.add("/login");
-		noMappingSet.add("/loginValidate");
-		noMappingSet.add("/logout");
-		noMappingSet.add("/register");
-		noMappingSet.add("/getVerificationCode");
-		noMappingSet.add("/testCode");
-		noMappingSet.add("/forgetPassword");
-		noMappingSet.add("/getCurrency");
-		noMappingSet.add("/appVersion");
-		
-		// swagger
-		noMappingSetUrl.add("api-docs");
-		noMappingSetUrl.add("swagger");
+//		noMappingSet.add("/login");
+//		noMappingSet.add("/loginValidate");
+//		noMappingSet.add("/logout");
+//		noMappingSet.add("/register");
+//		noMappingSet.add("/getVerificationCode");
+//		noMappingSet.add("/testCode");
+//		noMappingSet.add("/forgetPassword");
+//		noMappingSet.add("/getCurrency");
+//		noMappingSet.add("/appVersion");
+//		
+//		// swagger
+//		noMappingSetUrl.add("api-docs");
+//		noMappingSetUrl.add("swagger");
 	}
 
 	/**
