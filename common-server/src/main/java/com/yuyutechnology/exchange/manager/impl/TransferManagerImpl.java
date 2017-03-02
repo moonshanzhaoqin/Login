@@ -7,7 +7,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
@@ -36,6 +38,7 @@ import com.yuyutechnology.exchange.manager.ExchangeRateManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
+import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.TransactionNotification;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
@@ -90,7 +93,7 @@ public class TransferManagerImpl implements TransferManager{
 			final BigDecimal amount, String transferComment,int noticeId) {
 
 		//干扰条件过滤
-		HashMap<String, Object> args = new HashMap<>();		
+		LinkedHashMap<String, Object> args = new LinkedHashMap<>();		
 		args.put("isTradableCurrency", currency);
 		args.put("isAccountFrozened", userId);
 		args.put("isInsufficientBalance",new HashMap<String,Object>(){{
@@ -112,6 +115,9 @@ public class TransferManagerImpl implements TransferManager{
 			map.put("msg", "Prohibit transfers to yourself");
 			return map;
 		}
+		
+		Currency unit = currencyDAO.getCurrency("USD");
+		
 		//每次支付金额限制
 		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
@@ -119,7 +125,8 @@ public class TransferManagerImpl implements TransferManager{
 		if((exchangeRateManager.getExchangeResult(currency, amount)).compareTo(transferLimitPerPay) == 1){
 			logger.warn("Exceeds the maximum amount of each transaction");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
-			map.put("msg", transferLimitPerPay.toString());
+			map.put("msg", transferLimitPerPay.setScale(2).toString());
+			map.put("unit", unit.getCurrencyUnit());
 			return map;
 		}
 
@@ -131,8 +138,9 @@ public class TransferManagerImpl implements TransferManager{
 		if((accumulatedAmount.add(exchangeRateManager.getExchangeResult(currency, amount))).compareTo(transferLimitDailyPay) == 1){
 			logger.warn("More than the maximum daily transaction limit");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY);
-			map.put("msg", transferLimitDailyPay.toString());
+			map.put("msg", transferLimitDailyPay.setScale(2).toString());
 			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
+			map.put("unit", unit.getCurrencyUnit());
 			return map;
 		}
 		//每天累计给付次数限制
@@ -144,7 +152,7 @@ public class TransferManagerImpl implements TransferManager{
 		if(transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)){
 			logger.warn("Exceeds the maximum number of transactions per day");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY);
-			map.put("msg", transferLimitNumOfPayPerDay.toString());
+			map.put("msg", (transferLimitNumOfPayPerDay).intValue()+"");
 			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
 			return map;
 		}
@@ -610,7 +618,7 @@ public class TransferManagerImpl implements TransferManager{
 	public HashMap<String, String> respond2Request(final int userId,final String areaCode,final String userPhone, 
 			final String currency,final BigDecimal amount, String transferComment,int noticeId){
 
-		HashMap<String, Object> args = new HashMap<>();		
+		LinkedHashMap<String, Object> args = new LinkedHashMap<>();		
 		HashMap<String, String> map  = new HashMap<>();
 		final TransactionNotification notification = notificationDAO.getNotificationById(noticeId);
 		if(notification == null){
@@ -718,7 +726,7 @@ public class TransferManagerImpl implements TransferManager{
 		return new BigDecimal(df1.format(amoumt));  
 	}
 	
-	private HashMap<String, String> test(HashMap<String, Object> map){
+	private HashMap<String, String> test(Map<String, Object> map){
 		
 		HashMap<String, String> result = new HashMap<>();
 		
@@ -727,6 +735,7 @@ public class TransferManagerImpl implements TransferManager{
 			switch (entry.getKey()) {
 				//检验传入Currency是否可用
 				case "isTradableCurrency":
+					logger.info("Currency : {}", (String) entry.getValue());
 					if(!commonManager.verifyCurrency((String) entry.getValue())){
 						logger.warn("This currency is not a tradable currency");
 						result.put("retCode", RetCodeConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
@@ -873,14 +882,24 @@ public class TransferManagerImpl implements TransferManager{
 	@Override
 	public HashMap<String, String> regenerateQRCode(String currency,BigDecimal amount) {
 		
+		HashMap<String, String> map = new HashMap<>();
+		
 		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
-		HashMap<String, String> map = new HashMap<>();
+		Currency unit = currencyDAO.getCurrency("USD");
+		
+		if(unit == null){
+			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+			map.put("msg", "fail");
+			return map;
+		}
+
 		logger.warn("transferLimitPerPay : {}",transferLimitPerPay);
 		if((exchangeRateManager.getExchangeResult(currency, amount)).compareTo(transferLimitPerPay) == 1){
 			logger.warn("Exceeds the maximum amount of each transaction");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
-			map.put("msg", transferLimitPerPay.toString());
+			map.put("msg", transferLimitPerPay.setScale(2).toString());
+			map.put("unit", unit.getCurrencyUnit());
 			return map;
 		}
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);

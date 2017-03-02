@@ -6,8 +6,8 @@ package com.yuyutechnology.exchange.server.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,15 +23,12 @@ import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
-import com.yuyutechnology.exchange.pojo.AppVersion;
-import com.yuyutechnology.exchange.server.controller.request.AppVersionRequest;
 import com.yuyutechnology.exchange.server.controller.request.ForgetPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetVerificationCodeRequest;
 import com.yuyutechnology.exchange.server.controller.request.LoginRequest;
 import com.yuyutechnology.exchange.server.controller.request.LoginValidateRequest;
 import com.yuyutechnology.exchange.server.controller.request.RegisterRequest;
 import com.yuyutechnology.exchange.server.controller.request.TestCodeRequest;
-import com.yuyutechnology.exchange.server.controller.response.AppVersionResponse;
 import com.yuyutechnology.exchange.server.controller.response.ForgetPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetVerificationCodeResponse;
 import com.yuyutechnology.exchange.server.controller.response.LoginResponse;
@@ -379,46 +376,6 @@ public class UserController {
 				logger.info(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 				rep.setRetCode(RetCodeConsts.PHONE_AND_CODE_NOT_MATCH);
 				rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
-			}
-		}
-		return rep;
-	}
-
-	/**
-	 * appVersion 版本获取
-	 * 
-	 * @param appVersionRequest
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@ResponseBody
-	@ApiOperation(value = "版本获取", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/appVersion", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public AppVersionResponse appVersion(@RequestBody AppVersionRequest appVersionRequest, HttpServletRequest request,
-			HttpServletResponse response) {
-		logger.info("appVersion : ");
-		AppVersionResponse rep = new AppVersionResponse();
-		if (appVersionRequest.isEmpty()) {
-			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
-		} else {
-			AppVersion appVersion = commonManager.getAppVersion(appVersionRequest.getPlatformType(),
-					appVersionRequest.getUpdateWay());
-			if (appVersion == null) {
-				logger.warn("No this appVersion : {}", appVersionRequest.toString());
-				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
-			} else if (appVersion.getAppVersionNum().equals(appVersionRequest.getAppVersionNum())) {
-				logger.info(MessageConsts.VERSION_NUM_IS_LATEST);
-				rep.setRetCode(RetCodeConsts.VERSION_NUM_IS_LATEST);
-				rep.setMessage(MessageConsts.VERSION_NUM_IS_LATEST);
-			} else {
-				rep.setAppVersion(appVersion);
-				logger.info(MessageConsts.RET_CODE_SUCCESS);
-				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			}
 		}
 		return rep;

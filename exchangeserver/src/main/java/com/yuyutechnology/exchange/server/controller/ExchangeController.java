@@ -98,10 +98,12 @@ public class ExchangeController {
 			rep.setAmountIn(Double.parseDouble(result.get("in")));
 			rep.setAmountOut(Double.parseDouble(result.get("out")));
 			rep.setRateUpdateTime(exchangeRateManager.getExchangeRateUpdateDate());
-		}else if((result.get("retCode").equals(RetCodeConsts.EXCHANGE_LIMIT_DAILY_PAY)||
-				result.get("retCode").equals(RetCodeConsts.EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY))||
-				result.get("retCode").equals(RetCodeConsts.EXCHANGE_LIMIT_EACH_TIME)){
+		}else if(result.get("retCode").equals(RetCodeConsts.EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY)){
 			rep.setOpts(new String[]{result.get("msg"),result.get("thawTime")});
+		}else if(result.get("retCode").equals(RetCodeConsts.EXCHANGE_LIMIT_EACH_TIME)){
+			rep.setOpts(new String[]{result.get("msg")+" "+result.get("unit")});
+		}else if(result.get("retCode").equals(RetCodeConsts.EXCHANGE_LIMIT_DAILY_PAY)){
+			rep.setOpts(new String[]{result.get("msg")+" "+result.get("unit"),result.get("thawTime")});
 		}
 
 		return rep;

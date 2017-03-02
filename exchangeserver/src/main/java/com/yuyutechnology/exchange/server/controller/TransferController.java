@@ -90,7 +90,7 @@ public class TransferController {
 			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The input amount is less than the minimum amount");
 			return rep;
-		}else if((reqMsg.getCurrency()).equals(ServerConsts.CURRENCY_OF_GOLDPAY) && reqMsg.getAmount()%1 > 0){
+		}else if((reqMsg.getCurrency()).equals(ServerConsts.CURRENCY_OF_GOLDPAY) &&( reqMsg.getAmount()%1 > 0 || reqMsg.getAmount()==0)){
 			logger.warn("The GDQ must be an integer value");
 			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The GDQ must be an integer value");
@@ -108,9 +108,11 @@ public class TransferController {
 		
 		if(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)){
 			rep.setTransferId(map.get("transferId"));
-		}else if((map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)||
-				map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY))||
-				map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY)){
+		}else if(map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY)){
+			rep.setOpts(new String[]{map.get("msg")+" "+map.get("unit"),map.get("thawTime")});
+		}else if(map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)){
+			rep.setOpts(new String[]{map.get("msg")+" "+map.get("unit")});
+		}else if(map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY)){
 			rep.setOpts(new String[]{map.get("msg"),map.get("thawTime")});
 		}
 		
@@ -230,6 +232,9 @@ public class TransferController {
 		HashMap<String, String> result = transferManager.regenerateQRCode(reqMsg.getCurrency(), reqMsg.getAmount());
 		rep.setRetCode(result.get("retCode"));
 		rep.setMessage(result.get("msg"));
+		if(result.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)){
+			rep.setOpts(new String[]{result.get("msg")+" "+result.get("unit")});
+		}
 		return rep;
 	}
 	

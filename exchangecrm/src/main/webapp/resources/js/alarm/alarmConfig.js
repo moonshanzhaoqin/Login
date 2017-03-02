@@ -33,7 +33,12 @@ function updateAlarmConfig(obj){
 				if(data.retCode == 1){
 					$('#updateAlarmModal').modal('show');
 					$("#updateAlarmId").val(data.crmAlarm.alarmId);
-					$("#updateAlarmType").val(data.crmAlarm.alarmType);
+					
+					if(data.crmAlarm.alarmType== null ||data.crmAlarm.alarmType == undefined ){
+						$("#updateAlarmType").val(0);
+					}else{
+						$("#updateAlarmType").val(data.crmAlarm.alarmType);
+					}
 					$("#updateLowerLimit").val(data.crmAlarm.lowerLimit);
 					$("#updateUpperLimit").val(data.crmAlarm.upperLimit);
 					

@@ -49,9 +49,11 @@ public class SessionManager {
 	public void saveSessionData(SessionData sessionData, boolean allowRepeatLogin) {
 		String json = JsonBinder.getInstance().toJson(sessionData);
 		String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", sessionData.getSessionId());
+		logger.info("saveData : {}={}", key,json);
 		redisDAO.saveData(key, json, ResourceUtils.getBundleValue4Long("session.timeout.minuate", 15l), TimeUnit.MINUTES);
 		if (sessionData.getUserId() != null) {
 			if (!allowRepeatLogin) {
+				logger.info("repeatLogin");
 				repeatLogin(sessionData.getUserId());
 			}
 			saveSessionDataToUserId(sessionData);
@@ -62,8 +64,12 @@ public class SessionManager {
 	 * 
 	 * @param sessionData
 	 */
-	public void refreshSessionDataExpireTime(String sessionId) {
-		String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", sessionId);
+	public void refreshSessionDataExpireTime(SessionData sessionData) {
+		String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", sessionData.getSessionId());
+		logger.info("expireData : {}",key);
+		redisDAO.expireData(key, ResourceUtils.getBundleValue4Long("session.timeout.minuate", 15l), TimeUnit.MINUTES);
+		String userkey=StringUtils.replace(SESSION_DATA_KEY_USERID, "userid", sessionData.getUserId().toString());
+		logger.info("expireData : {}",userkey);
 		redisDAO.expireData(key, ResourceUtils.getBundleValue4Long("session.timeout.minuate", 15l), TimeUnit.MINUTES);
 	}
 
@@ -74,6 +80,7 @@ public class SessionManager {
 	public void saveSessionDataToUserId(SessionData sessionData) {
 		String json = JsonBinder.getInstance().toJson(sessionData);
 		String useridkey = StringUtils.replace(SESSION_DATA_KEY_USERID, "userid", sessionData.getUserId().toString());
+		logger.info("saveData : {}={}",useridkey,json);
 		redisDAO.saveData(useridkey, json, ResourceUtils.getBundleValue4Long("session.timeout.minuate", 15l), TimeUnit.MINUTES);
 	}
 
@@ -98,6 +105,7 @@ public class SessionManager {
 	 */
 	public void cleanSession(String sessionId) {
 		String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", sessionId);
+		logger.info("deleteData : {}",key);
 		redisDAO.deleteData(key);
 	}
 
@@ -108,6 +116,7 @@ public class SessionManager {
 		SessionData session = getByUserid(userId);
 		if (session != null && StringUtils.isNotEmpty(session.getSessionId())) {
 			String key = StringUtils.replace(SESSION_DATA_KEY, "sessionid", session.getSessionId());
+			logger.info("deleteData : {}",key);
 			redisDAO.deleteData(key);
 		}
 	}
