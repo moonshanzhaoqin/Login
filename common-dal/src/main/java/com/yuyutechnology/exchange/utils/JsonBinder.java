@@ -28,8 +28,8 @@ import org.codehaus.jackson.map.ser.BeanSerializerFactory;
 import org.codehaus.jackson.map.ser.impl.SimpleBeanPropertyFilter;
 import org.codehaus.jackson.map.ser.impl.SimpleFilterProvider;
 import org.codehaus.jackson.type.JavaType;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.yuyutechnology.exchange.pojo.Bind;
 

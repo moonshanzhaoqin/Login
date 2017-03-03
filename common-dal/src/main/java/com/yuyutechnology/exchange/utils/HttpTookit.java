@@ -12,8 +12,8 @@ import java.net.URLConnection;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.yuyutechnology.exchange.ServerException;
 /**

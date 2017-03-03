@@ -2,8 +2,8 @@ package com.yuyutechnology.exchange.task;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.yuyutechnology.exchange.startup.Bootstrap;
 /**
