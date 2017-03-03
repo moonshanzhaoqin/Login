@@ -1,9 +1,15 @@
 package com.yuyutechnology.exchange.manager;
 
-import com.yuyutechnology.exchange.utils.oanda.OandaRespData;
+import java.math.BigDecimal;
 
 public interface OandaRatesManager {
 
-	public OandaRespData getCurrentPrices(String instruments);
+	public void updateExchangeRates();
+
+	public BigDecimal getExchangedAmount(String currencyIn, 
+			BigDecimal amountIn, String currencyOut, String type);
+
+	public BigDecimal getDefaultCurrencyAmount(String transCurrency, 
+			BigDecimal transAmount, String type);
 
 }

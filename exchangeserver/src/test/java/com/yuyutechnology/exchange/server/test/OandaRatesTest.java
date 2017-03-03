@@ -3,6 +3,8 @@
  */
 package com.yuyutechnology.exchange.server.test;
 
+import java.math.BigDecimal;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.server.controller.TransferController;
-import com.yuyutechnology.exchange.utils.oanda.OandaRespData;
-import com.yuyutechnology.exchange.utils.oanda.PriceInfo;
 
 /**
  * @author silent.sun
@@ -27,21 +27,14 @@ public class OandaRatesTest extends BaseSpringJunit4 {
 	@Test
 	public void test() {
 
-		OandaRespData oandaRespData = oandaRatesManager.getCurrentPrices("USD_JPY2CEUR_JPY");
+		oandaRatesManager.updateExchangeRates();
 		
+		BigDecimal amount = oandaRatesManager.getExchangedAmount("GDQ", new BigDecimal("1000"), "CNY", "ask");
 		
+//		BigDecimal amount = oandaRatesManager.getExchangedAmount("CNY", new BigDecimal("1000"), "USD", "ask");
 		
-		if(oandaRespData != null){
-			logger.info("oandaRespData : {} ",oandaRespData.toString());
+		logger.info("amount : {}",amount);
 
-			PriceInfo priceInfo = oandaRespData.getPrices()[0];
-			
-			logger.info("bid : {}",priceInfo.getBid());
-		}else{
-			logger.warn("#errors");
-		}
-
-		
 		
 	}
 

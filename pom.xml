@@ -143,6 +143,12 @@
      		<artifactId>druid</artifactId>
      		<version>1.0.27</version>
 		</dependency>
+		<dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3</version>
+            <scope>compile</scope>
+        </dependency>
 		<!-- 
 		<dependency>
 			<groupId>com.google.protobuf</groupId>
