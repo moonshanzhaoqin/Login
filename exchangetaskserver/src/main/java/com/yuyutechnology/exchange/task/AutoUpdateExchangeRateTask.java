@@ -8,14 +8,14 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.yuyutechnology.exchange.manager.ExchangeRateManager;
+import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 
 @Component
 public class AutoUpdateExchangeRateTask {
 
 	@Autowired
-	ExchangeRateManager exchangeRateManager;
+	OandaRatesManager oandaRatesManager;
 	@Autowired
 	TransferManager transferManager;
 	
@@ -23,7 +23,7 @@ public class AutoUpdateExchangeRateTask {
 	
 	public void autoUpdateExchangeRateTask(){
 		logger.info("=============autoUpdateExchangeRateTask Start==================");
-		exchangeRateManager.updateExchangeRate(false);
+		oandaRatesManager.updateExchangeRate(false);
 		logger.info("=============End at {}==================",new Date());
 	}
 	

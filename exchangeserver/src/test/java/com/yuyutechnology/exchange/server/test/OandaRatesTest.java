@@ -3,8 +3,6 @@
  */
 package com.yuyutechnology.exchange.server.test;
 
-import java.math.BigDecimal;
-
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,11 +27,13 @@ public class OandaRatesTest extends BaseSpringJunit4 {
 
 		oandaRatesManager.updateExchangeRates();
 		
-		BigDecimal amount = oandaRatesManager.getExchangedAmount("GDQ", new BigDecimal("1000"), "CNY", "ask");
+//		BigDecimal amount = oandaRatesManager.getExchangedAmount("GDQ", new BigDecimal("1000"), "CNY", "ask");
 		
 //		BigDecimal amount = oandaRatesManager.getExchangedAmount("CNY", new BigDecimal("1000"), "USD", "ask");
 		
-		logger.info("amount : {}",amount);
+//		logger.info("amount : {}",amount);
+		
+		oandaRatesManager.getExchangeRateUpdateDate();
 
 		
 	}

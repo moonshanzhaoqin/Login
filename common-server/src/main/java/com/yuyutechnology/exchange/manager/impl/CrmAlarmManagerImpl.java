@@ -19,7 +19,7 @@ import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.mail.MailManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
-import com.yuyutechnology.exchange.manager.ExchangeRateManager;
+import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.pojo.CrmSupervisor;
 import com.yuyutechnology.exchange.sms.SmsManager;
@@ -42,7 +42,7 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	@Autowired
 	MailManager mailManager;
 	@Autowired
-	ExchangeRateManager exchangeRateManager;
+	OandaRatesManager oandaRatesManager;
 
 	private static Logger logger = LogManager.getLogger(CrmAlarmManagerImpl.class);
 
@@ -145,15 +145,15 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		// 预备金剩余量 = 1 - (Ex用户持有的总资产 - Ex公司持有的总资产) / 预备金;
 		BigDecimal sumRecharge = transferDAO.sumGoldpayTransAmount(ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE);
 		BigDecimal sumWithdraw = transferDAO.sumGoldpayTransAmount(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
-		BigDecimal exHoldingTotalAssets = exchangeRateManager.getExchangeResult(ServerConsts.CURRENCY_OF_GOLDPAY,
-				sumRecharge.subtract(sumWithdraw));
+		BigDecimal exHoldingTotalAssets = oandaRatesManager.getDefaultCurrencyAmount(ServerConsts.CURRENCY_OF_GOLDPAY,
+				sumRecharge.subtract(sumWithdraw),"bid");
 
 		logger.info("sumRecharge:{},sumWithdraw:{},exHoldingTotalAssets(USD):{}",
 				new Object[] { sumRecharge, sumWithdraw, exHoldingTotalAssets });
 
 		String reserveFundsStr = configManager.getConfigStringValue(ConfigKeyEnum.RESERVEFUNDS, "100000000");
-		BigDecimal reserveFunds = exchangeRateManager.getExchangeResult(ServerConsts.CURRENCY_OF_GOLDPAY,
-				new BigDecimal(reserveFundsStr));
+		BigDecimal reserveFunds = oandaRatesManager.getDefaultCurrencyAmount(ServerConsts.CURRENCY_OF_GOLDPAY,
+				new BigDecimal(reserveFundsStr),"bid");
 
 		logger.info("reserveFunds (USD) :{}", reserveFunds);
 
