@@ -11,7 +11,7 @@ import com.yuyutechnology.exchange.utils.JsonBinder;
 
 /**
  * 
- * @author sunwei
+ * @author silent.sun
  * 
  */
 @Component

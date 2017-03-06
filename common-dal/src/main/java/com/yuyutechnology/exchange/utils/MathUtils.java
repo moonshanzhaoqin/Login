@@ -3,7 +3,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.RandomUtils;
 /**
  * 
- * @author sunwei
+ * @author silent.sun
  * 
  */
 public class MathUtils

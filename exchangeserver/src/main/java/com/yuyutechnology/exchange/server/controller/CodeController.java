@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.mangofactory.swagger.annotations.ApiIgnore;
 import com.yuyutechnology.exchange.server.controller.request.DecryptRequest;
 import com.yuyutechnology.exchange.server.controller.response.EncryptResponse;
 import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;

@@ -2,7 +2,7 @@ package com.yuyutechnology.exchange.utils;
 import java.util.UUID;
 /**
  * 
- * @author sunwei
+ * @author silent.sun
  * 
  */
 public class UidUtils
