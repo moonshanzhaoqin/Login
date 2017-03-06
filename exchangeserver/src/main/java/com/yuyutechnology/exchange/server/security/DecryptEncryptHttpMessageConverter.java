@@ -67,7 +67,7 @@ public class DecryptEncryptHttpMessageConverter extends MappingJackson2HttpMessa
 				jsonString = this.objectMapper.writeValueAsString(value);
 			}
 	        if (decryptEncryptBodyProcessor != null) {
-	        	jsonString = decryptEncryptBodyProcessor.doEncryptResponseBody(jsonString, outputMessage.getHeaders());
+	        	jsonString = decryptEncryptBodyProcessor.encryptResponseBody(jsonString, outputMessage.getHeaders());
 	        }
 			JsonEncoding encoding = getJsonEncoding(outputMessage.getHeaders().getContentType());
 			outputMessage.getBody().write(jsonString.getBytes(encoding.getJavaName()));

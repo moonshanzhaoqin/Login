@@ -1,20 +1,13 @@
 package com.yuyutechnology.exchange.crm.session;
 
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Resource;
-
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.utils.JsonBinder;
-import com.yuyutechnology.exchange.utils.ResourceUtils;
-import com.yuyutechnology.exchange.utils.UidUtils;
 
 /**
  * 

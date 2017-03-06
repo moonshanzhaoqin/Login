@@ -35,6 +35,7 @@ public class DecryptEncryptBodyProcessorImpl extends DecryptEncryptBodyProcessor
 			} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException
 					| InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException
 					| UnsupportedEncodingException e) {
+				input = "";
 			}
         }
         logger.info("==========doDecryptRequestBody input(decryptAES), {}", input);
@@ -51,6 +52,7 @@ public class DecryptEncryptBodyProcessorImpl extends DecryptEncryptBodyProcessor
 			} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException
 					| InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException
 					| UnsupportedEncodingException e) {
+				input = "";
 			}
         }
         logger.info("==========doEncryptResponseBody input(encryptAES), {}", input);
