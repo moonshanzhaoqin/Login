@@ -19,9 +19,9 @@ public class AdminTest extends BaseSpringJunit4 {
 	@Autowired
 	CrmAdminManager crmAdminManager;
 
-	@Test
-	public void addAdminTEST() {
-		crmAdminManager.addAdmin("admin");
-	}
+//	@Test
+//	public void addAdminTEST() {
+//		crmAdminManager.addAdmin("admin");
+//	}
 
 }

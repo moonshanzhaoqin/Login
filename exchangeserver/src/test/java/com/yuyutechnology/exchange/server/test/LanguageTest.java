@@ -28,7 +28,6 @@ public class LanguageTest extends BaseSpringJunit4{
 	
 	public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
-	@SuppressWarnings("null")
 	@Test	
 	public void enumTEST() throws ParseException{
 		
