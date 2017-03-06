@@ -31,7 +31,6 @@ public class LanguageTest extends BaseSpringJunit4{
 	@SuppressWarnings("null")
 	@Test	
 	public void enumTEST() throws ParseException{
-		
 //		System.out.println(Language.standard("en").toString());
 //		System.out.println(Language.standard("zh").name());
 //		System.out.println(Language.standard("cn"));
