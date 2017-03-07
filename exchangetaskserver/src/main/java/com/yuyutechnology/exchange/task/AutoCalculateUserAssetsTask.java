@@ -22,8 +22,8 @@ public class AutoCalculateUserAssetsTask {
 	
 	public static Logger logger = LogManager.getLogger(AutoCalculateUserAssetsTask.class);
 	
-	public void autoUpdateExchangeRateTask(){
-		logger.info("=============autoUpdateExchangeRateTask Start==================");
+	public void autoCalculateUserAssetsTask(){
+		logger.info("=============autoCalculateUserAssetsTask Start==================");
 		List<User> list = userManager.getUserList();
 		if(list.isEmpty()){
 			return ;
