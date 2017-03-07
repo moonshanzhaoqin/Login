@@ -14,6 +14,7 @@ public class ServerConsts {
 	 * 用户可用
 	 */
 	public static final int USER_AVAILABLE_OF_AVAILABLE = 1;
+	// 冻结状态
 	/**
 	 * 用户冻结
 	 */
@@ -25,7 +26,7 @@ public class ServerConsts {
 	/**
 	 * 登录冻结
 	 */
-	public static final int LOGIN_AVAILABLE_OF_UNAVAILABLE  = 0;
+	public static final int LOGIN_AVAILABLE_OF_UNAVAILABLE = 0;
 	/**
 	 * 支付可用
 	 */
@@ -34,11 +35,12 @@ public class ServerConsts {
 	 * 支付冻结
 	 */
 	public static final int PAY_AVAILABLE_OF_UNAVAILABLE = 0;
-	//检查密码，返回状态
+
+	// 检查密码，返回状态
 	public static final int CHECKPWD_STATUS_CORRECT = 0;
-	public static final int CHECKPWD_STATUS_INCORRECT  = 1;
+	public static final int CHECKPWD_STATUS_INCORRECT = 1;
 	public static final int CHECKPWD_STATUS_FREEZE = 2;
-	
+
 	// 币种
 	public static final String CURRENCY_OF_GOLDPAY = "GDQ";
 
@@ -47,7 +49,9 @@ public class ServerConsts {
 	 * 交易
 	 */
 	public static final int TRANSFER_TYPE_TRANSACTION = 0;
-	
+	/**
+	 * 兑换
+	 */
 	public static final int TRANSFER_TYPE_EXCHANGE = 1;
 	/**
 	 * 邀请
@@ -58,7 +62,7 @@ public class ServerConsts {
 	 */
 	public static final int TRANSFER_TYPE_IN_SYSTEM_REFUND = 3;
 	/**
-	 * 金沛体现
+	 * 金沛提现
 	 */
 	public static final int TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW = 4;
 	/**
@@ -66,10 +70,9 @@ public class ServerConsts {
 	 */
 	public static final int TRANSFER_TYPE_IN_GOLDPAY_RECHARGE = 5;
 	/**
-	 * 金沛充值
+	 * 金沛充值退款
 	 */
 	public static final int TRANSFER_TYPE_IN_GOLDPAY_REFUND = 6;
-	
 
 	// 交易状态
 	/**
@@ -88,8 +91,8 @@ public class ServerConsts {
 	 * 交易退回
 	 */
 	public static final int TRANSFER_STATUS_OF_REFUND = 3;
-	
-	//notification状态
+
+	// notification状态
 	public static final int NOTIFICATION_STATUS_OF_PENDING = 0;
 	public static final int NOTIFICATION_STATUS_OF_ALREADY_PAID = 1;
 
@@ -141,16 +144,14 @@ public class ServerConsts {
 	 * 币种状态——不可用
 	 */
 	public static final int CURRENCY_UNAVAILABLE = 0;
-	
+
 	public static final String ADMIN_DEFAULT_PASSWORD = "12345678";
-	
+
 	public static final String WRONG_PASSWORD = "WPASSWORD";
-	public static final String WRONG_PAYPWD= "WPAYPWD";
+	public static final String WRONG_PAYPWD = "WPAYPWD";
 	public static final String LOGIN_FREEZE = "LOGIN_FREEZE";
 	public static final String PAY_FREEZE = "PAY_FREEZE";
-	
-	
-	
+
 	/**
 	 * 校验支付密码功能——换绑手机
 	 */

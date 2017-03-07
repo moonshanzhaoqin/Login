@@ -515,20 +515,18 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 			map.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
 			return map;
 		}
-		// 验证支付密码
+		/*验证支付密码*/
 		CheckPwdResult checkPwdResult = userManager.checkPayPassword(userId, payPwd);
 		switch (checkPwdResult.getStatus()) {
 		case ServerConsts.CHECKPWD_STATUS_FREEZE:
 			map.put("msg", String.valueOf(checkPwdResult.getInfo()));
 			map.put("retCode", RetCodeConsts.PAY_FREEZE);
 			return map;
-
 		case ServerConsts.CHECKPWD_STATUS_INCORRECT:
 			logger.warn("payPwd is wrong !");
 			map.put("msg", String.valueOf(checkPwdResult.getInfo()));
 			map.put("retCode", RetCodeConsts.PAY_PWD_NOT_MATCH);
 			return map;
-
 		default:
 			break;
 		}
@@ -561,12 +559,20 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 				ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, transfer.getTransferId(), transfer.getCurrency(),
 				transfer.getTransferAmount());
 
+		//TODO 添加提现审批
+		
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");
 		return map;
 
 	}
-
+	
+	
+	//TODO 定时审批
+	public void withdrawReview() {
+		
+	}
+	
 	@Override
 	public void withdrawRefund(int userId, String transferId, String transferCurrency, BigDecimal transferAmount) {
 		User systemUser = userDAO.getSystemUser();

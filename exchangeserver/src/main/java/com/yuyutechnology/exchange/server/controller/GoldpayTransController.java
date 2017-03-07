@@ -159,6 +159,10 @@ public class GoldpayTransController {
 		}
 		HashMap<String, String> map = goldpayTransManager.withdrawConfirm1(sessionData.getUserId(),
 				reqMsg.getPayPwd(), reqMsg.getTransferId());
+		
+		//TODO 定时审批
+		
+		
 		if(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)){
 			HashMap<String, String> map2 = goldpayTransManager.withdrawConfirm2(sessionData.getUserId(), reqMsg.getTransferId());
 			rep.setRetCode(map2.get("retCode"));
