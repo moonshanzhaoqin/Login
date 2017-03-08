@@ -15,14 +15,8 @@ public interface OandaRatesManager {
 			BigDecimal transAmount, String type);
 
 	public Date getExchangeRateUpdateDate();
-	
-	
-	
-	
 
 	public BigDecimal getTotalBalance(int userId);
-
-	public void updateExchangeRate(boolean refresh);
 
 	public HashMap<String, Double> getExchangeRate(String base,String type);
 	
