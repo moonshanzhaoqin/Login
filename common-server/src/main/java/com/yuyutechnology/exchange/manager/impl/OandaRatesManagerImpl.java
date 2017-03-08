@@ -95,27 +95,6 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 	}
 	
 	@Override
-	public void updateExchangeRate(boolean refresh) {
-		PriceInfo priceInfo = getPriceInfo("USD","CNH");
-		if(priceInfo == null || refresh){
-			updateExchangeRates();
-		}else{
-			try {
-				String time = priceInfo.getTime().replace("T", " ").substring(0, 19);
-				logger.info("update time : {}", time);
-				Date lastUpdateDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(time);
-				int updatePeriod = ResourceUtils.getBundleValue4Long("rate.update.period.seconds", 0l).intValue();
-				if (new Date().getTime() - lastUpdateDate.getTime() >= updatePeriod * 1000) {
-					updateExchangeRates();
-				} 
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-		}
-	}
-	
-	
-	@Override
 	public BigDecimal getExchangedAmount(String currencyLeft,BigDecimal amountIn,String currencyRight,String type){
 		
 		
@@ -253,7 +232,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		
 		HashMap<String, Double> map = new HashMap<>();
 
-		List<Currency> list = currencyDAO.getCurrencys();
+		List<Currency> list = currencyDAO.getCurrentCurrency();
 
 		for (Currency currency : list) {
 
