@@ -127,7 +127,6 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		Double exchangeLimitNumOfPayPerDay =  configManager.
 				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITNUMBEROFPAYPERDAY, 100000d);
 		logger.info("exchangeLimitNumOfPayPerDay : {}",exchangeLimitNumOfPayPerDay.toString());
-//		Integer totalNumOfDailyExchange = exchangeDAO.getTotalNumOfDailyExchange();
 		Integer totalNumOfDailyExchange = transferDAO.getCumulativeNumofTimes("exchange_"+userId);
 		if(exchangeLimitNumOfPayPerDay <= new Double(totalNumOfDailyExchange)){
 			logger.warn("Exceeds the maximum number of exchange per day");
@@ -167,6 +166,8 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		map.put("msg", "ok");
 		map.put("out", map2.get("out").toString());
 		map.put("in", map2.get("in").toString());
+		map.put("fee", map2.get("fee").toString());
+		map.put("perThousand", map2.get("perThousand").toString());
 		return map;
 	}
 
@@ -208,6 +209,8 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			exchange.setCreateTime(new Date());
 			exchange.setFinishTime(new Date());
 			exchange.setExchangeRate(oandaRatesManager.getSingleExchangeRate(currencyOut, currencyIn));
+			exchange.setExchangeFeePerThousand(new BigDecimal(result.get("perThousand")));
+			exchange.setExchangeFeeAmount(new BigDecimal(result.get("fee")));
 
 			exchangeDAO.addExchange(exchange);
 
@@ -296,17 +299,26 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		if (currencyOut.equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
 			bitsOut = 0;
 		}
+		
+		String exchangeFeePerThousand = configManager.getConfigStringValue(ConfigKeyEnum.EXCHANGEFEE, "1.5");
 
 		BigDecimal in = (oandaRatesManager.getExchangedAmount(currencyOut, outAmount, currencyIn, "ask"))
 				.setScale(bitsIn, BigDecimal.ROUND_FLOOR);
+		
+		BigDecimal fee = in.multiply(new BigDecimal(((Double.parseDouble(exchangeFeePerThousand))/1000)+""))
+				.setScale(bitsIn, BigDecimal.ROUND_FLOOR);;
 		
 		BigDecimal out = (oandaRatesManager.getExchangedAmount(currencyIn, in, currencyOut, "ask"))
 				.setScale(bitsOut, BigDecimal.ROUND_CEILING);
 
 		HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>();
+		
+		logger.info(" out : {}, in : {} ,fee : {} ,per thousand : {}  ",out,in.subtract(fee),fee,exchangeFeePerThousand);
 
 		map.put("out", out);
-		map.put("in", in);
+		map.put("in", in.subtract(fee));
+		map.put("fee", fee);
+		map.put("perThousand", new BigDecimal(exchangeFeePerThousand));
 
 		return map;
 
