@@ -104,8 +104,8 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 				String time = priceInfo.getTime().replace("T", " ").substring(0, 19);
 				logger.info("update time : {}", time);
 				Date lastUpdateDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(time);
-				int updatePeriod = ResourceUtils.getBundleValue4Long("rate.update.period.minuate", 0l).intValue();
-				if (new Date().getTime() - lastUpdateDate.getTime() >= updatePeriod * 60 * 1000) {
+				int updatePeriod = ResourceUtils.getBundleValue4Long("rate.update.period.seconds", 0l).intValue();
+				if (new Date().getTime() - lastUpdateDate.getTime() >= updatePeriod * 1000) {
 					updateExchangeRates();
 				} 
 			} catch (Exception e) {
@@ -253,15 +253,13 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		
 		HashMap<String, Double> map = new HashMap<>();
 
-		List<Currency> list = currencyDAO.getCurrentCurrency();
+		List<Currency> list = currencyDAO.getCurrencys();
 
 		for (Currency currency : list) {
 
 			if (!currency.getCurrency().equals(base)) {
 				BigDecimal value = getSingleExchangeRate(base, currency.getCurrency());
-				if(value != null){
-					map.put(currency.getCurrency(), value.doubleValue());
-				}
+				map.put(currency.getCurrency(), value.doubleValue());
 			}
 		}
 
@@ -438,12 +436,11 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 	private OandaRespData getCurrentPrices(String instruments){
 		
 		OandaRespData oandaRespData = null;
-	
-		String domain = ResourceUtils.getBundleValue4String("oanda.exchangerate.url", "https://api-fxpractice.oanda.com/v1/prices");
-		String bearer = ResourceUtils.getBundleValue4String("oanda.exchangerate.key", "d413e2cd916ebc4613376c3a3ca826ae-ebdc8079ec4cca1b1d650ea030036226");
+		
+		String domain = "https://api-fxpractice.oanda.com/v1/prices";
 		String params = "instruments="+instruments;
 		BasicHeader basicHeader = new BasicHeader("Authorization", 
-				"Bearer " + bearer);
+				"Bearer " + "d413e2cd916ebc4613376c3a3ca826ae-ebdc8079ec4cca1b1d650ea030036226");
 		String result = HttpClientUtils.sendGet(domain,params,basicHeader);
 		logger.info("result : {}",result);
 		
