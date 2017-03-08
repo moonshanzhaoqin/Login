@@ -17,7 +17,8 @@ public interface GoldpayTransManager {
 
 	public HashMap<String, String> goldpayWithdraw(int userId, double amount);
 
-//	public HashMap<String, String> withdrawConfirm(int userId, String payPwd, String transferId);
+	// public HashMap<String, String> withdrawConfirm(int userId, String payPwd,
+	// String transferId);
 
 	/**
 	 * 提现第一步：exanytime划账
@@ -42,5 +43,15 @@ public interface GoldpayTransManager {
 	public void withdrawRefund(int userId, String transferId, String transferCurrency, BigDecimal transferAmount);
 
 	public List<Transfer> findGoldpayWithdrawByTimeBefore(Date date);
+
+	/**
+	 * 提现审批
+	 */
+	void withdrawReview();
+
+	/**
+	 * 对通过审核的提现进行goldpay划账
+	 */
+	void goldpayRemit();
 
 }

@@ -168,4 +168,31 @@ public class ServerConsts {
 	 * 重置支付密码
 	 */
 	public static final String RESETPAYPWD = "RESETPAYPWD";
+	
+	/**
+	 * 审批状态-未审批
+	 */
+	public static final int REVIEW_STATUS_NEED = 0;
+	/**
+	 * 审批状态-未通过
+	 */
+	public static final int REVIEW_STATUS_FAIL = 1;
+	/**
+	 * 审批状态-通过
+	 */
+	public static final int REVIEW_STATUS_PASS = 2;
+	
+	/**
+	 * goldPay划账结果-未执行
+	 */
+	public static final int GOLDPAY_REMIT_TODO = 0;
+	/**
+	 * goldPay划账结果-失败
+	 */
+	public static final int GOLDPAY_REMIT_FAIL = 1;
+	/**
+	 * goldPay划账结果-成功
+	 */
+	public static final int GOLDPAY_REMIT_SUCCESS= 2;
+	
 }
