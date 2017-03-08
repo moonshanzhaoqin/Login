@@ -253,13 +253,15 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		
 		HashMap<String, Double> map = new HashMap<>();
 
-		List<Currency> list = currencyDAO.getCurrencys();
+		List<Currency> list = currencyDAO.getCurrentCurrency();
 
 		for (Currency currency : list) {
 
 			if (!currency.getCurrency().equals(base)) {
 				BigDecimal value = getSingleExchangeRate(base, currency.getCurrency());
-				map.put(currency.getCurrency(), value.doubleValue());
+				if(value != null){
+					map.put(currency.getCurrency(), value.doubleValue());
+				}
 			}
 		}
 
@@ -436,11 +438,12 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 	private OandaRespData getCurrentPrices(String instruments){
 		
 		OandaRespData oandaRespData = null;
-		
-		String domain = "https://api-fxpractice.oanda.com/v1/prices";
+	
+		String domain = ResourceUtils.getBundleValue4String("oanda.exchangerate.url", "https://api-fxpractice.oanda.com/v1/prices");
+		String bearer = ResourceUtils.getBundleValue4String("oanda.exchangerate.key", "d413e2cd916ebc4613376c3a3ca826ae-ebdc8079ec4cca1b1d650ea030036226");
 		String params = "instruments="+instruments;
 		BasicHeader basicHeader = new BasicHeader("Authorization", 
-				"Bearer " + "d413e2cd916ebc4613376c3a3ca826ae-ebdc8079ec4cca1b1d650ea030036226");
+				"Bearer " + bearer);
 		String result = HttpClientUtils.sendGet(domain,params,basicHeader);
 		logger.info("result : {}",result);
 		
