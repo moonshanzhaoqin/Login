@@ -214,7 +214,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			exchange.setAmountIn(new BigDecimal(result.get("in")));
 			exchange.setCreateTime(new Date());
 			exchange.setFinishTime(new Date());
-			exchange.setExchangeRate(oandaRatesManager.getSingleExchangeRate(currencyOut, currencyIn,"bid"));
+			exchange.setExchangeRate(oandaRatesManager.getSingleExchangeRate(currencyOut, currencyIn));
 
 			exchangeDAO.addExchange(exchange);
 

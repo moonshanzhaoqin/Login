@@ -26,7 +26,7 @@ public interface OandaRatesManager {
 
 	public HashMap<String, Double> getExchangeRate(String base,String type);
 	
-	public BigDecimal getSingleExchangeRate(String currencyLeft, String currencyRight,String type);
+	public BigDecimal getSingleExchangeRate(String currencyLeft, String currencyRight);
 	
 	
 

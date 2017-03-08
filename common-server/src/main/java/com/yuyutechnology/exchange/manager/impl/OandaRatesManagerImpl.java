@@ -123,19 +123,21 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 				&&(!currencyRight.equals("GDQ")&&!currencyRight.equals("XAU"))){
 			
 			//获取汇率，如果存在  amountIn*汇率
-			BigDecimal exchangeRate = getExchangeRate(currencyLeft,currencyRight,type);
+			BigDecimal exchangeRate = getExchangeRate(currencyLeft,currencyRight,"bid");
 			
 			if(exchangeRate != null){
 				return amountIn.multiply(exchangeRate);
 			}else{
 				//如果不存在  amount/汇率
-				exchangeRate = getExchangeRate(currencyRight,currencyLeft,type);
+				exchangeRate = getExchangeRate(currencyRight,currencyLeft,"ask");
 				if(exchangeRate != null){
 					return amountIn.divide(exchangeRate, 8, BigDecimal.ROUND_DOWN);
 				}else{
 					return new BigDecimal("-1");
 				}
 			}
+			
+			
 		}
 		//黄金与其他货币的兑换
 		
@@ -146,7 +148,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		if(currencyLeft.equals("GDQ") || currencyRight.equals("GDQ")){
 			
 			//首先获取 1oz黄金对应的美元价值
-			BigDecimal rate4XAU2USD = getExchangeRate("XAU", "USD", type);
+			BigDecimal rate4XAU2USD = getExchangeRate("XAU", "USD", "bid");
 			//计算1GDQ对应的美元价值
 			BigDecimal rate4GDQ2USD = rate4XAU2USD.divide(new BigDecimal("10000").
 					multiply(new BigDecimal(ResourceUtils.getBundleValue4String("exchange.oz4g", "31.1034768"))),
@@ -157,11 +159,11 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 				if(currencyRight.equals("USD")){
 					return rate4GDQ2USD.multiply(amountIn);
 				}else{
-					BigDecimal rateUSD2Other = getExchangeRate("USD",currencyRight,type);
+					BigDecimal rateUSD2Other = getExchangeRate("USD",currencyRight,"bid");
 					if(rateUSD2Other != null){
 						return amountIn.multiply(rate4GDQ2USD).multiply(rateUSD2Other);
 					}else{
-						BigDecimal rateOther2USD = getExchangeRate(currencyRight,"USD",type);
+						BigDecimal rateOther2USD = getExchangeRate(currencyRight,"USD","ask");
 						if(rateOther2USD != null){
 							return rate4GDQ2USD.multiply(new BigDecimal("1")
 									.divide(rateOther2USD,8,BigDecimal.ROUND_DOWN))
@@ -177,11 +179,11 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 				if(currencyLeft.equals("USD")){
 					return amountIn.divide(rate4GDQ2USD, 8, BigDecimal.ROUND_DOWN);
 				}else{
-					BigDecimal rateOther2USD = getExchangeRate(currencyLeft,"USD",type);
+					BigDecimal rateOther2USD = getExchangeRate(currencyLeft,"USD","ask");
 					if(rateOther2USD!= null){
 						return rateOther2USD.divide(rate4GDQ2USD,8,BigDecimal.ROUND_DOWN).multiply(amountIn);
 					}else{
-						BigDecimal rateUSD2Other = getExchangeRate("USD",currencyLeft,type);
+						BigDecimal rateUSD2Other = getExchangeRate("USD",currencyLeft,"ask");
 						if(rateUSD2Other != null){
 							return new BigDecimal("1")
 									.divide(rate4GDQ2USD.multiply(rateUSD2Other),8,BigDecimal.ROUND_DOWN)
@@ -256,7 +258,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		for (Currency currency : list) {
 
 			if (!currency.getCurrency().equals(base)) {
-				BigDecimal value = getSingleExchangeRate(base, currency.getCurrency(),type);
+				BigDecimal value = getSingleExchangeRate(base, currency.getCurrency());
 				map.put(currency.getCurrency(), value.doubleValue());
 			}
 		}
@@ -265,18 +267,18 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		
 	}
 	@Override
-	public BigDecimal getSingleExchangeRate(String currencyLeft, String currencyRight,String type) {
+	public BigDecimal getSingleExchangeRate(String currencyLeft, String currencyRight) {
 		if((!currencyLeft.equals("GDQ")&&!currencyLeft.equals("XAU"))
 				&&(!currencyRight.equals("GDQ")&&!currencyRight.equals("XAU"))){
 			
 			//获取汇率，如果存在  amountIn*汇率
-			BigDecimal exchangeRate = getExchangeRate(currencyLeft,currencyRight,type);
+			BigDecimal exchangeRate = getExchangeRate(currencyLeft,currencyRight,"bid");
 			
 			if(exchangeRate != null){
 				return exchangeRate;
 			}else{
 				//如果不存在  amount/汇率
-				exchangeRate = getExchangeRate(currencyRight,currencyLeft,type);
+				exchangeRate = getExchangeRate(currencyRight,currencyLeft,"ask");
 				if(exchangeRate != null){
 					return (new BigDecimal("1")).divide(exchangeRate, 8, BigDecimal.ROUND_DOWN);
 				}else{
@@ -293,7 +295,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		if(currencyLeft.equals("GDQ") || currencyRight.equals("GDQ")){
 			
 			//首先获取 1oz黄金对应的美元价值
-			BigDecimal rate4XAU2USD = getExchangeRate("XAU", "USD", type);
+			BigDecimal rate4XAU2USD = getExchangeRate("XAU", "USD", "bid");
 			//计算1GDQ对应的美元价值
 			BigDecimal rate4GDQ2USD = rate4XAU2USD.divide(new BigDecimal("10000").
 					multiply(new BigDecimal(ResourceUtils.getBundleValue4String("exchange.oz4g", "31.1034768"))),
@@ -304,11 +306,11 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 				if(currencyRight.equals("USD")){
 					return rate4GDQ2USD;
 				}else{
-					BigDecimal rateUSD2Other = getExchangeRate("USD",currencyRight,type);
+					BigDecimal rateUSD2Other = getExchangeRate("USD",currencyRight,"bid");
 					if(rateUSD2Other != null){
 						return rate4GDQ2USD.multiply(rateUSD2Other);
 					}else{
-						BigDecimal rateOther2USD = getExchangeRate(currencyRight,"USD",type);
+						BigDecimal rateOther2USD = getExchangeRate(currencyRight,"USD","ask");
 						if(rateOther2USD != null){
 							return rate4GDQ2USD.multiply(new BigDecimal("1")
 									.divide(rateOther2USD,8,BigDecimal.ROUND_DOWN));
@@ -323,11 +325,11 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 				if(currencyLeft.equals("USD")){
 					return (new BigDecimal("1")).divide(rate4GDQ2USD, 8, BigDecimal.ROUND_DOWN);
 				}else{
-					BigDecimal rateOther2USD = getExchangeRate(currencyLeft,"USD",type);
+					BigDecimal rateOther2USD = getExchangeRate(currencyLeft,"USD","ask");
 					if(rateOther2USD!= null){
 						return rateOther2USD.divide(rate4GDQ2USD,8,BigDecimal.ROUND_DOWN);
 					}else{
-						BigDecimal rateUSD2Other = getExchangeRate("USD",currencyLeft,type);
+						BigDecimal rateUSD2Other = getExchangeRate("USD",currencyLeft,"ask");
 						if(rateUSD2Other != null){
 							return new BigDecimal("1")
 									.divide(rate4GDQ2USD.multiply(rateUSD2Other),8,BigDecimal.ROUND_DOWN);
