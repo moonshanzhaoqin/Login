@@ -253,7 +253,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		
 		HashMap<String, Double> map = new HashMap<>();
 
-		List<Currency> list = currencyDAO.getCurrencys();
+		List<Currency> list = currencyDAO.getCurrentCurrency();
 
 		for (Currency currency : list) {
 
