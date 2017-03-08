@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +22,7 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
-import com.yuyutechnology.exchange.manager.ExchangeRateManager;
+import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.pojo.Exchange;
 import com.yuyutechnology.exchange.server.controller.dto.ExchangeDTO;
 import com.yuyutechnology.exchange.server.controller.request.ExchangeCalculationRequest;
@@ -43,7 +43,7 @@ public class ExchangeController {
 	@Autowired
 	ExchangeManager exchangeManager;
 	@Autowired
-	ExchangeRateManager exchangeRateManager;
+	OandaRatesManager oandaRatesManager;
 	@Autowired
 	CommonManager commonManager;
 
@@ -97,7 +97,7 @@ public class ExchangeController {
 		if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			rep.setAmountIn(Double.parseDouble(result.get("in")));
 			rep.setAmountOut(Double.parseDouble(result.get("out")));
-			rep.setRateUpdateTime(exchangeRateManager.getExchangeRateUpdateDate());
+			rep.setRateUpdateTime(oandaRatesManager.getExchangeRateUpdateDate());
 		}else if(result.get("retCode").equals(RetCodeConsts.EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY)){
 			rep.setOpts(new String[]{result.get("msg"),result.get("thawTime")});
 		}else if(result.get("retCode").equals(RetCodeConsts.EXCHANGE_LIMIT_EACH_TIME)){
@@ -120,7 +120,7 @@ public class ExchangeController {
 			rep.setMessage("This currency is not a tradable currency");
 			return rep;
 		}
-		HashMap<String, Double> map = exchangeRateManager.getExchangeRate(reqMsg.getBase());
+		HashMap<String, Double> map = oandaRatesManager.getExchangeRate(reqMsg.getBase(),"bid");
 		if (map.isEmpty()) {
 			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 			rep.setMessage("Failed to get exchange rate");
@@ -129,7 +129,7 @@ public class ExchangeController {
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		rep.setBase(reqMsg.getBase());
-		rep.setRateUpdateTime(exchangeRateManager.getExchangeRateUpdateDate());
+		rep.setRateUpdateTime(oandaRatesManager.getExchangeRateUpdateDate());
 		rep.setExchangeRates(map);
 
 		return rep;

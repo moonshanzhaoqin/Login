@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.WalletDAO;
-import com.yuyutechnology.exchange.manager.ExchangeRateManager;
+import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.manager.WalletManager;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
@@ -24,7 +24,7 @@ public class WalletManagerImpl implements WalletManager {
 	WalletDAO walletDAO;
 	
 	@Autowired
-	ExchangeRateManager exchangeRateManager;
+	OandaRatesManager oandaRatesManager;
 	
 	public static Logger logger = LogManager.getLogger(WalletManagerImpl.class);
 	
@@ -43,12 +43,15 @@ public class WalletManagerImpl implements WalletManager {
 			
 			if(!wallet.getCurrency().getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 				
-				double exchangeRate = exchangeRateManager.getExchangeRate(
-						wallet.getCurrency().getCurrency(), ServerConsts.CURRENCY_OF_GOLDPAY);
+//				double exchangeRate = oandaRatesManager.getExchangeRate(
+//						wallet.getCurrency().getCurrency(), ServerConsts.CURRENCY_OF_GOLDPAY);			
+//				logger.info("base : {} for goldpay ,exchangeRate : {}" ,wallet.getCurrency().getCurrency(),exchangeRate);
+//				goldpayAmount = goldpayAmount.add(wallet.getBalance().multiply(new BigDecimal(Double.toString(exchangeRate))));
 				
-				logger.info("base : {} for goldpay ,exchangeRate : {}" ,wallet.getCurrency().getCurrency(),exchangeRate);
+				BigDecimal num = oandaRatesManager.getExchangedAmount(wallet.getCurrency().getCurrency(), 
+						goldpayAmount, ServerConsts.CURRENCY_OF_GOLDPAY, "bid");
 				
-				goldpayAmount = goldpayAmount.add(wallet.getBalance().multiply(new BigDecimal(Double.toString(exchangeRate))));
+				goldpayAmount = goldpayAmount.add(num);
 				
 			}else{
 				goldpayAmount = goldpayAmount.add(wallet.getBalance());

@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
-import com.yuyutechnology.exchange.manager.ExchangeRateManager;
+import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.pojo.CrmUserInfo;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
@@ -38,14 +38,14 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 	RedisDAO redisDAO;
 
 	@Autowired
-	ExchangeRateManager exchangeRateManager;
+	OandaRatesManager oandaRatesManager;
 
 	public static Logger logger = LogManager.getLogger(CrmUserInfoManagerImpl.class);
 
 	@Override
 	public void updateUserInfo(User user) {
 		CrmUserInfo crmUserInfo = new CrmUserInfo(user);
-		BigDecimal totalBalance = exchangeRateManager.getTotalBalance(user.getUserId());
+		BigDecimal totalBalance = oandaRatesManager.getTotalBalance(user.getUserId());
 		logger.info("current time : {} , user Id : {} ,totalBalance : {}",
 				new Object[] { new Date(), user.getUserId(), totalBalance });
 		crmUserInfo.setUserTotalAssets(totalBalance);
@@ -77,7 +77,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 			if (entry.getKey().equals(ServerConsts.STANDARD_CURRENCY)) {
 				totalAssets = totalAssets.add(entry.getValue());
 			} else {
-				totalAssets = totalAssets.add(exchangeRateManager.getExchangeResult(entry.getKey(), entry.getValue()));
+				totalAssets = totalAssets.add(oandaRatesManager.getDefaultCurrencyAmount(entry.getKey(), entry.getValue(),"bid"));
 			}
 		}
 		map.put("totalAssets", totalAssets.setScale(4, RoundingMode.DOWN));
@@ -110,7 +110,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 					totalAssets = totalAssets.add(entry.getValue());
 				} else {
 					totalAssets = totalAssets
-							.add(exchangeRateManager.getExchangeResult(entry.getKey(), entry.getValue()));
+							.add(oandaRatesManager.getDefaultCurrencyAmount(entry.getKey(), entry.getValue(),"bid"));
 				}
 			}
 		}

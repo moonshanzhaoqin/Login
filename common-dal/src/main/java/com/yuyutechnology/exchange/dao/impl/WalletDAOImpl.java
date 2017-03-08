@@ -8,11 +8,11 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
@@ -62,10 +62,6 @@ public class WalletDAOImpl implements WalletDAO {
 	@Override
 	public Integer updateWalletByUserIdAndCurrency(final int userId, final String currency, final BigDecimal amount,
 			final String capitalFlows) {
-
-		logger.info(
-				"updateWalletByUserIdAndCurrency , userId : {} , currency " + ": {}, amount : {}, capitalFlows : {}",
-				new Object[] { userId, currency, amount.toString(), capitalFlows });
 
 		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
 			@Override

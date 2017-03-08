@@ -45,7 +45,7 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 	    
 	   	<task:scheduled 
 	    ref="autoCalculateUserAssetsTask" 
-	    method="autoUpdateExchangeRateTask" 
+	    method="autoCalculateUserAssetsTask" 
 	    fixed-delay="900000" initial-delay="1000"/>
 	    
 	    <task:scheduled 

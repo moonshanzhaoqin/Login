@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import org.junit.Test;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class BigDecimalTEST extends BaseSpringJunit4 {
 	public static Logger logger = LogManager.getLogger(AdminTest.class);

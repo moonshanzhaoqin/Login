@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ import com.yuyutechnology.exchange.dao.ConfigDAO;
 import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
-import com.yuyutechnology.exchange.manager.ExchangeRateManager;
+import com.yuyutechnology.exchange.manager.SpareExchangeRateManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.utils.HttpTookit;
@@ -32,7 +32,7 @@ import com.yuyutechnology.exchange.utils.exchangerate.ExchangeRate;
 import com.yuyutechnology.exchange.utils.exchangerate.GoldpayExchangeRate;
 
 @Service
-public class ExchangeRateManagerImpl implements ExchangeRateManager {
+public class ExchangeRateManagerImpl implements SpareExchangeRateManager {
 
 	@Autowired
 	RedisDAO redisDAO;
