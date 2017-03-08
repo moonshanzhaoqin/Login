@@ -1,16 +1,11 @@
 package com.yuyutechnology.exchange.task;
 
-import java.math.BigDecimal;
 import java.util.Date;
-import java.util.HashMap;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.yuyutechnology.exchange.manager.CrmAlarmManager;
-import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 
 @Component
