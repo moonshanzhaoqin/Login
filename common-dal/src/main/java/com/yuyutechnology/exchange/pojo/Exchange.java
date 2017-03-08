@@ -30,6 +30,10 @@ public class Exchange implements java.io.Serializable {
 	private BigDecimal amountOut;
 	private BigDecimal amountIn;
 	private BigDecimal exchangeRate;
+	
+	private BigDecimal exchangeFeePerThousand;
+	private BigDecimal exchangeFeeAmount;
+	
 	private Date createTime;
 	private Date finishTime;
 	private int exchangeStatus;
@@ -126,6 +130,24 @@ public class Exchange implements java.io.Serializable {
 
 	public void setExchangeRate(BigDecimal exchangeRate) {
 		this.exchangeRate = exchangeRate;
+	}
+
+	@Column(name = "exchange_fee_per_thousand", nullable = false, precision = 20, scale = 4)
+	public BigDecimal getExchangeFeePerThousand() {
+		return exchangeFeePerThousand;
+	}
+
+	public void setExchangeFeePerThousand(BigDecimal exchangeFeePerThousand) {
+		this.exchangeFeePerThousand = exchangeFeePerThousand;
+	}
+
+	@Column(name = "exchange_fee_amount", nullable = false, precision = 20, scale = 4)
+	public BigDecimal getExchangeFeeAmount() {
+		return exchangeFeeAmount;
+	}
+
+	public void setExchangeFeeAmount(BigDecimal exchangeFeeAmount) {
+		this.exchangeFeeAmount = exchangeFeeAmount;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)

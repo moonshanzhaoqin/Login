@@ -104,8 +104,8 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 				String time = priceInfo.getTime().replace("T", " ").substring(0, 19);
 				logger.info("update time : {}", time);
 				Date lastUpdateDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(time);
-				int updatePeriod = ResourceUtils.getBundleValue4Long("rate.update.period.minuate", 0l).intValue();
-				if (new Date().getTime() - lastUpdateDate.getTime() >= updatePeriod * 60 * 1000) {
+				int updatePeriod = ResourceUtils.getBundleValue4Long("rate.update.period.seconds", 0l).intValue();
+				if (new Date().getTime() - lastUpdateDate.getTime() >= updatePeriod * 1000) {
 					updateExchangeRates();
 				} 
 			} catch (Exception e) {
