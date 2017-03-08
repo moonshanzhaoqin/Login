@@ -89,9 +89,6 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			BigDecimal amountOut) {
 
 		HashMap<String, String> map = new HashMap<String, String>();
-		
-
-		
 		if(!commonManager.verifyCurrency(currencyOut) || !commonManager.verifyCurrency(currencyIn)){
 			logger.warn("This currency is not a tradable currency");
 			map.put("retCode", RetCodeConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
@@ -152,10 +149,6 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			return map;
 		}
 		// 然后判断换算后金额是否超过最小限额
-//		double exchangeRate = oandaRatesManager.getExchangeRate(currencyOut, currencyIn);
-//		BigDecimal result = amountOut.multiply(new BigDecimal(Double.toString(exchangeRate)));
-//		logger.info("out : " + amountOut + " exchangeRate : " + exchangeRate + "result : " + result);
-		
 		BigDecimal result = oandaRatesManager.getExchangedAmount(currencyOut, amountOut, currencyIn, "bid");
 		
 		if (currencyIn.equals(ServerConsts.CURRENCY_OF_GOLDPAY) && result.compareTo(new BigDecimal(1)) == 1) {
