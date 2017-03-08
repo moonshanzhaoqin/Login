@@ -54,7 +54,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		
 		logger.info("instruments from redis : {}",instruments);
 		
-		List<Currency> currencies = currencyDAO.getCurrentCurrency();
+		List<Currency> currencies = currencyDAO.getCurrencys();
 		
 		if(StringUtils.isNotBlank(instruments)){
 			
