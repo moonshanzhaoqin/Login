@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CrmAlarmDAO;
-import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.NotificationDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
@@ -58,8 +57,6 @@ public class TransferManagerImpl implements TransferManager{
 	@Autowired
 	WalletDAO walletDAO;
 	@Autowired
-	CurrencyDAO currencyDAO;
-	@Autowired
 	TransferDAO transferDAO;
 	@Autowired
 	WalletSeqDAO walletSeqDAO;
@@ -69,7 +66,6 @@ public class TransferManagerImpl implements TransferManager{
 	NotificationDAO notificationDAO;
 	@Autowired
 	CrmAlarmDAO crmAlarmDAO;
-	
 	@Autowired
 	OandaRatesManager oandaRatesManager;
 	@Autowired
@@ -116,7 +112,7 @@ public class TransferManagerImpl implements TransferManager{
 			return map;
 		}
 		
-		Currency unit = currencyDAO.getCurrency("USD");
+		Currency unit = commonManager.getCurreny("USD");
 		
 		//每次支付金额限制
 		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
@@ -886,7 +882,8 @@ public class TransferManagerImpl implements TransferManager{
 		
 		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
-		Currency unit = currencyDAO.getCurrency("USD");
+		
+		Currency unit = commonManager.getCurreny("USD");
 		
 		if(unit == null){
 			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
