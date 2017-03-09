@@ -44,7 +44,6 @@ public class CurrencyManagerImpl implements CurrencyManager {
 
 	@Override
 	public void updateCurrency(Currency currency) {
-		// TODO Auto-generated method stub
 		currencyDAO.updateCurrency(currency);
 	}
 

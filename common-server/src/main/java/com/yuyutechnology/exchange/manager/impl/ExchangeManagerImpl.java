@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CrmAlarmDAO;
-import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.ExchangeDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
@@ -45,8 +44,6 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	@Autowired
 	WalletDAO walletDAO;
 	@Autowired
-	CurrencyDAO currencyDAO;
-	@Autowired
 	ExchangeDAO exchangeDAO;
 	@Autowired
 	WalletSeqDAO walletSeqDAO;
@@ -54,7 +51,6 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	TransferDAO transferDAO;
 	@Autowired
 	CrmAlarmDAO crmAlarmDAO;
-	
 	@Autowired
 	OandaRatesManager oandaRatesManager;
 	@Autowired
@@ -96,7 +92,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			return map;
 		}
 		
-		Currency unit = currencyDAO.getCurrency("USD");
+		Currency unit = commonManager.getCurreny("USD");
 		
 		//每次兑换金额限制
 		BigDecimal exchangeLimitPerPay =  BigDecimal.valueOf(configManager.
@@ -306,9 +302,11 @@ public class ExchangeManagerImpl implements ExchangeManager {
 				.setScale(bitsIn, BigDecimal.ROUND_FLOOR);
 		
 		BigDecimal fee = in.multiply(new BigDecimal(((Double.parseDouble(exchangeFeePerThousand))/1000)+""))
-				.setScale(bitsIn, BigDecimal.ROUND_FLOOR);;
+				.setScale(bitsIn, BigDecimal.ROUND_FLOOR);
 		
-		BigDecimal out = (oandaRatesManager.getExchangedAmount(currencyIn, in, currencyOut, "ask"))
+		
+		
+		BigDecimal out = (oandaRatesManager.getInputValue(currencyOut, in, currencyIn))
 				.setScale(bitsOut, BigDecimal.ROUND_CEILING);
 
 		HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>();

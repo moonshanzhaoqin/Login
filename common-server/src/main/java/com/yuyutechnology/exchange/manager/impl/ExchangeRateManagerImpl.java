@@ -19,9 +19,9 @@ import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.ConfigDAO;
-import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
+import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.SpareExchangeRateManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Wallet;
@@ -41,7 +41,7 @@ public class ExchangeRateManagerImpl implements SpareExchangeRateManager {
 	@Autowired
 	WalletDAO walletDAO;
 	@Autowired
-	CurrencyDAO currencyDAO;
+	CommonManager commonManager;
 
 	private static int scale = 20;
 
@@ -49,7 +49,7 @@ public class ExchangeRateManagerImpl implements SpareExchangeRateManager {
 
 	private void updateExchangeRateNoGoldq() {
 		String exchangeRateUrl = ResourceUtils.getBundleValue4String("exchange.rate.url", "http://api.fixer.io/latest");
-		List<Currency> currencies = currencyDAO.getCurrencys();
+		List<Currency> currencies = commonManager.getAllCurrencies();
 		if (currencies.isEmpty()) {
 			return;
 		}
@@ -117,7 +117,7 @@ public class ExchangeRateManagerImpl implements SpareExchangeRateManager {
 			// others4Gdp 表示 1其他币种兑换多少gdp
 			Map<String, BigDecimal> others4Gdp = new HashMap<String, BigDecimal>();
 			others4Gdp.put(ServerConsts.STANDARD_CURRENCY, USD4GdpExchangeRate);
-			List<Currency> list = currencyDAO.getCurrencys();
+			List<Currency> list = commonManager.getAllCurrencies();
 			for (Currency index : list) {
 				if (!index.getCurrency().equals(ServerConsts.STANDARD_CURRENCY)
 						&& !index.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
@@ -185,7 +185,7 @@ public class ExchangeRateManagerImpl implements SpareExchangeRateManager {
 
 		HashMap<String, Double> map = new HashMap<>();
 
-		List<Currency> list = currencyDAO.getCurrencys();
+		List<Currency> list = commonManager.getAllCurrencies();
 
 		for (Currency currency : list) {
 

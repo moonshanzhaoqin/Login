@@ -18,9 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
-import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
+import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Wallet;
@@ -37,8 +37,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 	@Autowired
 	WalletDAO walletDAO;
 	@Autowired
-	CurrencyDAO currencyDAO;
-	
+	CommonManager commonManager;
 	
 	@Autowired
 	RedisDAO redisDAO;
@@ -55,7 +54,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		
 		logger.info("instruments from redis : {}",instruments);
 		
-		List<Currency> currencies = currencyDAO.getCurrencys();
+		List<Currency> currencies = commonManager.getAllCurrencies();
 		
 		if(StringUtils.isNotBlank(instruments)){
 			
@@ -244,7 +243,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		
 		HashMap<String, Double> map = new HashMap<>();
 
-		List<Currency> list = currencyDAO.getCurrentCurrency();
+		List<Currency> list = commonManager.getAllCurrencies();
 
 		for (Currency currency : list) {
 
@@ -337,7 +336,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 	@Override
 	public List<PriceInfo> getAllPrices(){
 		
-		List<Currency> currencies = currencyDAO.getCurrentCurrency();
+		List<Currency> currencies = commonManager.getAllCurrencies();
 		List<PriceInfo> priceInfos = new LinkedList<>();
 		
 		for (Currency currency1 : currencies) {
@@ -358,6 +357,25 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		
 		
 		return priceInfos;
+		
+	}
+	
+	@Override
+	public BigDecimal getInputValue(String currencyLeft,BigDecimal amount, String currencyRight){
+		
+		
+		BigDecimal exchangeRate = getExchangeRate(currencyLeft,currencyRight,"bid");
+		if(exchangeRate != null){
+			return amount.divide(exchangeRate,8, BigDecimal.ROUND_UP);
+		}else{
+			exchangeRate = getExchangeRate(currencyRight,currencyLeft,"ask");
+			if(exchangeRate!= null){
+				return amount.multiply(exchangeRate);
+			}
+		}
+		
+		
+		return null;
 		
 	}
 	
