@@ -304,8 +304,6 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		BigDecimal fee = in.multiply(new BigDecimal(((Double.parseDouble(exchangeFeePerThousand))/1000)+""))
 				.setScale(bitsIn, BigDecimal.ROUND_FLOOR);
 		
-		
-		
 		BigDecimal out = (oandaRatesManager.getInputValue(currencyOut, in, currencyIn))
 				.setScale(bitsOut, BigDecimal.ROUND_CEILING);
 
