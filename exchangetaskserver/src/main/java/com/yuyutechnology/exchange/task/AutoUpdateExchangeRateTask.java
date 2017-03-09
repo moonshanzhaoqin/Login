@@ -22,9 +22,9 @@ public class AutoUpdateExchangeRateTask {
 	public static Logger logger = LogManager.getLogger(AutoUpdateExchangeRateTask.class);
 	
 	public void autoUpdateExchangeRateTask(){
-		logger.info("=============autoUpdateExchangeRateTask Start==================");
+		logger.info("=============autoUpdateExchangeRateTask Start=================={}",new SimpleDateFormat("HH:mm:ss").format(new Date()));
 		oandaRatesManager.updateExchangeRates();
-		logger.info("=============End at {}==================",new Date());
+		logger.info("=============End at {}==================",new SimpleDateFormat("HH:mm:ss").format(new Date()));
 	}
 	
 	public void autoSystemRefundBatch(){
