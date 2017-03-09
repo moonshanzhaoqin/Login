@@ -33,7 +33,7 @@ public class OandaRatesTest extends BaseSpringJunit4 {
 		
 //		logger.info("amount : {}",amount);
 		
-		oandaRatesManager.getExchangeRateUpdateDate();
+//		oandaRatesManager.getExchangeRateUpdateDate();
 
 		
 	}

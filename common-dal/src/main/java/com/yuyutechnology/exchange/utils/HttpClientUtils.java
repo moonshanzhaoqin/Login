@@ -77,7 +77,7 @@ public class HttpClientUtils {
         	}
             HttpUriRequest httpGet = new HttpGet(urlName);
             httpGet.setHeader(basicHeader);
-            logger.info("Executing request: {}",httpGet.getRequestLine());
+//            logger.info("Executing request: {}",httpGet.getRequestLine());
             HttpResponse resp = httpClient.execute(httpGet);
             HttpEntity entity = resp.getEntity();
             if (resp.getStatusLine().getStatusCode() == 200 && entity != null) {
@@ -90,7 +90,8 @@ public class HttpClientUtils {
             } else {
                 // print error message
                 String responseString = EntityUtils.toString(entity, "UTF-8");
-                logger.info("responseString : {}",responseString);
+                result = responseString;
+//                logger.info("responseString : {}",responseString);
             }
 
         }catch(ClientProtocolException e1){
@@ -103,7 +104,7 @@ public class HttpClientUtils {
             httpClient.getConnectionManager().shutdown();
         }
         
-        logger.info("HttpClientUtils result : {}",result);
+//        logger.info("HttpClientUtils result : {}",result);
         
 		return result;
 	}
