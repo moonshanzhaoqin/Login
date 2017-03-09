@@ -27,4 +27,8 @@ public class PageController {
 	public String config(HttpServletRequest request, HttpServletResponse response) {
 		return "config";
 	}
+	@RequestMapping(value = "/withdraw", method = { RequestMethod.GET })
+	public String withdraw(HttpServletRequest request, HttpServletResponse response) {
+		return "withdraw";
+	}
 }

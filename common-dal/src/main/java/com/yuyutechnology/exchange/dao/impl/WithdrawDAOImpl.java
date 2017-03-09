@@ -7,11 +7,14 @@ import javax.annotation.Resource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.orm.hibernate4.HibernateTemplate;
+import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.WithdrawDAO;
 import com.yuyutechnology.exchange.pojo.Withdraw;
 
+
+@Repository
 public class WithdrawDAOImpl implements WithdrawDAO {
 	public static Logger logger = LogManager.getLogger(WithdrawDAOImpl.class);
 
@@ -30,18 +33,24 @@ public class WithdrawDAOImpl implements WithdrawDAO {
 		return (List<Withdraw>) list;
 	}
 
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Withdraw> getNeedGoldpayRemitWithdraws() {
-		List<?> list = hibernateTemplate.find("from Withdraw where goldpayRemit = ? and  reviewStatus = ?", ServerConsts.GOLDPAY_REMIT_TODO,ServerConsts.REVIEW_STATUS_PASS);
+		List<?> list = hibernateTemplate.find("from Withdraw where goldpayRemit = ? and  reviewStatus = ?",
+				ServerConsts.GOLDPAY_REMIT_TODO, ServerConsts.REVIEW_STATUS_PASS);
 		return (List<Withdraw>) list;
 	}
 
-	
 	@Override
 	public Withdraw getWithdrawByTransferId(String transferId) {
 		List<?> list = hibernateTemplate.find("from Withdraw where transferId = ? ", transferId);
 		return (list.isEmpty()) ? null : (Withdraw) list.get(0);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Withdraw> getAllWithdraws() {
+		List<?> list = hibernateTemplate.find("from Withdraw order");
+		return (List<Withdraw>) list;
 	}
 }

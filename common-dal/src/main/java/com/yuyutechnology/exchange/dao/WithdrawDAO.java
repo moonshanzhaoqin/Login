@@ -8,14 +8,12 @@ public interface WithdrawDAO {
 
 	void saveOrUpdateWithdraw(Withdraw withdraw);
 
+	List<Withdraw> getAllWithdraws();
 
 	List<Withdraw> getNeedReviewWithdraws();
+
 	List<Withdraw> getNeedGoldpayRemitWithdraws();
+
 	Withdraw getWithdrawByTransferId(String transferId);
 
-
-
-
-	
-	
 }

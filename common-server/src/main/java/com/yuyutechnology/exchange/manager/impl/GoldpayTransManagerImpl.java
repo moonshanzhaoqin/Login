@@ -724,4 +724,9 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 				ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, date);
 	}
 
+	@Override
+	public List<Withdraw> getWithdrawList() {
+		return withdrawDAO.getAllWithdraws();
+	}
+
 }

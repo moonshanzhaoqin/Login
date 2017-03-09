@@ -197,7 +197,9 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 
 		return map;
 	}
-
+    /**
+     * 兑换成美元
+     */
 	@Override
 	public BigDecimal getExchangeResult(String transCurrency, BigDecimal transAmount) {
 		BigDecimal result = null;

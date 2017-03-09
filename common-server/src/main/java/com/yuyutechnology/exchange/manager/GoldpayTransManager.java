@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.yuyutechnology.exchange.pojo.Transfer;
+import com.yuyutechnology.exchange.pojo.Withdraw;
 
 public interface GoldpayTransManager {
 
@@ -53,5 +54,7 @@ public interface GoldpayTransManager {
 	 * 对通过审核的提现进行goldpay划账
 	 */
 	void goldpayRemit();
+
+	public List<Withdraw> getWithdrawList();
 
 }
