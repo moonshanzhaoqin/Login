@@ -8,7 +8,6 @@ import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.dao.UserDeviceDAO;
-import com.yuyutechnology.exchange.pojo.Friend;
 import com.yuyutechnology.exchange.pojo.UserDevice;
 
 @Repository
