@@ -54,6 +54,7 @@ public class CommonManagerImpl implements CommonManager {
 	private List<Currency> allCurrencies = new ArrayList<Currency>();
 	private Map<String, Currency> currentCurrenciesMap = new HashMap<String, Currency>();
 	private List<Currency> currentCurrencies = new ArrayList<Currency>();
+	private List<String[]> instruments = new ArrayList<String[]>();
 
 	@Override
 	@PostConstruct
@@ -76,6 +77,25 @@ public class CommonManagerImpl implements CommonManager {
 			}
 		}
 		currentCurrencies = currentCurrenciesTmp;
+		initInstruments();
+	}
+	
+	private void initInstruments() {
+		List<String[]> temp = new ArrayList<String[]>();
+		int currencySize = allCurrencies.size();
+		for (int i = 0; i < currencySize; i++) {
+			String left = allCurrencies.get(i).getCurrency();
+			if (!ServerConsts.CURRENCY_OF_GOLDPAY.equals(left)) {
+				for (int f = i + 1; f < currencySize; f++) {
+					if (!ServerConsts.CURRENCY_OF_GOLDPAY.equals(left)) {
+						String right = allCurrencies.get(f).getCurrency();
+						temp.add(new String[]{left +"_"+right,right +"_"+left});
+					}
+				}
+			}
+		}
+		temp.add(new String[]{ServerConsts.CURRENCY_OF_GOLDPAY +"_"+ServerConsts.CURRENCY_OF_USD,ServerConsts.CURRENCY_OF_USD +"_"+ServerConsts.CURRENCY_OF_GOLDPAY});
+		instruments = temp;
 	}
 
 	@Override
@@ -101,6 +121,11 @@ public class CommonManagerImpl implements CommonManager {
 	@Override
 	public boolean verifyCurrency(String currency) {
 		return currentCurrenciesMap.get(currency) != null;
+	}
+	
+	@Override
+	public List<String[]> getInstruments() {
+		return instruments;
 	}
 
 	@Override

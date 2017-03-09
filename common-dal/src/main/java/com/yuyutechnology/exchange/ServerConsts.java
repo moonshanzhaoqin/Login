@@ -41,6 +41,14 @@ public class ServerConsts {
 	
 	// 币种
 	public static final String CURRENCY_OF_GOLDPAY = "GDQ";
+	
+	public static final String CURRENCY_OF_GOLD = "XAU";
+	
+	public static final String CURRENCY_OF_CNH = "CNH";
+	
+	public static final String CURRENCY_OF_CNY = "CNY";
+	
+	public static final String CURRENCY_OF_USD = "USD";
 
 	// 交易类型
 	/**

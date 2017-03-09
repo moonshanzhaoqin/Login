@@ -28,6 +28,8 @@ public interface CommonManager {
 	
 	public List<String> getAllConfigurableCurrencies();
 	
+	public List<String[]> getInstruments();
+	
 	/**
 	 * @param userId
 	 * @param type 0=转账提示, 1=请求消息提示

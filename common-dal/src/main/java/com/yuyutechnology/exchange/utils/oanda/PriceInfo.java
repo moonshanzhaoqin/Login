@@ -40,5 +40,9 @@ public class PriceInfo {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
+	@Override
+	public String toString() {
+		return "PriceInfo [instrument=" + instrument + ", time=" + time + ", bid=" + bid + ", ask=" + ask + ", status="
+				+ status + "]";
+	}
 }
