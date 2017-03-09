@@ -249,7 +249,9 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 
 			if (!currency.getCurrency().equals(base)) {
 				BigDecimal value = getSingleExchangeRate(base, currency.getCurrency());
-				map.put(currency.getCurrency(), value.doubleValue());
+				if(value != null){
+					map.put(currency.getCurrency(), value.doubleValue());
+				}
 			}
 		}
 
