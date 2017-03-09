@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -57,28 +56,6 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		logger.info("instruments from redis : {}",instruments);
 		instruments = incrementalUpdateExchangeRates(instruments);
 		saveExchangeRatesMultiParams(instruments);
-//		if(StringUtils.isNotBlank(instruments)){
-//			String replacedStr = instruments.replaceAll(ServerConsts.CURRENCY_OF_CNH, ServerConsts.CURRENCY_OF_CNY).replaceAll(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_GOLDPAY);
-//			for (Currency currency : currencies) {
-//				//CNY->CNH
-//				logger.info("instruments replaced : {}",replacedStr);
-//				if(!replacedStr.contains(currency.getCurrency())){
-//					updateCurrencies.add(currency);
-//				}
-//			}
-//			if(!updateCurrencies.isEmpty()){
-//				saveExchangeRatesAllParams(updateCurrencies);
-//			}else{
-//				saveExchangeRatesMultiParams(instruments);
-//			}
-//		}else{
-//			saveExchangeRatesAllParams(currencies);
-//			logger.info("instruments : {}",instruments);
-//		}
-		
-		//单独更新黄金对美元的汇率
-//		saveExchangeRatesMultiParams("XAU_USD");
-		
 	}
 	
 	@Override
@@ -398,33 +375,6 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		return stringBuilder.toString();
 	}
 	
-	private String saveExchangeRatesAllParams(List<Currency> updateCurrencies, List<Currency> allCurrencies, String existentInstruments){
-		List<String> multiParamsList = new ArrayList<>();
-		for (Currency base : updateCurrencies) {
-			if(!base.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
-				for (Currency targetCurrency : allCurrencies) {
-					if(!targetCurrency.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY) && !targetCurrency.equals(base)){
-						String instruments = generateParam(base.getCurrency(),targetCurrency.getCurrency());
-						logger.info("instruments : {}",instruments);
-						if (saveExchangeRatesMultiParams(instruments)) {
-							multiParamsList.add(instruments);
-						}
-					}
-				}
-			}else{
-				//黄金汇率
-				if( saveExchangeRatesMultiParams("XAU_USD")) {
-					multiParamsList.add("XAU_USD");
-				}else{
-					logger.error("get currency rate error !!! instruments : {} ","XAU_USD");
-				}
-			}
-		}
-		String multiParamsListString = generateParams(multiParamsList, existentInstruments);
-		redisDAO.saveData(oandaRatesPrefix.replace("[key]", "instruments"), multiParamsListString);
-		return multiParamsListString;
-	}
-	
 	private boolean saveExchangeRatesMultiParams(String instruments){
 		OandaRespData oandaRespData = getCurrentPrices(instruments);
 		if(oandaRespData!= null){
@@ -484,8 +434,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		BasicHeader basicHeader = new BasicHeader("Authorization", 
 				"Bearer " + "d413e2cd916ebc4613376c3a3ca826ae-ebdc8079ec4cca1b1d650ea030036226");
 		String result = HttpClientUtils.sendGet(domain,params,basicHeader);
-		logger.info("result : {}",result);
-		
+//		logger.info("result : {}",result);
 		if(result.contains("#errors")){
         	return null;
         }else{
@@ -506,24 +455,5 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		
 	}
 	
-	private String generateParams(List<String> multiParamsList, String existentInstruments){
-		logger.info("updateMultiParamsList content : {}", multiParamsList.toString());
-		StringBuilder stringBuilder = new StringBuilder(existentInstruments);
-		if(!multiParamsList.isEmpty()){
-			if (StringUtils.isNotBlank(stringBuilder.toString())) {
-				stringBuilder.append(URL_AND_SYMBOL);
-			}
-			if(multiParamsList.size() == 1){
-				stringBuilder.append(multiParamsList.get(0));
-			}else{
-				for(int i = 0;i<multiParamsList.size()-1;i++){
-					stringBuilder.append(multiParamsList.get(i)+URL_AND_SYMBOL);
-				}
-				stringBuilder.append(multiParamsList.get(multiParamsList.size()-1));
-			}
-		}
-		logger.info("multiParamsList content : {}", stringBuilder.toString());
-		return stringBuilder.toString();
-	}
 
 }
