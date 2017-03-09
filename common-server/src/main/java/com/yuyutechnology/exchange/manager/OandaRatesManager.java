@@ -3,6 +3,9 @@ package com.yuyutechnology.exchange.manager;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+
+import com.yuyutechnology.exchange.utils.oanda.PriceInfo;
 
 public interface OandaRatesManager {
 
@@ -21,7 +24,7 @@ public interface OandaRatesManager {
 	public HashMap<String, Double> getExchangeRate(String base,String type);
 	
 	public BigDecimal getSingleExchangeRate(String currencyLeft, String currencyRight);
-	
-	
+
+	public List<PriceInfo> getAllPrices();
 
 }

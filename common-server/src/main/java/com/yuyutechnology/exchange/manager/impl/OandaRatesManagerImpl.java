@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -97,6 +98,8 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 	@Override
 	public BigDecimal getExchangedAmount(String currencyLeft,BigDecimal amountIn,String currencyRight,String type){
 		
+		BigDecimal result ;
+		
 		
 		if((!currencyLeft.equals("GDQ")&&!currencyLeft.equals("XAU"))
 				&&(!currencyRight.equals("GDQ")&&!currencyRight.equals("XAU"))){
@@ -105,12 +108,21 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 			BigDecimal exchangeRate = getExchangeRate(currencyLeft,currencyRight,"bid");
 			
 			if(exchangeRate != null){
-				return amountIn.multiply(exchangeRate);
+				
+				result = amountIn.multiply(exchangeRate);
+				
+				logger.info("amount : {} ,bid rate : {},result : {}",amountIn,exchangeRate,result);
+	
+				return result;
 			}else{
 				//如果不存在  amount/汇率
 				exchangeRate = getExchangeRate(currencyRight,currencyLeft,"ask");
 				if(exchangeRate != null){
-					return amountIn.divide(exchangeRate, 8, BigDecimal.ROUND_DOWN);
+					
+					result = amountIn.divide(exchangeRate, 8, BigDecimal.ROUND_DOWN);
+					logger.info("amount : {} ,ask rate : {},result : {}",amountIn,exchangeRate,result);
+					
+					return result;
 				}else{
 					return new BigDecimal("-1");
 				}
@@ -320,6 +332,33 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public List<PriceInfo> getAllPrices(){
+		
+		List<Currency> currencies = currencyDAO.getCurrentCurrency();
+		List<PriceInfo> priceInfos = new LinkedList<>();
+		
+		for (Currency currency1 : currencies) {
+			for (Currency currency2 : currencies) {
+				if(!currency1.equals(currency2)){
+					PriceInfo priceInfo = getPriceInfo(currency1.getCurrency(),currency2.getCurrency());
+					if(priceInfo != null){
+						priceInfos.add(priceInfo);
+					}
+				}
+			}
+		}
+
+		PriceInfo priceInfo = getPriceInfo("XAU","USD");
+		if(priceInfo!= null){
+			priceInfos.add(priceInfo);
+		}
+		
+		
+		return priceInfos;
+		
 	}
 	
 
