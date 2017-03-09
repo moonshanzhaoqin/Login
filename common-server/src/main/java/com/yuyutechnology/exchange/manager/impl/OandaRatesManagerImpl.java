@@ -140,8 +140,8 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 			//首先获取 1oz黄金对应的美元价值
 			BigDecimal rate4XAU2USD = getExchangeRate("XAU", "USD", "bid");
 			//计算1GDQ对应的美元价值
-			BigDecimal rate4GDQ2USD = rate4XAU2USD.divide(new BigDecimal("10000").
-					multiply(new BigDecimal(ResourceUtils.getBundleValue4String("exchange.oz4g", "31.1034768"))),
+			BigDecimal rate4GDQ2USD = rate4XAU2USD.divide(
+					new BigDecimal("10000").multiply(new BigDecimal(ResourceUtils.getBundleValue4String("exchange.oz4g", "31.1034768"))),
 					8,BigDecimal.ROUND_DOWN);
 			logger.info("rate4XAU2USD :{} ,rate4GDQ2USD : {}",rate4XAU2USD,rate4GDQ2USD);
 			
@@ -363,18 +363,61 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 	@Override
 	public BigDecimal getInputValue(String currencyLeft,BigDecimal amount, String currencyRight){
 		
-		
-		BigDecimal exchangeRate = getExchangeRate(currencyLeft,currencyRight,"bid");
-		if(exchangeRate != null){
-			return amount.divide(exchangeRate,8, BigDecimal.ROUND_UP);
-		}else{
-			exchangeRate = getExchangeRate(currencyRight,currencyLeft,"ask");
-			if(exchangeRate!= null){
-				return amount.multiply(exchangeRate);
+		if((!currencyLeft.equals("GDQ")&&!currencyLeft.equals("XAU"))
+				&&(!currencyRight.equals("GDQ")&&!currencyRight.equals("XAU"))){
+			
+			BigDecimal exchangeRate = getExchangeRate(currencyLeft,currencyRight,"bid");
+			if(exchangeRate != null){
+				return amount.divide(exchangeRate,8, BigDecimal.ROUND_UP);
+			}else{
+				exchangeRate = getExchangeRate(currencyRight,currencyLeft,"ask");
+				if(exchangeRate!= null){
+					return amount.multiply(exchangeRate);
+				}
 			}
+			
+		}else{
+			//首先获取 1oz黄金对应的美元价值
+			BigDecimal rate4XAU2USD = getExchangeRate("XAU", "USD", "bid");
+			//计算1GDQ对应的美元价值
+			BigDecimal rate4GDQ2USD = rate4XAU2USD.divide(new BigDecimal("10000").
+					multiply(new BigDecimal(ResourceUtils.getBundleValue4String("exchange.oz4g", "31.1034768"))),
+					8,BigDecimal.ROUND_DOWN);
+			
+			if(currencyLeft.equals("GDQ")){
+				
+				BigDecimal rateUSD2Other = getExchangeRate("USD", currencyRight, "bid");
+				if(rateUSD2Other != null){
+					return amount.divide(rateUSD2Other.multiply(rate4GDQ2USD),8, BigDecimal.ROUND_UP);
+				}else{
+					BigDecimal rateOther2USD = getExchangeRate(currencyRight,"USD",  "ask");
+					if(rateOther2USD != null){
+						return amount.multiply(rateOther2USD).
+								divide(rate4GDQ2USD, 8, BigDecimal.ROUND_UP);
+					}
+				}	
+			}
+			
+			if(currencyRight .equals("GDQ")){
+				if(currencyLeft.equals("USD")){
+					return amount.multiply(rate4GDQ2USD);
+				}else{
+					BigDecimal rateOther2USD = getExchangeRate(currencyLeft,"USD","ask");
+					if(rateOther2USD!= null){
+						return amount.multiply(rate4GDQ2USD).divide(rateOther2USD,8,BigDecimal.ROUND_DOWN);
+					}else{
+						BigDecimal rateUSD2Other = getExchangeRate("USD",currencyLeft,"ask");
+						if(rateUSD2Other != null){
+							return amount.multiply(rate4GDQ2USD).multiply(rateUSD2Other);
+						}
+					}
+				}
+			}
+			
+			
+			
 		}
-		
-		
+
 		return null;
 		
 	}
