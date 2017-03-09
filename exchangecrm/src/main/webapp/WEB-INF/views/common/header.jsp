@@ -45,6 +45,7 @@
 							</li>
 						</ul></li>
 					<li><a href="<c:url value='/currency' />">币种管理</a></li>
+					<li><a href="<c:url value='/exchangeRate/getAllExchangeRates' />">Oanda汇率</a>
 					<li><a href="<c:url value='/config' />">系统配置管理</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
