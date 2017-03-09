@@ -102,7 +102,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		if(currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLDPAY) || currencyRight.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 			
 			//首先获取 1oz黄金对应的美元价值
-			BigDecimal rate4XAU2USD = getExchangeRate(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_USD, "bid");
+			BigDecimal rate4XAU2USD = getExchangeRate(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_USD, "ask");
 			//计算1GDQ对应的美元价值
 			BigDecimal rate4GDQ2USD = rate4XAU2USD.divide(
 					new BigDecimal("10000").multiply(new BigDecimal(ResourceUtils.getBundleValue4String("exchange.oz4g", "31.1034768"))),
@@ -251,7 +251,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		if(currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLDPAY) || currencyRight.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 			
 			//首先获取 1oz黄金对应的美元价值
-			BigDecimal rate4XAU2USD = getExchangeRate(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_USD, "bid");
+			BigDecimal rate4XAU2USD = getExchangeRate(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_USD, "ask");
 			//计算1GDQ对应的美元价值
 			BigDecimal rate4GDQ2USD = rate4XAU2USD.divide(new BigDecimal("10000").
 					multiply(new BigDecimal(ResourceUtils.getBundleValue4String("exchange.oz4g", "31.1034768"))),
@@ -344,7 +344,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 			
 		}else{
 			//首先获取 1oz黄金对应的美元价值
-			BigDecimal rate4XAU2USD = getExchangeRate(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_USD, "bid");
+			BigDecimal rate4XAU2USD = getExchangeRate(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_USD, "ask");
 			//计算1GDQ对应的美元价值
 			BigDecimal rate4GDQ2USD = rate4XAU2USD.divide(new BigDecimal("10000").
 					multiply(new BigDecimal(ResourceUtils.getBundleValue4String("exchange.oz4g", "31.1034768"))),
@@ -478,10 +478,11 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		
 		OandaRespData oandaRespData = null;
 		
-		String domain = "https://api-fxpractice.oanda.com/v1/prices";
+		String domain = ResourceUtils.getBundleValue4String("oanda.exchangerate.url", "https://api-fxpractice.oanda.com/v1/prices");
+		String bearer = ResourceUtils.getBundleValue4String("oanda.exchangerate.key", "d413e2cd916ebc4613376c3a3ca826ae-ebdc8079ec4cca1b1d650ea030036226");
 		String params = "instruments="+instruments;
 		BasicHeader basicHeader = new BasicHeader("Authorization", 
-				"Bearer " + "d413e2cd916ebc4613376c3a3ca826ae-ebdc8079ec4cca1b1d650ea030036226");
+				"Bearer " + bearer);
 		String result = HttpClientUtils.sendGet(domain,params,basicHeader);
 //		logger.info("result : {}",result);
 		if(result.contains("#errors")){
