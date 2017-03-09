@@ -243,7 +243,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		
 		HashMap<String, Double> map = new HashMap<>();
 
-		List<Currency> list = commonManager.getAllCurrencies();
+		List<Currency> list = commonManager.getCurrentCurrencies();
 
 		for (Currency currency : list) {
 
@@ -388,16 +388,20 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 			
 			if(currencyLeft.equals("GDQ")){
 				
-				BigDecimal rateUSD2Other = getExchangeRate("USD", currencyRight, "bid");
-				if(rateUSD2Other != null){
-					return amount.divide(rateUSD2Other.multiply(rate4GDQ2USD),8, BigDecimal.ROUND_UP);
+				if(currencyRight.equals("USD")){
+					return amount.divide(rate4GDQ2USD, 8, BigDecimal.ROUND_UP);
 				}else{
-					BigDecimal rateOther2USD = getExchangeRate(currencyRight,"USD",  "ask");
-					if(rateOther2USD != null){
-						return amount.multiply(rateOther2USD).
-								divide(rate4GDQ2USD, 8, BigDecimal.ROUND_UP);
+					BigDecimal rateUSD2Other = getExchangeRate("USD", currencyRight, "bid");
+					if(rateUSD2Other != null){
+						return amount.divide(rateUSD2Other.multiply(rate4GDQ2USD),8, BigDecimal.ROUND_UP);
+					}else{
+						BigDecimal rateOther2USD = getExchangeRate(currencyRight,"USD",  "ask");
+						if(rateOther2USD != null){
+							return amount.multiply(rateOther2USD).
+									divide(rate4GDQ2USD, 8, BigDecimal.ROUND_UP);
+						}
 					}
-				}	
+				}
 			}
 			
 			if(currencyRight .equals("GDQ")){
