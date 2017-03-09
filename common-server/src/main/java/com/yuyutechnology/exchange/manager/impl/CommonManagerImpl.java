@@ -5,6 +5,7 @@ package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -12,9 +13,8 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -28,9 +28,7 @@ import com.yuyutechnology.exchange.dto.MsgFlagInfo;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Wallet;
-import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
-import com.yuyutechnology.exchange.utils.exchangerate.ExchangeRate;
 
 /**
  * @author silent.sun
@@ -161,19 +159,20 @@ public class CommonManagerImpl implements CommonManager {
 
 	@Override
 	public List<String> getAllConfigurableCurrencies() {
-		List<String> currencies = new ArrayList<String>();
-		currencies.add(ServerConsts.STANDARD_CURRENCY);
-		currencies.add(ServerConsts.CURRENCY_OF_GOLDPAY);
-		String result = redisDAO.getValueByKey("redis_exchangeRate");
-		if (StringUtils.isNotBlank(result)) {
-			@SuppressWarnings("unchecked")
-			HashMap<String, String> map = JsonBinder.getInstance().fromJson(result, HashMap.class);
-			String value = map.get(ServerConsts.STANDARD_CURRENCY);
-			ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().fromJson(value, ExchangeRate.class);
-			currencies.addAll(exchangeRate.getRates().keySet());
-			return currencies;
-		}
-		return currencies;
+//		List<String> currencies = new ArrayList<String>();
+//		currencies.add(ServerConsts.STANDARD_CURRENCY);
+//		currencies.add(ServerConsts.CURRENCY_OF_GOLDPAY);
+//		String result = redisDAO.getValueByKey("redis_exchangeRate");
+//		if (StringUtils.isNotBlank(result)) {
+//			@SuppressWarnings("unchecked")
+//			HashMap<String, String> map = JsonBinder.getInstance().fromJson(result, HashMap.class);
+//			String value = map.get(ServerConsts.STANDARD_CURRENCY);
+//			ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().fromJson(value, ExchangeRate.class);
+//			currencies.addAll(exchangeRate.getRates().keySet());
+//			return currencies;
+//		}
+		String[] currency = {"USD","GDQ","AUD","BGN","BRL","CAD","CHF","CNY","CZK","DKK","GBP","HKD","HRK","HUF","IDR","ILS","INR","JPY","KRW","MXN","MYR","NOK","NZD","PHP","PLN","RON","RUB","SEK","SGD","THB","TRY","ZAR","EUR"};
+		return Arrays.asList(currency);
 	}
 
 	@Override
