@@ -361,6 +361,25 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		
 	}
 	
+	@Override
+	public BigDecimal getInputValue(String currencyLeft,BigDecimal amount, String currencyRight){
+		
+		
+		BigDecimal exchangeRate = getExchangeRate(currencyLeft,currencyRight,"bid");
+		if(exchangeRate != null){
+			return amount.divide(exchangeRate,8, BigDecimal.ROUND_UP);
+		}else{
+			exchangeRate = getExchangeRate(currencyRight,currencyLeft,"ask");
+			if(exchangeRate!= null){
+				return amount.multiply(exchangeRate);
+			}
+		}
+		
+		
+		return null;
+		
+	}
+	
 
 
 	///////////////////////////////////////////////////////////////////////////////////////

@@ -306,9 +306,11 @@ public class ExchangeManagerImpl implements ExchangeManager {
 				.setScale(bitsIn, BigDecimal.ROUND_FLOOR);
 		
 		BigDecimal fee = in.multiply(new BigDecimal(((Double.parseDouble(exchangeFeePerThousand))/1000)+""))
-				.setScale(bitsIn, BigDecimal.ROUND_FLOOR);;
+				.setScale(bitsIn, BigDecimal.ROUND_FLOOR);
 		
-		BigDecimal out = (oandaRatesManager.getExchangedAmount(currencyIn, in, currencyOut, "ask"))
+		
+		
+		BigDecimal out = (oandaRatesManager.getInputValue(currencyOut, in, currencyIn))
 				.setScale(bitsOut, BigDecimal.ROUND_CEILING);
 
 		HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>();
