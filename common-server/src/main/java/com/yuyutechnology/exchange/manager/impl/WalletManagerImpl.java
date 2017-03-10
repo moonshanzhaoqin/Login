@@ -42,12 +42,7 @@ public class WalletManagerImpl implements WalletManager {
 		for (Wallet wallet : list) {
 			
 			if(!wallet.getCurrency().getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
-				
-//				double exchangeRate = oandaRatesManager.getExchangeRate(
-//						wallet.getCurrency().getCurrency(), ServerConsts.CURRENCY_OF_GOLDPAY);			
-//				logger.info("base : {} for goldpay ,exchangeRate : {}" ,wallet.getCurrency().getCurrency(),exchangeRate);
-//				goldpayAmount = goldpayAmount.add(wallet.getBalance().multiply(new BigDecimal(Double.toString(exchangeRate))));
-				
+
 				BigDecimal num = oandaRatesManager.getExchangedAmount(wallet.getCurrency().getCurrency(), 
 						wallet.getBalance(), ServerConsts.CURRENCY_OF_GOLDPAY, "bid");
 				
