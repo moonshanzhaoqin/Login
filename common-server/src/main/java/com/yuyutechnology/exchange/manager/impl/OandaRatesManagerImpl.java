@@ -102,7 +102,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		if(currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLDPAY) || currencyRight.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 			
 			//首先获取 1oz黄金对应的美元价值
-			BigDecimal rate4XAU2USD = getExchangeRate(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_USD, "ask");
+			BigDecimal rate4XAU2USD = getExchangeRate(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_USD, "bid");
 			//计算1GDQ对应的美元价值
 			BigDecimal rate4GDQ2USD = rate4XAU2USD.divide(
 					new BigDecimal("10000").multiply(new BigDecimal(ResourceUtils.getBundleValue4String("exchange.oz4g", "31.1034768"))),
@@ -133,7 +133,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 				if(currencyLeft.equals(ServerConsts.CURRENCY_OF_USD)){
 					return amountIn.divide(rate4GDQ2USD, 8, BigDecimal.ROUND_DOWN);
 				}else{
-					BigDecimal rateOther2USD = getExchangeRate(currencyLeft,ServerConsts.CURRENCY_OF_USD,"ask");
+					BigDecimal rateOther2USD = getExchangeRate(currencyLeft,ServerConsts.CURRENCY_OF_USD,"bid");
 					if(rateOther2USD!= null){
 						return rateOther2USD.divide(rate4GDQ2USD,8,BigDecimal.ROUND_DOWN).multiply(amountIn);
 					}else{
@@ -251,7 +251,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		if(currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLDPAY) || currencyRight.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 			
 			//首先获取 1oz黄金对应的美元价值
-			BigDecimal rate4XAU2USD = getExchangeRate(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_USD, "ask");
+			BigDecimal rate4XAU2USD = getExchangeRate(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_USD, "bid");
 			//计算1GDQ对应的美元价值
 			BigDecimal rate4GDQ2USD = rate4XAU2USD.divide(new BigDecimal("10000").
 					multiply(new BigDecimal(ResourceUtils.getBundleValue4String("exchange.oz4g", "31.1034768"))),
@@ -281,7 +281,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 				if(currencyLeft.equals(ServerConsts.CURRENCY_OF_USD)){
 					return (new BigDecimal("1")).divide(rate4GDQ2USD, 8, BigDecimal.ROUND_DOWN);
 				}else{
-					BigDecimal rateOther2USD = getExchangeRate(currencyLeft,ServerConsts.CURRENCY_OF_USD,"ask");
+					BigDecimal rateOther2USD = getExchangeRate(currencyLeft,ServerConsts.CURRENCY_OF_USD,"bid");
 					if(rateOther2USD!= null){
 						return rateOther2USD.divide(rate4GDQ2USD,8,BigDecimal.ROUND_DOWN);
 					}else{
@@ -344,7 +344,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 			
 		}else{
 			//首先获取 1oz黄金对应的美元价值
-			BigDecimal rate4XAU2USD = getExchangeRate(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_USD, "ask");
+			BigDecimal rate4XAU2USD = getExchangeRate(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_USD, "bid");
 			//计算1GDQ对应的美元价值
 			BigDecimal rate4GDQ2USD = rate4XAU2USD.divide(new BigDecimal("10000").
 					multiply(new BigDecimal(ResourceUtils.getBundleValue4String("exchange.oz4g", "31.1034768"))),
@@ -372,7 +372,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 				if(currencyLeft.equals(ServerConsts.CURRENCY_OF_USD)){
 					return amount.multiply(rate4GDQ2USD);
 				}else{
-					BigDecimal rateOther2USD = getExchangeRate(currencyLeft,ServerConsts.CURRENCY_OF_USD,"ask");
+					BigDecimal rateOther2USD = getExchangeRate(currencyLeft,ServerConsts.CURRENCY_OF_USD,"bid");
 					if(rateOther2USD!= null){
 						return amount.multiply(rate4GDQ2USD).divide(rateOther2USD,8,BigDecimal.ROUND_DOWN);
 					}else{
