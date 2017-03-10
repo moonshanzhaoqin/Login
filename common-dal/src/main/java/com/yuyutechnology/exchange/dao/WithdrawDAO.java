@@ -16,4 +16,6 @@ public interface WithdrawDAO {
 
 	Withdraw getWithdrawByTransferId(String transferId);
 
+	Withdraw getWithdraw(Integer withdrawId);
+
 }

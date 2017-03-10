@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.yuyutechnology.exchange.dto.WithdrawDetail;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Withdraw;
 
@@ -48,13 +49,20 @@ public interface GoldpayTransManager {
 	/**
 	 * 提现审批
 	 */
-	void withdrawReview();
+	void withdrawReview(Integer withdrawId);
 
 	/**
 	 * 对通过审核的提现进行goldpay划账
 	 */
-	void goldpayRemit();
+	void goldpayRemit(Integer withdrawId);
 
 	public List<Withdraw> getWithdrawList();
+
+	public WithdrawDetail getWithdrawDetail(Integer withdrawId);
+
+	public void goldpayRemitAll();
+
+	public void withdrawReviewAll();
+
 
 }

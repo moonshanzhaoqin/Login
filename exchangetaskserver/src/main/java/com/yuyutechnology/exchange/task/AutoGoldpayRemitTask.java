@@ -18,7 +18,7 @@ public class AutoGoldpayRemitTask {
 
 	public void autoGoldpayRemitTask() {
 		logger.info("=============autoGoldpayRemitTask Start=================={}", new Date());
-		goldpayTransManager.goldpayRemit();
+		goldpayTransManager.goldpayRemitAll();
 		logger.info("=============autoGoldpayRemitTask End=================={}", new Date());
 	}
 

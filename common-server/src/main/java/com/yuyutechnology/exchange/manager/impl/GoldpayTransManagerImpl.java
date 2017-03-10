@@ -21,6 +21,7 @@ import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.dao.WithdrawDAO;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
+import com.yuyutechnology.exchange.dto.WithdrawDetail;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.goldpay.transaction.CalculateCharge;
 import com.yuyutechnology.exchange.goldpay.transaction.CalculateChargeReturnModel;
@@ -573,32 +574,6 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 	}
 
-	// TODO 提现审批
-	@Override
-	public void withdrawReview() {
-		List<Withdraw> withdraws = withdrawDAO.getNeedReviewWithdraws();
-		for (Withdraw withdraw : withdraws) {
-			// TODO 具体审批流程
-
-			withdraw.setReviewStatus(ServerConsts.REVIEW_STATUS_PASS);
-			withdrawDAO.saveOrUpdateWithdraw(withdraw);
-		}
-	}
-
-	// TODO 对通过审核的提现进行goldpay划账
-	@Override
-	public void goldpayRemit() {
-
-		List<Withdraw> withdraws = withdrawDAO.getNeedGoldpayRemitWithdraws();
-		for (Withdraw withdraw : withdraws) {
-			HashMap<String, String> map = withdrawConfirm2(withdraw.getUserId(), withdraw.getTransferId());
-			withdraw.setGoldpayRemit(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)
-					? ServerConsts.GOLDPAY_REMIT_SUCCESS : ServerConsts.GOLDPAY_REMIT_FAIL);
-			withdrawDAO.saveOrUpdateWithdraw(withdraw);
-		}
-
-	}
-
 	@Override
 	public void withdrawRefund(int userId, String transferId, String transferCurrency, BigDecimal transferAmount) {
 		User systemUser = userDAO.getSystemUser();
@@ -727,6 +702,75 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	@Override
 	public List<Withdraw> getWithdrawList() {
 		return withdrawDAO.getAllWithdraws();
+	}
+
+	@Override
+	public WithdrawDetail getWithdrawDetail(Integer withdrawId) {
+		logger.info("getWithdrawDetail : withdrawId={} ==>", withdrawId);
+
+		WithdrawDetail withdrawDetail = new WithdrawDetail();
+		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
+		User user = userDAO.getUser(withdraw.getUserId());
+		Bind bind = bindBAO.getBindByUserId(withdraw.getUserId());
+		Transfer transfer = transferDAO.getTransferById(withdraw.getTransferId());
+
+		withdrawDetail.setCreateTime(transfer.getCreateTime());
+		withdrawDetail.setGoldpayAcount(bind.getGoldpayAcount());
+		withdrawDetail.setGoldpayName(bind.getGoldpayName());
+		withdrawDetail.setGoldpayRemit(withdraw.getGoldpayRemit());
+		withdrawDetail.setReviewStatus(withdraw.getReviewStatus());
+		withdrawDetail.setTransferAmount(transfer.getTransferAmount());
+		withdrawDetail.setUserId(user.getUserId());
+		withdrawDetail.setTransferId(transfer.getTransferId());
+		withdrawDetail.setUserName(user.getUserName());
+
+		logger.info(withdrawDetail.toString());
+		return withdrawDetail;
+	}
+
+	// TODO 提现审批
+	@Override
+	public void withdrawReview(Integer withdrawId) {
+		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
+		// TODO 具体审批流程
+
+		withdraw.setReviewStatus(ServerConsts.REVIEW_STATUS_PASS);
+		withdrawDAO.saveOrUpdateWithdraw(withdraw);
+	}
+
+	// TODO 对通过审核的提现进行goldpay划账
+	@Override
+	public void goldpayRemit(Integer withdrawId) {
+		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
+		//TODO 限制
+		HashMap<String, String> map = withdrawConfirm2(withdraw.getUserId(), withdraw.getTransferId());
+		withdraw.setGoldpayRemit(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)
+				? ServerConsts.GOLDPAY_REMIT_SUCCESS : ServerConsts.GOLDPAY_REMIT_FAIL);
+		withdrawDAO.saveOrUpdateWithdraw(withdraw);
+	}
+
+	@Override
+	public void goldpayRemitAll() {
+		// TODO Auto-generated method stub
+		List<Withdraw> withdraws = withdrawDAO.getNeedGoldpayRemitWithdraws();
+		//TODO 限制
+		for (Withdraw withdraw : withdraws) {
+			HashMap<String, String> map = withdrawConfirm2(withdraw.getUserId(), withdraw.getTransferId());
+			withdraw.setGoldpayRemit(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)
+					? ServerConsts.GOLDPAY_REMIT_SUCCESS : ServerConsts.GOLDPAY_REMIT_FAIL);
+			withdrawDAO.saveOrUpdateWithdraw(withdraw);
+		}
+	}
+
+	@Override
+	public void withdrawReviewAll() {
+		List<Withdraw> withdraws = withdrawDAO.getNeedReviewWithdraws();
+		for (Withdraw withdraw : withdraws) {
+			// TODO 具体审批流程
+
+			withdraw.setReviewStatus(ServerConsts.REVIEW_STATUS_PASS);
+			withdrawDAO.saveOrUpdateWithdraw(withdraw);
+		}
 	}
 
 }

@@ -19,7 +19,7 @@ public class AutoWithdrawReviewTask {
 	
 	public void autoWithdrawReviewTask(){
 		logger.info("=============AutoWithdrawReviewTask Start=================={}",new Date());
-		goldpayTransManager.withdrawReview();
+		goldpayTransManager.withdrawReviewAll();
 		logger.info("=============AutoWithdrawReviewTask End=================={}",new Date());	
 	}
 

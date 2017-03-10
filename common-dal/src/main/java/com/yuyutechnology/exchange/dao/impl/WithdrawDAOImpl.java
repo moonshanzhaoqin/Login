@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.WithdrawDAO;
+import com.yuyutechnology.exchange.pojo.UserConfig;
 import com.yuyutechnology.exchange.pojo.Withdraw;
 
 
@@ -52,5 +53,10 @@ public class WithdrawDAOImpl implements WithdrawDAO {
 	public List<Withdraw> getAllWithdraws() {
 		List<?> list = hibernateTemplate.find("from Withdraw order");
 		return (List<Withdraw>) list;
+	}
+
+	@Override
+	public Withdraw getWithdraw(Integer withdrawId) {
+		return hibernateTemplate.get(Withdraw.class, withdrawId);
 	}
 }
