@@ -3,15 +3,13 @@ package com.yuyutechnology.exchange.server.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
@@ -24,6 +22,8 @@ import com.yuyutechnology.exchange.server.controller.request.DeleteFriendRequest
 import com.yuyutechnology.exchange.server.controller.response.AddFriendResponse;
 import com.yuyutechnology.exchange.server.controller.response.DeleteFriendResponse;
 import com.yuyutechnology.exchange.server.controller.response.FriendsListResponse;
+import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
+import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 import com.yuyutechnology.exchange.server.session.SessionData;
 import com.yuyutechnology.exchange.server.session.SessionDataHolder;
 
@@ -44,10 +44,10 @@ public class FriendController {
 	 * @param addFriendRequest
 	 * @return
 	 */
-	@ResponseBody
+	@ResponseEncryptBody
 	@ApiOperation(value = "添加好友", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/addFriend", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public AddFriendResponse addFriend(@PathVariable String token, @RequestBody AddFriendRequest addFriendRequest) {
+	public AddFriendResponse addFriend(@PathVariable String token, @RequestDecryptBody AddFriendRequest addFriendRequest) {
 		logger.info("========addFriend : {}============", token);
 		AddFriendResponse rep = new AddFriendResponse();
 
@@ -96,7 +96,7 @@ public class FriendController {
 	 * @param token
 	 * @return
 	 */
-	@ResponseBody
+	@ResponseEncryptBody
 	@ApiOperation(value = "好友列表", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/friendsList", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public FriendsListResponse friendsList(@PathVariable String token) {
@@ -124,11 +124,11 @@ public class FriendController {
 	 * @param deleteFriendRequest
 	 * @return
 	 */
-	@ResponseBody
+	@ResponseEncryptBody
 	@ApiOperation(value = "删除好友", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/deleteFriend", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public DeleteFriendResponse deleteFriend(@PathVariable String token,
-			@RequestBody DeleteFriendRequest deleteFriendRequest) {
+			@RequestDecryptBody DeleteFriendRequest deleteFriendRequest) {
 		logger.info("========deleteFriend : {}============", token);
 		DeleteFriendResponse rep = new DeleteFriendResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();

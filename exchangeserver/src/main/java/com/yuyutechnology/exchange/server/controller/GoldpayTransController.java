@@ -9,10 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.RetCodeConsts;
@@ -29,6 +27,8 @@ import com.yuyutechnology.exchange.server.controller.response.GoldpayTransConfir
 import com.yuyutechnology.exchange.server.controller.response.GoldpayWithdrawResponse;
 import com.yuyutechnology.exchange.server.controller.response.RequestPinResponse;
 import com.yuyutechnology.exchange.server.controller.response.WithdrawConfirmResponse;
+import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
+import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 import com.yuyutechnology.exchange.server.session.SessionData;
 import com.yuyutechnology.exchange.server.session.SessionDataHolder;
 
@@ -44,8 +44,8 @@ public class GoldpayTransController {
 	
 	@ApiOperation(value = "goldpay 买入")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/goldpayTrans/goldpayPurchase")
-	public @ResponseBody
-	GoldpayPurchaseResponse goldpayPurchase(@PathVariable String token,@RequestBody GoldpayPurchaseRequest reqMsg){
+	public @ResponseEncryptBody
+	GoldpayPurchaseResponse goldpayPurchase(@PathVariable String token,@RequestDecryptBody GoldpayPurchaseRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		GoldpayPurchaseResponse rep = new GoldpayPurchaseResponse();
@@ -78,8 +78,8 @@ public class GoldpayTransController {
 	
 	@ApiOperation(value = "goldpay 重新发送Pin")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/goldpayTrans/requestPin")
-	public @ResponseBody
-	RequestPinResponse requestPin(@PathVariable String token,@RequestBody RequestPinRequest reqMsg){
+	public @ResponseEncryptBody
+	RequestPinResponse requestPin(@PathVariable String token,@RequestDecryptBody RequestPinRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		RequestPinResponse rep = new RequestPinResponse();
@@ -97,8 +97,8 @@ public class GoldpayTransController {
 
 	@ApiOperation(value = "goldpay 交易确认")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/goldpayTrans/goldpayTransConfirm")
-	public @ResponseBody
-	GoldpayTransConfirmResponse goldpayTransConfirm(@PathVariable String token,@RequestBody GoldpayTransConfirmRequest reqMsg){
+	public @ResponseEncryptBody
+	GoldpayTransConfirmResponse goldpayTransConfirm(@PathVariable String token,@RequestDecryptBody GoldpayTransConfirmRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		GoldpayTransConfirmResponse rep = new GoldpayTransConfirmResponse(); 
@@ -114,8 +114,8 @@ public class GoldpayTransController {
 	
 	@ApiOperation(value = "goldpay 提现")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/goldpayTrans/goldpayWithdraw")
-	public @ResponseBody
-	GoldpayWithdrawResponse goldpayWithdraw(@PathVariable String token,@RequestBody GoldpayWithdrawRequest reqMsg){
+	public @ResponseEncryptBody
+	GoldpayWithdrawResponse goldpayWithdraw(@PathVariable String token,@RequestDecryptBody GoldpayWithdrawRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		GoldpayWithdrawResponse rep = new GoldpayWithdrawResponse();
@@ -147,8 +147,8 @@ public class GoldpayTransController {
 	
 	@ApiOperation(value = "goldpay 提现确认")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/goldpayTrans/withdrawConfirm")
-	public @ResponseBody 
-	WithdrawConfirmResponse withdrawConfirm(@PathVariable String token,@RequestBody WithdrawConfirmRequest reqMsg){
+	public @ResponseEncryptBody 
+	WithdrawConfirmResponse withdrawConfirm(@PathVariable String token,@RequestDecryptBody WithdrawConfirmRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		WithdrawConfirmResponse rep = new WithdrawConfirmResponse();
