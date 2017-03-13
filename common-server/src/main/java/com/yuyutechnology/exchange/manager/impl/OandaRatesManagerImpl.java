@@ -145,7 +145,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 			
 			if(currencyRight .equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 				if(currencyLeft.equals(ServerConsts.CURRENCY_OF_USD)){
-					result = amountIn.divide(rate4GDQ2USD, 8, BigDecimal.ROUND_DOWN);
+					result = amountIn.divide(rate4GDQ2USDASK, 8, BigDecimal.ROUND_DOWN);
 					logger.info("{} to {} , amount : {} , gold bid rate : {}, result(amountIn / rate4GDQ2USD) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USD, result);
 					return result;
 				}else{
