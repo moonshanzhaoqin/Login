@@ -118,7 +118,7 @@ public class TransferManagerImpl implements TransferManager{
 		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
 		logger.warn("transferLimitPerPay : {}",transferLimitPerPay);
-		if((oandaRatesManager.getDefaultCurrencyAmount(currency, amount,"bid")).compareTo(transferLimitPerPay) == 1){
+		if((oandaRatesManager.getDefaultCurrencyAmount(currency, amount)).compareTo(transferLimitPerPay) == 1){
 			logger.warn("Exceeds the maximum amount of each transaction");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
 			map.put("msg", transferLimitPerPay.setScale(2).toString());
@@ -131,7 +131,7 @@ public class TransferManagerImpl implements TransferManager{
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITDAILYPAY, 100000d));
 		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount("transfer_"+userId);
 		logger.warn("transferLimitDailyPay : {},accumulatedAmount : {} ",transferLimitDailyPay,accumulatedAmount);
-		if((accumulatedAmount.add(oandaRatesManager.getDefaultCurrencyAmount(currency, amount,"bid"))).compareTo(transferLimitDailyPay) == 1){
+		if((accumulatedAmount.add(oandaRatesManager.getDefaultCurrencyAmount(currency, amount))).compareTo(transferLimitDailyPay) == 1){
 			logger.warn("More than the maximum daily transaction limit");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY);
 			map.put("msg", transferLimitDailyPay.setScale(2).toString());
@@ -234,7 +234,7 @@ public class TransferManagerImpl implements TransferManager{
 		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount("transfer_"+userId);
 		BigDecimal accumulatedAmountMax =  BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.DAILYTRANSFERTHRESHOLD, 100000d));
 		//单笔转出金额大于设置安全基数，弹出需要短信验证框
-		BigDecimal singleTransferAmount = oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount(),"bid");
+		BigDecimal singleTransferAmount = oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount());
 		BigDecimal singleTransferAmountMax = BigDecimal.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.EACHTRANSFERTHRESHOLD, 100000d));
 
 		logger.info("totalBalance : {},totalBalanceMax: {} ",totalBalance,totalBalanceMax);
@@ -281,7 +281,7 @@ public class TransferManagerImpl implements TransferManager{
 		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
 		logger.warn("transferLimitPerPay : {}",transferLimitPerPay);
-		if((oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount(),"bid")).compareTo(transferLimitPerPay) == 1){
+		if((oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount())).compareTo(transferLimitPerPay) == 1){
 			logger.warn("Exceeds the maximum amount of each transaction");
 			return RetCodeConsts.TRANSFER_LIMIT_EACH_TIME;
 		}
@@ -291,7 +291,7 @@ public class TransferManagerImpl implements TransferManager{
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITDAILYPAY, 100000d));
 		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount("transfer_"+userId);
 		logger.warn("transferLimitDailyPay : {},accumulatedAmount : {} ",transferLimitDailyPay,accumulatedAmount);
-		if((accumulatedAmount.add(oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount(),"bid"))).compareTo(transferLimitDailyPay) == 1){
+		if((accumulatedAmount.add(oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount()))).compareTo(transferLimitDailyPay) == 1){
 			logger.warn("More than the maximum daily transaction limit");
 			return RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY;
 		}
@@ -387,7 +387,7 @@ public class TransferManagerImpl implements TransferManager{
 		transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 
 		//转换金额
-		BigDecimal exchangeResult = oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(),transfer.getTransferAmount(),"bid");
+		BigDecimal exchangeResult = oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(),transfer.getTransferAmount());
 		transferDAO.updateAccumulatedAmount("transfer_"+transfer.getUserFrom(), exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
 		//更改累计次数
 		transferDAO.updateCumulativeNumofTimes("transfer_"+transfer.getUserFrom(), new BigDecimal("1"));
@@ -484,7 +484,7 @@ public class TransferManagerImpl implements TransferManager{
 		
 		
 		if(StringUtils.isNotBlank(currency)&&StringUtils.isNotBlank(amount.toString())){
-			if((oandaRatesManager.getDefaultCurrencyAmount(currency, amount,"bid")).compareTo(transferLimitPerPay) == 1){
+			if((oandaRatesManager.getDefaultCurrencyAmount(currency, amount)).compareTo(transferLimitPerPay) == 1){
 				logger.warn("Exceeds the maximum amount of each transaction");
 				return RetCodeConsts.TRANSFER_LIMIT_EACH_TIME;
 			}
@@ -653,7 +653,7 @@ public class TransferManagerImpl implements TransferManager{
 		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
 		logger.warn("transferLimitPerPay : {}",transferLimitPerPay);
-		if((oandaRatesManager.getDefaultCurrencyAmount(currency, amount,"bid")).compareTo(transferLimitPerPay) == 1){
+		if((oandaRatesManager.getDefaultCurrencyAmount(currency, amount)).compareTo(transferLimitPerPay) == 1){
 			logger.warn("Exceeds the maximum amount of each transaction");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
 			map.put("msg", transferLimitPerPay.toString());
@@ -665,7 +665,7 @@ public class TransferManagerImpl implements TransferManager{
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITDAILYPAY, 100000d));
 		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount("transfer_"+userId);
 		logger.warn("transferLimitDailyPay : {},accumulatedAmount : {} ",transferLimitDailyPay,accumulatedAmount);
-		if((accumulatedAmount.add(oandaRatesManager.getDefaultCurrencyAmount(currency, amount,"bid"))).compareTo(transferLimitDailyPay) == 1){
+		if((accumulatedAmount.add(oandaRatesManager.getDefaultCurrencyAmount(currency, amount))).compareTo(transferLimitDailyPay) == 1){
 			logger.warn("More than the maximum daily transaction limit");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY);
 			map.put("msg", transferLimitDailyPay.toString());
@@ -843,7 +843,7 @@ public class TransferManagerImpl implements TransferManager{
 	private void largeTransWarn(final User payer,final Transfer transfer){
 		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
-		BigDecimal percentage = (oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount(),"bid"))
+		BigDecimal percentage = (oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount()))
 				.divide(transferLimitPerPay,5,RoundingMode.DOWN).multiply(new BigDecimal("100"));
 		
 		logger.info("percentage : {}",percentage);
@@ -892,7 +892,7 @@ public class TransferManagerImpl implements TransferManager{
 		}
 
 		logger.warn("transferLimitPerPay : {}",transferLimitPerPay);
-		if((oandaRatesManager.getDefaultCurrencyAmount(currency, amount,"bid")).compareTo(transferLimitPerPay) == 1){
+		if((oandaRatesManager.getDefaultCurrencyAmount(currency, amount)).compareTo(transferLimitPerPay) == 1){
 			logger.warn("Exceeds the maximum amount of each transaction");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
 			map.put("msg", transferLimitPerPay.setScale(2).toString());

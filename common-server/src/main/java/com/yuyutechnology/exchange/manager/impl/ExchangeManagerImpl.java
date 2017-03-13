@@ -98,7 +98,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		BigDecimal exchangeLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITPERPAY, 100000d));
 		logger.info("exchangeLimitPerPay : {}",exchangeLimitPerPay.toString());
-		if((oandaRatesManager.getDefaultCurrencyAmount(currencyOut, amountOut,"bid")).compareTo(exchangeLimitPerPay) == 1){
+		if((oandaRatesManager.getDefaultCurrencyAmount(currencyOut, amountOut)).compareTo(exchangeLimitPerPay) == 1){
 			logger.warn("Exceeds the maximum amount of each exchange");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_EACH_TIME);
 			map.put("msg", exchangeLimitPerPay.setScale(2).toString());
@@ -111,7 +111,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITDAILYPAY, 100000d));
 		logger.info("exchangeLimitDailyPay : {}",exchangeLimitDailyPay.toString());
 		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount("exchange_"+userId);
-		if((accumulatedAmount.add(oandaRatesManager.getDefaultCurrencyAmount(currencyOut, amountOut,"bid"))).compareTo(exchangeLimitDailyPay) == 1){
+		if((accumulatedAmount.add(oandaRatesManager.getDefaultCurrencyAmount(currencyOut, amountOut))).compareTo(exchangeLimitDailyPay) == 1){
 			logger.warn("More than the maximum daily exchange limit");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_DAILY_PAY);
 			map.put("msg", exchangeLimitDailyPay.setScale(2).toString());
@@ -144,7 +144,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			return map;
 		}
 		// 然后判断换算后金额是否超过最小限额
-		BigDecimal result = oandaRatesManager.getExchangedAmount(currencyOut, amountOut, currencyIn, "bid");
+		BigDecimal result = oandaRatesManager.getExchangedAmount(currencyOut, amountOut, currencyIn);
 		
 		if (currencyIn.equals(ServerConsts.CURRENCY_OF_GOLDPAY) && result.compareTo(new BigDecimal(1)) == 1) {
 
@@ -217,7 +217,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 					currencyIn, new BigDecimal(result.get("in")), currencyOut, new BigDecimal(result.get("out")));
 			
 			//添加累计金额
-			BigDecimal exchangeResult = oandaRatesManager.getDefaultCurrencyAmount(currencyOut,amountOut,"bid");
+			BigDecimal exchangeResult = oandaRatesManager.getDefaultCurrencyAmount(currencyOut,amountOut);
 			transferDAO.updateAccumulatedAmount("exchange_"+userId, exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
 			//更改累计次数
 			transferDAO.updateCumulativeNumofTimes("exchange_"+userId, new BigDecimal("1"));
@@ -298,7 +298,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		
 		String exchangeFeePerThousand = configManager.getConfigStringValue(ConfigKeyEnum.EXCHANGEFEE, "1.5");
 
-		BigDecimal in = (oandaRatesManager.getExchangedAmount(currencyOut, outAmount, currencyIn, "ask"))
+		BigDecimal in = (oandaRatesManager.getExchangedAmount(currencyOut, outAmount, currencyIn))
 				.setScale(bitsIn, BigDecimal.ROUND_FLOOR);
 		
 		BigDecimal fee = in.multiply(new BigDecimal(((Double.parseDouble(exchangeFeePerThousand))/1000)+""))
@@ -325,7 +325,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	private void largeExchangeWarn(final Exchange exchange){
 		BigDecimal exchangeLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITPERPAY, 100000d));
-		BigDecimal percentage = (oandaRatesManager.getDefaultCurrencyAmount(exchange.getCurrencyOut(), exchange.getAmountOut(),"bid"))
+		BigDecimal percentage = (oandaRatesManager.getDefaultCurrencyAmount(exchange.getCurrencyOut(), exchange.getAmountOut()))
 				.divide(exchangeLimitPerPay,5,RoundingMode.DOWN).multiply(new BigDecimal("100"));
 		
 		logger.info("exchangeLimitPerPay : {},percentage : {}",exchangeLimitPerPay.toString(),percentage.toString());

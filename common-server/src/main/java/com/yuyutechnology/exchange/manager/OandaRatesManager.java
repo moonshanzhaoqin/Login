@@ -12,10 +12,10 @@ public interface OandaRatesManager {
 	public void updateExchangeRates();
 
 	public BigDecimal getExchangedAmount(String currencyLeft, 
-			BigDecimal amount, String currencyRight, String type);
+			BigDecimal amount, String currencyRight);
 
 	public BigDecimal getDefaultCurrencyAmount(String transCurrency, 
-			BigDecimal transAmount, String type);
+			BigDecimal transAmount);
 
 	public Date getExchangeRateUpdateDate();
 
