@@ -146,14 +146,14 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		BigDecimal sumRecharge = transferDAO.sumGoldpayTransAmount(ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE);
 		BigDecimal sumWithdraw = transferDAO.sumGoldpayTransAmount(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
 		BigDecimal exHoldingTotalAssets = oandaRatesManager.getDefaultCurrencyAmount(ServerConsts.CURRENCY_OF_GOLDPAY,
-				sumRecharge.subtract(sumWithdraw),"bid");
+				sumRecharge.subtract(sumWithdraw));
 
 		logger.info("sumRecharge:{},sumWithdraw:{},exHoldingTotalAssets(USD):{}",
 				new Object[] { sumRecharge, sumWithdraw, exHoldingTotalAssets });
 
 		String reserveFundsStr = configManager.getConfigStringValue(ConfigKeyEnum.RESERVEFUNDS, "100000000");
 		BigDecimal reserveFunds = oandaRatesManager.getDefaultCurrencyAmount(ServerConsts.CURRENCY_OF_GOLDPAY,
-				new BigDecimal(reserveFundsStr),"bid");
+				new BigDecimal(reserveFundsStr));
 
 		logger.info("reserveFunds (USD) :{}", reserveFunds);
 

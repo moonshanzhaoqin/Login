@@ -44,7 +44,7 @@ public class WalletManagerImpl implements WalletManager {
 			if(!wallet.getCurrency().getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 
 				BigDecimal num = oandaRatesManager.getExchangedAmount(wallet.getCurrency().getCurrency(), 
-						wallet.getBalance(), ServerConsts.CURRENCY_OF_GOLDPAY, "bid");
+						wallet.getBalance(), ServerConsts.CURRENCY_OF_GOLDPAY);
 				
 				goldpayAmount = goldpayAmount.add(num);
 				
