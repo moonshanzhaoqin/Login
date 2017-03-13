@@ -59,9 +59,9 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 	}
 	
 	@Override
-	public BigDecimal getExchangedAmount(String currencyLeft,BigDecimal amountIn,String currencyRight,String type){
+	public BigDecimal getExchangedAmount(String currencyLeft,BigDecimal amountIn,String currencyRight){
 		
-		BigDecimal result ;
+		BigDecimal result = BigDecimal.ZERO ;
 		
 		
 		if((!currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLDPAY)&&!currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLD))
@@ -74,7 +74,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 				
 				result = amountIn.multiply(exchangeRate);
 				
-				logger.info("amount : {} ,bid rate : {},result : {}",amountIn,exchangeRate,result);
+				logger.info("{} to {} , amount : {} , bid rate : {}, result(amountIn * rate) : {}",currencyLeft, currencyRight, amountIn,exchangeRate,result);
 	
 				return result;
 			}else{
@@ -83,7 +83,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 				if(exchangeRate != null){
 					
 					result = amountIn.divide(exchangeRate, 8, BigDecimal.ROUND_DOWN);
-					logger.info("amount : {} ,ask rate : {},result : {}",amountIn,exchangeRate,result);
+					logger.info("{} to {}, amount : {} , ask rate : {}, result(amountIn / rate) : {}",currencyLeft, currencyRight, amountIn,exchangeRate,result);
 					
 					return result;
 				}else{
@@ -115,25 +115,27 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 					new BigDecimal("10000").multiply(new BigDecimal(ResourceUtils.getBundleValue4String("exchange.oz4g", "31.1034768"))),
 					8,BigDecimal.ROUND_DOWN);
 			
-			
-			
-			
-			
-			logger.info("rate4XAU2USD :{} ,rate4GDQ2USD : {}",rate4XAU2USD,rate4GDQ2USD);
+//			logger.info("rate4XAU2USD :{} ,rate4GDQ2USD : {}",rate4XAU2USD,rate4GDQ2USD);
 			
 			if(currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 				if(currencyRight.equals(ServerConsts.CURRENCY_OF_USD)){
-					return rate4GDQ2USD.multiply(amountIn);
+					result = rate4GDQ2USD.multiply(amountIn);
+					logger.info("{} to {} , amount : {} , gold bid rate : {}, result(amountIn * rate4GDQ2USD) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USD, result);
+					return result;
 				}else{
 					BigDecimal rateUSD2Other = getExchangeRate(ServerConsts.CURRENCY_OF_USD,currencyRight,"bid");
 					if(rateUSD2Other != null){
-						return amountIn.multiply(rate4GDQ2USD).multiply(rateUSD2Other);
+						result = amountIn.multiply(rate4GDQ2USD).multiply(rateUSD2Other);
+						logger.info("{} to {} , amount : {} ,gold bid rate : {}, other bid rate : {}, result(amountIn * rate4GDQ2USD * rateUSD2Other) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USD, rateUSD2Other, result);
+						return result;
 					}else{
 						BigDecimal rateOther2USD = getExchangeRate(currencyRight,ServerConsts.CURRENCY_OF_USD,"ask");
 						if(rateOther2USD != null){
-							return rate4GDQ2USD.multiply(new BigDecimal("1")
-									.divide(rateOther2USD,8,BigDecimal.ROUND_DOWN))
+							result = rate4GDQ2USD.multiply(new BigDecimal("1")
+									.divide(rateOther2USD, 8, BigDecimal.ROUND_DOWN))
 									.multiply(amountIn);
+							logger.info("{} to {} , amount : {} ,gold bid rate : {}, other bid rate : {}, result(amount * (rate4GDQ2USD * (1/rateOther2USD))) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USD, rateOther2USD, result);
+							return result;
 						}
 
 					}
@@ -143,23 +145,29 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 			
 			if(currencyRight .equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 				if(currencyLeft.equals(ServerConsts.CURRENCY_OF_USD)){
-					return amountIn.divide(rate4GDQ2USD, 8, BigDecimal.ROUND_DOWN);
+					result = amountIn.divide(rate4GDQ2USD, 8, BigDecimal.ROUND_DOWN);
+					logger.info("{} to {} , amount : {} , gold bid rate : {}, result(amountIn / rate4GDQ2USD) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USD, result);
+					return result;
 				}else{
 					BigDecimal rateOther2USD = getExchangeRate(currencyLeft,ServerConsts.CURRENCY_OF_USD,"bid");
 					if(rateOther2USD!= null){
-						return rateOther2USD.divide(rate4GDQ2USD,8,BigDecimal.ROUND_DOWN).multiply(amountIn);
+						result = rateOther2USD.divide(rate4GDQ2USD,8,BigDecimal.ROUND_DOWN).multiply(amountIn);
+						logger.info("{} to {} , amount : {} ,gold ask rate : {}, other bid rate : {}, result(amount * (rateOther2USD/rate4GDQ2USD)) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USD, rateOther2USD, result);
+						return result;
 					}else{
 
 						BigDecimal rateUSD2Other = getExchangeRate(ServerConsts.CURRENCY_OF_USD,currencyLeft,"ask");
 						if(rateUSD2Other != null){
-							return new BigDecimal("1")
+							
+							result = new BigDecimal("1")
 									.divide(rate4GDQ2USDASK.multiply(rateUSD2Other),8,BigDecimal.ROUND_DOWN)
 									.multiply(amountIn);
+							logger.info("{} to {} , amount : {} ,gold ask rate : {}, other bid rate : {}, result(amount * (1 / (rate4GDQ2USDASK*rateUSD2Other))) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USDASK, rateUSD2Other, result);
+							return result;
 						}
 					}
 				}
 			}
-
 		}
 		
 		return null;
@@ -167,9 +175,9 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 	}
 	
 	@Override
-	public BigDecimal getDefaultCurrencyAmount(String transCurrency,BigDecimal transAmount,String type){
+	public BigDecimal getDefaultCurrencyAmount(String transCurrency,BigDecimal transAmount){
 		
-		return getExchangedAmount(transCurrency,transAmount,ServerConsts.STANDARD_CURRENCY,type);
+		return getExchangedAmount(transCurrency,transAmount,ServerConsts.STANDARD_CURRENCY);
 		
 	}
 	
@@ -204,7 +212,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 					totalBalance = totalBalance.add(wallet.getBalance());
 				} else {
 					totalBalance = totalBalance.add(
-							getDefaultCurrencyAmount(wallet.getCurrency().getCurrency(), wallet.getBalance(),"bid"));
+							getDefaultCurrencyAmount(wallet.getCurrency().getCurrency(), wallet.getBalance()));
 				}
 			}
 		}
@@ -396,11 +404,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 					}
 				}
 			}
-			
-			
-			
 		}
-
 		return null;
 		
 	}
