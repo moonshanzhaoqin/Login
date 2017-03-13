@@ -1,7 +1,5 @@
 package com.yuyutechnology.exchange.crm.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,13 +14,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
+import com.yuyutechnology.exchange.crm.request.GetWithdrawListRequest;
 import com.yuyutechnology.exchange.crm.request.WithdrawRequest;
-import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.dto.WithdrawDetail;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
-import com.yuyutechnology.exchange.pojo.User;
-import com.yuyutechnology.exchange.pojo.Withdraw;
+import com.yuyutechnology.exchange.utils.page.PageBean;
 
 @Controller
 public class WithdrawController {
@@ -42,8 +39,12 @@ public class WithdrawController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getWithdrawList", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public List<Withdraw> getWithdrawList(HttpServletRequest request, HttpServletResponse response) {
-		return goldpayTransManager.getWithdrawList();
+	public PageBean getWithdrawList(@RequestBody GetWithdrawListRequest getWithdrawListRequest,
+			HttpServletRequest request, HttpServletResponse response) {
+		logger.info(getWithdrawListRequest.toString());
+		return	goldpayTransManager.getWithdrawList(Integer.parseInt(getWithdrawListRequest.getCurrentPage()),
+				getWithdrawListRequest.getUserId(), getWithdrawListRequest.getReviewStatus(),
+				getWithdrawListRequest.getGoldpayRemit());
 	}
 
 	/**

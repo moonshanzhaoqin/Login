@@ -42,6 +42,7 @@ import com.yuyutechnology.exchange.pojo.Withdraw;
 import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
+import com.yuyutechnology.exchange.utils.page.PageBean;
 
 @Service
 public class GoldpayTransManagerImpl implements GoldpayTransManager {
@@ -700,11 +701,6 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	}
 
 	@Override
-	public List<Withdraw> getWithdrawList() {
-		return withdrawDAO.getAllWithdraws();
-	}
-
-	@Override
 	public WithdrawDetail getWithdrawDetail(Integer withdrawId) {
 		logger.info("getWithdrawDetail : withdrawId={} ==>", withdrawId);
 
@@ -771,6 +767,12 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 			withdraw.setReviewStatus(ServerConsts.REVIEW_STATUS_PASS);
 			withdrawDAO.saveOrUpdateWithdraw(withdraw);
 		}
+	}
+
+	@Override
+	public PageBean getWithdrawList(int currentPage, String userId, String reviewStatus, String goldpayRemit) {
+		logger.info("currentPage={},userId={},reviewStatus={},goldpayRemit={}", currentPage, userId, reviewStatus, goldpayRemit);
+		return withdrawDAO.searchWithdrawsByPage(userId, reviewStatus, goldpayRemit, currentPage, 10);
 	}
 
 }

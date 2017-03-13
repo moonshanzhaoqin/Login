@@ -1,9 +1,11 @@
 package com.yuyutechnology.exchange.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.orm.hibernate4.HibernateTemplate;
@@ -11,8 +13,9 @@ import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.WithdrawDAO;
-import com.yuyutechnology.exchange.pojo.UserConfig;
 import com.yuyutechnology.exchange.pojo.Withdraw;
+import com.yuyutechnology.exchange.utils.page.PageBean;
+import com.yuyutechnology.exchange.utils.page.PageUtils;
 
 
 @Repository
@@ -48,15 +51,47 @@ public class WithdrawDAOImpl implements WithdrawDAO {
 		return (list.isEmpty()) ? null : (Withdraw) list.get(0);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public List<Withdraw> getAllWithdraws() {
-		List<?> list = hibernateTemplate.find("from Withdraw order");
-		return (List<Withdraw>) list;
+	public PageBean searchWithdrawsByPage(String userId, String reviewStatus, String goldpayRemit, int currentPage, int pageSize) {
+		logger.info("userId={},reviewStatus={},goldpayRemit={},currentPage={},pageSize={}",  userId, reviewStatus, goldpayRemit,currentPage,pageSize);
+		List<Object> values = new ArrayList<Object>();
+		StringBuilder hql = new StringBuilder("from Withdraw");
+//		logger.info("hql.length()={}",hql.length());
+		if (StringUtils.isNotBlank(userId)) {
+			if (hql.length()>13) {
+				hql.append(" and ");
+			}else{
+				hql.append(" where ");
+			}
+			hql.append("userId = ?");
+			values.add(userId);
+		}
+		if (StringUtils.isNotBlank(reviewStatus)) {
+			if (hql.length()>13) {
+				hql.append(" and ");
+			}else{
+				hql.append(" where ");
+			}
+			hql.append("reviewStatus = ? ");
+			values.add(Integer.parseInt(reviewStatus));
+		}
+		if (StringUtils.isNotBlank(goldpayRemit)) {
+			if (hql.length()>13) {
+				hql.append(" and ");
+			}else{
+				hql.append(" where ");
+			}
+			hql.append("goldpayRemit = ? ");
+			values.add(Integer.parseInt(goldpayRemit));
+		}
+		logger.info("hql:{}", hql);
+		PageBean pageBean=PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
+		return pageBean;
 	}
 
 	@Override
 	public Withdraw getWithdraw(Integer withdrawId) {
 		return hibernateTemplate.get(Withdraw.class, withdrawId);
 	}
+
 }
