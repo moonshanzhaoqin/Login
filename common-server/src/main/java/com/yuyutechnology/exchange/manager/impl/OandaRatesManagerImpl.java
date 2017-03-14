@@ -151,7 +151,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 				}else{
 					BigDecimal rateOther2USD = getExchangeRate(currencyLeft,ServerConsts.CURRENCY_OF_USD,"bid");
 					if(rateOther2USD!= null){
-						result = rateOther2USD.divide(rate4GDQ2USD,8,BigDecimal.ROUND_DOWN).multiply(amountIn);
+						result = rateOther2USD.divide(rate4GDQ2USDASK,8,BigDecimal.ROUND_DOWN).multiply(amountIn);
 						logger.info("{} to {} , amount : {} ,gold ask rate : {}, other bid rate : {}, result(amount * (rateOther2USD/rate4GDQ2USD)) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USD, rateOther2USD, result);
 						return result;
 					}else{
@@ -277,6 +277,14 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 			BigDecimal rate4GDQ2USD = rate4XAU2USD.divide(new BigDecimal("10000").
 					multiply(new BigDecimal(ResourceUtils.getBundleValue4String("exchange.oz4g", "31.1034768"))),
 					8,BigDecimal.ROUND_DOWN);
+			
+			//首先获取 1oz黄金对应的美元价值
+			BigDecimal rate4XAU2USDASK = getExchangeRate(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_USD, "ask");
+			//计算1GDQ对应的美元价值
+			BigDecimal rate4GDQ2USDASK = rate4XAU2USDASK.divide(
+					new BigDecimal("10000").multiply(new BigDecimal(ResourceUtils.getBundleValue4String("exchange.oz4g", "31.1034768"))),
+					8,BigDecimal.ROUND_DOWN);
+			
 			logger.info("rate4XAU2USD :{} ,rate4GDQ2USD : {}",rate4XAU2USD,rate4GDQ2USD);
 			
 			if(currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
@@ -300,16 +308,16 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 			
 			if(currencyRight .equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 				if(currencyLeft.equals(ServerConsts.CURRENCY_OF_USD)){
-					return (new BigDecimal("1")).divide(rate4GDQ2USD, 8, BigDecimal.ROUND_DOWN);
+					return (new BigDecimal("1")).divide(rate4GDQ2USDASK, 8, BigDecimal.ROUND_DOWN);
 				}else{
 					BigDecimal rateOther2USD = getExchangeRate(currencyLeft,ServerConsts.CURRENCY_OF_USD,"bid");
 					if(rateOther2USD!= null){
-						return rateOther2USD.divide(rate4GDQ2USD,8,BigDecimal.ROUND_DOWN);
+						return rateOther2USD.divide(rate4GDQ2USDASK,8,BigDecimal.ROUND_DOWN);
 					}else{
 						BigDecimal rateUSD2Other = getExchangeRate(ServerConsts.CURRENCY_OF_USD,currencyLeft,"ask");
 						if(rateUSD2Other != null){
 							return new BigDecimal("1")
-									.divide(rate4GDQ2USD.multiply(rateUSD2Other),8,BigDecimal.ROUND_DOWN);
+									.divide(rate4GDQ2USDASK.multiply(rateUSD2Other),8,BigDecimal.ROUND_DOWN);
 						}
 					}
 				}
@@ -371,6 +379,14 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 					multiply(new BigDecimal(ResourceUtils.getBundleValue4String("exchange.oz4g", "31.1034768"))),
 					8,BigDecimal.ROUND_DOWN);
 			
+			//首先获取 1oz黄金对应的美元价值
+			BigDecimal rate4XAU2USDASK = getExchangeRate(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_USD, "ask");
+			//计算1GDQ对应的美元价值
+			BigDecimal rate4GDQ2USDASK = rate4XAU2USDASK.divide(
+					new BigDecimal("10000").multiply(new BigDecimal(ResourceUtils.getBundleValue4String("exchange.oz4g", "31.1034768"))),
+					8,BigDecimal.ROUND_DOWN);
+			
+			
 			if(currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 				
 				if(currencyRight.equals(ServerConsts.CURRENCY_OF_USD)){
@@ -391,15 +407,15 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 			
 			if(currencyRight .equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 				if(currencyLeft.equals(ServerConsts.CURRENCY_OF_USD)){
-					return amount.multiply(rate4GDQ2USD);
+					return amount.multiply(rate4GDQ2USDASK);
 				}else{
 					BigDecimal rateOther2USD = getExchangeRate(currencyLeft,ServerConsts.CURRENCY_OF_USD,"bid");
 					if(rateOther2USD!= null){
-						return amount.multiply(rate4GDQ2USD).divide(rateOther2USD,8,BigDecimal.ROUND_DOWN);
+						return amount.multiply(rate4GDQ2USDASK).divide(rateOther2USD,8,BigDecimal.ROUND_DOWN);
 					}else{
 						BigDecimal rateUSD2Other = getExchangeRate(ServerConsts.CURRENCY_OF_USD,currencyLeft,"ask");
 						if(rateUSD2Other != null){
-							return amount.multiply(rate4GDQ2USD).multiply(rateUSD2Other);
+							return amount.multiply(rate4GDQ2USDASK).multiply(rateUSD2Other);
 						}
 					}
 				}
