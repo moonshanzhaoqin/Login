@@ -13,7 +13,10 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
+import com.yuyutechnology.exchange.server.controller.request.DecryptRequest;
+import com.yuyutechnology.exchange.server.controller.response.EncryptResponse;
 import com.yuyutechnology.exchange.utils.AESCipher;
+import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
 
 /**
@@ -31,7 +34,8 @@ public class DecryptEncryptBodyProcessorImpl extends DecryptEncryptBodyProcessor
         String key = ResourceUtils.getBundleValue4String("aes.key");
         if (StringUtils.isNotBlank(key)) {
         	try {
-				input = AESCipher.decryptAES(input,key);
+                DecryptRequest request = JsonBinder.getInstance().fromJson(input, DecryptRequest.class);
+				input = AESCipher.decryptAES(request == null ? "" : StringUtils.defaultString(request.getContent()),key);
 			} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException
 					| InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException
 					| UnsupportedEncodingException e) {
@@ -39,7 +43,7 @@ public class DecryptEncryptBodyProcessorImpl extends DecryptEncryptBodyProcessor
 			}
         }
         logger.info("==========doDecryptRequestBody input(decryptAES), {}", input);
-        return super.doDecryptRequestBody(input, httpHeaders);
+        return input;
     }
 
     @Override
@@ -49,6 +53,9 @@ public class DecryptEncryptBodyProcessorImpl extends DecryptEncryptBodyProcessor
         if (StringUtils.isNotBlank(key)) {
         	try {
 				input = AESCipher.encryptAES(input,key);
+		        EncryptResponse response = new EncryptResponse();
+		        response.setContent(input);
+		        input = JsonBinder.getInstance().toJson(response);
 			} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException
 					| InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException
 					| UnsupportedEncodingException e) {
@@ -56,7 +63,7 @@ public class DecryptEncryptBodyProcessorImpl extends DecryptEncryptBodyProcessor
 			}
         }
         logger.info("==========doEncryptResponseBody input(encryptAES), {}", input);
-        return super.doEncryptResponseBody(input, httpHeaders);
+        return input;
     }
 
 }

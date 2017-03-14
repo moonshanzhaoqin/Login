@@ -10,10 +10,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 
-import com.yuyutechnology.exchange.server.controller.request.DecryptRequest;
-import com.yuyutechnology.exchange.server.controller.response.EncryptResponse;
-import com.yuyutechnology.exchange.utils.JsonBinder;
-
 /**
  * @author silent.sun
  *
@@ -28,22 +24,15 @@ public abstract class DecryptEncryptBodyProcessor {
         InputStream inputStream = inputMessage.getBody();
         String input = IOUtils.toString(inputStream, charset);
         HttpHeaders httpHeaders = inputMessage.getHeaders();
-        DecryptRequest request = JsonBinder.getInstance().fromJson(input, DecryptRequest.class);
-        return doDecryptRequestBody(request.getContent(), httpHeaders);
+        return doDecryptRequestBody(input, httpHeaders);
     }
 
     public final String encryptResponseBody(String input, HttpHeaders httpHeaders) {
-        EncryptResponse response = new EncryptResponse();
-        response.setContent(doEncryptResponseBody(input, httpHeaders));
-        return JsonBinder.getInstance().toJson(response);
+        return doEncryptResponseBody(input, httpHeaders);
     }
 
-    protected String doDecryptRequestBody(String input, HttpHeaders httpHeaders) {
-        return input;
-    }
+    protected abstract String doDecryptRequestBody(String input, HttpHeaders httpHeaders);
 
-    protected String doEncryptResponseBody(String input, HttpHeaders httpHeaders) {
-        return input;
-    }
+    protected abstract String doEncryptResponseBody(String input, HttpHeaders httpHeaders);
 
 }
