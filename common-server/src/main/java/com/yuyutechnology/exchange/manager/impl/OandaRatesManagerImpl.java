@@ -170,7 +170,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 			}
 		}
 		
-		return null;
+		return result;
 		
 	}
 	
