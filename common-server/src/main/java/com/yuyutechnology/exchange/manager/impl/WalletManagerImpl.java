@@ -31,7 +31,7 @@ public class WalletManagerImpl implements WalletManager {
 	@Override
 	public HashMap<String, BigDecimal> getTotalAmoutGold(int userId) {
 		
-		BigDecimal goldpayAmount = new BigDecimal("0");
+		BigDecimal totalUSDAmoumt = BigDecimal.ZERO;
 
 		List<Wallet> list = walletDAO.getWalletsByUserId(userId);
 		
@@ -41,18 +41,21 @@ public class WalletManagerImpl implements WalletManager {
 		
 		for (Wallet wallet : list) {
 			
-			if(!wallet.getCurrency().getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
+			if(!wallet.getCurrency().getCurrency().equals(ServerConsts.CURRENCY_OF_USD)){
 
-				BigDecimal num = oandaRatesManager.getExchangedAmount(wallet.getCurrency().getCurrency(), 
-						wallet.getBalance(), ServerConsts.CURRENCY_OF_GOLDPAY);
+				BigDecimal num = oandaRatesManager.getDefaultCurrencyAmount(wallet.getCurrency().getCurrency(), wallet.getBalance())
+						.setScale(4, BigDecimal.ROUND_DOWN);
 				
-				goldpayAmount = goldpayAmount.add(num);
+				logger.info("{} {} to {} USD",wallet.getBalance(),wallet.getCurrency().getCurrency(),num);
+				
+				totalUSDAmoumt = totalUSDAmoumt.add(num);
 				
 			}else{
-				goldpayAmount = goldpayAmount.add(wallet.getBalance());
+				totalUSDAmoumt = totalUSDAmoumt.add(wallet.getBalance());
 			}
 		}
-
+		
+		BigDecimal goldpayAmount = oandaRatesManager.getExchangedAmount(ServerConsts.CURRENCY_OF_USD, totalUSDAmoumt, ServerConsts.CURRENCY_OF_GOLDPAY);				
 		logger.info("user id : {} ,Currently has total goldpay : {}",userId,goldpayAmount);
 		final BigDecimal goldAmount = goldpayAmount.divide(new BigDecimal("10000"),2,BigDecimal.ROUND_FLOOR);
 		logger.info("user id : {} ,Currently has total gold : {}",userId ,goldAmount);
