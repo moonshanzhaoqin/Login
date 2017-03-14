@@ -134,7 +134,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 							result = rate4GDQ2USD.multiply(new BigDecimal("1")
 									.divide(rateOther2USD, 8, BigDecimal.ROUND_DOWN))
 									.multiply(amountIn);
-							logger.info("{} to {} , amount : {} ,gold bid rate : {}, other bid rate : {}, result(amount * (rate4GDQ2USD * (1/rateOther2USD))) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USD, rateOther2USD, result);
+							logger.info("{} to {} , amount : {} ,gold bid rate : {}, other ask rate : {}, result(amount * (rate4GDQ2USD * (1/rateOther2USD))) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USD, rateOther2USD, result);
 							return result;
 						}
 
@@ -146,7 +146,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 			if(currencyRight .equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 				if(currencyLeft.equals(ServerConsts.CURRENCY_OF_USD)){
 					result = amountIn.divide(rate4GDQ2USDASK, 8, BigDecimal.ROUND_DOWN);
-					logger.info("{} to {} , amount : {} , gold bid rate : {}, result(amountIn / rate4GDQ2USDASK) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USDASK, result);
+					logger.info("{} to {} , amount : {} , gold ask rate : {}, result(amountIn / rate4GDQ2USDASK) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USDASK, result);
 					return result;
 				}else{
 					BigDecimal rateOther2USD = getExchangeRate(currencyLeft,ServerConsts.CURRENCY_OF_USD,"bid");
@@ -162,7 +162,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 							result = new BigDecimal("1")
 									.divide(rate4GDQ2USDASK.multiply(rateUSD2Other),8,BigDecimal.ROUND_DOWN)
 									.multiply(amountIn);
-							logger.info("{} to {} , amount : {} ,gold ask rate : {}, other bid rate : {}, result(amount * (1 / (rate4GDQ2USDASK*rateUSD2Other))) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USDASK, rateUSD2Other, result);
+							logger.info("{} to {} , amount : {} ,gold ask rate : {}, other ask rate : {}, result(amount * (1 / (rate4GDQ2USDASK*rateUSD2Other))) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USDASK, rateUSD2Other, result);
 							return result;
 						}
 					}
