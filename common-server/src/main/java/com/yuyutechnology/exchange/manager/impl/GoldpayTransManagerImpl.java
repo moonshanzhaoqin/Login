@@ -719,7 +719,9 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		withdrawDetail.setUserId(user.getUserId());
 		withdrawDetail.setTransferId(transfer.getTransferId());
 		withdrawDetail.setUserName(user.getUserName());
-
+		withdrawDetail.setAreaCode(user.getAreaCode());
+		withdrawDetail.setUserPhone(user.getUserPhone());
+		
 		logger.info(withdrawDetail.toString());
 		return withdrawDetail;
 	}
@@ -738,7 +740,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	@Override
 	public void goldpayRemit(Integer withdrawId) {
 		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
-		//TODO 限制
+		// TODO 限制
 		HashMap<String, String> map = withdrawConfirm2(withdraw.getUserId(), withdraw.getTransferId());
 		withdraw.setGoldpayRemit(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)
 				? ServerConsts.GOLDPAY_REMIT_SUCCESS : ServerConsts.GOLDPAY_REMIT_FAIL);
@@ -749,7 +751,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	public void goldpayRemitAll() {
 		// TODO Auto-generated method stub
 		List<Withdraw> withdraws = withdrawDAO.getNeedGoldpayRemitWithdraws();
-		//TODO 限制
+		// TODO 限制
 		for (Withdraw withdraw : withdraws) {
 			HashMap<String, String> map = withdrawConfirm2(withdraw.getUserId(), withdraw.getTransferId());
 			withdraw.setGoldpayRemit(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)
@@ -771,7 +773,8 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 	@Override
 	public PageBean getWithdrawList(int currentPage, String userId, String reviewStatus, String goldpayRemit) {
-		logger.info("currentPage={},userId={},reviewStatus={},goldpayRemit={}", currentPage, userId, reviewStatus, goldpayRemit);
+		logger.info("currentPage={},userId={},reviewStatus={},goldpayRemit={}", currentPage, userId, reviewStatus,
+				goldpayRemit);
 		return withdrawDAO.searchWithdrawsByPage(userId, reviewStatus, goldpayRemit, currentPage, 10);
 	}
 

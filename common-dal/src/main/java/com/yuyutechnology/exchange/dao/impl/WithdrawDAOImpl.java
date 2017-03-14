@@ -17,7 +17,6 @@ import com.yuyutechnology.exchange.pojo.Withdraw;
 import com.yuyutechnology.exchange.utils.page.PageBean;
 import com.yuyutechnology.exchange.utils.page.PageUtils;
 
-
 @Repository
 public class WithdrawDAOImpl implements WithdrawDAO {
 	public static Logger logger = LogManager.getLogger(WithdrawDAOImpl.class);
@@ -52,40 +51,42 @@ public class WithdrawDAOImpl implements WithdrawDAO {
 	}
 
 	@Override
-	public PageBean searchWithdrawsByPage(String userId, String reviewStatus, String goldpayRemit, int currentPage, int pageSize) {
-		logger.info("userId={},reviewStatus={},goldpayRemit={},currentPage={},pageSize={}",  userId, reviewStatus, goldpayRemit,currentPage,pageSize);
+	public PageBean searchWithdrawsByPage(String userId, String reviewStatus, String goldpayRemit, int currentPage,
+			int pageSize) {
+		logger.info("userId={},reviewStatus={},goldpayRemit={},currentPage={},pageSize={}", userId, reviewStatus,
+				goldpayRemit, currentPage, pageSize);
 		List<Object> values = new ArrayList<Object>();
 		StringBuilder hql = new StringBuilder("from Withdraw");
-//		logger.info("hql.length()={}",hql.length());
+//		 logger.info("hql.length()={}",hql.length());
 		if (StringUtils.isNotBlank(userId)) {
-			if (hql.length()>13) {
+			if (hql.length() > 13) {
 				hql.append(" and ");
-			}else{
+			} else {
 				hql.append(" where ");
 			}
-			hql.append("userId = ?");
+			hql.append("u.userId = ? and u.userid = w.userId");
 			values.add(userId);
 		}
 		if (StringUtils.isNotBlank(reviewStatus)) {
-			if (hql.length()>13) {
+			if (hql.length() > 13) {
 				hql.append(" and ");
-			}else{
+			} else {
 				hql.append(" where ");
 			}
 			hql.append("reviewStatus = ? ");
 			values.add(Integer.parseInt(reviewStatus));
 		}
 		if (StringUtils.isNotBlank(goldpayRemit)) {
-			if (hql.length()>13) {
+			if (hql.length() > 13) {
 				hql.append(" and ");
-			}else{
+			} else {
 				hql.append(" where ");
 			}
 			hql.append("goldpayRemit = ? ");
 			values.add(Integer.parseInt(goldpayRemit));
 		}
 		logger.info("hql:{}", hql);
-		PageBean pageBean=PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
+		PageBean pageBean = PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
 		return pageBean;
 	}
 
@@ -93,5 +94,6 @@ public class WithdrawDAOImpl implements WithdrawDAO {
 	public Withdraw getWithdraw(Integer withdrawId) {
 		return hibernateTemplate.get(Withdraw.class, withdrawId);
 	}
+
 
 }

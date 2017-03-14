@@ -2,7 +2,6 @@ package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -291,8 +290,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	public HashMap<String, BigDecimal> exchangeCalculation(String currencyOut, String currencyIn, BigDecimal outAmount,
 			int capitalFlows) {
 
-		logger.info("currencyOut : {},currencyIn : {},outAmount:{}",
-				new String[] { currencyOut, currencyIn, outAmount.toString() });
+		logger.info("currencyOut : {},currencyIn : {},outAmount:{}",new String[] { currencyOut, currencyIn, outAmount.toString() });
 		// 取余位数
 		int bitsOut = 4;
 		int bitsIn = 4;
@@ -313,8 +311,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 
 		HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>();
 
-		logger.info("currencyOut : {},currencyIn : {}, out:{}, in:{}",
-				new String[] { currencyOut, currencyIn, out.toString(), in.toString() });
+		logger.info("currencyOut : {},currencyIn : {}, out:{}, in:{}",new String[] { currencyOut, currencyIn, out.toString(), in.toString() });
 
 		map.put("out", out);
 		map.put("in", in);

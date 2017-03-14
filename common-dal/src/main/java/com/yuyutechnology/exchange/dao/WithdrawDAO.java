@@ -19,5 +19,8 @@ public interface WithdrawDAO {
 
 	PageBean searchWithdrawsByPage(String userId, String reviewStatus, String goldpayRemit, int currentPage,
 			int pageSize);
+	
+	
+	
 
 }

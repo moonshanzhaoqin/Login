@@ -204,7 +204,7 @@ public class TransferDAOImpl implements TransferDAO {
 				query.setInteger(0, transferType);
 				
 
-				List list = query.list();
+				List<?> list = query.list();
 				
 				if((list != null && !list.isEmpty())&& list.get(0)!=null){
 					return Integer.parseInt((list.get(0).toString()));

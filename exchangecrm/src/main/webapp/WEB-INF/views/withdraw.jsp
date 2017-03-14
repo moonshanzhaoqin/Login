@@ -25,8 +25,7 @@
 			<form class="form-inline" id="searchWithdraw">
 				<div class="form-group">
 					<label class="sr-only" for="userId">userId</label> <input
-						type="text" class="form-control" name="userId"
-						placeholder="用户ID">
+						type="text" class="form-control" name="userId" placeholder="用户ID">
 				</div>
 				<div class="form-group">
 					<label class="sr-only" for="reviewStatus">reviewStatus</label> <select
@@ -55,7 +54,7 @@
 				id="withdraw">
 				<thead>
 					<tr>
-						<th>用户ID</th>
+<!-- 						<th>用户ID</th> -->
 						<th>交易号</th>
 						<th>审批状态</th>
 						<th>Goldpay划账结果</th>
@@ -88,6 +87,10 @@
 						<div class="form-group">
 							<label class="col-sm-3 control-label">用户名：</label>
 							<div class="col-sm-9" id="userName"></div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">手机号：</label>
+							<div class="col-sm-9" id="userPhone"></div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-3 control-label">Goldpay账号：</label>
@@ -147,8 +150,8 @@
 				initModel(withdrawId);
 			})
 			$('#myModal').on('hidden.bs.modal', function(e) {
-// 				console.log($("#paginator .active a").html());
-// 				console.log($("#paginator").data("currentPage"));
+				// 				console.log($("#paginator .active a").html());
+				// 				console.log($("#paginator").data("currentPage"));
 				searchWithdraw($("#paginator .active a").html());
 			})
 		});
@@ -200,7 +203,8 @@
 			data = {
 				withdrawId : withdrawId
 			};
-			$.ajax({
+			$
+					.ajax({
 						type : "post",
 						url : "/crm/getWithdrawDetail",
 						dataType : 'json',
@@ -213,6 +217,10 @@
 							$('#userName').html(
 									'<p class="form-control-static">'
 											+ data.userName + '</p>');
+							$('#userPhone').html(
+									'<p class="form-control-static">'
+											+ data.areaCode + data.userPhone
+											+ '</p>');
 							$('#goldpayAcount').html(
 									'<p class="form-control-static">'
 											+ data.goldpayAcount + '</p>');
@@ -307,9 +315,9 @@
 								var html = "";
 								for ( var i in data.rows) {
 									html += '<tr>'
-											+ '<td>'
-											+ data.rows[i].userId
-											+ '</td>'
+// 											+ '<td>'
+// 											+ data.rows[i].userId
+// 											+ '</td>'
 											+ '<td>'
 											+ data.rows[i].transferId
 											+ '</td>'

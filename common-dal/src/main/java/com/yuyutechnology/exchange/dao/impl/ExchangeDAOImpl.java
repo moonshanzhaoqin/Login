@@ -82,7 +82,7 @@ public class ExchangeDAOImpl implements ExchangeDAO {
 				Query query = session.createSQLQuery(" select COUNT(*) "
 						+ "FROM `e_exchange` "
 						+ "where TO_DAYS(`finish_time`) = TO_DAYS(NOW())");
-				List list = query.list();
+				List<?> list = query.list();
 				if((list != null && !list.isEmpty())&& list.get(0)!=null){
 					return Integer.parseInt((list.get(0).toString()));
 				}
