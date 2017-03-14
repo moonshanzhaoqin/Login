@@ -224,7 +224,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 
 	
 	@Override
-	public HashMap<String, Double> getExchangeRate(String base,String type) {
+	public HashMap<String, Double> getExchangeRate(String base) {
 		
 		HashMap<String, Double> map = new HashMap<>();
 

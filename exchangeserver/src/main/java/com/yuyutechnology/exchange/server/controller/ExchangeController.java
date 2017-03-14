@@ -120,7 +120,7 @@ public class ExchangeController {
 			rep.setMessage("This currency is not a tradable currency");
 			return rep;
 		}
-		HashMap<String, Double> map = oandaRatesManager.getExchangeRate(reqMsg.getBase(),"bid");
+		HashMap<String, Double> map = oandaRatesManager.getExchangeRate(reqMsg.getBase());
 		if (map.isEmpty()) {
 			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 			rep.setMessage("Failed to get exchange rate");
