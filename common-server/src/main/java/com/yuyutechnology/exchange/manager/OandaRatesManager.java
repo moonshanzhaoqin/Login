@@ -21,7 +21,7 @@ public interface OandaRatesManager {
 
 	public BigDecimal getTotalBalance(int userId);
 
-	public HashMap<String, Double> getExchangeRate(String base,String type);
+	public HashMap<String, Double> getExchangeRate(String base);
 	
 	public BigDecimal getSingleExchangeRate(String currencyLeft, String currencyRight);
 

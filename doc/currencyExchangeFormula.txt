@@ -1,0 +1,57 @@
+CNY to USD, amount : 100 , ask rate : 6.90354, result(amountIn / rate) : 14.48532202
+USD to CNY , amount : 100 , bid rate : 6.90277, result(amountIn * rate) : 690.27700
+CNY to HKD, amount : 100 , ask rate : 0.88903, result(amountIn / rate) : 112.48214345
+HKD to CNY , amount : 100 , bid rate : 0.88888, result(amountIn * rate) : 88.88800
+CNY to JPY, amount : 100 , ask rate : 0.061, result(amountIn / rate) : 1639.34426229
+JPY to CNY , amount : 100 , bid rate : 0.06, result(amountIn * rate) : 6.00
+CNY to EUR, amount : 100 , ask rate : 7.35718, result(amountIn / rate) : 13.59216438
+EUR to CNY , amount : 100 , bid rate : 7.35532, result(amountIn * rate) : 735.53200
+CNY to GBP, amount : 100 , ask rate : 8.42929, result(amountIn / rate) : 11.86339537
+GBP to CNY , amount : 100 , bid rate : 8.42676, result(amountIn * rate) : 842.67600
+CNY to AUD, amount : 100 , ask rate : 5.21846, result(amountIn / rate) : 19.16274149
+AUD to CNY , amount : 100 , bid rate : 5.21663, result(amountIn * rate) : 521.66300
+USD to HKD , amount : 100 , bid rate : 7.76532, result(amountIn * rate) : 776.53200
+HKD to USD, amount : 100 , ask rate : 7.76573, result(amountIn / rate) : 12.87708946
+USD to JPY , amount : 100 , bid rate : 114.789, result(amountIn * rate) : 11478.900
+JPY to USD, amount : 100 , ask rate : 114.802, result(amountIn / rate) : 0.87106496
+USD to EUR, amount : 100 , ask rate : 1.06571, result(amountIn / rate) : 93.83415751
+EUR to USD , amount : 100 , bid rate : 1.06556, result(amountIn * rate) : 106.55600
+USD to GBP, amount : 100 , ask rate : 1.22101, result(amountIn / rate) : 81.89941114
+GBP to USD , amount : 100 , bid rate : 1.22078, result(amountIn * rate) : 122.07800
+USD to AUD, amount : 100 , ask rate : 0.75591, result(amountIn / rate) : 132.29088118
+AUD to USD , amount : 100 , bid rate : 0.75573, result(amountIn * rate) : 75.57300
+HKD to JPY , amount : 100 , bid rate : 14.78148, result(amountIn * rate) : 1478.14800
+JPY to HKD, amount : 100 , ask rate : 14.78394, result(amountIn / rate) : 6.76409671
+HKD to EUR, amount : 100 , ask rate : 8.27602, result(amountIn / rate) : 12.08310274
+EUR to HKD , amount : 100 , bid rate : 8.27441, result(amountIn * rate) : 827.44100
+HKD to GBP, amount : 100 , ask rate : 9.48204, result(amountIn / rate) : 10.54625375
+GBP to HKD , amount : 100 , bid rate : 9.47975, result(amountIn * rate) : 947.97500
+HKD to AUD, amount : 100 , ask rate : 5.87019, result(amountIn / rate) : 17.03522373
+AUD to HKD , amount : 100 , bid rate : 5.86848, result(amountIn * rate) : 586.84800
+JPY to EUR, amount : 100 , ask rate : 122.341, result(amountIn / rate) : 0.81738746
+EUR to JPY , amount : 100 , bid rate : 122.321, result(amountIn * rate) : 12232.100
+JPY to GBP, amount : 100 , ask rate : 140.155, result(amountIn / rate) : 0.71349577
+GBP to JPY , amount : 100 , bid rate : 140.118, result(amountIn * rate) : 14011.800
+JPY to AUD, amount : 100 , ask rate : 86.779, result(amountIn / rate) : 1.15235252
+AUD to JPY , amount : 100 , bid rate : 86.754, result(amountIn * rate) : 8675.400
+EUR to GBP , amount : 100 , bid rate : 0.87278, result(amountIn * rate) : 87.27800
+GBP to EUR, amount : 100 , ask rate : 0.87295, result(amountIn / rate) : 114.55409817
+EUR to AUD , amount : 100 , bid rate : 1.40964, result(amountIn * rate) : 140.96400
+AUD to EUR, amount : 100 , ask rate : 1.41002, result(amountIn / rate) : 70.92097984
+GBP to AUD , amount : 100 , bid rate : 1.61488, result(amountIn * rate) : 161.48800
+AUD to GBP, amount : 100 , ask rate : 1.61547, result(amountIn / rate) : 61.90148996
+
+CNY to GDQ , amount : 10000 ,gold ask rate : 0.00387284, other ask rate : 6.90354, result(amount * (1 / (rate4GDQ2USDASK*rateUSD2Other))) : 374023.24960000
+GDQ to CNY , amount : 10000 ,gold bid rate : 0.00387204, other bid rate : 6.90277, result(amount * rate4GDQ2USD * rateUSD2Other) : 267.2780155080000
+USD to GDQ , amount : 10000 ,gold ask rate : 0.00387284, result(amount / rate4GDQ2USDASK) : 2582084.46514702
+GDQ to USD , amount : 10000 ,gold bid rate : 0.00387204, result(amount * rate4GDQ2USD) : 38.72040000
+HKD to GDQ , amount : 10000 ,gold ask rate : 0.00387284, other ask rate : 7.76573, result(amount * (1 / (rate4GDQ2USDASK*rateUSD2Other))) : 332497.32670000
+GDQ to HKD , amount : 10000 ,gold bid rate : 0.00387204, other bid rate : 7.76532, result(amount * rate4GDQ2USD * rateUSD2Other) : 300.6762965280000
+JPY to GDQ , amount : 10000 ,gold ask rate : 0.00387284, other ask rate : 114.802, result(amount * (1 / (rate4GDQ2USDASK*rateUSD2Other))) : 22491.63310000
+GDQ to JPY , amount : 10000 ,gold bid rate : 0.00387204, other bid rate : 114.789, result(amount * rate4GDQ2USD * rateUSD2Other) : 4444.67599560000
+EUR to GDQ , amount : 10000 ,gold ask rate : 0.00387284, other bid rate : 1.06556, result(amount * (rateOther2USD/rate4GDQ2USDASK)) : 2751365.92260000
+GDQ to EUR , amount : 10000 ,gold bid rate : 0.00387204, other ask rate : 1.06571, result(amount * (rate4GDQ2USD * (1/rateOther2USD))) : 36.3329609270280000
+GBP to GDQ , amount : 10000 ,gold ask rate : 0.00387284, other bid rate : 1.22078, result(amount * (rateOther2USD/rate4GDQ2USDASK)) : 3152157.07330000
+GDQ to GBP , amount : 10000 ,gold bid rate : 0.00387204, other ask rate : 1.22101, result(amount * (rate4GDQ2USD * (1/rateOther2USD))) : 31.7117795368440000
+AUD to GDQ , amount : 10000 ,gold ask rate : 0.00387284, other bid rate : 0.75573, result(amount * (rateOther2USD/rate4GDQ2USDASK)) : 1951358.69280000
+GDQ to AUD , amount : 10000 ,gold bid rate : 0.00387204, other ask rate : 0.75591, result(amount * (rate4GDQ2USD * (1/rateOther2USD))) : 51.2235582867240000
