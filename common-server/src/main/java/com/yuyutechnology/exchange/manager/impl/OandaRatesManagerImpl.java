@@ -146,13 +146,13 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 			if(currencyRight .equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 				if(currencyLeft.equals(ServerConsts.CURRENCY_OF_USD)){
 					result = amountIn.divide(rate4GDQ2USDASK, 8, BigDecimal.ROUND_DOWN);
-					logger.info("{} to {} , amount : {} , gold bid rate : {}, result(amountIn / rate4GDQ2USD) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USDASK, result);
+					logger.info("{} to {} , amount : {} , gold bid rate : {}, result(amountIn / rate4GDQ2USDASK) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USDASK, result);
 					return result;
 				}else{
 					BigDecimal rateOther2USD = getExchangeRate(currencyLeft,ServerConsts.CURRENCY_OF_USD,"bid");
 					if(rateOther2USD!= null){
 						result = rateOther2USD.divide(rate4GDQ2USDASK,8,BigDecimal.ROUND_DOWN).multiply(amountIn);
-						logger.info("{} to {} , amount : {} ,gold ask rate : {}, other bid rate : {}, result(amount * (rateOther2USD/rate4GDQ2USD)) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USDASK, rateOther2USD, result);
+						logger.info("{} to {} , amount : {} ,gold ask rate : {}, other bid rate : {}, result(amount * (rateOther2USD/rate4GDQ2USDASK)) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USDASK, rateOther2USD, result);
 						return result;
 					}else{
 
