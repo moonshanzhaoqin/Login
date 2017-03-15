@@ -172,7 +172,7 @@ public class CommonManagerImpl implements CommonManager {
 //			return currencies;
 //		}
 //		String[] currency = {"USD","GDQ","AUD","BGN","BRL","CAD","CHF","CNY","CZK","DKK","GBP","HKD","HRK","HUF","IDR","ILS","INR","JPY","KRW","MXN","MYR","NOK","NZD","PHP","PLN","RON","RUB","SEK","SGD","THB","TRY","ZAR","EUR"};
-		String[] currency = {"CHF","CNY","EUR","GBP","HKD","JPY","USD","GDQ"};
+		String[] currency = {"AUD","CAD","CHF","CNY","EUR","GBP","HKD","JPY","USD","GDQ"};
 		return Arrays.asList(currency);
 	}
 
