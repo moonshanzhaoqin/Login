@@ -10,10 +10,12 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
@@ -71,7 +73,10 @@ public class HttpClientUtils {
 	public static String sendGet(String domain,String params,BasicHeader basicHeader){
 		String result = "";
 //		HttpClient httpClient = HttpClientBuilder.create().build();
-		HttpClient httpClient = HttpClientBuilder.create().disableAutomaticRetries().build();
+		RequestConfig config = RequestConfig.custom()
+                .setConnectTimeout(3 * 1000) //设置连接超时时间，单位毫秒
+                .setSocketTimeout(3 * 1000).build(); //请求获取数据的超时时间，单位毫秒
+		HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).disableAutomaticRetries().build();
 		String urlName = domain;
 		if(StringUtils.isNotBlank(params)){
 			urlName = domain + "?" + params;
