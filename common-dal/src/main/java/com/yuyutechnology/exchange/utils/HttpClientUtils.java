@@ -12,6 +12,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
@@ -69,7 +70,8 @@ public class HttpClientUtils {
 	@SuppressWarnings("deprecation")
 	public static String sendGet(String domain,String params,BasicHeader basicHeader){
 		String result = "";
-		HttpClient httpClient = HttpClientBuilder.create().build();
+//		HttpClient httpClient = HttpClientBuilder.create().build();
+		HttpClient httpClient = HttpClientBuilder.create().disableAutomaticRetries().build();
         try {
         	String urlName = domain;
         	if(StringUtils.isNotBlank(params)){
