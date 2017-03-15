@@ -76,8 +76,10 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 		for (Entry<String, BigDecimal> entry : map.entrySet()) {
 			if (entry.getKey().equals(ServerConsts.STANDARD_CURRENCY)) {
 				totalAssets = totalAssets.add(entry.getValue());
+				logger.info("SystemAccountTotalAssets : {}",totalAssets);
 			} else {
 				totalAssets = totalAssets.add(oandaRatesManager.getDefaultCurrencyAmount(entry.getKey(), entry.getValue()));
+				logger.info("SystemAccountTotalAssets : {}",totalAssets);
 			}
 		}
 		map.put("totalAssets", totalAssets.setScale(4, RoundingMode.DOWN));
@@ -108,9 +110,11 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 			for (Entry<String, BigDecimal> entry : map.entrySet()) {
 				if (entry.getKey().equals(ServerConsts.STANDARD_CURRENCY)) {
 					totalAssets = totalAssets.add(entry.getValue());
+					logger.info("UserAccountTotalAssets : {}",totalAssets);
 				} else {
 					totalAssets = totalAssets
 							.add(oandaRatesManager.getDefaultCurrencyAmount(entry.getKey(), entry.getValue()));
+					logger.info("UserAccountTotalAssets : {}",totalAssets);
 				}
 			}
 		}

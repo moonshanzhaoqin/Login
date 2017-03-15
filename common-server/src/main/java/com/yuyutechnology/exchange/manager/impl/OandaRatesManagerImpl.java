@@ -87,7 +87,10 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 					
 					return result;
 				}else{
-					return new BigDecimal("-1");
+					
+					logger.warn("left:{},right:{} has no exchangeRate",currencyLeft,currencyRight);
+					
+					return result;
 				}
 			}
 			
@@ -170,7 +173,9 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 			}
 		}
 		
-		return null;
+		logger.warn("left:{},right:{} has no exchangeRate",currencyLeft,currencyRight);
+		
+		return result;
 		
 	}
 	
@@ -507,7 +512,8 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		
 	}
 
-	private OandaRespData getCurrentPrices(String instruments){
+	@Override
+	public OandaRespData getCurrentPrices(String instruments){
 		
 		OandaRespData oandaRespData = null;
 		
