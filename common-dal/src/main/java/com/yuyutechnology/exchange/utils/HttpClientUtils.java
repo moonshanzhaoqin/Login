@@ -73,7 +73,7 @@ public class HttpClientUtils {
 	public static String sendGet(String domain,String params,BasicHeader basicHeader){
 		String result = "";
 //		HttpClient httpClient = HttpClientBuilder.create().build();
-		RequestConfig config = RequestConfig.custom()
+		RequestConfig config = RequestConfig.custom().setConnectionRequestTimeout(3000)
                 .setConnectTimeout(3000) //设置连接超时时间，单位毫秒
                 .setSocketTimeout(3000).build(); //请求获取数据的超时时间，单位毫秒
 		CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).disableAutomaticRetries().build();
