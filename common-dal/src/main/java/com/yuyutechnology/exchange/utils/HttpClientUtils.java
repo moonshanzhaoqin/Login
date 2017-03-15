@@ -74,8 +74,8 @@ public class HttpClientUtils {
 		String result = "";
 //		HttpClient httpClient = HttpClientBuilder.create().build();
 		RequestConfig config = RequestConfig.custom()
-                .setConnectTimeout(3 * 1000) //设置连接超时时间，单位毫秒
-                .setSocketTimeout(3 * 1000).build(); //请求获取数据的超时时间，单位毫秒
+                .setConnectTimeout(3000) //设置连接超时时间，单位毫秒
+                .setSocketTimeout(3000).build(); //请求获取数据的超时时间，单位毫秒
 		HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).disableAutomaticRetries().build();
 		String urlName = domain;
 		if(StringUtils.isNotBlank(params)){
