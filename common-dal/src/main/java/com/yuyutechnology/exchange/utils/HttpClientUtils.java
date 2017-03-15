@@ -13,6 +13,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
@@ -76,7 +77,7 @@ public class HttpClientUtils {
 		RequestConfig config = RequestConfig.custom()
                 .setConnectTimeout(3000) //设置连接超时时间，单位毫秒
                 .setSocketTimeout(3000).build(); //请求获取数据的超时时间，单位毫秒
-		HttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).disableAutomaticRetries().build();
+		CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).disableAutomaticRetries().build();
 		String urlName = domain;
 		if(StringUtils.isNotBlank(params)){
 			urlName = domain + "?" + params;
@@ -104,7 +105,10 @@ public class HttpClientUtils {
         }catch(IOException e2){
         	logger.warn("sendGet url : {},  result : {}",urlName, e2.getMessage());
         }finally {
-            httpClient.getConnectionManager().shutdown();
+			try {
+				httpClient.close();
+			} catch (IOException e) {
+			}
         }
 		return result;
 	}
