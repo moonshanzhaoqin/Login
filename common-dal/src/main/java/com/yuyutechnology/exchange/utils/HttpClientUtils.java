@@ -82,7 +82,8 @@ public class HttpClientUtils {
 			urlName = domain + "?" + params;
 		}
         try {
-            HttpUriRequest httpGet = new HttpGet(urlName);
+        	HttpGet httpGet = new HttpGet(urlName);
+        	httpGet.setConfig(config);
             httpGet.setHeader(basicHeader);
             logger.warn("sendGet url : {}, execute",urlName);
             HttpResponse resp = httpClient.execute(httpGet);
