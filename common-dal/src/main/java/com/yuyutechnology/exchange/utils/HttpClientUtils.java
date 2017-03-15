@@ -70,7 +70,6 @@ public class HttpClientUtils {
 		return result;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public static String sendGet(String domain,String params,BasicHeader basicHeader){
 		String result = "";
 //		HttpClient httpClient = HttpClientBuilder.create().build();
@@ -94,12 +93,12 @@ public class HttpClientUtils {
                 while ((line = br.readLine()) != null) {
                 	result += "" + line;
                 }
+                logger.warn("sendGet url : {},  result : {}",urlName, result);
             } else {
                 // print error message
                 String responseString = EntityUtils.toString(entity, "UTF-8");
                 logger.warn("sendGet url : {},  result : {}",urlName, responseString);
             }
-
         }catch(ClientProtocolException e1){
         	logger.warn("sendGet url : {},  result : {}",urlName, e1.getMessage());
         }catch(IOException e2){
