@@ -72,14 +72,13 @@ public class HttpClientUtils {
 		String result = "";
 //		HttpClient httpClient = HttpClientBuilder.create().build();
 		HttpClient httpClient = HttpClientBuilder.create().disableAutomaticRetries().build();
+		String urlName = domain;
+		if(StringUtils.isNotBlank(params)){
+			urlName = domain + "?" + params;
+		}
         try {
-        	String urlName = domain;
-        	if(StringUtils.isNotBlank(params)){
-        		urlName = domain + "?" + params;
-        	}
             HttpUriRequest httpGet = new HttpGet(urlName);
             httpGet.setHeader(basicHeader);
-//            logger.info("Executing request: {}",httpGet.getRequestLine());
             HttpResponse resp = httpClient.execute(httpGet);
             HttpEntity entity = resp.getEntity();
             if (resp.getStatusLine().getStatusCode() == 200 && entity != null) {
@@ -92,22 +91,16 @@ public class HttpClientUtils {
             } else {
                 // print error message
                 String responseString = EntityUtils.toString(entity, "UTF-8");
-                result = responseString;
-//                logger.info("responseString : {}",responseString);
+                logger.warn("sendGet url : {},  result : {}",urlName, responseString);
             }
 
         }catch(ClientProtocolException e1){
-        	result = e1.getMessage();
-        	e1.printStackTrace();
+        	logger.warn("sendGet url : {},  result : {}",urlName, e1.getMessage());
         }catch(IOException e2){
-        	result = e2.getMessage();
-        	e2.printStackTrace();
+        	logger.warn("sendGet url : {},  result : {}",urlName, e2.getMessage());
         }finally {
             httpClient.getConnectionManager().shutdown();
         }
-        
-//        logger.info("HttpClientUtils result : {}",result);
-        
 		return result;
 	}
 	
