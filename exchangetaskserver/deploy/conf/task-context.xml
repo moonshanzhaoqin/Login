@@ -41,22 +41,22 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 	    <task:scheduled 
 	    ref="autoUpdateExchangeRateTask" 
 	    method="autoSystemRefundBatch" 
-	    fixed-delay="1800000" initial-delay="5000"/>
+	    fixed-delay="1800000" initial-delay="10000"/>
 	    
 	   	<task:scheduled 
 	    ref="autoCalculateUserAssetsTask" 
 	    method="autoCalculateUserAssetsTask" 
-	    fixed-delay="900000" initial-delay="1000"/>
+	    fixed-delay="900000" initial-delay="10000"/>
 	    
 	    <task:scheduled 
 	    ref="autoAlarmTask" 
 	    method="autoAlarmTask" 
-	    fixed-delay="600000" initial-delay="1000"/>
+	    fixed-delay="600000" initial-delay="20000"/>
 	    
 	   	<task:scheduled 
 	    ref="autoTransferRefundTask" 
 	    method="autoWithdrawRefund" 
-	    fixed-delay="600000" initial-delay="1000"/>
+	    fixed-delay="600000" initial-delay="25000"/>
 	    
 	    
 <!-- 	    <task:scheduled ref="beanC" method="methodC" cron="*/5 * * * * MON-FRI"/> -->
