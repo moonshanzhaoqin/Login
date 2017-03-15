@@ -90,7 +90,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 					
 					logger.warn("left:{},right:{} has no exchangeRate",currencyLeft,currencyRight);
 					
-					return null;
+					return result;
 				}
 			}
 			
@@ -172,6 +172,8 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 				}
 			}
 		}
+		
+		logger.warn("left:{},right:{} has no exchangeRate",currencyLeft,currencyRight);
 		
 		return result;
 		
@@ -510,7 +512,8 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		
 	}
 
-	private OandaRespData getCurrentPrices(String instruments){
+	@Override
+	public OandaRespData getCurrentPrices(String instruments){
 		
 		OandaRespData oandaRespData = null;
 		

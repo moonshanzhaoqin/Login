@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.yuyutechnology.exchange.utils.oanda.OandaRespData;
 import com.yuyutechnology.exchange.utils.oanda.PriceInfo;
 
 public interface OandaRatesManager {
@@ -28,5 +29,7 @@ public interface OandaRatesManager {
 	public List<PriceInfo> getAllPrices();
 
 	public BigDecimal getInputValue(String currencyLeft, BigDecimal amount, String currencyRight);
+
+	OandaRespData getCurrentPrices(String instruments);
 
 }
