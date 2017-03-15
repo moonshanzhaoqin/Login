@@ -51,13 +51,10 @@ public class HttpClientUtils {
         try {
         	HttpGet httpGet = new HttpGet(urlName);
             httpGet.setHeader(basicHeader);
-            logger.warn("sendGet url : {}, execute",urlName);
             resp = getClient().execute(httpGet);
-            logger.warn("sendGet url : {},  resp",urlName);
             HttpEntity entity = resp.getEntity();
             if (resp.getStatusLine().getStatusCode() == 200 && entity != null) {
                 result = EntityUtils.toString(entity, "UTF-8");  
-                logger.warn("sendGet url : {},  result : {}",urlName, result);
             } else {
                 String responseString = EntityUtils.toString(entity, "UTF-8");
                 logger.warn("sendGet url : {},  result : {}",urlName, responseString);
