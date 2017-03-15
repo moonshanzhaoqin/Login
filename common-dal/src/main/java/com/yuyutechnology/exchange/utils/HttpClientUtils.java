@@ -84,7 +84,9 @@ public class HttpClientUtils {
         try {
             HttpUriRequest httpGet = new HttpGet(urlName);
             httpGet.setHeader(basicHeader);
+            logger.warn("sendGet url : {}, execute",urlName);
             HttpResponse resp = httpClient.execute(httpGet);
+            logger.warn("sendGet url : {},  resp",urlName);
             HttpEntity entity = resp.getEntity();
             if (resp.getStatusLine().getStatusCode() == 200 && entity != null) {
                 InputStream stream = entity.getContent();
