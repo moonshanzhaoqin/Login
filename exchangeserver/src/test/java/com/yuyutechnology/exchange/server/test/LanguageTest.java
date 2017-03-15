@@ -1,13 +1,11 @@
 package com.yuyutechnology.exchange.server.test;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import org.junit.Test;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.yuyutechnology.exchange.dao.RedisDAO;
@@ -28,7 +26,6 @@ public class LanguageTest extends BaseSpringJunit4{
 	
 	public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
-	@SuppressWarnings("null")
 	@Test	
 	public void enumTEST() throws ParseException{
 //		System.out.println(Language.standard("en").toString());

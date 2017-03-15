@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
-import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.FriendDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
@@ -67,8 +66,6 @@ public class UserManagerImpl implements UserManager {
 	TransferDAO transferDAO;
 	@Autowired
 	WalletSeqDAO walletSeqDAO;
-	@Autowired
-	CurrencyDAO currencyDAO;
 	@Autowired
 	BindDAO bindDAO;
 	@Autowired

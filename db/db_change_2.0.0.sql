@@ -16,3 +16,4 @@ insert into `e_config` (`config_key`, `config_value`, `config_name`, `config_ord
 insert into `e_config` (`config_key`, `config_value`, `config_name`, `config_order`, `config_canChange`) values('transfer_limit_per_pay','100','每次支付金额限制','17','0');
 insert into `e_config` (`config_key`, `config_value`, `config_name`, `config_order`, `config_canChange`) values('wrong_password_frequency','10','错误登录密码次数','16','0');
 insert into `e_config` (`config_key`, `config_value`, `config_name`, `config_order`, `config_canChange`) values('wrong_paypwd_frequency','3','错误支付密码次数','14','0');
+`

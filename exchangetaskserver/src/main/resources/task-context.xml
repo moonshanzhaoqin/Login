@@ -36,7 +36,7 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 	    <task:scheduled 
 	    ref="autoUpdateExchangeRateTask"
 	    method="autoUpdateExchangeRateTask" 
- 	    fixed-delay="60000" initial-delay="1000"/> <!--程序启动后1s调用autoUpdateExchangeRateTask方法，然后小时执行一次 -->
+ 	    fixed-delay="5000" initial-delay="1000"/> <!--程序启动后1s调用autoUpdateExchangeRateTask方法，然后小时执行一次 -->
 	    
 	    <task:scheduled 
 	    ref="autoUpdateExchangeRateTask" 
@@ -45,7 +45,7 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 	    
 	   	<task:scheduled 
 	    ref="autoCalculateUserAssetsTask" 
-	    method="autoUpdateExchangeRateTask" 
+	    method="autoCalculateUserAssetsTask" 
 	    fixed-delay="900000" initial-delay="1000"/>
 	    
 	    <task:scheduled 

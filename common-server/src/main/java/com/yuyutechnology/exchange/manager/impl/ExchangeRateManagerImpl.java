@@ -9,20 +9,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.ConfigDAO;
-import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
-import com.yuyutechnology.exchange.manager.ExchangeRateManager;
+import com.yuyutechnology.exchange.manager.CommonManager;
+import com.yuyutechnology.exchange.manager.SpareExchangeRateManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.utils.HttpTookit;
@@ -32,7 +32,7 @@ import com.yuyutechnology.exchange.utils.exchangerate.ExchangeRate;
 import com.yuyutechnology.exchange.utils.exchangerate.GoldpayExchangeRate;
 
 @Service
-public class ExchangeRateManagerImpl implements ExchangeRateManager {
+public class ExchangeRateManagerImpl implements SpareExchangeRateManager {
 
 	@Autowired
 	RedisDAO redisDAO;
@@ -41,7 +41,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 	@Autowired
 	WalletDAO walletDAO;
 	@Autowired
-	CurrencyDAO currencyDAO;
+	CommonManager commonManager;
 
 	private static int scale = 20;
 
@@ -49,7 +49,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 
 	private void updateExchangeRateNoGoldq() {
 		String exchangeRateUrl = ResourceUtils.getBundleValue4String("exchange.rate.url", "http://api.fixer.io/latest");
-		List<Currency> currencies = currencyDAO.getCurrencys();
+		List<Currency> currencies = commonManager.getAllCurrencies();
 		if (currencies.isEmpty()) {
 			return;
 		}
@@ -117,7 +117,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 			// others4Gdp 表示 1其他币种兑换多少gdp
 			Map<String, BigDecimal> others4Gdp = new HashMap<String, BigDecimal>();
 			others4Gdp.put(ServerConsts.STANDARD_CURRENCY, USD4GdpExchangeRate);
-			List<Currency> list = currencyDAO.getCurrencys();
+			List<Currency> list = commonManager.getAllCurrencies();
 			for (Currency index : list) {
 				if (!index.getCurrency().equals(ServerConsts.STANDARD_CURRENCY)
 						&& !index.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
@@ -185,7 +185,7 @@ public class ExchangeRateManagerImpl implements ExchangeRateManager {
 
 		HashMap<String, Double> map = new HashMap<>();
 
-		List<Currency> list = currencyDAO.getCurrencys();
+		List<Currency> list = commonManager.getAllCurrencies();
 
 		for (Currency currency : list) {
 

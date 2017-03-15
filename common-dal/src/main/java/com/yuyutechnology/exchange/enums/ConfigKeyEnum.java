@@ -30,6 +30,7 @@ public enum ConfigKeyEnum {
 	LOGIN_UNAVAILIABLE_TIME("login_unavailiable_time"), 
 	WRONG_PAYPWD_FREQUENCY("wrong_paypwd_frequency"),
 	PAY_UNAVAILIABLE_TIME("pay_unavailiable_time"),
+	EXCHANGEFEE("exchange_fee"),
 	WRONG_PASSWORD_FREQUENCY("wrong_password_frequency");
 
 	private String key;

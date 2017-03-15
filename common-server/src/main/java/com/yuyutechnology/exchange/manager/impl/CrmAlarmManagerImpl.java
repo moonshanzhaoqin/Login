@@ -6,8 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.mail.MailManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
-import com.yuyutechnology.exchange.manager.ExchangeRateManager;
+import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.pojo.CrmSupervisor;
 import com.yuyutechnology.exchange.sms.SmsManager;
@@ -42,7 +42,7 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	@Autowired
 	MailManager mailManager;
 	@Autowired
-	ExchangeRateManager exchangeRateManager;
+	OandaRatesManager oandaRatesManager;
 
 	private static Logger logger = LogManager.getLogger(CrmAlarmManagerImpl.class);
 
@@ -145,14 +145,14 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		// 预备金剩余量 = 1 - (Ex用户持有的总资产 - Ex公司持有的总资产) / 预备金;
 		BigDecimal sumRecharge = transferDAO.sumGoldpayTransAmount(ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE);
 		BigDecimal sumWithdraw = transferDAO.sumGoldpayTransAmount(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
-		BigDecimal exHoldingTotalAssets = exchangeRateManager.getExchangeResult(ServerConsts.CURRENCY_OF_GOLDPAY,
+		BigDecimal exHoldingTotalAssets = oandaRatesManager.getDefaultCurrencyAmount(ServerConsts.CURRENCY_OF_GOLDPAY,
 				sumRecharge.subtract(sumWithdraw));
 
 		logger.info("sumRecharge:{},sumWithdraw:{},exHoldingTotalAssets(USD):{}",
 				new Object[] { sumRecharge, sumWithdraw, exHoldingTotalAssets });
 
 		String reserveFundsStr = configManager.getConfigStringValue(ConfigKeyEnum.RESERVEFUNDS, "100000000");
-		BigDecimal reserveFunds = exchangeRateManager.getExchangeResult(ServerConsts.CURRENCY_OF_GOLDPAY,
+		BigDecimal reserveFunds = oandaRatesManager.getDefaultCurrencyAmount(ServerConsts.CURRENCY_OF_GOLDPAY,
 				new BigDecimal(reserveFundsStr));
 
 		logger.info("reserveFunds (USD) :{}", reserveFunds);
