@@ -87,7 +87,10 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 					
 					return result;
 				}else{
-					return new BigDecimal("-1");
+					
+					logger.warn("left:{},right:{} has no exchangeRate",currencyLeft,currencyRight);
+					
+					return null;
 				}
 			}
 			
