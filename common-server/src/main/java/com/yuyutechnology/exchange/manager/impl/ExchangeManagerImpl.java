@@ -310,7 +310,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 
 		HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>();
 		
-		logger.info(" out : {}, in : {} ,fee : {} ,per thousand : {}  ",out,in.subtract(fee),fee,exchangeFeePerThousand);
+		logger.info("{} to {} ,  out : {}, in : {} ,fee : {} ,per thousand : {}  ",currencyOut, currencyIn, out,in.subtract(fee),fee,exchangeFeePerThousand);
 
 		map.put("out", out);
 		map.put("in", in.subtract(fee));
