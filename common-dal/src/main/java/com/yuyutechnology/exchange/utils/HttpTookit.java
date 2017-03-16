@@ -23,6 +23,57 @@ public final class HttpTookit
 {
 	public static Logger logger = LogManager.getLogger(HttpTookit.class);
 	
+	public static String sendGet4Oanda(String url, String param, String authorization){
+		String result = "";
+		BufferedReader in = null;
+		try
+		{
+			String urlName = url;
+			if (StringUtils.isNotBlank(param))
+			{
+				urlName = url + "?" + param;
+			}
+			URL realUrl = new URL(urlName);
+			// 打开和URL之间的连接
+			URLConnection conn = realUrl.openConnection();
+			
+			conn.setConnectTimeout(3000);
+			conn.setReadTimeout(3000);
+			// 设置通用的请求属性
+			conn.setRequestProperty("authorization", "Bearer " + authorization);
+			// 建立实际的连接
+			conn.connect();
+			// 定义BufferedReader输入流来读取URL的响应
+			in = new BufferedReader(
+					new InputStreamReader(conn.getInputStream()));
+			String line;
+			while ((line = in.readLine()) != null)
+			{
+				result += "" + line;
+			}
+		}
+		catch (Exception e){
+//			result = e.getMessage();
+			logger.error("sendGet error : {}", e.getMessage(), e);
+		}
+		// 使用finally块来关闭输入流
+		finally
+		{
+			try
+			{
+				if (in != null)
+				{
+					in.close();
+				}
+			}
+			catch (IOException ex)
+			{
+				ex.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
 	public static String sendGet(String url, String param){
 		String result = "";
 		BufferedReader in = null;

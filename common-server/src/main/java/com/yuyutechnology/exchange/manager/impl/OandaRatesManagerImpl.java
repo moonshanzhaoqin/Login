@@ -25,6 +25,7 @@ import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.utils.HttpClientUtils;
+import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
 import com.yuyutechnology.exchange.utils.oanda.OandaRespData;
@@ -520,9 +521,10 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		String domain = ResourceUtils.getBundleValue4String("oanda.exchangerate.url", "https://api-fxpractice.oanda.com/v1/prices");
 		String bearer = ResourceUtils.getBundleValue4String("oanda.exchangerate.key", "d413e2cd916ebc4613376c3a3ca826ae-ebdc8079ec4cca1b1d650ea030036226");
 		String params = "instruments="+instruments;
-		BasicHeader basicHeader = new BasicHeader("Authorization", 
-				"Bearer " + bearer);
-		String result = HttpClientUtils.sendGet(domain,params,basicHeader);
+//		BasicHeader basicHeader = new BasicHeader("Authorization", 
+//				"Bearer " + bearer);
+//		String result = HttpClientUtils.sendGet(domain,params,basicHeader);
+		String result = HttpTookit.sendGet4Oanda(domain,params,bearer);
 //		logger.info("result : {}",result);
 		if(result.contains("#errors")){
         	return null;
