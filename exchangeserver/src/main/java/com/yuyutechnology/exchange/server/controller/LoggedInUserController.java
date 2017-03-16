@@ -12,8 +12,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
@@ -297,11 +299,11 @@ public class LoggedInUserController {
 	 * @param checkPayPwdRequest
 	 * @return
 	 */
-	@ResponseEncryptBody
+	@ResponseBody
 	@ApiOperation(value = "校验支付密码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/checkPayPwd", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public CheckPayPwdResponse checkPayPwd(@PathVariable String token,
-			@RequestDecryptBody CheckPayPwdRequest checkPayPwdRequest) {
+			@RequestBody CheckPayPwdRequest checkPayPwdRequest) {
 		logger.info("========checkPayPwd : {}============", token);
 		CheckPayPwdResponse rep = new CheckPayPwdResponse();
 		if (checkPayPwdRequest.isEmpty()) {
@@ -344,11 +346,11 @@ public class LoggedInUserController {
 	 * @param checkPayPwdRequest
 	 * @return
 	 */
-	@ResponseEncryptBody
+	@ResponseBody
 	@ApiOperation(value = "校验Goldpay", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/checkGoldpay", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public CheckGoldpayResponse checkGoldpay(@PathVariable String token,
-			@RequestDecryptBody CheckGoldpayRequest checkPayGoldpayRequest) {
+			@RequestBody CheckGoldpayRequest checkPayGoldpayRequest) {
 		logger.info("========checkPassword : {}============", token);
 		CheckGoldpayResponse rep = new CheckGoldpayResponse();
 		if (checkPayGoldpayRequest.isEmpty()) {
