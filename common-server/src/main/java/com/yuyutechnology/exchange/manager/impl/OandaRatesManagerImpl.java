@@ -521,10 +521,10 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		String domain = ResourceUtils.getBundleValue4String("oanda.exchangerate.url", "https://api-fxpractice.oanda.com/v1/prices");
 		String bearer = ResourceUtils.getBundleValue4String("oanda.exchangerate.key", "d413e2cd916ebc4613376c3a3ca826ae-ebdc8079ec4cca1b1d650ea030036226");
 		String params = "instruments="+instruments;
-//		BasicHeader basicHeader = new BasicHeader("Authorization", 
-//				"Bearer " + bearer);
-//		String result = HttpClientUtils.sendGet(domain,params,basicHeader);
-		String result = HttpTookit.sendGet4Oanda(domain,params,bearer);
+		BasicHeader basicHeader = new BasicHeader("Authorization", 
+				"Bearer " + bearer);
+		String result = HttpClientUtils.sendGet(domain,params,basicHeader);
+//		String result = HttpTookit.sendGet4Oanda(domain,params,bearer);
 //		logger.info("result : {}",result);
 		if(result.contains("#errors")){
         	return null;
