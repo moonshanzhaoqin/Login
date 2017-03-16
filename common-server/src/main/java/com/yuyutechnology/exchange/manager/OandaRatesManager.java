@@ -28,7 +28,7 @@ public interface OandaRatesManager {
 
 	public List<PriceInfo> getAllPrices();
 
-	public BigDecimal getInputValue(String currencyLeft, BigDecimal amount, String currencyRight);
+//	public BigDecimal getInputValue(String currencyLeft, BigDecimal amount, String currencyRight);
 
 	OandaRespData getCurrentPrices(String instruments);
 

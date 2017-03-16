@@ -367,7 +367,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		
 	}
 	
-	@Override
+	/*@Override
 	public BigDecimal getInputValue(String currencyLeft,BigDecimal amount, String currencyRight){
 		
 		if((!currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLDPAY)&&!currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLD))
@@ -435,7 +435,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		}
 		return null;
 		
-	}
+	}*/
 
 	private String incrementalUpdateExchangeRates(String existentInstruments){
 		String replacedStr = existentInstruments.replaceAll(ServerConsts.CURRENCY_OF_CNH, ServerConsts.CURRENCY_OF_CNY).replaceAll(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_GOLDPAY);
