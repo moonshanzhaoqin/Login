@@ -27,7 +27,7 @@ public class OandaRatesTest extends BaseSpringJunit4 {
 	@Test
 	public void test() {
 
-//		oandaRatesManager.updateExchangeRates();
+		oandaRatesManager.updateExchangeRates();
 		
 //		BigDecimal amount = oandaRatesManager.getExchangedAmount("GDQ", new BigDecimal("1000"), "CNY", "ask");
 		
@@ -40,13 +40,13 @@ public class OandaRatesTest extends BaseSpringJunit4 {
 		
 //		oandaRatesManager.getSingleExchangeRate("HRK", "USD");
 		
-		OandaRespData oandaRespData = oandaRatesManager.getCurrentPrices("USD_HRK");
-		if(oandaRespData == null){
-			logger.info("null");
-		}else{
-			PriceInfo priceInfo = oandaRespData.getPrices()[0];
-			logger.info("bid : {}",priceInfo.getBid());
-		}
+//		OandaRespData oandaRespData = oandaRatesManager.getCurrentPrices("USD_HRK");
+//		if(oandaRespData == null){
+//			logger.info("null");
+//		}else{
+//			PriceInfo priceInfo = oandaRespData.getPrices()[0];
+//			logger.info("bid : {}",priceInfo.getBid());
+//		}
 
 		
 	}

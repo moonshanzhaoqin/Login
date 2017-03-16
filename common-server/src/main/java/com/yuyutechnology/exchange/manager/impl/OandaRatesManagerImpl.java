@@ -25,6 +25,7 @@ import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.utils.HttpClientUtils;
+import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
 import com.yuyutechnology.exchange.utils.oanda.OandaRespData;
@@ -248,7 +249,13 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		return map;
 		
 	}
+	
 	@Override
+	public BigDecimal getSingleExchangeRate(String currencyLeft, String currencyRight) {
+		return getExchangedAmount(currencyLeft, new BigDecimal("1"), currencyRight);
+	}
+	
+	/*@Override
 	public BigDecimal getSingleExchangeRate(String currencyLeft, String currencyRight) {
 		if((!currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLDPAY)&&!currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLD))
 				&&(!currencyRight.equals(ServerConsts.CURRENCY_OF_GOLDPAY)&&!currencyRight.equals(ServerConsts.CURRENCY_OF_GOLD))){
@@ -331,7 +338,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		}
 		
 		return null;
-	}
+	}*/
 	
 	@Override
 	public List<PriceInfo> getAllPrices(){
@@ -523,6 +530,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		BasicHeader basicHeader = new BasicHeader("Authorization", 
 				"Bearer " + bearer);
 		String result = HttpClientUtils.sendGet(domain,params,basicHeader);
+//		String result = HttpTookit.sendGet4Oanda(domain,params,bearer);
 //		logger.info("result : {}",result);
 		if(result.contains("#errors")){
         	return null;

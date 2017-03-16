@@ -157,7 +157,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			return map;
 		}
 
-		HashMap<String, BigDecimal> map2 = exchangeCalculation(currencyOut, currencyIn, amountOut, 0);
+		HashMap<String, BigDecimal> map2 = exchangeCalculation(currencyOut, currencyIn, amountOut);
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");
 		map.put("out", map2.get("out").toString());
@@ -282,8 +282,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	}
 
 	@Override
-	public HashMap<String, BigDecimal> exchangeCalculation(String currencyOut, String currencyIn, BigDecimal outAmount,
-			int capitalFlows) {
+	public HashMap<String, BigDecimal> exchangeCalculation(String currencyOut, String currencyIn, BigDecimal outAmount) {
 		// 取余位数
 		int bitsOut = 4;
 		int bitsIn = 4;
@@ -299,13 +298,13 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		String exchangeFeePerThousand = configManager.getConfigStringValue(ConfigKeyEnum.EXCHANGEFEE, "1.5");
 
 		BigDecimal in = (oandaRatesManager.getExchangedAmount(currencyOut, outAmount, currencyIn))
-				.setScale(bitsIn, BigDecimal.ROUND_FLOOR);
+				.setScale(bitsIn, BigDecimal.ROUND_DOWN);
 		
 		BigDecimal fee = in.multiply(new BigDecimal(((Double.parseDouble(exchangeFeePerThousand))/1000)+""))
-				.setScale(bitsIn, BigDecimal.ROUND_FLOOR);
+				.setScale(bitsIn, BigDecimal.ROUND_DOWN);
 		
 		BigDecimal out = (oandaRatesManager.getInputValue(currencyOut, in, currencyIn))
-				.setScale(bitsOut, BigDecimal.ROUND_CEILING);
+				.setScale(bitsOut, BigDecimal.ROUND_UP);
 
 		HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>();
 		
