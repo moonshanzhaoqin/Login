@@ -157,7 +157,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			return map;
 		}
 
-		HashMap<String, BigDecimal> map2 = exchangeCalculation(currencyOut, currencyIn, amountOut, 0);
+		HashMap<String, BigDecimal> map2 = exchangeCalculation(currencyOut, currencyIn, amountOut);
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");
 		map.put("out", map2.get("out").toString());
@@ -282,8 +282,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	}
 
 	@Override
-	public HashMap<String, BigDecimal> exchangeCalculation(String currencyOut, String currencyIn, BigDecimal outAmount,
-			int capitalFlows) {
+	public HashMap<String, BigDecimal> exchangeCalculation(String currencyOut, String currencyIn, BigDecimal outAmount) {
 		// 取余位数
 		int bitsOut = 4;
 		int bitsIn = 4;
@@ -313,6 +312,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 
 		map.put("out", out);
 		map.put("in", in.subtract(fee));
+		map.put("inNoFee", in);
 		map.put("fee", fee);
 		map.put("perThousand", new BigDecimal(exchangeFeePerThousand));
 

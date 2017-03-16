@@ -34,19 +34,19 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 
 	@Test
 	public void testUpdateRate() {
-		List<String[]> instruments = commonManager.getInstruments();
-		for (String[] strings : instruments) {
-			 exchangeManager.exchangeCalculation(strings[0].split("_")[0],
-			 strings[0].split("_")[1], new BigDecimal("100"), 1);
-			 exchangeManager.exchangeCalculation(strings[1].split("_")[0],
-			 strings[1].split("_")[1], new BigDecimal("100"), 1);
-		}
+//		List<String[]> instruments = commonManager.getInstruments();
+//		for (String[] strings : instruments) {
+//			 exchangeManager.exchangeCalculation(strings[0].split("_")[0],
+//			 strings[0].split("_")[1], new BigDecimal("100"), 1);
+//			 exchangeManager.exchangeCalculation(strings[1].split("_")[0],
+//			 strings[1].split("_")[1], new BigDecimal("100"), 1);
+//		}
 
 		List<Currency> cs = commonManager.getAllCurrencies();
 		for (Currency currency : cs) {
 			if (!currency.getCurrency().equals("GDQ")) {
-				exchangeManager.exchangeCalculation(currency.getCurrency(), "GDQ", new BigDecimal("10000"), 1);
-				exchangeManager.exchangeCalculation("GDQ", currency.getCurrency(), new BigDecimal("10000"), 1);
+				exchangeManager.exchangeCalculation(currency.getCurrency(), "GDQ", new BigDecimal("10000"));
+				exchangeManager.exchangeCalculation("GDQ", currency.getCurrency(), new BigDecimal("1"));
 			}
 		}
 	}
