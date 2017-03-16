@@ -298,13 +298,13 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		String exchangeFeePerThousand = configManager.getConfigStringValue(ConfigKeyEnum.EXCHANGEFEE, "1.5");
 
 		BigDecimal in = (oandaRatesManager.getExchangedAmount(currencyOut, outAmount, currencyIn))
-				.setScale(bitsIn, BigDecimal.ROUND_FLOOR);
+				.setScale(bitsIn, BigDecimal.ROUND_DOWN);
 		
 		BigDecimal fee = in.multiply(new BigDecimal(((Double.parseDouble(exchangeFeePerThousand))/1000)+""))
-				.setScale(bitsIn, BigDecimal.ROUND_FLOOR);
+				.setScale(bitsIn, BigDecimal.ROUND_DOWN);
 		
 		BigDecimal out = (oandaRatesManager.getInputValue(currencyOut, in, currencyIn))
-				.setScale(bitsOut, BigDecimal.ROUND_CEILING);
+				.setScale(bitsOut, BigDecimal.ROUND_UP);
 
 		HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>();
 		
@@ -312,7 +312,6 @@ public class ExchangeManagerImpl implements ExchangeManager {
 
 		map.put("out", out);
 		map.put("in", in.subtract(fee));
-		map.put("inNoFee", in);
 		map.put("fee", fee);
 		map.put("perThousand", new BigDecimal(exchangeFeePerThousand));
 
