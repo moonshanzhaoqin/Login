@@ -182,7 +182,9 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 	
 	@Override
 	public BigDecimal getDefaultCurrencyAmount(String transCurrency,BigDecimal transAmount){
-		
+		if (transCurrency.equals(ServerConsts.STANDARD_CURRENCY)) {
+			return transAmount;
+		}
 		return getExchangedAmount(transCurrency,transAmount,ServerConsts.STANDARD_CURRENCY);
 		
 	}
