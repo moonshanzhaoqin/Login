@@ -64,7 +64,6 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		
 		BigDecimal result = BigDecimal.ZERO ;
 		
-		
 		if((!currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLDPAY)&&!currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLD))
 				&&(!currencyRight.equals(ServerConsts.CURRENCY_OF_GOLDPAY)&&!currencyRight.equals(ServerConsts.CURRENCY_OF_GOLD))){
 			
