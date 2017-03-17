@@ -19,7 +19,9 @@ import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
+import com.yuyutechnology.exchange.dao.WithdrawDAO;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
+import com.yuyutechnology.exchange.dto.WithdrawDetail;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.goldpay.transaction.CalculateCharge;
 import com.yuyutechnology.exchange.goldpay.transaction.CalculateChargeReturnModel;
@@ -36,9 +38,11 @@ import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.pojo.Withdraw;
 import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
+import com.yuyutechnology.exchange.utils.page.PageBean;
 
 @Service
 public class GoldpayTransManagerImpl implements GoldpayTransManager {
@@ -53,6 +57,8 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	TransferDAO transferDAO;
 	@Autowired
 	WalletSeqDAO walletSeqDAO;
+	@Autowired
+	WithdrawDAO withdrawDAO;
 	@Autowired
 	ConfigManager configManager;
 	@Autowired
@@ -301,7 +307,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 			map.put("msg", "Current balance is insufficient");
 			return map;
 		}
-		
+
 		map.put("charge", "0");
 		CalculateCharge calculateCharge = new CalculateCharge();
 		calculateCharge.setClientId(configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTID, ""));
@@ -318,13 +324,14 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		if (StringUtils.isNotBlank(result)) {
 			logger.info("calculateCharge tpps callback {} ", result);
 			calculateChargeReturnModel = JsonBinder.getInstance().fromJson(result, CalculateChargeReturnModel.class);
-			if (calculateChargeReturnModel != null && calculateChargeReturnModel.getResultCode() == 1 && calculateChargeReturnModel.getChargeType() == 2) {
-				map.put("charge", calculateChargeReturnModel.getChargeAmount()+"");
-			}else{
+			if (calculateChargeReturnModel != null && calculateChargeReturnModel.getResultCode() == 1
+					&& calculateChargeReturnModel.getChargeType() == 2) {
+				map.put("charge", calculateChargeReturnModel.getChargeAmount() + "");
+			} else {
 				map.put("charge", "0");
 			}
 		}
-		
+
 		// 生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 
@@ -515,20 +522,18 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 			map.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
 			return map;
 		}
-		// 验证支付密码
+		/* 验证支付密码 */
 		CheckPwdResult checkPwdResult = userManager.checkPayPassword(userId, payPwd);
 		switch (checkPwdResult.getStatus()) {
 		case ServerConsts.CHECKPWD_STATUS_FREEZE:
 			map.put("msg", String.valueOf(checkPwdResult.getInfo()));
 			map.put("retCode", RetCodeConsts.PAY_FREEZE);
 			return map;
-
 		case ServerConsts.CHECKPWD_STATUS_INCORRECT:
 			logger.warn("payPwd is wrong !");
 			map.put("msg", String.valueOf(checkPwdResult.getInfo()));
 			map.put("retCode", RetCodeConsts.PAY_PWD_NOT_MATCH);
 			return map;
-
 		default:
 			break;
 		}
@@ -560,6 +565,9 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		walletSeqDAO.addWalletSeq4Transaction(userId, systemUser.getUserId(),
 				ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, transfer.getTransferId(), transfer.getCurrency(),
 				transfer.getTransferAmount());
+
+		// TODO 添加提现审批
+		withdrawDAO.saveOrUpdateWithdraw(new Withdraw(userId, transferId, 0, 0));
 
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");
@@ -690,6 +698,84 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	public List<Transfer> findGoldpayWithdrawByTimeBefore(Date date) {
 		return transferDAO.findTransferByStatusAndTimeBefore(ServerConsts.TRANSFER_STATUS_OF_PROCESSING,
 				ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, date);
+	}
+
+	@Override
+	public WithdrawDetail getWithdrawDetail(Integer withdrawId) {
+		logger.info("getWithdrawDetail : withdrawId={} ==>", withdrawId);
+
+		WithdrawDetail withdrawDetail = new WithdrawDetail();
+		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
+		User user = userDAO.getUser(withdraw.getUserId());
+		Bind bind = bindBAO.getBindByUserId(withdraw.getUserId());
+		Transfer transfer = transferDAO.getTransferById(withdraw.getTransferId());
+
+		withdrawDetail.setCreateTime(transfer.getCreateTime());
+		withdrawDetail.setGoldpayAcount(bind.getGoldpayAcount());
+		withdrawDetail.setGoldpayName(bind.getGoldpayName());
+		withdrawDetail.setGoldpayRemit(withdraw.getGoldpayRemit());
+		withdrawDetail.setReviewStatus(withdraw.getReviewStatus());
+		withdrawDetail.setTransferAmount(transfer.getTransferAmount());
+		withdrawDetail.setUserId(user.getUserId());
+		withdrawDetail.setTransferId(transfer.getTransferId());
+		withdrawDetail.setUserName(user.getUserName());
+		withdrawDetail.setAreaCode(user.getAreaCode());
+		withdrawDetail.setUserPhone(user.getUserPhone());
+		
+		logger.info(withdrawDetail.toString());
+		return withdrawDetail;
+	}
+
+	// TODO 提现审批
+	@Override
+	public void withdrawReview(Integer withdrawId) {
+		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
+		// TODO 具体审批流程
+
+		withdraw.setReviewStatus(ServerConsts.REVIEW_STATUS_PASS);
+		withdrawDAO.saveOrUpdateWithdraw(withdraw);
+	}
+
+	// TODO 对通过审核的提现进行goldpay划账
+	@Override
+	public void goldpayRemit(Integer withdrawId) {
+		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
+		// TODO 限制
+		HashMap<String, String> map = withdrawConfirm2(withdraw.getUserId(), withdraw.getTransferId());
+		withdraw.setGoldpayRemit(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)
+				? ServerConsts.GOLDPAY_REMIT_SUCCESS : ServerConsts.GOLDPAY_REMIT_FAIL);
+		withdrawDAO.saveOrUpdateWithdraw(withdraw);
+	}
+
+	@Override
+	public void goldpayRemitAll() {
+		// TODO Auto-generated method stub
+		List<Withdraw> withdraws = withdrawDAO.getNeedGoldpayRemitWithdraws();
+		// TODO 限制
+		for (Withdraw withdraw : withdraws) {
+			HashMap<String, String> map = withdrawConfirm2(withdraw.getUserId(), withdraw.getTransferId());
+			withdraw.setGoldpayRemit(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)
+					? ServerConsts.GOLDPAY_REMIT_SUCCESS : ServerConsts.GOLDPAY_REMIT_FAIL);
+			withdrawDAO.saveOrUpdateWithdraw(withdraw);
+		}
+	}
+
+	@Override
+	public void withdrawReviewAll() {
+		List<Withdraw> withdraws = withdrawDAO.getNeedReviewWithdraws();
+		for (Withdraw withdraw : withdraws) {
+			// TODO 具体审批流程
+
+			withdraw.setReviewStatus(ServerConsts.REVIEW_STATUS_PASS);
+			withdrawDAO.saveOrUpdateWithdraw(withdraw);
+		}
+	}
+
+	@Override
+	public PageBean getWithdrawList(int currentPage, String userId, String reviewStatus, String goldpayRemit) {
+		logger.info("currentPage={},userId={},reviewStatus={},goldpayRemit={}", currentPage, userId, reviewStatus,
+				goldpayRemit);
+		return withdrawDAO.searchWithdrawsByPage(userId, reviewStatus, goldpayRemit, currentPage, 10);
 	}
 
 }
