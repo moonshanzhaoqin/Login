@@ -218,7 +218,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 					currencyIn, new BigDecimal(result.get("in")), currencyOut, new BigDecimal(result.get("out")));
 			
 			//添加累计金额
-			BigDecimal exchangeResult = oandaRatesManager.getDefaultCurrencyAmount(currencyOut,amountOut);
+			BigDecimal exchangeResult = oandaRatesManager.getDefaultCurrencyAmount(exchange.getCurrencyOut(),exchange.getAmountOut());
 			transferDAO.updateAccumulatedAmount("exchange_"+userId, exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
 			//更改累计次数
 			transferDAO.updateCumulativeNumofTimes("exchange_"+userId, new BigDecimal("1"));
