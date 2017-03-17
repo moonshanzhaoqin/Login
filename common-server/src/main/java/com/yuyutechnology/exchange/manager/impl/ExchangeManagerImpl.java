@@ -163,6 +163,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		map.put("out", map2.get("out").toString());
 		map.put("in", map2.get("in").toString());
 		map.put("fee", map2.get("fee").toString());
+		map.put("rate", map2.get("rate").toString());
 		map.put("perThousand", map2.get("perThousand").toString());
 		return map;
 	}
@@ -204,7 +205,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			exchange.setAmountIn(new BigDecimal(result.get("in")));
 			exchange.setCreateTime(new Date());
 			exchange.setFinishTime(new Date());
-			exchange.setExchangeRate(oandaRatesManager.getSingleExchangeRate(currencyOut, currencyIn));
+			exchange.setExchangeRate(new BigDecimal(result.get("rate")));
 			exchange.setExchangeFeePerThousand(new BigDecimal(result.get("perThousand")));
 			exchange.setExchangeFeeAmount(new BigDecimal(result.get("fee")));
 
@@ -296,26 +297,31 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		}
 		
 		String exchangeFeePerThousand = configManager.getConfigStringValue(ConfigKeyEnum.EXCHANGEFEE, "1.5");
-
-		BigDecimal in = (oandaRatesManager.getExchangedAmount(currencyOut, outAmount, currencyIn))
-				.setScale(bitsIn, BigDecimal.ROUND_DOWN);
+		
+		BigDecimal rate = oandaRatesManager.getSingleExchangeRate(currencyOut, currencyIn);
+		
+		BigDecimal in = (outAmount.multiply(rate)).setScale(bitsIn, BigDecimal.ROUND_DOWN);
+		
+//		BigDecimal in = (oandaRatesManager.getExchangedAmount(currencyOut, outAmount, currencyIn))
+//				.setScale(bitsIn, BigDecimal.ROUND_DOWN);
 		
 		BigDecimal fee = in.multiply(new BigDecimal(((Double.parseDouble(exchangeFeePerThousand))/1000)+""))
 				.setScale(bitsIn, BigDecimal.ROUND_DOWN);
 		
 //		BigDecimal out = (oandaRatesManager.getInputValue(currencyOut, in, currencyIn))
 //				.setScale(bitsOut, BigDecimal.ROUND_UP);
-		BigDecimal out = in.divide(oandaRatesManager.getExchangedAmount(currencyOut, new BigDecimal("1"), currencyIn), bitsOut, BigDecimal.ROUND_UP);
-
+		
+		BigDecimal out = in.divide(rate, bitsOut, BigDecimal.ROUND_UP);
+		
 		HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>();
 		
-		logger.info(" out : {}, in : {} ,fee : {} ,per thousand : {}  ",out,in.subtract(fee),fee,exchangeFeePerThousand);
+		logger.info("{} to {} ,  out : {}, in : {} ,rate : {}, fee : {} ,per thousand : {}  ",currencyOut, currencyIn, out,in.subtract(fee),rate,fee,exchangeFeePerThousand);
 
 		map.put("out", out);
 		map.put("in", in.subtract(fee));
 		map.put("fee", fee);
 		map.put("perThousand", new BigDecimal(exchangeFeePerThousand));
-
+		map.put("rate", rate);
 		return map;
 
 	}
