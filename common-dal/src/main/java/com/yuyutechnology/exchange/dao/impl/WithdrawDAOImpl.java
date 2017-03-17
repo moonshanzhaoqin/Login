@@ -51,21 +51,21 @@ public class WithdrawDAOImpl implements WithdrawDAO {
 	}
 
 	@Override
-	public PageBean searchWithdrawsByPage(String userId, String reviewStatus, String goldpayRemit, int currentPage,
+	public PageBean searchWithdrawsByPage(String userPhone, String reviewStatus, String goldpayRemit, int currentPage,
 			int pageSize) {
-		logger.info("userId={},reviewStatus={},goldpayRemit={},currentPage={},pageSize={}", userId, reviewStatus,
+		logger.info("userPhone={},reviewStatus={},goldpayRemit={},currentPage={},pageSize={}", userPhone, reviewStatus,
 				goldpayRemit, currentPage, pageSize);
 		List<Object> values = new ArrayList<Object>();
 		StringBuilder hql = new StringBuilder("from Withdraw");
 //		 logger.info("hql.length()={}",hql.length());
-		if (StringUtils.isNotBlank(userId)) {
+		if (StringUtils.isNotBlank(userPhone)) {
 			if (hql.length() > 13) {
 				hql.append(" and ");
 			} else {
 				hql.append(" where ");
 			}
-			hql.append("u.userId = ? and u.userid = w.userId");
-			values.add(userId);
+			hql.append("u.userPhone = ? ");
+			values.add(userPhone);
 		}
 		if (StringUtils.isNotBlank(reviewStatus)) {
 			if (hql.length() > 13) {

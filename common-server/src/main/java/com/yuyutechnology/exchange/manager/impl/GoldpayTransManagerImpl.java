@@ -567,7 +567,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 				transfer.getTransferAmount());
 
 		//  添加提现审批
-		withdrawDAO.saveOrUpdateWithdraw(new Withdraw(userId, transferId, 0, 0));
+		withdrawDAO.saveOrUpdateWithdraw(new Withdraw(userId, user.getAreaCode(), user.getUserPhone(), transferId, 0, 0));
 
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");
