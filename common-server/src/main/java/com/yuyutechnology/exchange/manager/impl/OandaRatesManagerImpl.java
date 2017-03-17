@@ -64,7 +64,6 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		
 		BigDecimal result = BigDecimal.ZERO ;
 		
-		
 		if((!currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLDPAY)&&!currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLD))
 				&&(!currencyRight.equals(ServerConsts.CURRENCY_OF_GOLDPAY)&&!currencyRight.equals(ServerConsts.CURRENCY_OF_GOLD))){
 			
@@ -75,7 +74,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 				
 				result = amountIn.multiply(exchangeRate);
 				
-				logger.info("{} to {} , amount : {} , bid rate : {}, result(amountIn * rate) : {}",currencyLeft, currencyRight, amountIn,exchangeRate,result);
+				logger.info("{} to {} , amount : {} , bid rate : {}, result(amount * rate) : {}",currencyLeft, currencyRight, amountIn,exchangeRate,result);
 	
 				return result;
 			}else{
@@ -84,7 +83,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 				if(exchangeRate != null){
 					
 					result = amountIn.divide(exchangeRate, 8, BigDecimal.ROUND_DOWN);
-					logger.info("{} to {}, amount : {} , ask rate : {}, result(amountIn / rate) : {}",currencyLeft, currencyRight, amountIn,exchangeRate,result);
+					logger.info("{} to {}, amount : {} , ask rate : {}, result(amount / rate) : {}",currencyLeft, currencyRight, amountIn,exchangeRate,result);
 					
 					return result;
 				}else{
@@ -124,13 +123,13 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 			if(currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
 				if(currencyRight.equals(ServerConsts.CURRENCY_OF_USD)){
 					result = rate4GDQ2USD.multiply(amountIn);
-					logger.info("{} to {} , amount : {} , gold bid rate : {}, result(amountIn * rate4GDQ2USD) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USD, result);
+					logger.info("{} to {} , amount : {} , gold bid rate : {}, result(amount * rate4GDQ2USD) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USD, result);
 					return result;
 				}else{
 					BigDecimal rateUSD2Other = getExchangeRate(ServerConsts.CURRENCY_OF_USD,currencyRight,"bid");
 					if(rateUSD2Other != null){
 						result = amountIn.multiply(rate4GDQ2USD).multiply(rateUSD2Other);
-						logger.info("{} to {} , amount : {} ,gold bid rate : {}, other bid rate : {}, result(amountIn * rate4GDQ2USD * rateUSD2Other) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USD, rateUSD2Other, result);
+						logger.info("{} to {} , amount : {} ,gold bid rate : {}, other bid rate : {}, result(amount * rate4GDQ2USD * rateUSD2Other) : {}",currencyLeft, currencyRight, amountIn, rate4GDQ2USD, rateUSD2Other, result);
 						return result;
 					}else{
 						BigDecimal rateOther2USD = getExchangeRate(currencyRight,ServerConsts.CURRENCY_OF_USD,"ask");
@@ -182,7 +181,9 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 	
 	@Override
 	public BigDecimal getDefaultCurrencyAmount(String transCurrency,BigDecimal transAmount){
-		
+		if (transCurrency.equals(ServerConsts.STANDARD_CURRENCY)) {
+			return transAmount;
+		}
 		return getExchangedAmount(transCurrency,transAmount,ServerConsts.STANDARD_CURRENCY);
 		
 	}
@@ -249,7 +250,13 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		return map;
 		
 	}
+	
 	@Override
+	public BigDecimal getSingleExchangeRate(String currencyLeft, String currencyRight) {
+		return getExchangedAmount(currencyLeft, new BigDecimal("1"), currencyRight);
+	}
+	
+	/*@Override
 	public BigDecimal getSingleExchangeRate(String currencyLeft, String currencyRight) {
 		if((!currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLDPAY)&&!currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLD))
 				&&(!currencyRight.equals(ServerConsts.CURRENCY_OF_GOLDPAY)&&!currencyRight.equals(ServerConsts.CURRENCY_OF_GOLD))){
@@ -332,7 +339,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		}
 		
 		return null;
-	}
+	}*/
 	
 	@Override
 	public List<PriceInfo> getAllPrices(){
@@ -361,7 +368,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		
 	}
 	
-	@Override
+	/*@Override
 	public BigDecimal getInputValue(String currencyLeft,BigDecimal amount, String currencyRight){
 		
 		if((!currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLDPAY)&&!currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLD))
@@ -429,7 +436,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		}
 		return null;
 		
-	}
+	}*/
 
 	private String incrementalUpdateExchangeRates(String existentInstruments){
 		String replacedStr = existentInstruments.replaceAll(ServerConsts.CURRENCY_OF_CNH, ServerConsts.CURRENCY_OF_CNY).replaceAll(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_GOLDPAY);
