@@ -40,7 +40,7 @@ public class WithdrawDAOImpl implements WithdrawDAO {
 	@Override
 	public List<Withdraw> getNeedGoldpayRemitWithdraws() {
 		List<?> list = hibernateTemplate.find("from Withdraw where goldpayRemit = ? and  reviewStatus = ?",
-				ServerConsts.GOLDPAY_REMIT_TODO, ServerConsts.REVIEW_STATUS_PASS);
+				ServerConsts.GOLDPAY_REMIT_, ServerConsts.REVIEW_STATUS_PASS);
 		return (List<Withdraw>) list;
 	}
 

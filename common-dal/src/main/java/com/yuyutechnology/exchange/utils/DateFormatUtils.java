@@ -33,7 +33,6 @@ public class DateFormatUtils {
 		try {
 			startTime = new SimpleDateFormat(pattern).parse(dateString);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 //			e.printStackTrace();
 		}
 		return startTime;
@@ -80,7 +79,6 @@ public class DateFormatUtils {
 		try {
 			startTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startStr);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return startTime;
@@ -92,7 +90,6 @@ public class DateFormatUtils {
 		try {
 			endTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(endStr);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return endTime;

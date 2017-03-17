@@ -7,7 +7,7 @@ import java.util.List;
 public interface CurrencyDAO {
 	
 	/**
-	 * @Descrition : TODO
+	 * @Descrition : 
 	 * @author : nicholas.chi
 	 * @time : 2016年12月2日 下午5:09:37
 	 * @param currency
@@ -16,7 +16,7 @@ public interface CurrencyDAO {
 	public Currency getCurrency(String currency);
 	
 	/**
-	 * @Descrition : TODO
+	 * @Descrition : 
 	 * @author : nicholas.chi
 	 * @time : 2016年12月2日 下午5:09:43
 	 * @return

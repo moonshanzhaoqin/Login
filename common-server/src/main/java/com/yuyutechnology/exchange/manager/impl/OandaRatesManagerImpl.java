@@ -24,6 +24,7 @@ import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.utils.DateFormatUtils;
 import com.yuyutechnology.exchange.utils.HttpClientUtils;
 import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.JsonBinder;
@@ -190,20 +191,11 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 	
 	@Override
 	public Date getExchangeRateUpdateDate() {
-		
 		PriceInfo priceInfo = getPriceInfo(ServerConsts.CURRENCY_OF_USD,ServerConsts.CURRENCY_OF_CNH);
-		
 		if(priceInfo != null){
 			String time = priceInfo.getTime().replace("T", " ").substring(0,19);
-			logger.info("update time : {}",time);
-			try {
-				return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(time);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			return DateFormatUtils.fromString(time, "yyyy-MM-dd HH:mm:ss");
 		}
-
 		return new Date();
 		
 	}

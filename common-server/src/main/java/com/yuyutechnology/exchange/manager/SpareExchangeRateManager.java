@@ -12,7 +12,7 @@ public interface SpareExchangeRateManager {
 	public void updateExchangeRate(boolean refresh);
 
 	/**
-	 * @Descrition : TODO
+	 * @Descrition : 
 	 * @author : nicholas.chi
 	 * @time : 2016年12月9日 下午3:15:27
 	 * @param base
@@ -27,7 +27,7 @@ public interface SpareExchangeRateManager {
 	public Date getExchangeRateUpdateDate();
 	
 	/**
-	 * @Descrition : TODO
+	 * @Descrition : 
 	 * @author : nicholas.chi
 	 * @time : 2016年12月17日 上午10:47:56
 	 * @param base
@@ -46,7 +46,7 @@ public interface SpareExchangeRateManager {
 	public BigDecimal getExchangeResult(String transCurrency,BigDecimal transAmount);
 
 	/**
-	 * @Descrition : TODO
+	 * @Descrition : 
 	 * @author : nicholas.chi
 	 * @time : 2016年12月17日 下午5:21:10
 	 * @param userId

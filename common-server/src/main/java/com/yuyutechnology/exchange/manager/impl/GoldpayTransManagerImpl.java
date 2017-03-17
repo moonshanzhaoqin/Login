@@ -566,7 +566,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 				ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, transfer.getTransferId(), transfer.getCurrency(),
 				transfer.getTransferAmount());
 
-		// TODO 添加提现审批
+		//  添加提现审批
 		withdrawDAO.saveOrUpdateWithdraw(new Withdraw(userId, transferId, 0, 0));
 
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
@@ -726,21 +726,21 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		return withdrawDetail;
 	}
 
-	// TODO 提现审批
+	//  提现审批
 	@Override
 	public void withdrawReview(Integer withdrawId) {
 		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
-		// TODO 具体审批流程
+		//  具体审批流程
 
 		withdraw.setReviewStatus(ServerConsts.REVIEW_STATUS_PASS);
 		withdrawDAO.saveOrUpdateWithdraw(withdraw);
 	}
 
-	// TODO 对通过审核的提现进行goldpay划账
+	//  对通过审核的提现进行goldpay划账
 	@Override
 	public void goldpayRemit(Integer withdrawId) {
 		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
-		// TODO 限制
+		//  限制
 		HashMap<String, String> map = withdrawConfirm2(withdraw.getUserId(), withdraw.getTransferId());
 		withdraw.setGoldpayRemit(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)
 				? ServerConsts.GOLDPAY_REMIT_SUCCESS : ServerConsts.GOLDPAY_REMIT_FAIL);
@@ -749,9 +749,8 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 	@Override
 	public void goldpayRemitAll() {
-		// TODO Auto-generated method stub
 		List<Withdraw> withdraws = withdrawDAO.getNeedGoldpayRemitWithdraws();
-		// TODO 限制
+		//  限制
 		for (Withdraw withdraw : withdraws) {
 			HashMap<String, String> map = withdrawConfirm2(withdraw.getUserId(), withdraw.getTransferId());
 			withdraw.setGoldpayRemit(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)
@@ -764,7 +763,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	public void withdrawReviewAll() {
 		List<Withdraw> withdraws = withdrawDAO.getNeedReviewWithdraws();
 		for (Withdraw withdraw : withdraws) {
-			// TODO 具体审批流程
+			//  具体审批流程
 
 			withdraw.setReviewStatus(ServerConsts.REVIEW_STATUS_PASS);
 			withdrawDAO.saveOrUpdateWithdraw(withdraw);

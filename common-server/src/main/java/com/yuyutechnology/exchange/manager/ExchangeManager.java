@@ -36,7 +36,7 @@ public interface ExchangeManager {
 	
 
 	/**
-	 * @Descrition : TODO
+	 * @Descrition : 
 	 * @author : nicholas.chi
 	 * @time : 2016年12月16日 下午4:19:38
 	 * @param userId
@@ -50,7 +50,7 @@ public interface ExchangeManager {
 			String currencyIn,BigDecimal amountOut,BigDecimal amountIn);
 
 	/**
-	 * @Descrition : TODO
+	 * @Descrition : 
 	 * @author : nicholas.chi
 	 * @time : 2016年12月9日 下午4:35:28
 	 * @param currencyOut

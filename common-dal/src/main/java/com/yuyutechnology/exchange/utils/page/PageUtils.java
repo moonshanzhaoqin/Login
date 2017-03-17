@@ -24,7 +24,7 @@ public class PageUtils {
 	private static final Logger log = LogManager.getLogger(PageUtils.class);
 	/** 
 	* @Title: getBulletinList 
-	* @Description: TODO(这里用一句话描述这个方法的作用) 
+	* @Description: 
 	* @param hibernateTemplate
 	* @param hql
 	* @param values
@@ -51,7 +51,7 @@ public class PageUtils {
 	
 	/** 
 	* @Title: getListByPage 
-	* @Description: TODO(这里用一句话描述这个方法的作用) 
+	* @Description: 
 	* @param  hibernateTemplate
 	* @param  hql
 	* @param  values

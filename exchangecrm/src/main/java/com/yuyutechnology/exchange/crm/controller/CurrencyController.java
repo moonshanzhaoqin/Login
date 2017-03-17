@@ -31,14 +31,14 @@ public class CurrencyController {
 	@Autowired
 	CommonManager commonManager;
 
-	// TODO 获取货币列表 getCurrencyList
+	// 获取货币列表 getCurrencyList
 	@ResponseBody
 	@RequestMapping(value = "/getCurrencyList", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public List<Currency> getCurrencyList(HttpServletRequest request, HttpServletResponse response) {
 		return currencyManager.getCurrencyList();
 	}
 
-	// TODO 保存货币信息 updateCurrency
+	// 保存货币信息 updateCurrency
 	@ResponseBody
 	@RequestMapping(value = "/updateCurrency", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse updateCurrency(@RequestBody Currency currency, HttpServletRequest request,
@@ -51,14 +51,14 @@ public class CurrencyController {
 		return rep;
 	}
 
-	// TODO 获取待添加货币列表
+	// 获取待添加货币列表
 	@ResponseBody
 	@RequestMapping(value = "/getAddingCurrencyList", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public List<String> getAddingCurrencyList(HttpServletRequest request, HttpServletResponse response) {
 		return commonManager.getAllConfigurableCurrencies();
 	}
 
-	// TODO 添加新币种
+	// 添加新币种
 	@ResponseBody
 	@RequestMapping(value = "/addCurrency", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse addCurrency(@RequestBody AddCurrencyRequest addCurrencyRequest, HttpServletRequest request,
@@ -75,7 +75,7 @@ public class CurrencyController {
 		return rep;
 	}
 
-	// TODO 修改币种状态
+	// 修改币种状态
 	@ResponseBody
 	@RequestMapping(value = "/changeCurrencyStatus", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse changeCurrencyStatus(@RequestBody ChangeCurrencyStatusRequest changeCurrencyStatusRequest,

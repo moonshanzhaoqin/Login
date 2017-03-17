@@ -62,7 +62,6 @@ public class SupervisorController {
 		try {
 			out = response.getWriter();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
 		String retCode = crmAlarmManager.saveSupervisor(request.getSupervisorName().trim(), 

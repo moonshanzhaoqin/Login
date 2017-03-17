@@ -193,7 +193,7 @@ public class ServerConsts {
 	/**
 	 * goldPay划账结果-未执行
 	 */
-	public static final int GOLDPAY_REMIT_TODO = 0;
+	public static final int GOLDPAY_REMIT_ = 0;
 	/**
 	 * goldPay划账结果-失败
 	 */
