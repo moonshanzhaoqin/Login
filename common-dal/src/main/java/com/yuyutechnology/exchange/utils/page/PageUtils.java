@@ -24,7 +24,7 @@ public class PageUtils {
 	private static final Logger log = LogManager.getLogger(PageUtils.class);
 	/** 
 	* @Title: getBulletinList 
-	* @Description: TODO(这里用一句话描述这个方法的作用) 
+	* @Description: 
 	* @param hibernateTemplate
 	* @param hql
 	* @param values
@@ -40,6 +40,7 @@ public class PageUtils {
 		int firstResult = (currentPage -1)*pageSize;
 		int masResult = pageSize;
 		List<?> list = PageUtils.getListByPage(hibernateTemplate, hql, values, firstResult, masResult);
+		log.info(list);
 		long total = PageUtils.getTotal(hibernateTemplate, hql, values);
 		int pageTotal = PageUtils.getPageTotal(total, pageSize);
 		
@@ -50,7 +51,7 @@ public class PageUtils {
 	
 	/** 
 	* @Title: getListByPage 
-	* @Description: TODO(这里用一句话描述这个方法的作用) 
+	* @Description: 
 	* @param  hibernateTemplate
 	* @param  hql
 	* @param  values

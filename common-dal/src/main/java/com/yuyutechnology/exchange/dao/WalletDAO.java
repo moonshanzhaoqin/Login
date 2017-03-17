@@ -9,7 +9,7 @@ import com.yuyutechnology.exchange.pojo.Wallet;
 public interface WalletDAO {
 
 	/**
-	 * @Descrition : TODO
+	 * @Descrition : 
 	 * @author : nicholas.chi
 	 * @time : 2016年12月2日 下午5:15:20
 	 * @param userId

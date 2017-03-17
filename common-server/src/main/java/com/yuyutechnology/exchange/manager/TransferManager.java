@@ -59,7 +59,7 @@ public interface TransferManager {
 	
 	
 	/**
-	 * @Descrition : TODO
+	 * @Descrition : 
 	 * @author : nicholas.chi
 	 * @time : 2016年12月15日 下午6:09:28
 	 * @param period
@@ -72,7 +72,7 @@ public interface TransferManager {
 	
 	
 	/**
-	 * @Descrition : TODO
+	 * @Descrition : 
 	 * @author : nicholas.chi
 	 * @time : 2016年12月16日 上午10:12:19
 	 * @param userId
@@ -85,7 +85,7 @@ public interface TransferManager {
 	public String makeRequest(int userId,String payerAreaCode,String payerPhone,String currency,BigDecimal amount);
 	
 	/**
-	 * @Descrition : TODO
+	 * @Descrition : 
 	 * @author : nicholas.chi
 	 * @time : 2016年12月20日 下午3:59:04
 	 * @param userId
@@ -96,7 +96,7 @@ public interface TransferManager {
 	public HashMap<String, Object> getNotificationRecordsByPage(int userId,int currentPage, int pageSize);
 
 	/**
-	 * @Descrition : TODO
+	 * @Descrition : 
 	 * @author : nicholas.chi
 	 * @time : 2016年12月23日 上午10:37:31
 	 * @param userId

@@ -10,10 +10,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
@@ -35,6 +33,8 @@ import com.yuyutechnology.exchange.server.controller.response.LoginResponse;
 import com.yuyutechnology.exchange.server.controller.response.LoginValidateResponse;
 import com.yuyutechnology.exchange.server.controller.response.RegisterResponse;
 import com.yuyutechnology.exchange.server.controller.response.TestCodeResponse;
+import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
+import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 import com.yuyutechnology.exchange.server.session.SessionData;
 import com.yuyutechnology.exchange.server.session.SessionManager;
 import com.yuyutechnology.exchange.utils.HttpTookit;
@@ -66,10 +66,10 @@ public class UserController {
 	 * @param response
 	 * @return
 	 */
-	@ResponseBody
+	@ResponseEncryptBody
 	@ApiOperation(value = "忘记密码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/forgetPassword", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public ForgetPasswordResponse forgetPassword(@RequestBody ForgetPasswordRequest forgetPasswordRequest,
+	public ForgetPasswordResponse forgetPassword(@RequestDecryptBody ForgetPasswordRequest forgetPasswordRequest,
 			HttpServletRequest request, HttpServletResponse response) {
 		logger.info("forgetPassword : {}", forgetPasswordRequest.getAreaCode() + forgetPasswordRequest.getUserPhone());
 		ForgetPasswordResponse rep = new ForgetPasswordResponse();
@@ -118,11 +118,11 @@ public class UserController {
 	 * @param response
 	 * @return
 	 */
-	@ResponseBody
+	@ResponseEncryptBody
 	@ApiOperation(value = "获取验证码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/getVerificationCode", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public GetVerificationCodeResponse getVerificationCode(
-			@RequestBody GetVerificationCodeRequest getVerificationCodeRequest, HttpServletRequest request,
+			@RequestDecryptBody GetVerificationCodeRequest getVerificationCodeRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		logger.info("getVerificationCode : {}", getVerificationCodeRequest.toString());
 		GetVerificationCodeResponse rep = new GetVerificationCodeResponse();
@@ -176,10 +176,10 @@ public class UserController {
 	 * @param response
 	 * @return
 	 */
-	@ResponseBody
+	@ResponseEncryptBody
 	@ApiOperation(value = "登录", httpMethod = "POST", notes = "userPassword  loginToken  二选一")
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public LoginResponse login(@RequestBody LoginRequest loginRequest, HttpServletRequest request,
+	public LoginResponse login(@RequestDecryptBody LoginRequest loginRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		logger.info("============login==========");
 		LoginResponse rep = new LoginResponse();
@@ -284,10 +284,10 @@ public class UserController {
 	 * @param response
 	 * @return
 	 */
-	@ResponseBody
+	@ResponseEncryptBody
 	@ApiOperation(value = "注册", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/register", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public RegisterResponse register(@RequestBody RegisterRequest registerRequest, HttpServletRequest request,
+	public RegisterResponse register(@RequestDecryptBody RegisterRequest registerRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		logger.info("register : {}", registerRequest.getAreaCode() + registerRequest.getUserPhone());
 		RegisterResponse rep = new RegisterResponse();
@@ -354,10 +354,10 @@ public class UserController {
 	 * @param response
 	 * @return
 	 */
-	@ResponseBody
+	@ResponseEncryptBody
 	@ApiOperation(value = "测试验证码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/testCode", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public TestCodeResponse testCode(@RequestBody TestCodeRequest testRequest, HttpServletRequest request,
+	public TestCodeResponse testCode(@RequestDecryptBody TestCodeRequest testRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		logger.info("testCode : {}", testRequest.getAreaCode() + testRequest.getUserPhone());
 		TestCodeResponse rep = new TestCodeResponse();
@@ -382,10 +382,10 @@ public class UserController {
 	}
 
 	// 登录验证 loginValidate
-	@ResponseBody
+	@ResponseEncryptBody
 	@ApiOperation(value = "登录验证", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/loginValidate", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public LoginValidateResponse loginValidate(@RequestBody LoginValidateRequest loginValidateRequest,
+	public LoginValidateResponse loginValidate(@RequestDecryptBody LoginValidateRequest loginValidateRequest,
 			HttpServletRequest request, HttpServletResponse response) {
 		logger.info("loginValidate : ");
 		LoginValidateResponse rep = new LoginValidateResponse();

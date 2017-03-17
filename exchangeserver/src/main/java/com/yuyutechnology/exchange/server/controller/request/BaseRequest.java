@@ -3,7 +3,7 @@
  */
 package com.yuyutechnology.exchange.server.controller.request;
 
-import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
  * @author silent.sun

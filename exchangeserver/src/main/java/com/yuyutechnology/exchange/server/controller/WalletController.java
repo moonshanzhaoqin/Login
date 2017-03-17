@@ -10,13 +10,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.manager.WalletManager;
 import com.yuyutechnology.exchange.server.controller.response.GetTotalAmontGoldResponse;
+import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 import com.yuyutechnology.exchange.server.session.SessionData;
 import com.yuyutechnology.exchange.server.session.SessionDataHolder;
 
@@ -30,7 +30,7 @@ public class WalletController {
 
 	@ApiOperation(value = "获取黄金总量")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/wallet/getTotalAmontGold")
-	public @ResponseBody
+	public @ResponseEncryptBody
 	GetTotalAmontGoldResponse getTotalAmontGold(@PathVariable String token){
 		
 		SessionData sessionData = SessionDataHolder.getSessionData();

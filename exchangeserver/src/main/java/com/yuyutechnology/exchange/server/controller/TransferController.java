@@ -12,10 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
@@ -50,6 +48,8 @@ import com.yuyutechnology.exchange.server.controller.response.Respond2RequestRes
 import com.yuyutechnology.exchange.server.controller.response.TransPwdConfirmResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransferConfirmResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransferInitiateResponse;
+import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
+import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 import com.yuyutechnology.exchange.server.session.SessionData;
 import com.yuyutechnology.exchange.server.session.SessionDataHolder;
 
@@ -71,9 +71,9 @@ public class TransferController {
 
 	@ApiOperation(value = "交易初始化")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transferInitiate")
-	public @ResponseBody
+	public @ResponseEncryptBody
 	TransferInitiateResponse transferInitiate(@PathVariable String token,
-			@RequestBody TransferInitiateRequest reqMsg){
+			@RequestDecryptBody TransferInitiateRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		TransferInitiateResponse rep = new TransferInitiateResponse();
@@ -125,8 +125,8 @@ public class TransferController {
 	
 	@ApiOperation(value = "验证支付密码")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transPwdConfirm")
-	public @ResponseBody
-	TransPwdConfirmResponse transPwdConfirm(@PathVariable String token,@RequestBody TransPwdConfirmRequest reqMsg){
+	public @ResponseEncryptBody
+	TransPwdConfirmResponse transPwdConfirm(@PathVariable String token,@RequestDecryptBody TransPwdConfirmRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		TransPwdConfirmResponse rep = new TransPwdConfirmResponse();
@@ -149,8 +149,8 @@ public class TransferController {
 	
 	@ApiOperation(value = "重新发送pin")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/resendPhonePin")
-	public @ResponseBody
-	ResendTransferPinResponse resendTransferPin(@PathVariable String token,@RequestBody ResendTransferPinRequest reqMsg){
+	public @ResponseEncryptBody
+	ResendTransferPinResponse resendTransferPin(@PathVariable String token,@RequestDecryptBody ResendTransferPinRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		ResendTransferPinResponse rep = new ResendTransferPinResponse();
@@ -170,8 +170,8 @@ public class TransferController {
 	
 	@ApiOperation(value = "交易确认")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transferConfirm")
-	public  @ResponseBody
-	TransferConfirmResponse transferConfirm(@PathVariable String token,@RequestBody TransferConfirmRequest reqMsg){
+	public  @ResponseEncryptBody
+	TransferConfirmResponse transferConfirm(@PathVariable String token,@RequestDecryptBody TransferConfirmRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		
@@ -198,8 +198,8 @@ public class TransferController {
 	
 	@ApiOperation(value = "发起转账请求")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/makeRequest")
-	public  @ResponseBody
-	MakeRequestResponse makeRequest(@PathVariable String token,@RequestBody MakeRequestRequest reqMsg){
+	public  @ResponseEncryptBody
+	MakeRequestResponse makeRequest(@PathVariable String token,@RequestDecryptBody MakeRequestRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		MakeRequestResponse rep = new MakeRequestResponse();		
@@ -221,8 +221,8 @@ public class TransferController {
 	
 	@ApiOperation(value = "重新生成二维码")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/regenerateQRCode")
-	public  @ResponseBody 
-	RegenerateQRCodeResponse regenerateQRCode(@PathVariable String token,@RequestBody RegenerateQRCodeRequest reqMsg){
+	public  @ResponseEncryptBody 
+	RegenerateQRCodeResponse regenerateQRCode(@PathVariable String token,@RequestDecryptBody RegenerateQRCodeRequest reqMsg){
 		RegenerateQRCodeResponse rep = new RegenerateQRCodeResponse();
 		if(reqMsg == null || StringUtils.isEmpty(reqMsg.getCurrency())){
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
@@ -241,8 +241,8 @@ public class TransferController {
 	
 	@ApiOperation(value = "请求转账回应")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/requestATransfer")
-	public @ResponseBody
-	Respond2RequestResponse respond2Request(@PathVariable String token,@RequestBody Respond2RequestRequest reqMsg){
+	public @ResponseEncryptBody
+	Respond2RequestResponse respond2Request(@PathVariable String token,@RequestDecryptBody Respond2RequestRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		Respond2RequestResponse rep = new Respond2RequestResponse();
@@ -277,8 +277,8 @@ public class TransferController {
 
 	@ApiOperation(value = "获取交易明细")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransactionRecord")
-	public @ResponseBody
-	GetTransactionRecordResponse getTransactionRecord(@PathVariable String token,@RequestBody GetTransactionRecordRequest reqMsq){
+	public @ResponseEncryptBody
+	GetTransactionRecordResponse getTransactionRecord(@PathVariable String token,@RequestDecryptBody GetTransactionRecordRequest reqMsq){
 		
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
@@ -353,9 +353,9 @@ public class TransferController {
 	
 	@ApiOperation(value = "交易通知列表")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getNotificationRecords")
-	public @ResponseBody 
+	public @ResponseEncryptBody 
 	GetNotificationRecordsResponse getNotificationRecords(@PathVariable String token,
-			@RequestBody GetNotificationRecordsRequest reqMsg){
+			@RequestDecryptBody GetNotificationRecordsRequest reqMsg){
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		GetNotificationRecordsResponse rep = new GetNotificationRecordsResponse();

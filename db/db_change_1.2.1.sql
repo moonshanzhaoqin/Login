@@ -4,3 +4,5 @@ INSERT INTO `e_config` (`config_key`, `config_value`, `config_name`) VALUES ('ex
 alter table `e_exchange` add column `exchange_fee_per_thousand` decimal(20,4) NOT NULL  COMMENT '手续费千分比' AFTER `exchange_rate`;
 
 alter table `e_exchange` add column `exchange_fee_amount` decimal(20,4) NOT NULL  COMMENT '实际扣除手续费' AFTER `exchange_fee_per_thousand`;
+
+alter table `e_exchange` change `exchange_rate` `exchange_rate` decimal (20,10) DEFAULT '0';

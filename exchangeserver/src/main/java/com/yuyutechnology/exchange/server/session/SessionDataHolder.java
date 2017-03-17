@@ -1,7 +1,7 @@
 package com.yuyutechnology.exchange.server.session;
 /**
  * 
- * @author sunwei
+ * @author silent.sun
  * 
  */
 public class SessionDataHolder

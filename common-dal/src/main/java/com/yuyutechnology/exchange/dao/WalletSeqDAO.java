@@ -7,7 +7,7 @@ import com.yuyutechnology.exchange.pojo.WalletSeq;
 public interface WalletSeqDAO {
 	
 	/**
-	 * @Descrition : TODO
+	 * @Descrition : 
 	 * @author : nicholas.chi
 	 * @time : 2016年12月7日 上午11:49:38
 	 * @param walletSeq

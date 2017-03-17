@@ -10,10 +10,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
@@ -34,6 +32,8 @@ import com.yuyutechnology.exchange.server.controller.response.ExchangeConfirmRes
 import com.yuyutechnology.exchange.server.controller.response.GetCurrentBalanceResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetExchangeHistoryResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetExchangeRateResponse;
+import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
+import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 import com.yuyutechnology.exchange.server.session.SessionData;
 import com.yuyutechnology.exchange.server.session.SessionDataHolder;
 
@@ -51,7 +51,7 @@ public class ExchangeController {
 
 	@ApiOperation(value = "获取当前余额")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/getCurrentBalance")
-	public @ResponseBody GetCurrentBalanceResponse getCurrentBalance(@PathVariable String token) {
+	public @ResponseEncryptBody GetCurrentBalanceResponse getCurrentBalance(@PathVariable String token) {
 		// 从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		GetCurrentBalanceResponse rep = new GetCurrentBalanceResponse();
@@ -69,8 +69,8 @@ public class ExchangeController {
 
 	@ApiOperation(value = "兑换计算")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/exchangeCalculation")
-	public @ResponseBody ExchangeCalculationResponse exchangeCalculation(@PathVariable String token,
-			@RequestBody ExchangeCalculationRequest reqMsg) {
+	public @ResponseEncryptBody ExchangeCalculationResponse exchangeCalculation(@PathVariable String token,
+			@RequestDecryptBody ExchangeCalculationRequest reqMsg) {
 		// 从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		ExchangeCalculationResponse rep = new ExchangeCalculationResponse();
@@ -111,8 +111,8 @@ public class ExchangeController {
 
 	@ApiOperation(value = "获取汇率")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/getExchangeRate")
-	public @ResponseBody GetExchangeRateResponse getExchangeRate(@PathVariable String token,
-			@RequestBody GetExchangeRateRequest reqMsg) {
+	public @ResponseEncryptBody GetExchangeRateResponse getExchangeRate(@PathVariable String token,
+			@RequestDecryptBody GetExchangeRateRequest reqMsg) {
 		GetExchangeRateResponse rep = new GetExchangeRateResponse();
 		if (!commonManager.verifyCurrency(reqMsg.getBase())) {
 			logger.warn("This currency is not a tradable currency");
@@ -138,8 +138,8 @@ public class ExchangeController {
 
 	@ApiOperation(value = "兑换确认")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/exchangeConfirm")
-	public @ResponseBody ExchangeConfirmResponse exchangeConfirm(@PathVariable String token,
-			@RequestBody ExchangeConfirmRequest reqMsg) {
+	public @ResponseEncryptBody ExchangeConfirmResponse exchangeConfirm(@PathVariable String token,
+			@RequestDecryptBody ExchangeConfirmRequest reqMsg) {
 		// 从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		ExchangeConfirmResponse rep = new ExchangeConfirmResponse();
@@ -160,8 +160,8 @@ public class ExchangeController {
 
 	@ApiOperation(value = "获取兑换历史记录")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/getExchangeHistory")
-	public @ResponseBody GetExchangeHistoryResponse getExchangeHistory(@PathVariable String token,
-			@RequestBody GetExchangeHistoryRequest reqMsg) {
+	public @ResponseEncryptBody GetExchangeHistoryResponse getExchangeHistory(@PathVariable String token,
+			@RequestDecryptBody GetExchangeHistoryRequest reqMsg) {
 		// 从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		GetExchangeHistoryResponse rep = new GetExchangeHistoryResponse();

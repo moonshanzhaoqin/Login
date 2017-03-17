@@ -15,14 +15,14 @@ import com.fasterxml.jackson.databind.SerializerProvider;
  * @author silent.sun
  *
  */
-public class JsonObjectMapper4Null extends ObjectMapper {
+public class JsonObjectMapper extends ObjectMapper {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3659875234079482330L;
 
-    public JsonObjectMapper4Null(){
+    public JsonObjectMapper(){
         super();
         // 空值处理为空串  
         this.getSerializerProvider().setNullValueSerializer(new JsonSerializer<Object>() {  
