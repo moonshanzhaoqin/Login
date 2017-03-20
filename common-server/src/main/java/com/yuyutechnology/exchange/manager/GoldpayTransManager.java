@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.yuyutechnology.exchange.dto.WithdrawDetail;
 import com.yuyutechnology.exchange.pojo.Transfer;
+import com.yuyutechnology.exchange.pojo.Withdraw;
 import com.yuyutechnology.exchange.utils.page.PageBean;
 
 public interface GoldpayTransManager {
@@ -58,11 +59,11 @@ public interface GoldpayTransManager {
 
 	public WithdrawDetail getWithdrawDetail(Integer withdrawId);
 
-	public void goldpayRemitAll();
-
-	public void withdrawReviewAll();
-
 	PageBean getWithdrawList(int currentPage, String userId, String reviewStatus, String goldpayRemit);
+
+	public List<Withdraw> getNeedGoldpayRemitWithdraws();
+
+	public List<Withdraw> getNeedReviewWithdraws();
 
 
 }

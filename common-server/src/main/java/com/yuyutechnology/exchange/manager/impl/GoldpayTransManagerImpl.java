@@ -747,28 +747,6 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		withdrawDAO.saveOrUpdateWithdraw(withdraw);
 	}
 
-	@Override
-	public void goldpayRemitAll() {
-		List<Withdraw> withdraws = withdrawDAO.getNeedGoldpayRemitWithdraws();
-		//  限制
-		for (Withdraw withdraw : withdraws) {
-			HashMap<String, String> map = withdrawConfirm2(withdraw.getUserId(), withdraw.getTransferId());
-			withdraw.setGoldpayRemit(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)
-					? ServerConsts.GOLDPAY_REMIT_SUCCESS : ServerConsts.GOLDPAY_REMIT_FAIL);
-			withdrawDAO.saveOrUpdateWithdraw(withdraw);
-		}
-	}
-
-	@Override
-	public void withdrawReviewAll() {
-		List<Withdraw> withdraws = withdrawDAO.getNeedReviewWithdraws();
-		for (Withdraw withdraw : withdraws) {
-			//  具体审批流程
-
-			withdraw.setReviewStatus(ServerConsts.REVIEW_STATUS_PASS);
-			withdrawDAO.saveOrUpdateWithdraw(withdraw);
-		}
-	}
 
 	@Override
 	public PageBean getWithdrawList(int currentPage, String userId, String reviewStatus, String goldpayRemit) {
@@ -776,5 +754,16 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 				goldpayRemit);
 		return withdrawDAO.searchWithdrawsByPage(userId, reviewStatus, goldpayRemit, currentPage, 10);
 	}
+
+	@Override
+	public List<Withdraw> getNeedGoldpayRemitWithdraws() {
+		return withdrawDAO.getNeedGoldpayRemitWithdraws();
+	}
+
+	@Override
+	public List<Withdraw> getNeedReviewWithdraws() {
+		return withdrawDAO.getNeedReviewWithdraws();
+	}
+
 
 }
