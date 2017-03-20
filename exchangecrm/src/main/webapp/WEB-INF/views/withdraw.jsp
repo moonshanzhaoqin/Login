@@ -160,7 +160,7 @@
 		function searchWithdraw(page) {
 			console.log("searchWithdraw:page=" + page);
 			form = document.getElementById("searchWithdraw");
-			getWithdrawList(page, form.userId.value, form.reviewStatus.value,
+			getWithdrawList(page, form.userPhone.value, form.reviewStatus.value,
 					form.goldpayRemit.value);
 		}
 
@@ -287,21 +287,20 @@
 					})
 		}
 
-		function getWithdrawList(currentPage, userId, reviewStatus,
+		function getWithdrawList(currentPage, userPhone, reviewStatus,
 				goldpayRemit) {
 			console.log("getWithdrawList-->currentPage=" + currentPage
-					+ ", userId=" + userId + ", reviewStatus=" + reviewStatus
+					+ ", userPhone=" + userPhone + ", reviewStatus=" + reviewStatus
 					+ ", goldpayRemit=" + goldpayRemit)
 
 			data = {
 				currentPage : currentPage,
-				userId : userId,
+				userPhone : userPhone,
 				reviewStatus : reviewStatus,
 				goldpayRemit : goldpayRemit
 			};
 
-			$
-					.ajax({
+			$.ajax({
 						type : "post",
 						url : "/crm/getWithdrawList",
 						dataType : 'json',

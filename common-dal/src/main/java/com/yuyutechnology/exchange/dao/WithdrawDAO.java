@@ -17,7 +17,7 @@ public interface WithdrawDAO {
 
 	Withdraw getWithdraw(Integer withdrawId);
 
-	PageBean searchWithdrawsByPage(String userId, String reviewStatus, String goldpayRemit, int currentPage,
+	PageBean searchWithdrawsByPage(String userPhone, String reviewStatus, String goldpayRemit, int currentPage,
 			int pageSize);
 	
 	
