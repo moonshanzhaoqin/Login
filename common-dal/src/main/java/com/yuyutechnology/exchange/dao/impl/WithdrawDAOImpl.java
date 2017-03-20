@@ -64,7 +64,7 @@ public class WithdrawDAOImpl implements WithdrawDAO {
 			} else {
 				hql.append(" where ");
 			}
-			hql.append("u.userPhone = ? ");
+			hql.append("userPhone = ? ");
 			values.add(userPhone);
 		}
 		if (StringUtils.isNotBlank(reviewStatus)) {

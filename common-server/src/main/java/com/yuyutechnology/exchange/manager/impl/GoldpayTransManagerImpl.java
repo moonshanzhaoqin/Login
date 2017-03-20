@@ -749,10 +749,10 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 
 	@Override
-	public PageBean getWithdrawList(int currentPage, String userId, String reviewStatus, String goldpayRemit) {
-		logger.info("currentPage={},userId={},reviewStatus={},goldpayRemit={}", currentPage, userId, reviewStatus,
+	public PageBean getWithdrawList(int currentPage, String userPhone, String reviewStatus, String goldpayRemit) {
+		logger.info("currentPage={},userPhone={},reviewStatus={},goldpayRemit={}", currentPage, userPhone, reviewStatus,
 				goldpayRemit);
-		return withdrawDAO.searchWithdrawsByPage(userId, reviewStatus, goldpayRemit, currentPage, 10);
+		return withdrawDAO.searchWithdrawsByPage(userPhone, reviewStatus, goldpayRemit, currentPage, 10);
 	}
 
 	@Override

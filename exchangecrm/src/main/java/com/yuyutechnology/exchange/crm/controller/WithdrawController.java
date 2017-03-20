@@ -43,7 +43,7 @@ public class WithdrawController {
 			HttpServletRequest request, HttpServletResponse response) {
 		logger.info(getWithdrawListRequest.toString());
 		return	goldpayTransManager.getWithdrawList(Integer.parseInt(getWithdrawListRequest.getCurrentPage()),
-				getWithdrawListRequest.getUserId(), getWithdrawListRequest.getReviewStatus(),
+				getWithdrawListRequest.getUserPhone(), getWithdrawListRequest.getReviewStatus(),
 				getWithdrawListRequest.getGoldpayRemit());
 	}
 

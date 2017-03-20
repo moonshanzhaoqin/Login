@@ -59,7 +59,7 @@ public interface GoldpayTransManager {
 
 	public WithdrawDetail getWithdrawDetail(Integer withdrawId);
 
-	PageBean getWithdrawList(int currentPage, String userId, String reviewStatus, String goldpayRemit);
+	PageBean getWithdrawList(int currentPage, String userPhone, String reviewStatus, String goldpayRemit);
 
 	public List<Withdraw> getNeedGoldpayRemitWithdraws();
 
