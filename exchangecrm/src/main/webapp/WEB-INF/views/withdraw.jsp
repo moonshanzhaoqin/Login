@@ -24,8 +24,8 @@
 
 			<form class="form-inline" id="searchWithdraw">
 				<div class="form-group">
-					<label class="sr-only" for="userId">userId</label> <input
-						type="text" class="form-control" name="userId" placeholder="用户ID">
+					<label class="sr-only" for="userPhone">userPhone</label> <input
+						type="text" class="form-control" name="userPhone" placeholder="手机号">
 				</div>
 				<div class="form-group">
 					<label class="sr-only" for="reviewStatus">reviewStatus</label> <select
@@ -54,7 +54,8 @@
 				id="withdraw">
 				<thead>
 					<tr>
-<!-- 						<th>用户ID</th> -->
+						<th>用户ID</th>
+						<th>手机号</th>
 						<th>交易号</th>
 						<th>审批状态</th>
 						<th>Goldpay划账结果</th>
@@ -315,9 +316,12 @@
 								var html = "";
 								for ( var i in data.rows) {
 									html += '<tr>'
-// 											+ '<td>'
-// 											+ data.rows[i].userId
-// 											+ '</td>'
+											+ '<td>'
+											+ data.rows[i].userId
+											+ '</td>'
+											+ '<td>'
+											+ data.rows[i].areaCode+data.rows[i].userPhone
+											+ '</td>'
 											+ '<td>'
 											+ data.rows[i].transferId
 											+ '</td>'
