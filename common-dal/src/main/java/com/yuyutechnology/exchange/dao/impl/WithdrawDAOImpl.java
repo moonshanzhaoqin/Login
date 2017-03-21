@@ -57,7 +57,7 @@ public class WithdrawDAOImpl implements WithdrawDAO {
 				goldpayRemit, currentPage, pageSize);
 		List<Object> values = new ArrayList<Object>();
 		StringBuilder hql = new StringBuilder("from Withdraw");
-//		 logger.info("hql.length()={}",hql.length());
+		// logger.info("hql.length()={}",hql.length());
 		if (StringUtils.isNotBlank(userPhone)) {
 			if (hql.length() > 13) {
 				hql.append(" and ");
@@ -94,6 +94,5 @@ public class WithdrawDAOImpl implements WithdrawDAO {
 	public Withdraw getWithdraw(Integer withdrawId) {
 		return hibernateTemplate.get(Withdraw.class, withdrawId);
 	}
-
 
 }

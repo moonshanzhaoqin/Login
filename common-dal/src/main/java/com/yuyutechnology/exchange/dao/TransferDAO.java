@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.yuyutechnology.exchange.pojo.Transfer;
+import com.yuyutechnology.exchange.utils.page.PageBean;
 
 public interface TransferDAO {
 
@@ -40,5 +41,7 @@ public interface TransferDAO {
 	public BigDecimal sumGoldpayTransAmount(int transferType);
 	
 	public Integer getDayTradubgVolume(final int transferType);
+
+	public PageBean getWithdrawRecordByPage(Integer userId, int currentPage, int pageSize);
 	
 }
