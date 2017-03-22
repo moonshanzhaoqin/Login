@@ -21,7 +21,7 @@ import com.yuyutechnology.exchange.server.controller.TransferController;
  * @author silent.sun
  *
  */
-public class ExchangeRateManagerTest extends BaseSpringJunit4 {
+public class ExchangeManagerTest extends BaseSpringJunit4 {
 
 	@Autowired
 	UserDAO userDAO;
@@ -33,7 +33,7 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 	public static Logger logger = LogManager.getLogger(TransferController.class);
 
 	@Test
-	public void testUpdateRate() {
+	public void testRate() {
 		List<String[]> instruments = commonManager.getInstruments();
 		for (String[] strings : instruments) {
 			 exchangeManager.exchangeCalculation(strings[0].split("_")[0],
@@ -50,12 +50,15 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 			}
 		}
 	}
+	
+	@Test
+	public void testExchange() {
+		exchangeManager.exchangeConfirm(23, "GDQ", "USD", new BigDecimal(10000));
+	}
 
 	public static void main(String[] args) {
-
 		System.out.println(new BigDecimal("1").divide(new BigDecimal("3"), 8, BigDecimal.ROUND_UP)
 				.multiply(new BigDecimal("2")));
-
 		System.out.println(new BigDecimal("1")
 				.multiply(new BigDecimal("2").divide(new BigDecimal("3"), 8, BigDecimal.ROUND_UP)));
 	}

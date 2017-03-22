@@ -70,29 +70,29 @@ public class WalletDAOImpl implements WalletDAO {
 				if (capitalFlows.equals("+")) {
 //					query = session.createSQLQuery("update e_wallet set update_time = ? ,balance = balance+" + amount.abs()
 //					+ " where user_id = ? and currency = ?");
-					query = session.createQuery("update Wallet set updateTime = ? ,balance = balance+" + amount
-							+ " where userId = ? and currency.currency = ?  and updateSeqId = ?");
+					query = session.createQuery("update Wallet set updateTime = ? ,updateSeqId = ? , balance = balance+" + amount
+							+ " where userId = ? and currency.currency = ?");
 				} else {
 					if (userId != systemUserId) {
 //						query = session.createSQLQuery("update e_wallet set update_time = ? ,balance = balance-"
 //								+ amount.abs() + " where user_id = ? and currency = ? and balance-"
 //								+ amount.abs() + ">=0");
-						query = session.createQuery("update Wallet set updateTime = ? ,balance = balance-"
+						query = session.createQuery("update Wallet set updateTime = ? , updateSeqId = ? , balance = balance-"
 								+ amount + " where userId = ? and currency.currency = ? and balance-"
-								+ amount + ">=0 and updateSeqId = ?");
+								+ amount + ">=0");
 						
 					} else {
 //						query = session.createSQLQuery("update e_wallet set update_time = ? ,balance = balance-"
 //								+ amount.abs() + " where user_id = ? and currency = ?");
-						query = session.createQuery("update Wallet set updateTime = ? ,balance = balance-"
-								+ amount + " where userId = ? and currency.currency = ? and updateSeqId = ?");
+						query = session.createQuery("update Wallet set updateTime = ? , updateSeqId = ? , balance = balance-"
+								+ amount + " where userId = ? and currency.currency = ?");
 					}
 
 				}
 				query.setTimestamp(0, new Date());
-				query.setInteger(1, userId);
-				query.setString(2, currency);
-				query.setInteger(3, walletSeqId);
+				query.setInteger(1, walletSeqId);
+				query.setInteger(2, userId);
+				query.setString(3, currency);
 				return query.executeUpdate();
 			}
 		});
@@ -137,7 +137,7 @@ public class WalletDAOImpl implements WalletDAO {
 		}
 		WalletSeq walletSeq = new WalletSeq(userId,transferType,currency,amount,transactionId, new Date());
 		hibernateTemplate.save(walletSeq);
-		int update = updateWalletByUserIdAndCurrency(userId, currency, amount, capitalFlows, walletSeq.getSeqId());
+		int update = updateWalletByUserIdAndCurrency(userId, currency, amount.abs(), capitalFlows, walletSeq.getSeqId());
 		if (update == 0) {
 			hibernateTemplate.delete(walletSeq);
 		}

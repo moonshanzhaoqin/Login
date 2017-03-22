@@ -169,8 +169,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	}
 
 	@Override
-	public HashMap<String, String> exchangeConfirm(int userId, String currencyOut, String currencyIn, BigDecimal amountOut,
-			BigDecimal amountIn) {
+	public HashMap<String, String> exchangeConfirm(int userId, String currencyOut, String currencyIn, BigDecimal amountOut) {
 		HashMap<String, String> result = exchangeCalculation(userId, currencyOut, currencyIn, amountOut);
 		if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			// 用户账户
