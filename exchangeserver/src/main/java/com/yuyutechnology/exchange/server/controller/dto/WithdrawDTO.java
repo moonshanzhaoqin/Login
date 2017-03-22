@@ -5,6 +5,7 @@ import java.util.Date;
 
 public class WithdrawDTO {
 	private BigDecimal amount;
+	private String currencyUnit;
 	private Date createTime;
 	private int WithdrawStatus;
 
@@ -30,5 +31,13 @@ public class WithdrawDTO {
 
 	public void setWithdrawStatus(int withdrawStatus) {
 		WithdrawStatus = withdrawStatus;
+	}
+
+	public String getCurrencyUnit() {
+		return currencyUnit;
+	}
+
+	public void setCurrencyUnit(String currencyUnit) {
+		this.currencyUnit = currencyUnit;
 	}
 }

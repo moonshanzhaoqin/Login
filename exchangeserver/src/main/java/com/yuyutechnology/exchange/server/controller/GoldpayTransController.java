@@ -18,6 +18,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
+import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.pojo.Transfer;
@@ -47,6 +48,8 @@ public class GoldpayTransController {
 	GoldpayTransManager goldpayTransManager;
 	@Autowired
 	ConfigManager configManager;
+	@Autowired
+	CommonManager commonManager;
 
 	public static Logger logger = LogManager.getLogger(GoldpayTransController.class);
 
@@ -206,6 +209,7 @@ public class GoldpayTransController {
 				withdrawDTO.setAmount(transfer.getTransferAmount());
 				withdrawDTO.setCreateTime(transfer.getCreateTime());
 				withdrawDTO.setWithdrawStatus(transfer.getTransferStatus());
+				withdrawDTO.setCurrencyUnit(commonManager.getCurreny(transfer.getCurrency()).getCurrencyUnit());
 				dtos.add(withdrawDTO);
 			}
 			rep.setList(dtos);
