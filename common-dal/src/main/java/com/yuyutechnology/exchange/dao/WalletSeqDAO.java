@@ -26,9 +26,9 @@ public interface WalletSeqDAO {
 	 * @param currencyIn
 	 * @param amountIn
 	 */
-	public void addWalletSeq4Exchange(int userId, int transferType, String transactionId, 
-			String currencyOut, BigDecimal amountOut,
-			String currencyIn, BigDecimal amountIn);
+//	public void addWalletSeq4Exchange(int userId, int transferType, String transactionId, 
+//			String currencyOut, BigDecimal amountOut,
+//			String currencyIn, BigDecimal amountIn);
 	
 	/**
 	 * @Descrition : 交易过程中产生的两条交易记录
@@ -41,7 +41,7 @@ public interface WalletSeqDAO {
 	 * @param currency
 	 * @param amount
 	 */
-	public void addWalletSeq4Transaction(int payerId,int payeeId,int transferType, 
-			String transactionId, String currency,BigDecimal amount );
+//	public void addWalletSeq4Transaction(int payerId,int payeeId,int transferType, 
+//			String transactionId, String currency,BigDecimal amount );
 
 }

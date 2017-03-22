@@ -245,15 +245,15 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 				User systemUser = userDAO.getSystemUser();
 				// 系统扣款
 				walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(),
-						transfer.getTransferAmount(), "-");
+						transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE, transferId);
 				// 用户加款
 				walletDAO.updateWalletByUserIdAndCurrency(userId, transfer.getCurrency(), transfer.getTransferAmount(),
-						"+");
+						"+", ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE, transferId);
 
 				// 添加Seq记录
-				walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), userId,
-						ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE, transferId, transfer.getCurrency(),
-						transfer.getTransferAmount());
+//				walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), userId,
+//						ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE, transferId, transfer.getCurrency(),
+//						transfer.getTransferAmount());
 				// 更改订单状态
 				transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 
@@ -548,7 +548,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		}
 		// 用户扣款
 		int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId, transfer.getCurrency(),
-				transfer.getTransferAmount(), "-");
+				transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, transfer.getTransferId());
 
 		if (updateCount == 0) {
 			logger.warn("Current balance is insufficient");
@@ -557,14 +557,14 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		}
 		// 系统加款
 		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(),
-				transfer.getTransferAmount(), "+");
+				transfer.getTransferAmount(), "+", ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, transfer.getTransferId());
 
 		// 更改Transfer状态
 		transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_PROCESSING);
 		// 添加seq记录
-		walletSeqDAO.addWalletSeq4Transaction(userId, systemUser.getUserId(),
-				ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, transfer.getTransferId(), transfer.getCurrency(),
-				transfer.getTransferAmount());
+//		walletSeqDAO.addWalletSeq4Transaction(userId, systemUser.getUserId(),
+//				ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, transfer.getTransferId(), transfer.getCurrency(),
+//				transfer.getTransferAmount());
 
 		//  添加提现审批
 		withdrawDAO.saveOrUpdateWithdraw(new Withdraw(userId, user.getAreaCode(), user.getUserPhone(), transferId, 0, 0));
@@ -579,14 +579,14 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	public void withdrawRefund(int userId, String transferId, String transferCurrency, BigDecimal transferAmount) {
 		User systemUser = userDAO.getSystemUser();
 		// 系统加款
-		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transferCurrency, transferAmount, "-");
+		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transferCurrency, transferAmount, "-", ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_REFUND, transferId);
 		// 用户扣款
-		walletDAO.updateWalletByUserIdAndCurrency(userId, transferCurrency, transferAmount, "+");
+		walletDAO.updateWalletByUserIdAndCurrency(userId, transferCurrency, transferAmount, "+", ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_REFUND, transferId);
 		// 更改Transfer状态
 		transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_REFUND);
 		// 添加seq记录
-		walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), userId,
-				ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_REFUND, transferId, transferCurrency, transferAmount);
+//		walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), userId,
+//				ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_REFUND, transferId, transferCurrency, transferAmount);
 	}
 
 	@Override

@@ -572,17 +572,20 @@ public class UserManagerImpl implements UserManager {
 				return;
 			}
 
+			String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+			
 			User payer = userDAO.getUser(payerTransfer.getUserFrom());
 
 			// 系统账号扣款
 			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, unregistered.getCurrency(),
-					unregistered.getAmount(), "-");
+					unregistered.getAmount(), "-", ServerConsts.TRANSFER_TYPE_TRANSACTION,
+					transferId);
 			// 用户加款
 			walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(), unregistered.getAmount(),
-					"+");
+					"+", ServerConsts.TRANSFER_TYPE_TRANSACTION,
+					transferId);
 
 			// 生成TransId
-			String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 			Transfer transfer = new Transfer();
 			transfer.setTransferId(transferId);
 			transfer.setUserFrom(systemUserId);
@@ -601,8 +604,8 @@ public class UserManagerImpl implements UserManager {
 			transferDAO.addTransfer(transfer);
 
 			// 增加seq记录
-			walletSeqDAO.addWalletSeq4Transaction(systemUserId, userId, ServerConsts.TRANSFER_TYPE_TRANSACTION,
-					transferId, unregistered.getCurrency(), unregistered.getAmount());
+//			walletSeqDAO.addWalletSeq4Transaction(systemUserId, userId, ServerConsts.TRANSFER_TYPE_TRANSACTION,
+//					transferId, unregistered.getCurrency(), unregistered.getAmount());
 
 			// 更改unregistered状态
 			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);

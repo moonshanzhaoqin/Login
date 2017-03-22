@@ -23,24 +23,24 @@ public class WalletSeqDAOImpl implements WalletSeqDAO {
 	}
 	
 	
-	@Override
-	public void addWalletSeq4Exchange(int userId,int transferType,String transactionId,
-			String currencyOut,BigDecimal amountOut,String currencyIn,BigDecimal amountIn){
-		WalletSeq inSeq = new WalletSeq(userId,transferType,currencyIn,amountIn,transactionId, new Date());
-		addWalletSeq(inSeq);
-		//negate 取负数
-		WalletSeq outSeq = new WalletSeq(userId,transferType,currencyOut,amountOut.negate(),transactionId, new Date());
-		addWalletSeq(outSeq);
-	}
+//	@Override
+//	public void addWalletSeq4Exchange(int userId,int transferType,String transactionId,
+//			String currencyOut,BigDecimal amountOut,String currencyIn,BigDecimal amountIn){
+//		WalletSeq inSeq = new WalletSeq(userId,transferType,currencyIn,amountIn,transactionId, new Date());
+//		addWalletSeq(inSeq);
+//		//negate 取负数
+//		WalletSeq outSeq = new WalletSeq(userId,transferType,currencyOut,amountOut.negate(),transactionId, new Date());
+//		addWalletSeq(outSeq);
+//	}
 
 
-	@Override
-	public void addWalletSeq4Transaction(int payerId, int payeeId, int transferType, String transactionId,
-			String currency, BigDecimal amount) {
-		WalletSeq payerSeq = new WalletSeq(payerId,transferType,currency,amount.negate(),transactionId, new Date());
-		addWalletSeq(payerSeq);
-		WalletSeq payeeSeq = new WalletSeq(payeeId,transferType,currency,amount,transactionId, new Date());
-		addWalletSeq(payeeSeq);
-	}
+//	@Override
+//	public void addWalletSeq4Transaction(int payerId, int payeeId, int transferType, String transactionId,
+//			String currency, BigDecimal amount) {
+//		WalletSeq payerSeq = new WalletSeq(payerId,transferType,currency,amount.negate(),transactionId, new Date());
+//		addWalletSeq(payerSeq);
+//		WalletSeq payeeSeq = new WalletSeq(payeeId,transferType,currency,amount,transactionId, new Date());
+//		addWalletSeq(payeeSeq);
+//	}
 
 }

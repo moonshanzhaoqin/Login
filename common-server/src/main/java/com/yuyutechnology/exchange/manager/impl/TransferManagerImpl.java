@@ -313,7 +313,7 @@ public class TransferManagerImpl implements TransferManager{
 		if(transfer.getUserTo() == systemUser.getUserId()){  	//交易对象没有注册账号
 			//扣款
 			Integer updateCount = walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), 
-					transfer.getCurrency(), transfer.getTransferAmount(), "-");
+					transfer.getCurrency(), transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_OUT_INVITE, transfer.getTransferId());
 			
 			if(updateCount == 0){
 				return RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT;
@@ -321,7 +321,7 @@ public class TransferManagerImpl implements TransferManager{
 			
 			//加款
 			walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), 
-					transfer.getCurrency(), transfer.getTransferAmount(), "+");
+					transfer.getCurrency(), transfer.getTransferAmount(), "+", ServerConsts.TRANSFER_TYPE_OUT_INVITE, transfer.getTransferId());
 			
 			//添加gift记录
 			Unregistered unregistered = unregisteredDAO.getUnregisteredByTransId(transfer.getTransferId());
@@ -339,9 +339,9 @@ public class TransferManagerImpl implements TransferManager{
 			}
 
 			//增加seq记录
-			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), systemUser.getUserId(), 
-					ServerConsts.TRANSFER_TYPE_OUT_INVITE, transfer.getTransferId(), 
-					transfer.getCurrency(), transfer.getTransferAmount());
+//			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), systemUser.getUserId(), 
+//					ServerConsts.TRANSFER_TYPE_OUT_INVITE, transfer.getTransferId(), 
+//					transfer.getCurrency(), transfer.getTransferAmount());
 			
 			//更改Transfer状态
 			transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
@@ -356,7 +356,7 @@ public class TransferManagerImpl implements TransferManager{
 			
 			//扣款
 			Integer updateCount = walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), 
-					transfer.getCurrency(), transfer.getTransferAmount(), "-");
+					transfer.getCurrency(), transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_TRANSACTION, transfer.getTransferId());
 			
 			if(updateCount == 0){
 				return RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT;
@@ -364,12 +364,12 @@ public class TransferManagerImpl implements TransferManager{
 			
 			//加款
 			walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserTo(), 
-					transfer.getCurrency(), transfer.getTransferAmount(), "+");
+					transfer.getCurrency(), transfer.getTransferAmount(), "+", ServerConsts.TRANSFER_TYPE_TRANSACTION, transfer.getTransferId());
 			
 			//添加seq记录
-			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), transfer.getUserTo(), 
-					ServerConsts.TRANSFER_TYPE_TRANSACTION, transfer.getTransferId(), 
-					transfer.getCurrency(), transfer.getTransferAmount());	
+//			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), transfer.getUserTo(), 
+//					ServerConsts.TRANSFER_TYPE_TRANSACTION, transfer.getTransferId(), 
+//					transfer.getCurrency(), transfer.getTransferAmount());	
 			
 			//如果是请求转账还需要更改消息通知中的状态
 			if(transfer.getNoticeId() != 0){
@@ -407,18 +407,18 @@ public class TransferManagerImpl implements TransferManager{
 			logger.warn("Did not find the corresponding transfer information");
 			return ;
 		}
+		String transferId2 = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		User systemUser = userDAO.getSystemUser();
 		//系统扣款
 		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), 
-				transfer.getCurrency(), transfer.getTransferAmount(), "-");
+				transfer.getCurrency(), transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND,transferId2);
 		//用户加款
 		walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), 
-				transfer.getCurrency(), transfer.getTransferAmount(), "+");
+				transfer.getCurrency(), transfer.getTransferAmount(), "+", ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND,transferId2);
 
 		///////////////////////////生成transfer系统退款订单////////////////////////////
 		Transfer transfer2 = new Transfer();
 		//生成TransId
-		String transferId2 = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		transfer2.setTransferId(transferId2);
 		transfer2.setUserFrom(systemUser.getUserId());
 		transfer2.setUserTo(transfer.getUserFrom());
@@ -436,9 +436,9 @@ public class TransferManagerImpl implements TransferManager{
 		transferDAO.addTransfer(transfer2);
 		///////////////////////////end////////////////////////////
 		//添加Seq记录
-		walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), transfer.getUserFrom(), 
-				ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND,transferId2 , 
-				transfer.getCurrency(), transfer.getTransferAmount());
+//		walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), transfer.getUserFrom(), 
+//				ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND,transferId2 , 
+//				transfer.getCurrency(), transfer.getTransferAmount());
 		//修改gift记录
 		unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_BACK);
 		unregistered.setRefundTransId(transferId2);

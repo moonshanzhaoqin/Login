@@ -21,6 +21,7 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.pojo.WalletSeq;
 
 @Repository
 public class WalletDAOImpl implements WalletDAO {
@@ -59,10 +60,9 @@ public class WalletDAOImpl implements WalletDAO {
 		return wallet;
 	}
 
-	@Override
-	public Integer updateWalletByUserIdAndCurrency(final int userId, final String currency, final BigDecimal amount,
-			final String capitalFlows) {
-
+	
+	private Integer updateWalletByUserIdAndCurrency(final int userId, final String currency, final BigDecimal amount,
+			final String capitalFlows, final int walletSeqId) {
 		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
 			@Override
 			public Integer doInHibernate(Session session) throws HibernateException {
@@ -70,29 +70,29 @@ public class WalletDAOImpl implements WalletDAO {
 				if (capitalFlows.equals("+")) {
 //					query = session.createSQLQuery("update e_wallet set update_time = ? ,balance = balance+" + amount.abs()
 //					+ " where user_id = ? and currency = ?");
-					query = session.createQuery("update Wallet set updateTime = ? ,balance = balance+" + amount.abs()
-							+ " where userId = ? and currency.currency = ?");
+					query = session.createQuery("update Wallet set updateTime = ? ,balance = balance+" + amount
+							+ " where userId = ? and currency.currency = ?  and updateSeqId = ?");
 				} else {
 					if (userId != systemUserId) {
 //						query = session.createSQLQuery("update e_wallet set update_time = ? ,balance = balance-"
 //								+ amount.abs() + " where user_id = ? and currency = ? and balance-"
 //								+ amount.abs() + ">=0");
 						query = session.createQuery("update Wallet set updateTime = ? ,balance = balance-"
-								+ amount.abs() + " where userId = ? and currency.currency = ? and balance-"
-								+ amount.abs() + ">=0");
+								+ amount + " where userId = ? and currency.currency = ? and balance-"
+								+ amount + ">=0 and updateSeqId = ?");
 						
 					} else {
 //						query = session.createSQLQuery("update e_wallet set update_time = ? ,balance = balance-"
 //								+ amount.abs() + " where user_id = ? and currency = ?");
 						query = session.createQuery("update Wallet set updateTime = ? ,balance = balance-"
-								+ amount.abs() + " where userId = ? and currency.currency = ?");
+								+ amount + " where userId = ? and currency.currency = ? and updateSeqId = ?");
 					}
 
 				}
 				query.setTimestamp(0, new Date());
 				query.setInteger(1, userId);
 				query.setString(2, currency);
-
+				query.setInteger(3, walletSeqId);
 				return query.executeUpdate();
 			}
 		});
@@ -124,9 +124,23 @@ public class WalletDAOImpl implements WalletDAO {
 				map.put(new String((String) obj[0]), new BigDecimal(obj[1] + ""));
 			}
 		}
-		// logger.info("Map content : {}",map.toString());
-
 		return map;
 
+	}
+
+	@Override
+	public Integer updateWalletByUserIdAndCurrency(int userId, String currency, BigDecimal amount, String capitalFlows,
+			int transferType, String transactionId) {
+		amount = amount.abs();
+		if (capitalFlows.equals("-")) {
+			amount = amount.negate();
+		}
+		WalletSeq walletSeq = new WalletSeq(userId,transferType,currency,amount,transactionId, new Date());
+		hibernateTemplate.save(walletSeq);
+		int update = updateWalletByUserIdAndCurrency(userId, currency, amount, capitalFlows, walletSeq.getSeqId());
+		if (update == 0) {
+			hibernateTemplate.delete(walletSeq);
+		}
+		return update;
 	}
 }

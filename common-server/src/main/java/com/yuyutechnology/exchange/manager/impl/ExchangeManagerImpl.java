@@ -175,26 +175,26 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			// 用户账户
 			// 扣款
-			int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut, new BigDecimal(result.get("out")), "-");
+			String exchangeId = exchangeDAO.createExchangeId(ServerConsts.TRANSFER_TYPE_EXCHANGE);
+			
+			int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut, new BigDecimal(result.get("out")), "-", ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
 			if(updateCount == 0){//余额不足
 				result.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
 				result.put("msg", "Insufficient balance");
 				return result;
 			}
 			// 加款
-			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, new BigDecimal(result.get("in")), "+");
+			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, new BigDecimal(result.get("in")), "+", ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
 
 			// 系统账户
 			int systemUserId = userDAO.getSystemUser().getUserId();
 			// 加款
-			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyOut, new BigDecimal(result.get("out")),
-					"+");
+			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyOut, new BigDecimal(result.get("out")), "+", ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
 			// 扣款
-			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new BigDecimal(result.get("in")), "-");
+			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new BigDecimal(result.get("in")), "-", ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
 			
 
 
-			String exchangeId = exchangeDAO.createExchangeId(ServerConsts.TRANSFER_TYPE_EXCHANGE);
 			// 添加Exchange记录
 			Exchange exchange = new Exchange();
 			exchange.setExchangeId(exchangeId);
@@ -212,10 +212,10 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			exchangeDAO.addExchange(exchange);
 
 			// 添加seq记录
-			walletSeqDAO.addWalletSeq4Exchange(userId, ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId, currencyOut,
-					new BigDecimal(result.get("out")), currencyIn, new BigDecimal(result.get("in")));
-			walletSeqDAO.addWalletSeq4Exchange(systemUserId, ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId,
-					currencyIn, new BigDecimal(result.get("in")), currencyOut, new BigDecimal(result.get("out")));
+//			walletSeqDAO.addWalletSeq4Exchange(userId, ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId, currencyOut,
+//					new BigDecimal(result.get("out")), currencyIn, new BigDecimal(result.get("in")));
+//			walletSeqDAO.addWalletSeq4Exchange(systemUserId, ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId,
+//					currencyIn, new BigDecimal(result.get("in")), currencyOut, new BigDecimal(result.get("out")));
 			
 			//添加累计金额
 			BigDecimal exchangeResult = oandaRatesManager.getDefaultCurrencyAmount(exchange.getCurrencyOut(),exchange.getAmountOut());
