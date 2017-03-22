@@ -47,7 +47,6 @@ public class DecryptEncryptHttpMessageConverter extends MappingJackson2HttpMessa
     	return read(clazz, inputMessage);
     }
 
-
 	@Override
 	protected void writeInternal(Object object, HttpOutputMessage outputMessage)
 			throws IOException, HttpMessageNotWritableException {
@@ -77,5 +76,10 @@ public class DecryptEncryptHttpMessageConverter extends MappingJackson2HttpMessa
 			throw new HttpMessageNotWritableException("Could not write content: " + ex.getMessage(), ex);
 		}
 	}
-
+	
+	@Override
+	protected void writeInternal(Object object, Type type, HttpOutputMessage outputMessage)
+			throws IOException, HttpMessageNotWritableException {
+		writeInternal(object, outputMessage);
+	}
 }
