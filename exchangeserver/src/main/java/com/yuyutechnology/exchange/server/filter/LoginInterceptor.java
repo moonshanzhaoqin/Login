@@ -8,19 +8,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
+import com.yuyutechnology.exchange.server.controller.response.EncryptResponse;
 import com.yuyutechnology.exchange.server.session.SessionData;
 import com.yuyutechnology.exchange.server.session.SessionDataHolder;
 import com.yuyutechnology.exchange.server.session.SessionManager;
 import com.yuyutechnology.exchange.startup.ServerContext;
+import com.yuyutechnology.exchange.utils.AESCipher;
 import com.yuyutechnology.exchange.utils.JsonBinder;
+import com.yuyutechnology.exchange.utils.ResourceUtils;
 
 /**
  * 登录拦截器
@@ -130,7 +133,15 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			BaseResponse re = new BaseResponse();
 			re.setRetCode(RetCodeConsts.SESSION_TIMEOUT);
 			re.setMessage(MessageConsts.SESSION_TIMEOUT);
-			response.getOutputStream().print(JsonBinder.getInstance().toJson(re));
+			String json = JsonBinder.getInstance().toJson(re);
+	        String key = ResourceUtils.getBundleValue4String("aes.key");
+	        if (StringUtils.isNotBlank(key)) {
+	        	json = AESCipher.encryptAES(json,key);
+	        	EncryptResponse encryptResponse = new EncryptResponse();
+	        	encryptResponse.setContent(json);
+	        	json = JsonBinder.getInstance().toJson(encryptResponse);
+	        }
+			response.getOutputStream().print(json);
 			response.getOutputStream().close();
 			return false;
 		}
