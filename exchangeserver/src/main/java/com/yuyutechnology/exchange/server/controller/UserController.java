@@ -10,23 +10,29 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
+import com.yuyutechnology.exchange.mail.MailManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
+import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
 import com.yuyutechnology.exchange.server.controller.request.ForgetPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetVerificationCodeRequest;
 import com.yuyutechnology.exchange.server.controller.request.LoginRequest;
 import com.yuyutechnology.exchange.server.controller.request.LoginValidateRequest;
 import com.yuyutechnology.exchange.server.controller.request.RegisterRequest;
 import com.yuyutechnology.exchange.server.controller.request.TestCodeRequest;
+import com.yuyutechnology.exchange.server.controller.response.ContactUsResponse;
 import com.yuyutechnology.exchange.server.controller.response.ForgetPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetVerificationCodeResponse;
 import com.yuyutechnology.exchange.server.controller.response.LoginResponse;
@@ -57,6 +63,8 @@ public class UserController {
 	UserManager userManager;
 	@Autowired
 	CommonManager commonManager;
+	@Autowired
+	MailManager mailManager;
 
 	/**
 	 * forget password 忘记密码
@@ -453,6 +461,32 @@ public class UserController {
 					break;
 				}
 			}
+		}
+		return rep;
+	}
+	/**
+	 * contactUs 联系我们
+	 * 
+	 * @param token
+	 * @param contactUsRequest
+	 * @return
+	 */
+	@ResponseBody
+	@ApiOperation(value = "联系我们", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/contactUs", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public ContactUsResponse contactUs(@RequestBody ContactUsRequest contactUsRequest) {
+		logger.info("========contactUs : {}============");
+		ContactUsResponse rep = new ContactUsResponse();
+		if (contactUsRequest.isEmpty()) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+		} else {
+			mailManager.mail4contact(contactUsRequest.getName(), contactUsRequest.getEmail(),
+					contactUsRequest.getCategory(), contactUsRequest.getEnquiry());
+			logger.info("********Operation succeeded********");
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		}
 		return rep;
 	}
