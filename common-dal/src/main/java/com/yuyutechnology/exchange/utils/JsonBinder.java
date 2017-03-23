@@ -17,7 +17,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -39,7 +38,6 @@ public class JsonBinder
 	private static Object lock = new Object();
 	private static JsonBinder jsonBinder;
 	private static JsonBinder jsonBinderNonNull;
-	private static JsonBinder jsonBinderNonEmpty;
 	private ObjectMapper mapper;
 	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
@@ -55,7 +53,7 @@ public class JsonBinder
 			{
 				if (jsonBinder == null)
 				{
-					jsonBinder = new JsonBinder(Include.NON_DEFAULT);
+					jsonBinder = new JsonBinder(Include.NON_EMPTY);
 				}
 			}
 		}
@@ -79,21 +77,6 @@ public class JsonBinder
 			}
 		}
 		return jsonBinderNonNull;
-	}
-	
-	public static JsonBinder getInstanceNonEmpty()
-	{
-		if (jsonBinderNonEmpty == null)
-		{
-			synchronized (lock)
-			{
-				if (jsonBinderNonEmpty == null)
-				{
-					jsonBinderNonEmpty = new JsonBinder(Include.NON_EMPTY);
-				}
-			}
-		}
-		return jsonBinderNonEmpty;
 	}
 	
 	protected JsonBinder(Include inclusion)
