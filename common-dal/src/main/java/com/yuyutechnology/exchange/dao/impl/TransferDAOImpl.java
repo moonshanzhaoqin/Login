@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.dao.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.pojo.Transfer;
+import com.yuyutechnology.exchange.utils.page.PageBean;
 import com.yuyutechnology.exchange.utils.page.PageUtils;
 
 @Repository
@@ -200,7 +202,7 @@ public class TransferDAOImpl implements TransferDAO {
 				Query query = session.createSQLQuery("SELECT COUNT(*) FROM `e_transfer` "
 						+ "where transfer_type = ? "
 						+ "and transfer_status = 2 "
-						+ "and TO_DAYS(`finish_time`) = TO_DAYS(NOW());");
+						+ "and k(`finish_time`) = TO_DAYS(NOW());");
 				query.setInteger(0, transferType);
 				
 
@@ -215,6 +217,16 @@ public class TransferDAOImpl implements TransferDAO {
 		});
 
 		return sum;
+	}
+
+	@Override
+	public PageBean getWithdrawRecordByPage(Integer userId, int currentPage, int pageSize) {
+		List<Object> values = new ArrayList<Object>();
+		StringBuilder hql = new StringBuilder("from Transfer where userFrom = ? and transferType = ?");
+		values.add(userId);
+		values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
+		PageBean pageBean = PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
+		return pageBean;
 	}
 
 }

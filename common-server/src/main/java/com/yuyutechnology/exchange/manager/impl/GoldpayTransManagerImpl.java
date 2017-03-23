@@ -765,5 +765,11 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		return withdrawDAO.getNeedReviewWithdraws();
 	}
 
+	@Override
+	public PageBean getWithdrawRecordByPage(Integer userId, int currentPage, int pageSize) {
+		// TODO Auto-generated method stub
+		return transferDAO.getWithdrawRecordByPage( userId,  currentPage,  pageSize) ;
+	}
+
 
 }
