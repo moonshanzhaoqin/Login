@@ -77,8 +77,7 @@ public class LoggedInUserController {
 	ExchangeManager exchangeManager;
 	@Autowired
 	SessionManager sessionManager;
-	@Autowired
-	MailManager mailManager;
+	
 	@Autowired
 	CommonManager commonManager;
 
@@ -661,32 +660,7 @@ public class LoggedInUserController {
 		return rep;
 	}
 
-	/**
-	 * contactUs 联系我们
-	 * 
-	 * @param token
-	 * @param contactUsRequest
-	 * @return
-	 */
-	@ResponseEncryptBody
-	@ApiOperation(value = "联系我们", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/user/contactUs", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public ContactUsResponse contactUs(@PathVariable String token, @RequestDecryptBody ContactUsRequest contactUsRequest) {
-		logger.info("========contactUs : {}============", token);
-		ContactUsResponse rep = new ContactUsResponse();
-		if (contactUsRequest.isEmpty()) {
-			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
-		} else {
-			mailManager.mail4contact(contactUsRequest.getName(), contactUsRequest.getEmail(),
-					contactUsRequest.getCategory(), contactUsRequest.getEnquiry());
-			logger.info("********Operation succeeded********");
-			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-		}
-		return rep;
-	}
+	
 
 	@ApiOperation(value = "获取消息红点标志位")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/user/getMsgFlag")
