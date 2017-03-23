@@ -222,7 +222,7 @@ public class TransferDAOImpl implements TransferDAO {
 	@Override
 	public PageBean getWithdrawRecordByPage(Integer userId, int currentPage, int pageSize) {
 		List<Object> values = new ArrayList<Object>();
-		StringBuilder hql = new StringBuilder("from Transfer where userFrom = ? and transferType = ?");
+		StringBuilder hql = new StringBuilder("from Transfer where userFrom = ? and transferType = ? order by createTime desc");
 		values.add(userId);
 		values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
 		PageBean pageBean = PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
