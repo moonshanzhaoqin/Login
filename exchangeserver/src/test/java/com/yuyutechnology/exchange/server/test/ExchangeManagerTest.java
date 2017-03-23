@@ -53,7 +53,27 @@ public class ExchangeManagerTest extends BaseSpringJunit4 {
 	
 	@Test
 	public void testExchange() {
-		exchangeManager.exchangeConfirm(23, "GDQ", "USD", new BigDecimal(10000));
+		exchangeManager.exchangeConfirm(15, "GDQ", "USD", new BigDecimal(1000));
+		exchangeManager.exchangeConfirm(99, "GDQ", "USD", new BigDecimal(1000));
+		exchangeManager.exchangeConfirm(106, "GDQ", "USD", new BigDecimal(1000));
+		exchangeManager.exchangeConfirm(113, "GDQ", "USD", new BigDecimal(1000));
+		exchangeManager.exchangeConfirm(182, "GDQ", "USD", new BigDecimal(1000));
+		exchangeManager.exchangeConfirm(310, "GDQ", "USD", new BigDecimal(1000));
+		exchangeManager.exchangeConfirm(324, "GDQ", "USD", new BigDecimal(1000));
+		exchangeManager.exchangeConfirm(394, "GDQ", "USD", new BigDecimal(1000));
+		exchangeManager.exchangeConfirm(408, "GDQ", "USD", new BigDecimal(1000));
+		exchangeManager.exchangeConfirm(415, "GDQ", "USD", new BigDecimal(1000));
+		
+		exchangeManager.exchangeConfirm(15, "USD", "GDQ", new BigDecimal(4));
+		exchangeManager.exchangeConfirm(99, "USD", "GDQ", new BigDecimal(4));
+		exchangeManager.exchangeConfirm(106, "USD", "GDQ", new BigDecimal(4));
+		exchangeManager.exchangeConfirm(113, "USD", "GDQ", new BigDecimal(4));
+		exchangeManager.exchangeConfirm(182, "USD", "GDQ", new BigDecimal(4));
+		exchangeManager.exchangeConfirm(310, "USD", "GDQ", new BigDecimal(4));
+		exchangeManager.exchangeConfirm(324, "USD", "GDQ", new BigDecimal(4));
+		exchangeManager.exchangeConfirm(394, "USD", "GDQ", new BigDecimal(4));
+		exchangeManager.exchangeConfirm(408, "USD", "GDQ", new BigDecimal(4));
+		exchangeManager.exchangeConfirm(415, "USD", "GDQ", new BigDecimal(4));
 	}
 
 	public static void main(String[] args) {
