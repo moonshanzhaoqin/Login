@@ -3,6 +3,7 @@
  */
 package com.yuyutechnology.exchange.task.accountsys;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -56,19 +57,16 @@ public class AccountDAO {
 
 	public Integer accountingWalletSeq(final int seqIdStart, final int seqIdEnd, final Date stareDate,
 			final Date endDate) {
-		if (seqIdStart >= seqIdEnd) {
-			return 0;
-		}
 		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
 			@Override
 			public Integer doInHibernate(Session session) throws HibernateException {
 				StringBuilder sql = new StringBuilder();
-				sql.append("insert into e_bad_account (user_id,currency,sum_amount,balance_history,balance_now,start_time,end_time) ")
-						.append("select user_id,currency,sum_amount,balance_history,balance_now,?,? ")
-						.append("from (select ws.user_id as user_id,ws.currency as currency,SUM(ws.amount) as sum_amount,w.balance as balance_history,w2.balance as balance_now ")
+				sql.append("insert into e_bad_account (user_id,currency,sum_amount,balance_before,balance_now,start_time,end_time) ")
+						.append("select user_id,currency,sum_amount,balance_before,balance_now,?,? ")
+						.append("from (select ws.user_id as user_id,ws.currency as currency,SUM(ws.amount) as sum_amount,w.balance as balance_before,w2.balance as balance_now ")
 						.append("from e_wallet_seq ws left join e_wallet_before w on ws.user_id = w.user_id and ws.currency = w.currency left join e_wallet_now w2 on ws.user_id = w2.user_id and ws.currency = w2.currency ")
 						.append("where ws.seq_id > ? and ws.seq_id <= ? group by ws.user_id, ws.currency")
-						.append(") tmp where sum_amount + balance_history != balance_now");
+						.append(") tmp where sum_amount + balance_before != balance_now");
 				Query query = session.createSQLQuery(sql.toString());
 				query.setString(0, DateFormatUtils.formatDate(stareDate));
 				query.setString(1, DateFormatUtils.formatDate(endDate));
@@ -121,12 +119,12 @@ public class AccountDAO {
 		});
 	}
 	
-	public Object calculatorWalletSeqByUserIdAndCurrency(final int seqIdEnd, final int userId, final String currency) {
-		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<Object>() {
+	public Object[] calculatorWalletSeqByUserIdAndCurrency(final int seqIdEnd, final int userId, final String currency) {
+		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<Object[]>() {
 			@Override
-			public Object doInHibernate(Session session) throws HibernateException {
+			public Object[] doInHibernate(Session session) throws HibernateException {
 				StringBuilder sql = new StringBuilder();
-				sql.append("select SUM(ws.amount) + w.balance as balance_history, w.update_time as update_time from e_wallet_seq ws ")
+				sql.append("select SUM(ws.amount) as sum_amount, w.balance as balance_before, w.update_time as update_time from e_wallet_seq ws ")
 						.append("left join e_wallet_before w on ws.user_id = w.user_id and ws.currency = w.currency ")
 						.append("where ws.user_id = ? and ws.currency = ? and ws.seq_id > w.update_seq_id and ws.seq_id <= ?");
 				Query query = session.createSQLQuery(sql.toString());
@@ -137,8 +135,27 @@ public class AccountDAO {
 				if (r == null || r.isEmpty()) {
 					return null;
 				}else{
-					return r.get(0);
+					return (Object[]) r.get(0);
 				}
+			}
+		});
+	}
+	
+	public Integer saveBadAccount(final int userId, final String currency, final BigDecimal sumAmount, final BigDecimal balanceBefore, final BigDecimal balanceNow, final Date stareDate,
+			final Date endDate) {
+		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
+			@Override
+			public Integer doInHibernate(Session session) throws HibernateException {
+				StringBuilder sql = new StringBuilder("insert into e_bad_account (user_id,currency,sum_amount,balance_before,balance_now,start_time,end_time) values (?,?,?,?,?,?,?) ");
+				Query query = session.createSQLQuery(sql.toString());
+				query.setInteger(0, userId);
+				query.setString(1, currency);
+				query.setBigDecimal(2, sumAmount);
+				query.setBigDecimal(3, balanceBefore);
+				query.setBigDecimal(4, balanceNow);
+				query.setString(5, DateFormatUtils.formatDate(endDate));
+				query.setString(6, DateFormatUtils.formatDate(endDate));
+				return query.executeUpdate();
 			}
 		});
 	}

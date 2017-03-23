@@ -70,29 +70,29 @@ public class WalletDAOImpl implements WalletDAO {
 				if (capitalFlows.equals("+")) {
 //					query = session.createSQLQuery("update e_wallet set update_time = ? ,balance = balance+" + amount.abs()
 //					+ " where user_id = ? and currency = ?");
-					query = session.createQuery("update Wallet set updateTime = ? ,updateSeqId = ? , balance = balance+" + amount
-							+ " where userId = ? and currency.currency = ?");
+					query = session.createQuery("update Wallet set updateTime = :updateTime ,updateSeqId = :updateSeqId , balance = balance+" + amount
+							+ " where userId = :userId and currency.currency = :currency");
 				} else {
 					if (userId != systemUserId) {
 //						query = session.createSQLQuery("update e_wallet set update_time = ? ,balance = balance-"
 //								+ amount.abs() + " where user_id = ? and currency = ? and balance-"
 //								+ amount.abs() + ">=0");
-						query = session.createQuery("update Wallet set updateTime = ? , updateSeqId = ? , balance = balance-"
-								+ amount + " where userId = ? and currency.currency = ? and balance-"
+						query = session.createQuery("update Wallet set updateTime = :updateTime , updateSeqId = :updateSeqId , balance = balance-"
+								+ amount + " where userId = :userId and currency.currency = :currency and balance-"
 								+ amount + ">=0");
 						
 					} else {
 //						query = session.createSQLQuery("update e_wallet set update_time = ? ,balance = balance-"
 //								+ amount.abs() + " where user_id = ? and currency = ?");
-						query = session.createQuery("update Wallet set updateTime = ? , updateSeqId = ? , balance = balance-"
-								+ amount + " where userId = ? and currency.currency = ?");
+						query = session.createQuery("update Wallet set updateTime = :updateTime , updateSeqId = :updateSeqId , balance = balance-"
+								+ amount + " where userId = :userId and currency.currency = :currency");
 					}
 
 				}
-				query.setTimestamp(0, new Date());
-				query.setInteger(1, walletSeqId);
-				query.setInteger(2, userId);
-				query.setString(3, currency);
+				query.setTimestamp("updateTime", new Date());
+				query.setInteger("updateSeqId", walletSeqId);
+				query.setInteger("userId", userId);
+				query.setString("currency", currency);
 				return query.executeUpdate();
 			}
 		});

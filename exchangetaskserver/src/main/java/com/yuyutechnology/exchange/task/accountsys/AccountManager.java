@@ -3,6 +3,7 @@
  */
 package com.yuyutechnology.exchange.task.accountsys;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
@@ -37,7 +38,17 @@ public class AccountManager {
 	
 	public void accountingUser(int userId, String currency) {
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
-		Object object = accountDAO.calculatorWalletSeqByUserIdAndCurrency(wallet.getUpdateSeqId(), userId, currency);
+		Object[] accountInfo = accountDAO.calculatorWalletSeqByUserIdAndCurrency(wallet.getUpdateSeqId(), userId, currency);
+		if (accountInfo != null && accountInfo[0] != null && accountInfo[1] != null) {
+			BigDecimal sumAmount = (BigDecimal) accountInfo[0];
+			BigDecimal balance = (BigDecimal) accountInfo[1];
+			Date startTime = (Date) accountInfo[2];
+			logger.info("accountingUser , userId : {}, currency : {}, sumAmount : {}, balanceBefore : {}, balanceNow : {}, startTime : {}", userId, currency, sumAmount, balance, wallet.getBalance(), startTime);
+			if (sumAmount.add(balance).compareTo(wallet.getBalance()) != 0) {
+				accountDAO.saveBadAccount(userId, currency, sumAmount, balance, wallet.getBalance(), startTime, new Date());
+				//TODO: 账号冻结, 停止提现定时任务
+			}
+		}
 	}
 	
 	public void accounting(Date startDate, Date endDate) {
@@ -47,7 +58,11 @@ public class AccountManager {
 			int startId = accountDAO.getMAXSeqId4WalletBefore();
 			int endId = accountDAO.getMAXSeqId4WalletNow();
 			logger.info("accounting wallet_seq from {} to {}", startId, endId);
-			updateRows = accountDAO.accountingWalletSeq(startId, endId, startDate, endDate);
+			if (startId < endId) {
+				updateRows = accountDAO.accountingWalletSeq(startId, endId, startDate, endDate);
+			}else{
+				updateRows = 0;
+			}
 			logger.info("accounting finsh , bad account user size {}", updateRows);
 			snapshotToBefore();
 		}
