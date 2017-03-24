@@ -66,6 +66,8 @@ public interface GoldpayTransManager {
 	public List<Withdraw> getNeedReviewWithdraws();
 
 	public PageBean getWithdrawRecordByPage(Integer userId, int currentPage, int pageSize);
-
-
+	
+	public void forbiddenGoldpayRemitWithdraws();
+	
+	public boolean getGoldpayRemitWithdrawsforbidden();
 }

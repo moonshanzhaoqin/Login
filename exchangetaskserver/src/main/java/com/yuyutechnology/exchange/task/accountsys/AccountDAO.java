@@ -140,26 +140,7 @@ public class AccountDAO {
 			}
 		});
 	}
-	
-	public Integer saveBadAccount(final int userId, final String currency, final BigDecimal sumAmount, final BigDecimal balanceBefore, final BigDecimal balanceNow, final Date stareDate,
-			final Date endDate) {
-		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
-			@Override
-			public Integer doInHibernate(Session session) throws HibernateException {
-				StringBuilder sql = new StringBuilder("insert into e_bad_account (user_id,currency,sum_amount,balance_before,balance_now,start_time,end_time) values (?,?,?,?,?,?,?) ");
-				Query query = session.createSQLQuery(sql.toString());
-				query.setInteger(0, userId);
-				query.setString(1, currency);
-				query.setBigDecimal(2, sumAmount);
-				query.setBigDecimal(3, balanceBefore);
-				query.setBigDecimal(4, balanceNow);
-				query.setString(5, DateFormatUtils.formatDate(endDate));
-				query.setString(6, DateFormatUtils.formatDate(endDate));
-				return query.executeUpdate();
-			}
-		});
-	}
-	
+
 	public Date getLastAccountingTime() {
 		String timeString = redisDAO.getValueByKey(ACCOUNTINGTIMEKEY);
 		if (StringUtils.isBlank(timeString)) {

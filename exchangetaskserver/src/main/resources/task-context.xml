@@ -32,8 +32,10 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 
 	<task:scheduler id="taskServerScheduler" pool-size="10" />
 	
-<!-- 
 	<task:scheduled-tasks scheduler="taskServerScheduler">
+	
+		<task:scheduled ref="autoAccountingTask" method="autoAccounting"
+			fixed-delay="60000" initial-delay="60000" />
 
 		<task:scheduled ref="autoUpdateExchangeRateTask"
 			method="autoUpdateExchangeRateTask" fixed-delay="5000" initial-delay="1000" />
@@ -56,8 +58,5 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 
 		<task:scheduled ref="beanC" method="methodC" cron="*/5 * * * * MON-FRI"/>
 	</task:scheduled-tasks>
- -->
-
-
 
 </beans>

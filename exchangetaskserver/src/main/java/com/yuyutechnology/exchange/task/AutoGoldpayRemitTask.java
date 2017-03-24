@@ -21,14 +21,10 @@ public class AutoGoldpayRemitTask {
 
 	public void autoGoldpayRemitTask() {
 		logger.info("=============autoGoldpayRemitTask Start=================={}", new Date());
-		
 		List<Withdraw> withdraws = goldpayTransManager.getNeedGoldpayRemitWithdraws();
-
 		for (Withdraw withdraw : withdraws) {
 			goldpayTransManager.goldpayRemit(withdraw.getWithdrawId());
 		}
-		
-		
 		logger.info("=============autoGoldpayRemitTask End=================={}", new Date());
 	}
 

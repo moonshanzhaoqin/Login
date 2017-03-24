@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
+import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
@@ -63,6 +65,10 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	ConfigManager configManager;
 	@Autowired
 	UserManager userManager;
+	@Autowired
+	RedisDAO redisDAO;
+	
+	private final String GOLDPAY_WITHDRAW_FORBIDDEN = "goldpayWithdrawForbidden";
 
 	public static Logger logger = LogManager.getLogger(GoldpayTransManagerImpl.class);
 
@@ -757,7 +763,10 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 	@Override
 	public List<Withdraw> getNeedGoldpayRemitWithdraws() {
-		return withdrawDAO.getNeedGoldpayRemitWithdraws();
+		if (!getGoldpayRemitWithdrawsforbidden()){
+			return withdrawDAO.getNeedGoldpayRemitWithdraws();
+		}
+		return new ArrayList<Withdraw>();
 	}
 
 	@Override
@@ -767,9 +776,17 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 	@Override
 	public PageBean getWithdrawRecordByPage(Integer userId, int currentPage, int pageSize) {
-		// TODO Auto-generated method stub
 		return transferDAO.getWithdrawRecordByPage( userId,  currentPage,  pageSize) ;
 	}
 
-
+	@Override
+	public void forbiddenGoldpayRemitWithdraws() {
+		redisDAO.saveData(GOLDPAY_WITHDRAW_FORBIDDEN, "true");
+	}
+	
+	@Override
+	public boolean getGoldpayRemitWithdrawsforbidden() {
+		String goldpSwitch = redisDAO.getValueByKey(GOLDPAY_WITHDRAW_FORBIDDEN);
+		return Boolean.parseBoolean(goldpSwitch);
+	}
 }
