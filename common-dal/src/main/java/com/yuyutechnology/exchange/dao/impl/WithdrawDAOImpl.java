@@ -57,32 +57,16 @@ public class WithdrawDAOImpl implements WithdrawDAO {
 				goldpayRemit, currentPage, pageSize);
 		List<Object> values = new ArrayList<Object>();
 		StringBuilder hql = new StringBuilder("from Withdraw");
-		// logger.info("hql.length()={}",hql.length());
 		if (StringUtils.isNotBlank(userPhone)) {
-			if (hql.length() > 13) {
-				hql.append(" and ");
-			} else {
-				hql.append(" where ");
-			}
-			hql.append("userPhone = ? ");
+			hql.append((hql.length() > 13) ? " and userPhone = ?" : " where userPhone = ?");
 			values.add(userPhone);
 		}
 		if (StringUtils.isNotBlank(reviewStatus)) {
-			if (hql.length() > 13) {
-				hql.append(" and ");
-			} else {
-				hql.append(" where ");
-			}
-			hql.append("reviewStatus = ? ");
+			hql.append((hql.length() > 13) ? " and reviewStatus = ?" : " where reviewStatus = ?");
 			values.add(Integer.parseInt(reviewStatus));
 		}
 		if (StringUtils.isNotBlank(goldpayRemit)) {
-			if (hql.length() > 13) {
-				hql.append(" and ");
-			} else {
-				hql.append(" where ");
-			}
-			hql.append("goldpayRemit = ? ");
+			hql.append((hql.length() > 13) ? " and goldpayRemit = ?" : " where goldpayRemit = ?");
 			values.add(Integer.parseInt(goldpayRemit));
 		}
 		logger.info("hql:{}", hql);

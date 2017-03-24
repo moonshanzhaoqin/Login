@@ -740,7 +740,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	@Override
 	public void goldpayRemit(Integer withdrawId) {
 		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
-		//  限制
+		// TODO 限制  账号冻结
 		HashMap<String, String> map = withdrawConfirm2(withdraw.getUserId(), withdraw.getTransferId());
 		withdraw.setGoldpayRemit(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)
 				? ServerConsts.GOLDPAY_REMIT_SUCCESS : ServerConsts.GOLDPAY_REMIT_FAIL);
