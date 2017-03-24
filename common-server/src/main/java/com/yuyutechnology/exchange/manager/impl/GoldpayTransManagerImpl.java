@@ -121,7 +121,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 					logger.warn("goldpayPurchase tpps callback: ORDERID REPEAT");
 				} else if (payModel.getResultCode().equals(-102)) {
 					logger.warn("goldpayPurchase tpps callback: ORDERID_COMPLETE");
-				} else if (payModel.getResultCode().equals(200001)) {
+				} else if (payModel.getResultCode().equals(200001) || payModel.getResultCode().equals(200008)) {
 					logger.warn("goldpayPurchase tpps callback: NOT_ENOUGH_GOLDPAY");
 					map.put("msg", "not enough goldpay!");
 					map.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH);
@@ -668,7 +668,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 					// logger.warn("goldpayPurchase tpps callback:
 					// ORDERID_COMPLETE");
 					// }
-					else if (payModel.getResultCode().equals(200001)) {
+					else if (payModel.getResultCode().equals(200001) || payModel.getResultCode().equals(200008)) {
 						logger.warn("goldpayPurchase tpps callback: NOT_ENOUGH_GOLDPAY");
 						map.put("msg", "not enough goldpay!");
 						map.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH);
@@ -740,7 +740,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	@Override
 	public void goldpayRemit(Integer withdrawId) {
 		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
-		//  限制
+		// TODO 限制  账号冻结
 		HashMap<String, String> map = withdrawConfirm2(withdraw.getUserId(), withdraw.getTransferId());
 		withdraw.setGoldpayRemit(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)
 				? ServerConsts.GOLDPAY_REMIT_SUCCESS : ServerConsts.GOLDPAY_REMIT_FAIL);

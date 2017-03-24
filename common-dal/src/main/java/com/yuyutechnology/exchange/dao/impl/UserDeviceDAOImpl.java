@@ -18,16 +18,12 @@ public class UserDeviceDAOImpl implements UserDeviceDAO {
 	@Override
 	public UserDevice getUserDeviceByUserIdAndDeviceId(Integer userId, String deviceId) {
 		List<?> list = hibernateTemplate.find("from UserDevice where id.userId = ? and id.deviceId = ?", userId, deviceId);
-		if (!list.isEmpty()) {
-			return (UserDevice) list.get(0);
-		}
-		return null;
+		return list.isEmpty() ? null : (UserDevice) list.get(0);
 	}
 
 	@Override
 	public void addUserDevice(UserDevice userDevice) {
 		hibernateTemplate.saveOrUpdate(userDevice);
-
 	}
 
 }
