@@ -22,10 +22,7 @@ public class AdminDAOImpl implements AdminDAO {
 	@Override
 	public Admin getAdminByName(String adminName) {
 		List<?> list = hibernateTemplate.find("from Admin where adminName = ?", adminName);
-		if (!list.isEmpty()) {
-			return (Admin) list.get(0);
-		}
-		return null;
+		return list.isEmpty() ? null : (Admin) list.get(0);
 	}
 
 	@Override
@@ -35,16 +32,13 @@ public class AdminDAOImpl implements AdminDAO {
 
 	@Override
 	public Admin getAdmin(Integer adminId) {
-		return	hibernateTemplate.get(Admin.class, adminId);
+		return hibernateTemplate.get(Admin.class, adminId);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Admin> getAdminList(){
+	public List<Admin> getAdminList() {
 		List<?> list = hibernateTemplate.find("from Admin");
-		if(list.isEmpty()){
-			return null;
-		}
-		return (List<Admin>) list;
+		return list.isEmpty() ? null : (List<Admin>) list;
 	}
 }
