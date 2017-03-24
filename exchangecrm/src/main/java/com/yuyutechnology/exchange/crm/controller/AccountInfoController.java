@@ -17,12 +17,12 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.crm.dto.TotalAsset;
 import com.yuyutechnology.exchange.crm.request.GetTotalAssetsInfoRequest;
 import com.yuyutechnology.exchange.crm.request.UserFreezeRequest;
-import com.yuyutechnology.exchange.crm.session.SessionData;
-import com.yuyutechnology.exchange.crm.session.SessionManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Currency;
+import com.yuyutechnology.exchange.session.SessionData;
+import com.yuyutechnology.exchange.session.SessionManager;
 import com.yuyutechnology.exchange.utils.page.PageBean;
 
 @Controller
@@ -128,7 +128,6 @@ public class AccountInfoController {
 		}
 
 		userManager.userFreeze(request.getUserId(), request.getOperate());
-		crmUserInfoManager.userFreeze(request.getUserId(), request.getOperate());
 		mav.setViewName("redirect:/account/accountOverview");
 		return mav;
 	}

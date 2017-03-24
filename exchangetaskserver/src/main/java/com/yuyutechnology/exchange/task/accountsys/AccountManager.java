@@ -11,8 +11,13 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.WalletDAO;
+import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
+import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.session.SessionData;
+import com.yuyutechnology.exchange.session.SessionManager;
 
 /**
  * @author silent.sun
@@ -28,6 +33,25 @@ public class AccountManager {
 	
 	@Autowired
 	WalletDAO walletDAO;
+	
+	@Autowired
+	SessionManager sessionManager;
+	
+	@Autowired
+	CrmUserInfoManager crmUserInfoManager;
+	
+	@Autowired
+	UserManager userManager;
+	
+	private void freezeUser (int userId) {
+		SessionData sessionData = sessionManager.getByUserid(userId);
+		if (sessionData != null) {
+			sessionManager.cleanSession(sessionData.getSessionId());
+		}
+		sessionManager.delLoginToken(userId);
+		userManager.logout(userId);
+		userManager.userFreeze(userId, ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE);
+	}
 	
 	public void accountingAll() {
 		Date startDate = accountDAO.getLastAccountingTime();
@@ -47,6 +71,7 @@ public class AccountManager {
 			if (sumAmount.add(balance).compareTo(wallet.getBalance()) != 0) {
 				accountDAO.saveBadAccount(userId, currency, sumAmount, balance, wallet.getBalance(), startTime, new Date());
 				//TODO: 账号冻结, 停止提现定时任务
+				freezeUser(userId);
 			}
 		}
 	}
@@ -68,11 +93,14 @@ public class AccountManager {
 		}
 	}
 	
+	public void freezeUsers () {
+		
+	}
+	
 	private void snapshotToBefore () {
 		int updateRows = accountDAO.snapshotWalletNowToHistory();
 		logger.info("accounting copy new to history, size : {}", updateRows);
 		accountDAO.cleanSnapshotWalletNow();
 		logger.info("accounting clean new ok ");
 	}
-
 }

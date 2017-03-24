@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
+import com.yuyutechnology.exchange.dao.CrmUserInfoDAO;
 import com.yuyutechnology.exchange.dao.FriendDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
@@ -77,6 +78,8 @@ public class UserManagerImpl implements UserManager {
 	@Autowired
 	UserDeviceDAO userDeviceDAO;
 	@Autowired
+	CrmUserInfoDAO crmUserInfoDAO;
+	@Autowired
 	SmsManager smsManager;
 	@Autowired
 	GoldpayManager goldpayManager;
@@ -86,7 +89,7 @@ public class UserManagerImpl implements UserManager {
 	CommonManager commonManager;
 	@Autowired
 	ConfigManager configManager;
-
+	
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
 		logger.info("Find friend==>");
@@ -651,6 +654,7 @@ public class UserManagerImpl implements UserManager {
 			user.setUserAvailable(userAvailable);
 			userDAO.updateUser(user);
 		}
+		crmUserInfoDAO.userFreeze(userId, userAvailable);
 	}
 
 	@Override
