@@ -299,11 +299,11 @@ public class LoggedInUserController {
 	 * @param checkPayPwdRequest
 	 * @return
 	 */
-	@ResponseBody
+	@ResponseEncryptBody
 	@ApiOperation(value = "校验支付密码", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/checkPayPwd", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public CheckPayPwdResponse checkPayPwd(@PathVariable String token,
-			@RequestBody CheckPayPwdRequest checkPayPwdRequest) {
+			@RequestDecryptBody CheckPayPwdRequest checkPayPwdRequest) {
 		logger.info("========checkPayPwd : {}============", token);
 		CheckPayPwdResponse rep = new CheckPayPwdResponse();
 		if (checkPayPwdRequest.isEmpty()) {

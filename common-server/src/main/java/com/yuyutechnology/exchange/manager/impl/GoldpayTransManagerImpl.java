@@ -94,7 +94,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		clientPayOrder.setType(0);
 		clientPayOrder.setClientId(configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTID, ""));
 
-		String sign = DigestUtils.md5Hex(JsonBinder.getInstanceNonEmpty().toJson(clientPayOrder)
+		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(clientPayOrder)
 				+ configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTKEY, ""));
 		clientPayOrder.setSign(sign.toUpperCase());
 
@@ -121,7 +121,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 					logger.warn("goldpayPurchase tpps callback: ORDERID REPEAT");
 				} else if (payModel.getResultCode().equals(-102)) {
 					logger.warn("goldpayPurchase tpps callback: ORDERID_COMPLETE");
-				} else if (payModel.getResultCode().equals(200001)) {
+				} else if (payModel.getResultCode().equals(200001) || payModel.getResultCode().equals(200008)) {
 					logger.warn("goldpayPurchase tpps callback: NOT_ENOUGH_GOLDPAY");
 					map.put("msg", "not enough goldpay!");
 					map.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH);
@@ -178,7 +178,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		clientPin.setClientId(configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTID, ""));
 		clientPin.setPayOrderId(transfer.getTransferComment());
 
-		String sign = DigestUtils.md5Hex(JsonBinder.getInstanceNonEmpty().toJson(clientPin)
+		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(clientPin)
 				+ configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTKEY, ""));
 
 		clientPin.setSign(sign.toUpperCase());
@@ -230,7 +230,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		clientComfirmPay.setPin(StringUtils.defaultString(pin));
 		clientComfirmPay.setPayOrderId(transfer.getTransferComment());
 
-		String sign = DigestUtils.md5Hex(JsonBinder.getInstanceNonEmpty().toJson(clientComfirmPay)
+		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(clientComfirmPay)
 				+ configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTKEY, ""));
 
 		clientComfirmPay.setSign(sign.toUpperCase());
@@ -314,7 +314,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		calculateCharge.setAmount(Double.valueOf(amount).longValue());
 		calculateCharge.setAccountNum(bind.getGoldpayAcount());
 		calculateCharge.setTo(true);
-		String sign = DigestUtils.md5Hex(JsonBinder.getInstanceNonEmpty().toJson(calculateCharge)
+		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(calculateCharge)
 				+ configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTKEY, ""));
 		calculateCharge.setSign(sign.toUpperCase());
 
@@ -626,7 +626,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		merchantPayOrder.setPayAmount(transfer.getTransferAmount().intValue());
 		merchantPayOrder.setType(0);
 
-		String sign = DigestUtils.md5Hex(JsonBinder.getInstanceNonEmpty().toJson(merchantPayOrder)
+		String sign = DigestUtils.md5Hex(JsonBinder.getInstance().toJson(merchantPayOrder)
 				+ configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTKEY, ""));
 
 		merchantPayOrder.setSign(sign.toUpperCase());
@@ -668,7 +668,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 					// logger.warn("goldpayPurchase tpps callback:
 					// ORDERID_COMPLETE");
 					// }
-					else if (payModel.getResultCode().equals(200001)) {
+					else if (payModel.getResultCode().equals(200001) || payModel.getResultCode().equals(200008)) {
 						logger.warn("goldpayPurchase tpps callback: NOT_ENOUGH_GOLDPAY");
 						map.put("msg", "not enough goldpay!");
 						map.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH);
@@ -770,6 +770,4 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		// TODO Auto-generated method stub
 		return transferDAO.getWithdrawRecordByPage( userId,  currentPage,  pageSize) ;
 	}
-
-
 }
