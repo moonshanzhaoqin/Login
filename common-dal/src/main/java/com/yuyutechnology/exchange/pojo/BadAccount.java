@@ -31,13 +31,15 @@ public class BadAccount implements java.io.Serializable {
 	private BigDecimal balanceNow;
 	private Date startTime;
 	private Date endTime;
+	private long startSeqId;
+	private long endSeqId;
 	private int badAccountStatus;
 
 	public BadAccount() {
 	}
 
 	public BadAccount(int userId, String currency, BigDecimal sumAmount, BigDecimal balanceBefore,
-			BigDecimal balanceNow, Date startTime, Date endTime, int badAccountStatus) {
+			BigDecimal balanceNow, Date startTime, Date endTime, long startSeqId, long endSeqId, int badAccountStatus) {
 		this.userId = userId;
 		this.currency = currency;
 		this.sumAmount = sumAmount;
@@ -45,6 +47,8 @@ public class BadAccount implements java.io.Serializable {
 		this.balanceNow = balanceNow;
 		this.startTime = startTime;
 		this.endTime = endTime;
+		this.startSeqId = startSeqId;
+		this.endSeqId = endSeqId;
 		this.badAccountStatus = badAccountStatus;
 	}
 
@@ -123,6 +127,24 @@ public class BadAccount implements java.io.Serializable {
 
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+	
+	@Column(name = "start_seq_id", nullable = false)
+	public long getStartSeqId() {
+		return this.startSeqId;
+	}
+
+	public void setStartSeqId(long startSeqId) {
+		this.startSeqId = startSeqId;
+	}
+
+	@Column(name = "end_seq_id", nullable = false)
+	public long getEndSeqId() {
+		return this.endSeqId;
+	}
+
+	public void setEndSeqId(long endSeqId) {
+		this.endSeqId = endSeqId;
 	}
 
 	@Column(name = "bad_account_status", nullable = false)

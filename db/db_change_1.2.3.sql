@@ -1,4 +1,6 @@
-alter table `e_wallet` add column `update_seq_id` int (11) DEFAULT '0' NOT NULL  after `update_time`;
+alter table `e_wallet_seq` change `seq_id` `seq_id` bigint (20)  NOT NULL AUTO_INCREMENT  COMMENT '流水ID';
+
+alter table `e_wallet` add column `update_seq_id` bigint (20) DEFAULT '0' NOT NULL  after `update_time`;
 
 update e_wallet w left join (select MAX(seq_id) as seq_id,user_id,currency from e_wallet_seq group by user_id, currency) s on w.user_id = s.user_id and w.currency = s.currency set w.update_seq_id = s.seq_id;
 
@@ -9,7 +11,7 @@ CREATE TABLE `e_wallet_before` (
     `currency` char(3) NOT NULL DEFAULT '' COMMENT '币种',             
     `balance` decimal(20,4) NOT NULL DEFAULT '0.0000' COMMENT '余额',  
     `update_time` datetime DEFAULT NULL COMMENT '最新变动时间',    
-    `update_seq_id` int(11) NOT NULL DEFAULT '0',                        
+    `update_seq_id` bigint(20) NOT NULL DEFAULT '0',                        
     PRIMARY KEY (`user_id`,`currency`)                                   
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='钱包旧快照'; 
                   
@@ -18,7 +20,7 @@ CREATE TABLE `e_wallet_now` (
     `currency` char(3) NOT NULL DEFAULT '' COMMENT '币种',             
     `balance` decimal(20,4) NOT NULL DEFAULT '0.0000' COMMENT '余额',  
     `update_time` datetime DEFAULT NULL COMMENT '最新变动时间',    
-    `update_seq_id` int(11) NOT NULL DEFAULT '0',                        
+    `update_seq_id` bigint(20) NOT NULL DEFAULT '0',                        
     PRIMARY KEY (`user_id`,`currency`)                                   
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='钱包新快照';
 
@@ -30,7 +32,9 @@ CREATE TABLE `e_bad_account` (
      `balance_history` decimal(20,4) NOT NULL DEFAULT '0.0000',                   
      `balance_now` decimal(20,4) NOT NULL DEFAULT '0.0000',                       
      `start_time` datetime NOT NULL,                                              
-     `end_time` datetime NOT NULL,                                                
+     `end_time` datetime NOT NULL,     
+     `start_seq_id` bigint(20) NOT NULL DEFAULT '0',                             
+     `end_seq_id` bigint(20) NOT NULL DEFAULT '0',                                               
      `bad_account_status` int(1) NOT NULL DEFAULT '0',                            
      PRIMARY KEY (`bad_account_id`)                                               
 ) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8 COMMENT='坏账记录'

@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.yuyutechnology.exchange.task.accountsys.AccountManager;
+import com.yuyutechnology.exchange.task.accountsys.AccountingManager;
 
 /**
  * @author silent.sun
@@ -18,7 +18,7 @@ import com.yuyutechnology.exchange.task.accountsys.AccountManager;
 public class AutoAccountingTask {
 
 	@Autowired
-	AccountManager accountManager;
+	AccountingManager accountManager;
 	
 	public static Logger logger = LogManager.getLogger(AutoAccountingTask.class);
 	

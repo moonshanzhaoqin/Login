@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.yuyutechnology.exchange.manager.ExchangeManager;
-import com.yuyutechnology.exchange.task.accountsys.AccountManager;
+import com.yuyutechnology.exchange.task.accountsys.AccountingManager;
 import com.yuyutechnology.exchange.utils.DateFormatUtils;
 
 /**
@@ -20,7 +20,7 @@ import com.yuyutechnology.exchange.utils.DateFormatUtils;
 public class AccountManagerTest extends BaseSpringJunit4 {
 
 	@Autowired
-	AccountManager accountManager;
+	AccountingManager accountManager;
 	
 	@Autowired
 	ExchangeManager exchangeManager;

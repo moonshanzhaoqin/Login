@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BadAccountDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
-import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.BadAccount;
@@ -28,12 +27,12 @@ import com.yuyutechnology.exchange.session.SessionManager;
  *
  */
 @Service
-public class AccountManager {
+public class AccountingManager {
 	
-	private static Logger logger = LogManager.getLogger(AccountManager.class);
+	private static Logger logger = LogManager.getLogger(AccountingManager.class);
 	
 	@Autowired
-	AccountDAO accountDAO;
+	AccountingDAO accountingDAO;
 	
 	@Autowired
 	BadAccountDAO badAccountDAO;
@@ -62,24 +61,26 @@ public class AccountManager {
 	}
 	
 	public int accountingAll() {
-		Date startDate = accountDAO.getLastAccountingTime();
+		Date startDate = accountingDAO.getLastAccountingTime();
 		Date endDate = new Date();
 		int userSize = accounting(startDate, endDate);
-		accountDAO.saveLastAccountingTime(endDate);
+		accountingDAO.saveLastAccountingTime(endDate);
 		return userSize;
 	}
 	
 	public void accountingUser(int userId, String currency) {
+		long startSeqId = accountingDAO.getMAXSeqId4WalletBeforeByUserIdAndCurrency(userId, currency);
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
-		Object[] accountInfo = accountDAO.calculatorWalletSeqByUserIdAndCurrency(wallet.getUpdateSeqId(), userId, currency);
+		Object[] accountInfo = accountingDAO.calculatorWalletSeqByUserIdAndCurrency(startSeqId, wallet.getUpdateSeqId(), userId, currency);
 		if (accountInfo != null && accountInfo[0] != null && accountInfo[1] != null) {
 			BigDecimal sumAmount = (BigDecimal) accountInfo[0];
 			BigDecimal balance = (BigDecimal) accountInfo[1];
 			Date startTime = (Date) accountInfo[2];
-			logger.info("accountingUser , userId : {}, currency : {}, sumAmount : {}, balanceBefore : {}, balanceNow : {}, startTime : {}", userId, currency, sumAmount, balance, wallet.getBalance(), startTime);
+			logger.info("accountingUser , userId : {}, currency : {}, sumAmount : {}, balanceBefore : {}, balanceNow : {}, startSeq : {}, endSeq : {}", userId, currency, sumAmount, balance, wallet.getBalance(), startSeqId, wallet.getUpdateSeqId());
 			if (sumAmount.add(balance).compareTo(wallet.getBalance()) != 0) {
 				goldpayTransManager.forbiddenGoldpayRemitWithdraws();
 				freezeUser(userId);
+				//TODO: 邮件通知预警人
 				BadAccount badAccount = new BadAccount();
 				badAccount.setUserId(userId);
 				badAccount.setCurrency(currency);
@@ -88,6 +89,8 @@ public class AccountManager {
 				badAccount.setBalanceNow(wallet.getBalance());
 				badAccount.setStartTime(startTime);
 				badAccount.setEndTime(new Date());
+				badAccount.setStartSeqId(startSeqId);
+				badAccount.setEndSeqId(wallet.getUpdateSeqId());
 				badAccount.setBadAccountStatus(ServerConsts.BAD_ACCOUNT_STATUS_FREEZE_USER);
 				badAccountDAO.saveBadAccount(badAccount);
 			}
@@ -95,14 +98,14 @@ public class AccountManager {
 	}
 	
 	public int accounting(Date startDate, Date endDate) {
-		int updateRows = accountDAO.snapshotWalletToNow(startDate, endDate);
+		int updateRows = accountingDAO.snapshotWalletToNow(startDate, endDate);
 		logger.info("accounting new rows, size : {}", updateRows);
 		if (updateRows > 0) {
-			int startId = accountDAO.getMAXSeqId4WalletBefore();
-			int endId = accountDAO.getMAXSeqId4WalletNow();
+			long startId = accountingDAO.getMAXSeqId4WalletBefore();
+			long endId = accountingDAO.getMAXSeqId4WalletNow();
 			logger.info("accounting wallet_seq from {} to {}", startId, endId);
 			if (startId < endId) {
-				updateRows = accountDAO.accountingWalletSeq(startId, endId, startDate, endDate);
+				updateRows = accountingDAO.accountingWalletSeq(startId, endId, startDate, endDate);
 			}else{
 				updateRows = 0;
 			}
@@ -119,6 +122,7 @@ public class AccountManager {
 		List<BadAccount> badAccounts = badAccountDAO.findBadAccountList(ServerConsts.BAD_ACCOUNT_STATUS_DEFAULT);
 		if (badAccounts != null && badAccounts.isEmpty()) {
 			goldpayTransManager.forbiddenGoldpayRemitWithdraws();
+			//TODO: 发邮件通知预警人
 			for (BadAccount badAccount : badAccounts) {
 				try {
 					freezeUser(badAccount.getUserId());
@@ -129,9 +133,9 @@ public class AccountManager {
 	}
 	
 	private void snapshotToBefore () {
-		int updateRows = accountDAO.snapshotWalletNowToHistory();
+		int updateRows = accountingDAO.snapshotWalletNowToHistory();
 		logger.info("accounting copy new to history, size : {}", updateRows);
-		accountDAO.cleanSnapshotWalletNow();
+		accountingDAO.cleanSnapshotWalletNow();
 		logger.info("accounting clean new ok ");
 	}
 }

@@ -62,7 +62,7 @@ public class WalletDAOImpl implements WalletDAO {
 
 	
 	private Integer updateWalletByUserIdAndCurrency(final int userId, final String currency, final BigDecimal amount,
-			final String capitalFlows, final int walletSeqId) {
+			final String capitalFlows, final long walletSeqId) {
 		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
 			@Override
 			public Integer doInHibernate(Session session) throws HibernateException {
@@ -90,7 +90,7 @@ public class WalletDAOImpl implements WalletDAO {
 
 				}
 				query.setTimestamp("updateTime", new Date());
-				query.setInteger("updateSeqId", walletSeqId);
+				query.setLong("updateSeqId", walletSeqId);
 				query.setInteger("userId", userId);
 				query.setString("currency", currency);
 				return query.executeUpdate();
