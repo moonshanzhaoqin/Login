@@ -37,7 +37,7 @@ CREATE TABLE `e_bad_account` (
      `end_seq_id` bigint(20) NOT NULL DEFAULT '0',                                               
      `bad_account_status` int(1) NOT NULL DEFAULT '0',                            
      PRIMARY KEY (`bad_account_id`)                                               
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8 COMMENT='坏账记录'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='坏账记录'
 
 alter table `e_wallet_before` add index `index_update_time` (`update_time`);
 
