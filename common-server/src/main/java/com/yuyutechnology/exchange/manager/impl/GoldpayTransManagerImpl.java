@@ -767,7 +767,6 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 	@Override
 	public PageBean getWithdrawRecordByPage(Integer userId, int currentPage, int pageSize) {
-		// TODO Auto-generated method stub
 		return transferDAO.getWithdrawRecordByPage( userId,  currentPage,  pageSize) ;
 	}
 }

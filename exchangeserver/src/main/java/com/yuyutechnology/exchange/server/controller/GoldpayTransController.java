@@ -184,7 +184,6 @@ public class GoldpayTransController {
 		return rep;
 	}
 
-	// TODO 提现进度列表
 	@SuppressWarnings("unchecked")
 	@ApiOperation(value = "goldpay 提现进度列表")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/goldpayTrans/getWithdrawRecord")
