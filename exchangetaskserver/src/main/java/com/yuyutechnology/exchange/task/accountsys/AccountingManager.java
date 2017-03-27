@@ -118,7 +118,7 @@ public class AccountingManager {
 		return 0;
 	}
 	
-	public void freezeUsers () {
+	public void freezeUsers() {
 		List<BadAccount> badAccounts = badAccountDAO.findBadAccountList(ServerConsts.BAD_ACCOUNT_STATUS_DEFAULT);
 		if (badAccounts != null && badAccounts.isEmpty()) {
 			goldpayTransManager.forbiddenGoldpayRemitWithdraws();
