@@ -151,7 +151,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-		// logger.info("interceptor excute order:2.postHandle================");
+		 logger.info("interceptor excute order:2.postHandle================");
 	}
 
 	/**
@@ -162,8 +162,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
-		// logger.info("interceptor excute
-		// order:3.afterCompletion================");
+		 logger.info("interceptor excute order:3.afterCompletion================");
 	}
 
 }
