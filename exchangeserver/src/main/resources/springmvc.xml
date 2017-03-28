@@ -81,20 +81,17 @@
             <ref bean="decryptEncryptBodyMethodProcessor" />
         </mvc:return-value-handlers>
 	</mvc:annotation-driven>
+	
+	<mvc:resources location="/" mapping="/**"/>
+	
 	<mvc:interceptors>
-	<mvc:interceptor>
-		<mvc:mapping path="/token/**" />  
-		<bean class="com.yuyutechnology.exchange.server.filter.LoginInterceptor"></bean>
-	</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/token/**" />  
+			<bean class="com.yuyutechnology.exchange.server.filter.LoginInterceptor"></bean>
+		</mvc:interceptor>
 	</mvc:interceptors>
-	
-	
-	
 	<mvc:cors>
-
-	<mvc:mapping path="/**"
-		allowed-origins="*" allowed-headers="accept, content-type" allowed-methods="POST, GET, OPTIONS"/>
-
+		<mvc:mapping path="/**"
+			allowed-origins="*" allowed-headers="accept, content-type" allowed-methods="POST, GET, OPTIONS"/>
 	</mvc:cors>
-	
 </beans>
