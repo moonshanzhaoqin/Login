@@ -473,7 +473,7 @@ public class UserController {
 	 */
 	@ResponseBody
 	@ApiOperation(value = "联系我们", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/contactUs", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	@RequestMapping(value = "/contactUs4Web", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public ContactUsResponse contactUs(@RequestBody ContactUsRequest contactUsRequest) {
 		logger.info("========contactUs : {}============");
 		ContactUsResponse rep = new ContactUsResponse();
