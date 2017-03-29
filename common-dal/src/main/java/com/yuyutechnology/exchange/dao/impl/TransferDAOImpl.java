@@ -223,7 +223,7 @@ public class TransferDAOImpl implements TransferDAO {
 	public PageBean getWithdrawRecordByPage(Integer userId, int currentPage, int pageSize) {
 		List<Object> values = new ArrayList<Object>();
 		StringBuilder hql = new StringBuilder(
-				"from Transfer where userFrom = ? and transferType = ? and ( transfer_status = ? or  transfer_status = ? ) order by createTime desc");
+				"from Transfer where userFrom = ? and transferType = ? and ( transferStatus = ? or  transferStatus = ? ) order by createTime desc");
 		values.add(userId);
 		values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
 		values.add(ServerConsts.TRANSFER_STATUS_OF_PROCESSING);
@@ -256,7 +256,7 @@ public class TransferDAOImpl implements TransferDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Transfer> getNeedGoldpayRemitWithdraws() {
-		List<?> list = hibernateTemplate.find("from Transfer where transfer_status = ",
+		List<?> list = hibernateTemplate.find("from Transfer where transferStatus = ",
 				ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS);
 		return (List<Transfer>) list;
 	}
@@ -264,7 +264,7 @@ public class TransferDAOImpl implements TransferDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Transfer> getNeedReviewWithdraws() {
-		List<?> list = hibernateTemplate.find("from Transfer where transfer_status = ",
+		List<?> list = hibernateTemplate.find("from Transfer where transferStatus = ",
 				ServerConsts.TRANSFER_STATUS_OF_PROCESSING);
 		return (List<Transfer>) list;
 	}
