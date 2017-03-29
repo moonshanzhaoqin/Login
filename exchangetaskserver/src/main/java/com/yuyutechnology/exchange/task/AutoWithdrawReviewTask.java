@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.pojo.Transfer;
-import com.yuyutechnology.exchange.pojo.Withdraw;
 
 @Component
 public class AutoWithdrawReviewTask {

@@ -5,9 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import com.yuyutechnology.exchange.dto.WithdrawDetail;
 import com.yuyutechnology.exchange.pojo.Transfer;
-import com.yuyutechnology.exchange.pojo.Withdraw;
 import com.yuyutechnology.exchange.utils.page.PageBean;
 
 public interface GoldpayTransManager {
