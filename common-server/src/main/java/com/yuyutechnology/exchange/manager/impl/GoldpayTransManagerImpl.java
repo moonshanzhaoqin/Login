@@ -578,18 +578,23 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		User systemUser = userDAO.getSystemUser();
 		Transfer transfer = transferDAO.getTransferById(transferId);
 		// 系统加款
-		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(), transfer.getTransferAmount(), "-");
+		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(),
+				transfer.getTransferAmount(), "-");
 		// 用户扣款
-		walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getCurrency(), transfer.getTransferAmount(), "+");
+		walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getCurrency(),
+				transfer.getTransferAmount(), "+");
 		// 更改Transfer状态
 		transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_REFUND);
 		// 添加seq记录
 		walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), transfer.getUserFrom(),
-				ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_REFUND, transferId, transfer.getCurrency(), transfer.getTransferAmount());
+				ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_REFUND, transferId, transfer.getCurrency(),
+				transfer.getTransferAmount());
 	}
 
 	@Override
 	public HashMap<String, String> goldpayRemit(String transferId) {
+		logger.info("goldpayRemit {}==>",transferId);
+		
 		HashMap<String, String> map = new HashMap<String, String>();
 
 		Transfer transfer = transferDAO.getTransferById(transferId);
@@ -749,15 +754,19 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	// 提现审批
 	@Override
 	public void withdrawReviewAuto(String transferId) {
+		logger.info("withdrawReviewAuto {}==>",transferId);
+		
 		Transfer transfer = transferDAO.getTransferById(transferId);
 		// 审核成功
-			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS);
+		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS);
 	}
+
 	@Override
 	public void withdrawReviewManual(String transferId) {
+		logger.info("withdrawReviewManual {}==>",transferId);
 		Transfer transfer = transferDAO.getTransferById(transferId);
 		// 审核成功
-			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_MANUALREVIEW_SUCCESS);
+		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_MANUALREVIEW_SUCCESS);
 	}
 
 	@Override
