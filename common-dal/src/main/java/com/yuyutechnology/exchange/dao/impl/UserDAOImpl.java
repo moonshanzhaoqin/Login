@@ -36,6 +36,12 @@ public class UserDAOImpl implements UserDAO {
 		List<?> list = hibernateTemplate.find("from User where areaCode = ? and userPhone = ?", areaCode, userPhone);
 		return list.isEmpty() ? null : (User) list.get(0);
 	}
+	
+	@Override
+	public User getUserByPhone(String userPhone) {
+		List<?> list = hibernateTemplate.find("from User where and userPhone = ?", userPhone);
+		return list.isEmpty() ? null : (User) list.get(0);
+	}
 
 	// @SuppressWarnings("unchecked")
 	@Override

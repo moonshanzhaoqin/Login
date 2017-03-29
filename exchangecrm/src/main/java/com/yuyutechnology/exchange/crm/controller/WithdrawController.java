@@ -16,7 +16,6 @@ import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
 import com.yuyutechnology.exchange.crm.request.GetWithdrawListRequest;
 import com.yuyutechnology.exchange.crm.request.WithdrawRequest;
-import com.yuyutechnology.exchange.dto.WithdrawDetail;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.utils.page.PageBean;
@@ -42,9 +41,9 @@ public class WithdrawController {
 	public PageBean getWithdrawList(@RequestBody GetWithdrawListRequest getWithdrawListRequest,
 			HttpServletRequest request, HttpServletResponse response) {
 		logger.info(getWithdrawListRequest.toString());
-		return	goldpayTransManager.getWithdrawList(Integer.parseInt(getWithdrawListRequest.getCurrentPage()),
-				getWithdrawListRequest.getUserPhone(), getWithdrawListRequest.getReviewStatus(),
-				getWithdrawListRequest.getGoldpayRemit());
+		return goldpayTransManager.getWithdrawList(Integer.parseInt(getWithdrawListRequest.getCurrentPage()),
+				 getWithdrawListRequest.getUserPhone(),
+				getWithdrawListRequest.getTransferId(), getWithdrawListRequest.getTransferStatus());
 	}
 
 	/**
@@ -55,12 +54,12 @@ public class WithdrawController {
 	 * @param response
 	 * @return
 	 */
-	@ResponseBody
-	@RequestMapping(value = "/getWithdrawDetail", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public WithdrawDetail getWithdrawDetail(@RequestBody WithdrawRequest withdrawRequest, HttpServletRequest request,
-			HttpServletResponse response) {
-		return goldpayTransManager.getWithdrawDetail(withdrawRequest.getWithdrawId());
-	}
+//	@ResponseBody
+//	@RequestMapping(value = "/getWithdrawDetail", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+//	public WithdrawDetail getWithdrawDetail(@RequestBody WithdrawRequest withdrawRequest, HttpServletRequest request,
+//			HttpServletResponse response) {
+//		return goldpayTransManager.getWithdrawDetail(withdrawRequest.getWithdrawId());
+//	}
 
 	/**
 	 * 提现审批
@@ -74,7 +73,7 @@ public class WithdrawController {
 	public BaseResponse withdrawReview(@RequestBody WithdrawRequest withdrawRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
-		goldpayTransManager.withdrawReview(withdrawRequest.getWithdrawId());
+		goldpayTransManager.withdrawReviewManual(withdrawRequest.getTransferId());
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
@@ -91,7 +90,16 @@ public class WithdrawController {
 	public BaseResponse goldpayRemit(@RequestBody WithdrawRequest withdrawRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
-		goldpayTransManager.goldpayRemit(withdrawRequest.getWithdrawId());
+		goldpayTransManager.goldpayRemit(withdrawRequest.getTransferId());
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		return rep;
+	}
+	@ResponseBody
+	@RequestMapping(value = "/refund", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public BaseResponse refund(@RequestBody WithdrawRequest withdrawRequest, HttpServletRequest request,
+			HttpServletResponse response) {
+		BaseResponse rep = new BaseResponse();
+		goldpayTransManager.withdrawRefund(withdrawRequest.getTransferId());
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
