@@ -7,17 +7,17 @@ import com.yuyutechnology.exchange.utils.page.PageBean;
 
 public interface WithdrawDAO {
 
-	void saveOrUpdateWithdraw(Withdraw withdraw);
-
-	List<Withdraw> getNeedReviewWithdraws();
-
-	List<Withdraw> getNeedGoldpayRemitWithdraws();
-
-	Withdraw getWithdrawByTransferId(String transferId);
-
-	Withdraw getWithdraw(Integer withdrawId);
-
-	PageBean searchWithdrawsByPage(String userPhone, String reviewStatus, String goldpayRemit, int currentPage,
-			int pageSize);
+//	void saveOrUpdateWithdraw(Withdraw withdraw);
+//
+//	List<Withdraw> getNeedReviewWithdraws();
+//
+//	List<Withdraw> getNeedGoldpayRemitWithdraws();
+//
+//	Withdraw getWithdrawByTransferId(String transferId);
+//
+//	Withdraw getWithdraw(Integer withdrawId);
+//
+//	PageBean searchWithdrawsByPage(String userPhone, String reviewStatus, String goldpayRemit, int currentPage,
+//			int pageSize);
 
 }

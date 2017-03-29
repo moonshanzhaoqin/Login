@@ -725,31 +725,32 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 				ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, date);
 	}
 
-	@Override
-	public WithdrawDetail getWithdrawDetail(Integer withdrawId) {
-		logger.info("getWithdrawDetail : withdrawId={} ==>", withdrawId);
-
-		WithdrawDetail withdrawDetail = new WithdrawDetail();
-		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
-		User user = userDAO.getUser(withdraw.getUserId());
-		Bind bind = bindBAO.getBindByUserId(withdraw.getUserId());
-		Transfer transfer = transferDAO.getTransferById(withdraw.getTransferId());
-
-		withdrawDetail.setCreateTime(transfer.getCreateTime());
-		withdrawDetail.setGoldpayAcount(bind.getGoldpayAcount());
-		withdrawDetail.setGoldpayName(bind.getGoldpayName());
-		withdrawDetail.setGoldpayRemit(withdraw.getGoldpayRemit());
-		withdrawDetail.setReviewStatus(withdraw.getReviewStatus());
-		withdrawDetail.setTransferAmount(transfer.getTransferAmount());
-		withdrawDetail.setUserId(user.getUserId());
-		withdrawDetail.setTransferId(transfer.getTransferId());
-		withdrawDetail.setUserName(user.getUserName());
-		withdrawDetail.setAreaCode(user.getAreaCode());
-		withdrawDetail.setUserPhone(user.getUserPhone());
-
-		logger.info(withdrawDetail.toString());
-		return withdrawDetail;
-	}
+	// @Override
+	// public WithdrawDetail getWithdrawDetail(Integer withdrawId) {
+	// logger.info("getWithdrawDetail : withdrawId={} ==>", withdrawId);
+	//
+	// WithdrawDetail withdrawDetail = new WithdrawDetail();
+	// Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
+	// User user = userDAO.getUser(withdraw.getUserId());
+	// Bind bind = bindBAO.getBindByUserId(withdraw.getUserId());
+	// Transfer transfer =
+	// transferDAO.getTransferById(withdraw.getTransferId());
+	//
+	// withdrawDetail.setCreateTime(transfer.getCreateTime());
+	// withdrawDetail.setGoldpayAcount(bind.getGoldpayAcount());
+	// withdrawDetail.setGoldpayName(bind.getGoldpayName());
+	// withdrawDetail.setGoldpayRemit(withdraw.getGoldpayRemit());
+	// withdrawDetail.setReviewStatus(withdraw.getReviewStatus());
+	// withdrawDetail.setTransferAmount(transfer.getTransferAmount());
+	// withdrawDetail.setUserId(user.getUserId());
+	// withdrawDetail.setTransferId(transfer.getTransferId());
+	// withdrawDetail.setUserName(user.getUserName());
+	// withdrawDetail.setAreaCode(user.getAreaCode());
+	// withdrawDetail.setUserPhone(user.getUserPhone());
+	//
+	// logger.info(withdrawDetail.toString());
+	// return withdrawDetail;
+	// }
 
 	// 提现审批
 	@Override

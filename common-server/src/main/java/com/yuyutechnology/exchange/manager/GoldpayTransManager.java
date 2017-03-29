@@ -34,13 +34,12 @@ public interface GoldpayTransManager {
 
 	public HashMap<String, String> withdrawConfirm1(int userId, String payPwd, String transferId);
 
-
-//	public void withdrawRefund(int userId, String transferId, String transferCurrency, BigDecimal transferAmount);
+	// public void withdrawRefund(int userId, String transferId, String
+	// transferCurrency, BigDecimal transferAmount);
 
 	public List<Transfer> findGoldpayWithdrawByTimeBefore(Date date);
 
-
-	public WithdrawDetail getWithdrawDetail(Integer withdrawId);
+	// public WithdrawDetail getWithdrawDetail(Integer withdrawId);
 
 	public List<Transfer> getNeedGoldpayRemitWithdraws();
 
@@ -48,18 +47,14 @@ public interface GoldpayTransManager {
 
 	public PageBean getWithdrawRecordByPage(Integer userId, int currentPage, int pageSize);
 
-
-
 	HashMap<String, String> goldpayRemit(String transferId);
 
-	public PageBean getWithdrawList(int currentPage,String userPhone, String transferId,
-			String transferStatus);
+	public PageBean getWithdrawList(int currentPage, String userPhone, String transferId, String transferStatus);
 
 	void withdrawRefund(String transferId);
 
 	void withdrawReviewManual(String transferId);
 
 	void withdrawReviewAuto(String transferId);
-
 
 }
