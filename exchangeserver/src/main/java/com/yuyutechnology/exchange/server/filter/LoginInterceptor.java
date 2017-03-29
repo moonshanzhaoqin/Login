@@ -1,5 +1,6 @@
 package com.yuyutechnology.exchange.server.filter;
 
+import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -17,6 +19,7 @@ import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
 import com.yuyutechnology.exchange.server.controller.response.EncryptResponse;
+import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 import com.yuyutechnology.exchange.server.session.SessionData;
 import com.yuyutechnology.exchange.server.session.SessionDataHolder;
 import com.yuyutechnology.exchange.server.session.SessionManager;
@@ -35,52 +38,14 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
 	private final Logger logger = LogManager.getLogger(this.getClass());
 
-	private static final Set<String> noMappingSet = new HashSet<String>();
-	private static final Set<String> noMappingSetUrl = new HashSet<String>();
-	
 	SessionManager sessionManager;
 
 	@PostConstruct
 	private void init() {
 		logger.info("=============initLoginInterceptor start===============");
-		
 		sessionManager = ServerContext.getBean(SessionManager.class);
-		
-//		noMappingSet.add("/login");
-//		noMappingSet.add("/loginValidate");
-//		noMappingSet.add("/logout");
-//		noMappingSet.add("/register");
-//		noMappingSet.add("/getVerificationCode");
-//		noMappingSet.add("/testCode");
-//		noMappingSet.add("/forgetPassword");
-//		noMappingSet.add("/getCurrency");
-//		noMappingSet.add("/appVersion");
-//		
-//		// swagger
-//		noMappingSetUrl.add("api-docs");
-//		noMappingSetUrl.add("swagger");
 	}
 
-	/**
-	 * 判断是否需要拦截
-	 * 
-	 * @param method
-	 * @return
-	 */
-	private boolean validURL(String method) {
-		for (String string : noMappingSetUrl) {
-			if (method.contains(string)) {
-				return true;
-			}
-		}
-		method = method.substring(method.lastIndexOf("/"));
-		if (noMappingSet.contains(method)) {
-			return true;
-		} else {
-			return false;
-		}
-
-	}
 
 	/**
 	 * 从URI中获取token
@@ -125,17 +90,14 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			sessionManager.refreshSessionDataExpireTime(sessionData);
 			SessionDataHolder.setSessionData(sessionData);
 			return true;
-		} else if (validURL(requestURI) ) {
-			logger.info("request URI:" + requestURI + "==>validURL");
-			return true;
-		}else{
+		} else {
 			logger.info("request URI:" + requestURI + " session : " + sessionId + " " +MessageConsts.SESSION_TIMEOUT);
 			BaseResponse re = new BaseResponse();
 			re.setRetCode(RetCodeConsts.SESSION_TIMEOUT);
 			re.setMessage(MessageConsts.SESSION_TIMEOUT);
 			String json = JsonBinder.getInstance().toJson(re);
 	        String key = ResourceUtils.getBundleValue4String("aes.key");
-	        if (StringUtils.isNotBlank(key)) {
+	        if (StringUtils.isNotBlank(key) && ((HandlerMethod)handler).getMethodAnnotation(ResponseEncryptBody.class) != null) {
 	        	json = AESCipher.encryptAES(json,key);
 	        	EncryptResponse encryptResponse = new EncryptResponse();
 	        	encryptResponse.setContent(json);
@@ -151,7 +113,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-		// logger.info("interceptor excute order:2.postHandle================");
+		 logger.info("interceptor excute order:2.postHandle================");
 	}
 
 	/**
@@ -162,8 +124,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
-		// logger.info("interceptor excute
-		// order:3.afterCompletion================");
+		 logger.info("interceptor excute order:3.afterCompletion================");
 	}
 
 }
