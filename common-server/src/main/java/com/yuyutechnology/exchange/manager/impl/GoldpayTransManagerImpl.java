@@ -19,9 +19,7 @@ import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
-import com.yuyutechnology.exchange.dao.WithdrawDAO;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
-import com.yuyutechnology.exchange.dto.WithdrawDetail;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.goldpay.transaction.CalculateCharge;
 import com.yuyutechnology.exchange.goldpay.transaction.CalculateChargeReturnModel;
@@ -38,7 +36,6 @@ import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
-import com.yuyutechnology.exchange.pojo.Withdraw;
 import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
@@ -57,8 +54,6 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	TransferDAO transferDAO;
 	@Autowired
 	WalletSeqDAO walletSeqDAO;
-	@Autowired
-	WithdrawDAO withdrawDAO;
 	@Autowired
 	ConfigManager configManager;
 	@Autowired

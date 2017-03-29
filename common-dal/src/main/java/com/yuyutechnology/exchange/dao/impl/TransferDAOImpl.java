@@ -1,7 +1,5 @@
 package com.yuyutechnology.exchange.dao.impl;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
