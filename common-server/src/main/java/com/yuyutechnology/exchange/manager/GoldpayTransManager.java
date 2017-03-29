@@ -34,38 +34,32 @@ public interface GoldpayTransManager {
 
 	public HashMap<String, String> withdrawConfirm1(int userId, String payPwd, String transferId);
 
-	/**
-	 * 提现第二步： goldpay划账
-	 * 
-	 * @param userId
-	 * @param transferId
-	 * @return
-	 */
-	public HashMap<String, String> withdrawConfirm2(int userId, String transferId);
 
-	public void withdrawRefund(int userId, String transferId, String transferCurrency, BigDecimal transferAmount);
+//	public void withdrawRefund(int userId, String transferId, String transferCurrency, BigDecimal transferAmount);
 
 	public List<Transfer> findGoldpayWithdrawByTimeBefore(Date date);
 
-	/**
-	 * 提现审批
-	 */
-	void withdrawReview(Integer withdrawId);
-
-	/**
-	 * 对通过审核的提现进行goldpay划账
-	 */
-	void goldpayRemit(Integer withdrawId);
 
 	public WithdrawDetail getWithdrawDetail(Integer withdrawId);
 
-	PageBean getWithdrawList(int currentPage, String userPhone, String reviewStatus, String goldpayRemit);
+	public List<Transfer> getNeedGoldpayRemitWithdraws();
 
-	public List<Withdraw> getNeedGoldpayRemitWithdraws();
-
-	public List<Withdraw> getNeedReviewWithdraws();
+	public List<Transfer> getNeedReviewWithdraws();
 
 	public PageBean getWithdrawRecordByPage(Integer userId, int currentPage, int pageSize);
+
+
+
+	HashMap<String, String> goldpayRemit(String transferId);
+
+	public PageBean getWithdrawList(int currentPage,String userPhone, String transferId,
+			String transferStatus);
+
+	void withdrawRefund(String transferId);
+
+	void withdrawReviewManual(String transferId);
+
+	void withdrawReviewAuto(String transferId);
 
 
 }

@@ -25,7 +25,7 @@ public class AutoTransferRefundTask {
 		List<Transfer> trans = goldpayTransManager.findGoldpayWithdrawByTimeBefore(DateFormatUtils.getIntervalHour(new Date(), -2));
 		if (trans != null && !trans.isEmpty()) {
 			for (Transfer transfer : trans) {
-				goldpayTransManager.withdrawRefund(transfer.getUserFrom(), transfer.getTransferId(), transfer.getCurrency(), transfer.getTransferAmount());
+				goldpayTransManager.withdrawRefund(transfer.getTransferId());
 			}
 		}
 		logger.info("=============autoWithdrawRefund end==================difference : {}",new Date());

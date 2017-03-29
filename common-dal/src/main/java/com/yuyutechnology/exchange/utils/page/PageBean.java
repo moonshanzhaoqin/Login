@@ -11,13 +11,19 @@ import java.util.List;
 */
 public class PageBean {
 	
+	@Override
+	public String toString() {
+		return "PageBean [total=" + total + ", currentPage=" + currentPage + ", pageSize=" + pageSize + ", pageTotal="
+				+ pageTotal + ", rows=" + rows + "]";
+	}
+
 	private long total;			//数据条数
 	private int currentPage;	//当前页码
 	private int pageSize;		//单页数据量
 	private int pageTotal;		//页数
 
 	private List<?> rows;
-	
+
 	public PageBean() {
 		super();
 	}
