@@ -99,7 +99,27 @@ public class ServerConsts {
 	 * 交易退回
 	 */
 	public static final int TRANSFER_STATUS_OF_REFUND = 3;
-
+	/**
+	 * 提现一审成功，待支付
+	 */
+	public static final int TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS = 4;
+	/**
+	 * 提现一审失败，待二审
+	 */
+	public static final int TRANSFER_STATUS_OF_AUTOREVIEW_FAIL = 5;
+	/**
+	 * 提现二审成功 ，待支付
+	 */
+	public static final int TRANSFER_STATUS_OF_MANUALREVIEW_SUCCESS = 6;
+	/**
+	 * 提现二审失败，待退回
+	 */
+	public static final int TRANSFER_STATUS_OF_MANUALREVIEW_FAIL = 7;
+	/**
+	 * 支付失败，待退回，待支付
+	 */
+	public static final int TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL = 8;
+	
 	// notification状态
 	public static final int NOTIFICATION_STATUS_OF_PENDING = 0;
 	public static final int NOTIFICATION_STATUS_OF_ALREADY_PAID = 1;
