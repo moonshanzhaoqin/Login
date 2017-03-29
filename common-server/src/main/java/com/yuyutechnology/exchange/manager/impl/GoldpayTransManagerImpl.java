@@ -615,12 +615,12 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		// }
 
 		if (transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_MANUALREVIEW_SUCCESS
-				|| transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS
-				|| transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL) {
+				&& transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS
+				&& transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL) {
 			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL);
 			transferDAO.updateTransfer(transfer);
 
-			logger.warn("The transaction status is not processing!");
+			logger.warn("The transaction status is not processing!{}",transfer.getTransferStatus());
 			map.put("msg", "The transaction order does not exist");
 			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 			return map;
