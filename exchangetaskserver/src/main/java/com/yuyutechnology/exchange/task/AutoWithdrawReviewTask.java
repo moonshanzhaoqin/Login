@@ -13,21 +13,21 @@ import com.yuyutechnology.exchange.pojo.Transfer;
 
 @Component
 public class AutoWithdrawReviewTask {
-	
+
 	@Autowired
 	GoldpayTransManager goldpayTransManager;
-	
-	
+
 	public static Logger logger = LogManager.getLogger(AutoWithdrawReviewTask.class);
-	
-	public void autoWithdrawReviewTask(){
-		logger.info("=============AutoWithdrawReviewTask Start=================={}",new Date());
+
+	public void autoWithdrawReviewTask() {
+		logger.info("=============AutoWithdrawReviewTask Start=================={}", new Date());
 		List<Transfer> transfers = goldpayTransManager.getNeedReviewWithdraws();
-		for (Transfer transfer : transfers) {
-			goldpayTransManager.withdrawReviewAuto(transfer.getTransferId());
+		if (transfers != null && !transfers.isEmpty()) {
+			for (Transfer transfer : transfers) {
+				goldpayTransManager.withdrawReviewAuto(transfer.getTransferId());
+			}
 		}
-		
-		logger.info("=============AutoWithdrawReviewTask End=================={}",new Date());	
+		logger.info("=============AutoWithdrawReviewTask End=================={}", new Date());
 	}
 
 }
