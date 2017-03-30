@@ -19,3 +19,7 @@ CREATE TABLE `e_withdraw` (
   `goldpay_remit` int(1) NOT NULL DEFAULT '0' COMMENT 'Goldpay划账结果 未执行/失败/成功',
   PRIMARY KEY (`withdraw_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8 COMMENT='提现审核';
+
+
+ALTER TABLE `anytime_exchange`.`e_transfer`
+  ADD COLUMN `goldpay_result` varchar(255) NULL DEFAULT NULL COMMENT 'goldpay回包';
