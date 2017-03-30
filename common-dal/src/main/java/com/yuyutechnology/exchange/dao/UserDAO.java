@@ -32,4 +32,6 @@ public interface UserDAO {
 
 	User getUserByPhone(String userPhone);
 
+	public List<User> getUserByPushId(String pushId);
+
 }

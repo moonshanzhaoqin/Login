@@ -78,4 +78,12 @@ public class UserDAOImpl implements UserDAO {
 		hibernateTemplate.saveOrUpdate(userConfig);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> getUserByPushId(String pushId) {
+		List<?> list = hibernateTemplate.find("from User where pushId = ? ",pushId);
+		return list.isEmpty() ? null : (List<User>) list;
+		
+	}
+
 }
