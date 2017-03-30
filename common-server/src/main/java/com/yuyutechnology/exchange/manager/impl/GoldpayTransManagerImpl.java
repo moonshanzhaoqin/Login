@@ -617,6 +617,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		if (transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_MANUALREVIEW_SUCCESS
 				&& transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS
 				&& transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL) {
+			
 			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL);
 			transferDAO.updateTransfer(transfer);
 
@@ -641,13 +642,14 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue4String("tpps.url") + "merchantPay.do",
 				JsonBinder.getInstance().toJson(merchantPayOrder));
-
-		PayModel payModel;
+		
+		transfer.setGoldpayResult(result);
+		
 
 		if (!StringUtils.isEmpty(result)) {
-
+			
 			logger.info("withdrawConfirm tpps callback result : {}", result);
-			payModel = JsonBinder.getInstance().fromJson(result, PayModel.class);
+			PayModel payModel = JsonBinder.getInstance().fromJson(result, PayModel.class);
 
 			if (payModel != null) {
 
@@ -663,7 +665,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 					map.put("msg", "ok");
 					return map;
 				} else {
-
+					
 					transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL);
 					transferDAO.updateTransfer(transfer);
 
@@ -710,8 +712,9 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 			logger.warn("withdrawConfirm tpps callback result : null");
 			map.put("msg", "withdrawConfirm tpps callback result : null");
 			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+			return map;
 		}
-		return map;
+		
 	}
 
 	@Override
