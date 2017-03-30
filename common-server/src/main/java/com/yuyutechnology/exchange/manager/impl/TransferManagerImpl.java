@@ -103,7 +103,7 @@ public class TransferManagerImpl implements TransferManager{
 		}
 		
 		map = checkTransferLimit(currency, amount, userId);
-		if (map != null) {
+		if (!map.isEmpty()) {
 			return map;
 		}
 		
@@ -654,10 +654,9 @@ public class TransferManagerImpl implements TransferManager{
 		}
 		
 		map = checkTransferLimit(currency, amount, userId);
-		if (map != null) {
+		if (!map.isEmpty()) {
 			return map;
 		}
-		
 		
 		//每次支付金额限制
 		/*BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
@@ -955,6 +954,6 @@ public class TransferManagerImpl implements TransferManager{
 			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
 			return map;
 		}
-		return null;
+		return map;
 	}
 }
