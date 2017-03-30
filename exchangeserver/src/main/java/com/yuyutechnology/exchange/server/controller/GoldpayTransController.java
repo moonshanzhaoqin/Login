@@ -199,6 +199,7 @@ public class GoldpayTransController {
 		List<WithdrawDTO> dtos = new ArrayList<>();
 
 		if (pageBean.getRows().isEmpty()) {
+			rep.setList(dtos);
 			rep.setRetCode(RetCodeConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
 			rep.setMessage("Withdraw Records not acquired");
 		} else {
