@@ -206,6 +206,7 @@ public class LoggedInUserController {
 				rep.setRetCode(RetCodeConsts.TIME_NOT_ARRIVED);
 				rep.setMessage(MessageConsts.TIME_NOT_ARRIVED);
 				rep.setTime(time);
+//				rep.setOpts(new String(time));
 			} else if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_CHANGEPHONE,
 					changePhoneRequest.getCheckToken())) {
 				// 校验手机验证码

@@ -19,9 +19,7 @@ import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
-import com.yuyutechnology.exchange.dao.WithdrawDAO;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
-import com.yuyutechnology.exchange.dto.WithdrawDetail;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.goldpay.transaction.CalculateCharge;
 import com.yuyutechnology.exchange.goldpay.transaction.CalculateChargeReturnModel;
@@ -38,7 +36,6 @@ import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
-import com.yuyutechnology.exchange.pojo.Withdraw;
 import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
@@ -57,8 +54,6 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	TransferDAO transferDAO;
 	@Autowired
 	WalletSeqDAO walletSeqDAO;
-	@Autowired
-	WithdrawDAO withdrawDAO;
 	@Autowired
 	ConfigManager configManager;
 	@Autowired
@@ -620,12 +615,12 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		// }
 
 		if (transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_MANUALREVIEW_SUCCESS
-				|| transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS
-				|| transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL) {
+				&& transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS
+				&& transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL) {
 			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL);
 			transferDAO.updateTransfer(transfer);
 
-			logger.warn("The transaction status is not processing!");
+			logger.warn("The transaction status is not processing!{}",transfer.getTransferStatus());
 			map.put("msg", "The transaction order does not exist");
 			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 			return map;
@@ -725,31 +720,32 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 				ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, date);
 	}
 
-	@Override
-	public WithdrawDetail getWithdrawDetail(Integer withdrawId) {
-		logger.info("getWithdrawDetail : withdrawId={} ==>", withdrawId);
-
-		WithdrawDetail withdrawDetail = new WithdrawDetail();
-		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
-		User user = userDAO.getUser(withdraw.getUserId());
-		Bind bind = bindBAO.getBindByUserId(withdraw.getUserId());
-		Transfer transfer = transferDAO.getTransferById(withdraw.getTransferId());
-
-		withdrawDetail.setCreateTime(transfer.getCreateTime());
-		withdrawDetail.setGoldpayAcount(bind.getGoldpayAcount());
-		withdrawDetail.setGoldpayName(bind.getGoldpayName());
-		withdrawDetail.setGoldpayRemit(withdraw.getGoldpayRemit());
-		withdrawDetail.setReviewStatus(withdraw.getReviewStatus());
-		withdrawDetail.setTransferAmount(transfer.getTransferAmount());
-		withdrawDetail.setUserId(user.getUserId());
-		withdrawDetail.setTransferId(transfer.getTransferId());
-		withdrawDetail.setUserName(user.getUserName());
-		withdrawDetail.setAreaCode(user.getAreaCode());
-		withdrawDetail.setUserPhone(user.getUserPhone());
-
-		logger.info(withdrawDetail.toString());
-		return withdrawDetail;
-	}
+	// @Override
+	// public WithdrawDetail getWithdrawDetail(Integer withdrawId) {
+	// logger.info("getWithdrawDetail : withdrawId={} ==>", withdrawId);
+	//
+	// WithdrawDetail withdrawDetail = new WithdrawDetail();
+	// Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
+	// User user = userDAO.getUser(withdraw.getUserId());
+	// Bind bind = bindBAO.getBindByUserId(withdraw.getUserId());
+	// Transfer transfer =
+	// transferDAO.getTransferById(withdraw.getTransferId());
+	//
+	// withdrawDetail.setCreateTime(transfer.getCreateTime());
+	// withdrawDetail.setGoldpayAcount(bind.getGoldpayAcount());
+	// withdrawDetail.setGoldpayName(bind.getGoldpayName());
+	// withdrawDetail.setGoldpayRemit(withdraw.getGoldpayRemit());
+	// withdrawDetail.setReviewStatus(withdraw.getReviewStatus());
+	// withdrawDetail.setTransferAmount(transfer.getTransferAmount());
+	// withdrawDetail.setUserId(user.getUserId());
+	// withdrawDetail.setTransferId(transfer.getTransferId());
+	// withdrawDetail.setUserName(user.getUserName());
+	// withdrawDetail.setAreaCode(user.getAreaCode());
+	// withdrawDetail.setUserPhone(user.getUserPhone());
+	//
+	// logger.info(withdrawDetail.toString());
+	// return withdrawDetail;
+	// }
 
 	// 提现审批
 	@Override

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.pojo.Transfer;
-import com.yuyutechnology.exchange.pojo.Withdraw;
 
 @Component
 public class AutoGoldpayRemitTask {
@@ -22,14 +21,14 @@ public class AutoGoldpayRemitTask {
 
 	public void autoGoldpayRemitTask() {
 		logger.info("=============autoGoldpayRemitTask Start=================={}", new Date());
-		
-		List<Transfer> transfers = goldpayTransManager.getNeedGoldpayRemitWithdraws();
 
-		for (Transfer transfer : transfers) {
-			goldpayTransManager.goldpayRemit(transfer.getTransferId());
+		List<Transfer> transfers = goldpayTransManager.getNeedGoldpayRemitWithdraws();
+		if (transfers!=null && !transfers.isEmpty()  ) {
+			for (Transfer transfer : transfers) {
+				goldpayTransManager.goldpayRemit(transfer.getTransferId());
+			}
 		}
-		
-		
+
 		logger.info("=============autoGoldpayRemitTask End=================={}", new Date());
 	}
 

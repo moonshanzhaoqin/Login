@@ -1,7 +1,5 @@
 package com.yuyutechnology.exchange.dao.impl;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -257,7 +255,7 @@ public class TransferDAOImpl implements TransferDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Transfer> getNeedGoldpayRemitWithdraws() {
-		List<?> list = hibernateTemplate.find("from Transfer where transferStatus = ",
+		List<?> list = hibernateTemplate.find("from Transfer where transferStatus = ?",
 				ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS);
 		return (List<Transfer>) list;
 	}
@@ -265,7 +263,7 @@ public class TransferDAOImpl implements TransferDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Transfer> getNeedReviewWithdraws() {
-		List<?> list = hibernateTemplate.find("from Transfer where transferStatus = ",
+		List<?> list = hibernateTemplate.find("from Transfer where transferStatus = ?",
 				ServerConsts.TRANSFER_STATUS_OF_PROCESSING);
 		return (List<Transfer>) list;
 	}
