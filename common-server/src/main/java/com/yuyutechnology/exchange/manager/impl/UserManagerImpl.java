@@ -513,7 +513,17 @@ public class UserManagerImpl implements UserManager {
 		// 绑定Tag
 		logger.info("***bind Tag***");
 		pushManager.bindPushTag(user.getPushId(), user.getPushTag());
+		
+		/*清除其他账号的此pushId*/
+		List<User> users=userDAO.getUserByPushId(pushId);
+		for (User user2 : users) {
+			if (user2.getUserId()!=userId) {
+				user2.setPushId(null);
+				userDAO.updateUser(user2);
+			}
+		}
 	}
+
 
 	@Override
 	public void updateUserName(Integer userId, String newUserName) {
