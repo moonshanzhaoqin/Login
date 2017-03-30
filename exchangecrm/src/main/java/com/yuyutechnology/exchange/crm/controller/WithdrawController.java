@@ -1,5 +1,7 @@
 package com.yuyutechnology.exchange.crm.controller;
 
+import java.util.HashMap;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -90,8 +92,13 @@ public class WithdrawController {
 	public BaseResponse goldpayRemit(@RequestBody WithdrawRequest withdrawRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
-		goldpayTransManager.goldpayRemit(withdrawRequest.getTransferId());
-		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		HashMap<String, String> map=goldpayTransManager.goldpayRemit(withdrawRequest.getTransferId());
+		if (map.get("retCode")==RetCodeConsts.RET_CODE_SUCCESS) {
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		}else {
+			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+		}
+		rep.setMessage(map.get("msg"));
 		return rep;
 	}
 	@ResponseBody
