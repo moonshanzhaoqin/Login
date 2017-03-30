@@ -250,7 +250,7 @@ public class TransferDAOImpl implements TransferDAO {
 	public PageBean searchWithdrawsByPage(String userPhone, String transferId, String transferStatus, int currentPage,
 			int pageSize) {
 		List<Object> values = new ArrayList<Object>();
-		StringBuilder hql = new StringBuilder("from Transfer t, User u where t.userFrom = u.userId and transferType = ? ");
+		StringBuilder hql = new StringBuilder("from Transfer t, User u where t.userFrom = u.userId and t.transferType = ? ");
 		values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
 		if (StringUtils.isNotBlank(userPhone)) {
 			hql.append(" and u.userPhone = ?");
