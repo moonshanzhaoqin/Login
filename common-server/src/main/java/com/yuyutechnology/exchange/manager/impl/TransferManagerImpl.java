@@ -101,7 +101,11 @@ public class TransferManagerImpl implements TransferManager{
 		if(!map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)){
 			return map;
 		}
-		//end
+		
+		map = checkTransferLimit(currency, amount, userId);
+		if (map != null) {
+			return map;
+		}
 		
 		User receiver = userDAO.getUserByUserPhone(areaCode, userPhone);
 		//不用给自己转账
@@ -112,7 +116,7 @@ public class TransferManagerImpl implements TransferManager{
 			return map;
 		}
 		
-		Currency unit = commonManager.getCurreny("USD");
+		/*Currency unit = commonManager.getCurreny("USD");
 		
 		//每次支付金额限制
 		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
@@ -151,7 +155,7 @@ public class TransferManagerImpl implements TransferManager{
 			map.put("msg", (transferLimitNumOfPayPerDay).intValue()+"");
 			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
 			return map;
-		}
+		}*/
 
 		//生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
@@ -649,8 +653,14 @@ public class TransferManagerImpl implements TransferManager{
 			return map;
 		}
 		
+		map = checkTransferLimit(currency, amount, userId);
+		if (map != null) {
+			return map;
+		}
+		
+		
 		//每次支付金额限制
-		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
+		/*BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
 		logger.warn("transferLimitPerPay : {}",transferLimitPerPay);
 		if((oandaRatesManager.getDefaultCurrencyAmount(currency, amount)).compareTo(transferLimitPerPay) == 1){
@@ -682,7 +692,7 @@ public class TransferManagerImpl implements TransferManager{
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY);
 			map.put("msg", transferLimitNumOfPayPerDay.toString());
 			return map;
-		}
+		}*/
 		
 		//生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
@@ -904,5 +914,47 @@ public class TransferManagerImpl implements TransferManager{
 		return map;
 	}
 	
-	
+	private HashMap<String, String> checkTransferLimit(String currency, BigDecimal amount, int userId){
+		HashMap<String, String> map = new HashMap<>();
+		Currency unit = commonManager.getCurreny("USD");
+		//每次支付金额限制
+		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
+				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
+		logger.warn("transferLimitPerPay : {}",transferLimitPerPay);
+		if((oandaRatesManager.getDefaultCurrencyAmount(currency, amount)).compareTo(transferLimitPerPay) == 1){
+			logger.warn("Exceeds the maximum amount of each transaction");
+			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
+			map.put("msg", transferLimitPerPay.setScale(2).toString());
+			map.put("unit", unit.getCurrencyUnit());
+			return map;
+		}
+
+		//每天累计金额限制
+		BigDecimal transferLimitDailyPay =  BigDecimal.valueOf(configManager.
+				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITDAILYPAY, 100000d));
+		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount("transfer_"+userId);
+		logger.warn("transferLimitDailyPay : {},accumulatedAmount : {} ",transferLimitDailyPay,accumulatedAmount);
+		if((accumulatedAmount.add(oandaRatesManager.getDefaultCurrencyAmount(currency, amount))).compareTo(transferLimitDailyPay) == 1){
+			logger.warn("More than the maximum daily transaction limit");
+			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY);
+			map.put("msg", transferLimitDailyPay.setScale(2).toString());
+			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
+			map.put("unit", unit.getCurrencyUnit());
+			return map;
+		}
+		//每天累计给付次数限制
+		Double transferLimitNumOfPayPerDay =  configManager.
+				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITNUMBEROFPAYPERDAY, 100000d);
+//		Integer dayTradubgVolume = transferDAO.getDayTradubgVolume(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+		Integer dayTradubgVolume = transferDAO.getCumulativeNumofTimes("transfer_"+userId);
+		logger.warn("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ",transferLimitNumOfPayPerDay,dayTradubgVolume);
+		if(transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)){
+			logger.warn("Exceeds the maximum number of transactions per day");
+			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY);
+			map.put("msg", (transferLimitNumOfPayPerDay).intValue()+"");
+			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
+			return map;
+		}
+		return null;
+	}
 }
