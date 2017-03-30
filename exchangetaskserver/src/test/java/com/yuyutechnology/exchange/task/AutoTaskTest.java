@@ -1,15 +1,41 @@
 package com.yuyutechnology.exchange.task;
 
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 
 public class AutoTaskTest extends BaseSpringJunit4 {
 
 	@Autowired
 	AutoTransferRefundTask autoTransferRefundTask;
+	@Autowired
+	AutoGoldpayRemitTask autoGoldpayRemitTask;
+	@Autowired
+	GoldpayTransManager goldpayTransManager;
+	@Autowired 
+	AutoWithdrawReviewTask autoWithdrawReviewTask;
+//	@Test
+//	public void test () {
+//		autoTransferRefundTask.autoWithdrawRefund();
+//	}
+	
+
+//	@TEST
+//	PUBLIC VOID TEST () {
+//		AUTOGOLDPAYREMITTASK.AUTOGOLDPAYREMITTASK();
+//	}
 	
 //	@Test
 	public void test () {
-		autoTransferRefundTask.autoWithdrawRefund();
+		autoWithdrawReviewTask.autoWithdrawReviewTask();
 	}
+	
+//	@Test
+//	public void test () {
+//		List<Transfer> transfers= goldpayTransManager.getNeedGoldpayRemitWithdraws();
+//		for (Transfer transfer : transfers) {
+//			System.out.println(transfer);
+//		}
+//	}
+	
 }
