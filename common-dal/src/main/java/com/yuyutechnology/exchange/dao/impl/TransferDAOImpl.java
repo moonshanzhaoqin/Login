@@ -221,50 +221,28 @@ public class TransferDAOImpl implements TransferDAO {
 	public PageBean getWithdrawRecordByPage(Integer userId, int currentPage, int pageSize) {
 		List<Object> values = new ArrayList<Object>();
 		StringBuilder hql = new StringBuilder(
-				"from Transfer where userFrom = ? and transferType = ? and ( transferStatus <> ? and  transferStatus <> ? and  transferStatus <> ?) order by createTime desc");
+				"from Transfer where userFrom = ? and transferType = ? and ( transferStatus <> ? and  transferStatus <> ? ) order by createTime desc");
 		values.add(userId);
 		values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
 		values.add(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		values.add(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-		values.add(ServerConsts.TRANSFER_STATUS_OF_REFUND);
 		PageBean pageBean = PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
 		return pageBean;
 	}
 
-	// @Override
-	// public void testByPage() {
-	//
-	// List<?> list = hibernateTemplate.execute(new HibernateCallback<List<?>>()
-	// {
-	// @Override
-	// public List<?> doInHibernate(Session session) throws HibernateException {
-	// Query query = session.createQuery("SELECT u.*,t.* from 'e_transfer'
-	// t,'e_user' u where t.userFrom = u.userId and u.phone=? ");
-	// query.setParameter(0, "18818218259");
-	//
-	// return query.list();
-	// }
-	// });
-
-	// System.out.println(list.get(0).toString());
-	// PageBean pageBean = PageUtils.getPageContent(hibernateTemplate,
-	// hql.toString(), values, 1, 3);
-	// System.out.println(pageBean.toString());
-	// }
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Transfer> getNeedGoldpayRemitWithdraws() {
-		List<?> list = hibernateTemplate.find("from Transfer where transferStatus = ?",
-				ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS);
+		List<?> list = hibernateTemplate.find("from Transfer where transferStatus = ? and transferType = ? ",
+				ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS,ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
 		return (List<Transfer>) list;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Transfer> getNeedReviewWithdraws() {
-		List<?> list = hibernateTemplate.find("from Transfer where transferStatus = ?",
-				ServerConsts.TRANSFER_STATUS_OF_PROCESSING);
+		List<?> list = hibernateTemplate.find("from Transfer where  transferStatus = ? and transferType = ? ",
+				ServerConsts.TRANSFER_STATUS_OF_PROCESSING,ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
 		return (List<Transfer>) list;
 	}
 
@@ -272,7 +250,8 @@ public class TransferDAOImpl implements TransferDAO {
 	public PageBean searchWithdrawsByPage(String userPhone, String transferId, String transferStatus, int currentPage,
 			int pageSize) {
 		List<Object> values = new ArrayList<Object>();
-		StringBuilder hql = new StringBuilder("from Transfer t, User u where t.userFrom = u.userId");
+		StringBuilder hql = new StringBuilder("from Transfer t, User u where t.userFrom = u.userId and transferType = ? ");
+		values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
 		if (StringUtils.isNotBlank(userPhone)) {
 			hql.append(" and u.userPhone = ?");
 			values.add(userPhone);
@@ -285,30 +264,6 @@ public class TransferDAOImpl implements TransferDAO {
 			hql.append(" and t.transferStatus = ?" );
 			values.add(Integer.parseInt(transferStatus));
 		}
-
-		// List<?> list = hibernateTemplate.execute(new
-		// HibernateCallback<List<?>>() {
-		// @Override
-		// public List<?> doInHibernate(Session session) throws
-		// HibernateException {
-		// Query query = session.createQuery("");
-		// //设置参数
-		// if(values != null && !values.isEmpty()){
-		// for (int i = 0; i < values.size(); i++)
-		// {
-		// query.setParameter(i, values.get(i));
-		// }
-		// }
-		// //设置起点
-		// query.setFirstResult(firstResult);
-		// //设置每页显示多少个
-		// query.setMaxResults(masResult);
-		//
-		// return query.list();
-		// }
-		// });
-		//
-
 		PageBean pageBean = PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
 		return pageBean;
 	}

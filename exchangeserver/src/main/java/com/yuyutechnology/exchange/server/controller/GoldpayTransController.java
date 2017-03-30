@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
@@ -207,7 +208,16 @@ public class GoldpayTransController {
 				WithdrawDTO withdrawDTO = new WithdrawDTO();
 				withdrawDTO.setAmount(transfer.getTransferAmount());
 				withdrawDTO.setCreateTime(transfer.getCreateTime());
-				withdrawDTO.setWithdrawStatus(transfer.getTransferStatus());
+				if (transfer.getTransferStatus() == ServerConsts.TRANSFER_STATUS_OF_PROCESSING
+						|| transfer.getTransferStatus() == ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS
+						|| transfer.getTransferStatus() == ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_FAIL
+						||transfer.getTransferStatus()==ServerConsts.TRANSFER_STATUS_OF_MANUALREVIEW_FAIL
+						||transfer.getTransferStatus()==ServerConsts.TRANSFER_STATUS_OF_MANUALREVIEW_SUCCESS
+						||transfer.getTransferStatus()==ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL) {
+					withdrawDTO.setWithdrawStatus(0);
+				} else if (transfer.getTransferStatus() == ServerConsts.TRANSFER_STATUS_OF_REFUND) {
+					withdrawDTO.setWithdrawStatus(1);
+				}
 				withdrawDTO.setCurrencyUnit(commonManager.getCurreny(transfer.getCurrency()).getCurrencyUnit());
 				dtos.add(withdrawDTO);
 			}
