@@ -20,6 +20,9 @@ CREATE TABLE `e_withdraw` (
   PRIMARY KEY (`withdraw_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8 COMMENT='提现审核';
 
-
+#2017-03-30
 ALTER TABLE `anytime_exchange`.`e_transfer`
   ADD COLUMN `goldpay_result` varchar(255) NULL DEFAULT NULL COMMENT 'goldpay回包';
+
+#2017-03-30
+DROP TABLE IF EXISTS `e_withdraw`;
