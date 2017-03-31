@@ -21,14 +21,14 @@ public class AutoTransferRefundTask {
 	public static Logger logger = LogManager.getLogger(AutoTransferRefundTask.class);
 	
 	public void autoWithdrawRefund(){
-		logger.info("=============autoWithdrawRefund Start=================={}",new Date());
-		List<Transfer> trans = goldpayTransManager.findGoldpayWithdrawByTimeBefore(DateFormatUtils.getIntervalHour(new Date(), -2));
-		if (trans != null && !trans.isEmpty()) {
-			for (Transfer transfer : trans) {
-				goldpayTransManager.withdrawRefund(transfer.getTransferId());
-			}
-		}
-		logger.info("=============autoWithdrawRefund end==================difference : {}",new Date());
+//		logger.info("=============autoWithdrawRefund Start=================={}",new Date());
+//		List<Transfer> trans = goldpayTransManager.findGoldpayWithdrawByTimeBefore(DateFormatUtils.getIntervalHour(new Date(), -2));
+//		if (trans != null && !trans.isEmpty()) {
+//			for (Transfer transfer : trans) {
+//				goldpayTransManager.withdrawRefund(transfer.getTransferId());
+//			}
+//		}
+//		logger.info("=============autoWithdrawRefund end==================difference : {}",new Date());
 		
 	}
 }
