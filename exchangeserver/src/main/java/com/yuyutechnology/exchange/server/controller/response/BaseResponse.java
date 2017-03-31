@@ -1,5 +1,6 @@
 package com.yuyutechnology.exchange.server.controller.response;
 
+import com.mysql.fabric.xmlrpc.base.Array;
 import com.yuyutechnology.exchange.RetCodeConsts;
 
 public class BaseResponse {
@@ -16,6 +17,7 @@ public class BaseResponse {
 		name = name.substring(0, name.indexOf("Response"));
 		name = name.substring(0, 1).toLowerCase() + name.substring(1);
 		apiName = name;
+		this.opts=new String[]{};
 	}
 
 	public String getRetCode() {
