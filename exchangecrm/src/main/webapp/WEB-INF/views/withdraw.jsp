@@ -37,7 +37,7 @@
 					<label class="sr-only" for="transferStatus">transferStatus</label>
 					<select class="form-control" name="transferStatus">
 						<option value="">审批状态</option>
-						<option value="0">初始化</option>
+						<!-- 						<option value="0">初始化</option> -->
 						<option value="1">未审核</option>
 						<option value="2">已完成</option>
 						<option value="3">已退回</option>
@@ -64,6 +64,7 @@
 						<th>交易数量(GDQ)</th>
 						<th>交易状态</th>
 						<th>操作</th>
+						<th>最新更新时间</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -168,7 +169,7 @@
 			form = document.getElementById("searchWithdraw");
 			getWithdrawList(page, form.userPhone.value, form.transferId.value,
 					form.transferStatus.value);
-			
+
 		}
 
 		//分页
@@ -296,7 +297,7 @@
 
 		function getWithdrawList(currentPage, userPhone, transferId,
 				transferStatus) {
-		var data = {
+			var data = {
 				currentPage : currentPage,
 				userPhone : userPhone,
 				transferId : transferId,
@@ -335,13 +336,16 @@
 									+ '</td>'
 									+ status(data.rows[i][0].transferId,
 											data.rows[i][0].transferStatus)
-									+ '</tr>'
+									+ '<td>'
+									+ timeDate(data.rows[i][0].finishTime)
+									+ '</td>' + '</tr>'
 						}
 						$('#withdraw tbody').html(html);
-						if(data.currentPage==1){
+						if (data.currentPage == 1) {
 							paginator(data.currentPage, data.pageTotal);
-							}
-					};
+						}
+					}
+					;
 				},
 				error : function(xhr, err) {
 					console.log("error");
@@ -349,6 +353,12 @@
 				},
 				async : false
 			});
+		}
+		//时间戳变格式化
+		function timeDate(time) {
+			var date = new Date();
+			date.setTime(time);
+			return date.toLocaleString();
 		}
 
 		//审批
