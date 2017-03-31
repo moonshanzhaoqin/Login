@@ -351,7 +351,7 @@
 									+ '</td>' + '</tr>'
 						}
 						$('#withdraw tbody').html(html);
-						if (data.currentPage == 1) {
+						if (data.currentPage == 1 && data.total!=0) {
 							paginator(data.currentPage, data.pageTotal);
 						}
 					}
