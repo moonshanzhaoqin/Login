@@ -162,14 +162,18 @@
 			// 				// 				console.log($("#paginator").data("currentPage"));
 			// 				searchWithdraw($("#paginator .active a").html());
 			// 			})
+
+			var userPhone, transferId, transferStatus;
+
 		});
 
 		function searchWithdraw(page) {
 			console.log("searchWithdraw:page=" + page);
 			form = document.getElementById("searchWithdraw");
-			getWithdrawList(page, form.userPhone.value, form.transferId.value,
-					form.transferStatus.value);
-
+			userPhone = form.userPhone.value;
+			transferId = form.transferId.value;
+			transferStatus = form.transferStatus.value;
+			getWithdrawList(page, userPhone, transferId,transferStatus);
 		}
 
 		//分页
@@ -196,11 +200,13 @@
 						return "" + page;
 					}
 				},
-				itemContainerClass : function(type, page, current) {
-					return (page === current) ? "active" : "pointer-cursor";
-				},
+				// 				itemContainerClass : function(type, page, current) {
+				// 					console.log("itemContainerClass")
+				// 					return (page === current) ? "active" : "pointer-cursor";
+				// 				},
 				onPageClicked : function(event, originalEvent, type, page) {
-					searchWithdraw(page);
+					console.log("onPageClicked")
+					getWithdrawList(page, userPhone, transferId,transferStatus);
 				}
 			}
 			//分页控件
@@ -297,6 +303,10 @@
 
 		function getWithdrawList(currentPage, userPhone, transferId,
 				transferStatus) {
+			form = document.getElementById("searchWithdraw");
+			form.userPhone.value = userPhone;
+			form.transferId.value =transferId;
+			form.transferStatus.value = transferStatus;
 			var data = {
 				currentPage : currentPage,
 				userPhone : userPhone,
@@ -341,11 +351,8 @@
 									+ '</td>' + '</tr>'
 						}
 						$('#withdraw tbody').html(html);
-						if (data.currentPage == 1 && data.total != 0) {
+						if (data.currentPage == 1) {
 							paginator(data.currentPage, data.pageTotal);
-						}
-						if (data.total == 0) {
-							$('#paginator').html("");
 						}
 					}
 					;
