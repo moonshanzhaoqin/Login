@@ -95,10 +95,7 @@ public class TransferDAOImpl implements TransferDAO {
 	public void updateTransferStatus(String transferId, int transferStatus) {
 		Transfer transfer = hibernateTemplate.get(Transfer.class, transferId);
 		transfer.setTransferStatus(transferStatus);
-		if (transferStatus == ServerConsts.TRANSFER_STATUS_OF_COMPLETED
-				|| transferStatus == ServerConsts.TRANSFER_STATUS_OF_REFUND) {
-			transfer.setFinishTime(new Date());
-		}
+		transfer.setFinishTime(new Date());
 		hibernateTemplate.saveOrUpdate(transfer);
 	}
 
@@ -234,7 +231,7 @@ public class TransferDAOImpl implements TransferDAO {
 	@Override
 	public List<Transfer> getNeedGoldpayRemitWithdraws() {
 		List<?> list = hibernateTemplate.find("from Transfer where transferStatus = ? and transferType = ? ",
-				ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS,ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
+				ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS, ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
 		return (List<Transfer>) list;
 	}
 
@@ -242,7 +239,7 @@ public class TransferDAOImpl implements TransferDAO {
 	@Override
 	public List<Transfer> getNeedReviewWithdraws() {
 		List<?> list = hibernateTemplate.find("from Transfer where  transferStatus = ? and transferType = ? ",
-				ServerConsts.TRANSFER_STATUS_OF_PROCESSING,ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
+				ServerConsts.TRANSFER_STATUS_OF_PROCESSING, ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
 		return (List<Transfer>) list;
 	}
 
@@ -250,8 +247,10 @@ public class TransferDAOImpl implements TransferDAO {
 	public PageBean searchWithdrawsByPage(String userPhone, String transferId, String transferStatus, int currentPage,
 			int pageSize) {
 		List<Object> values = new ArrayList<Object>();
-		StringBuilder hql = new StringBuilder("from Transfer t, User u where t.userFrom = u.userId and t.transferType = ? ");
+		StringBuilder hql = new StringBuilder(
+				"from Transfer t, User u where t.userFrom = u.userId and t.transferType = ? and t.transferStatus<>? ");
 		values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
+		values.add(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		if (StringUtils.isNotBlank(userPhone)) {
 			hql.append(" and u.userPhone = ?");
 			values.add(userPhone);
@@ -261,9 +260,16 @@ public class TransferDAOImpl implements TransferDAO {
 			values.add(transferId);
 		}
 		if (StringUtils.isNotBlank(transferStatus)) {
-			hql.append(" and t.transferStatus = ?" );
+			hql.append(" and t.transferStatus = ?");
 			values.add(Integer.parseInt(transferStatus));
+		}else{
+			hql.append(" and t.transferStatus <> ? and t.transferStatus <> ?");
+			values.add(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+			values.add(ServerConsts.TRANSFER_STATUS_OF_REFUND);
 		}
+		
+		 hql.append(" order by t.transferStatus,t.finishTime desc" );
+		 
 		PageBean pageBean = PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
 		return pageBean;
 	}

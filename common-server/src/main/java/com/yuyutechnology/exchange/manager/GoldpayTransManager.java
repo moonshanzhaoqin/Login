@@ -35,7 +35,7 @@ public interface GoldpayTransManager {
 	// public void withdrawRefund(int userId, String transferId, String
 	// transferCurrency, BigDecimal transferAmount);
 
-	public List<Transfer> findGoldpayWithdrawByTimeBefore(Date date);
+//	public List<Transfer> findGoldpayWithdrawByTimeBefore(Date date);
 
 	// public WithdrawDetail getWithdrawDetail(Integer withdrawId);
 

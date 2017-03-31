@@ -334,6 +334,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		Transfer transfer = new Transfer();
 		transfer.setTransferId(transferId);
 		transfer.setCreateTime(new Date());
+		transfer.setFinishTime(new Date());
 		transfer.setCurrency(ServerConsts.CURRENCY_OF_GOLDPAY);
 		transfer.setTransferAmount(new BigDecimal(Double.toString(amount)));
 		transfer.setTransferComment("goldpay withdraw");
@@ -556,7 +557,9 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 				transfer.getTransferAmount(), "+");
 
 		// 更改Transfer状态
-		transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_PROCESSING);
+		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_PROCESSING);
+		transfer.setFinishTime(new Date());
+		transferDAO.updateTransfer(transfer);
 		// 添加seq记录
 		walletSeqDAO.addWalletSeq4Transaction(userId, systemUser.getUserId(),
 				ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, transfer.getTransferId(), transfer.getCurrency(),
@@ -579,7 +582,9 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getCurrency(),
 				transfer.getTransferAmount(), "+");
 		// 更改Transfer状态
-		transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_REFUND);
+		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_REFUND);
+		transfer.setFinishTime(new Date());
+		transferDAO.updateTransfer(transfer);
 		// 添加seq记录
 		walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), transfer.getUserFrom(),
 				ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_REFUND, transferId, transfer.getCurrency(),
@@ -599,6 +604,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 			logger.warn("The account is not tied to goldpay");
 
 			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL);
+			transfer.setFinishTime(new Date());
 			transferDAO.updateTransfer(transfer);
 
 			map.put("msg", "The account is not tied to goldpay");
@@ -619,6 +625,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 				&& transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL) {
 			
 			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL);
+			transfer.setFinishTime(new Date());
 			transferDAO.updateTransfer(transfer);
 
 			logger.warn("The transaction status is not processing!{}",transfer.getTransferStatus());
@@ -696,6 +703,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 			} else {
 
 				transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL);
+				transfer.setFinishTime(new Date());
 				transferDAO.updateTransfer(transfer);
 
 				logger.warn("withdrawConfirm tpps callback result : null");
@@ -707,6 +715,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		} else {
 
 			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL);
+			transfer.setFinishTime(new Date());
 			transferDAO.updateTransfer(transfer);
 
 			logger.warn("withdrawConfirm tpps callback result : null");
@@ -717,11 +726,11 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		
 	}
 
-	@Override
-	public List<Transfer> findGoldpayWithdrawByTimeBefore(Date date) {
-		return transferDAO.findTransferByStatusAndTimeBefore(ServerConsts.TRANSFER_STATUS_OF_PROCESSING,
-				ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, date);
-	}
+//	@Override
+//	public List<Transfer> findGoldpayWithdrawByTimeBefore(Date date) {
+//		return transferDAO.findTransferByStatusAndTimeBefore(ServerConsts.TRANSFER_STATUS_OF_PROCESSING,
+//				ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, date);
+//	}
 
 	// @Override
 	// public WithdrawDetail getWithdrawDetail(Integer withdrawId) {
@@ -754,10 +763,11 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	@Override
 	public void withdrawReviewAuto(String transferId) {
 		logger.info("withdrawReviewAuto {}==>",transferId);
-		
 		Transfer transfer = transferDAO.getTransferById(transferId);
 		// 审核成功
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS);
+		transfer.setFinishTime(new Date());
+		transferDAO.updateTransfer(transfer);
 	}
 
 	@Override
@@ -766,6 +776,8 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		Transfer transfer = transferDAO.getTransferById(transferId);
 		// 审核成功
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_MANUALREVIEW_SUCCESS);
+		transfer.setFinishTime(new Date());
+		transferDAO.updateTransfer(transfer);
 	}
 
 	@Override

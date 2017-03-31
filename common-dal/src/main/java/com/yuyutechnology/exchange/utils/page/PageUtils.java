@@ -36,7 +36,7 @@ public class PageUtils {
 	*/
 	public static PageBean getPageContent(HibernateTemplate hibernateTemplate,final String hql,
 			final List<?> values,int currentPage,int pageSize) {
-		
+		log.info(hql);
 		int firstResult = (currentPage -1)*pageSize;
 		int masResult = pageSize;
 		List<?> list = PageUtils.getListByPage(hibernateTemplate, hql, values, firstResult, masResult);

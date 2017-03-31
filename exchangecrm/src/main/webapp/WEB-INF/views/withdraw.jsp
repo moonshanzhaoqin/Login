@@ -31,13 +31,13 @@
 				<div class="form-group">
 					<label class="sr-only" for="transferId">transferId</label> <input
 						type="text" class="form-control" name="transferId"
-						placeholder="交易ID">
+						placeholder="交易号">
 				</div>
 				<div class="form-group">
 					<label class="sr-only" for="transferStatus">transferStatus</label>
 					<select class="form-control" name="transferStatus">
 						<option value="">审批状态</option>
-						<option value="0">初始化</option>
+						<!-- 						<option value="0">初始化</option> -->
 						<option value="1">未审核</option>
 						<option value="2">已完成</option>
 						<option value="3">已退回</option>
@@ -64,6 +64,7 @@
 						<th>交易数量(GDQ)</th>
 						<th>交易状态</th>
 						<th>操作</th>
+						<th>最新更新时间</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -146,9 +147,7 @@
 	<script>
 		$(function() {
 			//页面初始化，加载数据
-			getWithdrawList(1, "", "", "");
-
-			// 			//模态框打开初始化数据
+			searchWithdraw(1);
 			// 			$('#myModal').on('show.bs.modal', function(e) {
 			// 				// do something...
 			// 				var tr = $(e.relatedTarget) // Button that triggered the modal
@@ -170,11 +169,12 @@
 			form = document.getElementById("searchWithdraw");
 			getWithdrawList(page, form.userPhone.value, form.transferId.value,
 					form.transferStatus.value);
+
 		}
 
 		//分页
 		function paginator(currentPage, pageTotal) {
-			console.log("currentPage=" + currentPage + ",pageTotal="
+			console.log("paginator:currentPage=" + currentPage + ",pageTotal="
 					+ pageTotal);
 			var options = {
 				currentPage : currentPage,//当前页
@@ -200,7 +200,7 @@
 					return (page === current) ? "active" : "pointer-cursor";
 				},
 				onPageClicked : function(event, originalEvent, type, page) {
-					searchWithdraw(page)
+					searchWithdraw(page);
 				}
 			}
 			//分页控件
@@ -297,7 +297,7 @@
 
 		function getWithdrawList(currentPage, userPhone, transferId,
 				transferStatus) {
-			data = {
+			var data = {
 				currentPage : currentPage,
 				userPhone : userPhone,
 				transferId : transferId,
@@ -318,7 +318,6 @@
 						console.log("success");
 						var html = "";
 						for ( var i in data.rows) {
-							// 							console.log(status(data.rows[i][0].transferId,data.rows[i][0].transferStatus));
 							html += '<tr>'
 									+ '<td>'
 									+ data.rows[i][0].userFrom
@@ -337,11 +336,16 @@
 									+ '</td>'
 									+ status(data.rows[i][0].transferId,
 											data.rows[i][0].transferStatus)
-									+ '</tr>'
+									+ '<td>'
+									+ timeDate(data.rows[i][0].finishTime)
+									+ '</td>' + '</tr>'
 						}
 						$('#withdraw tbody').html(html);
-						paginator(data.currentPage, data.pageTotal);
+						if (data.currentPage == 1) {
+							paginator(data.currentPage, data.pageTotal);
+						}
 					}
+					;
 				},
 				error : function(xhr, err) {
 					console.log("error");
@@ -349,7 +353,12 @@
 				},
 				async : false
 			});
-
+		}
+		//时间戳变格式化
+		function timeDate(time) {
+			var date = new Date();
+			date.setTime(time);
+			return date.toLocaleString();
 		}
 
 		//审批
