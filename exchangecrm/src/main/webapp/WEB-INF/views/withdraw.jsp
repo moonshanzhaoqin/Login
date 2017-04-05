@@ -57,8 +57,7 @@
 
 					<!-- 					<label class="sr-only" for="transferStatus">transferStatus</label> -->
 					<!-- 					<select class="form-control selectpicker" name="transferStatus" multiple> -->
-					<!-- <!-- 						<option value="">审批状态</option> -->
-					-->
+					<!-- 						<option value="">审批状态</option> -->
 					<!-- 						<option value="1">未审核</option> -->
 					<!-- 						<option value="2">已完成</option> -->
 					<!-- 						<option value="3">已退回</option> -->
@@ -333,16 +332,12 @@
 			form = document.getElementById("searchWithdraw");
 			form.userPhone.value = userPhone;
 			form.transferId.value = transferId;
-
-			// 			form.transferStatus.value = transferStatus;
 			$('input:checkbox').each(function() {
-				$(this).val()
+				$(this).attr("checked", false);
 			});
 			for (i in transferStatus) {
-				string =transferStatus[i];
-				console.log(string);
-				$("input:checkbox[value="+transferStatus[i]+"]").attr("checked",
-						true);
+				$("input:checkbox[value='" + transferStatus[i] + "']").prop(
+						"checked", true);
 			}
 
 			var data = {
