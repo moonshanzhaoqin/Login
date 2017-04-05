@@ -2,6 +2,7 @@ package com.yuyutechnology.exchange.utils.page;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -11,6 +12,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
+
+import com.mysql.fabric.xmlrpc.base.Array;
 
 /** 
 * @ClassName: PageUtils 
@@ -37,6 +40,7 @@ public class PageUtils {
 	public static PageBean getPageContent(HibernateTemplate hibernateTemplate,final String hql,
 			final List<?> values,int currentPage,int pageSize) {
 		log.info(hql);
+		log.info(values);
 		int firstResult = (currentPage -1)*pageSize;
 		int masResult = pageSize;
 		List<?> list = PageUtils.getListByPage(hibernateTemplate, hql, values, firstResult, masResult);
