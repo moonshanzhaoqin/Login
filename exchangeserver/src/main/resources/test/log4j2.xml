@@ -29,7 +29,7 @@
          	<DefaultRolloverStrategy>  
 	        	<Delete basePath="/srv/logs" maxDepth="1">  
                      <IfFileName glob="server.log.*" />  
-                     <IfLastModified age="1d" />  
+                     <IfLastModified age="3d" />  
 	            </Delete>  
             </DefaultRolloverStrategy>  
         </RollingFile>
