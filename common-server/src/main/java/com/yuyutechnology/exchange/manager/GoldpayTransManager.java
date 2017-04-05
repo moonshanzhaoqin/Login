@@ -47,7 +47,7 @@ public interface GoldpayTransManager {
 
 	HashMap<String, String> goldpayRemit(String transferId);
 
-	public PageBean getWithdrawList(int currentPage, String userPhone, String transferId, String transferStatus);
+	public PageBean getWithdrawList(int currentPage, String userPhone, String transferId, String[] transferStatus);
 
 	void withdrawRefund(String transferId);
 
