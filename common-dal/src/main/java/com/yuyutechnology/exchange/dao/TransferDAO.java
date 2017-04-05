@@ -48,7 +48,7 @@ public interface TransferDAO {
 
 	public List<Transfer> getNeedReviewWithdraws();
 
-	public PageBean searchWithdrawsByPage(String userPhone, String reviewStatus, String goldpayRemit, int currentPage,
+	public PageBean searchWithdrawsByPage(String userPhone, String reviewStatus, String[] transferStatus, int currentPage,
 			int pageSize);
 
 //	void testByPage();

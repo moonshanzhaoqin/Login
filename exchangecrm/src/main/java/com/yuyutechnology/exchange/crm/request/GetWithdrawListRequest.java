@@ -1,17 +1,14 @@
 package com.yuyutechnology.exchange.crm.request;
 
+import java.util.Arrays;
+
 public class GetWithdrawListRequest {
 
-	@Override
-	public String toString() {
-		return "GetWithdrawListRequest [currentPage=" + currentPage + ", userPhone=" + userPhone + ", transferId="
-				+ transferId + ", transferStatus=" + transferStatus + "]";
-	}
 
 	private String currentPage;
 	private String userPhone;
 	private String transferId;
-	private String transferStatus;
+	private String[] transferStatus;
 
 	public String getUserPhone() {
 		return userPhone;
@@ -37,11 +34,18 @@ public class GetWithdrawListRequest {
 		this.transferId = transferId;
 	}
 
-	public String getTransferStatus() {
+	public String[] getTransferStatus() {
 		return transferStatus;
 	}
 
-	public void setTransferStatus(String transferStatus) {
+	public void setTransferStatus(String[] transferStatus) {
 		this.transferStatus = transferStatus;
 	}
+
+	@Override
+	public String toString() {
+		return "GetWithdrawListRequest [currentPage=" + currentPage + ", userPhone=" + userPhone + ", transferId="
+				+ transferId + ", transferStatus=" + Arrays.toString(transferStatus) + "]";
+	}
+
 }

@@ -34,19 +34,40 @@
 						placeholder="交易号">
 				</div>
 				<div class="form-group">
-					<label class="sr-only" for="transferStatus">transferStatus</label>
-					<select class="form-control" name="transferStatus">
-						<option value="">审批状态</option>
-						<!-- 						<option value="0">初始化</option> -->
-						<option value="1">未审核</option>
-						<option value="2">已完成</option>
-						<option value="3">已退回</option>
-						<option value="4">一审成功，待支付</option>
-						<option value="5">一审失败，待二审</option>
-						<option value="6">二审成功 ，待支付</option>
-						<option value="7">二审失败，待退回</option>
-						<option value="8">支付失败，待退回，待支付</option>
-					</select>
+					<!-- 					<label class="checkbox-inline"> <input type="checkbox" -->
+					<!-- 						name="transferStatus" value="">all -->
+					<!-- 					</label>  -->
+					<label class="checkbox-inline"> <input type="checkbox"
+						name="transferStatus" value="1" checked>未审核
+					</label> <label class="checkbox-inline"> <input type="checkbox"
+						name="transferStatus" value="2">已完成
+					</label> <label class="checkbox-inline"> <input type="checkbox"
+						name="transferStatus" value="3">已退回
+					</label> <label class="checkbox-inline"> <input type="checkbox"
+						name="transferStatus" value="4" checked>一审成功，待支付
+					</label> <label class="checkbox-inline"> <input type="checkbox"
+						name="transferStatus" value="5" checked>一审失败，待二审
+					</label> <label class="checkbox-inline"> <input type="checkbox"
+						name="transferStatus" value="6" checked>二审成功 ，待支付
+					</label> <label class="checkbox-inline"> <input type="checkbox"
+						name="transferStatus" value="7" checked>二审失败，待退回
+					</label> <label class="checkbox-inline"> <input type="checkbox"
+						name="transferStatus" value="8" checked>支付失败，待退回，待支付
+					</label>
+
+					<!-- 					<label class="sr-only" for="transferStatus">transferStatus</label> -->
+					<!-- 					<select class="form-control selectpicker" name="transferStatus" multiple> -->
+					<!-- <!-- 						<option value="">审批状态</option> -->
+					-->
+					<!-- 						<option value="1">未审核</option> -->
+					<!-- 						<option value="2">已完成</option> -->
+					<!-- 						<option value="3">已退回</option> -->
+					<!-- 						<option value="4">一审成功，待支付</option> -->
+					<!-- 						<option value="5">一审失败，待二审</option> -->
+					<!-- 						<option value="6">二审成功 ，待支付</option> -->
+					<!-- 						<option value="7">二审失败，待退回</option> -->
+					<!-- 						<option value="8">支付失败，待退回，待支付</option> -->
+					<!-- 					</select> -->
 				</div>
 				<button type="button" class="btn btn-primary"
 					onclick="searchWithdraw(1)">搜索</button>
@@ -163,7 +184,7 @@
 			// 				searchWithdraw($("#paginator .active a").html());
 			// 			})
 
-			var userPhone, transferId, transferStatus;
+			var userPhone, transferId, transferStatus = [];
 
 		});
 
@@ -172,8 +193,14 @@
 			form = document.getElementById("searchWithdraw");
 			userPhone = form.userPhone.value;
 			transferId = form.transferId.value;
-			transferStatus = form.transferStatus.value;
-			getWithdrawList(page, userPhone, transferId,transferStatus);
+			obj = form.transferStatus;
+			transferStatus = [];
+			for (k in obj) {
+				if (obj[k].checked)
+					transferStatus.push(obj[k].value);
+			}
+			console.log(transferStatus);
+			getWithdrawList(page, userPhone, transferId, transferStatus);
 		}
 
 		//分页
@@ -206,7 +233,7 @@
 				// 				},
 				onPageClicked : function(event, originalEvent, type, page) {
 					console.log("onPageClicked")
-					getWithdrawList(page, userPhone, transferId,transferStatus);
+					getWithdrawList(page, userPhone, transferId, transferStatus);
 				}
 			}
 			//分页控件
@@ -305,8 +332,19 @@
 				transferStatus) {
 			form = document.getElementById("searchWithdraw");
 			form.userPhone.value = userPhone;
-			form.transferId.value =transferId;
-			form.transferStatus.value = transferStatus;
+			form.transferId.value = transferId;
+
+			// 			form.transferStatus.value = transferStatus;
+			$('input:checkbox').each(function() {
+				$(this).val()
+			});
+			for (i in transferStatus) {
+				string =transferStatus[i];
+				console.log(string);
+				$("input:checkbox[value="+transferStatus[i]+"]").attr("checked",
+						true);
+			}
+
 			var data = {
 				currentPage : currentPage,
 				userPhone : userPhone,
@@ -351,7 +389,7 @@
 									+ '</td>' + '</tr>'
 						}
 						$('#withdraw tbody').html(html);
-						if (data.currentPage == 1 && data.total!=0) {
+						if (data.currentPage == 1) {
 							paginator(data.currentPage, data.pageTotal);
 						}
 					}

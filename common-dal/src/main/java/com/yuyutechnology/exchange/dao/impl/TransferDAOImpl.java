@@ -244,13 +244,13 @@ public class TransferDAOImpl implements TransferDAO {
 	}
 
 	@Override
-	public PageBean searchWithdrawsByPage(String userPhone, String transferId, String transferStatus, int currentPage,
+	public PageBean searchWithdrawsByPage(String userPhone, String transferId, String[] transferStatus, int currentPage,
 			int pageSize) {
 		List<Object> values = new ArrayList<Object>();
 		StringBuilder hql = new StringBuilder(
-				"from Transfer t, User u where t.userFrom = u.userId and t.transferType = ? and t.transferStatus<>? ");
+				"from Transfer t, User u where t.userFrom = u.userId and t.transferType = ? ");
 		values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
-		values.add(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
+//		values.add(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		if (StringUtils.isNotBlank(userPhone)) {
 			hql.append(" and u.userPhone = ?");
 			values.add(userPhone);
@@ -259,17 +259,17 @@ public class TransferDAOImpl implements TransferDAO {
 			hql.append(" and t.transferId = ?");
 			values.add(transferId);
 		}
-		if (StringUtils.isNotBlank(transferStatus)) {
-			hql.append(" and t.transferStatus = ?");
-			values.add(Integer.parseInt(transferStatus));
-		}else{
-			hql.append(" and t.transferStatus <> ? and t.transferStatus <> ?");
-			values.add(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-			values.add(ServerConsts.TRANSFER_STATUS_OF_REFUND);
+		if (transferStatus.length >= 0) {
+			hql.append(" and ( t.transferStatus = ?");
+			values.add(Integer.parseInt(transferStatus[0]));
+			for (int i = 1; i < transferStatus.length; i++) {
+				hql.append(" or t.transferStatus = ?");
+				values.add(Integer.parseInt(transferStatus[i]));
+			}
+			hql.append(")");
 		}
-		
-		 hql.append(" order by t.transferStatus,t.finishTime desc" );
-		 
+		hql.append(" order by t.transferStatus,t.finishTime desc");
+
 		PageBean pageBean = PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
 		return pageBean;
 	}

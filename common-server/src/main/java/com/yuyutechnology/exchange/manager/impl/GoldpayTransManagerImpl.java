@@ -781,7 +781,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	}
 
 	@Override
-	public PageBean getWithdrawList(int currentPage, String userPhone, String transferId, String transferStatus) {
+	public PageBean getWithdrawList(int currentPage, String userPhone, String transferId, String[] transferStatus) {
 		logger.info("currentPage={},userPhone={},transferId={},transferStatus={}", currentPage, userPhone, transferId,
 				transferStatus);
 		return transferDAO.searchWithdrawsByPage(userPhone, transferId, transferStatus, currentPage, 10);
