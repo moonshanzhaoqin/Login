@@ -289,7 +289,7 @@ public class TransferController {
 		//从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		GetTransactionRecordResponse rep = new GetTransactionRecordResponse();
-		HashMap<String,Object> map = transferManager.getTransactionRecordByPage(reqMsq.getPeriod(), sessionData.getUserId(),
+		HashMap<String,Object> map = transferManager.getTransactionRecordByPage(reqMsq.getPeriod(),reqMsq.getType() ,sessionData.getUserId(),
 				reqMsq.getCurrentPage(), reqMsq.getPageSize());
 
 		User systemUser = userManager.getSystemUser();
@@ -406,4 +406,12 @@ public class TransferController {
 		}
 		return rep;
 	}
+	
+	public void getTransDetails(){
+		
+		
+		
+	}
+	
+	
 }

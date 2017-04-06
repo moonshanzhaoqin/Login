@@ -68,7 +68,7 @@ public interface TransferManager {
 	 * @param pageSize
 	 * @return
 	 */
-	public HashMap<String, Object> getTransactionRecordByPage(String period,int userId,int currentPage, int pageSize);
+	public HashMap<String, Object> getTransactionRecordByPage(String period,String type, int userId,int currentPage, int pageSize);
 	
 	
 	/**

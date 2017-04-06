@@ -7,7 +7,7 @@ import com.wordnik.swagger.annotations.ApiParam;
 public class GetTransactionRecordRequest {
 	
 	private String period;
-//	private int status;
+	private String type;
 	private int currentPage;
 	private int pageSize;
 	
@@ -18,14 +18,15 @@ public class GetTransactionRecordRequest {
 	public void setPeriod(String period) {
 		this.period = period;
 	}
-//	public int getStatus() {
-//		return status;
-//	}
-//	public void setStatus(int status) {
-//		this.status = status;
-//	}
+
 	public int getCurrentPage() {
 		return currentPage;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
 	}
 	public void setCurrentPage(int currentPage) {
 		this.currentPage = currentPage;
