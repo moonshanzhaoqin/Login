@@ -25,7 +25,12 @@
             <!-- 
             <SizeBasedTriggeringPolicy size="50MB"/>
              -->
-            <DefaultRolloverStrategy max="30" />  
+         	<DefaultRolloverStrategy>  
+	        	<Delete basePath="/srv/logs" maxDepth="1">  
+                     <IfFileName glob="task.log.*" />  
+                     <IfLastModified age="30d" />  
+	            </Delete>  
+            </DefaultRolloverStrategy> 
         </RollingFile>
     </appenders>
     <!--然后定义logger，只有定义了logger并引入的appender，appender才会生效-->

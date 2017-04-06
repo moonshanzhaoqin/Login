@@ -25,7 +25,12 @@
             <!-- 
             <SizeBasedTriggeringPolicy size="50MB"/>
              -->
-            <DefaultRolloverStrategy max="30" />  
+         	<DefaultRolloverStrategy>  
+	        	<Delete basePath="/srv/logs" maxDepth="1">  
+                     <IfFileName glob="crm.log.*" />  
+                     <IfLastModified age="30d" />  
+	            </Delete>  
+            </DefaultRolloverStrategy> 
         </RollingFile>
         
     </appenders>
