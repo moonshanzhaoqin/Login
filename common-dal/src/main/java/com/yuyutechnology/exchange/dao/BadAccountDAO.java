@@ -19,4 +19,6 @@ public interface BadAccountDAO {
 	public List<BadAccount> findBadAccountList(int badAccountStatus);
 
 	public PageBean getBadAccountByPage(int currentPage, int pageSize);
+
+	BadAccount getBadAccount(Integer badAccountId);
 }

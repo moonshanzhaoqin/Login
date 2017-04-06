@@ -12,47 +12,167 @@
 	type='image/x-ico' />
 <link rel="stylesheet"
 	href='<c:url value="/resources/bootstrap/css/bootstrap.min.css" />' />
+	<link rel="stylesheet"
+	href='<c:url value="/resources/bootstrap/css/bootstrap-paginator.min.css" />' />
 <link rel="stylesheet"
 	href="<c:url value="/resources/css/common.css" />" />
 </head>
 <body>
 	<%@ include file="common/header.jsp"%>
 
-	<div class="container">
+	<div class="container" style="height: 100%;">
 
-		<div class="row">
+		<div class="row" style="height: 300px; overflow: auto;">
 			<table class="table table-bordered table-hover table-striped"
 				id="badAccount">
 				<thead>
 					<tr>
 						<th>用户ID</th>
+						<th>手机号</th>
 						<th>货币</th>
+						<th>sumAmount</th>
+						<th>balanceBefore</th>
+						<th>balanceNow</th>
 						<th>开始时间</th>
 						<th>结束时间</th>
+						<th>badAccountStatus</th>
 						<th>操作</th>
+
 					</tr>
 				</thead>
 				<tbody></tbody>
 			</table>
 		</div>
 
+		<div class="row" style="height: 300px; overflow: auto;"></div>
 	</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">Modal title</h4>
+				</div>
+				<div class="modal-body" style="overflow: auto;">
+					<table class="table table-bordered table-hover table-striped"
+						id="walletSeq">
+						<thead>
+							<tr>
+								<th>货币</th>
+								<th>数量</th>
+								<th>交易类型</th>
+								<th>交易ID</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
 
 	<script type="text/javascript"
 		src="<c:url value="/resources/js/jquery.min.js" />"></script>
 	<script type="text/javascript"
 		src="<c:url value="/resources/bootstrap/js/bootstrap.min.js" />"></script>
+		<script type="text/javascript"
+		src="<c:url value="/resources/bootstrap/js/bootstrap-paginator.min.js" />"></script>
 	<script type="text/javascript">
 		$(function() {
 			getBadAccountByPage(1);
+
+			$('#myModal').on('show.bs.modal', function(e) {
+				// do something...
+				var tr = $(e.relatedTarget) // Button that triggered the modal
+				var badAccountId = tr.data('whatever') // Extract info from data-* attributes
+				console.log(badAccountId);
+				getDetailSeq(badAccountId)
+			})
+
+			
 		})
 		function getBadAccountByPage(currentPage) {
 			data = {
 				currentPage : currentPage
 			};
+			$
+					.ajax({
+						type : "post",
+						url : "/crm/getBadAccountByPage",
+						dataType : 'json',
+						contentType : "application/json; charset=utf-8",
+						data : JSON.stringify(data),
+						success : function(data) {
+							if (data.retCode == "00002") {
+								location.href = loginUrl;
+							} else {
+								console.log("success");
+								var html = "";
+								for ( var i in data.rows) {
+									html += '<tr>' + '<td>'
+											+ data.rows[i][1].userId
+											+ '</td>'
+											+ '<td>'
+											+ data.rows[i][1].areaCode
+											+ data.rows[i][1].userPhone
+											+ '</td>'
+											+ '<td>'
+											+ data.rows[i][0].currency
+											+ '</td>'
+											+ '<td>'
+											+ data.rows[i][0].sumAmount
+											+ '</td>'
+											+ '<td>'
+											+ data.rows[i][0].balanceBefore
+											+ '</td>'
+											+ '<td>'
+											+ data.rows[i][0].balanceNow
+											+ '</td>'
+											+ '<td>'
+											+ timeDate(data.rows[i][0].startTime)
+											+ '</td>'
+											+ '<td>'
+											+ timeDate(data.rows[i][0].endTime)
+											+ '</td>'
+											+ '<td>'
+											+ data.rows[i][0].badAccountStatus
+											+ '</td>'
+											+ '<td>'
+											+ '<a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" data-whatever='
+											+ data.rows[i][0].badAccountId
+											+ '>详情</a>' + '</td>' + '</tr>'
+								}
+								$('#badAccount tbody').html(html);
+								if (data.currentPage == 1) {
+									paginator(data.currentPage, data.pageTotal);
+								}
+							}
+						},
+						error : function(xhr, err) {
+							console.log("error");
+							console.log(err);
+						},
+						async : false
+					});
+		}
+		function getDetailSeq(badAccountId) {
+			data = {
+				badAccountId : badAccountId
+			};
 			$.ajax({
 				type : "post",
-				url : "/crm/getBadAccountByPage",
+				url : "/crm/getDetailSeq",
 				dataType : 'json',
 				contentType : "application/json; charset=utf-8",
 				data : JSON.stringify(data),
@@ -62,19 +182,15 @@
 					} else {
 						console.log("success");
 						var html = "";
-						for ( var i in data.rows) {
-							html += '<tr>' + '<td>' + data.rows[i].userId
-									+ '</td>' + '<td>' + data.rows[i].currency
-									+ '</td>' + '<td>' + timeDate(data.rows[i].startTime)
-									+ '</td>' + '<td>' + timeDate(data.rows[i].endTime)
-									+ '</td>' + '<td>'
-									+ '<a href="javascript:void(0)">详情</a>'
+						for ( var i in data) {
+							html += '<tr>' + '<td>' + data[i].currency
+									+ '</td>' + '<td>' + data[i].amount
+									+ '</td>' + '<td>' + data[i].transferType
+									+ '</td>' + '<td>' + data[i].transactionId
+
 									+ '</td>' + '</tr>'
 						}
-						$('#badAccount tbody').html(html);
-						if (data.currentPage == 1) {
-							paginator(data.currentPage, data.pageTotal);
-						}
+						$('#walletSeq tbody').html(html);
 					}
 				},
 				error : function(xhr, err) {
@@ -83,7 +199,6 @@
 				},
 				async : false
 			});
-
 		}
 		//分页
 		function paginator(currentPage, pageTotal) {

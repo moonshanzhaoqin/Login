@@ -2,11 +2,12 @@ package com.yuyutechnology.exchange.manager;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 
 import com.yuyutechnology.exchange.utils.page.PageBean;
 
 public interface WalletManager {
-	
+
 	/**
 	 * @Descrition : 根据用户id获取账号资产对应的黄金总量
 	 * @author : nicholas.chi
@@ -15,9 +16,11 @@ public interface WalletManager {
 	 * @return
 	 */
 	public HashMap<String, BigDecimal> getTotalAmoutGold(int userId);
-	
+
 	public void getUserTotalBalance(int systemUserId);
 
 	public PageBean getBadAccountByPage(int parseInt);
-	
+
+	public List<?> getDetailSeq(Integer badAccountId);
+
 }

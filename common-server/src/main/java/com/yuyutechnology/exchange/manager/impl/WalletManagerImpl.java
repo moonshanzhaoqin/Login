@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BadAccountDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
+import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.manager.WalletManager;
+import com.yuyutechnology.exchange.pojo.BadAccount;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
 import com.yuyutechnology.exchange.utils.page.PageBean;
@@ -24,6 +26,8 @@ public class WalletManagerImpl implements WalletManager {
 	
 	@Autowired
 	WalletDAO walletDAO;
+	@Autowired
+	WalletSeqDAO walletSeqDAO;
 	@Autowired
 	BadAccountDAO badAccountDAO;
 	
@@ -85,6 +89,13 @@ public class WalletManagerImpl implements WalletManager {
 	@Override
 	public PageBean getBadAccountByPage(int currentPage) {
 		return badAccountDAO.getBadAccountByPage(currentPage,10);
+	}
+
+
+	@Override
+	public List<?> getDetailSeq(Integer badAccountId) {
+	BadAccount badAccount=	badAccountDAO.getBadAccount(badAccountId);
+	return	walletSeqDAO.getWalletSeq(badAccount.getUserId(),badAccount.getCurrency(),badAccount.getStartSeqId(),badAccount.getEndSeqId());
 	}
 
 }

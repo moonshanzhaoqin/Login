@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.dao;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.yuyutechnology.exchange.pojo.WalletSeq;
 
@@ -13,6 +14,8 @@ public interface WalletSeqDAO {
 	 * @param walletSeq
 	 */
 	public void addWalletSeq(WalletSeq walletSeq);
+
+	public List<?> getWalletSeq(int userId, String currency, long startSeqId, long endSeqId);
 	
 	/**
 	 * @Descrition : 添加兑换交易中一方的进出两条交易记录

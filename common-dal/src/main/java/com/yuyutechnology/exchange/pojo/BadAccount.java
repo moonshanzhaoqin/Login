@@ -91,7 +91,7 @@ public class BadAccount implements java.io.Serializable {
 		this.sumAmount = sumAmount;
 	}
 
-	@Column(name = "balance_before", nullable = false, precision = 20, scale = 4)
+	@Column(name = "balance_history", nullable = false, precision = 20, scale = 4)
 	public BigDecimal getBalanceBefore() {
 		return this.balanceBefore;
 	}
