@@ -84,6 +84,7 @@
 						<th>交易数量(GDQ)</th>
 						<th>交易状态</th>
 						<th>操作</th>
+						<th>创建时间</th>
 						<th>最新更新时间</th>
 					</tr>
 				</thead>
@@ -371,6 +372,9 @@
 									+ '</td>'
 									+ status(data.rows[i][0].transferId,
 											data.rows[i][0].transferStatus)
+									+ '<td>'
+									+ timeDate(data.rows[i][0].createTime)
+									+ '</td>'
 									+ '<td>'
 									+ timeDate(data.rows[i][0].finishTime)
 									+ '</td>' + '</tr>'
