@@ -3,6 +3,8 @@ package com.yuyutechnology.exchange.manager;
 import java.math.BigDecimal;
 import java.util.HashMap;
 
+import com.yuyutechnology.exchange.utils.page.PageBean;
+
 public interface WalletManager {
 	
 	/**
@@ -15,5 +17,7 @@ public interface WalletManager {
 	public HashMap<String, BigDecimal> getTotalAmoutGold(int userId);
 	
 	public void getUserTotalBalance(int systemUserId);
+
+	public PageBean getBadAccountByPage(int parseInt);
 	
 }
