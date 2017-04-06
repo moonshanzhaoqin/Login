@@ -65,7 +65,7 @@ public class AccountInfoController {
 			mav.addObject("usermAmount", userTotalAssets.get("totalAssets"));
 		}
 
-		mav.setViewName("/accountInfo/totalAssetsDetails");
+		mav.setViewName("accountInfo/totalAssetsDetails");
 		return mav;
 	}
 
@@ -86,7 +86,7 @@ public class AccountInfoController {
 		mav.addObject("updateFlag", crmUserInfoManager.getUpdateFlag());
 		mav.addObject("model", requst);
 
-		mav.setViewName("/accountInfo/accountOverview");
+		mav.setViewName("accountInfo/accountOverview");
 		return mav;
 	}
 
@@ -110,7 +110,7 @@ public class AccountInfoController {
 		mav.addObject("updateFlag", crmUserInfoManager.getUpdateFlag());
 		mav.addObject("model", requst);
 
-		mav.setViewName("/accountInfo/accountOverview");
+		mav.setViewName("accountInfo/accountOverview");
 		return mav;
 	}
 
