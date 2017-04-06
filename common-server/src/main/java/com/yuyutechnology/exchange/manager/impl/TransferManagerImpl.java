@@ -538,7 +538,7 @@ public class TransferManagerImpl implements TransferManager{
 				+ "CONCAT(t2.area_code,t2.user_phone),"
 				+ "t1.transfer_comment,"
 				+ "t1.finish_time,"
-				+ "t1.transfer_type ";
+				+ "t1.transfer_type,t1.transfer_id  ";
 		StringBuilder sb = new StringBuilder(
 				"FROM `e_transfer` t1 LEFT JOIN `e_user` t2  "+
 				"ON  "+
@@ -915,7 +915,6 @@ public class TransferManagerImpl implements TransferManager{
 		//每天累计给付次数限制
 		Double transferLimitNumOfPayPerDay =  configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITNUMBEROFPAYPERDAY, 100000d);
-//		Integer dayTradubgVolume = transferDAO.getDayTradubgVolume(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		Integer dayTradubgVolume = transferDAO.getCumulativeNumofTimes("transfer_"+userId);
 		logger.warn("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ",transferLimitNumOfPayPerDay,dayTradubgVolume);
 		if(transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)){
@@ -926,5 +925,10 @@ public class TransferManagerImpl implements TransferManager{
 			return map;
 		}
 		return map;
+	}
+
+	@Override
+	public void getTransDetails(String transferId, int userId) {
+
 	}
 }

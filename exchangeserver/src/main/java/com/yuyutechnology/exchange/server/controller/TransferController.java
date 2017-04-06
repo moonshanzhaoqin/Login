@@ -341,6 +341,7 @@ public class TransferController {
 				}
 				dto.setComments("");
 				dto.setFinishAt((Date) obj[6]);
+				dto.setTransferId((String) obj[8]);
 
 				dtos.add(dto);
 			}

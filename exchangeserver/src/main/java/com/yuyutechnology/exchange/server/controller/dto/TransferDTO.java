@@ -5,6 +5,7 @@ import java.util.Date;
 
 public class TransferDTO {
 	
+	private String transferId;
 	private String currency;
 	private String currencyUnit;
 	private BigDecimal amount;
@@ -13,6 +14,12 @@ public class TransferDTO {
 	private Date finishAt;
 	private int transferType;
 
+	public String getTransferId() {
+		return transferId;
+	}
+	public void setTransferId(String transferId) {
+		this.transferId = transferId;
+	}
 	public String getCurrency() {
 		return currency;
 	}

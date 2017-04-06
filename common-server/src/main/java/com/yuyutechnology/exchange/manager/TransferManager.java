@@ -113,4 +113,7 @@ public interface TransferManager {
 	
 	
 	public HashMap<String, String> regenerateQRCode(String currency,BigDecimal amount);
+	
+	public void getTransDetails(String transferId,int userId);
+	
 }
