@@ -166,6 +166,7 @@
 		src="<c:url value="/resources/bootstrap/js/bootstrap-paginator.min.js" />"></script>
 	<script>
 		$(function() {
+			var userPhone, transferId, transferStatus = [];
 			//页面初始化，加载数据
 			searchWithdraw(1);
 			// 			$('#myModal').on('show.bs.modal', function(e) {
@@ -182,9 +183,6 @@
 			// 				// 				console.log($("#paginator").data("currentPage"));
 			// 				searchWithdraw($("#paginator .active a").html());
 			// 			})
-
-			var userPhone, transferId, transferStatus = [];
-
 		});
 
 		function searchWithdraw(page) {
@@ -226,12 +224,7 @@
 						return "" + page;
 					}
 				},
-				// 				itemContainerClass : function(type, page, current) {
-				// 					console.log("itemContainerClass")
-				// 					return (page === current) ? "active" : "pointer-cursor";
-				// 				},
 				onPageClicked : function(event, originalEvent, type, page) {
-					console.log("onPageClicked")
 					getWithdrawList(page, userPhone, transferId, transferStatus);
 				}
 			}
@@ -339,7 +332,6 @@
 				$("input:checkbox[value='" + transferStatus[i] + "']").prop(
 						"checked", true);
 			}
-
 			var data = {
 				currentPage : currentPage,
 				userPhone : userPhone,
