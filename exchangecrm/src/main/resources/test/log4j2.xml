@@ -24,8 +24,14 @@
 		    </Policies> 
             <!-- 
             <SizeBasedTriggeringPolicy size="50MB"/>
-             -->
             <DefaultRolloverStrategy max="5" />  
+             -->
+         	<DefaultRolloverStrategy>  
+	        	<Delete basePath="/srv/logs" maxDepth="1">  
+                     <IfFileName glob="crm.log.*" />  
+                     <IfLastModified age="30d" />  
+	            </Delete>  
+            </DefaultRolloverStrategy> 
         </RollingFile>
     </appenders>
     <!--然后定义logger，只有定义了logger并引入的appender，appender才会生效-->

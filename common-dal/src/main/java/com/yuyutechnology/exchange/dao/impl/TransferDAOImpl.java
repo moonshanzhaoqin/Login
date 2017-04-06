@@ -248,9 +248,9 @@ public class TransferDAOImpl implements TransferDAO {
 			int pageSize) {
 		List<Object> values = new ArrayList<Object>();
 		StringBuilder hql = new StringBuilder(
-				"from Transfer t, User u where t.userFrom = u.userId and t.transferType = ? ");
+				"from Transfer t, User u where t.userFrom = u.userId and t.transferType = ? and t.transferStatus<>? ");
 		values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
-//		values.add(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
+		values.add(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		if (StringUtils.isNotBlank(userPhone)) {
 			hql.append(" and u.userPhone = ?");
 			values.add(userPhone);
@@ -259,7 +259,8 @@ public class TransferDAOImpl implements TransferDAO {
 			hql.append(" and t.transferId = ?");
 			values.add(transferId);
 		}
-		if (transferStatus.length >= 0) {
+//		System.out.println(transferStatus.length);
+		if (transferStatus.length >0) {
 			hql.append(" and ( t.transferStatus = ?");
 			values.add(Integer.parseInt(transferStatus[0]));
 			for (int i = 1; i < transferStatus.length; i++) {
