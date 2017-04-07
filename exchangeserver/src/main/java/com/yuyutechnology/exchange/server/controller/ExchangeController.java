@@ -25,11 +25,13 @@ import com.yuyutechnology.exchange.pojo.Exchange;
 import com.yuyutechnology.exchange.server.controller.dto.ExchangeDTO;
 import com.yuyutechnology.exchange.server.controller.request.ExchangeCalculationRequest;
 import com.yuyutechnology.exchange.server.controller.request.ExchangeConfirmRequest;
+import com.yuyutechnology.exchange.server.controller.request.GetExchangeDetailsRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetExchangeHistoryRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetExchangeRateRequest;
 import com.yuyutechnology.exchange.server.controller.response.ExchangeCalculationResponse;
 import com.yuyutechnology.exchange.server.controller.response.ExchangeConfirmResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetCurrentBalanceResponse;
+import com.yuyutechnology.exchange.server.controller.response.GetExchangeDetailsResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetExchangeHistoryResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetExchangeRateResponse;
 import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
@@ -160,7 +162,8 @@ public class ExchangeController {
 
 	@ApiOperation(value = "获取兑换历史记录")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/getExchangeHistory")
-	public @ResponseEncryptBody GetExchangeHistoryResponse getExchangeHistory(@PathVariable String token,
+	public @ResponseEncryptBody 
+	GetExchangeHistoryResponse getExchangeHistory(@PathVariable String token,
 			@RequestDecryptBody GetExchangeHistoryRequest reqMsg) {
 		// 从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
@@ -178,6 +181,7 @@ public class ExchangeController {
 		}
 		for (Exchange exchange : list) {
 			ExchangeDTO dto = new ExchangeDTO();
+			dto.setExchangeId(exchange.getExchangeId());
 			dto.setCurrencyOut(exchange.getCurrencyOut());
 			dto.setCurrencyIn(exchange.getCurrencyIn());
 			dto.setCurrencyOutUnit(commonManager.getCurreny(dto.getCurrencyOut()).getCurrencyUnit());
@@ -199,6 +203,37 @@ public class ExchangeController {
 
 		return rep;
 
+	}
+	
+	@ApiOperation(value = "获取兑换详细内容")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/getExchangeDetails")
+	public @ResponseEncryptBody  
+	GetExchangeDetailsResponse getExchangeDetails(@PathVariable String token,
+			@RequestDecryptBody GetExchangeDetailsRequest reqMsg){
+		
+		GetExchangeDetailsResponse rep = new GetExchangeDetailsResponse();
+		Exchange exchange = exchangeManager.getExchangeById(reqMsg.getExchangeId());
+		if(exchange == null){
+			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+			rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+			return rep;
+		}
+		
+		rep.setCurrencyOut(exchange.getCurrencyOut());
+		rep.setAmountOut(exchange.getAmountOut());
+		rep.setCurrencyOutUnit(commonManager.getCurreny(exchange.getCurrencyOut()).getCurrencyUnit());
+		rep.setCurrencyIn(exchange.getCurrencyIn());
+		rep.setAmountIn(exchange.getAmountIn());
+		rep.setCurrencyInUnit(commonManager.getCurreny(exchange.getCurrencyIn()).getCurrencyUnit());
+		
+		rep.setCurrencyIn(exchange.getCurrencyIn());
+		rep.setCreateTime(exchange.getCreateTime());
+		
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		
+		return rep;
+		
 	}
 
 }

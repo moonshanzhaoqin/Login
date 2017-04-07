@@ -364,4 +364,9 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		}
 	}
 
+	@Override
+	public Exchange getExchangeById(String exchangeId) {
+		return exchangeDAO.getExchangeById(exchangeId);
+	}
+
 }

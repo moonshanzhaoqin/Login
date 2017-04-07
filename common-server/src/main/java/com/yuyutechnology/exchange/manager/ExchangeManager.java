@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.yuyutechnology.exchange.dto.WalletInfo;
+import com.yuyutechnology.exchange.pojo.Exchange;
 
 /**
  * @author nicholas.chi
@@ -59,10 +60,9 @@ public interface ExchangeManager {
 	 * @return
 	 */
 	HashMap<String, BigDecimal> exchangeCalculation(String currencyOut, String currencyIn, BigDecimal outAmount);
-	
-	
+		
 	public HashMap<String, Object> getExchangeRecordsByPage(int userId,String period,int currentPage,int pageSize);
-
-
+	
+	public Exchange getExchangeById(String exchangeId);
 
 }
