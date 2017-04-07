@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,11 +26,13 @@ import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Currency;
+import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.server.controller.dto.NotificationDTO;
 import com.yuyutechnology.exchange.server.controller.dto.TransferDTO;
 import com.yuyutechnology.exchange.server.controller.request.GetNotificationRecordsRequest;
+import com.yuyutechnology.exchange.server.controller.request.GetTransDetailsRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetTransactionRecordRequest;
 import com.yuyutechnology.exchange.server.controller.request.MakeRequestRequest;
 import com.yuyutechnology.exchange.server.controller.request.RegenerateQRCodeRequest;
@@ -40,6 +42,7 @@ import com.yuyutechnology.exchange.server.controller.request.TransPwdConfirmRequ
 import com.yuyutechnology.exchange.server.controller.request.TransferConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransferInitiateRequest;
 import com.yuyutechnology.exchange.server.controller.response.GetNotificationRecordsResponse;
+import com.yuyutechnology.exchange.server.controller.response.GetTransDetailsResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetTransactionRecordResponse;
 import com.yuyutechnology.exchange.server.controller.response.MakeRequestResponse;
 import com.yuyutechnology.exchange.server.controller.response.RegenerateQRCodeResponse;
@@ -408,9 +411,39 @@ public class TransferController {
 		return rep;
 	}
 	
-	public void getTransDetails(){
+	@ApiOperation(value = "获取交易详情")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransDetails")
+	public @ResponseEncryptBody 
+	GetTransDetailsResponse getTransDetails(@PathVariable String token,
+			@RequestDecryptBody GetTransDetailsRequest reqMsg){
 		
+		GetTransDetailsResponse rep = new GetTransDetailsResponse();
 		
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		HashMap<String, Object> result = transferManager.getTransDetails(reqMsg.getTransferId(), sessionData.getUserId());
+		if(result.isEmpty()){
+			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+			rep.setMessage("something wrong!");
+		}else{
+			
+			User user = (User) result.get("user");
+			Transfer transfer = (Transfer) result.get("transfer");
+			
+			rep.setTrader(user.getUserName());
+			rep.setTraderMobile(user.getAreaCode()+user.getUserPhone());
+			rep.setMoney(transfer.getTransferAmount() + (String)(result.get("unit")));
+			rep.setTransferType(transfer.getTransferType());
+			rep.setCreateTime(transfer.getCreateTime());
+			rep.setFinishTime(transfer.getFinishTime());
+			rep.setTransferId(transfer.getTransferId());
+			rep.setFriend((boolean) result.get("isFriend"));
+			
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+
+		}
+		
+		return rep;
 		
 	}
 	

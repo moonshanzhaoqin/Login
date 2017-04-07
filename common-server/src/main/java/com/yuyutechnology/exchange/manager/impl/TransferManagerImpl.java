@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CrmAlarmDAO;
+import com.yuyutechnology.exchange.dao.CurrencyDAO;
+import com.yuyutechnology.exchange.dao.FriendDAO;
 import com.yuyutechnology.exchange.dao.NotificationDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
@@ -38,6 +40,7 @@ import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.pojo.Currency;
+import com.yuyutechnology.exchange.pojo.Friend;
 import com.yuyutechnology.exchange.pojo.TransactionNotification;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
@@ -57,7 +60,11 @@ public class TransferManagerImpl implements TransferManager{
 	@Autowired
 	WalletDAO walletDAO;
 	@Autowired
+	FriendDAO friendDAO;
+	@Autowired
 	TransferDAO transferDAO;
+	@Autowired
+	CurrencyDAO currencyDAO;
 	@Autowired
 	WalletSeqDAO walletSeqDAO;
 	@Autowired
@@ -115,47 +122,6 @@ public class TransferManagerImpl implements TransferManager{
 			map.put("msg", "Prohibit transfers to yourself");
 			return map;
 		}
-		
-		/*Currency unit = commonManager.getCurreny("USD");
-		
-		//每次支付金额限制
-		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
-				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
-		logger.warn("transferLimitPerPay : {}",transferLimitPerPay);
-		if((oandaRatesManager.getDefaultCurrencyAmount(currency, amount)).compareTo(transferLimitPerPay) == 1){
-			logger.warn("Exceeds the maximum amount of each transaction");
-			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
-			map.put("msg", transferLimitPerPay.setScale(2).toString());
-			map.put("unit", unit.getCurrencyUnit());
-			return map;
-		}
-
-		//每天累计金额限制
-		BigDecimal transferLimitDailyPay =  BigDecimal.valueOf(configManager.
-				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITDAILYPAY, 100000d));
-		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount("transfer_"+userId);
-		logger.warn("transferLimitDailyPay : {},accumulatedAmount : {} ",transferLimitDailyPay,accumulatedAmount);
-		if((accumulatedAmount.add(oandaRatesManager.getDefaultCurrencyAmount(currency, amount))).compareTo(transferLimitDailyPay) == 1){
-			logger.warn("More than the maximum daily transaction limit");
-			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY);
-			map.put("msg", transferLimitDailyPay.setScale(2).toString());
-			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
-			map.put("unit", unit.getCurrencyUnit());
-			return map;
-		}
-		//每天累计给付次数限制
-		Double transferLimitNumOfPayPerDay =  configManager.
-				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITNUMBEROFPAYPERDAY, 100000d);
-//		Integer dayTradubgVolume = transferDAO.getDayTradubgVolume(ServerConsts.TRANSFER_TYPE_TRANSACTION);
-		Integer dayTradubgVolume = transferDAO.getCumulativeNumofTimes("transfer_"+userId);
-		logger.warn("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ",transferLimitNumOfPayPerDay,dayTradubgVolume);
-		if(transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)){
-			logger.warn("Exceeds the maximum number of transactions per day");
-			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY);
-			map.put("msg", (transferLimitNumOfPayPerDay).intValue()+"");
-			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
-			return map;
-		}*/
 
 		//生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
@@ -928,7 +894,40 @@ public class TransferManagerImpl implements TransferManager{
 	}
 
 	@Override
-	public void getTransDetails(String transferId, int userId) {
+	public HashMap<String, Object> getTransDetails(String transferId, int userId) {
+		
+		HashMap<String, Object> map = new HashMap<>();
+		
+		User user;
+		
+		Transfer transfer = transferDAO.getTransferById(transferId);
+		
+		if(transfer.getUserFrom()!= userId && transfer.getUserTo() != userId){
+			return map;
+		}
+		
+		if(transfer.getUserFrom() == userId){
+			user = userDAO.getUser(transfer.getUserTo()); 
+		}else{
+			user = userDAO.getUser(transfer.getUserFrom());
+		}
+		
+		//判断是否已经是好友
+		Friend friend = friendDAO.getFriendByUserIdAndFrindId(userId, user.getUserId());
+		if(friend == null){
+			map.put("isFriend", false);
+		}else{
+			map.put("isFriend", true);
+		}
+		
+		//获取单位
+		Currency currency = currencyDAO.getCurrency(transfer.getCurrency());
+		
+		map.put("user", user);
+		map.put("transfer", transfer);
+		map.put("unit", currency.getCurrencyUnit());
+		
+		return map;
 
 	}
 }
