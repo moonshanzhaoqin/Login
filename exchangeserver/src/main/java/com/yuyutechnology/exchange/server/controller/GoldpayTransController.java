@@ -207,6 +207,7 @@ public class GoldpayTransController {
 			List<Transfer> list = (List<Transfer>) pageBean.getRows();
 			for (Transfer transfer : list) {
 				WithdrawDTO withdrawDTO = new WithdrawDTO();
+				withdrawDTO.setCurrency(ServerConsts.CURRENCY_OF_GOLDPAY);
 				withdrawDTO.setAmount(transfer.getTransferAmount());
 				withdrawDTO.setCreateTime(transfer.getCreateTime());
 				if (transfer.getTransferStatus() == ServerConsts.TRANSFER_STATUS_OF_PROCESSING
