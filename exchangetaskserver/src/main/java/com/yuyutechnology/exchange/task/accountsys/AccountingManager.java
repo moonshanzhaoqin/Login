@@ -14,10 +14,13 @@ import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BadAccountDAO;
+import com.yuyutechnology.exchange.dao.CrmAlarmDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
+import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.BadAccount;
+import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionManager;
@@ -39,6 +42,12 @@ public class AccountingManager {
 	
 	@Autowired
 	WalletDAO walletDAO;
+	
+	@Autowired
+	CrmAlarmDAO crmAlarmDAO;
+	
+	@Autowired
+	CrmAlarmManager crmAlarmManager;
 	
 	@Autowired
 	SessionManager sessionManager;
@@ -80,7 +89,7 @@ public class AccountingManager {
 			if (sumAmount.add(balance).compareTo(wallet.getBalance()) != 0) {
 				goldpayTransManager.forbiddenGoldpayRemitWithdraws();
 				freezeUser(userId);
-				//TODO: 邮件通知预警人
+				badAccountWarn();
 				BadAccount badAccount = new BadAccount();
 				badAccount.setUserId(userId);
 				badAccount.setCurrency(currency);
@@ -122,7 +131,7 @@ public class AccountingManager {
 		List<BadAccount> badAccounts = badAccountDAO.findBadAccountList(ServerConsts.BAD_ACCOUNT_STATUS_DEFAULT);
 		if (badAccounts != null && badAccounts.isEmpty()) {
 			goldpayTransManager.forbiddenGoldpayRemitWithdraws();
-			//TODO: 发邮件通知预警人
+			badAccountWarn();
 			for (BadAccount badAccount : badAccounts) {
 				try {
 					freezeUser(badAccount.getUserId());
@@ -137,5 +146,15 @@ public class AccountingManager {
 		logger.info("accounting copy new to history, size : {}", updateRows);
 		accountingDAO.cleanSnapshotWalletNow();
 		logger.info("accounting clean new ok ");
+	}
+	
+	private void badAccountWarn(){
+		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(3, 1);
+		if(list != null && !list.isEmpty()){
+			for (int i = 0; i < list.size(); i++) {
+				CrmAlarm crmAlarm = list.get(i);
+				crmAlarmManager.alarmNotice(crmAlarm.getSupervisorIdArr(), "badAccountWarning", crmAlarm.getAlarmMode(),null);
+			}
+		}
 	}
 }
