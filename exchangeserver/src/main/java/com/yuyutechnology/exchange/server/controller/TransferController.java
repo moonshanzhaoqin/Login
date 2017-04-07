@@ -429,8 +429,15 @@ public class TransferController {
 			User user = (User) result.get("user");
 			Transfer transfer = (Transfer) result.get("transfer");
 			
-			rep.setTrader(user.getUserName());
-			rep.setTraderMobile(user.getAreaCode()+user.getUserPhone());
+			if(user!= null){
+				rep.setTrader(user.getUserName());
+				rep.setRegiste(true);
+			}else{
+				rep.setTrader(transfer.getPhone());
+				rep.setRegiste(false);
+			}
+			
+			rep.setTraderMobile(transfer.getAreaCode()+transfer.getPhone());
 			rep.setMoney(transfer.getTransferAmount() + (String)(result.get("unit")));
 			rep.setTransferType(transfer.getTransferType());
 			rep.setCreateTime(transfer.getCreateTime());

@@ -899,6 +899,7 @@ public class TransferManagerImpl implements TransferManager{
 		HashMap<String, Object> map = new HashMap<>();
 		
 		User user;
+		Integer friendId;
 		
 		Transfer transfer = transferDAO.getTransferById(transferId);
 		
@@ -908,12 +909,14 @@ public class TransferManagerImpl implements TransferManager{
 		
 		if(transfer.getUserFrom() == userId){
 			user = userDAO.getUser(transfer.getUserTo()); 
+			friendId = transfer.getUserTo();
 		}else{
 			user = userDAO.getUser(transfer.getUserFrom());
+			friendId = transfer.getUserFrom();
 		}
 		
 		//判断是否已经是好友
-		Friend friend = friendDAO.getFriendByUserIdAndFrindId(userId, user.getUserId());
+		Friend friend = friendDAO.getFriendByUserIdAndFrindId(userId, friendId);
 		if(friend == null){
 			map.put("isFriend", false);
 		}else{

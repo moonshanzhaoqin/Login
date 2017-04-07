@@ -13,6 +13,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 	private String transferId;
 	
 	private boolean isFriend;
+	private boolean isRegiste;
 
 	public String getTrader() {
 		return trader;
@@ -76,6 +77,14 @@ public class GetTransDetailsResponse extends BaseResponse {
 
 	public void setFriend(boolean isFriend) {
 		this.isFriend = isFriend;
+	}
+
+	public boolean isRegiste() {
+		return isRegiste;
+	}
+
+	public void setRegiste(boolean isRegiste) {
+		this.isRegiste = isRegiste;
 	}
 
 }
