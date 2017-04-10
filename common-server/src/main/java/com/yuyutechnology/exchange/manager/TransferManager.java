@@ -2,7 +2,9 @@ package com.yuyutechnology.exchange.manager;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 
+import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
 
 public interface TransferManager {
@@ -113,4 +115,6 @@ public interface TransferManager {
 	
 	
 	public HashMap<String, String> regenerateQRCode(String currency,BigDecimal amount);
+
+	public Transfer getTransfer(String transferId);
 }

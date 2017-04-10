@@ -903,6 +903,11 @@ public class TransferManagerImpl implements TransferManager{
 		map.put("msg", "OK");
 		return map;
 	}
+
+	@Override
+	public Transfer getTransfer(String transferId) {
+		return transferDAO.getTransferById(transferId);
+	}
 	
 	
 }

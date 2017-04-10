@@ -17,8 +17,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuyutechnology.exchange.crm.request.GetBadAccountByPageRequest;
 import com.yuyutechnology.exchange.crm.request.GetDetailSeqRequest;
+import com.yuyutechnology.exchange.crm.request.GetTransferRequest;
 import com.yuyutechnology.exchange.manager.CommonManager;
+import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.WalletManager;
+import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.utils.page.PageBean;
 
 @Controller
@@ -30,19 +33,30 @@ public class BadAccountController {
 	@Autowired
 	CommonManager commonManager;
 
-	//TODO 分页获取坏账列表
+	@Autowired
+	TransferManager transferManager;
+
+	// TODO 分页获取坏账列表
 	@ResponseBody
 	@RequestMapping(value = "/getBadAccountByPage", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public PageBean getBadAccountByPage(@RequestBody GetBadAccountByPageRequest getBadAccountByPageRequest,
 			HttpServletRequest request, HttpServletResponse response) {
-		return	walletManager.getBadAccountByPage(Integer.parseInt(getBadAccountByPageRequest.getCurrentPage()));
+		return walletManager.getBadAccountByPage(Integer.parseInt(getBadAccountByPageRequest.getCurrentPage()));
 	}
 
-	//TODO 获取详细流水
+	// TODO 获取详细流水
 	@ResponseBody
 	@RequestMapping(value = "/getDetailSeq", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public List<?> getDetailSeq(@RequestBody GetDetailSeqRequest getDetailSeqRequest,
-			HttpServletRequest request, HttpServletResponse response) {
-		return	walletManager.getDetailSeq(getDetailSeqRequest.getBadAccountId());
+	public List<?> getDetailSeq(@RequestBody GetDetailSeqRequest getDetailSeqRequest, HttpServletRequest request,
+			HttpServletResponse response) {
+		return walletManager.getDetailSeq(getDetailSeqRequest.getBadAccountId());
+	}
+
+	// TODO 获取交易详情
+	@ResponseBody
+	@RequestMapping(value = "/getTransfer", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public Transfer getTransfer(@RequestBody GetTransferRequest getTransferRequest, HttpServletRequest request,
+			HttpServletResponse response) {
+		return transferManager.getTransfer(getTransferRequest.getTransferId());
 	}
 }
