@@ -30,9 +30,9 @@
 						<th>用户ID</th>
 						<th>手机号</th>
 						<th>货币</th>
-						<th>sumAmount</th>
-						<th>balanceBefore</th>
-						<th>balanceNow</th>
+						<th>核账前</th>
+						<th>核账中</th>
+						<th>核账后</th>
 						<th>开始时间(UTC)</th>
 						<th>结束时间(UTC)</th>
 						<th>badAccountStatus</th>
@@ -172,10 +172,10 @@
 											+ data.rows[i][0].currency
 											+ '</td>'
 											+ '<td>'
-											+ data.rows[i][0].sumAmount
+											+ data.rows[i][0].balanceBefore
 											+ '</td>'
 											+ '<td>'
-											+ data.rows[i][0].balanceBefore
+											+ data.rows[i][0].sumAmount
 											+ '</td>'
 											+ '<td>'
 											+ data.rows[i][0].balanceNow
