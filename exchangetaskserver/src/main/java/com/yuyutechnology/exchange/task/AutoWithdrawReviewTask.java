@@ -9,25 +9,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
-import com.yuyutechnology.exchange.pojo.Withdraw;
+import com.yuyutechnology.exchange.pojo.Transfer;
 
 @Component
 public class AutoWithdrawReviewTask {
-	
+
 	@Autowired
 	GoldpayTransManager goldpayTransManager;
-	
-	
+
 	public static Logger logger = LogManager.getLogger(AutoWithdrawReviewTask.class);
-	
-	public void autoWithdrawReviewTask(){
-		logger.info("=============AutoWithdrawReviewTask Start=================={}",new Date());
-		List<Withdraw> withdraws = goldpayTransManager.getNeedReviewWithdraws();
-		for (Withdraw withdraw : withdraws) {
-			goldpayTransManager.withdrawReview(withdraw.getWithdrawId());
+
+	public void autoWithdrawReviewTask() {
+		logger.info("=============AutoWithdrawReviewTask Start=================={}", new Date());
+		List<Transfer> transfers = goldpayTransManager.getNeedReviewWithdraws();
+		if (transfers != null && !transfers.isEmpty()) {
+			for (Transfer transfer : transfers) {
+				goldpayTransManager.withdrawReviewAuto(transfer.getTransferId());
+			}
 		}
-		
-		logger.info("=============AutoWithdrawReviewTask End=================={}",new Date());	
+		logger.info("=============AutoWithdrawReviewTask End=================={}", new Date());
 	}
 
 }

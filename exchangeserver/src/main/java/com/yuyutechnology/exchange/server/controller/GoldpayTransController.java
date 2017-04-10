@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
+import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.pojo.Transfer;
@@ -47,6 +49,8 @@ public class GoldpayTransController {
 	GoldpayTransManager goldpayTransManager;
 	@Autowired
 	ConfigManager configManager;
+	@Autowired
+	CommonManager commonManager;
 
 	public static Logger logger = LogManager.getLogger(GoldpayTransController.class);
 
@@ -181,7 +185,6 @@ public class GoldpayTransController {
 		return rep;
 	}
 
-	// TODO 提现进度列表
 	@SuppressWarnings("unchecked")
 	@ApiOperation(value = "goldpay 提现进度列表")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/goldpayTrans/getWithdrawRecord")
@@ -196,6 +199,7 @@ public class GoldpayTransController {
 		List<WithdrawDTO> dtos = new ArrayList<>();
 
 		if (pageBean.getRows().isEmpty()) {
+			rep.setList(dtos);
 			rep.setRetCode(RetCodeConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
 			rep.setMessage("Withdraw Records not acquired");
 		} else {
@@ -203,9 +207,20 @@ public class GoldpayTransController {
 			List<Transfer> list = (List<Transfer>) pageBean.getRows();
 			for (Transfer transfer : list) {
 				WithdrawDTO withdrawDTO = new WithdrawDTO();
+				withdrawDTO.setCurrency(ServerConsts.CURRENCY_OF_GOLDPAY);
 				withdrawDTO.setAmount(transfer.getTransferAmount());
 				withdrawDTO.setCreateTime(transfer.getCreateTime());
-				withdrawDTO.setWithdrawStatus(transfer.getTransferStatus());
+				if (transfer.getTransferStatus() == ServerConsts.TRANSFER_STATUS_OF_PROCESSING
+						|| transfer.getTransferStatus() == ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS
+						|| transfer.getTransferStatus() == ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_FAIL
+						||transfer.getTransferStatus()==ServerConsts.TRANSFER_STATUS_OF_MANUALREVIEW_FAIL
+						||transfer.getTransferStatus()==ServerConsts.TRANSFER_STATUS_OF_MANUALREVIEW_SUCCESS
+						||transfer.getTransferStatus()==ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL) {
+					withdrawDTO.setWithdrawStatus(0);
+				} else if (transfer.getTransferStatus() == ServerConsts.TRANSFER_STATUS_OF_REFUND) {
+					withdrawDTO.setWithdrawStatus(1);
+				}
+				withdrawDTO.setCurrencyUnit(commonManager.getCurreny(transfer.getCurrency()).getCurrencyUnit());
 				dtos.add(withdrawDTO);
 			}
 			rep.setList(dtos);

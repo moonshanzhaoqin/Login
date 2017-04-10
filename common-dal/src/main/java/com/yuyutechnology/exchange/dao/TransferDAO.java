@@ -43,5 +43,14 @@ public interface TransferDAO {
 	public Integer getDayTradubgVolume(final int transferType);
 
 	public PageBean getWithdrawRecordByPage(Integer userId, int currentPage, int pageSize);
+
+	public List<Transfer> getNeedGoldpayRemitWithdraws();
+
+	public List<Transfer> getNeedReviewWithdraws();
+
+	public PageBean searchWithdrawsByPage(String userPhone, String reviewStatus, String[] transferStatus, int currentPage,
+			int pageSize);
+
+//	void testByPage();
 	
 }

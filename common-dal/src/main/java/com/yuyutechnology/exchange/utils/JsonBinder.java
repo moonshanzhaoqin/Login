@@ -17,11 +17,12 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonGenerator.Feature;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yuyutechnology.exchange.pojo.Bind;
@@ -39,7 +40,6 @@ public class JsonBinder
 	private static Object lock = new Object();
 	private static JsonBinder jsonBinder;
 	private static JsonBinder jsonBinderNonNull;
-	private static JsonBinder jsonBinderNonEmpty;
 	private ObjectMapper mapper;
 	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
@@ -55,7 +55,7 @@ public class JsonBinder
 			{
 				if (jsonBinder == null)
 				{
-					jsonBinder = new JsonBinder(Include.NON_DEFAULT);
+					jsonBinder = new JsonBinder(Include.NON_EMPTY);
 				}
 			}
 		}
@@ -81,27 +81,11 @@ public class JsonBinder
 		return jsonBinderNonNull;
 	}
 	
-	public static JsonBinder getInstanceNonEmpty()
-	{
-		if (jsonBinderNonEmpty == null)
-		{
-			synchronized (lock)
-			{
-				if (jsonBinderNonEmpty == null)
-				{
-					jsonBinderNonEmpty = new JsonBinder(Include.NON_EMPTY);
-				}
-			}
-		}
-		return jsonBinderNonEmpty;
-	}
-	
 	protected JsonBinder(Include inclusion)
 	{
 		mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(inclusion);
-//		mapper.getDeserializationConfig().set(
-//				Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		mapper.setDateFormat(df);
 	}
 	

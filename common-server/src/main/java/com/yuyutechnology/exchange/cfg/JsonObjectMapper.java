@@ -28,7 +28,9 @@ public class JsonObjectMapper extends ObjectMapper {
         this.getSerializerProvider().setNullValueSerializer(new JsonSerializer<Object>() {  
             @Override  
             public void serialize(Object value, JsonGenerator jg, SerializerProvider sp) throws IOException, JsonProcessingException {  
-                jg.writeString("");  
+            	if (value instanceof String) {
+            		jg.writeString("");  
+            	}
             }  
         });
     } 

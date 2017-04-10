@@ -92,7 +92,7 @@ public class UserManagerImpl implements UserManager {
 	
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
-		logger.info("Find friend==>");
+		logger.info("{} add friend {} ==>", userId, areaCode + userPhone);
 		User friend = userDAO.getUserByUserPhone(areaCode, userPhone);
 		if (friend == null) {
 			return RetCodeConsts.PHONE_NOT_EXIST;
@@ -108,10 +108,10 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public String bindGoldpay(Integer userId, String goldpayToken) {
-		logger.info("get Goldpay==>");
+		logger.info("get Goldpay ==>");
 		GoldpayUser goldpayUser = goldpayManager.getGoldpayInfo(goldpayToken);
 		if (goldpayUser == null) {
-			logger.warn("goldpay account does not exist.");
+			logger.warn("Goldpay account does not exist. 'goldpayToken' is wrong!");
 			return RetCodeConsts.RET_CODE_FAILUE;
 		} else {
 			logger.info("goldpayUser = ", goldpayUser.toString());
@@ -137,7 +137,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void changePhone(Integer userId, String areaCode, String userPhone) {
-		logger.info("changePhone {}==>", areaCode + userPhone);
+		logger.info("{} changePhone to {} ==>", userId, areaCode + userPhone);
 		User user = userDAO.getUser(userId);
 		user.setAreaCode(areaCode);
 		user.setUserPhone(userPhone);
@@ -330,7 +330,7 @@ public class UserManagerImpl implements UserManager {
 		if (wallet == null) {
 			// 没有该货币的钱包，需要新增
 			walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date()));
-			logger.info("新增 用户{} 的  {} 钱包  ", userId, currency.getCurrency());
+			logger.info("add {} user's  wallet of {} ", userId, currency.getCurrency());
 		}
 	}
 
@@ -345,7 +345,7 @@ public class UserManagerImpl implements UserManager {
 	 * @param userId
 	 */
 	private void createWallets4NewUser(Integer userId) {
-		logger.info("New wallet for newly registered users==>");
+		logger.info("New wallets for newly registered user {}==>", userId);
 		List<Currency> currencies = commonManager.getCurrentCurrencies();
 		for (Currency currency : currencies) {
 			walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date()));
@@ -457,22 +457,23 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void switchLanguage(Integer userId, String language) {
+		logger.info("{} switchLanguage to {} ==>", userId, language);
 		User user = userDAO.getUser(userId);
 		if (!user.getPushTag().equals(LanguageUtils.standard(language))) {
 			// 语言不一致，解绑Tag
-			logger.info("Language inconsistency, unbind Tag==>,");
+			logger.info("***Language inconsistency, unbind Tag***");
 			pushManager.unbindPushTag(user.getPushId(), user.getPushTag());
 		}
 		user.setPushTag(LanguageUtils.standard(language));
 		userDAO.updateUser(user);
 		// 绑定Tag
-		logger.info("bind Tag==>");
+		logger.info("***bind Tag***");
 		pushManager.bindPushTag(user.getPushId(), user.getPushTag());
 	}
 
 	@Override
 	public boolean testPinCode(String func, String areaCode, String userPhone, String verificationCode) {
-		logger.info("Check phone number {} and verify code {}", areaCode + userPhone, verificationCode);
+		logger.info("Check phone number {} and verify code {} ==>", areaCode + userPhone, verificationCode);
 		if (StringUtils.equals(DigestUtils.md5Hex(verificationCode),
 				redisDAO.getValueByKey(func + areaCode + userPhone))) {
 			logger.info("***match***");
@@ -484,7 +485,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void updatePassword(Integer userId, String newPassword) {
-		logger.info("Update user {} password {}", userId, newPassword);
+		logger.info("Update user {} password {} ==>", userId, newPassword);
 		User user = userDAO.getUser(userId);
 		user.setUserPassword(PasswordUtils.encrypt(newPassword, user.getPasswordSalt()));
 		userDAO.updateUser(user);
@@ -504,7 +505,7 @@ public class UserManagerImpl implements UserManager {
 		}
 		if (!user.getPushTag().equals(LanguageUtils.standard(language))) {
 			// 语言不一致，解绑Tag
-			logger.info("Language inconsistency, unbind Tag==>");
+			logger.info("***Language inconsistency, unbind Tag***");
 			pushManager.unbindPushTag(user.getPushId(), user.getPushTag());
 			user.setPushTag(LanguageUtils.standard(language));
 		}
@@ -513,9 +514,19 @@ public class UserManagerImpl implements UserManager {
 		}
 		userDAO.updateUser(user);
 		// 绑定Tag
-		logger.info("bind Tag==>");
+		logger.info("***bind Tag***");
 		pushManager.bindPushTag(user.getPushId(), user.getPushTag());
+		
+		/*清除其他账号的此pushId*/
+		List<User> users=userDAO.getUserByPushId(pushId);
+		for (User user2 : users) {
+			if (user2.getUserId()!=userId) {
+				user2.setPushId(null);
+				userDAO.updateUser(user2);
+			}
+		}
 	}
+
 
 	@Override
 	public void updateUserName(Integer userId, String newUserName) {
@@ -526,7 +537,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void updateUserPayPwd(Integer userId, String userPayPwd) {
-		logger.info("Update user {} pay password {}", userId, userPayPwd);
+		logger.info("Update user {} pay password {} ==>", userId, userPayPwd);
 		User user = userDAO.getUser(userId);
 		user.setUserPayPwd(PasswordUtils.encrypt(userPayPwd, user.getPasswordSalt()));
 		userDAO.updateUser(user);
@@ -697,10 +708,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public boolean isNewDevice(Integer userId, String deviceId) {
-		if (userDeviceDAO.getUserDeviceByUserIdAndDeviceId(userId, deviceId) == null) {
-			return true;
-		}
-		return false;
+		return userDeviceDAO.getUserDeviceByUserIdAndDeviceId(userId, deviceId) == null ? true : false;
 	}
 
 	@Override
@@ -708,25 +716,15 @@ public class UserManagerImpl implements UserManager {
 		userDeviceDAO.addUserDevice(new UserDevice(new UserDeviceId(userId, deviceId), deviceName));
 	}
 
-	// @Override
-	// public boolean isLoginAvailiable(Integer userId) {
-	// User user = userDAO.getUser(userId);
-	// if (user.getLoginAvailable() ==
-	// ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE) {
-	//
-	// }
-	// return false;
-	// }
-
 	@Override
 	public boolean isUserPayPwdEqualsOld(Integer userId, String newUserPayPwd) {
-		logger.info("is UserPayPwd Equals Old==>");
+		logger.info("is {} user's newPayPwd {} equals old==>", userId, newUserPayPwd);
 		User user = userDAO.getUser(userId);
 		if (PasswordUtils.check(newUserPayPwd, user.getUserPayPwd(), user.getPasswordSalt())) {
-			logger.info("UserPayPwd Equals Old");
+			logger.info("***equal***");
 			return true;
 		}
-		logger.info("UserPayPwd not Equals Old");
+		logger.info("***not equal***");
 		return false;
 	}
 }

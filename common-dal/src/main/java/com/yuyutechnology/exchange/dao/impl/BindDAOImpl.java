@@ -18,10 +18,7 @@ public class BindDAOImpl implements BindDAO {
 	@Override
 	public Bind getBindByUserId(Integer userId) {
 		List<?> list = hibernateTemplate.find("from Bind where userId = ?", userId);
-		if (!list.isEmpty()) {
-			return (Bind) list.get(0);
-		}
-		return null;
+		return list.isEmpty() ? null : (Bind) list.get(0);
 	}
 
 	@Override

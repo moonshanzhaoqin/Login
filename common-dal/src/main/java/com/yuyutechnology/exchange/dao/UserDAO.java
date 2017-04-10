@@ -30,4 +30,8 @@ public interface UserDAO {
 	
 	public void saveUserConfig(UserConfig userConfig);
 
+	User getUserByPhone(String userPhone);
+
+	public List<User> getUserByPushId(String pushId);
+
 }
