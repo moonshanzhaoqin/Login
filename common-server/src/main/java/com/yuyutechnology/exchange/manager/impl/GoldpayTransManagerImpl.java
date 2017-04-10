@@ -582,9 +582,9 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		User systemUser = userDAO.getSystemUser();
 		Transfer transfer = transferDAO.getTransferById(transferId);
 		// 系统加款
-		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transferCurrency, transferAmount, "-", ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_REFUND, transferId);
+		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(), transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_REFUND, transferId);
 		// 用户扣款
-		walletDAO.updateWalletByUserIdAndCurrency(userId, transferCurrency, transferAmount, "+", ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_REFUND, transferId);
+		walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getCurrency(), transfer.getTransferAmount(), "+", ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_REFUND, transferId);
 		// 更改Transfer状态
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_REFUND);
 		transfer.setFinishTime(new Date());
@@ -792,11 +792,11 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	}
 
 	@Override
-	public List<Withdraw> getNeedGoldpayRemitWithdraws() {
+	public List<Transfer> getNeedGoldpayRemitWithdraws() {
 		if (!getGoldpayRemitWithdrawsforbidden()){
-			return withdrawDAO.getNeedGoldpayRemitWithdraws();
+			return transferDAO.getNeedGoldpayRemitWithdraws();
 		}
-		return new ArrayList<Withdraw>();
+		return new ArrayList<Transfer>();
 	}
 
 	@Override
