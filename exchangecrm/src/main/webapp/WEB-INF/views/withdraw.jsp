@@ -84,8 +84,8 @@
 						<th>交易数量(GDQ)</th>
 						<th>交易状态</th>
 						<th>操作</th>
-						<th>创建时间</th>
-						<th>最新更新时间</th>
+						<th>创建时间(UTC)</th>
+						<th>最新更新时间(UTC)</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -394,11 +394,11 @@
 			});
 		}
 		//时间戳变格式化
-		function timeDate(time) {
-			var date = new Date();
-			date.setTime(time);
-			return date.toLocaleString();
-		}
+// 		function timeDate(time) {
+// 			var date = new Date();
+// 			date.setTime(time);
+// 			return date.toLocaleString();
+// 		}
 
 		//审批
 		function withdrawReview(transferId) {
