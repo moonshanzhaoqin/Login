@@ -350,7 +350,7 @@ public class TransferManagerImpl implements TransferManager{
 			//推送到账通知
 
 			User payee = userDAO.getUser(transfer.getUserTo());
-			pushManager.push4Transfer(payer, payee, transfer.getCurrency(), 
+			pushManager.push4Transfer(transfer.getTransferId(),payer, payee, transfer.getCurrency(), 
 					amountFormatByCurrency(transfer.getCurrency(),transfer.getTransferAmount()));
 		}
 		//更改Transfer状态
