@@ -120,11 +120,11 @@ public class SmsManager {
 	 * @param code
 	 */
 	@Async
-	public void sendSMS4PhoneVerify(String areaCode, String userPhone, String code) {
+	public void sendSMS4PhoneVerify(String areaCode, String userPhone, String code,String type) {
 		String phoneVerifyContent = templateChoose("phoneVerify", areaCode);
 		String content = phoneVerifyContent.replace(SMS_REPLACE_PIN, code).replace(SMS_REPLACE_TIME,
 				configManager.getConfigStringValue(ConfigKeyEnum.VERIFYTIME, "10"));
-		sendSMS(areaCode + userPhone, content,"phoneVerify");
+		sendSMS(areaCode + userPhone, content,type);
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class SmsManager {
 						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? GDQ.format(amount) :CURRENCY.format(amount))
 				.replace(SMS_REPLACE_LINK, configManager.getConfigStringValue(ConfigKeyEnum.DOWNLOADLINK, ""))
 				.replace(SMS_REPLACE_TIME, configManager.getConfigStringValue(ConfigKeyEnum.REFUNTIME, "7"));
-		sendSMS(areaCode + userPhone, content,"transfer");
+		sendSMS(areaCode + userPhone, content,"");
 	}
 	
 	@Async
