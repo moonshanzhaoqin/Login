@@ -1,6 +1,5 @@
 package com.yuyutechnology.exchange.dao;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import com.yuyutechnology.exchange.pojo.WalletSeq;

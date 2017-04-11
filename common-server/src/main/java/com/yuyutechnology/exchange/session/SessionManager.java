@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.yuyutechnology.exchange.dao.RedisDAO;
-import com.yuyutechnology.exchange.session.SessionData;
-import com.yuyutechnology.exchange.session.SessionManager;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
 import com.yuyutechnology.exchange.utils.UidUtils;
@@ -70,7 +68,7 @@ public class SessionManager {
 		redisDAO.expireData(key, ResourceUtils.getBundleValue4Long("session.timeout.minuate", 15l), TimeUnit.MINUTES);
 		String userkey=StringUtils.replace(SESSION_DATA_KEY_USERID, "userid", sessionData.getUserId().toString());
 //		logger.info("expireData : {}",userkey);
-		redisDAO.expireData(key, ResourceUtils.getBundleValue4Long("session.timeout.minuate", 15l), TimeUnit.MINUTES);
+		redisDAO.expireData(userkey, ResourceUtils.getBundleValue4Long("session.timeout.minuate", 15l), TimeUnit.MINUTES);
 	}
 
 	/**
