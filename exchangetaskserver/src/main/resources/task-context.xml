@@ -47,10 +47,10 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 		<task:scheduled ref="autoAlarmTask" method="autoAlarmTask"
 			fixed-delay="600000" initial-delay="600000" />
 
-		
+		<!--
 		<task:scheduled ref="autoTransferRefundTask" method="autoWithdrawRefund"
 			fixed-delay="600000" initial-delay="600000" />
-		
+		-->
 
 		<task:scheduled ref="autoWithdrawReviewTask" method="autoWithdrawReviewTask"
 			fixed-delay="600000" initial-delay="1000" />
