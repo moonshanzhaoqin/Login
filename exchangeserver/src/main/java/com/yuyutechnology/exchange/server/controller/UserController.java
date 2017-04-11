@@ -42,6 +42,7 @@ import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody
 import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionManager;
+import com.yuyutechnology.exchange.sms.SendMessageResponse;
 import com.yuyutechnology.exchange.utils.HttpTookit;
 import com.yuyutechnology.exchange.utils.UidUtils;
 
@@ -164,11 +165,23 @@ public class UserController {
 					rep.setRetCode(RetCodeConsts.USER_BLOCKED);
 					rep.setMessage(MessageConsts.USER_BLOCKED);
 				} else {
-					userManager.getPinCode(getVerificationCodeRequest.getPurpose(),
+					SendMessageResponse sendMessageResponse=  userManager.getPinCode(getVerificationCodeRequest.getPurpose(),
 							getVerificationCodeRequest.getAreaCode(), getVerificationCodeRequest.getUserPhone());
-					logger.info(MessageConsts.RET_CODE_SUCCESS);
-					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+					if (sendMessageResponse==null) {
+						logger.info(MessageConsts.RET_CODE_FAILUE);
+						rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+						rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+					}else if(sendMessageResponse.isOk()){
+						logger.info(MessageConsts.RET_CODE_SUCCESS);
+						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+					}else{
+						logger.info(MessageConsts.SEND_MORE_THAN_LIMIT);
+						rep.setRetCode(RetCodeConsts.SEND_MORE_THAN_LIMIT);
+						rep.setMessage(MessageConsts.SEND_MORE_THAN_LIMIT);
+						rep.setOpts(new String[]{sendMessageResponse.getLimitCount().toString(),sendMessageResponse.getLimitTime().toString()});
+					}
+					
 				}
 			}
 		}

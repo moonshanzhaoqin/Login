@@ -118,13 +118,14 @@ public class SmsManager {
 	 * @param areaCode
 	 * @param userPhone
 	 * @param code
+	 * @return 
 	 */
-	@Async
-	public void sendSMS4PhoneVerify(String areaCode, String userPhone, String code,String func) {
+//	@Async
+	public SendMessageResponse sendSMS4PhoneVerify(String areaCode, String userPhone, String code,String func) {
 		String phoneVerifyContent = templateChoose("phoneVerify", areaCode);
 		String content = phoneVerifyContent.replace(SMS_REPLACE_PIN, code).replace(SMS_REPLACE_TIME,
 				configManager.getConfigStringValue(ConfigKeyEnum.VERIFYTIME, "10"));
-		sendSMS(areaCode + userPhone, content,func);
+		return sendSMS(areaCode + userPhone, content,func);
 	}
 
 	/**
@@ -227,7 +228,7 @@ public class SmsManager {
 		return content.toString();
 	}
 
-	private void sendSMS(String phoneNum, String content, String type) {
+	private SendMessageResponse sendSMS(String phoneNum, String content, String type) {
 		logger.info("sendSMS , phoneNum : {} , content : {}", phoneNum, content);
 		if (ResourceUtils.getBundleValue4Boolean("sms.enabled") && StringUtils.isNotBlank(phoneNum) && StringUtils.isNotBlank(content)) {
 			SendMessageRequest sendMessageRequest = new SendMessageRequest();
@@ -237,8 +238,10 @@ public class SmsManager {
 			sendMessageRequest.setType(type);
 			String param = JsonBinder.getInstance().toJson(sendMessageRequest);
 			logger.info("sendMessageRequest : {}", param);
-			HttpTookit.sendPost(ResourceUtils.getBundleValue4String("sendSMS.serverUrl"), param);
+			String result=HttpTookit.sendPost(ResourceUtils.getBundleValue4String("sendSMS.serverUrl"), param);
+			return JsonBinder.getInstance().fromJson(result, SendMessageResponse.class);
 		}
+		return null;
 	}
 
 }

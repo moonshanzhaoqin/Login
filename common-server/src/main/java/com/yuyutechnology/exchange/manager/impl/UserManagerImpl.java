@@ -49,6 +49,7 @@ import com.yuyutechnology.exchange.pojo.UserDevice;
 import com.yuyutechnology.exchange.pojo.UserDeviceId;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.push.PushManager;
+import com.yuyutechnology.exchange.sms.SendMessageResponse;
 import com.yuyutechnology.exchange.sms.SmsManager;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.LanguageUtils;
@@ -359,7 +360,7 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public void getPinCode(String func, String areaCode, String userPhone) {
+	public SendMessageResponse getPinCode(String func, String areaCode, String userPhone) {
 		// 随机生成六位数
 		final String random;
 		if (ResourceUtils.getBundleValue4Boolean("qa.switch")) {
@@ -373,7 +374,7 @@ public class UserManagerImpl implements UserManager {
 		redisDAO.saveData(func + areaCode + userPhone, md5random,
 				configManager.getConfigLongValue(ConfigKeyEnum.VERIFYTIME, 10l).intValue(), TimeUnit.MINUTES);
 		// 发送验证码
-		smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random, func);
+		return smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random, func);
 	}
 
 	@Override
