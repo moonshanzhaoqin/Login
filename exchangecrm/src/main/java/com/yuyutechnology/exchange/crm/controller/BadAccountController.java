@@ -55,7 +55,7 @@ public class BadAccountController {
 	// TODO 获取交易详情
 	@ResponseBody
 	@RequestMapping(value = "/getTransfer", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public Transfer getTransfer(@RequestBody GetTransferRequest getTransferRequest, HttpServletRequest request,
+	public Object getTransfer(@RequestBody GetTransferRequest getTransferRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		return transferManager.getTransfer(getTransferRequest.getTransferId());
 	}

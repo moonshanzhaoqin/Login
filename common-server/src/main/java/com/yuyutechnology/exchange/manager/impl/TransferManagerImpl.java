@@ -914,8 +914,8 @@ public class TransferManagerImpl implements TransferManager{
 	}
 
 	@Override
-	public Transfer getTransfer(String transferId) {
-		return transferDAO.getTransferById(transferId);
+	public Object getTransfer(String transferId) {
+		return transferDAO.getTransferByIdJoinUser(transferId);
 	}
 	
 	private HashMap<String, String> checkTransferLimit(String currency, BigDecimal amount, int userId){

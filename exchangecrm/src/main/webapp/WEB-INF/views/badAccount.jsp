@@ -30,11 +30,11 @@
 						<th>用户ID</th>
 						<th>手机号</th>
 						<th>货币</th>
-						<th>sumAmount</th>
-						<th>balanceBefore</th>
-						<th>balanceNow</th>
-						<th>开始时间</th>
-						<th>结束时间</th>
+						<th>核账前</th>
+						<th>核账中</th>
+						<th>核账后</th>
+						<th>开始时间(UTC)</th>
+						<th>结束时间(UTC)</th>
 						<th>badAccountStatus</th>
 						<th>操作</th>
 
@@ -43,7 +43,7 @@
 				<tbody></tbody>
 			</table>
 		</div>
-		<hr />
+		<hr style="background-color:grey;height:1px;"/>
 		<div id="detail" class="row" style="height: 450px; overflow: auto;"
 			hidden>
 			<table class="table table-bordered table-hover table-striped"
@@ -55,7 +55,7 @@
 						<th>数量</th>
 						<th>交易类型</th>
 						<th>交易ID</th>
-						<th>时间</th>
+						<th>时间(UTC)</th>
 					</tr>
 				</thead>
 				<tbody></tbody>
@@ -75,15 +75,44 @@
 					<h4 class="modal-title">详情</h4>
 				</div>
 				<div class="modal-body" style="overflow: auto;">
-					<!-- 					<table class="table table-bordered table-hover table-striped" -->
-					<!-- 						id="transfer"> -->
-					<!-- 						<thead> -->
-					<!-- 							<tr> -->
-					<!-- 								<th></th> -->
-					<!-- 							</tr> -->
-					<!-- 						</thead> -->
-					<!-- 						<tbody></tbody> -->
-					<!-- 					</table> -->
+					<form class="form-horizontal">
+						<div class="form-group">
+							<label class="col-sm-3 control-label">交易ID:</label>
+							<div class="col-sm-9" id="transferId"></div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">交易类型:</label>
+							<div class="col-sm-9" id="transferType"></div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">FROM:</label>
+							<div class="col-sm-9" id=from></div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">TO:</label>
+							<div class="col-sm-9" id=to></div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">币种:</label>
+							<div class="col-sm-9" id=currency></div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">数量:</label>
+							<div class="col-sm-9" id=transferAmount></div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">创建时间:</label>
+							<div class="col-sm-9" id=createTime></div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">最新更新时间:</label>
+							<div class="col-sm-9" id=finishTime></div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">交易状态:</label>
+							<div class="col-sm-9" id=transferStatus></div>
+						</div>
+					</form>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -105,17 +134,17 @@
 		$(function() {
 			getBadAccountByPage(1);
 
-			$('#myModal').on('show.bs.modal', function(e) {
-				// do something...
-				var tr = $(e.relatedTarget) // Button that triggered the modal
-				var badAccountId = tr.data('whatever') // Extract info from data-* attributes
-				console.log(badAccountId);
-				getDetailSeq(badAccountId)
-			})
+			// 			$('#myModal').on('show.bs.modal', function(e) {
+			// 				// do something...
+			// 				var tr = $(e.relatedTarget) // Button that triggered the modal
+			// 				var badAccountId = tr.data('whatever') // Extract info from data-* attributes
+			// 				console.log(badAccountId);
+			// 				getDetailSeq(badAccountId)
+			// 			})
 
 		})
 		function getBadAccountByPage(currentPage) {
-			data = {
+			var data = {
 				currentPage : currentPage
 			};
 			$
@@ -143,10 +172,10 @@
 											+ data.rows[i][0].currency
 											+ '</td>'
 											+ '<td>'
-											+ data.rows[i][0].sumAmount
+											+ data.rows[i][0].balanceBefore
 											+ '</td>'
 											+ '<td>'
-											+ data.rows[i][0].balanceBefore
+											+ data.rows[i][0].sumAmount
 											+ '</td>'
 											+ '<td>'
 											+ data.rows[i][0].balanceNow
@@ -180,7 +209,7 @@
 		}
 
 		function getDetailSeq(badAccountId) {
-			data = {
+			var data = {
 				badAccountId : badAccountId
 			};
 			$
@@ -212,7 +241,9 @@
 											+ '</td>'
 											+ '<td>'
 											+ ((data[i].transferType == "1") ? data[i].transactionId
-													: ('<a href="" data-toggle="modal" data-target="#myModal">onclick='
+													: ('<a href="" data-toggle="modal" data-target="#myModal" onclick= "getTransfer(\''
+															+ data[i].transactionId
+															+ '\')">	'
 															+ data[i].transactionId + '</a>'))
 											+ '</td>' + '<td>'
 											+ timeDate(data[i].createTime)
@@ -230,12 +261,59 @@
 					});
 		}
 
-function getTransfer(transferId){
-	
-}
+		function getTransfer(transferId) {
+			var data = {
+				transferId : transferId
+			};
+			$.ajax({
+				type : "post",
+				url : "/crm/getTransfer",
+				dataType : 'json',
+				contentType : "application/json; charset=utf-8",
+				data : JSON.stringify(data),
+				success : function(data) {
+					if (data.retCode == "00002") {
+						location.href = loginUrl;
+					} else {
+						$('#transferId').html(
+								'<p class="form-control-static">' + data[0].transferId
+										+ '</p>');
+						$('#from').html(
+								'<p class="form-control-static">' + data[0].userFrom
+										+ '</p><p class="form-control-static">' + data[1].areaCode+data[1].userPhone
+										+ '</p>');
+						$('#to').html(
+								'<p class="form-control-static">' + data[0].userTo
+										+ '</p><p class="form-control-static">' + data[2].areaCode+data[2].userPhone
+										+ '</p>');
 
-
-		
+						$('#currency').html(
+								'<p class="form-control-static">' + data[0].currency
+										+ '</p>');
+						$('#transferAmount').html(
+								'<p class="form-control-static">' + data[0].transferAmount
+										+ '</p>');
+						$('#createTime').html(
+								'<p class="form-control-static">' + timeDate(data[0].createTime)
+										+ '</p>');
+						$('#finishTime').html(
+								'<p class="form-control-static">' + timeDate(data[0].finishTime)
+										+ '</p>');
+						$('#transferStatus').html(
+								'<p class="form-control-static">' + transferStatus(data[0].transferStatus)
+										+ '</p>');
+						$('#transferType').html(
+								'<p class="form-control-static">' + transferType(data[0].transferType)
+										+ '</p>');
+					}
+				},
+				error : function(xhr, err) {
+					console.log("error");
+					console.log(err);
+				},
+				async : false
+			});
+		}
 
 		function transferType(transferType) {
 			switch (transferType) {
@@ -253,6 +331,28 @@ function getTransfer(transferId){
 				return "金沛充值";
 			case 6:
 				return "金沛充值退款";
+			}
+		}
+		function transferStatus(transferStatus) {
+			switch (transferStatus) {
+			case 0:
+				return "交易初始化";
+			case 1:
+				return " 交易进行中";
+			case 2:
+				return "交易已完成";
+			case 3:
+				return "交易退回";
+			case 4:
+				return "提现一审成功，待支付";
+			case 5:
+				return "提现一审失败，待二审";
+			case 6:
+				return "提现二审成功 ，待支付";
+			case 7:
+				return "提现二审失败，待退回";
+			case 8:
+				return "支付失败，待退回，待支付";
 			}
 		}
 
@@ -291,12 +391,7 @@ function getTransfer(transferId){
 			$('#paginator').bootstrapPaginator(options);
 		}
 
-		//时间戳变格式化
-		function timeDate(time) {
-			var date = new Date();
-			date.setTime(time);
-			return date.toLocaleString();
-		}
+		
 	</script>
 	<%@ include file="common/footer.jsp"%>
 </body>
