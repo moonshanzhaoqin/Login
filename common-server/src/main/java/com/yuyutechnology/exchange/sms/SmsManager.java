@@ -120,11 +120,11 @@ public class SmsManager {
 	 * @param code
 	 */
 	@Async
-	public void sendSMS4PhoneVerify(String areaCode, String userPhone, String code,String type) {
+	public void sendSMS4PhoneVerify(String areaCode, String userPhone, String code,String func) {
 		String phoneVerifyContent = templateChoose("phoneVerify", areaCode);
 		String content = phoneVerifyContent.replace(SMS_REPLACE_PIN, code).replace(SMS_REPLACE_TIME,
 				configManager.getConfigStringValue(ConfigKeyEnum.VERIFYTIME, "10"));
-		sendSMS(areaCode + userPhone, content,type);
+		sendSMS(areaCode + userPhone, content,func);
 	}
 
 	/**

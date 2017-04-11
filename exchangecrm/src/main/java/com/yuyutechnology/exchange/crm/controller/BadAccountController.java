@@ -34,7 +34,15 @@ public class BadAccountController {
 	@Autowired
 	TransferManager transferManager;
 
-	// TODO 分页获取坏账列表
+	/**
+	 * 分页获取坏账列表
+	 * 
+	 * @param getBadAccountByPageRequest
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+
 	@ResponseBody
 	@RequestMapping(value = "/getBadAccountByPage", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public PageBean getBadAccountByPage(@RequestBody GetBadAccountByPageRequest getBadAccountByPageRequest,
@@ -42,7 +50,14 @@ public class BadAccountController {
 		return walletManager.getBadAccountByPage(Integer.parseInt(getBadAccountByPageRequest.getCurrentPage()));
 	}
 
-	// TODO 获取详细流水
+	/**
+	 * 获取详细流水
+	 * 
+	 * @param getDetailSeqRequest
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/getDetailSeq", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public List<?> getDetailSeq(@RequestBody GetDetailSeqRequest getDetailSeqRequest, HttpServletRequest request,
@@ -50,7 +65,14 @@ public class BadAccountController {
 		return walletManager.getDetailSeq(getDetailSeqRequest.getBadAccountId());
 	}
 
-	// TODO 获取交易详情
+	/**
+	 * TODO 获取交易详情
+	 * 
+	 * @param getTransferRequest
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/getTransfer", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public Object getTransfer(@RequestBody GetTransferRequest getTransferRequest, HttpServletRequest request,
