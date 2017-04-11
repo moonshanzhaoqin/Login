@@ -1,13 +1,12 @@
 package com.yuyutechnology.exchange.crm.controller;
 
-import org.apache.logging.log4j.Logger;
-
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +20,6 @@ import com.yuyutechnology.exchange.crm.request.GetTransferRequest;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.WalletManager;
-import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.utils.page.PageBean;
 
 @Controller

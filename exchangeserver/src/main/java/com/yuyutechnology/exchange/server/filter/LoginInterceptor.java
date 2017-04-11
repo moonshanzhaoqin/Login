@@ -81,7 +81,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		String sessionId = getToeknFromURI(request.getRequestURI());
 		SessionData sessionData = sessionManager.get(sessionId);
 		// 判断是否需要拦截或者是否登录
-		if (sessionData!= null) {
+		if (sessionData != null) {
 			logger.info("request URI:" + requestURI + " session : " + sessionId + "==>session ok");
 			sessionManager.refreshSessionDataExpireTime(sessionData);
 			SessionDataHolder.setSessionData(sessionData);
