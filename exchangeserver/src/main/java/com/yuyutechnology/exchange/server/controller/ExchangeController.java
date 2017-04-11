@@ -36,8 +36,8 @@ import com.yuyutechnology.exchange.server.controller.response.GetExchangeHistory
 import com.yuyutechnology.exchange.server.controller.response.GetExchangeRateResponse;
 import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
 import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
-import com.yuyutechnology.exchange.server.session.SessionData;
-import com.yuyutechnology.exchange.server.session.SessionDataHolder;
+import com.yuyutechnology.exchange.session.SessionData;
+import com.yuyutechnology.exchange.session.SessionDataHolder;
 
 @Controller
 public class ExchangeController {
@@ -146,8 +146,7 @@ public class ExchangeController {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		ExchangeConfirmResponse rep = new ExchangeConfirmResponse();
 		HashMap<String, String> result = exchangeManager.exchangeConfirm(sessionData.getUserId(),
-				reqMsg.getCurrencyOut(), reqMsg.getCurrencyIn(), new BigDecimal(Double.toString(reqMsg.getAmountOut())),
-				new BigDecimal(Double.toString(reqMsg.getAmountIn())));
+				reqMsg.getCurrencyOut(), reqMsg.getCurrencyIn(), new BigDecimal(Double.toString(reqMsg.getAmountOut())));
 
 		rep.setRetCode(result.get("retCode"));
 		rep.setMessage(result.get("msg"));

@@ -60,9 +60,9 @@ import com.yuyutechnology.exchange.server.controller.response.SetUserPayPwdRespo
 import com.yuyutechnology.exchange.server.controller.response.SwitchLanguageResponse;
 import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
 import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
-import com.yuyutechnology.exchange.server.session.SessionData;
-import com.yuyutechnology.exchange.server.session.SessionDataHolder;
-import com.yuyutechnology.exchange.server.session.SessionManager;
+import com.yuyutechnology.exchange.session.SessionData;
+import com.yuyutechnology.exchange.session.SessionDataHolder;
+import com.yuyutechnology.exchange.session.SessionManager;
 
 /**
  * @author suzan.wu

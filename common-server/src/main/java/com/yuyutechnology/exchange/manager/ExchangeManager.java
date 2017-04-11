@@ -48,7 +48,7 @@ public interface ExchangeManager {
 	 * @return
 	 */
 	public HashMap<String, String> exchangeConfirm(int userId,String currencyOut,
-			String currencyIn,BigDecimal amountOut,BigDecimal amountIn);
+			String currencyIn,BigDecimal amountOut);
 
 	/**
 	 * @Descrition : 

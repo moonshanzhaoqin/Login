@@ -23,7 +23,7 @@
 					
 						<input type="hidden" value="0" name="alarmType" id="alarmType" />
 					
-						<div class="form-group">
+						<div class="form-group" id="limitConfig">
 							<label class="col-sm-3 control-label">预警范围</label>
 							<div class="col-sm-3 ">
 								<div class="input-group">

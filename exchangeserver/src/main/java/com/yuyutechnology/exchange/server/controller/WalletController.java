@@ -17,8 +17,8 @@ import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.manager.WalletManager;
 import com.yuyutechnology.exchange.server.controller.response.GetTotalAmontGoldResponse;
 import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
-import com.yuyutechnology.exchange.server.session.SessionData;
-import com.yuyutechnology.exchange.server.session.SessionDataHolder;
+import com.yuyutechnology.exchange.session.SessionData;
+import com.yuyutechnology.exchange.session.SessionDataHolder;
 
 @Controller
 public class WalletController {

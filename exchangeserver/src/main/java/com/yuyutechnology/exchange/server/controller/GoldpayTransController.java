@@ -38,8 +38,8 @@ import com.yuyutechnology.exchange.server.controller.response.RequestPinResponse
 import com.yuyutechnology.exchange.server.controller.response.WithdrawConfirmResponse;
 import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
 import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
-import com.yuyutechnology.exchange.server.session.SessionData;
-import com.yuyutechnology.exchange.server.session.SessionDataHolder;
+import com.yuyutechnology.exchange.session.SessionData;
+import com.yuyutechnology.exchange.session.SessionDataHolder;
 import com.yuyutechnology.exchange.utils.page.PageBean;
 
 @Controller
@@ -207,6 +207,7 @@ public class GoldpayTransController {
 			List<Transfer> list = (List<Transfer>) pageBean.getRows();
 			for (Transfer transfer : list) {
 				WithdrawDTO withdrawDTO = new WithdrawDTO();
+				withdrawDTO.setCurrency(ServerConsts.CURRENCY_OF_GOLDPAY);
 				withdrawDTO.setAmount(transfer.getTransferAmount());
 				withdrawDTO.setCreateTime(transfer.getCreateTime());
 				if (transfer.getTransferStatus() == ServerConsts.TRANSFER_STATUS_OF_PROCESSING

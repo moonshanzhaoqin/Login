@@ -21,7 +21,7 @@ import com.yuyutechnology.exchange.server.controller.TransferController;
  * @author silent.sun
  *
  */
-public class ExchangeRateManagerTest extends BaseSpringJunit4 {
+public class ExchangeManagerTest extends BaseSpringJunit4 {
 
 	@Autowired
 	UserDAO userDAO;
@@ -33,7 +33,7 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 	public static Logger logger = LogManager.getLogger(TransferController.class);
 
 	@Test
-	public void testUpdateRate() {
+	public void testRate() {
 		List<String[]> instruments = commonManager.getInstruments();
 		for (String[] strings : instruments) {
 			 exchangeManager.exchangeCalculation(strings[0].split("_")[0],
@@ -50,12 +50,35 @@ public class ExchangeRateManagerTest extends BaseSpringJunit4 {
 			}
 		}
 	}
+	
+	@Test
+	public void testExchange() {
+		exchangeManager.exchangeConfirm(15, "GDQ", "USD", new BigDecimal(1000));
+		exchangeManager.exchangeConfirm(99, "GDQ", "USD", new BigDecimal(1000));
+		exchangeManager.exchangeConfirm(106, "GDQ", "USD", new BigDecimal(1000));
+		exchangeManager.exchangeConfirm(113, "GDQ", "USD", new BigDecimal(1000));
+		exchangeManager.exchangeConfirm(182, "GDQ", "USD", new BigDecimal(1000));
+		exchangeManager.exchangeConfirm(310, "GDQ", "USD", new BigDecimal(1000));
+		exchangeManager.exchangeConfirm(324, "GDQ", "USD", new BigDecimal(1000));
+		exchangeManager.exchangeConfirm(394, "GDQ", "USD", new BigDecimal(1000));
+		exchangeManager.exchangeConfirm(408, "GDQ", "USD", new BigDecimal(1000));
+		exchangeManager.exchangeConfirm(415, "GDQ", "USD", new BigDecimal(1000));
+		
+		exchangeManager.exchangeConfirm(15, "USD", "GDQ", new BigDecimal(4));
+		exchangeManager.exchangeConfirm(99, "USD", "GDQ", new BigDecimal(4));
+		exchangeManager.exchangeConfirm(106, "USD", "GDQ", new BigDecimal(4));
+		exchangeManager.exchangeConfirm(113, "USD", "GDQ", new BigDecimal(4));
+		exchangeManager.exchangeConfirm(182, "USD", "GDQ", new BigDecimal(4));
+		exchangeManager.exchangeConfirm(310, "USD", "GDQ", new BigDecimal(4));
+		exchangeManager.exchangeConfirm(324, "USD", "GDQ", new BigDecimal(4));
+		exchangeManager.exchangeConfirm(394, "USD", "GDQ", new BigDecimal(4));
+		exchangeManager.exchangeConfirm(408, "USD", "GDQ", new BigDecimal(4));
+		exchangeManager.exchangeConfirm(415, "USD", "GDQ", new BigDecimal(4));
+	}
 
 	public static void main(String[] args) {
-
 		System.out.println(new BigDecimal("1").divide(new BigDecimal("3"), 8, BigDecimal.ROUND_UP)
 				.multiply(new BigDecimal("2")));
-
 		System.out.println(new BigDecimal("1")
 				.multiply(new BigDecimal("2").divide(new BigDecimal("3"), 8, BigDecimal.ROUND_UP)));
 	}

@@ -33,6 +33,7 @@ public class Wallet implements java.io.Serializable {
 	private int userId;
 	private BigDecimal balance;
 	private Date updateTime;
+	private Integer updateSeqId;
 
 	public Wallet() {
 	}
@@ -100,4 +101,12 @@ public class Wallet implements java.io.Serializable {
 		this.updateTime = updateTime;
 	}
 
+	@Column(name = "update_seq_id", nullable = false)
+	public Integer getUpdateSeqId() {
+		return updateSeqId;
+	}
+
+	public void setUpdateSeqId(Integer updateSeqId) {
+		this.updateSeqId = updateSeqId;
+	}
 }

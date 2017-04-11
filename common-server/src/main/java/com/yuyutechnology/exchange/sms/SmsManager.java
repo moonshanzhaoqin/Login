@@ -75,11 +75,12 @@ public class SmsManager {
 	
 	// zh_CN
 	private StringBuffer criticalAlarm_cn = new StringBuffer();
-	
 	// zh_CN
 	private StringBuffer largeTrans_cn = new StringBuffer();
 	// zh_CN
 	private StringBuffer largeExchange_cn = new StringBuffer();
+	// zh_CN
+	private StringBuffer badAccountAlarm_cn = new StringBuffer();
 	
 
 	@PostConstruct
@@ -97,6 +98,8 @@ public class SmsManager {
 		
 		readTemplate("template/sms/zh_CN/largeTrans.template", largeTrans_cn);
 		readTemplate("template/sms/zh_CN/largeExchangeWarn.template", largeExchange_cn);
+		
+		readTemplate("template/sms/zh_CN/badAccountAlarm.template", badAccountAlarm_cn);
 	}
 	
 	private void readTemplate(String filePath, StringBuffer content) {
@@ -183,6 +186,13 @@ public class SmsManager {
 		sendSMS(phone, content);
 	}
 
+	@Async
+	public void sendSMS4BadAccount(String phone, String dateTime){
+		String content = badAccountAlarm_cn.toString();
+		content = content.replace(SMS_REPLACE_TIME,dateTime);
+		sendSMS(phone, content);
+	}
+	
 	/**
 	 * 根据功能和国家码选择模板
 	 * 

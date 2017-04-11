@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
+import com.yuyutechnology.exchange.dao.CrmUserInfoDAO;
 import com.yuyutechnology.exchange.dao.FriendDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
@@ -77,6 +78,8 @@ public class UserManagerImpl implements UserManager {
 	@Autowired
 	UserDeviceDAO userDeviceDAO;
 	@Autowired
+	CrmUserInfoDAO crmUserInfoDAO;
+	@Autowired
 	SmsManager smsManager;
 	@Autowired
 	GoldpayManager goldpayManager;
@@ -86,7 +89,7 @@ public class UserManagerImpl implements UserManager {
 	CommonManager commonManager;
 	@Autowired
 	ConfigManager configManager;
-
+	
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
 		logger.info("{} add friend {} ==>", userId, areaCode + userPhone);
@@ -583,17 +586,20 @@ public class UserManagerImpl implements UserManager {
 				return;
 			}
 
+			String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+			
 			User payer = userDAO.getUser(payerTransfer.getUserFrom());
 
 			// 系统账号扣款
 			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, unregistered.getCurrency(),
-					unregistered.getAmount(), "-");
+					unregistered.getAmount(), "-", ServerConsts.TRANSFER_TYPE_TRANSACTION,
+					transferId);
 			// 用户加款
 			walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(), unregistered.getAmount(),
-					"+");
+					"+", ServerConsts.TRANSFER_TYPE_TRANSACTION,
+					transferId);
 
 			// 生成TransId
-			String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 			Transfer transfer = new Transfer();
 			transfer.setTransferId(transferId);
 			transfer.setUserFrom(systemUserId);
@@ -612,8 +618,8 @@ public class UserManagerImpl implements UserManager {
 			transferDAO.addTransfer(transfer);
 
 			// 增加seq记录
-			walletSeqDAO.addWalletSeq4Transaction(systemUserId, userId, ServerConsts.TRANSFER_TYPE_TRANSACTION,
-					transferId, unregistered.getCurrency(), unregistered.getAmount());
+//			walletSeqDAO.addWalletSeq4Transaction(systemUserId, userId, ServerConsts.TRANSFER_TYPE_TRANSACTION,
+//					transferId, unregistered.getCurrency(), unregistered.getAmount());
 
 			// 更改unregistered状态
 			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
@@ -659,6 +665,7 @@ public class UserManagerImpl implements UserManager {
 			user.setUserAvailable(userAvailable);
 			userDAO.updateUser(user);
 		}
+		crmUserInfoDAO.userFreeze(userId, userAvailable);
 	}
 
 	@Override

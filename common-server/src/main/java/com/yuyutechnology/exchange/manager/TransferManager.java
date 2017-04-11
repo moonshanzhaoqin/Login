@@ -114,6 +114,8 @@ public interface TransferManager {
 	
 	public HashMap<String, String> regenerateQRCode(String currency,BigDecimal amount);
 	
+	public Object getTransfer(String transferId);
+
 	public HashMap<String, Object> getTransDetails(String transferId,int userId);
 	
 }

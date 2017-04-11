@@ -42,7 +42,7 @@ public class SupervisorController {
 		mav = new ModelAndView();
 		List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
 		mav.addObject("supervisorList", supervisorList);
-		mav.setViewName("/alarm/supervisorInfo");
+		mav.setViewName("alarm/supervisorInfo");
 		return mav;
 	}
 	

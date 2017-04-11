@@ -24,7 +24,7 @@
 					
 					
 						<div class="modal-body">
-							<div class="row">
+							<div class="row" id="updateLimitConfig">
 								<div class="col-md-4">
 			            			<h4 class="text-right">预警范围 :</h4>	
 			            		</div>

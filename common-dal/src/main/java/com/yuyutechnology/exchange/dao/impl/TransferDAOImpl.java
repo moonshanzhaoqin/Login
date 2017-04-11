@@ -259,8 +259,8 @@ public class TransferDAOImpl implements TransferDAO {
 			hql.append(" and t.transferId = ?");
 			values.add(transferId);
 		}
-//		System.out.println(transferStatus.length);
-		if (transferStatus.length >0) {
+		// System.out.println(transferStatus.length);
+		if (transferStatus.length > 0) {
 			hql.append(" and ( t.transferStatus = ?");
 			values.add(Integer.parseInt(transferStatus[0]));
 			for (int i = 1; i < transferStatus.length; i++) {
@@ -273,6 +273,14 @@ public class TransferDAOImpl implements TransferDAO {
 
 		PageBean pageBean = PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
 		return pageBean;
+	}
+
+	@Override
+	public Object getTransferByIdJoinUser(String transferId) {
+		List<?> list = hibernateTemplate.find(
+				"from Transfer t,User u1,User u2 where t.transferId = ? and t.userFrom = u1.userId and t.userTo = u2.userId ",
+				transferId);
+		return list.isEmpty() ?null:list.get(0);
 	}
 
 }

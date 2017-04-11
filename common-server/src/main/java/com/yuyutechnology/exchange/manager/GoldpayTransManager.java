@@ -52,6 +52,10 @@ public interface GoldpayTransManager {
 	void withdrawRefund(String transferId);
 
 	void withdrawReviewManual(String transferId);
+	
+	public void forbiddenGoldpayRemitWithdraws();
+	
+	public boolean getGoldpayRemitWithdrawsforbidden();
 
 	void withdrawReviewAuto(String transferId);
 

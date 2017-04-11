@@ -84,7 +84,8 @@
 						<th>交易数量(GDQ)</th>
 						<th>交易状态</th>
 						<th>操作</th>
-						<th>最新更新时间</th>
+						<th>创建时间(UTC)</th>
+						<th>最新更新时间(UTC)</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -166,6 +167,7 @@
 		src="<c:url value="/resources/bootstrap/js/bootstrap-paginator.min.js" />"></script>
 	<script>
 		$(function() {
+			var userPhone, transferId, transferStatus = [];
 			//页面初始化，加载数据
 			searchWithdraw(1);
 			// 			$('#myModal').on('show.bs.modal', function(e) {
@@ -182,9 +184,6 @@
 			// 				// 				console.log($("#paginator").data("currentPage"));
 			// 				searchWithdraw($("#paginator .active a").html());
 			// 			})
-
-			var userPhone, transferId, transferStatus = [];
-
 		});
 
 		function searchWithdraw(page) {
@@ -226,12 +225,7 @@
 						return "" + page;
 					}
 				},
-				// 				itemContainerClass : function(type, page, current) {
-				// 					console.log("itemContainerClass")
-				// 					return (page === current) ? "active" : "pointer-cursor";
-				// 				},
 				onPageClicked : function(event, originalEvent, type, page) {
-					console.log("onPageClicked")
 					getWithdrawList(page, userPhone, transferId, transferStatus);
 				}
 			}
@@ -339,7 +333,6 @@
 				$("input:checkbox[value='" + transferStatus[i] + "']").prop(
 						"checked", true);
 			}
-
 			var data = {
 				currentPage : currentPage,
 				userPhone : userPhone,
@@ -380,6 +373,9 @@
 									+ status(data.rows[i][0].transferId,
 											data.rows[i][0].transferStatus)
 									+ '<td>'
+									+ timeDate(data.rows[i][0].createTime)
+									+ '</td>'
+									+ '<td>'
 									+ timeDate(data.rows[i][0].finishTime)
 									+ '</td>' + '</tr>'
 						}
@@ -398,11 +394,11 @@
 			});
 		}
 		//时间戳变格式化
-		function timeDate(time) {
-			var date = new Date();
-			date.setTime(time);
-			return date.toLocaleString();
-		}
+// 		function timeDate(time) {
+// 			var date = new Date();
+// 			date.setTime(time);
+// 			return date.toLocaleString();
+// 		}
 
 		//审批
 		function withdrawReview(transferId) {

@@ -1,4 +1,4 @@
-package com.yuyutechnology.exchange.server.session;
+package com.yuyutechnology.exchange.session;
 
 import java.util.concurrent.TimeUnit;
 
@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.yuyutechnology.exchange.dao.RedisDAO;
+import com.yuyutechnology.exchange.session.SessionData;
+import com.yuyutechnology.exchange.session.SessionManager;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.ResourceUtils;
 import com.yuyutechnology.exchange.utils.UidUtils;

@@ -31,4 +31,8 @@ public class PageController {
 	public String withdraw(HttpServletRequest request, HttpServletResponse response) {
 		return "withdraw";
 	}
+	@RequestMapping(value = "/badAccount", method = { RequestMethod.GET })
+	public String badAccount(HttpServletRequest request, HttpServletResponse response) {
+		return "badAccount";
+	}
 }
