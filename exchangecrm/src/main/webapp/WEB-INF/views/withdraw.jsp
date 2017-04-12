@@ -22,7 +22,7 @@
 	<div class="container">
 		<div class="row">
 
-			<form class="form-inline" id="searchWithdraw">
+			<form class="form-inline " id="searchWithdraw">
 				<div class="form-group">
 					<label class="sr-only" for="userPhone">userPhone</label> <input
 						type="text" class="form-control" name="userPhone"
@@ -33,6 +33,8 @@
 						type="text" class="form-control" name="transferId"
 						placeholder="交易号">
 				</div>
+				<button type="button" class="btn btn-primary pull-right"
+					onclick="searchWithdraw(1)">搜索</button>
 				<div class="form-group">
 					<!-- 					<label class="checkbox-inline"> <input type="checkbox" -->
 					<!-- 						name="transferStatus" value="">all -->
@@ -68,8 +70,7 @@
 					<!-- 						<option value="8">支付失败，待退回，待支付</option> -->
 					<!-- 					</select> -->
 				</div>
-				<button type="button" class="btn btn-primary"
-					onclick="searchWithdraw(1)">搜索</button>
+				
 			</form>
 		</div>
 		<div class="row">
