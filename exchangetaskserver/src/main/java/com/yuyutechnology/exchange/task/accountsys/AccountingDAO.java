@@ -61,7 +61,7 @@ public class AccountingDAO {
 			@Override
 			public Integer doInHibernate(Session session) throws HibernateException {
 				StringBuilder sql = new StringBuilder();
-				sql.append("insert into e_bad_account (user_id,currency,sum_amount,balance_before,balance_now,start_time,end_time,start_seq_id,end_seq_id) ")
+				sql.append("insert into e_bad_account (user_id,currency,sum_amount,balance_history,balance_now,start_time,end_time,start_seq_id,end_seq_id) ")
 						.append("select user_id,currency,sum_amount,balance_before,balance_now,?,?,?,? ")
 						.append("from (select ws.user_id as user_id,ws.currency as currency,SUM(ws.amount) as sum_amount,w.balance as balance_before,w2.balance as balance_now ")
 						.append("from e_wallet_seq ws left join e_wallet_before w on ws.user_id = w.user_id and ws.currency = w.currency left join e_wallet_now w2 on ws.user_id = w2.user_id and ws.currency = w2.currency ")
