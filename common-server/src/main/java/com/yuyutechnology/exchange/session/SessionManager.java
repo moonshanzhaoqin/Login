@@ -1,4 +1,4 @@
-package com.yuyutechnology.exchange.server.session;
+package com.yuyutechnology.exchange.session;
 
 import java.util.concurrent.TimeUnit;
 
@@ -68,7 +68,7 @@ public class SessionManager {
 		redisDAO.expireData(key, ResourceUtils.getBundleValue4Long("session.timeout.minuate", 15l), TimeUnit.MINUTES);
 		String userkey=StringUtils.replace(SESSION_DATA_KEY_USERID, "userid", sessionData.getUserId().toString());
 //		logger.info("expireData : {}",userkey);
-		redisDAO.expireData(key, ResourceUtils.getBundleValue4Long("session.timeout.minuate", 15l), TimeUnit.MINUTES);
+		redisDAO.expireData(userkey, ResourceUtils.getBundleValue4Long("session.timeout.minuate", 15l), TimeUnit.MINUTES);
 	}
 
 	/**

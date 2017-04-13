@@ -37,9 +37,13 @@
     <loggers>
         <!--建立一个默认的root的logger-->
         <root level="info">
+        <!-- 
             <appender-ref ref="LogFile"/>
+         -->
             <appender-ref ref="RollingFile"/>
-            <appender-ref ref="Console"/>
+		<!-- 
+			 <appender-ref ref="Console"/>
+		 -->            
         </root>
 
     </loggers>

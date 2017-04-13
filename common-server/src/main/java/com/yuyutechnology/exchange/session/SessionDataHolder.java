@@ -1,4 +1,7 @@
-package com.yuyutechnology.exchange.server.session;
+package com.yuyutechnology.exchange.session;
+
+import com.yuyutechnology.exchange.session.SessionData;
+
 /**
  * 
  * @author silent.sun

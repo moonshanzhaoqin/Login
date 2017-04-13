@@ -51,6 +51,8 @@ public interface TransferDAO {
 	public PageBean searchWithdrawsByPage(String userPhone, String reviewStatus, String[] transferStatus, int currentPage,
 			int pageSize);
 
+	public Object getTransferByIdJoinUser(String transferId);
+
 //	void testByPage();
 	
 }

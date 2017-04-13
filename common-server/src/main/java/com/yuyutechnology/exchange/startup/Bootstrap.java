@@ -10,7 +10,6 @@
 package com.yuyutechnology.exchange.startup;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
-import org.springframework.util.Log4jConfigurer;
 /**
  * 系统启动入口类
  * 

@@ -1,6 +1,5 @@
 package com.yuyutechnology.exchange.server.controller.response;
 
-import com.mysql.fabric.xmlrpc.base.Array;
 import com.yuyutechnology.exchange.RetCodeConsts;
 
 public class BaseResponse {

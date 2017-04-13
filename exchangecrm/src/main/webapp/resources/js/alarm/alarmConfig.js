@@ -39,9 +39,13 @@ function updateAlarmConfig(obj){
 					}else{
 						$("#updateAlarmType").val(data.crmAlarm.alarmType);
 					}
-					$("#updateLowerLimit").val(data.crmAlarm.lowerLimit);
-					$("#updateUpperLimit").val(data.crmAlarm.upperLimit);
 					
+					if (data.crmAlarm.alarmType == 3) {
+						$("#updateLimitConfig").hide();
+					}else{
+						$("#updateLowerLimit").val(data.crmAlarm.lowerLimit);
+						$("#updateUpperLimit").val(data.crmAlarm.upperLimit);
+					}
 					//拼接html
 					
 					var optionStr="";
@@ -94,34 +98,37 @@ function updateAlarmAvailable(obj,alarmAvailable){
 
 
 $("#addAlarmConfigBtn").click(function(){			
-	var lowerLimit = $("#criticalThresholdLowerLimit").val().trim();
-	var upperLimit = $("#criticalThresholdUpperLimit").val().trim();
-	
-	if( checkNotBlank(lowerLimit) && checkNotBlank(upperLimit)){
-		if(parseInt(lowerLimit) > parseInt(upperLimit)){
-			alert("下限不能大于上限！");
+	if ($("#alarmType").val().trim() != 3) {
+		var lowerLimit = $("#criticalThresholdLowerLimit").val().trim();
+		var upperLimit = $("#criticalThresholdUpperLimit").val().trim();
+		if( checkNotBlank(lowerLimit) && checkNotBlank(upperLimit)){
+			if(parseInt(lowerLimit) > parseInt(upperLimit)){
+				alert("下限不能大于上限！");
+				return ;
+			}
+		}else{
+			alert("有未填写完整的信息，请填写完善后再提交！");
 			return ;
 		}
-	}else{
-		alert("有未填写完整的信息，请填写完善后再提交！");
-		return ;
 	}
 	$("#addAlarmConfig").submit();
 });
 
 
 $("#updateAlarmConfigBtn").click(function(){		
-	var lowerLimit = $("#updateLowerLimit").val().trim();
-	var upperLimit = $("#updateUpperLimit").val().trim();
 	
-	if(checkNotBlank(lowerLimit) && checkNotBlank(upperLimit)){
-		if(parseInt(lowerLimit) > parseInt(upperLimit)){
-			alert("下限不能大于上限！");
+	if ($("#updateAlarmType").val().trim() != 3) {
+		var lowerLimit = $("#updateLowerLimit").val().trim();
+		var upperLimit = $("#updateUpperLimit").val().trim();
+		if(checkNotBlank(lowerLimit) && checkNotBlank(upperLimit)){
+			if(parseInt(lowerLimit) > parseInt(upperLimit)){
+				alert("下限不能大于上限！");
+				return ;
+			}
+		}else{
+			alert("有未填写完整的信息，请填写完善后再提交！");
 			return ;
 		}
-	}else{
-		alert("有未填写完整的信息，请填写完善后再提交！");
-		return ;
 	}
 	$("#updateAlarmConfig").submit();
 });
@@ -140,4 +147,7 @@ function isNumeric(obj) {
 function addLargeTransConfig(alarmType){
 	$("#addAlarmConfigModal").modal('show');
 	$("#alarmType").val(alarmType);
+	if (alarmType == 3) {
+		$("#limitConfig").hide();
+	}
 }

@@ -27,15 +27,18 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 	<context:component-scan base-package="com.yuyutechnology" />
 	<context:annotation-config />
 
-	<task:annotation-driven executor="taskServerExecutor"
-		scheduler="taskServerScheduler" />
+	<task:annotation-driven executor="taskServerExecutor" scheduler="taskServerScheduler" />
 	<task:executor id="taskServerExecutor" pool-size="10" />
 
 	<task:scheduler id="taskServerScheduler" pool-size="10" />
+	
 	<task:scheduled-tasks scheduler="taskServerScheduler">
+	
+		<task:scheduled ref="autoAccountingTask" method="autoAccounting"
+			fixed-delay="60000" initial-delay="60000" />
 
 		<task:scheduled ref="autoUpdateExchangeRateTask"
-			method="autoUpdateExchangeRateTask" fixed-delay="5000" initial-delay="1000" /> <!--程序启动后1s调用autoUpdateExchangeRateTask方法，然后小时执行一次 -->
+			method="autoUpdateExchangeRateTask" fixed-delay="5000" initial-delay="1000" />
 
 		<task:scheduled ref="autoUpdateExchangeRateTask"
 			method="autoSystemRefundBatch" fixed-delay="1800000" initial-delay="1800000" />
@@ -47,20 +50,13 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 		<task:scheduled ref="autoAlarmTask" method="autoAlarmTask"
 			fixed-delay="600000" initial-delay="600000" />
 
-		<!-- 
-		<task:scheduled ref="autoTransferRefundTask" method="autoWithdrawRefund"
-			fixed-delay="600000" initial-delay="600000" />
-		 -->
-
 		<task:scheduled ref="autoWithdrawReviewTask" method="autoWithdrawReviewTask"
-			fixed-delay="1800000" initial-delay="1000" />
+			fixed-delay="600000" initial-delay="1000" />
 
 		<task:scheduled ref="autoGoldpayRemitTask" method="autoGoldpayRemitTask"
-			fixed-delay="1800000" initial-delay="5000" />
+			fixed-delay="600000" initial-delay="5000" />
 
-		<!-- <task:scheduled ref="beanC" method="methodC" cron="*/5 * * * * MON-FRI"/> -->
+		<task:scheduled ref="beanC" method="methodC" cron="*/5 * * * * MON-FRI"/>
 	</task:scheduled-tasks>
-
-
 
 </beans>

@@ -170,11 +170,6 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 	}
 
 	@Override
-	public void userFreeze(Integer userId, int userAvailable) {
-		crmUserInfoDAO.userFreeze(userId, userAvailable);
-	}
-
-	@Override
 	public void updateImmediately() {
 
 		redisDAO.saveData("updateImmediately", 1);

@@ -11,6 +11,14 @@ import java.util.TimeZone;
 import org.apache.commons.lang.time.DateUtils;
 
 public class DateFormatUtils {
+	
+	public static String defDateFormatPattern = "yyyy-MM-dd HH:mm:ss";
+	
+	public static String formatDate(Date date)
+	{
+		return formatDate(date, defDateFormatPattern);
+	}
+	
 	public static String formatDate(Date date, String pattern)
 	{
 		try
@@ -26,6 +34,10 @@ public class DateFormatUtils {
 			//logger.error("error GamingDateUtils.parseString", e);
 		}
 		return "";
+	}
+	
+	public static Date fromString(String dateString){
+		return fromString(dateString, defDateFormatPattern);
 	}
 	
 	public static Date fromString(String dateString, String pattern){

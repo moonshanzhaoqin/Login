@@ -17,12 +17,12 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.crm.dto.TotalAsset;
 import com.yuyutechnology.exchange.crm.request.GetTotalAssetsInfoRequest;
 import com.yuyutechnology.exchange.crm.request.UserFreezeRequest;
-import com.yuyutechnology.exchange.crm.session.SessionData;
-import com.yuyutechnology.exchange.crm.session.SessionManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Currency;
+import com.yuyutechnology.exchange.session.SessionData;
+import com.yuyutechnology.exchange.session.SessionManager;
 import com.yuyutechnology.exchange.utils.page.PageBean;
 
 @Controller
@@ -65,7 +65,7 @@ public class AccountInfoController {
 			mav.addObject("usermAmount", userTotalAssets.get("totalAssets"));
 		}
 
-		mav.setViewName("/accountInfo/totalAssetsDetails");
+		mav.setViewName("accountInfo/totalAssetsDetails");
 		return mav;
 	}
 
@@ -86,7 +86,7 @@ public class AccountInfoController {
 		mav.addObject("updateFlag", crmUserInfoManager.getUpdateFlag());
 		mav.addObject("model", requst);
 
-		mav.setViewName("/accountInfo/accountOverview");
+		mav.setViewName("accountInfo/accountOverview");
 		return mav;
 	}
 
@@ -110,7 +110,7 @@ public class AccountInfoController {
 		mav.addObject("updateFlag", crmUserInfoManager.getUpdateFlag());
 		mav.addObject("model", requst);
 
-		mav.setViewName("/accountInfo/accountOverview");
+		mav.setViewName("accountInfo/accountOverview");
 		return mav;
 	}
 
@@ -128,7 +128,6 @@ public class AccountInfoController {
 		}
 
 		userManager.userFreeze(request.getUserId(), request.getOperate());
-		crmUserInfoManager.userFreeze(request.getUserId(), request.getOperate());
 		mav.setViewName("redirect:/account/accountOverview");
 		return mav;
 	}

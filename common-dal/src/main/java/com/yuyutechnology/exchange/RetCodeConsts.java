@@ -26,6 +26,10 @@ public class RetCodeConsts {
 	 * 参数为空
 	 */
 	public static final String PARAMETER_IS_EMPTY = "00003";
+	/**
+	 * 短信发送次数超过限制
+	 */
+	public static final String SEND_MORE_THAN_LIMIT = "00004";
 	// 用户 01
 	/**
 	 * 手机号已注册
@@ -115,7 +119,7 @@ public class RetCodeConsts {
 	 * Goldpay与已绑定账号不符
 	 */
 	public static final String GOLDPAY_NOT_MATCH_BIND = "01022";
-	
+
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息
@@ -135,13 +139,12 @@ public class RetCodeConsts {
 	public static final String EXCHANGE_ENTER_THE_AMOUNT_OF_VIOLATION = "02005";
 
 	public static final String EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY = "02006";
-	
+
 	public static final String EXCHANGE_LIMIT_EACH_TIME = "02007";
-	
+
 	public static final String EXCHANGE_LIMIT_DAILY_PAY = "02008";
-	
+
 	public static final String EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY = "02009";
-	
 
 	// 交易03
 	/**
@@ -190,13 +193,12 @@ public class RetCodeConsts {
 	public static final String TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY = "03018";
 
 	public static final String TRANSFER_REQUEST_INFORMATION_NOT_MATCH = "03019";
-	
+
 	public static final String TRANSFER_LIMIT_EACH_TIME = "03020";
-	
+
 	public static final String TRANSFER_LIMIT_DAILY_PAY = "03021";
-	
+
 	public static final String TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY = "03022";
-	
 
 	// crm 管理员04
 	/**
@@ -213,7 +215,6 @@ public class RetCodeConsts {
 	 * 币种已存在
 	 */
 	public static final String CURRENCY_IS_EXIST = "05001";
-	
 
 	static {
 		successCodeList.add(RET_CODE_SUCCESS);

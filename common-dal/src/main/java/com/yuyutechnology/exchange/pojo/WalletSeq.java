@@ -25,7 +25,7 @@ public class WalletSeq implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -2720266287674220445L;
-	private Integer seqId;
+	private Long seqId;
 	private int userId;
 	private int transferType;
 	private String currency;
@@ -56,11 +56,11 @@ public class WalletSeq implements java.io.Serializable {
 	@GeneratedValue(strategy = IDENTITY)
 
 	@Column(name = "seq_id", unique = true, nullable = false)
-	public Integer getSeqId() {
+	public Long getSeqId() {
 		return this.seqId;
 	}
 
-	public void setSeqId(Integer seqId) {
+	public void setSeqId(Long seqId) {
 		this.seqId = seqId;
 	}
 

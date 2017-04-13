@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,9 @@ public class MailManager {
 	
 	private StringBuffer largeExchangeWarnTital = new StringBuffer();
 	private StringBuffer largeExchangeWarnContent = new StringBuffer();
+	
+	private StringBuffer badAccountWarnTital = new StringBuffer();
+	private StringBuffer badAccountWarnContent = new StringBuffer();
 
 	private final String MAIL_REPLACE_EMAIL = "[EMAIL]";
 	private final String MAIL_REPLACE_NAME = "[NAME]";
@@ -67,6 +71,7 @@ public class MailManager {
 		readTemplate("template/mail/zh_CN/criticalAlarm.template", criticalAlarmTital, criticalAlarmContent);
 		readTemplate("template/mail/zh_CN/largeTransWarn.template", largeTransWarnTital, largeTransWarnContent);
 		readTemplate("template/mail/zh_CN/largeExchangeWarn.template", largeExchangeWarnTital, largeExchangeWarnContent);
+		readTemplate("template/mail/zh_CN/badAccountAlarm.template", badAccountWarnTital, badAccountWarnContent);
 	}
 	
 	private void readTemplate(String filePath, StringBuffer tital, StringBuffer content) {
@@ -81,7 +86,8 @@ public class MailManager {
 			logger.warn("Mail template ({}) read error , can't send this email : {} ", new Object[]{filePath, e.getMessage()});
 		}
 	}
-
+	
+	@Async
 	public void mail4contact(String name, String email, String category, String enquiry) {
 		String content = contactContent.toString().replace(MAIL_REPLACE_CATEGORY, category).replace(MAIL_REPLACE_EMAIL, email)
 				.replace(MAIL_REPLACE_ENQUIRY, enquiry).replace(MAIL_REPLACE_NAME, name);
@@ -94,6 +100,7 @@ public class MailManager {
 		sendMail(toMails, contactTital.toString(), content);
 	}
 	
+	@Async
 	public void mail4criticalAlarm(String email,BigDecimal difference,BigDecimal lowerLimit,String dateTime) {
 		String content = criticalAlarmContent.toString().
 				replace(MAIL_REPLACE_DIFFERENCE, difference.toString()).
@@ -105,6 +112,7 @@ public class MailManager {
 		sendMail(toMails, criticalAlarmTital.toString(), content);
 	}
 	
+	@Async
 	public void mail4LargeTrans(String email,String payerMobile,String payeeMobile,
 			BigDecimal amount,String currency,String dateTime) {
 		String content = largeTransWarnContent.toString().
@@ -119,6 +127,7 @@ public class MailManager {
 		sendMail(toMails, largeTransWarnTital.toString(), content);
 	}
 	
+	@Async
 	public void mail4LargeExchange(String email,String payerMobile,String dateTime,
 			BigDecimal amountOut,String currencyOut,BigDecimal amountIn,String currencyIn) {
 		String content = largeExchangeWarnContent.toString()
@@ -134,7 +143,15 @@ public class MailManager {
 		sendMail(toMails, largeExchangeWarnTital.toString(), content);
 	}
 	
-	
+	@Async
+	public void mail4BadAccount(String email,String dateTime) {
+		String content = badAccountWarnContent.toString()
+				.replace(MAIL_REPLACE_TIME,dateTime);
+		logger.info("content : {},tital : {}", content,badAccountWarnTital.toString());
+		List<String> toMails = new ArrayList<>();
+		toMails.add(email);
+		sendMail(toMails, badAccountWarnTital.toString(), content);
+	}
 	
 	public void sendMail(List<String> toMails, String tital, String content){
 		logger.info("sendMail,tital : {}, content : {}",tital, content);

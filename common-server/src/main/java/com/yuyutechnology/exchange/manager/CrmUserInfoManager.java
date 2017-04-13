@@ -17,8 +17,6 @@ public interface CrmUserInfoManager {
 			int loginAvailable, int payAvailable, BigDecimal upperLimit, BigDecimal lowerLimit, int currentPage,
 			int pageSize);
 	
-	public void userFreeze(Integer userId,int userAvailable);
-	
 	public void updateImmediately();
 	
 	public int getUpdateFlag();
