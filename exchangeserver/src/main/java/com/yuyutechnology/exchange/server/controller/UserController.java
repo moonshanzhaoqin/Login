@@ -149,11 +149,22 @@ public class UserController {
 					rep.setRetCode(RetCodeConsts.PHONE_IS_REGISTERED);
 					rep.setMessage(MessageConsts.PHONE_IS_REGISTERED);
 				} else {
-					userManager.getPinCode(getVerificationCodeRequest.getPurpose(),
+					SendMessageResponse sendMessageResponse= userManager.getPinCode(getVerificationCodeRequest.getPurpose(),
 							getVerificationCodeRequest.getAreaCode(), getVerificationCodeRequest.getUserPhone());
-					logger.info(MessageConsts.RET_CODE_SUCCESS);
-					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+					if (sendMessageResponse==null) {
+						logger.info(MessageConsts.RET_CODE_FAILUE);
+						rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+						rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+					}else if(sendMessageResponse.isOk()){
+						logger.info(MessageConsts.RET_CODE_SUCCESS);
+						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+					}else{
+						logger.info(MessageConsts.SEND_MORE_THAN_LIMIT);
+						rep.setRetCode(RetCodeConsts.SEND_MORE_THAN_LIMIT);
+						rep.setMessage(MessageConsts.SEND_MORE_THAN_LIMIT);
+						rep.setOpts(new String[]{sendMessageResponse.getLimitCount().toString(),sendMessageResponse.getLimitTime().toString()});
+					}
 				}
 			} else {
 				if (userId == null) {
