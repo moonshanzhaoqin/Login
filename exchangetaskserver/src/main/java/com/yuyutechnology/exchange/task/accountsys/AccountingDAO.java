@@ -3,6 +3,7 @@
  */
 package com.yuyutechnology.exchange.task.accountsys;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -115,7 +116,17 @@ public class AccountingDAO {
 			@Override
 			public Long doInHibernate(Session session) throws HibernateException {
 				Query query = session.createSQLQuery("select max(update_seq_id) from e_wallet_before");
-				return (Long) query.list().get(0);
+				List list =  query.list();
+				if (list == null || list.isEmpty()) {
+					return 0l;
+				}
+				Object max = list.get(0);
+				if (max instanceof BigInteger) {
+					return ((BigInteger)max).longValue();
+				}if (max instanceof Long) {
+					return (Long) max;
+				}
+				return 0l;
 			}
 		});
 	}
