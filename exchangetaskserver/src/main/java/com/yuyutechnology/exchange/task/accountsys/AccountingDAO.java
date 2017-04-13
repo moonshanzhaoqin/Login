@@ -106,7 +106,11 @@ public class AccountingDAO {
 			@Override
 			public Long doInHibernate(Session session) throws HibernateException {
 				Query query = session.createSQLQuery("select max(update_seq_id) from e_wallet_now");
-				return ((BigInteger) query.list().get(0)).longValue();
+				List list = query.list();
+				if (list == null || list.isEmpty() || list.get(0) == null) {
+					return 0l;
+				}
+				return ((BigInteger) list.get(0)).longValue();
 			}
 		});
 	}
@@ -116,7 +120,11 @@ public class AccountingDAO {
 			@Override
 			public Long doInHibernate(Session session) throws HibernateException {
 				Query query = session.createSQLQuery("select max(update_seq_id) from e_wallet_before");
-				return ((BigInteger) query.list().get(0)).longValue();
+				List list = query.list();
+				if (list == null || list.isEmpty() ||  list.get(0) == null) {
+					return 0l;
+				}
+				return ((BigInteger) list.get(0)).longValue();
 			}
 		});
 	}
@@ -128,7 +136,11 @@ public class AccountingDAO {
 				Query query = session.createSQLQuery("select max(update_seq_id) from e_wallet_before where user_id = ? and currency = ?");
 				query.setInteger(0, userId);
 				query.setString(1, currency);
-				return ((BigInteger) query.list().get(0)).longValue();
+				List list = query.list();
+				if (list == null || list.isEmpty() || list.get(0) == null) {
+					return 0l;
+				}
+				return ((BigInteger) list.get(0)).longValue();
 			}
 		});
 	}
