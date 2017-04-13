@@ -51,3 +51,6 @@ alter table `e_wallet_seq` add index `index_user_id_currency` (`user_id`, `curre
 
 replace into e_wallet_before (user_id,currency,balance,update_time,update_seq_id) 
 select user_id,currency,balance,update_time,update_seq_id from e_wallet where balance != 0;
+
+-- 2017/04/06 Niklaus.chi
+alter table `e_crm_user_info` add column `create_time` datetime AFTER `user_name`;
