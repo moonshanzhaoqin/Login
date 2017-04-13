@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CrmAlarmDAO;
+import com.yuyutechnology.exchange.dao.CurrencyDAO;
+import com.yuyutechnology.exchange.dao.FriendDAO;
 import com.yuyutechnology.exchange.dao.NotificationDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
@@ -38,6 +40,7 @@ import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.pojo.Currency;
+import com.yuyutechnology.exchange.pojo.Friend;
 import com.yuyutechnology.exchange.pojo.TransactionNotification;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
@@ -57,7 +60,11 @@ public class TransferManagerImpl implements TransferManager{
 	@Autowired
 	WalletDAO walletDAO;
 	@Autowired
+	FriendDAO friendDAO;
+	@Autowired
 	TransferDAO transferDAO;
+	@Autowired
+	CurrencyDAO currencyDAO;
 	@Autowired
 	WalletSeqDAO walletSeqDAO;
 	@Autowired
@@ -115,47 +122,6 @@ public class TransferManagerImpl implements TransferManager{
 			map.put("msg", "Prohibit transfers to yourself");
 			return map;
 		}
-		
-		/*Currency unit = commonManager.getCurreny("USD");
-		
-		//每次支付金额限制
-		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
-				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
-		logger.warn("transferLimitPerPay : {}",transferLimitPerPay);
-		if((oandaRatesManager.getDefaultCurrencyAmount(currency, amount)).compareTo(transferLimitPerPay) == 1){
-			logger.warn("Exceeds the maximum amount of each transaction");
-			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
-			map.put("msg", transferLimitPerPay.setScale(2).toString());
-			map.put("unit", unit.getCurrencyUnit());
-			return map;
-		}
-
-		//每天累计金额限制
-		BigDecimal transferLimitDailyPay =  BigDecimal.valueOf(configManager.
-				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITDAILYPAY, 100000d));
-		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount("transfer_"+userId);
-		logger.warn("transferLimitDailyPay : {},accumulatedAmount : {} ",transferLimitDailyPay,accumulatedAmount);
-		if((accumulatedAmount.add(oandaRatesManager.getDefaultCurrencyAmount(currency, amount))).compareTo(transferLimitDailyPay) == 1){
-			logger.warn("More than the maximum daily transaction limit");
-			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY);
-			map.put("msg", transferLimitDailyPay.setScale(2).toString());
-			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
-			map.put("unit", unit.getCurrencyUnit());
-			return map;
-		}
-		//每天累计给付次数限制
-		Double transferLimitNumOfPayPerDay =  configManager.
-				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITNUMBEROFPAYPERDAY, 100000d);
-//		Integer dayTradubgVolume = transferDAO.getDayTradubgVolume(ServerConsts.TRANSFER_TYPE_TRANSACTION);
-		Integer dayTradubgVolume = transferDAO.getCumulativeNumofTimes("transfer_"+userId);
-		logger.warn("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ",transferLimitNumOfPayPerDay,dayTradubgVolume);
-		if(transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)){
-			logger.warn("Exceeds the maximum number of transactions per day");
-			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY);
-			map.put("msg", (transferLimitNumOfPayPerDay).intValue()+"");
-			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
-			return map;
-		}*/
 
 		//生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
@@ -317,7 +283,7 @@ public class TransferManagerImpl implements TransferManager{
 		if(transfer.getUserTo() == systemUser.getUserId()){  	//交易对象没有注册账号
 			//扣款
 			Integer updateCount = walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), 
-					transfer.getCurrency(), transfer.getTransferAmount(), "-");
+					transfer.getCurrency(), transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_OUT_INVITE, transfer.getTransferId());
 			
 			if(updateCount == 0){
 				return RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT;
@@ -325,7 +291,7 @@ public class TransferManagerImpl implements TransferManager{
 			
 			//加款
 			walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), 
-					transfer.getCurrency(), transfer.getTransferAmount(), "+");
+					transfer.getCurrency(), transfer.getTransferAmount(), "+", ServerConsts.TRANSFER_TYPE_OUT_INVITE, transfer.getTransferId());
 			
 			//添加gift记录
 			Unregistered unregistered = unregisteredDAO.getUnregisteredByTransId(transfer.getTransferId());
@@ -343,9 +309,9 @@ public class TransferManagerImpl implements TransferManager{
 			}
 
 			//增加seq记录
-			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), systemUser.getUserId(), 
-					ServerConsts.TRANSFER_TYPE_OUT_INVITE, transfer.getTransferId(), 
-					transfer.getCurrency(), transfer.getTransferAmount());
+//			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), systemUser.getUserId(), 
+//					ServerConsts.TRANSFER_TYPE_OUT_INVITE, transfer.getTransferId(), 
+//					transfer.getCurrency(), transfer.getTransferAmount());
 			
 			//更改Transfer状态
 			transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
@@ -360,7 +326,7 @@ public class TransferManagerImpl implements TransferManager{
 			
 			//扣款
 			Integer updateCount = walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), 
-					transfer.getCurrency(), transfer.getTransferAmount(), "-");
+					transfer.getCurrency(), transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_TRANSACTION, transfer.getTransferId());
 			
 			if(updateCount == 0){
 				return RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT;
@@ -368,12 +334,12 @@ public class TransferManagerImpl implements TransferManager{
 			
 			//加款
 			walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserTo(), 
-					transfer.getCurrency(), transfer.getTransferAmount(), "+");
+					transfer.getCurrency(), transfer.getTransferAmount(), "+", ServerConsts.TRANSFER_TYPE_TRANSACTION, transfer.getTransferId());
 			
 			//添加seq记录
-			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), transfer.getUserTo(), 
-					ServerConsts.TRANSFER_TYPE_TRANSACTION, transfer.getTransferId(), 
-					transfer.getCurrency(), transfer.getTransferAmount());	
+//			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), transfer.getUserTo(), 
+//					ServerConsts.TRANSFER_TYPE_TRANSACTION, transfer.getTransferId(), 
+//					transfer.getCurrency(), transfer.getTransferAmount());	
 			
 			//如果是请求转账还需要更改消息通知中的状态
 			if(transfer.getNoticeId() != 0){
@@ -384,7 +350,7 @@ public class TransferManagerImpl implements TransferManager{
 			//推送到账通知
 
 			User payee = userDAO.getUser(transfer.getUserTo());
-			pushManager.push4Transfer(payer, payee, transfer.getCurrency(), 
+			pushManager.push4Transfer(transfer.getTransferId(),payer, payee, transfer.getCurrency(), 
 					amountFormatByCurrency(transfer.getCurrency(),transfer.getTransferAmount()));
 		}
 		//更改Transfer状态
@@ -411,18 +377,18 @@ public class TransferManagerImpl implements TransferManager{
 			logger.warn("Did not find the corresponding transfer information");
 			return ;
 		}
+		String transferId2 = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		User systemUser = userDAO.getSystemUser();
 		//系统扣款
 		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), 
-				transfer.getCurrency(), transfer.getTransferAmount(), "-");
+				transfer.getCurrency(), transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND,transferId2);
 		//用户加款
 		walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), 
-				transfer.getCurrency(), transfer.getTransferAmount(), "+");
+				transfer.getCurrency(), transfer.getTransferAmount(), "+", ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND,transferId2);
 
 		///////////////////////////生成transfer系统退款订单////////////////////////////
 		Transfer transfer2 = new Transfer();
 		//生成TransId
-		String transferId2 = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		transfer2.setTransferId(transferId2);
 		transfer2.setUserFrom(systemUser.getUserId());
 		transfer2.setUserTo(transfer.getUserFrom());
@@ -440,9 +406,9 @@ public class TransferManagerImpl implements TransferManager{
 		transferDAO.addTransfer(transfer2);
 		///////////////////////////end////////////////////////////
 		//添加Seq记录
-		walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), transfer.getUserFrom(), 
-				ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND,transferId2 , 
-				transfer.getCurrency(), transfer.getTransferAmount());
+//		walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), transfer.getUserFrom(), 
+//				ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND,transferId2 , 
+//				transfer.getCurrency(), transfer.getTransferAmount());
 		//修改gift记录
 		unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_BACK);
 		unregistered.setRefundTransId(transferId2);
@@ -526,7 +492,7 @@ public class TransferManagerImpl implements TransferManager{
 
 	
 	@Override
-	public HashMap<String, Object> getTransactionRecordByPage(String period, 
+	public HashMap<String, Object> getTransactionRecordByPage(String period,String type, 
 			int userId,int currentPage, int pageSize) {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -538,7 +504,7 @@ public class TransferManagerImpl implements TransferManager{
 				+ "CONCAT(t2.area_code,t2.user_phone),"
 				+ "t1.transfer_comment,"
 				+ "t1.finish_time,"
-				+ "t1.transfer_type ";
+				+ "t1.transfer_type,t1.transfer_id  ";
 		StringBuilder sb = new StringBuilder(
 				"FROM `e_transfer` t1 LEFT JOIN `e_user` t2  "+
 				"ON  "+
@@ -550,6 +516,12 @@ public class TransferManagerImpl implements TransferManager{
 		values.add(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		values.add(userId);
 		values.add(userId);
+		
+		if(StringUtils.isNotBlank(type)){
+			sb.append("and t1.transfer_type > ?");
+			values.add(Integer.valueOf(type));
+		}
+		
 		
 		if(!period.equals("all")){
 			switch (period) {
@@ -657,42 +629,7 @@ public class TransferManagerImpl implements TransferManager{
 		if (!map.isEmpty()) {
 			return map;
 		}
-		
-		//每次支付金额限制
-		/*BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
-				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
-		logger.warn("transferLimitPerPay : {}",transferLimitPerPay);
-		if((oandaRatesManager.getDefaultCurrencyAmount(currency, amount)).compareTo(transferLimitPerPay) == 1){
-			logger.warn("Exceeds the maximum amount of each transaction");
-			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
-			map.put("msg", transferLimitPerPay.toString());
-			return map;
-		}
 
-		//每天累计金额限制
-		BigDecimal transferLimitDailyPay =  BigDecimal.valueOf(configManager.
-				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITDAILYPAY, 100000d));
-		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount("transfer_"+userId);
-		logger.warn("transferLimitDailyPay : {},accumulatedAmount : {} ",transferLimitDailyPay,accumulatedAmount);
-		if((accumulatedAmount.add(oandaRatesManager.getDefaultCurrencyAmount(currency, amount))).compareTo(transferLimitDailyPay) == 1){
-			logger.warn("More than the maximum daily transaction limit");
-			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY);
-			map.put("msg", transferLimitDailyPay.toString());
-			return map;
-		}
-		//每天累计给付次数限制
-		Double transferLimitNumOfPayPerDay =  configManager.
-				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITNUMBEROFPAYPERDAY, 100000d);
-//				Integer dayTradubgVolume = transferDAO.getDayTradubgVolume(ServerConsts.TRANSFER_TYPE_TRANSACTION);
-		Integer dayTradubgVolume = transferDAO.getCumulativeNumofTimes("transfer_"+userId);
-		logger.warn("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ",transferLimitNumOfPayPerDay,dayTradubgVolume);
-		if(transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)){
-			logger.warn("Exceeds the maximum number of transactions per day");
-			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY);
-			map.put("msg", transferLimitNumOfPayPerDay.toString());
-			return map;
-		}*/
-		
 		//生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		
@@ -912,6 +849,11 @@ public class TransferManagerImpl implements TransferManager{
 		map.put("msg", "OK");
 		return map;
 	}
+
+	@Override
+	public Object getTransfer(String transferId) {
+		return transferDAO.getTransferByIdJoinUser(transferId);
+	}
 	
 	private HashMap<String, String> checkTransferLimit(String currency, BigDecimal amount, int userId){
 		HashMap<String, String> map = new HashMap<>();
@@ -944,7 +886,6 @@ public class TransferManagerImpl implements TransferManager{
 		//每天累计给付次数限制
 		Double transferLimitNumOfPayPerDay =  configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITNUMBEROFPAYPERDAY, 100000d);
-//		Integer dayTradubgVolume = transferDAO.getDayTradubgVolume(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		Integer dayTradubgVolume = transferDAO.getCumulativeNumofTimes("transfer_"+userId);
 		logger.warn("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ",transferLimitNumOfPayPerDay,dayTradubgVolume);
 		if(transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)){
@@ -955,5 +896,46 @@ public class TransferManagerImpl implements TransferManager{
 			return map;
 		}
 		return map;
+	}
+
+	@Override
+	public HashMap<String, Object> getTransDetails(String transferId, int userId) {
+		
+		HashMap<String, Object> map = new HashMap<>();
+		
+		User user;
+		Integer friendId;
+		
+		Transfer transfer = transferDAO.getTransferById(transferId);
+		
+		if(transfer.getUserFrom()!= userId && transfer.getUserTo() != userId){
+			return map;
+		}
+		
+		if(transfer.getUserFrom() == userId){
+			user = userDAO.getUser(transfer.getUserTo()); 
+			friendId = transfer.getUserTo();
+		}else{
+			user = userDAO.getUser(transfer.getUserFrom());
+			friendId = transfer.getUserFrom();
+		}
+		
+		//判断是否已经是好友
+		Friend friend = friendDAO.getFriendByUserIdAndFrindId(userId, friendId);
+		if(friend == null){
+			map.put("isFriend", false);
+		}else{
+			map.put("isFriend", true);
+		}
+		
+		//获取单位
+		Currency currency = currencyDAO.getCurrency(transfer.getCurrency());
+		
+		map.put("user", user);
+		map.put("transfer", transfer);
+		map.put("unit", currency.getCurrencyUnit());
+		
+		return map;
+
 	}
 }

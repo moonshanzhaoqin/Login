@@ -17,6 +17,7 @@ public class CrmUserInfo {
 	private String areaCode;
 	private String userPhone;
 	private String userName;
+	private Date createTime;
 	private int userType;
 	private int userAvailable;
 	private int loginAvailable;
@@ -28,7 +29,7 @@ public class CrmUserInfo {
 		super();
 	}
 
-	public CrmUserInfo(Integer userId, String areaCode, String userPhone, String userName, int userType,
+	public CrmUserInfo(Integer userId, String areaCode, String userPhone, String userName,Date createTime, int userType,
 			int userAvailable, int loginAvailable, int payAvailable, BigDecimal userTotalAssets, Date updateAt) {
 		super();
 		// this.infoId = infoId;
@@ -36,6 +37,7 @@ public class CrmUserInfo {
 		this.areaCode = areaCode;
 		this.userPhone = userPhone;
 		this.userName = userName;
+		this.createTime = createTime;
 		this.userType = userType;
 		this.userAvailable = userAvailable;
 		this.loginAvailable = loginAvailable;
@@ -50,6 +52,7 @@ public class CrmUserInfo {
 		this.areaCode = user.getAreaCode();
 		this.userPhone = user.getUserPhone();
 		this.userName = user.getUserName();
+		this.createTime = user.getCreateTime();
 		this.userType = user.getUserType();
 		this.userAvailable = user.getUserAvailable();
 		this.loginAvailable = user.getLoginAvailable();
@@ -57,13 +60,6 @@ public class CrmUserInfo {
 	}
 
 	@Id
-	// @Column(name = "info_id", unique = true, nullable = false)
-	// public long getInfoId() {
-	// return infoId;
-	// }
-	// public void setInfoId(long infoId) {
-	// this.infoId = infoId;
-	// }
 	@Column(name = "user_id")
 	public Integer getUserId() {
 		return userId;
@@ -98,6 +94,15 @@ public class CrmUserInfo {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	@Column(name = "create_time")
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 	@Column(name = "user_type")

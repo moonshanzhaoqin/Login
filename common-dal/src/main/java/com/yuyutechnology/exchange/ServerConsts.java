@@ -221,6 +221,18 @@ public class ServerConsts {
 	/**
 	 * goldPay划账结果-成功
 	 */
-	public static final int GOLDPAY_REMIT_SUCCESS= 2;
+	public static final int GOLDPAY_REMIT_SUCCESS= 2;	
+	/**
+	 * 坏账记录未处理
+	 */
+	public static final int BAD_ACCOUNT_STATUS_DEFAULT= 0;
+	/**
+	 * 坏账记录用户冻结
+	 */
+	public static final int BAD_ACCOUNT_STATUS_FREEZE_USER = 1;
+	/**
+	 * 坏账记录处理已失效
+	 */
+	public static final int BAD_ACCOUNT_STATUS_INVALID= 2;
 	
 }

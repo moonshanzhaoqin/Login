@@ -7,6 +7,8 @@
 <body>
 	<script
 		src="//cdn.bootcss.com/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js"></script>
+	<script
+		src="//cdn.bootcss.com/jquery-dateFormat/1.0/jquery.dateFormat.min.js"></script>
 	<script>
 		$(function() {
 			$('#modifyPassword').bootstrapValidator({
@@ -70,8 +72,8 @@
 							console.log("success");
 							alert("修改成功");
 							$('#myModal').modal('hide')
-							location.href="<c:url value='/login' />"
-							
+							location.href = "<c:url value='/login' />"
+
 						} else {
 							console.log(data.message);
 							alert(data.message);
@@ -85,6 +87,10 @@
 					async : false
 				});
 			}
+		}
+		//时间戳变格式化
+		function timeDate(time) {
+			return $.format.date(time, "yyyy-MM-dd HH:mm:ss")
 		}
 	</script>
 </body>

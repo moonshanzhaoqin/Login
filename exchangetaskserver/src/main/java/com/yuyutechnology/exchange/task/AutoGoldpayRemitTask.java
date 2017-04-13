@@ -21,7 +21,6 @@ public class AutoGoldpayRemitTask {
 
 	public void autoGoldpayRemitTask() {
 		logger.info("=============autoGoldpayRemitTask Start=================={}", new Date());
-
 		List<Transfer> transfers = goldpayTransManager.getNeedGoldpayRemitWithdraws();
 		if (transfers!=null && !transfers.isEmpty()  ) {
 			for (Transfer transfer : transfers) {

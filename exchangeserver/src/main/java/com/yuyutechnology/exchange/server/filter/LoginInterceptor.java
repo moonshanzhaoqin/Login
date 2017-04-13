@@ -1,9 +1,5 @@
 package com.yuyutechnology.exchange.server.filter;
 
-import java.lang.annotation.Annotation;
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,9 +16,9 @@ import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
 import com.yuyutechnology.exchange.server.controller.response.EncryptResponse;
 import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
-import com.yuyutechnology.exchange.server.session.SessionData;
-import com.yuyutechnology.exchange.server.session.SessionDataHolder;
-import com.yuyutechnology.exchange.server.session.SessionManager;
+import com.yuyutechnology.exchange.session.SessionData;
+import com.yuyutechnology.exchange.session.SessionDataHolder;
+import com.yuyutechnology.exchange.session.SessionManager;
 import com.yuyutechnology.exchange.startup.ServerContext;
 import com.yuyutechnology.exchange.utils.AESCipher;
 import com.yuyutechnology.exchange.utils.JsonBinder;
@@ -85,7 +81,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		String sessionId = getToeknFromURI(request.getRequestURI());
 		SessionData sessionData = sessionManager.get(sessionId);
 		// 判断是否需要拦截或者是否登录
-		if (sessionData!= null) {
+		if (sessionData != null) {
 			logger.info("request URI:" + requestURI + " session : " + sessionId + "==>session ok");
 			sessionManager.refreshSessionDataExpireTime(sessionData);
 			SessionDataHolder.setSessionData(sessionData);

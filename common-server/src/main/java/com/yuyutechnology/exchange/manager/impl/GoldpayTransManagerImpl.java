@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
+import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
@@ -58,6 +60,10 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	ConfigManager configManager;
 	@Autowired
 	UserManager userManager;
+	@Autowired
+	RedisDAO redisDAO;
+	
+	private final String GOLDPAY_WITHDRAW_FORBIDDEN = "goldpayWithdrawForbidden";
 
 	public static Logger logger = LogManager.getLogger(GoldpayTransManagerImpl.class);
 
@@ -240,15 +246,15 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 				User systemUser = userDAO.getSystemUser();
 				// 系统扣款
 				walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(),
-						transfer.getTransferAmount(), "-");
+						transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE, transferId);
 				// 用户加款
 				walletDAO.updateWalletByUserIdAndCurrency(userId, transfer.getCurrency(), transfer.getTransferAmount(),
-						"+");
+						"+", ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE, transferId);
 
 				// 添加Seq记录
-				walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), userId,
-						ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE, transferId, transfer.getCurrency(),
-						transfer.getTransferAmount());
+//				walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), userId,
+//						ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE, transferId, transfer.getCurrency(),
+//						transfer.getTransferAmount());
 				// 更改订单状态
 				transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 
@@ -545,7 +551,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		}
 		// 用户扣款
 		int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId, transfer.getCurrency(),
-				transfer.getTransferAmount(), "-");
+				transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, transfer.getTransferId());
 
 		if (updateCount == 0) {
 			logger.warn("Current balance is insufficient");
@@ -554,16 +560,16 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		}
 		// 系统加款
 		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(),
-				transfer.getTransferAmount(), "+");
+				transfer.getTransferAmount(), "+", ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, transfer.getTransferId());
 
 		// 更改Transfer状态
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_PROCESSING);
 		transfer.setFinishTime(new Date());
 		transferDAO.updateTransfer(transfer);
 		// 添加seq记录
-		walletSeqDAO.addWalletSeq4Transaction(userId, systemUser.getUserId(),
-				ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, transfer.getTransferId(), transfer.getCurrency(),
-				transfer.getTransferAmount());
+//		walletSeqDAO.addWalletSeq4Transaction(userId, systemUser.getUserId(),
+//				ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW, transfer.getTransferId(), transfer.getCurrency(),
+//				transfer.getTransferAmount());
 
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");
@@ -576,19 +582,16 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		User systemUser = userDAO.getSystemUser();
 		Transfer transfer = transferDAO.getTransferById(transferId);
 		// 系统加款
-		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(),
-				transfer.getTransferAmount(), "-");
+		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(), transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_REFUND, transferId);
 		// 用户扣款
-		walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getCurrency(),
-				transfer.getTransferAmount(), "+");
+		walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getCurrency(), transfer.getTransferAmount(), "+", ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_REFUND, transferId);
 		// 更改Transfer状态
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_REFUND);
 		transfer.setFinishTime(new Date());
 		transferDAO.updateTransfer(transfer);
 		// 添加seq记录
-		walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), transfer.getUserFrom(),
-				ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_REFUND, transferId, transfer.getCurrency(),
-				transfer.getTransferAmount());
+//		walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), userId,
+//				ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_REFUND, transferId, transferCurrency, transferAmount);
 	}
 
 	@Override
@@ -790,7 +793,10 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 	@Override
 	public List<Transfer> getNeedGoldpayRemitWithdraws() {
-		return transferDAO.getNeedGoldpayRemitWithdraws();
+		if (!getGoldpayRemitWithdrawsforbidden()){
+			return transferDAO.getNeedGoldpayRemitWithdraws();
+		}
+		return new ArrayList<Transfer>();
 	}
 
 	@Override
@@ -800,6 +806,17 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 	@Override
 	public PageBean getWithdrawRecordByPage(Integer userId, int currentPage, int pageSize) {
-		return transferDAO.getWithdrawRecordByPage(userId, currentPage, pageSize);
+		return transferDAO.getWithdrawRecordByPage( userId,  currentPage,  pageSize) ;
+	}
+
+	@Override
+	public void forbiddenGoldpayRemitWithdraws() {
+		redisDAO.saveData(GOLDPAY_WITHDRAW_FORBIDDEN, "true");
+	}
+	
+	@Override
+	public boolean getGoldpayRemitWithdrawsforbidden() {
+		String goldpSwitch = redisDAO.getValueByKey(GOLDPAY_WITHDRAW_FORBIDDEN);
+		return Boolean.parseBoolean(goldpSwitch);
 	}
 }

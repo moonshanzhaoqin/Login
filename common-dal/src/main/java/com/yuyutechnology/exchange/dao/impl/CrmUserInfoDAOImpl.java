@@ -64,7 +64,4 @@ public class CrmUserInfoDAOImpl implements CrmUserInfoDAO {
 		crmUserInfo.setUserAvailable(userAvailable);
 		hibernateTemplate.update(crmUserInfo);
 	}
-	
-	
-
 }

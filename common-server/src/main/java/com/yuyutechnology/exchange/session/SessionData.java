@@ -1,4 +1,4 @@
-package com.yuyutechnology.exchange.crm.session;
+package com.yuyutechnology.exchange.session;
 
 import java.io.Serializable;
 

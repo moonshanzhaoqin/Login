@@ -51,6 +51,12 @@ public class ExchangeDAOImpl implements ExchangeDAO {
 	public void addExchange(Exchange exchange) {
 		hibernateTemplate.save(exchange);
 	}
+	
+	@Override
+	public Exchange getExchangeById(String exchangeId) {
+		Exchange exchange = hibernateTemplate.get(Exchange.class, exchangeId);
+		return exchange;
+	}
 
 	@Override
 	public HashMap<String, Object> getExchangeRecordsByPage(String sql, List<Object> values, int currentPage,
@@ -93,4 +99,5 @@ public class ExchangeDAOImpl implements ExchangeDAO {
 
 		return sum;
 	}
+
 }

@@ -9,6 +9,7 @@ import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Friend;
 import com.yuyutechnology.exchange.pojo.User;
+import com.yuyutechnology.exchange.sms.SendMessageResponse;
 
 public interface UserManager {
 	/**
@@ -16,8 +17,9 @@ public interface UserManager {
 	 * 
 	 * @param areaCode
 	 * @param userPhone
+	 * @return 
 	 */
-	public void getPinCode(String func, String areaCode, String userPhone);
+	public SendMessageResponse getPinCode(String func, String areaCode, String userPhone);
 
 	/**
 	 * 根据手机号码获取userID(用作判断是否为注册用户)

@@ -14,6 +14,7 @@ public class ExchangeDTO {
 	private Date createTime;
 	private Date finishTime;
 	private int exchangeStatus;
+	private String exchangeId;
 	
 	public String getCurrencyOut() {
 		return currencyOut;
@@ -68,5 +69,11 @@ public class ExchangeDTO {
 	}
 	public void setExchangeStatus(int exchangeStatus) {
 		this.exchangeStatus = exchangeStatus;
+	}
+	public String getExchangeId() {
+		return exchangeId;
+	}
+	public void setExchangeId(String exchangeId) {
+		this.exchangeId = exchangeId;
 	}
 }

@@ -1,5 +1,7 @@
 package com.yuyutechnology.exchange;
 
+import org.apache.logging.log4j.message.Message;
+
 public class MessageConsts {
 	// RetCode: 通用 00; 用户 01;兑换 02; 转账 03
 
@@ -21,7 +23,11 @@ public class MessageConsts {
 	 * 参数为空
 	 */
 	public static final String PARAMETER_IS_EMPTY = "PARAMETER_IS_EMPTY";
-
+	/**
+	 * 短信发送次数超过限制
+	 */
+	public static final String SEND_MORE_THAN_LIMIT = "SEND_MORE_THAN_LIMIT";
+	
 	// 用户 01
 	/**
 	 * 手机号已注册
@@ -151,5 +157,6 @@ public class MessageConsts {
 	public static final String TRANSFER_HISTORY_NOT_ACQUIRED = "TRANSFER_HISTORY_NOT_ACQUIRED";
 
 	public static final String TRANSFER_NOTIFICATION_NOT_ACQUIRED = "TRANSFER_NOTIFICATION_NOT_ACQUIRED";
+	
 
 }

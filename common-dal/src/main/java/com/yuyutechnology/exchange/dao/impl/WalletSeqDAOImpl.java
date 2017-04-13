@@ -1,7 +1,6 @@
 package com.yuyutechnology.exchange.dao.impl;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -13,7 +12,7 @@ import com.yuyutechnology.exchange.pojo.WalletSeq;
 
 @Repository
 public class WalletSeqDAOImpl implements WalletSeqDAO {
-	
+
 	@Resource
 	HibernateTemplate hibernateTemplate;
 
@@ -21,26 +20,44 @@ public class WalletSeqDAOImpl implements WalletSeqDAO {
 	public void addWalletSeq(WalletSeq walletSeq) {
 		hibernateTemplate.save(walletSeq);
 	}
-	
-	
-	@Override
-	public void addWalletSeq4Exchange(int userId,int transferType,String transactionId,
-			String currencyOut,BigDecimal amountOut,String currencyIn,BigDecimal amountIn){
-		WalletSeq inSeq = new WalletSeq(userId,transferType,currencyIn,amountIn,transactionId, new Date());
-		addWalletSeq(inSeq);
-		//negate 取负数
-		WalletSeq outSeq = new WalletSeq(userId,transferType,currencyOut,amountOut.negate(),transactionId, new Date());
-		addWalletSeq(outSeq);
-	}
-
 
 	@Override
-	public void addWalletSeq4Transaction(int payerId, int payeeId, int transferType, String transactionId,
-			String currency, BigDecimal amount) {
-		WalletSeq payerSeq = new WalletSeq(payerId,transferType,currency,amount.negate(),transactionId, new Date());
-		addWalletSeq(payerSeq);
-		WalletSeq payeeSeq = new WalletSeq(payeeId,transferType,currency,amount,transactionId, new Date());
-		addWalletSeq(payeeSeq);
+	public List<?> getWalletSeq(int userId, String currency, long startSeqId, long endSeqId) {
+		// TODO Auto-generated method stub
+		List<?> list = hibernateTemplate.find(
+				"from WalletSeq where userId = ? and currency = ? and seqId >= ? and seqId <= ?", userId, currency,
+				startSeqId, endSeqId);
+		return list;
 	}
+
+	// @Override
+	// public void addWalletSeq4Exchange(int userId,int transferType,String
+	// transactionId,
+	// String currencyOut,BigDecimal amountOut,String currencyIn,BigDecimal
+	// amountIn){
+	// WalletSeq inSeq = new
+	// WalletSeq(userId,transferType,currencyIn,amountIn,transactionId, new
+	// Date());
+	// addWalletSeq(inSeq);
+	// //negate 取负数
+	// WalletSeq outSeq = new
+	// WalletSeq(userId,transferType,currencyOut,amountOut.negate(),transactionId,
+	// new Date());
+	// addWalletSeq(outSeq);
+	// }
+
+	// @Override
+	// public void addWalletSeq4Transaction(int payerId, int payeeId, int
+	// transferType, String transactionId,
+	// String currency, BigDecimal amount) {
+	// WalletSeq payerSeq = new
+	// WalletSeq(payerId,transferType,currency,amount.negate(),transactionId,
+	// new Date());
+	// addWalletSeq(payerSeq);
+	// WalletSeq payeeSeq = new
+	// WalletSeq(payeeId,transferType,currency,amount,transactionId, new
+	// Date());
+	// addWalletSeq(payeeSeq);
+	// }
 
 }

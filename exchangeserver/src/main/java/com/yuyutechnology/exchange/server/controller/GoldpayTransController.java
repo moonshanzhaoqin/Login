@@ -38,8 +38,8 @@ import com.yuyutechnology.exchange.server.controller.response.RequestPinResponse
 import com.yuyutechnology.exchange.server.controller.response.WithdrawConfirmResponse;
 import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
 import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
-import com.yuyutechnology.exchange.server.session.SessionData;
-import com.yuyutechnology.exchange.server.session.SessionDataHolder;
+import com.yuyutechnology.exchange.session.SessionData;
+import com.yuyutechnology.exchange.session.SessionDataHolder;
 import com.yuyutechnology.exchange.utils.page.PageBean;
 
 @Controller

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
+import com.yuyutechnology.exchange.dao.CrmUserInfoDAO;
 import com.yuyutechnology.exchange.dao.FriendDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
@@ -48,6 +49,7 @@ import com.yuyutechnology.exchange.pojo.UserDevice;
 import com.yuyutechnology.exchange.pojo.UserDeviceId;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.push.PushManager;
+import com.yuyutechnology.exchange.sms.SendMessageResponse;
 import com.yuyutechnology.exchange.sms.SmsManager;
 import com.yuyutechnology.exchange.utils.JsonBinder;
 import com.yuyutechnology.exchange.utils.LanguageUtils;
@@ -76,6 +78,8 @@ public class UserManagerImpl implements UserManager {
 	FriendDAO friendDAO;
 	@Autowired
 	UserDeviceDAO userDeviceDAO;
+	@Autowired
+	CrmUserInfoDAO crmUserInfoDAO;
 	@Autowired
 	SmsManager smsManager;
 	@Autowired
@@ -356,7 +360,7 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public void getPinCode(String func, String areaCode, String userPhone) {
+	public SendMessageResponse getPinCode(String func, String areaCode, String userPhone) {
 		// 随机生成六位数
 		final String random;
 		if (ResourceUtils.getBundleValue4Boolean("qa.switch")) {
@@ -370,7 +374,7 @@ public class UserManagerImpl implements UserManager {
 		redisDAO.saveData(func + areaCode + userPhone, md5random,
 				configManager.getConfigLongValue(ConfigKeyEnum.VERIFYTIME, 10l).intValue(), TimeUnit.MINUTES);
 		// 发送验证码
-		smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random);
+		return smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random, func);
 	}
 
 	@Override
@@ -513,17 +517,16 @@ public class UserManagerImpl implements UserManager {
 		// 绑定Tag
 		logger.info("***bind Tag***");
 		pushManager.bindPushTag(user.getPushId(), user.getPushTag());
-		
-		/*清除其他账号的此pushId*/
-		List<User> users=userDAO.getUserByPushId(pushId);
+
+		/* 清除其他账号的此pushId */
+		List<User> users = userDAO.getUserByPushId(pushId);
 		for (User user2 : users) {
-			if (user2.getUserId()!=userId) {
+			if (user2.getUserId() != userId) {
 				user2.setPushId(null);
 				userDAO.updateUser(user2);
 			}
 		}
 	}
-
 
 	@Override
 	public void updateUserName(Integer userId, String newUserName) {
@@ -583,17 +586,18 @@ public class UserManagerImpl implements UserManager {
 				return;
 			}
 
+			String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+
 			User payer = userDAO.getUser(payerTransfer.getUserFrom());
 
 			// 系统账号扣款
 			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, unregistered.getCurrency(),
-					unregistered.getAmount(), "-");
+					unregistered.getAmount(), "-", ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
 			// 用户加款
-			walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(), unregistered.getAmount(),
-					"+");
+			walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(), unregistered.getAmount(), "+",
+					ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
 
 			// 生成TransId
-			String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 			Transfer transfer = new Transfer();
 			transfer.setTransferId(transferId);
 			transfer.setUserFrom(systemUserId);
@@ -612,8 +616,10 @@ public class UserManagerImpl implements UserManager {
 			transferDAO.addTransfer(transfer);
 
 			// 增加seq记录
-			walletSeqDAO.addWalletSeq4Transaction(systemUserId, userId, ServerConsts.TRANSFER_TYPE_TRANSACTION,
-					transferId, unregistered.getCurrency(), unregistered.getAmount());
+			// walletSeqDAO.addWalletSeq4Transaction(systemUserId, userId,
+			// ServerConsts.TRANSFER_TYPE_TRANSACTION,
+			// transferId, unregistered.getCurrency(),
+			// unregistered.getAmount());
 
 			// 更改unregistered状态
 			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
@@ -659,6 +665,7 @@ public class UserManagerImpl implements UserManager {
 			user.setUserAvailable(userAvailable);
 			userDAO.updateUser(user);
 		}
+		crmUserInfoDAO.userFreeze(userId, userAvailable);
 	}
 
 	@Override

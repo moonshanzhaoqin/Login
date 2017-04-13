@@ -65,7 +65,7 @@ public class AlarmController {
 		}
 		List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
 		mav.addObject("supervisorList", supervisorList);
-		mav.setViewName("/alarm/alarmConfigInfo");
+		mav.setViewName("alarm/alarmConfigInfo");
 		return mav;
 	}
 	
@@ -82,7 +82,18 @@ public class AlarmController {
 		mav.addObject("list", list);
 		mav.addObject("transferLimitPerPay", map.get("transferLimitPerPay"));
 		mav.addObject("exchangeLimitPerPay", map.get("exchangeLimitPerPay"));
-		mav.setViewName("/alarm/largeTransAlarmConfig");
+		mav.setViewName("alarm/largeTransAlarmConfig");
+		return mav;
+	}
+	
+	@RequestMapping(value="/alarm/getBadAccountAlarmConfigList",method=RequestMethod.GET)
+	public ModelAndView getBadAccountAlarmConfigList(){
+		mav = new ModelAndView();
+		List<CrmAlarm> list = crmAlarmManager.getCrmAlarmConfigList();
+		mav.addObject("list", list);
+		List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
+		mav.addObject("supervisorList", supervisorList);
+		mav.setViewName("alarm/badAccountAlarmConfigInfo");
 		return mav;
 	}
 
@@ -92,6 +103,8 @@ public class AlarmController {
 		int alarmType = crmAlarmManager.delAlarmConfig(alarmId);
 		if(alarmType == 0){
 			mav.setViewName("redirect:/alarm/getAlarmConfigList");
+		} else if (alarmType == 3) {
+			mav.setViewName("redirect:/alarm/getBadAccountAlarmConfigList");
 		}else{
 			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
 		}
@@ -128,6 +141,8 @@ public class AlarmController {
 		
 		if(request.getAlarmType() == 0){
 			mav.setViewName("redirect:/alarm/getAlarmConfigList");
+		} else if (request.getAlarmType() == 3) {
+			mav.setViewName("redirect:/alarm/getBadAccountAlarmConfigList");
 		}else{
 			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
 		}
@@ -143,6 +158,8 @@ public class AlarmController {
 		
 		if(request.getAlarmType() == 0){
 			mav.setViewName("redirect:/alarm/getAlarmConfigList");
+		} else if (request.getAlarmType() == 3) {
+			mav.setViewName("redirect:/alarm/getBadAccountAlarmConfigList");
 		}else{
 			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
 		}
@@ -155,6 +172,8 @@ public class AlarmController {
 		int alarmType = crmAlarmManager.updateAlarmAvailable(alarmId, alarmAvailable);
 		if(alarmType == 0){
 			mav.setViewName("redirect:/alarm/getAlarmConfigList");
+		} else if (alarmType == 3) {
+			mav.setViewName("redirect:/alarm/getBadAccountAlarmConfigList");
 		}else{
 			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
 		}

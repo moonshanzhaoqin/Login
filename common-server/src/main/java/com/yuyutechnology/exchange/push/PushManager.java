@@ -113,23 +113,23 @@ public class PushManager {
 	@Scheduled(cron = "0 1/10 * * * ?")
 	public void init() {
 		logger.info("==========init PushManager==========");
-		
+
 		readTemplate("template/push/en_US/transfer.template", transfer_title_en, transfer_en);
 		readTemplate("template/push/zh_CN/transfer.template", transfer_title_cn, transfer_cn);
 		readTemplate("template/push/zh_HK/transfer.template", transfer_title_hk, transfer_hk);
-		
+
 		readTemplate("template/push/en_US/transfer_request.template", transfer_request_title_en, transfer_request_en);
 		readTemplate("template/push/zh_CN/transfer_request.template", transfer_request_title_cn, transfer_request_cn);
 		readTemplate("template/push/zh_HK/transfer_request.template", transfer_request_title_hk, transfer_request_hk);
-		
+
 		readTemplate("template/push/en_US/refund.template", refund_title_en, refund_en);
 		readTemplate("template/push/zh_CN/refund.template", refund_title_cn, refund_cn);
 		readTemplate("template/push/zh_HK/refund.template", refund_title_hk, refund_hk);
-		
+
 		readTemplate("template/push/en_US/offline.template", offline_title_en, offline_en);
 		readTemplate("template/push/zh_CN/offline.template", offline_title_cn, offline_cn);
 		readTemplate("template/push/zh_HK/offline.template", offline_title_hk, offline_hk);
-		
+
 	}
 
 	private void readTemplate(String filePath, StringBuffer tital, StringBuffer content) {
@@ -138,13 +138,15 @@ public class PushManager {
 			content.setLength(0);
 			Resource resource = new ClassPathResource(filePath);
 			String fileString = IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", "");
-			tital.append(fileString.substring(0, fileString.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", ""));
+			tital.append(
+					fileString.substring(0, fileString.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", ""));
 			content.append(fileString.substring(fileString.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", ""));
 		} catch (Exception e) {
-			logger.warn("push template ({}) read error , can't push this msg : {} ", new Object[]{filePath, e.getMessage()});
+			logger.warn("push template ({}) read error , can't push this msg : {} ",
+					new Object[] { filePath, e.getMessage() });
 		}
 	}
-	
+
 	/**
 	 * 到账通知
 	 * 
@@ -154,14 +156,16 @@ public class PushManager {
 	 * @param amount
 	 */
 	@Async
-	public void push4Transfer(User userFrom, User userTo, String currency, BigDecimal amount) {
+	public void push4Transfer(String transferId, User userFrom, User userTo, String currency, BigDecimal amount) {
 		String title = titleChoose("transfer", userTo.getPushTag());
 		String transferBody = templateChoose("transfer", userTo.getPushTag());
 		String body = transferBody.replace(PUSH_REPLACE_FROM, userFrom.getUserName())
-				.replace(PUSH_REPLACE_CURRENCY, commonManager.getCurreny(currency).getCurrencyUnit()).replace(PUSH_REPLACE_AMOUNT,
-						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ?  GDQ.format(amount) :CURRENCY.format(amount));
+				.replace(PUSH_REPLACE_CURRENCY, commonManager.getCurreny(currency).getCurrencyUnit())
+				.replace(PUSH_REPLACE_AMOUNT, currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? GDQ.format(amount)
+						: CURRENCY.format(amount));
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "transfer");
+		ext.put("transferId", transferId);
 		pushToCustom(userTo.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 
 		// 新请求转账标记
@@ -202,9 +206,11 @@ public class PushManager {
 		String title = titleChoose("refund", userFrom.getPushTag());
 		String refundBody = templateChoose("refund", userFrom.getPushTag());
 		logger.info("refund,{}=={}", userFrom.getPushTag(), refundBody);
-		String body = refundBody.replace(PUSH_REPLACE_TO, areaCode + phone).replace(PUSH_REPLACE_CURRENCY, commonManager.getCurreny(currency).getCurrencyUnit())
+		String body = refundBody.replace(PUSH_REPLACE_TO, areaCode + phone)
+				.replace(PUSH_REPLACE_CURRENCY, commonManager.getCurreny(currency).getCurrencyUnit())
 				.replace(PUSH_REPLACE_AMOUNT,
-						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? GDQ.format(amount) :CURRENCY.format(amount))
+						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? GDQ.format(amount)
+								: CURRENCY.format(amount))
 				.replace(PUSH_REPLACE_DAY, configManager.getConfigStringValue(ConfigKeyEnum.REFUNTIME, "7"));
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "refund");

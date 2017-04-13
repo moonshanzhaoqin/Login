@@ -1,7 +1,6 @@
 package com.yuyutechnology.exchange.manager;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -52,6 +51,10 @@ public interface GoldpayTransManager {
 	void withdrawRefund(String transferId);
 
 	void withdrawReviewManual(String transferId);
+	
+	public void forbiddenGoldpayRemitWithdraws();
+	
+	public boolean getGoldpayRemitWithdrawsforbidden();
 
 	void withdrawReviewAuto(String transferId);
 

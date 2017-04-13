@@ -75,11 +75,12 @@ public class SmsManager {
 	
 	// zh_CN
 	private StringBuffer criticalAlarm_cn = new StringBuffer();
-	
 	// zh_CN
 	private StringBuffer largeTrans_cn = new StringBuffer();
 	// zh_CN
 	private StringBuffer largeExchange_cn = new StringBuffer();
+	// zh_CN
+	private StringBuffer badAccountAlarm_cn = new StringBuffer();
 	
 
 	@PostConstruct
@@ -97,6 +98,8 @@ public class SmsManager {
 		
 		readTemplate("template/sms/zh_CN/largeTrans.template", largeTrans_cn);
 		readTemplate("template/sms/zh_CN/largeExchangeWarn.template", largeExchange_cn);
+		
+		readTemplate("template/sms/zh_CN/badAccountAlarm.template", badAccountAlarm_cn);
 	}
 	
 	private void readTemplate(String filePath, StringBuffer content) {
@@ -115,13 +118,14 @@ public class SmsManager {
 	 * @param areaCode
 	 * @param userPhone
 	 * @param code
+	 * @return 
 	 */
-	@Async
-	public void sendSMS4PhoneVerify(String areaCode, String userPhone, String code) {
+//	@Async
+	public SendMessageResponse sendSMS4PhoneVerify(String areaCode, String userPhone, String code,String func) {
 		String phoneVerifyContent = templateChoose("phoneVerify", areaCode);
 		String content = phoneVerifyContent.replace(SMS_REPLACE_PIN, code).replace(SMS_REPLACE_TIME,
 				configManager.getConfigStringValue(ConfigKeyEnum.VERIFYTIME, "10"));
-		sendSMS(areaCode + userPhone, content);
+		return sendSMS(areaCode + userPhone, content,func);
 	}
 
 	/**
@@ -142,7 +146,7 @@ public class SmsManager {
 						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? GDQ.format(amount) :CURRENCY.format(amount))
 				.replace(SMS_REPLACE_LINK, configManager.getConfigStringValue(ConfigKeyEnum.DOWNLOADLINK, ""))
 				.replace(SMS_REPLACE_TIME, configManager.getConfigStringValue(ConfigKeyEnum.REFUNTIME, "7"));
-		sendSMS(areaCode + userPhone, content);
+		sendSMS(areaCode + userPhone, content,"");
 	}
 	
 	@Async
@@ -152,7 +156,7 @@ public class SmsManager {
 				.replace(SMS_REPLACE_DIFFERENCE,difference.toString())
 				.replace(SMS_REPLACE_LOWERLIMIT,lowerLimit.toString())
 				.replace(SMS_REPLACE_TIME,dateTime);
-		sendSMS(phone, content);
+		sendSMS(phone, content,"");
 	}
 	
 	@Async
@@ -165,7 +169,7 @@ public class SmsManager {
 				.replace(SMS_REPLACE_AMOUNT,amount.toString())
 				.replace(SMS_REPLACE_CURRENCY,currency)
 				.replace(SMS_REPLACE_TIME,dateTime);
-		sendSMS(phone, content);
+		sendSMS(phone, content,"");
 	}
 	
 	@Async
@@ -180,9 +184,16 @@ public class SmsManager {
 				.replace(SMS_REPLACE_AMOUNTIN,amountIn.toString())
 				.replace(SMS_REPLACE_CURRENCYIN,currencyIn);
 				
-		sendSMS(phone, content);
+		sendSMS(phone, content,"");
 	}
 
+	@Async
+	public void sendSMS4BadAccount(String phone, String dateTime){
+		String content = badAccountAlarm_cn.toString();
+		content = content.replace(SMS_REPLACE_TIME,dateTime);
+		sendSMS(phone, content,"");
+	}
+	
 	/**
 	 * 根据功能和国家码选择模板
 	 * 
@@ -217,17 +228,20 @@ public class SmsManager {
 		return content.toString();
 	}
 
-	private void sendSMS(String phoneNum, String content) {
+	private SendMessageResponse sendSMS(String phoneNum, String content, String type) {
 		logger.info("sendSMS , phoneNum : {} , content : {}", phoneNum, content);
 		if (ResourceUtils.getBundleValue4Boolean("sms.enabled") && StringUtils.isNotBlank(phoneNum) && StringUtils.isNotBlank(content)) {
 			SendMessageRequest sendMessageRequest = new SendMessageRequest();
 			sendMessageRequest.setTo(phoneNum);
 			sendMessageRequest.setContent(content);
 			sendMessageRequest.setAppId(ResourceUtils.getBundleValue4String("appId"));
+			sendMessageRequest.setType(type);
 			String param = JsonBinder.getInstance().toJson(sendMessageRequest);
 			logger.info("sendMessageRequest : {}", param);
-			HttpTookit.sendPost(ResourceUtils.getBundleValue4String("sendSMS.serverUrl"), param);
+			String result=HttpTookit.sendPost(ResourceUtils.getBundleValue4String("sendSMS.serverUrl"), param);
+			return JsonBinder.getInstance().fromJson(result, SendMessageResponse.class);
 		}
+		return null;
 	}
 
 }
