@@ -119,10 +119,8 @@ public class AccountingManager {
 				updateRows = 0;
 			}
 			logger.info("accounting finsh , bad account user size {}", updateRows);
-			if (updateRows != 0) {
-				return updateRows;
-			}
 			snapshotToBefore();
+			return updateRows;
 		}
 		return 0;
 	}

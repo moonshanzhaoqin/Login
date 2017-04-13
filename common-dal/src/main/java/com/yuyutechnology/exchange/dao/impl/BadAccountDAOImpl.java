@@ -38,7 +38,7 @@ public class BadAccountDAOImpl implements BadAccountDAO {
 
 	@Override
 	public  List<BadAccount> findBadAccountList(int badAccountStatus) {
-		List<?> list = hibernateTemplate.find("from BadAccount where badAccountStatus = ? and userPhone = ?", badAccountStatus);
+		List<?> list = hibernateTemplate.find("from BadAccount where badAccountStatus = ?", badAccountStatus);
 		return (List<BadAccount>) list;
 	}
 
