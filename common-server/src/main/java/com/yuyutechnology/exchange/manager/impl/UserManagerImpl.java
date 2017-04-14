@@ -520,10 +520,12 @@ public class UserManagerImpl implements UserManager {
 
 		/* 清除其他账号的此pushId */
 		List<User> users = userDAO.getUserByPushId(pushId);
-		for (User user2 : users) {
-			if (user2.getUserId() != userId) {
-				user2.setPushId(null);
-				userDAO.updateUser(user2);
+		if (users != null) {
+			for (User user2 : users) {
+				if (user2.getUserId() != userId) {
+					user2.setPushId(null);
+					userDAO.updateUser(user2);
+				}
 			}
 		}
 	}
