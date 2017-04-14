@@ -150,8 +150,8 @@ public class AccountingManager {
 	
 	private void badAccountWarn(){
 		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(3, 1);
-		logger.info("accounting badAccountWarn listSize: {}", list.size());
 		if(list != null && !list.isEmpty()){
+			logger.info("accounting badAccountWarn listSize: {}", list.size());
 			for (int i = 0; i < list.size(); i++) {
 				CrmAlarm crmAlarm = list.get(i);
 				logger.info("accounting badAccountWarn crmAlarm: {}", crmAlarm.getSupervisorIdArr());
