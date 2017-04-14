@@ -31,6 +31,7 @@ import com.yuyutechnology.exchange.goldpay.transaction.ClientPin;
 import com.yuyutechnology.exchange.goldpay.transaction.MerchantPayOrder;
 import com.yuyutechnology.exchange.goldpay.transaction.PayConfirm;
 import com.yuyutechnology.exchange.goldpay.transaction.PayModel;
+import com.yuyutechnology.exchange.manager.AccountingManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.manager.UserManager;
@@ -62,6 +63,8 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	UserManager userManager;
 	@Autowired
 	RedisDAO redisDAO;
+	@Autowired
+	AccountingManager accountingManager;
 	
 	private final String GOLDPAY_WITHDRAW_FORBIDDEN = "goldpayWithdrawForbidden";
 
@@ -767,8 +770,12 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	public void withdrawReviewAuto(String transferId) {
 		logger.info("withdrawReviewAuto {}==>",transferId);
 		Transfer transfer = transferDAO.getTransferById(transferId);
+		if (accountingManager.accountingUser(transfer.getUserFrom())){
+			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS);
+		}else{
+			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_FAIL);
+		}
 		// 审核成功
-		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS);
 		transfer.setFinishTime(new Date());
 		transferDAO.updateTransfer(transfer);
 	}

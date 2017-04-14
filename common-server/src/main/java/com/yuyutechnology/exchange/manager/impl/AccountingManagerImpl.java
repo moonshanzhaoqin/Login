@@ -1,9 +1,8 @@
 /**
  * 
  */
-package com.yuyutechnology.exchange.task.accountsys;
+package com.yuyutechnology.exchange.manager.impl;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -13,15 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dao.AccountingDAO;
 import com.yuyutechnology.exchange.dao.BadAccountDAO;
 import com.yuyutechnology.exchange.dao.CrmAlarmDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
+import com.yuyutechnology.exchange.manager.AccountingManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.BadAccount;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
-import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionManager;
 
@@ -30,9 +30,9 @@ import com.yuyutechnology.exchange.session.SessionManager;
  *
  */
 @Service
-public class AccountingManager {
+public class AccountingManagerImpl implements AccountingManager{
 	
-	private static Logger logger = LogManager.getLogger(AccountingManager.class);
+	private static Logger logger = LogManager.getLogger(AccountingManagerImpl.class);
 	
 	@Autowired
 	AccountingDAO accountingDAO;
@@ -77,33 +77,21 @@ public class AccountingManager {
 		return userSize;
 	}
 	
-	public void accountingUser(int userId, String currency) {
-		long startSeqId = accountingDAO.getMAXSeqId4WalletBeforeByUserIdAndCurrency(userId, currency);
-		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
-		Object[] accountInfo = accountingDAO.calculatorWalletSeqByUserIdAndCurrency(startSeqId, wallet.getUpdateSeqId(), userId, currency);
-		if (accountInfo != null && accountInfo[0] != null && accountInfo[1] != null) {
-			BigDecimal sumAmount = (BigDecimal) accountInfo[0];
-			BigDecimal balance = (BigDecimal) accountInfo[1];
-			Date startTime = (Date) accountInfo[2];
-			logger.info("accountingUser , userId : {}, currency : {}, sumAmount : {}, balanceBefore : {}, balanceNow : {}, startSeq : {}, endSeq : {}", userId, currency, sumAmount, balance, wallet.getBalance(), startSeqId, wallet.getUpdateSeqId());
-			if (sumAmount.add(balance).compareTo(wallet.getBalance()) != 0) {
+	public boolean accountingUser(int userId) {
+		Date startDate = accountingDAO.getLastAccountingTime();
+		Date endDate = new Date();
+		long startSeqId = accountingDAO.getMAXSeqId4WalletBeforeByUserId(userId);
+		long endSeqId  = accountingDAO.getMAXSeqId4WalletUserId(userId);
+		if (startSeqId < endSeqId) {
+			int size = accountingDAO.calculatorWalletSeqByUserId(startSeqId, endSeqId, startDate, endDate, userId);
+			if (size >= 1) {
 				goldpayTransManager.forbiddenGoldpayRemitWithdraws();
-				freezeUser(userId);
 				badAccountWarn();
-				BadAccount badAccount = new BadAccount();
-				badAccount.setUserId(userId);
-				badAccount.setCurrency(currency);
-				badAccount.setSumAmount(sumAmount);
-				badAccount.setBalanceBefore(balance);
-				badAccount.setBalanceNow(wallet.getBalance());
-				badAccount.setStartTime(startTime);
-				badAccount.setEndTime(new Date());
-				badAccount.setStartSeqId(startSeqId);
-				badAccount.setEndSeqId(wallet.getUpdateSeqId());
-				badAccount.setBadAccountStatus(ServerConsts.BAD_ACCOUNT_STATUS_FREEZE_USER);
-				badAccountDAO.saveBadAccount(badAccount);
+				freezeUser(userId);
+				return false;
 			}
 		}
+		return true;
 	}
 	
 	public int accounting(Date startDate, Date endDate) {
@@ -150,8 +138,8 @@ public class AccountingManager {
 	
 	private void badAccountWarn(){
 		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(3, 1);
-		logger.info("accounting badAccountWarn listSize: {}", list.size());
 		if(list != null && !list.isEmpty()){
+			logger.info("accounting badAccountWarn listSize: {}", list.size());
 			for (int i = 0; i < list.size(); i++) {
 				CrmAlarm crmAlarm = list.get(i);
 				logger.info("accounting badAccountWarn crmAlarm: {}", crmAlarm.getSupervisorIdArr());
