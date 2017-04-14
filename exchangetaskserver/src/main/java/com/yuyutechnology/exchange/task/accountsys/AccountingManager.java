@@ -66,7 +66,7 @@ public class AccountingManager {
 		}
 		sessionManager.delLoginToken(userId);
 		userManager.logout(userId);
-		userManager.userFreeze(userId, ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE);
+		userManager.userFreeze(userId, ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE);
 	}
 	
 	public int accountingAll() {
@@ -127,12 +127,14 @@ public class AccountingManager {
 	
 	public void freezeUsers() {
 		List<BadAccount> badAccounts = badAccountDAO.findBadAccountList(ServerConsts.BAD_ACCOUNT_STATUS_DEFAULT);
-		if (badAccounts != null && badAccounts.isEmpty()) {
+		if (badAccounts != null && !badAccounts.isEmpty()) {
 			goldpayTransManager.forbiddenGoldpayRemitWithdraws();
 			badAccountWarn();
 			for (BadAccount badAccount : badAccounts) {
 				try {
 					freezeUser(badAccount.getUserId());
+					badAccount.setBadAccountStatus(ServerConsts.BAD_ACCOUNT_STATUS_FREEZE_USER);
+					badAccountDAO.saveBadAccount(badAccount);
 				} catch (Exception e) {
 				}
 			}
@@ -148,9 +150,11 @@ public class AccountingManager {
 	
 	private void badAccountWarn(){
 		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(3, 1);
+		logger.info("accounting badAccountWarn listSize: {}", list.size());
 		if(list != null && !list.isEmpty()){
 			for (int i = 0; i < list.size(); i++) {
 				CrmAlarm crmAlarm = list.get(i);
+				logger.info("accounting badAccountWarn crmAlarm: {}", crmAlarm.getSupervisorIdArr());
 				crmAlarmManager.alarmNotice(crmAlarm.getSupervisorIdArr(), "badAccountWarning", crmAlarm.getAlarmMode(),null);
 			}
 		}
