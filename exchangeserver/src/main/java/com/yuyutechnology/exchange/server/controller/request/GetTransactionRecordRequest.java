@@ -22,6 +22,7 @@ public class GetTransactionRecordRequest {
 	public int getCurrentPage() {
 		return currentPage;
 	}
+	@ApiParam(value="转账：expenses；收入：income；充值：recharge；体现：withdraw；")
 	public String getType() {
 		return type;
 	}

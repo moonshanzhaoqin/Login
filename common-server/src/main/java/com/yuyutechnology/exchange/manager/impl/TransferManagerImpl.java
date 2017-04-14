@@ -506,22 +506,47 @@ public class TransferManagerImpl implements TransferManager{
 				+ "t1.finish_time,"
 				+ "t1.transfer_type,t1.transfer_id  ";
 		StringBuilder sb = new StringBuilder(
-				"FROM `e_transfer` t1 LEFT JOIN `e_user` t2  "+
+				"FROM `e_transfer` t1 "+
+				"LEFT JOIN `e_user` t2  "+
 				"ON  "+
 				"t1.user_from = t2.user_id  "+
-				"where t1.transfer_status=? "+
-				"and (t1.user_from = ? or t1.user_to = ?) ");
+				"LEFT JOIN `e_wallet_seq` t3  "+
+				"ON  "+
+				"t1.transfer_id = t3.transaction_id  "+
+				"where " +
+				"t1.transfer_status=? "+
+				"and (t1.user_from = ? or t1.user_to = ?) "+ 
+				"and t3.user_id = ?  ");
 		
 		List<Object> values = new ArrayList<Object>();
 		values.add(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		values.add(userId);
 		values.add(userId);
+		values.add(userId);
 		
 		if(StringUtils.isNotBlank(type)){
-			sb.append("and t1.transfer_type > ?");
-			values.add(Integer.valueOf(type));
+			
+			switch(type){
+				case "expenses"://支出
+					sb.append("and t3.amount < 0 ");
+					break;
+				case "income"://收入
+					sb.append("and t3.amount > 0 ");
+					break;
+				case "withdraw"://体现
+					sb.append("and t1.transfer_type = ? ");
+					values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW+"");
+					break;
+				case "recharge"://充值
+					sb.append("and t1.transfer_type = ? ");
+					values.add(ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE+"");
+					break;
+				default:
+					break;	
+				
+			}
+
 		}
-		
 		
 		if(!period.equals("all")){
 			switch (period) {
