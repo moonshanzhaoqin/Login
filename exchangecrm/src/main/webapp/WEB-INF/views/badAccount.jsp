@@ -27,7 +27,7 @@
 		<div class="row" >
 			<table class="table table-bordered table-hover table-striped"
 				id="badAccount">
-				<thead style="height: 300px; overflow: auto;">
+				<thead>
 					<tr>
 						<th>用户ID</th>
 						<th>手机号</th>
@@ -37,11 +37,10 @@
 						<th>核账后</th>
 						<th>开始时间(UTC)</th>
 						<th>结束时间(UTC)</th>
-						<th>badAccountStatus</th>
 						<th>操作</th>
 					</tr>
 				</thead>
-				<tbody></tbody>
+				<tbody style="height: 300px; overflow: auto;"></tbody>
 			</table>
 		</div>
 		<hr style="background-color: grey; height: 1px;" />
@@ -238,9 +237,6 @@
 											+ '</td>'
 											+ '<td>'
 											+ timeDate(data.rows[i][0].endTime)
-											+ '</td>'
-											+ '<td>'
-											+ data.rows[i][0].badAccountStatus
 											+ '</td>'
 											+ '<td>'
 											+ '<a href="javascript:void(0)" onclick="getDetailSeq('
