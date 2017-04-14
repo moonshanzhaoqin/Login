@@ -778,10 +778,11 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	public void withdrawReviewAuto(String transferId) {
 		logger.info("withdrawReviewAuto {}==>", transferId);
 		Transfer transfer = transferDAO.getTransferById(transferId);
-		if (accountingManager.accountingUser(transfer.getUserFrom())){
-			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS);
-		}else{
+		User user = userDAO.getUser(transfer.getUserFrom());
+		if (user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE || !accountingManager.accountingUser(transfer.getUserFrom())){
 			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_FAIL);
+		}else{
+			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS);
 		}
 		// 审核成功
 		transfer.setFinishTime(new Date());
