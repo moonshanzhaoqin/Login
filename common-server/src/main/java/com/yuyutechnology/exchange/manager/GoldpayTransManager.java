@@ -52,7 +52,7 @@ public interface GoldpayTransManager {
 
 	void withdrawReviewManual(String transferId);
 	
-	public void forbiddenGoldpayRemitWithdraws();
+	public void forbiddenGoldpayRemitWithdraws(String forbidden);
 	
 	public boolean getGoldpayRemitWithdrawsforbidden();
 

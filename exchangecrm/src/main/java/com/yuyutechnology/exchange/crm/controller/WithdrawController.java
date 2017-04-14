@@ -44,8 +44,8 @@ public class WithdrawController {
 			HttpServletRequest request, HttpServletResponse response) {
 		logger.info(getWithdrawListRequest.toString());
 		return goldpayTransManager.getWithdrawList(Integer.parseInt(getWithdrawListRequest.getCurrentPage()),
-				 getWithdrawListRequest.getUserPhone(),
-				getWithdrawListRequest.getTransferId(), getWithdrawListRequest.getTransferStatus());
+				getWithdrawListRequest.getUserPhone(), getWithdrawListRequest.getTransferId(),
+				getWithdrawListRequest.getTransferStatus());
 	}
 
 	/**
@@ -56,12 +56,15 @@ public class WithdrawController {
 	 * @param response
 	 * @return
 	 */
-//	@ResponseBody
-//	@RequestMapping(value = "/getWithdrawDetail", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-//	public WithdrawDetail getWithdrawDetail(@RequestBody WithdrawRequest withdrawRequest, HttpServletRequest request,
-//			HttpServletResponse response) {
-//		return goldpayTransManager.getWithdrawDetail(withdrawRequest.getWithdrawId());
-//	}
+	// @ResponseBody
+	// @RequestMapping(value = "/getWithdrawDetail", method =
+	// RequestMethod.POST, produces = "application/json; charset=utf-8")
+	// public WithdrawDetail getWithdrawDetail(@RequestBody WithdrawRequest
+	// withdrawRequest, HttpServletRequest request,
+	// HttpServletResponse response) {
+	// return
+	// goldpayTransManager.getWithdrawDetail(withdrawRequest.getWithdrawId());
+	// }
 
 	/**
 	 * 提现审批
@@ -92,15 +95,24 @@ public class WithdrawController {
 	public BaseResponse goldpayRemit(@RequestBody WithdrawRequest withdrawRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
-		HashMap<String, String> map=goldpayTransManager.goldpayRemit(withdrawRequest.getTransferId());
-		if (map.get("retCode")==RetCodeConsts.RET_CODE_SUCCESS) {
+		HashMap<String, String> map = goldpayTransManager.goldpayRemit(withdrawRequest.getTransferId());
+		if (map.get("retCode") == RetCodeConsts.RET_CODE_SUCCESS) {
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-		}else {
+		} else {
 			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 		}
 		rep.setMessage(map.get("msg"));
 		return rep;
 	}
+
+	/**
+	 * 提现退款
+	 * 
+	 * @param withdrawRequest
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/refund", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse refund(@RequestBody WithdrawRequest withdrawRequest, HttpServletRequest request,
@@ -110,4 +122,6 @@ public class WithdrawController {
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
+
+	
 }

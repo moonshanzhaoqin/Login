@@ -85,7 +85,7 @@ public class AccountingManagerImpl implements AccountingManager{
 		if (startSeqId < endSeqId) {
 			int size = accountingDAO.calculatorWalletSeqByUserId(startSeqId, endSeqId, startDate, endDate, userId);
 			if (size >= 1) {
-				goldpayTransManager.forbiddenGoldpayRemitWithdraws();
+				goldpayTransManager.forbiddenGoldpayRemitWithdraws("true");
 				badAccountWarn();
 				freezeUser(userId);
 				return false;
@@ -116,7 +116,7 @@ public class AccountingManagerImpl implements AccountingManager{
 	public void freezeUsers() {
 		List<BadAccount> badAccounts = badAccountDAO.findBadAccountList(ServerConsts.BAD_ACCOUNT_STATUS_DEFAULT);
 		if (badAccounts != null && !badAccounts.isEmpty()) {
-			goldpayTransManager.forbiddenGoldpayRemitWithdraws();
+			goldpayTransManager.forbiddenGoldpayRemitWithdraws("true");
 			badAccountWarn();
 			for (BadAccount badAccount : badAccounts) {
 				try {

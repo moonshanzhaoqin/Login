@@ -12,12 +12,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.yuyutechnology.exchange.RetCodeConsts;
+import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
 import com.yuyutechnology.exchange.crm.request.GetBadAccountByPageRequest;
 import com.yuyutechnology.exchange.crm.request.GetDetailSeqRequest;
 import com.yuyutechnology.exchange.crm.request.GetTransferRequest;
+import com.yuyutechnology.exchange.crm.request.SetGoldpayRemitTaskStatusRequest;
 import com.yuyutechnology.exchange.manager.CommonManager;
+import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.WalletManager;
 import com.yuyutechnology.exchange.utils.page.PageBean;
@@ -30,7 +35,8 @@ public class BadAccountController {
 	WalletManager walletManager;
 	@Autowired
 	CommonManager commonManager;
-
+	@Autowired
+	GoldpayTransManager goldpayTransManager;
 	@Autowired
 	TransferManager transferManager;
 
@@ -78,5 +84,39 @@ public class BadAccountController {
 	public Object getTransfer(@RequestBody GetTransferRequest getTransferRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		return transferManager.getTransfer(getTransferRequest.getTransferId());
+	}
+
+	/**
+	 * 修改划账任务开启状态
+	 * 
+	 * @param forbidden
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+
+	@ResponseBody
+	@RequestMapping(value = "/setGoldpayRemitTaskStatus", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public BaseResponse setGoldpayRemitTaskStatus(@RequestBody SetGoldpayRemitTaskStatusRequest forbidden,
+			HttpServletRequest request, HttpServletResponse response) {
+		logger.info(forbidden.getStatus());
+		BaseResponse rep = new BaseResponse();
+		goldpayTransManager.forbiddenGoldpayRemitWithdraws(forbidden.getStatus());
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		return rep;
+	}
+
+	/**
+	 * 获取划账任务开启状态
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getGoldpayRemitTaskStatus", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public boolean getGoldpayRemitTaskStatus(HttpServletRequest request, HttpServletResponse response) {
+
+		return goldpayTransManager.getGoldpayRemitWithdrawsforbidden();
 	}
 }
