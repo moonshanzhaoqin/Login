@@ -330,7 +330,7 @@ public class UserManagerImpl implements UserManager {
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency.getCurrency());
 		if (wallet == null) {
 			// 没有该货币的钱包，需要新增
-			walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date()));
+			walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date(),0));
 			logger.info("add {} user's  wallet of {} ", userId, currency.getCurrency());
 		}
 	}
@@ -349,7 +349,7 @@ public class UserManagerImpl implements UserManager {
 		logger.info("New wallets for newly registered user {}==>", userId);
 		List<Currency> currencies = commonManager.getCurrentCurrencies();
 		for (Currency currency : currencies) {
-			walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date()));
+			walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date(),0));
 		}
 	}
 
@@ -560,7 +560,7 @@ public class UserManagerImpl implements UserManager {
 			// logger.info("{}",currency.getCurrency());
 			if (mapwallet.get(currency.getCurrency()) == null) {
 				// 没有该货币的钱包，需要新增
-				walletDAO.addwallet(new Wallet(currency, userId, BigDecimal.ZERO, new Date()));
+				walletDAO.addwallet(new Wallet(currency, userId, BigDecimal.ZERO, new Date(),0));
 				logger.info("Added {}wallet to user {}", currency.getCurrency(), userId);
 			}
 		}

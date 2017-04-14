@@ -182,7 +182,7 @@ public class CommonManagerImpl implements CommonManager {
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
 		if (wallet == null) {
 			// 没有该货币的钱包，需要新增
-			walletDAO.addwallet(new Wallet(allCurrenciesMap.get(currency), userId, BigDecimal.ZERO, new Date()));
+			walletDAO.addwallet(new Wallet(allCurrenciesMap.get(currency), userId, BigDecimal.ZERO, new Date(),0));
 			logger.info("Added {} wallet to user {}", currency, userId);
 		}
 	}
