@@ -21,7 +21,9 @@
 	<%@ include file="common/header.jsp"%>
 
 	<div class="container" style="height: 100%;">
-
+		<div class="row" id="task" style="margin-bottom: 20px;">
+			<!-- 			<button type="button" class="btn btn-primary pull-right" onclick="setGoldpayRemitTaskStatus(false)">开启</button> -->
+		</div>
 		<div class="row" style="height: 300px; overflow: auto;">
 			<table class="table table-bordered table-hover table-striped"
 				id="badAccount">
@@ -37,13 +39,12 @@
 						<th>结束时间(UTC)</th>
 						<th>badAccountStatus</th>
 						<th>操作</th>
-
 					</tr>
 				</thead>
 				<tbody></tbody>
 			</table>
 		</div>
-		<hr style="background-color:grey;height:1px;"/>
+		<hr style="background-color: grey; height: 1px;" />
 		<div id="detail" class="row" style="height: 450px; overflow: auto;"
 			hidden>
 			<table class="table table-bordered table-hover table-striped"
@@ -132,6 +133,7 @@
 		src="<c:url value="/resources/bootstrap/js/bootstrap-paginator.min.js" />"></script>
 	<script type="text/javascript">
 		$(function() {
+			getGoldpayRemitTaskStatus()
 			getBadAccountByPage(1);
 
 			// 			$('#myModal').on('show.bs.modal', function(e) {
@@ -143,6 +145,57 @@
 			// 			})
 
 		})
+
+		function getGoldpayRemitTaskStatus() {
+			$
+					.ajax({
+						type : "post",
+						url : "/crm/getGoldpayRemitTaskStatus",
+						dataType : 'json',
+						contentType : "application/json; charset=utf-8",
+						data : {},
+						success : function(data) {
+							if (data.retCode == "00002") {
+								location.href = loginUrl;
+							} else {
+								console.log("success");
+								console.log(data);
+								if (data == true) {
+									$("#task")
+											.html(
+													'<button type="button" class="btn btn-primary pull-right" onclick="setGoldpayRemitTaskStatus(false)">开启</button>');
+								} else {
+									$("#task")
+											.html(
+													'<button type="button" class="btn btn-danger pull-right" onclick="setGoldpayRemitTaskStatus(true)">关闭</button>');
+								}
+							}
+
+						}
+
+					})
+		}
+		function setGoldpayRemitTaskStatus(status) {
+			var data = {
+				status : status
+			};
+			$.ajax({
+				type : "post",
+				url : "/crm/setGoldpayRemitTaskStatus",
+				dataType : 'json',
+				contentType : "application/json; charset=utf-8",
+				data : JSON.stringify(data),
+				success : function(data) {
+					if (data.retCode == "00002") {
+						location.href = loginUrl;
+					} else {
+						getGoldpayRemitTaskStatus();
+					}
+
+				}
+
+			})
+		}
 		function getBadAccountByPage(currentPage) {
 			var data = {
 				currentPage : currentPage
@@ -265,54 +318,70 @@
 			var data = {
 				transferId : transferId
 			};
-			$.ajax({
-				type : "post",
-				url : "/crm/getTransfer",
-				dataType : 'json',
-				contentType : "application/json; charset=utf-8",
-				data : JSON.stringify(data),
-				success : function(data) {
-					if (data.retCode == "00002") {
-						location.href = loginUrl;
-					} else {
-						$('#transferId').html(
-								'<p class="form-control-static">' + data[0].transferId
-										+ '</p>');
-						$('#from').html(
-								'<p class="form-control-static">' + data[0].userFrom
-										+ '</p><p class="form-control-static">' + data[1].areaCode+data[1].userPhone
-										+ '</p>');
-						$('#to').html(
-								'<p class="form-control-static">' + data[0].userTo
-										+ '</p><p class="form-control-static">' + data[2].areaCode+data[2].userPhone
-										+ '</p>');
+			$
+					.ajax({
+						type : "post",
+						url : "/crm/getTransfer",
+						dataType : 'json',
+						contentType : "application/json; charset=utf-8",
+						data : JSON.stringify(data),
+						success : function(data) {
+							if (data.retCode == "00002") {
+								location.href = loginUrl;
+							} else {
+								$('#transferId').html(
+										'<p class="form-control-static">'
+												+ data[0].transferId + '</p>');
+								$('#from')
+										.html(
+												'<p class="form-control-static">'
+														+ data[0].userFrom
+														+ '</p><p class="form-control-static">'
+														+ data[1].areaCode
+														+ data[1].userPhone
+														+ '</p>');
+								$('#to')
+										.html(
+												'<p class="form-control-static">'
+														+ data[0].userTo
+														+ '</p><p class="form-control-static">'
+														+ data[2].areaCode
+														+ data[2].userPhone
+														+ '</p>');
 
-						$('#currency').html(
-								'<p class="form-control-static">' + data[0].currency
-										+ '</p>');
-						$('#transferAmount').html(
-								'<p class="form-control-static">' + data[0].transferAmount
-										+ '</p>');
-						$('#createTime').html(
-								'<p class="form-control-static">' + timeDate(data[0].createTime)
-										+ '</p>');
-						$('#finishTime').html(
-								'<p class="form-control-static">' + timeDate(data[0].finishTime)
-										+ '</p>');
-						$('#transferStatus').html(
-								'<p class="form-control-static">' + transferStatus(data[0].transferStatus)
-										+ '</p>');
-						$('#transferType').html(
-								'<p class="form-control-static">' + transferType(data[0].transferType)
-										+ '</p>');
-					}
-				},
-				error : function(xhr, err) {
-					console.log("error");
-					console.log(err);
-				},
-				async : false
-			});
+								$('#currency').html(
+										'<p class="form-control-static">'
+												+ data[0].currency + '</p>');
+								$('#transferAmount').html(
+										'<p class="form-control-static">'
+												+ data[0].transferAmount
+												+ '</p>');
+								$('#createTime').html(
+										'<p class="form-control-static">'
+												+ timeDate(data[0].createTime)
+												+ '</p>');
+								$('#finishTime').html(
+										'<p class="form-control-static">'
+												+ timeDate(data[0].finishTime)
+												+ '</p>');
+								$('#transferStatus')
+										.html(
+												'<p class="form-control-static">'
+														+ transferStatus(data[0].transferStatus)
+														+ '</p>');
+								$('#transferType')
+										.html(
+												'<p class="form-control-static">'
+														+ transferType(data[0].transferType)
+														+ '</p>');
+							}
+						},
+						error : function(xhr, err) {
+							console.log("error");
+							console.log(err);
+						},
+						async : false
+					});
 		}
 
 		function transferType(transferType) {
@@ -390,8 +459,6 @@
 			//分页控件
 			$('#paginator').bootstrapPaginator(options);
 		}
-
-		
 	</script>
 	<%@ include file="common/footer.jsp"%>
 </body>

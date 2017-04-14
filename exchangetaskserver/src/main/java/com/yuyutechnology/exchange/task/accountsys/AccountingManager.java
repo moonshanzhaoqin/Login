@@ -87,7 +87,7 @@ public class AccountingManager {
 			Date startTime = (Date) accountInfo[2];
 			logger.info("accountingUser , userId : {}, currency : {}, sumAmount : {}, balanceBefore : {}, balanceNow : {}, startSeq : {}, endSeq : {}", userId, currency, sumAmount, balance, wallet.getBalance(), startSeqId, wallet.getUpdateSeqId());
 			if (sumAmount.add(balance).compareTo(wallet.getBalance()) != 0) {
-				goldpayTransManager.forbiddenGoldpayRemitWithdraws();
+				goldpayTransManager.forbiddenGoldpayRemitWithdraws("true");
 				freezeUser(userId);
 				badAccountWarn();
 				BadAccount badAccount = new BadAccount();
@@ -128,7 +128,7 @@ public class AccountingManager {
 	public void freezeUsers() {
 		List<BadAccount> badAccounts = badAccountDAO.findBadAccountList(ServerConsts.BAD_ACCOUNT_STATUS_DEFAULT);
 		if (badAccounts != null && !badAccounts.isEmpty()) {
-			goldpayTransManager.forbiddenGoldpayRemitWithdraws();
+			goldpayTransManager.forbiddenGoldpayRemitWithdraws("true");
 			badAccountWarn();
 			for (BadAccount badAccount : badAccounts) {
 				try {
