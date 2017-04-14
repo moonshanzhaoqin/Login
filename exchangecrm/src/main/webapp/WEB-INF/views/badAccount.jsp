@@ -24,10 +24,10 @@
 		<div class="row" id="task" style="margin-bottom: 20px;">
 			<!-- 			<button type="button" class="btn btn-primary pull-right" onclick="setGoldpayRemitTaskStatus(false)">开启</button> -->
 		</div>
-		<div class="row" style="height: 300px; overflow: auto;">
+		<div class="row" >
 			<table class="table table-bordered table-hover table-striped"
 				id="badAccount">
-				<thead>
+				<thead style="height: 300px; overflow: auto;">
 					<tr>
 						<th>用户ID</th>
 						<th>手机号</th>

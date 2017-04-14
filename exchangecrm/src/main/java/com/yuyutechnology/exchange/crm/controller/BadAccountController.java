@@ -86,11 +86,19 @@ public class BadAccountController {
 		return transferManager.getTransfer(getTransferRequest.getTransferId());
 	}
 
-	// TODO 修改划账任务开启状态
+	/**
+	 * 修改划账任务开启状态
+	 * 
+	 * @param forbidden
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+
 	@ResponseBody
 	@RequestMapping(value = "/setGoldpayRemitTaskStatus", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse setGoldpayRemitTaskStatus(@RequestBody SetGoldpayRemitTaskStatusRequest forbidden, HttpServletRequest request,
-			HttpServletResponse response) {
+	public BaseResponse setGoldpayRemitTaskStatus(@RequestBody SetGoldpayRemitTaskStatusRequest forbidden,
+			HttpServletRequest request, HttpServletResponse response) {
 		logger.info(forbidden.getStatus());
 		BaseResponse rep = new BaseResponse();
 		goldpayTransManager.forbiddenGoldpayRemitWithdraws(forbidden.getStatus());
@@ -98,11 +106,17 @@ public class BadAccountController {
 		return rep;
 	}
 
-	// TODO 获取划账任务开启状态
+	/**
+	 * 获取划账任务开启状态
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/getGoldpayRemitTaskStatus", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public boolean getGoldpayRemitTaskStatus(HttpServletRequest request, HttpServletResponse response) {
-		
+
 		return goldpayTransManager.getGoldpayRemitWithdrawsforbidden();
 	}
 }

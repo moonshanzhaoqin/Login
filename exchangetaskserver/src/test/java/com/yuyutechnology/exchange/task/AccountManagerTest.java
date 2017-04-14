@@ -9,8 +9,8 @@ import java.util.Date;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.yuyutechnology.exchange.manager.AccountingManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
-import com.yuyutechnology.exchange.task.accountsys.AccountingManager;
 import com.yuyutechnology.exchange.utils.DateFormatUtils;
 
 /**
@@ -36,7 +36,7 @@ public class AccountManagerTest extends BaseSpringJunit4 {
 	
 	@Test
 	public void testAccountingUser() {
-		accountManager.accountingUser(3, "GDQ");
+		accountManager.accountingUser(3);
 	}
 	
 	@Test
