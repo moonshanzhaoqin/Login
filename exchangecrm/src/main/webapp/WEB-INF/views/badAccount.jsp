@@ -40,8 +40,10 @@
 						<th>操作</th>
 					</tr>
 				</thead>
-				<tbody style="height: 300px; overflow: auto;"></tbody>
+				<tbody style="height: 250px; overflow: auto;"></tbody>
 			</table>
+			<!--分页插件-->
+			<div id="paginator"></div>
 		</div>
 		<hr style="background-color: grey; height: 1px;" />
 		<div id="detail" class="row" style="height: 450px; overflow: auto;"
