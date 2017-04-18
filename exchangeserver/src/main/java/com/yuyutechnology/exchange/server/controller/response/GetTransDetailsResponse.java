@@ -1,12 +1,16 @@
 package com.yuyutechnology.exchange.server.controller.response;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class GetTransDetailsResponse extends BaseResponse {
 	
 	private String trader;
-	private String traderMobile;
-	private String money;
+	private String areaCode;
+	private String phone;
+	private String currency;
+	private BigDecimal amoumt;
+	private String unit;
 	private int transferType;
 	private Date createTime;
 	private Date finishTime;
@@ -23,20 +27,45 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.trader = trader;
 	}
 
-	public String getTraderMobile() {
-		return traderMobile;
+
+	public String getAreaCode() {
+		return areaCode;
 	}
 
-	public void setTraderMobile(String traderMobile) {
-		this.traderMobile = traderMobile;
+	public void setAreaCode(String areaCode) {
+		this.areaCode = areaCode;
 	}
 
-	public String getMoney() {
-		return money;
+	public String getPhone() {
+		return phone;
 	}
 
-	public void setMoney(String money) {
-		this.money = money;
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+
+	public BigDecimal getAmoumt() {
+		return amoumt;
+	}
+
+	public void setAmoumt(BigDecimal amoumt) {
+		this.amoumt = amoumt;
+	}
+
+	public String getUnit() {
+		return unit;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
 	}
 
 	public int getTransferType() {
