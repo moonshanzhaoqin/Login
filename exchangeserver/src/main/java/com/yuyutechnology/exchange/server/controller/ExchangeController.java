@@ -225,7 +225,7 @@ public class ExchangeController {
 		rep.setAmountIn(exchange.getAmountIn());
 		rep.setCurrencyInUnit(commonManager.getCurreny(exchange.getCurrencyIn()).getCurrencyUnit());
 		
-		rep.setCurrencyIn(exchange.getCurrencyIn());
+		rep.setExchangeId(exchange.getExchangeId());
 		rep.setCreateTime(exchange.getCreateTime());
 		
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);

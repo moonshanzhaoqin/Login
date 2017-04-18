@@ -20,6 +20,7 @@ import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
+import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.mail.MailManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
@@ -222,24 +223,29 @@ public class UserController {
 				logger.info(MessageConsts.TOKEN_NOT_MATCH);
 				rep.setRetCode(RetCodeConsts.TOKEN_NOT_MATCH);
 				rep.setMessage(MessageConsts.TOKEN_NOT_MATCH);
-			}else{
-				// 生成session Token
-				SessionData sessionData = new SessionData(userId, UidUtils.genUid());
-				sessionManager.saveSessionData(sessionData);
-				rep.setSessionToken(sessionData.getSessionId());
-				rep.setLoginToken(sessionManager.createLoginToken(userId));
-				// 记录登录信息
-				userManager.updateUser(userId, HttpTookit.getIp(request), loginRequest.getPushId(),
-						loginRequest.getLanguage());
-				// 更新钱包
-				userManager.updateWallet(userId);
-				// 获取用户信息
-				rep.setUser(userManager.getUserInfo(userId));
-
-				logger.info(MessageConsts.RET_CODE_SUCCESS);
-				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-
+			}else {
+				UserInfo userInfo=userManager.getUserInfo(userId);
+				if(userInfo!=null){
+					// 生成session Token
+					SessionData sessionData = new SessionData(userId, UidUtils.genUid());
+					sessionManager.saveSessionData(sessionData);
+					rep.setSessionToken(sessionData.getSessionId());
+					rep.setLoginToken(sessionManager.createLoginToken(userId));
+					// 记录登录信息
+					userManager.updateUser(userId, HttpTookit.getIp(request), loginRequest.getPushId(),
+							loginRequest.getLanguage());
+					// 更新钱包
+					userManager.updateWallet(userId);
+					// 获取用户信息
+					rep.setUser(userInfo);
+					logger.info(MessageConsts.RET_CODE_SUCCESS);
+					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+				}else{
+					logger.info(MessageConsts.TOKEN_NOT_MATCH);
+					rep.setRetCode(RetCodeConsts.TOKEN_NOT_MATCH);
+					rep.setMessage(MessageConsts.TOKEN_NOT_MATCH);
+				}
 			}
 			break;
 		case 2:
