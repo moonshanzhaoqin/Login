@@ -29,14 +29,12 @@
 				id="badAccount">
 				<thead>
 					<tr>
-						<th>用户ID</th>
 						<th>手机号</th>
-						<th>货币</th>
-						<th>核账前</th>
-						<th>核账中</th>
-						<th>核账后</th>
-						<th>开始时间(UTC)</th>
-						<th>结束时间(UTC)</th>
+						<th>币种</th>
+						<th>时间区间(UTC)</th>
+						<th>交易前金额</th>
+						<th>交易累计金额</th>
+						<th>交易后金额</th>
 						<th>操作</th>
 					</tr>
 				</thead>
@@ -53,11 +51,11 @@
 				<thead>
 					<tr>
 						<th>流水号</th>
-						<th>货币</th>
+						<th>币种</th>
 						<th>数量</th>
 						<th>交易类型</th>
 						<th>交易ID</th>
-						<th>时间(UTC)</th>
+						<th>创建时间(UTC)</th>
 					</tr>
 				</thead>
 				<tbody></tbody>
@@ -87,11 +85,11 @@
 							<div class="col-sm-9" id="transferType"></div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-3 control-label">FROM:</label>
+							<label class="col-sm-3 control-label">发款人:</label>
 							<div class="col-sm-9" id=from></div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-3 control-label">TO:</label>
+							<label class="col-sm-3 control-label">收款人:</label>
 							<div class="col-sm-9" id=to></div>
 						</div>
 						<div class="form-group">
@@ -215,15 +213,18 @@
 								console.log("success");
 								var html = "";
 								for ( var i in data.rows) {
-									html += '<tr>' + '<td>'
-											+ data.rows[i][1].userId
-											+ '</td>'
+									html += '<tr>'
 											+ '<td>'
 											+ data.rows[i][1].areaCode
 											+ data.rows[i][1].userPhone
 											+ '</td>'
 											+ '<td>'
 											+ data.rows[i][0].currency
+											+ '</td>'
+											+ '<td>'
+											+ timeDate(data.rows[i][0].startTime)
+											+ ' ~ '
+											+ timeDate(data.rows[i][0].endTime)
 											+ '</td>'
 											+ '<td>'
 											+ data.rows[i][0].balanceBefore
@@ -233,12 +234,6 @@
 											+ '</td>'
 											+ '<td>'
 											+ data.rows[i][0].balanceNow
-											+ '</td>'
-											+ '<td>'
-											+ timeDate(data.rows[i][0].startTime)
-											+ '</td>'
-											+ '<td>'
-											+ timeDate(data.rows[i][0].endTime)
 											+ '</td>'
 											+ '<td>'
 											+ '<a href="javascript:void(0)" onclick="getDetailSeq('
