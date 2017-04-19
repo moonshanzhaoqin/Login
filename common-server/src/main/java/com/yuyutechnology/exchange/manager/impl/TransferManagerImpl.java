@@ -940,9 +940,13 @@ public class TransferManagerImpl implements TransferManager{
 		if(transfer.getUserFrom() == userId){
 			user = userDAO.getUser(transfer.getUserTo()); 
 			friendId = transfer.getUserTo();
+			map.put("areaCode", transfer.getAreaCode());
+			map.put("phone", transfer.getPhone());
 		}else{
 			user = userDAO.getUser(transfer.getUserFrom());
 			friendId = transfer.getUserFrom();
+			map.put("areaCode", user.getAreaCode());
+			map.put("phone", user.getUserPhone());
 		}
 		
 		//判断是否已经是好友
