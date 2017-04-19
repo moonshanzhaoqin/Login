@@ -9,7 +9,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 	private String areaCode;
 	private String phone;
 	private String currency;
-	private BigDecimal amoumt;
+	private BigDecimal amount;
 	private String unit;
 	private int transferType;
 	private Date createTime;
@@ -52,12 +52,14 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.currency = currency;
 	}
 
-	public BigDecimal getAmoumt() {
-		return amoumt;
+
+
+	public BigDecimal getAmount() {
+		return amount;
 	}
 
-	public void setAmoumt(BigDecimal amoumt) {
-		this.amoumt = amoumt;
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
 	}
 
 	public String getUnit() {
