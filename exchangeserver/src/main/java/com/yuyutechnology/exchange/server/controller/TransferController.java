@@ -443,7 +443,7 @@ public class TransferController {
 			rep.setPhone(transfer.getPhone());
 			
 			rep.setCurrency(transfer.getCurrency());
-			rep.setAmoumt(transfer.getTransferAmount());
+			rep.setAmount(transfer.getTransferAmount());
 			rep.setUnit((String)(result.get("unit")));
 			
 			rep.setTransferType(transfer.getTransferType());
