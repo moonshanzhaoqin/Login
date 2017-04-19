@@ -166,6 +166,7 @@ public class PushManager {
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "transfer");
 		ext.put("transferId", transferId);
+		ext.put("userId", userTo.getUserId().toString());
 		pushToCustom(userTo.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 
 		// 新请求转账标记

@@ -161,7 +161,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 
 		}
 
-		sb.append(" order by userTotalAssets desc");
+		sb.append(" order by userTotalAssets desc, userPhone");
 
 		HashMap<String, Object> result = crmUserInfoDAO.getUserAccountInfoListByPage(sb.toString(), values, currentPage,
 				pageSize);
