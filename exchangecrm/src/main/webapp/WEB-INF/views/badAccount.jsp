@@ -24,7 +24,7 @@
 		<div class="row" id="task" style="margin-bottom: 20px;">
 			<!-- 			<button type="button" class="btn btn-primary pull-right" onclick="setGoldpayRemitTaskStatus(false)">开启</button> -->
 		</div>
-		<div class="row" >
+		<div class="row">
 			<table class="table table-bordered table-hover table-striped"
 				id="badAccount">
 				<thead>
@@ -34,7 +34,8 @@
 						<th>时间区间(UTC)</th>
 						<th>交易前金额</th>
 						<th>交易累计金额</th>
-						<th>交易后金额</th>
+						<th>交易后期望金额</th>
+						<th>交易后实际金额</th>
 						<th>操作</th>
 					</tr>
 				</thead>
@@ -85,12 +86,20 @@
 							<div class="col-sm-9" id="transferType"></div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-3 control-label">发款人:</label>
-							<div class="col-sm-9" id=from></div>
+							<label class="col-sm-3 control-label">发款人ID:</label>
+							<div class="col-sm-9" id=fromId></div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-3 control-label">收款人:</label>
-							<div class="col-sm-9" id=to></div>
+							<label class="col-sm-3 control-label">发款人手机号:</label>
+							<div class="col-sm-9" id=fromPhone></div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">收款人ID:</label>
+							<div class="col-sm-9" id=toId></div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">收款人手机号:</label>
+							<div class="col-sm-9" id=toPhone></div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-3 control-label">币种:</label>
@@ -115,7 +124,7 @@
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 				</div>
 			</div>
 			<!-- /.modal-content -->
@@ -170,6 +179,10 @@
 								}
 							}
 
+						},
+						error : function(xhr, err) {
+							alert("未知错误");
+							console.log(err);
 						}
 
 					})
@@ -191,7 +204,12 @@
 						getGoldpayRemitTaskStatus();
 					}
 
-				}
+				},
+				error : function(xhr, err) {
+					alert("未知错误");
+					console.log(err);
+				},
+				async : false
 
 			})
 		}
@@ -213,8 +231,7 @@
 								console.log("success");
 								var html = "";
 								for ( var i in data.rows) {
-									html += '<tr>'
-											+ '<td>'
+									html += '<tr>' + '<td>'
 											+ data.rows[i][1].areaCode
 											+ data.rows[i][1].userPhone
 											+ '</td>'
@@ -233,6 +250,9 @@
 											+ data.rows[i][0].sumAmount
 											+ '</td>'
 											+ '<td>'
+											+ (data.rows[i][0].balanceBefore + data.rows[i][0].sumAmount)
+											+ '</td>'
+											+ '<td>'
 											+ data.rows[i][0].balanceNow
 											+ '</td>'
 											+ '<td>'
@@ -247,10 +267,9 @@
 							}
 						},
 						error : function(xhr, err) {
-							console.log("error");
+							alert("未知错误");
 							console.log(err);
-						},
-						async : false
+						}
 					});
 		}
 
@@ -300,7 +319,7 @@
 							}
 						},
 						error : function(xhr, err) {
-							console.log("error");
+							alert("未知错误");
 							console.log(err);
 						},
 						async : false
@@ -325,22 +344,28 @@
 								$('#transferId').html(
 										'<p class="form-control-static">'
 												+ data[0].transferId + '</p>');
-								$('#from')
+								$('#fromId')
 										.html(
 												'<p class="form-control-static">'
 														+ data[0].userFrom
-														+ '</p><p class="form-control-static">'
-														+ data[1].areaCode
-														+ data[1].userPhone
 														+ '</p>');
-								$('#to')
+								$('#fromPhone')
+								.html(
+										'<p class="form-control-static">'
+												+ data[1].areaCode
+												+ data[1].userPhone
+												+ '</p>');
+								$('#toId')
 										.html(
 												'<p class="form-control-static">'
 														+ data[0].userTo
-														+ '</p><p class="form-control-static">'
-														+ data[2].areaCode
-														+ data[2].userPhone
 														+ '</p>');
+								$('#toPhone')
+								.html(
+										'<p class="form-control-static">'
+												+ data[2].areaCode
+												+ data[2].userPhone
+												+ '</p>');
 
 								$('#currency').html(
 										'<p class="form-control-static">'
@@ -370,7 +395,7 @@
 							}
 						},
 						error : function(xhr, err) {
-							console.log("error");
+							alert("未知错误");
 							console.log(err);
 						},
 						async : false
