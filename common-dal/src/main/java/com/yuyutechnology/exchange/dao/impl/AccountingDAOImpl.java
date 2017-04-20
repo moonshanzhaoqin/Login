@@ -63,11 +63,17 @@ public class AccountingDAOImpl implements AccountingDAO{
 			public Integer doInHibernate(Session session) throws HibernateException {
 				StringBuilder sql = new StringBuilder();
 				sql.append("insert into e_bad_account (user_id,currency,sum_amount,balance_history,balance_now,start_time,end_time,start_seq_id,end_seq_id) ")
-						.append("select user_id,currency,sum_amount,coalesce(balance_before,0),coalesce(balance_now,0),?,?,?,? ")
-						.append("from (select ws.user_id as user_id,ws.currency as currency,SUM(ws.amount) as sum_amount,w.balance as balance_before,w2.balance as balance_now ")
-						.append("from e_wallet_seq ws left join e_wallet_before w on ws.user_id = w.user_id and ws.currency = w.currency left join e_wallet_now w2 on ws.user_id = w2.user_id and ws.currency = w2.currency ")
-						.append("where ws.seq_id > ? and ws.seq_id <= ? group by ws.user_id, ws.currency")
-						.append(") tmp where sum_amount + coalesce(balance_before,0) != coalesce(balance_now,0)");
+				.append("select w.user_id,w.currency,coalesce(ws.sum_amount, 0),coalesce(w2.balance,0), w.balance,?,?,?,? from e_wallet_now w ")
+				.append("left join (select user_id,currency, SUM(amount) as sum_amount from e_wallet_seq ")
+				.append("where seq_id > ? and seq_id <= ? group by user_id, currency ")
+				.append(") ws on w.user_id = ws.user_id and ws.currency = w.currency left join e_wallet_before w2 on w.user_id = w2.user_id and w.currency = w2.currency ")
+				.append("where coalesce(ws.sum_amount, 0) + coalesce(w2.balance,0) != coalesce(w.balance,0)");
+//				sql.append("insert into e_bad_account (user_id,currency,sum_amount,balance_history,balance_now,start_time,end_time,start_seq_id,end_seq_id) ")
+//						.append("select user_id,currency,sum_amount,coalesce(balance_before,0),coalesce(balance_now,0),?,?,?,? ")
+//						.append("from (select ws.user_id as user_id,ws.currency as currency,SUM(ws.amount) as sum_amount,w.balance as balance_before,w2.balance as balance_now ")
+//						.append("from e_wallet_seq ws left join e_wallet_before w on ws.user_id = w.user_id and ws.currency = w.currency left join e_wallet_now w2 on ws.user_id = w2.user_id and ws.currency = w2.currency ")
+//						.append("where ws.seq_id > ? and ws.seq_id <= ? group by ws.user_id, ws.currency")
+//						.append(") tmp where sum_amount + coalesce(balance_before,0) != coalesce(balance_now,0)");
 				Query query = session.createSQLQuery(sql.toString());
 				query.setString(0, DateFormatUtils.formatDate(startDate));
 				query.setString(1, DateFormatUtils.formatDate(endDate));
@@ -166,12 +172,20 @@ public class AccountingDAOImpl implements AccountingDAO{
 			@Override
 			public Integer doInHibernate(Session session) throws HibernateException {
 				StringBuilder sql = new StringBuilder();
+//				sql.append("insert into e_bad_account (user_id,currency,sum_amount,balance_history,balance_now,start_time,end_time,start_seq_id,end_seq_id,bad_account_status) ")
+//						.append("select user_id,currency,sum_amount,coalesce(balance_before,0),coalesce(balance_now,0),?,?,?,?,1 ")
+//						.append("from (select ws.user_id as user_id,ws.currency as currency,SUM(ws.amount) as sum_amount,w.balance as balance_before,w2.balance as balance_now ")
+//						.append("from e_wallet_seq ws left join e_wallet_before w on ws.user_id = w.user_id and ws.currency = w.currency left join e_wallet w2 on ws.user_id = w2.user_id and ws.currency = w2.currency ")
+//						.append("where ws.seq_id > ? and ws.seq_id <= ? and ws.user_id = ? group by ws.currency")
+//						.append(") tmp where sum_amount + coalesce(balance_before,0) != coalesce(balance_now,0)");
+
 				sql.append("insert into e_bad_account (user_id,currency,sum_amount,balance_history,balance_now,start_time,end_time,start_seq_id,end_seq_id,bad_account_status) ")
-						.append("select user_id,currency,sum_amount,coalesce(balance_before,0),coalesce(balance_now,0),?,?,?,?,1 ")
-						.append("from (select ws.user_id as user_id,ws.currency as currency,SUM(ws.amount) as sum_amount,w.balance as balance_before,w2.balance as balance_now ")
-						.append("from e_wallet_seq ws left join e_wallet_before w on ws.user_id = w.user_id and ws.currency = w.currency left join e_wallet w2 on ws.user_id = w2.user_id and ws.currency = w2.currency ")
-						.append("where ws.seq_id > ? and ws.seq_id <= ? and ws.user_id = ? group by ws.currency")
-						.append(") tmp where sum_amount + coalesce(balance_before,0) != coalesce(balance_now,0)");
+				.append("select w.user_id,w.currency,coalesce(ws.sum_amount, 0),coalesce(w2.balance,0), w.balance,?,?,?,?,1 from e_wallet_now w ")
+				.append("left join (select user_id,currency, SUM(amount) as sum_amount from e_wallet_seq ")
+				.append("where seq_id > ? and seq_id <= ? and user_id = ? group by currency ")
+				.append(") ws on ws.currency = w.currency left join e_wallet_before w2 on w.currency = w2.currency ")
+				.append("where coalesce(ws.sum_amount, 0) + coalesce(w2.balance,0) != coalesce(w.balance,0)");
+				
 				Query query = session.createSQLQuery(sql.toString());
 				query.setString(0, DateFormatUtils.formatDate(startDate));
 				query.setString(1, DateFormatUtils.formatDate(endDate));
