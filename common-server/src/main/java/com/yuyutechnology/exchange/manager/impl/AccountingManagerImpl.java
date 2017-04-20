@@ -132,7 +132,7 @@ public class AccountingManagerImpl implements AccountingManager{
 	private void snapshotToBefore () {
 		int updateRows = accountingDAO.snapshotWalletNowToHistory();
 		logger.info("accounting copy new to history, size : {}", updateRows);
-		//accountingDAO.cleanSnapshotWalletNow();
+		accountingDAO.cleanSnapshotWalletNow();
 		logger.info("accounting clean new ok ");
 	}
 	
