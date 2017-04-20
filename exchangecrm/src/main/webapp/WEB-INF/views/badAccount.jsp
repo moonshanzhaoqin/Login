@@ -244,16 +244,16 @@
 											+ timeDate(data.rows[i][0].endTime)
 											+ '</td>'
 											+ '<td>'
-											+ data.rows[i][0].balanceBefore
+											+ new Number(data.rows[i][0].balanceBefore).toFixed(4)
 											+ '</td>'
 											+ '<td>'
-											+ data.rows[i][0].sumAmount
+											+ new Number(data.rows[i][0].sumAmount).toFixed(4)
 											+ '</td>'
 											+ '<td>'
-											+ (data.rows[i][0].balanceBefore + data.rows[i][0].sumAmount)
+											+ (new Number(data.rows[i][0].balanceBefore + data.rows[i][0].sumAmount).toFixed(4))
 											+ '</td>'
 											+ '<td>'
-											+ data.rows[i][0].balanceNow
+											+ new Number(data.rows[i][0].balanceNow).toFixed(4)
 											+ '</td>'
 											+ '<td>'
 											+ '<a href="javascript:void(0)" onclick="getDetailSeq('
@@ -299,7 +299,7 @@
 											+ data[i].currency
 											+ '</td>'
 											+ '<td>'
-											+ data[i].amount
+											+ new Number(data[i].amount).toFixed(4)
 											+ '</td>'
 											+ '<td>'
 											+ transferType(data[i].transferType)
