@@ -85,12 +85,20 @@
 							<div class="col-sm-9" id="transferType"></div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-3 control-label">发款人:</label>
-							<div class="col-sm-9" id=from></div>
+							<label class="col-sm-3 control-label">发款人ID:</label>
+							<div class="col-sm-9" id=fromId></div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-3 control-label">收款人:</label>
-							<div class="col-sm-9" id=to></div>
+							<label class="col-sm-3 control-label">发款人手机号:</label>
+							<div class="col-sm-9" id=fromPhone></div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">收款人ID:</label>
+							<div class="col-sm-9" id=toId></div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">收款人手机号:</label>
+							<div class="col-sm-9" id=toPhone></div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-3 control-label">币种:</label>
@@ -332,22 +340,28 @@
 								$('#transferId').html(
 										'<p class="form-control-static">'
 												+ data[0].transferId + '</p>');
-								$('#from')
+								$('#fromId')
 										.html(
 												'<p class="form-control-static">'
 														+ data[0].userFrom
-														+ '</p><p class="form-control-static">'
-														+ data[1].areaCode
-														+ data[1].userPhone
 														+ '</p>');
-								$('#to')
+								$('#fromPhone')
+								.html(
+										'<p class="form-control-static">'
+												+ data[1].areaCode
+												+ data[1].userPhone
+												+ '</p>');
+								$('#toId')
 										.html(
 												'<p class="form-control-static">'
 														+ data[0].userTo
-														+ '</p><p class="form-control-static">'
-														+ data[2].areaCode
-														+ data[2].userPhone
 														+ '</p>');
+								$('#toPhone')
+								.html(
+										'<p class="form-control-static">'
+												+ data[2].areaCode
+												+ data[2].userPhone
+												+ '</p>');
 
 								$('#currency').html(
 										'<p class="form-control-static">'
