@@ -170,7 +170,7 @@ public final class HttpTookit
 	}
 	
 	public static String sendPost(String link, String param){
-		logger.error("sendPost request is {}",param);
+		logger.info("sendPost request is {}",param);
 		BufferedWriter out = null;
 		BufferedReader in = null;
 		String body = "";

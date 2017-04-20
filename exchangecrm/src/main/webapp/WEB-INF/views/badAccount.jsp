@@ -24,7 +24,7 @@
 		<div class="row" id="task" style="margin-bottom: 20px;">
 			<!-- 			<button type="button" class="btn btn-primary pull-right" onclick="setGoldpayRemitTaskStatus(false)">开启</button> -->
 		</div>
-		<div class="row" >
+		<div class="row">
 			<table class="table table-bordered table-hover table-striped"
 				id="badAccount">
 				<thead>
@@ -116,7 +116,7 @@
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 				</div>
 			</div>
 			<!-- /.modal-content -->
@@ -171,6 +171,10 @@
 								}
 							}
 
+						},
+						error : function(xhr, err) {
+							alert("未知错误");
+							console.log(err);
 						}
 
 					})
@@ -192,7 +196,12 @@
 						getGoldpayRemitTaskStatus();
 					}
 
-				}
+				},
+				error : function(xhr, err) {
+					alert("未知错误");
+					console.log(err);
+				},
+				async : false
 
 			})
 		}
@@ -214,8 +223,7 @@
 								console.log("success");
 								var html = "";
 								for ( var i in data.rows) {
-									html += '<tr>'
-											+ '<td>'
+									html += '<tr>' + '<td>'
 											+ data.rows[i][1].areaCode
 											+ data.rows[i][1].userPhone
 											+ '</td>'
@@ -251,10 +259,9 @@
 							}
 						},
 						error : function(xhr, err) {
-							console.log("error");
+							alert("未知错误");
 							console.log(err);
-						},
-						async : false
+						}
 					});
 		}
 
@@ -304,7 +311,7 @@
 							}
 						},
 						error : function(xhr, err) {
-							console.log("error");
+							alert("未知错误");
 							console.log(err);
 						},
 						async : false
@@ -374,7 +381,7 @@
 							}
 						},
 						error : function(xhr, err) {
-							console.log("error");
+							alert("未知错误");
 							console.log(err);
 						},
 						async : false
