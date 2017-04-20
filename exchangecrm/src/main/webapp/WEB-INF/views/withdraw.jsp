@@ -70,7 +70,7 @@
 					<!-- 						<option value="8">支付失败，待退回，待支付</option> -->
 					<!-- 					</select> -->
 				</div>
-				
+
 			</form>
 		</div>
 		<div class="row">
@@ -388,10 +388,8 @@
 					;
 				},
 				error : function(xhr, err) {
-					console.log("error");
+					alert("未知错误");
 					console.log(err);
-				},
-				async : false
 			});
 		}
 		//时间戳变格式化
@@ -415,13 +413,13 @@
 				data : JSON.stringify(data),
 				success : function(data) {
 					if (data.retCode == "00000") {
-						alert("success");
+						alert("操作成功");
 						searchWithdraw($("#paginator .active a").html());
 					} else if (data.retCode == "00002") {
 						location.href = loginUrl;
 					} else {
 						console.log("withdrawReview" + data.message);
-						alert(data.message);
+						alert("操作失败");
 						searchWithdraw($("#paginator .active a").html());
 					}
 				},
@@ -429,7 +427,7 @@
 					console.log("error");
 					console.log(err);
 					console.log(xhr);
-					alert("something is wrong!");
+					alert("未知错误");
 				},
 				async : false
 			});
@@ -448,13 +446,13 @@
 				data : JSON.stringify(data),
 				success : function(data) {
 					if (data.retCode == "00000") {
-						alert("success");
+						alert("操作成功");
 						searchWithdraw($("#paginator .active a").html());
 					} else if (data.retCode == "00002") {
 						location.href = loginUrl;
 					} else {
 						console.log("goldpayRemit" + data.message);
-						alert(data.message);
+						alert("操作失败");
 						searchWithdraw($("#paginator .active a").html());
 					}
 				},
@@ -462,7 +460,7 @@
 					console.log("error");
 					console.log(err);
 					console.log(xhr);
-					alert("something is wrong!");
+					alert("未知错误");
 				},
 				async : false
 			});
@@ -480,13 +478,13 @@
 				data : JSON.stringify(data),
 				success : function(data) {
 					if (data.retCode == "00000") {
-						alert("success");
+						alert("操作成功");
 						searchWithdraw($("#paginator .active a").html());
 					} else if (data.retCode == "00002") {
 						location.href = loginUrl;
 					} else {
 						console.log("refund" + data.message);
-						alert(data.message);
+						alert("操作失败");
 						searchWithdraw($("#paginator .active a").html());
 					}
 				},
@@ -494,7 +492,7 @@
 					console.log("error");
 					console.log(err);
 					console.log(xhr);
-					alert("something is wrong!");
+					alert("未知错误");
 				},
 				async : false
 			});
