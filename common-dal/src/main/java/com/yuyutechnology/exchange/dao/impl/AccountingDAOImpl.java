@@ -47,10 +47,13 @@ public class AccountingDAOImpl implements AccountingDAO{
 			public Integer doInHibernate(Session session) throws HibernateException {
 				Query query = session.createSQLQuery(
 						"replace into e_wallet_now (user_id,currency,balance,update_time,update_seq_id) "
-								+ "select user_id,currency,balance,update_time,update_seq_id from e_wallet "
-								+ "where update_time > ? and update_time <= ?");
-				query.setString(0, DateFormatUtils.formatDate(stareDate));
-				query.setString(1, DateFormatUtils.formatDate(endDate));
+								+ "select user_id,currency,balance,update_time,update_seq_id from e_wallet ");
+//				Query query = session.createSQLQuery(
+//						"replace into e_wallet_now (user_id,currency,balance,update_time,update_seq_id) "
+//								+ "select user_id,currency,balance,update_time,update_seq_id from e_wallet "
+//								+ "where update_time > ? and update_time <= ?");
+//				query.setString(0, DateFormatUtils.formatDate(stareDate));
+//				query.setString(1, DateFormatUtils.formatDate(endDate));
 				return query.executeUpdate();
 			}
 		});
