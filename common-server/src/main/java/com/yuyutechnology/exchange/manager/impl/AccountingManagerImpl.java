@@ -82,7 +82,7 @@ public class AccountingManagerImpl implements AccountingManager{
 		Date endDate = new Date();
 		long startSeqId = accountingDAO.getMAXSeqId4WalletBeforeByUserId(userId);
 		long endSeqId  = accountingDAO.getMAXSeqId4WalletUserId(userId);
-		if (startSeqId < endSeqId) {
+		if (startSeqId <= endSeqId) {
 			int size = accountingDAO.calculatorWalletSeqByUserId(startSeqId, endSeqId, startDate, endDate, userId);
 			if (size >= 1) {
 				goldpayTransManager.forbiddenGoldpayRemitWithdraws("true");
@@ -101,7 +101,7 @@ public class AccountingManagerImpl implements AccountingManager{
 			long startId = accountingDAO.getMAXSeqId4WalletBefore();
 			long endId = accountingDAO.getMAXSeqId4WalletNow();
 			logger.info("accounting wallet_seq from {} to {}", startId, endId);
-			if (startId < endId) {
+			if (startId <= endId) {
 				updateRows = accountingDAO.accountingWalletSeq(startId, endId, startDate, endDate);
 			}else{
 				updateRows = 0;
