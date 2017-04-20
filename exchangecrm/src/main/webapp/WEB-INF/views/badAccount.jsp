@@ -34,7 +34,8 @@
 						<th>时间区间(UTC)</th>
 						<th>交易前金额</th>
 						<th>交易累计金额</th>
-						<th>交易后金额</th>
+						<th>交易后期望金额</th>
+						<th>交易后实际金额</th>
 						<th>操作</th>
 					</tr>
 				</thead>
@@ -247,6 +248,9 @@
 											+ '</td>'
 											+ '<td>'
 											+ data.rows[i][0].sumAmount
+											+ '</td>'
+											+ '<td>'
+											+ (data.rows[i][0].balanceBefore + data.rows[i][0].sumAmount)
 											+ '</td>'
 											+ '<td>'
 											+ data.rows[i][0].balanceNow
