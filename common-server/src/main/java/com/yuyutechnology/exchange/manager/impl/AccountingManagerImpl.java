@@ -95,7 +95,7 @@ public class AccountingManagerImpl implements AccountingManager{
 	}
 	
 	public int accounting(Date startDate, Date endDate) {
-		int updateRows = accountingDAO.snapshotWalletToNow(startDate, endDate);
+		int updateRows = accountingDAO.snapshotWalletToNow();
 		logger.info("accounting new rows, size : {}", updateRows);
 		if (updateRows > 0) {
 			long startId = accountingDAO.getMAXSeqId4WalletBefore();
@@ -127,6 +127,10 @@ public class AccountingManagerImpl implements AccountingManager{
 				}
 			}
 		}
+	}
+	
+	public void snapshotToBefore(int userId) {
+		accountingDAO.snapshotWalletToBeforeByUser(userId);
 	}
 	
 	private void snapshotToBefore () {

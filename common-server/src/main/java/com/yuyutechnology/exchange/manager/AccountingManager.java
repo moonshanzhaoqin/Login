@@ -19,4 +19,7 @@ public interface AccountingManager {
 	
 	public void freezeUsers();
 	
+	public void snapshotToBefore(int userId);
+	
+	
 }
