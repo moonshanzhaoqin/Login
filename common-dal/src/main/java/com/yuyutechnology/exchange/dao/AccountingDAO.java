@@ -10,8 +10,10 @@ import java.util.Date;
  *
  */
 public interface AccountingDAO {
+	
+	public Integer snapshotWalletToBeforeByUser(final int userId);
 
-	public Integer snapshotWalletToNow(final Date stareDate, final Date endDate);
+	public Integer snapshotWalletToNow();
 
 	public Integer accountingWalletSeq(final long seqIdStart, final long seqIdEnd, final Date startDate,
 			final Date endDate);

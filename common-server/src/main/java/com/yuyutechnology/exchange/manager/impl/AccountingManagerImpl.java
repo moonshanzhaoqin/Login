@@ -82,7 +82,7 @@ public class AccountingManagerImpl implements AccountingManager{
 		Date endDate = new Date();
 		long startSeqId = accountingDAO.getMAXSeqId4WalletBeforeByUserId(userId);
 		long endSeqId  = accountingDAO.getMAXSeqId4WalletUserId(userId);
-		if (startSeqId < endSeqId) {
+		if (startSeqId <= endSeqId) {
 			int size = accountingDAO.calculatorWalletSeqByUserId(startSeqId, endSeqId, startDate, endDate, userId);
 			if (size >= 1) {
 				goldpayTransManager.forbiddenGoldpayRemitWithdraws("true");
@@ -95,13 +95,13 @@ public class AccountingManagerImpl implements AccountingManager{
 	}
 	
 	public int accounting(Date startDate, Date endDate) {
-		int updateRows = accountingDAO.snapshotWalletToNow(startDate, endDate);
+		int updateRows = accountingDAO.snapshotWalletToNow();
 		logger.info("accounting new rows, size : {}", updateRows);
 		if (updateRows > 0) {
 			long startId = accountingDAO.getMAXSeqId4WalletBefore();
 			long endId = accountingDAO.getMAXSeqId4WalletNow();
 			logger.info("accounting wallet_seq from {} to {}", startId, endId);
-			if (startId < endId) {
+			if (startId <= endId) {
 				updateRows = accountingDAO.accountingWalletSeq(startId, endId, startDate, endDate);
 			}else{
 				updateRows = 0;
@@ -129,10 +129,14 @@ public class AccountingManagerImpl implements AccountingManager{
 		}
 	}
 	
+	public void snapshotToBefore(int userId) {
+		accountingDAO.snapshotWalletToBeforeByUser(userId);
+	}
+	
 	private void snapshotToBefore () {
 		int updateRows = accountingDAO.snapshotWalletNowToHistory();
 		logger.info("accounting copy new to history, size : {}", updateRows);
-		//accountingDAO.cleanSnapshotWalletNow();
+		accountingDAO.cleanSnapshotWalletNow();
 		logger.info("accounting clean new ok ");
 	}
 	

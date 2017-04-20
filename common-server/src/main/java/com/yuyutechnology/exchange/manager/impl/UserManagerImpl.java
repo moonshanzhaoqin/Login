@@ -34,6 +34,7 @@ import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
 import com.yuyutechnology.exchange.goldpay.GoldpayManager;
 import com.yuyutechnology.exchange.goldpay.GoldpayUser;
+import com.yuyutechnology.exchange.manager.AccountingManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.UserManager;
@@ -90,6 +91,8 @@ public class UserManagerImpl implements UserManager {
 	CommonManager commonManager;
 	@Autowired
 	ConfigManager configManager;
+	@Autowired
+	AccountingManager accountingManager;
 
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
@@ -325,17 +328,6 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public void checkWallet(Integer userId, Currency currency) {
-		logger.info("Check whether the user {} has a wallet of {}==>", userId, currency.getCurrency());
-		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency.getCurrency());
-		if (wallet == null) {
-			// 没有该货币的钱包，需要新增
-			walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date(), 0));
-			logger.info("add {} user's  wallet of {} ", userId, currency.getCurrency());
-		}
-	}
-
-	@Override
 	public void clearPinCode(String func, String areaCode, String userPhone) {
 		redisDAO.deleteData(func + areaCode + userPhone);
 	}
@@ -453,6 +445,8 @@ public class UserManagerImpl implements UserManager {
 		createWallets4NewUser(userId);
 		// 根据UNregistered 更新新用户钱包 将资金从系统帐户划给新用户
 		updateWalletsFromUnregistered(userId, areaCode, userPhone);
+		
+		accountingManager.snapshotToBefore(userId);
 		return userId;
 	}
 
