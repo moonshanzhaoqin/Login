@@ -443,10 +443,10 @@ public class UserManagerImpl implements UserManager {
 		redisDAO.saveData("changephonetime" + userId, new Date().getTime());
 		// 添加钱包信息
 		createWallets4NewUser(userId);
+		accountingManager.snapshotToBefore(userId);
 		// 根据UNregistered 更新新用户钱包 将资金从系统帐户划给新用户
 		updateWalletsFromUnregistered(userId, areaCode, userPhone);
 		
-		accountingManager.snapshotToBefore(userId);
 		return userId;
 	}
 
