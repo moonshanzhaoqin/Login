@@ -457,10 +457,14 @@ public class TransferManagerImpl implements TransferManager{
 		
 		if(StringUtils.isNotBlank(currency)&&StringUtils.isNotBlank(amount.toString())){
 			if((oandaRatesManager.getDefaultCurrencyAmount(currency, amount)).compareTo(transferLimitPerPay) == 1){
+				
+				Currency unit = commonManager.getCurreny(ServerConsts.CURRENCY_OF_USD);
+				
 				logger.warn("Exceeds the maximum amount of each transaction");
 				result.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
 				result.put("msg", "Exceeds the maximum amount of each transaction");
 				result.put("transferLimitPerPay",transferLimitPerPay.toString());
+				result.put("unit",unit.getCurrencyUnit());
 				return result;
 			}
 		}
