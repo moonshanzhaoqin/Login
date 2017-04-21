@@ -114,15 +114,14 @@ public class AccountingManagerImpl implements AccountingManager{
 	}
 	
 	public void freezeUsers() {
-		List<BadAccount> badAccounts = badAccountDAO.findBadAccountList(ServerConsts.BAD_ACCOUNT_STATUS_DEFAULT);
-		if (badAccounts != null && !badAccounts.isEmpty()) {
+		List<Integer> badAccountUserIds = badAccountDAO.findBadAccountList(ServerConsts.BAD_ACCOUNT_STATUS_DEFAULT);
+		if (badAccountUserIds != null && !badAccountUserIds.isEmpty()) {
 			goldpayTransManager.forbiddenGoldpayRemitWithdraws("true");
 			badAccountWarn();
-			for (BadAccount badAccount : badAccounts) {
+			for (Integer badAccountUserId : badAccountUserIds) {
 				try {
-					freezeUser(badAccount.getUserId());
-					badAccount.setBadAccountStatus(ServerConsts.BAD_ACCOUNT_STATUS_FREEZE_USER);
-					badAccountDAO.saveBadAccount(badAccount);
+					freezeUser(badAccountUserId);
+					badAccountDAO.updateBadAccountStatus(ServerConsts.BAD_ACCOUNT_STATUS_FREEZE_USER, badAccountUserId);
 				} catch (Exception e) {
 				}
 			}

@@ -36,7 +36,7 @@ public class AccountManagerTest extends BaseSpringJunit4 {
 	
 	@Test
 	public void testAccountingUser() {
-		accountManager.accountingUser(3);
+		accountManager.freezeUsers();
 	}
 	
 	@Test
