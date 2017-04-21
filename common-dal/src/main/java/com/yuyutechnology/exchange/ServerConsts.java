@@ -78,7 +78,7 @@ public class ServerConsts {
 	 */
 	public static final int TRANSFER_TYPE_IN_GOLDPAY_RECHARGE = 5;
 	/**
-	 * 金沛充值退款
+	 * 金沛提现退款
 	 */
 	public static final int TRANSFER_TYPE_IN_GOLDPAY_REFUND = 6;
 
