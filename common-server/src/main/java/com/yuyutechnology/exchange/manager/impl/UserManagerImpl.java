@@ -443,10 +443,10 @@ public class UserManagerImpl implements UserManager {
 		redisDAO.saveData("changephonetime" + userId, new Date().getTime());
 		// 添加钱包信息
 		createWallets4NewUser(userId);
+		accountingManager.snapshotToBefore(userId);
 		// 根据UNregistered 更新新用户钱包 将资金从系统帐户划给新用户
 		updateWalletsFromUnregistered(userId, areaCode, userPhone);
 		
-		accountingManager.snapshotToBefore(userId);
 		return userId;
 	}
 
@@ -658,7 +658,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public void userFreeze(Integer userId, int userAvailable) {
 		User user = userDAO.getUser(userId);
-		if (user == null) {
+		if (user == null || user.getUserType() == ServerConsts.USER_TYPE_OF_SYSTEM) {
 			logger.warn("{} is not exist!!!", userId);
 		} else {
 			user.setUserAvailable(userAvailable);
