@@ -137,6 +137,10 @@ public class ServerConsts {
 	 * 用户已注册并取回资金
 	 */
 	public static final int UNREGISTERED_STATUS_OF_COMPLETED = 2;
+	/**
+	 * 非法记录
+	 */
+	public static final int UNREGISTERED_STATUS_OF_ERROR = 3;
 
 	// configKey
 	/**
