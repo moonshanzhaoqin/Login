@@ -24,7 +24,10 @@ public class AutoWithdrawReviewTask {
 		List<Transfer> transfers = goldpayTransManager.getNeedReviewWithdraws();
 		if (transfers != null && !transfers.isEmpty()) {
 			for (Transfer transfer : transfers) {
-				goldpayTransManager.withdrawReviewAuto(transfer.getTransferId());
+				try {
+					goldpayTransManager.withdrawReviewAuto(transfer.getTransferId());
+				} catch (Exception e) {
+				}
 			}
 		}
 		logger.info("=============AutoWithdrawReviewTask End=================={}", new Date());
