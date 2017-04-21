@@ -460,7 +460,7 @@ public class TransferManagerImpl implements TransferManager{
 				logger.warn("Exceeds the maximum amount of each transaction");
 				result.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
 				result.put("msg", "Exceeds the maximum amount of each transaction");
-				result.put("transferLimitPerPay",transferLimitPerPay);
+				result.put("transferLimitPerPay",transferLimitPerPay.toString());
 				return result;
 			}
 		}
