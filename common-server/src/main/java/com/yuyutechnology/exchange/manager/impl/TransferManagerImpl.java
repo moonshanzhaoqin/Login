@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CrmAlarmDAO;
@@ -447,25 +448,49 @@ public class TransferManagerImpl implements TransferManager{
 	
 
 	@Override
-	public String makeRequest(int userId, String payerAreaCode, String payerPhone, String currency, BigDecimal amount) {
+	public HashMap<String,Object> makeRequest(int userId, String payerAreaCode, String payerPhone, String currency, BigDecimal amount) {
+		
+		HashMap<String,Object> result = new HashMap<>();
 		
 		BigDecimal transferLimitPerPay =  BigDecimal.valueOf(configManager.
 				getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
 		
-		
 		if(StringUtils.isNotBlank(currency)&&StringUtils.isNotBlank(amount.toString())){
 			if((oandaRatesManager.getDefaultCurrencyAmount(currency, amount)).compareTo(transferLimitPerPay) == 1){
 				logger.warn("Exceeds the maximum amount of each transaction");
-				return RetCodeConsts.TRANSFER_LIMIT_EACH_TIME;
+				result.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
+				result.put("msg", "Exceeds the maximum amount of each transaction");
+				result.put("transferLimitPerPay",transferLimitPerPay);
+				return result;
 			}
 		}
+		
+		//请求对方不是己方好友
+		
+		//Currency不在激活列表
+		if(!commonManager.verifyCurrency(currency)){
+			logger.warn("This currency is not a tradable currency");
+			result.put("retCode", RetCodeConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
+			result.put("msg", "This currency is not a tradable currency");
+			return result;
+		}
 
+		//Goldpay不是整数
+		if(currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) && (amount.doubleValue()%1 > 0 || amount.doubleValue() == 0)){
+			logger.warn("The GDQ must be an integer value");
+			result.put("retCode", RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
+			result.put("msg", "The GDQ must be an integer value");
+			return result;
+		}
+		
 		User payer = userDAO.getUserByUserPhone(payerAreaCode, payerPhone);
 		if(payer != null){
 			
 			if(userId == payer.getUserId()){
 				logger.info("bu neng gei zi ji fa qi qingqiu");
-				return RetCodeConsts.RET_CODE_FAILUE;
+				result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+				result.put("msg", "Sharing failed");
+				return result;
 			}
 			
 			TransactionNotification transactionNotification = new TransactionNotification();
@@ -483,10 +508,14 @@ public class TransferManagerImpl implements TransferManager{
 			//推送请求付款
 			User payee = userDAO.getUser(userId);
 			pushManager.push4TransferRuquest( payer,payee, currency, amountFormatByCurrency(currency,amount));
-			return RetCodeConsts.RET_CODE_SUCCESS;
+			result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
+			result.put("msg", MessageConsts.RET_CODE_SUCCESS);
+			return result;
 			
 		}
-		return RetCodeConsts.RET_CODE_FAILUE;
+		result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+		result.put("msg", MessageConsts.RET_CODE_FAILUE);
+		return result;
 	}
 
 
@@ -932,6 +961,7 @@ public class TransferManagerImpl implements TransferManager{
 		Integer friendId;
 		
 		Transfer transfer = transferDAO.getTransferById(transferId);
+		User systemUser = userDAO.getSystemUser();
 		
 		if(transfer.getUserFrom()!= userId && transfer.getUserTo() != userId){
 			return map;
@@ -942,6 +972,11 @@ public class TransferManagerImpl implements TransferManager{
 			friendId = transfer.getUserTo();
 			map.put("areaCode", transfer.getAreaCode());
 			map.put("phone", transfer.getPhone());
+		}else if(transfer.getUserFrom() == systemUser.getUserId()){
+			map.put("areaCode", transfer.getAreaCode());
+			map.put("phone", transfer.getPhone());	
+			friendId = -1;
+			user = null;
 		}else{
 			user = userDAO.getUser(transfer.getUserFrom());
 			friendId = transfer.getUserFrom();
