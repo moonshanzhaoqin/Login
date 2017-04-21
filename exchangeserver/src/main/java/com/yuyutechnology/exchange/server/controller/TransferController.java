@@ -207,17 +207,16 @@ public class TransferController {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		MakeRequestResponse rep = new MakeRequestResponse();		
 
-		String result = transferManager.makeRequest(sessionData.getUserId(), reqMsg.getAreaCode(), reqMsg.getPhone(),
+		HashMap<String,Object> result = transferManager.makeRequest(sessionData.getUserId(), 
+				reqMsg.getAreaCode(), reqMsg.getPhone(),
 				reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()));
-
-		if(result.equals(RetCodeConsts.RET_CODE_FAILUE)){
-			rep.setMessage("Sharing failed");
-		}else if(result.equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)){
-			rep.setMessage("Exceeds the maximum amount of each transaction");
-		}else{
-			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		
+		rep.setRetCode((String) result.get("retCode"));
+		rep.setMessage((String) result.get("msg"));
+		
+		if(result.get("transferLimitPerPay") != null){
+			rep.setOpts(new String[]{(String)result.get("transferLimitPerPay")+" "+result.get("unit")});
 		}
-		rep.setRetCode(result);
 		
 		return rep;
 	}

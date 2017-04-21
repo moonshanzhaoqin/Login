@@ -14,7 +14,7 @@ public interface CurrencyDAO {
 	 * @return
 	 */
 	public Currency getCurrency(String currency);
-	
+
 	/**
 	 * @Descrition : 
 	 * @author : nicholas.chi
