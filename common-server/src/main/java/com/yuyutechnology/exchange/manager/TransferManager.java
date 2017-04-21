@@ -82,7 +82,7 @@ public interface TransferManager {
 	 * @param amount
 	 * @return
 	 */
-	public String makeRequest(int userId,String payerAreaCode,String payerPhone,String currency,BigDecimal amount);
+	public HashMap<String,Object> makeRequest(int userId,String payerAreaCode,String payerPhone,String currency,BigDecimal amount);
 	
 	/**
 	 * @Descrition : 
