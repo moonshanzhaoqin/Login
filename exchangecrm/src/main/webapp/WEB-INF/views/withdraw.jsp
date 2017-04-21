@@ -355,8 +355,7 @@
 						console.log("success");
 						var html = "";
 						for ( var i in data.rows) {
-							html += '<tr>'
-									+ '<td>'
+							html += '<tr>' + '<td>'
 									+ data.rows[i][0].userFrom
 									+ '</td>'
 									+ '<td>'
@@ -375,8 +374,7 @@
 											data.rows[i][0].transferStatus)
 									+ '<td>'
 									+ timeDate(data.rows[i][0].createTime)
-									+ '</td>'
-									+ '<td>'
+									+ '</td>' + '<td>'
 									+ timeDate(data.rows[i][0].finishTime)
 									+ '</td>' + '</tr>'
 						}
@@ -385,19 +383,19 @@
 							paginator(data.currentPage, data.pageTotal);
 						}
 					}
-					;
 				},
 				error : function(xhr, err) {
 					alert("未知错误");
 					console.log(err);
+				}
 			});
 		}
 		//时间戳变格式化
-// 		function timeDate(time) {
-// 			var date = new Date();
-// 			date.setTime(time);
-// 			return date.toLocaleString();
-// 		}
+		// 		function timeDate(time) {
+		// 			var date = new Date();
+		// 			date.setTime(time);
+		// 			return date.toLocaleString();
+		// 		}
 
 		//审批
 		function withdrawReview(transferId) {

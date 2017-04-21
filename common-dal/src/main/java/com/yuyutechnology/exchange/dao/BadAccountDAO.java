@@ -16,10 +16,10 @@ public interface BadAccountDAO {
 
 	public void saveBadAccount(BadAccount badAccount);
 	
-	public List<BadAccount> findBadAccountList(int badAccountStatus);
+	public List<Integer> findBadAccountList(int badAccountStatus);
 	
-	public List<BadAccount> findBadAccountList(int badAccountStatus, int userId);
-
+	public void updateBadAccountStatus(int badAccountStatus, int userId);
+	
 	public PageBean getBadAccountByPage(int currentPage, int pageSize);
 
 	BadAccount getBadAccount(Integer badAccountId);
