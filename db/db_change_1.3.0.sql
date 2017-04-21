@@ -56,4 +56,7 @@ select user_id,currency,balance,update_time,update_seq_id from e_wallet;
 alter table `e_crm_user_info` add column `create_time` datetime AFTER `user_name`;
 
 -- 2017/04/19 Silent
-alter table `test_exchange`.`e_user` add unique `index_area_phone` (`area_code`, `user_phone`);
+alter table `e_user` add unique `index_area_phone` (`area_code`, `user_phone`);
+
+-- 2017/04/21 Silent
+alter table `e_unregistered` add unique `index_transfer_id` (`transfer_id`);

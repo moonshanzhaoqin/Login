@@ -63,7 +63,7 @@ public class BadAccountDAOImpl implements BadAccountDAO {
 	@Override
 	public PageBean getBadAccountByPage(int currentPage, int pageSize) {
 		List<Object> values = new ArrayList<Object>();
-		StringBuilder hql = new StringBuilder("from BadAccount b,User u where u.userId=b.userId");
+		StringBuilder hql = new StringBuilder("from BadAccount b,User u where u.userId=b.userId order by b.startTime desc");
 		PageBean pageBean = PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
 		return pageBean;
 	}

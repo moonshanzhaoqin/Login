@@ -579,8 +579,12 @@ public class UserManagerImpl implements UserManager {
 			logger.info("+ {} : {}", unregistered.getCurrency(), unregistered.getAmount());
 
 			Transfer payerTransfer = transferDAO.getTransferById(unregistered.getTransferId());
-
-			if (payerTransfer == null) {
+			
+			if (payerTransfer == null 
+					|| !unregistered.getUserPhone().equals(payerTransfer.getPhone()) 
+						|| !unregistered.getAreaCode().equals(payerTransfer.getAreaCode())
+							|| unregistered.getAmount().compareTo(payerTransfer.getTransferAmount()) != 0
+								|| !unregistered.getCurrency().equals(unregistered.getCurrency())) {
 				logger.warn("Did not find the corresponding transfer information");
 				return;
 			}
