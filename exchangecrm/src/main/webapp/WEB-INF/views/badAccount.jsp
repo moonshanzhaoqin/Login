@@ -417,7 +417,7 @@
 			case 5:
 				return "金沛充值";
 			case 6:
-				return "金沛充值退款";
+				return "金沛提现退款";
 			}
 		}
 		function transferStatus(transferStatus) {
