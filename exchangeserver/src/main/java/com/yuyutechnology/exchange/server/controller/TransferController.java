@@ -215,7 +215,7 @@ public class TransferController {
 		rep.setMessage((String) result.get("msg"));
 		
 		if(result.get("transferLimitPerPay") != null){
-			rep.setOpts(new String[]{(String)result.get("transferLimitPerPay")});
+			rep.setOpts(new String[]{(String)result.get("transferLimitPerPay")+" "+result.get("unit")});
 		}
 		
 		return rep;
