@@ -399,40 +399,42 @@
 
 		//审批
 		function withdrawReview(transferId) {
-			console.log("withdrawReview" + transferId);
-			data = {
-				transferId : transferId
-			};
-			$.ajax({
-				type : "post",
-				url : "/crm/withdrawReview",
-				dataType : 'json',
-				contentType : "application/json; charset=utf-8",
-				data : JSON.stringify(data),
-				success : function(data) {
-					if (data.retCode == "00000") {
-						alert("操作成功");
-						searchWithdraw($("#paginator .active a").html());
-					} else if (data.retCode == "00002") {
-						location.href = loginUrl;
-					} else {
-						console.log("withdrawReview" + data.message);
-						alert("操作失败");
-						searchWithdraw($("#paginator .active a").html());
-					}
-				},
-				error : function(xhr, err) {
-					console.log("error");
-					console.log(err);
-					console.log(xhr);
-					alert("未知错误");
-				},
-				async : false
-			});
-
+			if (confirm("确认审批吗？")) {
+				console.log("withdrawReview" + transferId);
+				data = {
+					transferId : transferId
+				};
+				$.ajax({
+					type : "post",
+					url : "/crm/withdrawReview",
+					dataType : 'json',
+					contentType : "application/json; charset=utf-8",
+					data : JSON.stringify(data),
+					success : function(data) {
+						if (data.retCode == "00000") {
+							alert("操作成功");
+							searchWithdraw($("#paginator .active a").html());
+						} else if (data.retCode == "00002") {
+							location.href = loginUrl;
+						} else {
+							console.log("withdrawReview" + data.message);
+							alert("操作失败");
+							searchWithdraw($("#paginator .active a").html());
+						}
+					},
+					error : function(xhr, err) {
+						console.log("error");
+						console.log(err);
+						console.log(xhr);
+						alert("未知错误");
+					},
+					async : false
+				});
+			}
 		}
 		//划账
 		function goldpayRemit(transferId) {
+			if (confirm("确认划账吗？")) {
 			data = {
 				transferId : transferId
 			};
@@ -461,10 +463,11 @@
 					alert("未知错误");
 				},
 				async : false
-			});
+			});}
 		}
 		//退回
 		function refund(transferId) {
+			if (confirm("确认退回吗？")) {
 			data = {
 				transferId : transferId
 			};
@@ -494,7 +497,7 @@
 				},
 				async : false
 			});
-
+			}
 		}
 
 		function status(transferId, transferStatus) {
