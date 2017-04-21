@@ -972,10 +972,17 @@ public class TransferManagerImpl implements TransferManager{
 		}
 		
 		if(transfer.getUserFrom() == userId){
-			user = userDAO.getUser(transfer.getUserTo()); 
-			friendId = transfer.getUserTo();
-			map.put("areaCode", transfer.getAreaCode());
-			map.put("phone", transfer.getPhone());
+			if(transfer.getUserTo() == systemUser.getUserId()){
+				map.put("areaCode", transfer.getAreaCode());
+				map.put("phone", transfer.getPhone());	
+				friendId = -1;
+				user = null;
+			}else{
+				user = userDAO.getUser(transfer.getUserTo()); 
+				friendId = transfer.getUserTo();
+				map.put("areaCode", transfer.getAreaCode());
+				map.put("phone", transfer.getPhone());
+			}
 		}else if(transfer.getUserFrom() == systemUser.getUserId()){
 			map.put("areaCode", transfer.getAreaCode());
 			map.put("phone", transfer.getPhone());	
