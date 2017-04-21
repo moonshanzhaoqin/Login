@@ -24,7 +24,10 @@ public class AutoGoldpayRemitTask {
 		List<Transfer> transfers = goldpayTransManager.getNeedGoldpayRemitWithdraws();
 		if (transfers!=null && !transfers.isEmpty()  ) {
 			for (Transfer transfer : transfers) {
-				goldpayTransManager.goldpayRemit(transfer.getTransferId());
+				try {
+					goldpayTransManager.goldpayRemit(transfer.getTransferId());
+				} catch (Exception e) {
+				}
 			}
 		}
 

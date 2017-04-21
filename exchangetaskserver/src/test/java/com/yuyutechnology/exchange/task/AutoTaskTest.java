@@ -7,23 +7,11 @@ import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 public class AutoTaskTest extends BaseSpringJunit4 {
 
 	@Autowired
-	AutoTransferRefundTask autoTransferRefundTask;
-	@Autowired
 	AutoGoldpayRemitTask autoGoldpayRemitTask;
 	@Autowired
 	GoldpayTransManager goldpayTransManager;
 	@Autowired 
 	AutoWithdrawReviewTask autoWithdrawReviewTask;
-//	@Test
-//	public void test () {
-//		autoTransferRefundTask.autoWithdrawRefund();
-//	}
-	
-
-//	@TEST
-//	PUBLIC VOID TEST () {
-//		AUTOGOLDPAYREMITTASK.AUTOGOLDPAYREMITTASK();
-//	}
 	
 //	@Test
 	public void test () {

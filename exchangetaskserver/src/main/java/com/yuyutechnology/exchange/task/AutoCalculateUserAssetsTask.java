@@ -30,7 +30,10 @@ public class AutoCalculateUserAssetsTask {
 		}
 		
 		for (User user : list) {
-			crmUserInfoManager.updateUserInfo(user);
+			try {
+				crmUserInfoManager.updateUserInfo(user);
+			} catch (Exception e) {
+			}
 		}
 		logger.info("=============End at {}==================",new Date());
 	}
