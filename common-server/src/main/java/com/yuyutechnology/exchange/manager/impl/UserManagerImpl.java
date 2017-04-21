@@ -658,7 +658,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public void userFreeze(Integer userId, int userAvailable) {
 		User user = userDAO.getUser(userId);
-		if (user == null) {
+		if (user == null || user.getUserType() == ServerConsts.USER_TYPE_OF_SYSTEM) {
 			logger.warn("{} is not exist!!!", userId);
 		} else {
 			user.setUserAvailable(userAvailable);
