@@ -3,7 +3,7 @@
 // */
 //package com.yuyutechnology.exchange.redis;
 //
-//import org.apache.logging.log4j.LogManager;
+//import org.apache.logging.log4j.LogManager;MessageListener
 //import org.apache.logging.log4j.Logger;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.data.redis.connection.Message;
@@ -15,7 +15,7 @@
 // * @author silent.sun
 // *
 // */
-//public class RedisMessageListener implements MessageListener {
+//public class RedisMessageListener implements  {
 //	
 //	@Autowired
 //	RedisDAO redisDAO;
