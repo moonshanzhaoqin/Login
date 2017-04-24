@@ -472,7 +472,7 @@ public class TransferManagerImpl implements TransferManager{
 		//请求对方不是己方好友
 		
 		//Currency不在激活列表
-		if(!commonManager.verifyCurrency(currency)){
+		if(StringUtils.isNotBlank(currency) && !commonManager.verifyCurrency(currency)){
 			logger.warn("This currency is not a tradable currency");
 			result.put("retCode", RetCodeConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
 			result.put("msg", "This currency is not a tradable currency");
@@ -480,7 +480,7 @@ public class TransferManagerImpl implements TransferManager{
 		}
 
 		//Goldpay不是整数
-		if(currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) && (amount.doubleValue()%1 > 0 || amount.doubleValue() == 0)){
+		if((StringUtils.isNotBlank(currency) && currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)) && (amount.doubleValue()%1 > 0 || amount.doubleValue() == 0)){
 			logger.warn("The GDQ must be an integer value");
 			result.put("retCode", RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			result.put("msg", "The GDQ must be an integer value");
