@@ -983,6 +983,7 @@ public class TransferManagerImpl implements TransferManager{
 				map.put("areaCode", transfer.getAreaCode());
 				map.put("phone", transfer.getPhone());
 			}
+			transfer.setTransferAmount(transfer.getTransferAmount().negate());
 		}else if(transfer.getUserFrom() == systemUser.getUserId()){
 			map.put("areaCode", transfer.getAreaCode());
 			map.put("phone", transfer.getPhone());	
