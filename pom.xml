@@ -15,7 +15,7 @@
 		<org.springframework.version>4.3.7.RELEASE</org.springframework.version>
 		<org.hibernate.version>4.3.11.Final</org.hibernate.version>
 		<jedis.version>2.9.0</jedis.version>
-		<spring.data.redis.version>1.8.1.RELEASE</spring.data.redis.version>
+		<spring.data.redis.version>1.8.3.RELEASE</spring.data.redis.version>
 		<jackson.version>2.8.6</jackson.version>
 		<log4j.version>2.8</log4j.version>
 	</properties>
