@@ -970,7 +970,10 @@ public class TransferManagerImpl implements TransferManager{
 		if(transfer.getUserFrom()!= userId && transfer.getUserTo() != userId){
 			return map;
 		}
+		
+		//amount正负号标识
 		map.put("isPlus",true);
+		
 		if(transfer.getUserFrom() == userId){
 			if(transfer.getUserTo() == systemUser.getUserId()){
 				map.put("areaCode", transfer.getAreaCode());
