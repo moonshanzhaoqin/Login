@@ -204,8 +204,8 @@ public class AccountingDAOImpl implements AccountingDAO{
 				.append("select w.user_id,w.currency,coalesce(ws.sum_amount, 0),coalesce(w2.balance,0), w.balance,?,?,?,?,1 from e_wallet w ")
 				.append("left join (select user_id,currency, SUM(amount) as sum_amount from e_wallet_seq ")
 				.append("where seq_id > ? and seq_id <= ? and user_id = ? group by currency ")
-				.append(") ws on ws.currency = w.currency left join e_wallet_before w2 on w.currency = w2.currency ")
-				.append("where coalesce(ws.sum_amount, 0) + coalesce(w2.balance,0) != coalesce(w.balance,0)");
+				.append(") ws on w.user_id = ws.user_id and ws.currency = w.currency left join e_wallet_before w2 on w.user_id = w2.user_id and w.currency = w2.currency ")
+				.append("where w.user_id = ? coalesce(ws.sum_amount, 0) + coalesce(w2.balance,0) != coalesce(w.balance,0)");
 				
 				Query query = session.createSQLQuery(sql.toString());
 				query.setString(0, DateFormatUtils.formatDate(startDate));
@@ -215,6 +215,7 @@ public class AccountingDAOImpl implements AccountingDAO{
 				query.setLong(4, seqIdStart);
 				query.setLong(5, seqIdEnd);
 				query.setLong(6, userId);
+				query.setLong(7, userId);
 				return query.executeUpdate();
 			}
 		});
