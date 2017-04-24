@@ -438,15 +438,16 @@ public class TransferController {
 
 			rep.setAreaCode((String)(result.get("areaCode")));
 			rep.setPhone((String)(result.get("phone")));
-			
-			rep.setCurrency(transfer.getCurrency());
-			
+			rep.setCurrency(transfer.getCurrency());	
 			rep.setUnit((String)(result.get("unit")));
+			
+			rep.setAmount(transfer.getTransferAmount());
+			rep.setTransferType(transfer.getTransferType());
 			
 			if(!(boolean)result.get("isPlus")){
 				rep.setAmount(transfer.getTransferAmount().negate());
 			}else if(transfer.getTransferType() == 0){
-				rep.setTransferType(1);
+				rep.setTransferType(1);	
 			}
 			
 			rep.setCreateTime(transfer.getCreateTime());
