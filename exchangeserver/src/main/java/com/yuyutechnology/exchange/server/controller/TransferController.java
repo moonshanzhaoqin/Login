@@ -440,16 +440,14 @@ public class TransferController {
 			rep.setPhone((String)(result.get("phone")));
 			
 			rep.setCurrency(transfer.getCurrency());
-			rep.setAmount(transfer.getTransferAmount());
+			
 			rep.setUnit((String)(result.get("unit")));
 			
-			if(transfer.getTransferType() == 0 && transfer.getTransferAmount().compareTo(BigDecimal.ZERO)>0 ){
+			if(!(boolean)result.get("isPlus")){
+				rep.setAmount(transfer.getTransferAmount().negate());
+			}else if(transfer.getTransferType() == 0){
 				rep.setTransferType(1);
-			}else{
-				rep.setTransferType(transfer.getTransferType());
 			}
-			
-			
 			
 			rep.setCreateTime(transfer.getCreateTime());
 			rep.setFinishTime(transfer.getFinishTime());

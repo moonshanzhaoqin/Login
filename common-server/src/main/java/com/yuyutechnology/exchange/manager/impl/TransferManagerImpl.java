@@ -970,7 +970,7 @@ public class TransferManagerImpl implements TransferManager{
 		if(transfer.getUserFrom()!= userId && transfer.getUserTo() != userId){
 			return map;
 		}
-		
+		map.put("isPlus",true);
 		if(transfer.getUserFrom() == userId){
 			if(transfer.getUserTo() == systemUser.getUserId()){
 				map.put("areaCode", transfer.getAreaCode());
@@ -983,7 +983,7 @@ public class TransferManagerImpl implements TransferManager{
 				map.put("areaCode", transfer.getAreaCode());
 				map.put("phone", transfer.getPhone());
 			}
-			transfer.setTransferAmount(transfer.getTransferAmount().negate());
+			map.put("isPlus",false);
 		}else if(transfer.getUserFrom() == systemUser.getUserId()){
 			map.put("areaCode", transfer.getAreaCode());
 			map.put("phone", transfer.getPhone());	
