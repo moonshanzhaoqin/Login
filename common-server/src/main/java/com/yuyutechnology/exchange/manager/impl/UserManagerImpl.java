@@ -584,7 +584,7 @@ public class UserManagerImpl implements UserManager {
 					|| !unregistered.getUserPhone().equals(payerTransfer.getPhone()) 
 						|| !unregistered.getAreaCode().equals(payerTransfer.getAreaCode())
 							|| unregistered.getAmount().compareTo(payerTransfer.getTransferAmount()) != 0
-								|| !unregistered.getCurrency().equals(unregistered.getCurrency())) {
+								|| !unregistered.getCurrency().equals(payerTransfer.getCurrency())) {
 				logger.warn("Did not find the corresponding transfer information");
 				unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_ERROR);
 				unregisteredDAO.updateUnregistered(unregistered);

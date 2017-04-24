@@ -201,7 +201,7 @@ public class AccountingDAOImpl implements AccountingDAO{
 //						.append(") tmp where sum_amount + coalesce(balance_before,0) != coalesce(balance_now,0)");
 
 				sql.append("insert into e_bad_account (user_id,currency,sum_amount,balance_history,balance_now,start_time,end_time,start_seq_id,end_seq_id,bad_account_status) ")
-				.append("select w.user_id,w.currency,coalesce(ws.sum_amount, 0),coalesce(w2.balance,0), w.balance,?,?,?,?,1 from e_wallet_now w ")
+				.append("select w.user_id,w.currency,coalesce(ws.sum_amount, 0),coalesce(w2.balance,0), w.balance,?,?,?,?,1 from e_wallet w ")
 				.append("left join (select user_id,currency, SUM(amount) as sum_amount from e_wallet_seq ")
 				.append("where seq_id > ? and seq_id <= ? and user_id = ? group by currency ")
 				.append(") ws on ws.currency = w.currency left join e_wallet_before w2 on w.currency = w2.currency ")
