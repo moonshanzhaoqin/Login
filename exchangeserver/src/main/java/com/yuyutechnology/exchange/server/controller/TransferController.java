@@ -443,7 +443,7 @@ public class TransferController {
 			rep.setAmount(transfer.getTransferAmount());
 			rep.setUnit((String)(result.get("unit")));
 			
-			if(transfer.getTransferType() == 0 && transfer.getTransferAmount().compareTo(BigDecimal.ZERO)<0 ){
+			if(transfer.getTransferType() == 0 && transfer.getTransferAmount().compareTo(BigDecimal.ZERO)>0 ){
 				rep.setTransferType(1);
 			}else{
 				rep.setTransferType(transfer.getTransferType());

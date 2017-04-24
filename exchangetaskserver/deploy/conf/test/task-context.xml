@@ -35,10 +35,10 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 	<task:scheduled-tasks scheduler="taskServerScheduler">
 	
 		<task:scheduled ref="autoAccountingTask" method="autoAccounting"
-			fixed-delay="300000" initial-delay="300000" />
+			fixed-delay="300000" initial-delay="60000" />
 
 		<task:scheduled ref="autoUpdateExchangeRateTask"
-			method="autoUpdateExchangeRateTask" fixed-delay="86400000" initial-delay="86400000" />
+			method="autoUpdateExchangeRateTask" fixed-delay="86400000" initial-delay="600000" />
 
 		<task:scheduled ref="autoUpdateExchangeRateTask"
 			method="autoSystemRefundBatch" fixed-delay="1800000" initial-delay="1800000" />
