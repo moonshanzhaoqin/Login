@@ -561,10 +561,12 @@ public class TransferManagerImpl implements TransferManager{
 			
 			switch(type){
 				case "expenses"://支出
-					sb.append("and t3.amount < 0 ");
+					sb.append("and t3.amount < 0 and t1.transfer_type in (0,?) ");
+					values.add(ServerConsts.TRANSFER_TYPE_OUT_INVITE+"");
 					break;
 				case "income"://收入
-					sb.append("and t3.amount > 0 ");
+					sb.append("and t3.amount > 0 and t1.transfer_type in (0,?) ");
+					values.add(ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND+"");
 					break;
 				case "withdraw"://体现
 					sb.append("and t1.transfer_type = ? ");
