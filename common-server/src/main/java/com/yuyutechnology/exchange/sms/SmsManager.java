@@ -125,7 +125,11 @@ public class SmsManager {
 		String phoneVerifyContent = templateChoose("phoneVerify", areaCode);
 		String content = phoneVerifyContent.replace(SMS_REPLACE_PIN, code).replace(SMS_REPLACE_TIME,
 				configManager.getConfigStringValue(ConfigKeyEnum.VERIFYTIME, "10"));
-		return sendSMS(areaCode + userPhone, content,func);
+		if(func==ServerConsts.PIN_FUNC_REGISTER || func==ServerConsts.PIN_FUNC_FORGETPASSWORD){
+			return sendSMS(areaCode + userPhone, content,func);
+		}else{
+			return sendSMS(areaCode + userPhone, content,"");
+		}
 	}
 
 	/**
