@@ -480,7 +480,7 @@ public class TransferManagerImpl implements TransferManager{
 		}
 
 		//Goldpay不是整数
-		if((StringUtils.isNotBlank(currency) && currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)) && (amount.doubleValue()%1 > 0 || amount.doubleValue() == 0)){
+		if((StringUtils.isNotBlank(currency) && currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)) && (amount.doubleValue()%1 > 0 )){
 			logger.warn("The GDQ must be an integer value");
 			result.put("retCode", RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			result.put("msg", "The GDQ must be an integer value");
