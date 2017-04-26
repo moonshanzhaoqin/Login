@@ -188,30 +188,32 @@
 					})
 		}
 		function setGoldpayRemitTaskStatus(status) {
-			var data = {
-				status : status
-			};
-			$.ajax({
-				type : "post",
-				url : "/crm/setGoldpayRemitTaskStatus",
-				dataType : 'json',
-				contentType : "application/json; charset=utf-8",
-				data : JSON.stringify(data),
-				success : function(data) {
-					if (data.retCode == "00002") {
-						location.href = loginUrl;
-					} else {
-						getGoldpayRemitTaskStatus();
-					}
+			if (confirm("确认吗？")) {
+				var data = {
+					status : status
+				};
+				$.ajax({
+					type : "post",
+					url : "/crm/setGoldpayRemitTaskStatus",
+					dataType : 'json',
+					contentType : "application/json; charset=utf-8",
+					data : JSON.stringify(data),
+					success : function(data) {
+						if (data.retCode == "00002") {
+							location.href = loginUrl;
+						} else {
+							getGoldpayRemitTaskStatus();
+						}
 
-				},
-				error : function(xhr, err) {
-					alert("未知错误");
-					console.log(err);
-				},
-				async : false
+					},
+					error : function(xhr, err) {
+						alert("未知错误");
+						console.log(err);
+					},
+					async : false
 
-			})
+				})
+			}
 		}
 		function getBadAccountByPage(currentPage) {
 			var data = {
@@ -244,16 +246,25 @@
 											+ timeDate(data.rows[i][0].endTime)
 											+ '</td>'
 											+ '<td>'
-											+ new Number(data.rows[i][0].balanceBefore).toFixed(4)
+											+ new Number(
+													data.rows[i][0].balanceBefore)
+													.toFixed(4)
 											+ '</td>'
 											+ '<td>'
-											+ new Number(data.rows[i][0].sumAmount).toFixed(4)
+											+ new Number(
+													data.rows[i][0].sumAmount)
+													.toFixed(4)
 											+ '</td>'
 											+ '<td>'
-											+ (new Number(data.rows[i][0].balanceBefore + data.rows[i][0].sumAmount).toFixed(4))
+											+ (new Number(
+													data.rows[i][0].balanceBefore
+															+ data.rows[i][0].sumAmount)
+													.toFixed(4))
 											+ '</td>'
 											+ '<td>'
-											+ new Number(data.rows[i][0].balanceNow).toFixed(4)
+											+ new Number(
+													data.rows[i][0].balanceNow)
+													.toFixed(4)
 											+ '</td>'
 											+ '<td>'
 											+ '<a href="javascript:void(0)" onclick="getDetailSeq('
@@ -299,7 +310,8 @@
 											+ data[i].currency
 											+ '</td>'
 											+ '<td>'
-											+ new Number(data[i].amount).toFixed(4)
+											+ new Number(data[i].amount)
+													.toFixed(4)
 											+ '</td>'
 											+ '<td>'
 											+ transferType(data[i].transferType)
@@ -344,28 +356,20 @@
 								$('#transferId').html(
 										'<p class="form-control-static">'
 												+ data[0].transferId + '</p>');
-								$('#fromId')
-										.html(
-												'<p class="form-control-static">'
-														+ data[0].userFrom
-														+ '</p>');
-								$('#fromPhone')
-								.html(
+								$('#fromId').html(
+										'<p class="form-control-static">'
+												+ data[0].userFrom + '</p>');
+								$('#fromPhone').html(
 										'<p class="form-control-static">'
 												+ data[1].areaCode
-												+ data[1].userPhone
-												+ '</p>');
-								$('#toId')
-										.html(
-												'<p class="form-control-static">'
-														+ data[0].userTo
-														+ '</p>');
-								$('#toPhone')
-								.html(
+												+ data[1].userPhone + '</p>');
+								$('#toId').html(
+										'<p class="form-control-static">'
+												+ data[0].userTo + '</p>');
+								$('#toPhone').html(
 										'<p class="form-control-static">'
 												+ data[2].areaCode
-												+ data[2].userPhone
-												+ '</p>');
+												+ data[2].userPhone + '</p>');
 
 								$('#currency').html(
 										'<p class="form-control-static">'
