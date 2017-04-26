@@ -69,6 +69,9 @@ public class AccountingManagerImpl implements AccountingManager{
 	}
 	
 	public int accountingAll() {
+		if (goldpayTransManager.getGoldpayRemitWithdrawsforbidden()) {
+			return 0;
+		}
 		Date startDate = accountingDAO.getLastAccountingTime();
 		Date endDate = new Date();
 		int userSize = accounting(startDate, endDate);
