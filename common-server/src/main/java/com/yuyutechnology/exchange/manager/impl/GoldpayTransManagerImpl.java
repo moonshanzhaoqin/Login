@@ -808,15 +808,18 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 	@Override
 	public List<Transfer> getNeedGoldpayRemitWithdraws() {
-		if (!getGoldpayRemitWithdrawsforbidden()) {
+//		if (!getGoldpayRemitWithdrawsforbidden()) {
 			return transferDAO.getNeedGoldpayRemitWithdraws();
-		}
-		return new ArrayList<Transfer>();
+//		}
+//		return new ArrayList<Transfer>();
 	}
 
 	@Override
 	public List<Transfer> getNeedReviewWithdraws() {
-		return transferDAO.getNeedReviewWithdraws();
+		if (!getGoldpayRemitWithdrawsforbidden()) {
+			return transferDAO.getNeedReviewWithdraws();
+		}
+		return new ArrayList<Transfer>();
 	}
 
 	@Override
