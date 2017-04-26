@@ -78,7 +78,7 @@ public class WithdrawController {
 	public BaseResponse withdrawReview(@RequestBody WithdrawRequest withdrawRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
-		goldpayTransManager.withdrawReviewManual(withdrawRequest.getTransferId());
+		goldpayTransManager.withdrawReviewPending(withdrawRequest.getTransferId());
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
@@ -95,13 +95,8 @@ public class WithdrawController {
 	public BaseResponse goldpayRemit(@RequestBody WithdrawRequest withdrawRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
-		HashMap<String, String> map = goldpayTransManager.goldpayRemit(withdrawRequest.getTransferId());
-		if (map.get("retCode") == RetCodeConsts.RET_CODE_SUCCESS) {
-			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-		} else {
-			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-		}
-		rep.setMessage(map.get("msg"));
+		goldpayTransManager.goldpayRemitPending(withdrawRequest.getTransferId());
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
 
