@@ -60,3 +60,6 @@ alter table `e_user` add unique `index_area_phone` (`area_code`, `user_phone`);
 
 -- 2017/04/21 Silent
 alter table `e_unregistered` add unique `index_transfer_id` (`transfer_id`);
+
+-- 2017/04/26 Silent
+alter table `e_bind` add unique `index_user_id` (`user_id`);
