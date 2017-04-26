@@ -20,7 +20,6 @@ import com.yuyutechnology.exchange.manager.AccountingManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.manager.UserManager;
-import com.yuyutechnology.exchange.pojo.BadAccount;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionManager;
@@ -107,7 +106,12 @@ public class AccountingManagerImpl implements AccountingManager{
 				updateRows = 0;
 			}
 			logger.info("accounting finsh , bad account user size {}", updateRows);
-			snapshotToBefore();
+			if (updateRows == 0) {
+				int updateRows2 = accountingDAO.snapshotWalletNowToHistory();
+				logger.info("accounting copy new to history, size : {}", updateRows2);
+			}
+			accountingDAO.cleanSnapshotWalletNow();
+			logger.info("accounting clean new ok ");
 			return updateRows;
 		}
 		return 0;
@@ -130,13 +134,6 @@ public class AccountingManagerImpl implements AccountingManager{
 	
 	public void snapshotToBefore(int userId) {
 		accountingDAO.snapshotWalletToBeforeByUser(userId);
-	}
-	
-	private void snapshotToBefore () {
-		int updateRows = accountingDAO.snapshotWalletNowToHistory();
-		logger.info("accounting copy new to history, size : {}", updateRows);
-		accountingDAO.cleanSnapshotWalletNow();
-		logger.info("accounting clean new ok ");
 	}
 	
 	private void badAccountWarn(){
