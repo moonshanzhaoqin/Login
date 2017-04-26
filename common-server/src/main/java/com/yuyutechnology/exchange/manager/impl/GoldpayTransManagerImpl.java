@@ -65,7 +65,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	RedisDAO redisDAO;
 	@Autowired
 	AccountingManager accountingManager;
-	
+
 	private final String GOLDPAY_WITHDRAW_FORBIDDEN = "goldpayWithdrawForbidden";
 
 	public static Logger logger = LogManager.getLogger(GoldpayTransManagerImpl.class);
@@ -634,9 +634,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		// return map;
 		// }
 
-		if (transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_MANUALREVIEW_SUCCESS
-				&& transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS
-				&& transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL) {
+		if (transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS) {
 
 			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL);
 			transfer.setFinishTime(new Date());
@@ -779,9 +777,10 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		logger.info("withdrawReviewAuto {}==>", transferId);
 		Transfer transfer = transferDAO.getTransferById(transferId);
 		User user = userDAO.getUser(transfer.getUserFrom());
-		if (user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE || !accountingManager.accountingUser(transfer.getUserFrom())){
+		if (user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE
+				|| !accountingManager.accountingUser(transfer.getUserFrom())) {
 			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_FAIL);
-		}else{
+		} else {
 			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS);
 		}
 		// 审核成功
@@ -789,15 +788,15 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		transferDAO.updateTransfer(transfer);
 	}
 
-	@Override
-	public void withdrawReviewManual(String transferId) {
-		logger.info("withdrawReviewManual {}==>", transferId);
-		Transfer transfer = transferDAO.getTransferById(transferId);
-		// 审核成功
-		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_MANUALREVIEW_SUCCESS);
-		transfer.setFinishTime(new Date());
-		transferDAO.updateTransfer(transfer);
-	}
+//	@Override
+//	public void withdrawReviewManual(String transferId) {
+//		logger.info("withdrawReviewManual {}==>", transferId);
+//		Transfer transfer = transferDAO.getTransferById(transferId);
+//		// 审核成功
+//		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_MANUALREVIEW_SUCCESS);
+//		transfer.setFinishTime(new Date());
+//		transferDAO.updateTransfer(transfer);
+//	}
 
 	@Override
 	public PageBean getWithdrawList(int currentPage, String userPhone, String transferId, String[] transferStatus) {
@@ -834,5 +833,21 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	public boolean getGoldpayRemitWithdrawsforbidden() {
 		String goldpSwitch = redisDAO.getValueByKey(GOLDPAY_WITHDRAW_FORBIDDEN);
 		return Boolean.parseBoolean(goldpSwitch);
+	}
+
+	@Override
+	public void withdrawReviewPending(String transferId) {
+		Transfer transfer = transferDAO.getTransferById(transferId);
+		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_PROCESSING);
+		transfer.setFinishTime(new Date());
+		transferDAO.updateTransfer(transfer);
+	}
+
+	@Override
+	public void goldpayRemitPending(String transferId) {
+		Transfer transfer = transferDAO.getTransferById(transferId);
+		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS);
+		transfer.setFinishTime(new Date());
+		transferDAO.updateTransfer(transfer);
 	}
 }
