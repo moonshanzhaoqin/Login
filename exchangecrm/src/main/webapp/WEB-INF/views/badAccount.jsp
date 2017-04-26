@@ -171,11 +171,11 @@
 								if (data == true) {
 									$("#task")
 											.html(
-													'<button type="button" class="btn btn-primary pull-right" onclick="setGoldpayRemitTaskStatus(false)">开启</button>');
+													'<button type="button" class="btn btn-primary pull-right" onclick="setGoldpayRemitTaskStatus(false)">开启核帐功能</button>');
 								} else {
 									$("#task")
 											.html(
-													'<button type="button" class="btn btn-danger pull-right" onclick="setGoldpayRemitTaskStatus(true)">关闭</button>');
+													'<button type="button" class="btn btn-danger pull-right" onclick="setGoldpayRemitTaskStatus(true)">关闭核帐功能</button>');
 								}
 							}
 
