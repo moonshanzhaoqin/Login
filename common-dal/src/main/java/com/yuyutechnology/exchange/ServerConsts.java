@@ -88,7 +88,7 @@ public class ServerConsts {
 	 */
 	public static final int TRANSFER_STATUS_OF_INITIALIZATION = 0;
 	/**
-	 * 交易进行中
+	 * 交易进行中/待审核
 	 */
 	public static final int TRANSFER_STATUS_OF_PROCESSING = 1;
 	/**
@@ -100,23 +100,23 @@ public class ServerConsts {
 	 */
 	public static final int TRANSFER_STATUS_OF_REFUND = 3;
 	/**
-	 * 提现一审成功，待支付
+	 * 待支付
 	 */
 	public static final int TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS = 4;
 	/**
-	 * 提现一审失败，待二审
+	 * 审核失败
 	 */
 	public static final int TRANSFER_STATUS_OF_AUTOREVIEW_FAIL = 5;
+//	/**
+//	 * 提现二审成功 ，待支付
+//	 */
+//	public static final int TRANSFER_STATUS_OF_MANUALREVIEW_SUCCESS = 6;
+//	/**
+//	 * 提现二审失败，待退回
+//	 */
+//	public static final int TRANSFER_STATUS_OF_MANUALREVIEW_FAIL = 7;
 	/**
-	 * 提现二审成功 ，待支付
-	 */
-	public static final int TRANSFER_STATUS_OF_MANUALREVIEW_SUCCESS = 6;
-	/**
-	 * 提现二审失败，待退回
-	 */
-	public static final int TRANSFER_STATUS_OF_MANUALREVIEW_FAIL = 7;
-	/**
-	 * 支付失败，待退回，待支付
+	 * 支付失败
 	 */
 	public static final int TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL = 8;
 	
@@ -201,31 +201,31 @@ public class ServerConsts {
 	 */
 	public static final String RESETPAYPWD = "RESETPAYPWD";
 	
-	/**
-	 * 审批状态-未审批
-	 */
-	public static final int REVIEW_STATUS_NEED = 0;
-	/**
-	 * 审批状态-未通过
-	 */
-	public static final int REVIEW_STATUS_FAIL = 1;
-	/**
-	 * 审批状态-通过
-	 */
-	public static final int REVIEW_STATUS_PASS = 2;
-	
-	/**
-	 * goldPay划账结果-未执行
-	 */
-	public static final int GOLDPAY_REMIT_ = 0;
-	/**
-	 * goldPay划账结果-失败
-	 */
-	public static final int GOLDPAY_REMIT_FAIL = 1;
-	/**
-	 * goldPay划账结果-成功
-	 */
-	public static final int GOLDPAY_REMIT_SUCCESS= 2;	
+//	/**
+//	 * 审批状态-未审批
+//	 */
+//	public static final int REVIEW_STATUS_NEED = 0;
+//	/**
+//	 * 审批状态-未通过
+//	 */
+//	public static final int REVIEW_STATUS_FAIL = 1;
+//	/**
+//	 * 审批状态-通过
+//	 */
+//	public static final int REVIEW_STATUS_PASS = 2;
+//	
+//	/**
+//	 * goldPay划账结果-未执行
+//	 */
+//	public static final int GOLDPAY_REMIT_ = 0;
+//	/**
+//	 * goldPay划账结果-失败
+//	 */
+//	public static final int GOLDPAY_REMIT_FAIL = 1;
+//	/**
+//	 * goldPay划账结果-成功
+//	 */
+//	public static final int GOLDPAY_REMIT_SUCCESS= 2;	
 	/**
 	 * 坏账记录未处理
 	 */

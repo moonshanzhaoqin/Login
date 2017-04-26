@@ -50,12 +50,16 @@ public interface GoldpayTransManager {
 
 	void withdrawRefund(String transferId);
 
-	void withdrawReviewManual(String transferId);
+//	void withdrawReviewManual(String transferId);
 	
 	public void forbiddenGoldpayRemitWithdraws(String forbidden);
 	
 	public boolean getGoldpayRemitWithdrawsforbidden();
 
 	void withdrawReviewAuto(String transferId);
+
+	public void withdrawReviewPending(String transferId);
+
+	public void goldpayRemitPending(String transferId);
 
 }

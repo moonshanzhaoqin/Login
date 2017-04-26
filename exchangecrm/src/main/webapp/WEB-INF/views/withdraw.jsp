@@ -40,21 +40,24 @@
 					<!-- 						name="transferStatus" value="">all -->
 					<!-- 					</label>  -->
 					<label class="checkbox-inline"> <input type="checkbox"
-						name="transferStatus" value="1" checked>未审核
+						name="transferStatus" value="1" checked>待审核
 					</label> <label class="checkbox-inline"> <input type="checkbox"
 						name="transferStatus" value="2">已完成
 					</label> <label class="checkbox-inline"> <input type="checkbox"
 						name="transferStatus" value="3">已退回
 					</label> <label class="checkbox-inline"> <input type="checkbox"
-						name="transferStatus" value="4" checked>一审成功，待支付
+						name="transferStatus" value="4" checked>待支付
 					</label> <label class="checkbox-inline"> <input type="checkbox"
-						name="transferStatus" value="5" checked>一审失败，待二审
-					</label> <label class="checkbox-inline"> <input type="checkbox"
-						name="transferStatus" value="6" checked>二审成功 ，待支付
-					</label> <label class="checkbox-inline"> <input type="checkbox"
-						name="transferStatus" value="7" checked>二审失败，待退回
-					</label> <label class="checkbox-inline"> <input type="checkbox"
-						name="transferStatus" value="8" checked>支付失败，待退回，待支付
+						name="transferStatus" value="5" checked>审核失败
+					</label>
+					<!-- 					<label class="checkbox-inline"> <input type="checkbox" -->
+					<!-- 						name="transferStatus" value="6" checked>二审成功 ，待支付 -->
+					<!-- 					</label>  -->
+					<!-- 					<label class="checkbox-inline"> <input type="checkbox" -->
+					<!-- 						name="transferStatus" value="7" checked>二审失败，待退回 -->
+					<!-- 					</label>  -->
+					<label class="checkbox-inline"> <input type="checkbox"
+						name="transferStatus" value="8" checked>支付失败
 					</label>
 
 					<!-- 					<label class="sr-only" for="transferStatus">transferStatus</label> -->
@@ -399,7 +402,7 @@
 
 		//审批
 		function withdrawReview(transferId) {
-			if (confirm("确认审批吗？")) {
+			if (confirm("确认重新审核吗？")) {
 				console.log("withdrawReview" + transferId);
 				data = {
 					transferId : transferId
@@ -434,69 +437,70 @@
 		}
 		//划账
 		function goldpayRemit(transferId) {
-			if (confirm("确认划账吗？")) {
-			data = {
-				transferId : transferId
-			};
-			$.ajax({
-				type : "post",
-				url : "/crm/goldpayRemit",
-				dataType : 'json',
-				contentType : "application/json; charset=utf-8",
-				data : JSON.stringify(data),
-				success : function(data) {
-					if (data.retCode == "00000") {
-						alert("操作成功");
-						searchWithdraw($("#paginator .active a").html());
-					} else if (data.retCode == "00002") {
-						location.href = loginUrl;
-					} else {
-						console.log("goldpayRemit" + data.message);
-						alert("操作失败");
-						searchWithdraw($("#paginator .active a").html());
-					}
-				},
-				error : function(xhr, err) {
-					console.log("error");
-					console.log(err);
-					console.log(xhr);
-					alert("未知错误");
-				},
-				async : false
-			});}
+			if (confirm("确认重新支付吗？")) {
+				data = {
+					transferId : transferId
+				};
+				$.ajax({
+					type : "post",
+					url : "/crm/goldpayRemit",
+					dataType : 'json',
+					contentType : "application/json; charset=utf-8",
+					data : JSON.stringify(data),
+					success : function(data) {
+						if (data.retCode == "00000") {
+							alert("操作成功");
+							searchWithdraw($("#paginator .active a").html());
+						} else if (data.retCode == "00002") {
+							location.href = loginUrl;
+						} else {
+							console.log("goldpayRemit" + data.message);
+							alert("操作失败");
+							searchWithdraw($("#paginator .active a").html());
+						}
+					},
+					error : function(xhr, err) {
+						console.log("error");
+						console.log(err);
+						console.log(xhr);
+						alert("未知错误");
+					},
+					async : false
+				});
+			}
 		}
 		//退回
 		function refund(transferId) {
 			if (confirm("确认退回吗？")) {
-			data = {
-				transferId : transferId
-			};
-			$.ajax({
-				type : "post",
-				url : "/crm/refund",
-				dataType : 'json',
-				contentType : "application/json; charset=utf-8",
-				data : JSON.stringify(data),
-				success : function(data) {
-					if (data.retCode == "00000") {
-						alert("操作成功");
-						searchWithdraw($("#paginator .active a").html());
-					} else if (data.retCode == "00002") {
-						location.href = loginUrl;
-					} else {
-						console.log("refund" + data.message);
-						alert("操作失败");
-						searchWithdraw($("#paginator .active a").html());
-					}
-				},
-				error : function(xhr, err) {
-					console.log("error");
-					console.log(err);
-					console.log(xhr);
-					alert("未知错误");
-				},
-				async : false
-			});
+				data = {
+					transferId : transferId
+				};
+				$.ajax({
+					type : "post",
+					url : "/crm/refund",
+					dataType : 'json',
+					contentType : "application/json; charset=utf-8",
+					data : JSON.stringify(data),
+					success : function(data) {
+						if (data.retCode == "00000") {
+							alert("操作成功");
+							searchWithdraw($("#paginator .active a").html());
+						} else if (data.retCode == "00002") {
+							location.href = loginUrl;
+						} else {
+							console.log("refund" + data.message);
+							alert("操作失败");
+							searchWithdraw($("#paginator .active a").html());
+						}
+					},
+					error : function(xhr, err) {
+						console.log("error");
+						console.log(err);
+						console.log(xhr);
+						alert("未知错误");
+					},
+					async : false
+				});
 			}
 		}
 
@@ -505,36 +509,24 @@
 			case 0:
 				return '<td>初始化</td><td></td>';
 			case 1:
-				return '<td>未审核</td><td><button type="button" class="btn btn-info" onclick="withdrawReview(\''
-						+ transferId
-						+ '\')">审批</button><button type="button" class="btn btn-warning" onclick="refund(\''
+				return '<td>待审核</td><td><button type="button" class="btn btn-warning" onclick="refund(\''
 						+ transferId + '\')">退回</button></td>';
 			case 2:
 				return '<td>已完成</td><td></td>';
 			case 3:
 				return '<td>已退回</td><td></td>';
 			case 4:
-				return '<td>一审成功，待支付</td><td><button type="button" class="btn btn-primary" onclick="goldpayRemit(\''
-						+ transferId
-						+ '\')">划账</button><button type="button" class="btn btn-warning" onclick="refund(\''
+				return '<td>待支付</td><td><button type="button" class="btn btn-warning" onclick="refund(\''
 						+ transferId + '\')">退回</button></td>';
 			case 5:
-				return '<td>一审失败，待二审</td><td><button type="button" class="btn btn-info" onclick="withdrawReview(\''
+				return '<td>审核失败</td><td><button type="button" class="btn btn-info" onclick="withdrawReview(\''
 						+ transferId
-						+ '\')">审批</button><button type="button" class="btn btn-warning" onclick="refund(\''
-						+ transferId + '\')">退回</button></td>';
-			case 6:
-				return '<td>二审成功 ，待支付</td><td><button type="button" class="btn btn-primary" onclick="goldpayRemit(\''
-						+ transferId
-						+ '\')">划账</button><button type="button" class="btn btn-warning" onclick="refund(\''
-						+ transferId + '\')">退回</button></td>';
-			case 7:
-				return '<td>二审失败，待退回</td><td><button type="button" class="btn btn-warning" onclick="refund(\''
+						+ '\')">重新审核</button><button type="button" class="btn btn-warning" onclick="refund(\''
 						+ transferId + '\')">退回</button></td>';
 			case 8:
-				return '<td>支付失败，待退回，待支付</td><td><button type="button" class="btn btn-primary" onclick="goldpayRemit(\''
+				return '<td>支付失败</td><td><button type="button" class="btn btn-primary" onclick="goldpayRemit(\''
 						+ transferId
-						+ '\')">划账</button><button type="button" class="btn btn-warning" onclick="refund(\''
+						+ '\')">重新支付</button><button type="button" class="btn btn-warning" onclick="refund(\''
 						+ transferId + '\')">退回</button></td>';
 			}
 		}
