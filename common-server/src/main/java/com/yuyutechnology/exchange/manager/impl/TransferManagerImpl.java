@@ -537,7 +537,7 @@ public class TransferManagerImpl implements TransferManager{
 				+ "CONCAT(t2.area_code,t2.user_phone),"
 				+ "t1.transfer_comment,"
 				+ "t1.finish_time,"
-				+ "t1.transfer_type,t1.transfer_id,"+"t1.goldpay_name  ";
+				+ "t1.transfer_type,t1.transfer_id  ";
 		StringBuilder sb = new StringBuilder(
 				"FROM `e_transfer` t1 "+
 				"LEFT JOIN `e_user` t2  "+
