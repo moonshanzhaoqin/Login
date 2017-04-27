@@ -337,7 +337,6 @@ public class TransferController {
 					dto.setAmount(new BigDecimal("-"+obj[2]+"") );
 					dto.setTransferType((int) obj[7]);
 					dto.setPhoneNum((String) obj[3]);
-					dto.setGoldpayName(MathUtils.hideString((String) obj[9]));
 				}else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE) {
 					dto.setAmount(new BigDecimal("+"+obj[2]+"") );
 					dto.setTransferType((int) obj[7]);
@@ -451,7 +450,7 @@ public class TransferController {
 			}else if(transfer.getTransferType() == 0){
 				rep.setTransferType(1);	
 			}
-			
+			rep.setGoldpayName(MathUtils.hideString(transfer.getGoldpayName()));
 			rep.setCreateTime(transfer.getCreateTime());
 			rep.setFinishTime(transfer.getFinishTime());
 			rep.setTransferId(transfer.getTransferId());

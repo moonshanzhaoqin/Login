@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class GetTransDetailsResponse extends BaseResponse {
-	
+
 	private String trader;
 	private String areaCode;
 	private String phone;
@@ -15,7 +15,8 @@ public class GetTransDetailsResponse extends BaseResponse {
 	private Date createTime;
 	private Date finishTime;
 	private String transferId;
-	
+	private String goldpayName;
+
 	private boolean isFriend;
 	private boolean isRegiste;
 
@@ -26,7 +27,6 @@ public class GetTransDetailsResponse extends BaseResponse {
 	public void setTrader(String trader) {
 		this.trader = trader;
 	}
-
 
 	public String getAreaCode() {
 		return areaCode;
@@ -51,8 +51,6 @@ public class GetTransDetailsResponse extends BaseResponse {
 	public void setCurrency(String currency) {
 		this.currency = currency;
 	}
-
-
 
 	public BigDecimal getAmount() {
 		return amount;
@@ -100,6 +98,14 @@ public class GetTransDetailsResponse extends BaseResponse {
 
 	public void setTransferId(String transferId) {
 		this.transferId = transferId;
+	}
+
+	public String getGoldpayName() {
+		return goldpayName;
+	}
+
+	public void setGoldpayName(String goldpayName) {
+		this.goldpayName = goldpayName;
 	}
 
 	public boolean isFriend() {
