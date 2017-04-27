@@ -61,6 +61,11 @@ alter table `e_user` add unique `index_area_phone` (`area_code`, `user_phone`);
 -- 2017/04/21 Silent
 alter table `e_unregistered` add unique `index_transfer_id` (`transfer_id`);
 
+
 -- 2017/04/27 suzan
 ALTER TABLE `anytime_exchange`.`e_transfer`
   ADD COLUMN `goldpay_name` varchar(255) NULL DEFAULT NULL;
+
+-- 2017/04/26 Silent
+alter table `e_bind` add unique `index_user_id` (`user_id`);
+
