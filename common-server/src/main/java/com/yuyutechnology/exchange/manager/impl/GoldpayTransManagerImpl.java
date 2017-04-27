@@ -356,6 +356,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		transfer.setUserTo(systemUser.getUserId());
 		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
 		transfer.setNoticeId(0);
+		transfer.setGoldpayName(bind.getGoldpayName());
 		// 保存
 		transferDAO.addTransfer(transfer);
 

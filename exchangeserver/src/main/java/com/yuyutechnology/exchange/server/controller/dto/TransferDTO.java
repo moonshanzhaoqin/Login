@@ -13,6 +13,8 @@ public class TransferDTO {
 	private String comments;
 	private Date finishAt;
 	private int transferType;
+	private String goldpayName;
+	
 
 	public String getTransferId() {
 		return transferId;
@@ -61,5 +63,11 @@ public class TransferDTO {
 	}
 	public void setCurrencyUnit(String currencyUnit) {
 		this.currencyUnit = currencyUnit;
+	}
+	public String getGoldpayName() {
+		return goldpayName;
+	}
+	public void setGoldpayName(String goldpayName) {
+		this.goldpayName = goldpayName;
 	}
 }

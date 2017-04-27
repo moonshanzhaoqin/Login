@@ -38,7 +38,8 @@ public class Transfer implements java.io.Serializable {
 	private Integer noticeId;
 	private Integer version;
 	private String goldpayResult;
-
+	private String goldpayName;
+	
 	public Transfer() {
 	}
 
@@ -55,7 +56,7 @@ public class Transfer implements java.io.Serializable {
 
 	public Transfer(String transferId, int userFrom, int userTo, String areaCode, String phone, String currency,
 			BigDecimal transferAmount, String transferComment, Date createTime, Date finishTime, int transferStatus,
-			int transferType, Integer noticeId,String goldpayResult) {
+			int transferType, Integer noticeId,String goldpayResult,String goldpayName) {
 		this.transferId = transferId;
 		this.userFrom = userFrom;
 		this.userTo = userTo;
@@ -70,6 +71,7 @@ public class Transfer implements java.io.Serializable {
 		this.transferType = transferType;
 		this.noticeId = noticeId;
 		this.goldpayResult = goldpayResult;
+		this.setGoldpayName(goldpayName);
 	}
 
 	@Id
@@ -202,7 +204,6 @@ public class Transfer implements java.io.Serializable {
 		this.version = version;
 	}
 	
-	@Version
 	@Column(name = "goldpay_result")
 	public String getGoldpayResult() {
 		return goldpayResult;
@@ -210,6 +211,15 @@ public class Transfer implements java.io.Serializable {
 
 	public void setGoldpayResult(String goldpayResult) {
 		this.goldpayResult = goldpayResult;
+	}
+	
+	@Column(name = "goldpay_name")
+	public String getGoldpayName() {
+		return goldpayName;
+	}
+
+	public void setGoldpayName(String goldpayName) {
+		this.goldpayName = goldpayName;
 	}
 
 }
