@@ -357,6 +357,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
 		transfer.setNoticeId(0);
 		transfer.setGoldpayName(bind.getGoldpayName());
+		transfer.setGoldpayAcount(bind.getGoldpayAcount());
 		// 保存
 		transferDAO.addTransfer(transfer);
 
@@ -613,19 +614,19 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		HashMap<String, String> map = new HashMap<String, String>();
 
 		Transfer transfer = transferDAO.getTransferById(transferId);
-		Bind bind = bindBAO.getBindByUserId(transfer.getUserFrom());
-		if (bind == null) {
-
-			logger.warn("The account is not tied to goldpay");
-
-			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL);
-			transfer.setFinishTime(new Date());
-			transferDAO.updateTransfer(transfer);
-
-			map.put("msg", "The account is not tied to goldpay");
-			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
-			return map;
-		}
+//		Bind bind = bindBAO.getBindByUserId(transfer.getUserFrom());
+//		if (bind == null) {
+//
+//			logger.warn("The account is not tied to goldpay");
+//
+//			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL);
+//			transfer.setFinishTime(new Date());
+//			transferDAO.updateTransfer(transfer);
+//
+//			map.put("msg", "The account is not tied to goldpay");
+//			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+//			return map;
+//		}
 		// User systemUser = userDAO.getSystemUser();
 		// Bind systemBind = bindBAO.getBindByUserId(systemUser.getUserId());
 		// if(systemBind == null){
@@ -649,7 +650,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 		MerchantPayOrder merchantPayOrder = new MerchantPayOrder();
 		merchantPayOrder.setFromAccountToken(configManager.getConfigStringValue(ConfigKeyEnum.TPPSTRANSTOKEN, ""));
-		merchantPayOrder.setToAccountNum(bind.getGoldpayAcount());
+		merchantPayOrder.setToAccountNum(transfer.getGoldpayAcount());
 		merchantPayOrder.setOrderId(transfer.getTransferId());
 		merchantPayOrder.setClientId(configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTID, ""));
 		merchantPayOrder.setPayAmount(transfer.getTransferAmount().intValue());
