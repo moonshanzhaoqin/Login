@@ -55,6 +55,7 @@ import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody
 import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
+import com.yuyutechnology.exchange.utils.MathUtils;
 
 @Controller
 public class TransferController {
@@ -336,6 +337,7 @@ public class TransferController {
 					dto.setAmount(new BigDecimal("-"+obj[2]+"") );
 					dto.setTransferType((int) obj[7]);
 					dto.setPhoneNum((String) obj[3]);
+					dto.setGoldpayName(MathUtils.hideString((String) obj[9]));
 				}else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE) {
 					dto.setAmount(new BigDecimal("+"+obj[2]+"") );
 					dto.setTransferType((int) obj[7]);
