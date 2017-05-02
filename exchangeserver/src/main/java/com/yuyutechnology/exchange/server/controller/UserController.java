@@ -150,21 +150,23 @@ public class UserController {
 					rep.setRetCode(RetCodeConsts.PHONE_IS_REGISTERED);
 					rep.setMessage(MessageConsts.PHONE_IS_REGISTERED);
 				} else {
-					SendMessageResponse sendMessageResponse= userManager.getPinCode(getVerificationCodeRequest.getPurpose(),
-							getVerificationCodeRequest.getAreaCode(), getVerificationCodeRequest.getUserPhone());
-					if (sendMessageResponse==null) {
+					SendMessageResponse sendMessageResponse = userManager.getPinCode(
+							getVerificationCodeRequest.getPurpose(), getVerificationCodeRequest.getAreaCode(),
+							getVerificationCodeRequest.getUserPhone());
+					if (sendMessageResponse == null) {
 						logger.info(MessageConsts.RET_CODE_FAILUE);
 						rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 						rep.setMessage(MessageConsts.RET_CODE_FAILUE);
-					}else if(sendMessageResponse.isOk()){
+					} else if (sendMessageResponse.isOk()) {
 						logger.info(MessageConsts.RET_CODE_SUCCESS);
 						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-					}else{
+					} else {
 						logger.info(MessageConsts.SEND_MORE_THAN_LIMIT);
 						rep.setRetCode(RetCodeConsts.SEND_MORE_THAN_LIMIT);
 						rep.setMessage(MessageConsts.SEND_MORE_THAN_LIMIT);
-						rep.setOpts(new String[]{sendMessageResponse.getLimitCount().toString(),sendMessageResponse.getLimitTime().toString()});
+						rep.setOpts(new String[] { sendMessageResponse.getLimitCount().toString(),
+								sendMessageResponse.getLimitTime().toString() });
 					}
 				}
 			} else {
@@ -177,23 +179,25 @@ public class UserController {
 					rep.setRetCode(RetCodeConsts.USER_BLOCKED);
 					rep.setMessage(MessageConsts.USER_BLOCKED);
 				} else {
-					SendMessageResponse sendMessageResponse=  userManager.getPinCode(getVerificationCodeRequest.getPurpose(),
-							getVerificationCodeRequest.getAreaCode(), getVerificationCodeRequest.getUserPhone());
-					if (sendMessageResponse==null) {
+					SendMessageResponse sendMessageResponse = userManager.getPinCode(
+							getVerificationCodeRequest.getPurpose(), getVerificationCodeRequest.getAreaCode(),
+							getVerificationCodeRequest.getUserPhone());
+					if (sendMessageResponse == null) {
 						logger.info(MessageConsts.RET_CODE_FAILUE);
 						rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 						rep.setMessage(MessageConsts.RET_CODE_FAILUE);
-					}else if(sendMessageResponse.isOk()){
+					} else if (sendMessageResponse.isOk()) {
 						logger.info(MessageConsts.RET_CODE_SUCCESS);
 						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-					}else{
+					} else {
 						logger.info(MessageConsts.SEND_MORE_THAN_LIMIT);
 						rep.setRetCode(RetCodeConsts.SEND_MORE_THAN_LIMIT);
 						rep.setMessage(MessageConsts.SEND_MORE_THAN_LIMIT);
-						rep.setOpts(new String[]{sendMessageResponse.getLimitCount().toString(),sendMessageResponse.getLimitTime().toString()});
+						rep.setOpts(new String[] { sendMessageResponse.getLimitCount().toString(),
+								sendMessageResponse.getLimitTime().toString() });
 					}
-					
+
 				}
 			}
 		}
@@ -292,11 +296,13 @@ public class UserController {
 					logger.info(MessageConsts.PASSWORD_NOT_MATCH);
 					rep.setRetCode(RetCodeConsts.PASSWORD_NOT_MATCH);
 					rep.setMessage(String.valueOf(result.getInfo()));
+					rep.setOpts(new String[]{String.valueOf(result.getInfo())});
 					break;
 				case ServerConsts.CHECKPWD_STATUS_FREEZE:
 					logger.info(MessageConsts.LOGIN_FREEZE);
 					rep.setRetCode(RetCodeConsts.LOGIN_FREEZE);
 					rep.setMessage(String.valueOf(result.getInfo()));
+					rep.setOpts(new String[]{String.valueOf(result.getInfo())});
 					break;
 				default:
 					break;
@@ -480,11 +486,13 @@ public class UserController {
 					logger.info(MessageConsts.PASSWORD_NOT_MATCH);
 					rep.setRetCode(RetCodeConsts.PASSWORD_NOT_MATCH);
 					rep.setMessage(String.valueOf(result.getInfo()));
+					rep.setOpts(new String[]{String.valueOf(result.getInfo())});
 					break;
 				case ServerConsts.CHECKPWD_STATUS_FREEZE:
 					logger.info(MessageConsts.LOGIN_FREEZE);
 					rep.setRetCode(RetCodeConsts.LOGIN_FREEZE);
 					rep.setMessage(String.valueOf(result.getInfo()));
+					rep.setOpts(new String[]{String.valueOf(result.getInfo())});
 					break;
 				default:
 					break;
@@ -493,6 +501,7 @@ public class UserController {
 		}
 		return rep;
 	}
+
 	/**
 	 * contactUs 联系我们
 	 * 

@@ -206,7 +206,7 @@ public class LoggedInUserController {
 				rep.setRetCode(RetCodeConsts.TIME_NOT_ARRIVED);
 				rep.setMessage(MessageConsts.TIME_NOT_ARRIVED);
 				rep.setTime(time);
-//				rep.setOpts(new String(time));
+				rep.setOpts(new String[] { String.valueOf(time) });
 			} else if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_CHANGEPHONE,
 					changePhoneRequest.getCheckToken())) {
 				// 校验手机验证码
@@ -256,6 +256,7 @@ public class LoggedInUserController {
 			rep.setRetCode(RetCodeConsts.TIME_NOT_ARRIVED);
 			rep.setMessage(MessageConsts.TIME_NOT_ARRIVED);
 			rep.setTime(time);
+			rep.setOpts(new String[] { String.valueOf(time) });
 		} else {
 			logger.info("********Operation succeeded********");
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
@@ -263,35 +264,6 @@ public class LoggedInUserController {
 		}
 		return rep;
 	}
-
-	/**
-	 * checkPassword 校验登录密码
-	 * 
-	 * @param token
-	 * @param checkPasswordRequest
-	 * @return
-	 */
-	// @ResponseEncryptBody
-	// @ApiOperation(value = "校验登录密码", httpMethod = "POST", notes = "")
-	// @RequestMapping(value = "/token/{token}/user/checkPassword", method =
-	// RequestMethod.POST, produces = "application/json; charset=utf-8")
-	// public CheckPasswordResponse checkPassword(@PathVariable String token,
-	// @RequestDecryptBody CheckPasswordRequest checkPasswordRequest) {
-	// logger.info("========checkPassword : {}============", token);
-	// CheckPasswordResponse rep = new CheckPasswordResponse();
-	// SessionData sessionData = SessionDataHolder.getSessionData();
-	// if (userManager.checkUserPassword(sessionData.getUserId(),
-	// checkPasswordRequest.getUserPassword())) {
-	// logger.info("********Operation succeeded********");
-	// rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-	// rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-	// } else {
-	// logger.info(MessageConsts.PASSWORD_NOT_MATCH);
-	// rep.setRetCode(RetCodeConsts.PASSWORD_NOT_MATCH);
-	// rep.setMessage(MessageConsts.PASSWORD_NOT_MATCH);
-	// }
-	// return rep;
-	// }
 
 	/**
 	 * checkPayPwd 校验支付密码
@@ -320,12 +292,14 @@ public class LoggedInUserController {
 				logger.info(MessageConsts.PAY_FREEZE);
 				rep.setRetCode(RetCodeConsts.PAY_FREEZE);
 				rep.setMessage(String.valueOf(result.getInfo()));
+				rep.setOpts(new String[]{String.valueOf(result.getInfo())});
 				break;
 
 			case ServerConsts.CHECKPWD_STATUS_INCORRECT:
 				logger.info(MessageConsts.PAY_PWD_NOT_MATCH);
 				rep.setRetCode(RetCodeConsts.PAY_PWD_NOT_MATCH);
 				rep.setMessage(String.valueOf(result.getInfo()));
+				rep.setOpts(new String[]{String.valueOf(result.getInfo())});
 				break;
 
 			case ServerConsts.CHECKPWD_STATUS_CORRECT:
@@ -334,6 +308,7 @@ public class LoggedInUserController {
 				logger.info("********Operation succeeded********");
 				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(checkToken);
+				rep.setCheckToken(checkToken);
 				break;
 			}
 		}
@@ -368,6 +343,7 @@ public class LoggedInUserController {
 				logger.info("********Operation succeeded********");
 				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(checkToken);
+				rep.setCheckToken(checkToken);
 				break;
 			case RetCodeConsts.GOLDPAY_IS_INCORRECT:
 				logger.info(MessageConsts.GOLDPAY_IS_INCORRECT);
@@ -416,11 +392,13 @@ public class LoggedInUserController {
 				logger.info(MessageConsts.LOGIN_FREEZE);
 				rep.setRetCode(RetCodeConsts.LOGIN_FREEZE);
 				rep.setMessage(String.valueOf(result.getInfo()));
+				rep.setOpts(new String[]{String.valueOf(result.getInfo())});
 				break;
 			case ServerConsts.CHECKPWD_STATUS_INCORRECT:
 				logger.info(MessageConsts.PASSWORD_NOT_MATCH);
 				rep.setRetCode(RetCodeConsts.PASSWORD_NOT_MATCH);
 				rep.setMessage(String.valueOf(result.getInfo()));
+				rep.setOpts(new String[]{String.valueOf(result.getInfo())});
 				break;
 			case ServerConsts.CHECKPWD_STATUS_CORRECT:
 				if (modifyPasswordRequest.getOldPassword().equals(modifyPasswordRequest.getNewPassword())) {
@@ -662,8 +640,6 @@ public class LoggedInUserController {
 		return rep;
 	}
 
-	
-
 	@ApiOperation(value = "获取消息红点标志位")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/user/getMsgFlag")
 	public @ResponseEncryptBody GetMsgFlagResponse getMsgFlag(@PathVariable String token) {
@@ -710,6 +686,7 @@ public class LoggedInUserController {
 		}
 		return rep;
 	}
+
 	/**
 	 * contactUs 联系我们
 	 * 
@@ -720,8 +697,9 @@ public class LoggedInUserController {
 	@ResponseEncryptBody
 	@ApiOperation(value = "联系我们", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/contactUs", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public ContactUsResponse contactUs(@PathVariable String token,@RequestDecryptBody ContactUsRequest contactUsRequest) {
-		logger.info("========contactUs : {}============",token);
+	public ContactUsResponse contactUs(@PathVariable String token,
+			@RequestDecryptBody ContactUsRequest contactUsRequest) {
+		logger.info("========contactUs : {}============", token);
 		ContactUsResponse rep = new ContactUsResponse();
 		if (contactUsRequest.isEmpty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
