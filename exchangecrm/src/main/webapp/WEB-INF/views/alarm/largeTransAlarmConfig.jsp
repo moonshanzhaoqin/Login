@@ -21,8 +21,8 @@
 				<table class = "table table-striped table-bordered">
 					<thead>
 						<tr>
-							<th>transferLimitPerPay</th>
-							<th>exchangeLimitPerPay</th>
+							<th>每次支付金额限制</th>
+							<th>每次兑换金额限制</th>
 						</tr>
 					</thead>
 					<tbody>
