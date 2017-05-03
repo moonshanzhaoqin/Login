@@ -980,7 +980,15 @@ public class TransferManagerImpl implements TransferManager{
 			if(transfer.getUserTo() == systemUser.getUserId()){
 				map.put("areaCode", transfer.getAreaCode());
 				map.put("phone", transfer.getPhone());	
-				friendId = -1;
+				
+				//如果当时交易对象中有System，查看交易未注册一方此时此时是否已经注册
+				User trander = userDAO.getUserByUserPhone(transfer.getAreaCode(), transfer.getPhone());
+				if(trander != null){
+					friendId = trander.getUserId();
+				}else {
+					friendId = -1;
+				}
+				
 				user = null;
 			}else{
 				user = userDAO.getUser(transfer.getUserTo()); 
@@ -992,7 +1000,13 @@ public class TransferManagerImpl implements TransferManager{
 		}else if(transfer.getUserFrom() == systemUser.getUserId()){
 			map.put("areaCode", transfer.getAreaCode());
 			map.put("phone", transfer.getPhone());	
-			friendId = -1;
+			//如果当时交易对象中有System，查看交易未注册一方此时此时是否已经注册
+			User trander = userDAO.getUserByUserPhone(transfer.getAreaCode(), transfer.getPhone());
+			if(trander != null){
+				friendId = trander.getUserId();
+			}else {
+				friendId = -1;
+			}
 			user = null;
 		}else{
 			user = userDAO.getUser(transfer.getUserFrom());
