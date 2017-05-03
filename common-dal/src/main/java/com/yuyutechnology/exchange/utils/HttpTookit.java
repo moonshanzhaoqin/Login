@@ -189,9 +189,9 @@ public final class HttpTookit
 			out.write(param);
 			out.flush();
 			// 读取响应
-			if (connection.getResponseCode() != 200) {
+			if (connection.getResponseCode() != 200 && connection.getErrorStream() != null) {
 				in = new BufferedReader(new InputStreamReader(connection.getErrorStream(), "UTF-8"));
-			}else{
+			}else {
 				in = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
 			}
 			String line = "";
