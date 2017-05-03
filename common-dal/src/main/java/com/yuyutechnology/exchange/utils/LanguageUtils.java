@@ -26,6 +26,6 @@ public class LanguageUtils {
 				return language2;
 			}
 		}
-		return null;
+		return Language.zh_CN;
 	}
 }
