@@ -45,7 +45,7 @@ public class ConfigManagerImpl implements ConfigManager {
 	private void initConfig() {
 		List<Config> configs = configDAO.getConfigValues();
 		for (Config config : configs) {
-			configMap.put(config.getConfigKey(), config.getConfigValue());
+			configMap.put(config.getConfigKey().trim(), config.getConfigValue().trim());
 		}
 	}
 
