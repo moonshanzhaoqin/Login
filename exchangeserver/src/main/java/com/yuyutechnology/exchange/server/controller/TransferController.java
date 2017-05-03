@@ -437,7 +437,7 @@ public class TransferController {
 				rep.setRegiste(false);
 			}
 			
-			rep.setTraderMobile(transfer.getAreaCode()+transfer.getPhone());
+			rep.setTraderMobile(transfer.getAreaCode()+ " " +transfer.getPhone());
 			rep.setMoney(transfer.getTransferAmount() + (String)(result.get("unit")));
 			rep.setTransferType(transfer.getTransferType());
 			rep.setCreateTime(transfer.getCreateTime());
