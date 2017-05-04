@@ -2,7 +2,7 @@ package com.yuyutechnology.exchange.crm.request;
 
 import java.math.BigDecimal;
 
-import com.yuyutechnology.exchange.utils.page.PageBean;
+import com.yuyutechnology.exchange.util.page.PageBean;
 
 public class GetTotalAssetsInfoRequest {
 

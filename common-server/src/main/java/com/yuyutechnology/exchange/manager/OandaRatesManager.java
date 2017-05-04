@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import com.yuyutechnology.exchange.utils.oanda.OandaRespData;
-import com.yuyutechnology.exchange.utils.oanda.PriceInfo;
+import com.yuyutechnology.exchange.util.oanda.OandaRespData;
+import com.yuyutechnology.exchange.util.oanda.PriceInfo;
 
 public interface OandaRatesManager {
 

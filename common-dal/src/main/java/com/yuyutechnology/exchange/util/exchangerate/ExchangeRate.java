@@ -1,4 +1,4 @@
-package com.yuyutechnology.exchange.utils.exchangerate;
+package com.yuyutechnology.exchange.util.exchangerate;
 
 import java.util.Map;
 

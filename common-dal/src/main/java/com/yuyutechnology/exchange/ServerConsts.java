@@ -43,13 +43,13 @@ public class ServerConsts {
 
 	// 币种
 	public static final String CURRENCY_OF_GOLDPAY = "GDQ";
-	
+
 	public static final String CURRENCY_OF_GOLD = "XAU";
-	
+
 	public static final String CURRENCY_OF_CNH = "CNH";
-	
+
 	public static final String CURRENCY_OF_CNY = "CNY";
-	
+
 	public static final String CURRENCY_OF_USD = "USD";
 
 	// 交易类型
@@ -107,19 +107,19 @@ public class ServerConsts {
 	 * 审核失败
 	 */
 	public static final int TRANSFER_STATUS_OF_AUTOREVIEW_FAIL = 5;
-//	/**
-//	 * 提现二审成功 ，待支付
-//	 */
-//	public static final int TRANSFER_STATUS_OF_MANUALREVIEW_SUCCESS = 6;
-//	/**
-//	 * 提现二审失败，待退回
-//	 */
-//	public static final int TRANSFER_STATUS_OF_MANUALREVIEW_FAIL = 7;
+	// /**
+	// * 提现二审成功 ，待支付
+	// */
+	// public static final int TRANSFER_STATUS_OF_MANUALREVIEW_SUCCESS = 6;
+	// /**
+	// * 提现二审失败，待退回
+	// */
+	// public static final int TRANSFER_STATUS_OF_MANUALREVIEW_FAIL = 7;
 	/**
 	 * 支付失败
 	 */
 	public static final int TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL = 8;
-	
+
 	// notification状态
 	public static final int NOTIFICATION_STATUS_OF_PENDING = 0;
 	public static final int NOTIFICATION_STATUS_OF_ALREADY_PAID = 1;
@@ -177,6 +177,22 @@ public class ServerConsts {
 	 */
 	public static final int CURRENCY_UNAVAILABLE = 0;
 
+	/**
+	 * 坏账记录未处理
+	 */
+	public static final int BAD_ACCOUNT_STATUS_DEFAULT = 0;
+	/**
+	 * 坏账记录用户冻结
+	 */
+	public static final int BAD_ACCOUNT_STATUS_FREEZE_USER = 1;
+	/**
+	 * 坏账记录处理已失效
+	 */
+	public static final int BAD_ACCOUNT_STATUS_INVALID = 2;
+
+	/**
+	 * crm管理员默认密码
+	 */
 	public static final String ADMIN_DEFAULT_PASSWORD = "12345678";
 
 	public static final String WRONG_PASSWORD = "WPASSWORD";
@@ -200,43 +216,5 @@ public class ServerConsts {
 	 * 重置支付密码
 	 */
 	public static final String RESETPAYPWD = "RESETPAYPWD";
-	
-//	/**
-//	 * 审批状态-未审批
-//	 */
-//	public static final int REVIEW_STATUS_NEED = 0;
-//	/**
-//	 * 审批状态-未通过
-//	 */
-//	public static final int REVIEW_STATUS_FAIL = 1;
-//	/**
-//	 * 审批状态-通过
-//	 */
-//	public static final int REVIEW_STATUS_PASS = 2;
-//	
-//	/**
-//	 * goldPay划账结果-未执行
-//	 */
-//	public static final int GOLDPAY_REMIT_ = 0;
-//	/**
-//	 * goldPay划账结果-失败
-//	 */
-//	public static final int GOLDPAY_REMIT_FAIL = 1;
-//	/**
-//	 * goldPay划账结果-成功
-//	 */
-//	public static final int GOLDPAY_REMIT_SUCCESS= 2;	
-	/**
-	 * 坏账记录未处理
-	 */
-	public static final int BAD_ACCOUNT_STATUS_DEFAULT= 0;
-	/**
-	 * 坏账记录用户冻结
-	 */
-	public static final int BAD_ACCOUNT_STATUS_FREEZE_USER = 1;
-	/**
-	 * 坏账记录处理已失效
-	 */
-	public static final int BAD_ACCOUNT_STATUS_INVALID= 2;
-	
+
 }

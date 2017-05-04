@@ -15,9 +15,9 @@ import org.springframework.stereotype.Component;
 
 import com.yuyutechnology.exchange.server.controller.request.DecryptRequest;
 import com.yuyutechnology.exchange.server.controller.response.EncryptResponse;
-import com.yuyutechnology.exchange.utils.AESCipher;
-import com.yuyutechnology.exchange.utils.JsonBinder;
-import com.yuyutechnology.exchange.utils.ResourceUtils;
+import com.yuyutechnology.exchange.util.AESCipher;
+import com.yuyutechnology.exchange.util.JsonBinder;
+import com.yuyutechnology.exchange.util.ResourceUtils;
 
 /**
  * @author silent.sun

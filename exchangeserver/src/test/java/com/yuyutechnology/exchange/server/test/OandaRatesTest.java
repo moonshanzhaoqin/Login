@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.server.controller.TransferController;
-import com.yuyutechnology.exchange.utils.oanda.OandaRespData;
-import com.yuyutechnology.exchange.utils.oanda.PriceInfo;
+import com.yuyutechnology.exchange.util.oanda.OandaRespData;
+import com.yuyutechnology.exchange.util.oanda.PriceInfo;
 
 /**
  * @author silent.sun

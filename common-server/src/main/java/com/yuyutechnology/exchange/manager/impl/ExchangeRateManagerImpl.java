@@ -25,11 +25,11 @@ import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.SpareExchangeRateManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Wallet;
-import com.yuyutechnology.exchange.utils.HttpTookit;
-import com.yuyutechnology.exchange.utils.JsonBinder;
-import com.yuyutechnology.exchange.utils.ResourceUtils;
-import com.yuyutechnology.exchange.utils.exchangerate.ExchangeRate;
-import com.yuyutechnology.exchange.utils.exchangerate.GoldpayExchangeRate;
+import com.yuyutechnology.exchange.util.HttpTookit;
+import com.yuyutechnology.exchange.util.JsonBinder;
+import com.yuyutechnology.exchange.util.ResourceUtils;
+import com.yuyutechnology.exchange.util.exchangerate.ExchangeRate;
+import com.yuyutechnology.exchange.util.exchangerate.GoldpayExchangeRate;
 
 @Service
 public class ExchangeRateManagerImpl implements SpareExchangeRateManager {

@@ -25,7 +25,7 @@ import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.WalletManager;
-import com.yuyutechnology.exchange.utils.page.PageBean;
+import com.yuyutechnology.exchange.util.page.PageBean;
 
 @Controller
 public class BadAccountController {

@@ -23,7 +23,7 @@ import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionManager;
-import com.yuyutechnology.exchange.utils.page.PageBean;
+import com.yuyutechnology.exchange.util.page.PageBean;
 
 @Controller
 public class AccountInfoController {

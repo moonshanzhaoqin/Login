@@ -52,11 +52,11 @@ import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.sms.SendMessageResponse;
 import com.yuyutechnology.exchange.sms.SmsManager;
-import com.yuyutechnology.exchange.utils.JsonBinder;
-import com.yuyutechnology.exchange.utils.LanguageUtils;
-import com.yuyutechnology.exchange.utils.MathUtils;
-import com.yuyutechnology.exchange.utils.PasswordUtils;
-import com.yuyutechnology.exchange.utils.ResourceUtils;
+import com.yuyutechnology.exchange.util.JsonBinder;
+import com.yuyutechnology.exchange.util.LanguageUtils;
+import com.yuyutechnology.exchange.util.MathUtils;
+import com.yuyutechnology.exchange.util.PasswordUtils;
+import com.yuyutechnology.exchange.util.ResourceUtils;
 
 @Service
 public class UserManagerImpl implements UserManager {
@@ -169,7 +169,7 @@ public class UserManagerImpl implements UserManager {
 		logger.info("Check {}  user's password {} ==>", userId, userPassword);
 		CheckPwdResult result = new CheckPwdResult();
 		User user = userDAO.getUser(userId);
-		// 判断冻结
+		/* 判断冻结 */
 		if (user.getLoginAvailable() == ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE) {
 			String timeString = redisDAO.getValueByKey(ServerConsts.LOGIN_FREEZE + userId);
 			if (timeString != null) {
@@ -190,7 +190,7 @@ public class UserManagerImpl implements UserManager {
 			user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE);
 			userDAO.updateUser(user);
 		}
-		// 校验密码
+		/* 校验密码 */
 		if (PasswordUtils.check(userPassword, user.getUserPassword(), user.getPasswordSalt())) {
 			logger.info("***match***");
 			redisDAO.deleteData(ServerConsts.WRONG_PASSWORD + userId);
@@ -204,14 +204,14 @@ public class UserManagerImpl implements UserManager {
 				t += Long.valueOf(times).longValue();
 			}
 			if (t >= configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PASSWORD_FREQUENCY, 3l).longValue()) {
-				// 输出超过次数，冻结
+				/* 输出超过次数，冻结 */
 				logger.info("***Does not match, login is frozen!***");
 				redisDAO.saveData(ServerConsts.LOGIN_FREEZE + userId, new Date().getTime());
 				user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE);
 				userDAO.updateUser(user);
-				// 次数清零
+				/* 次数清零 */
 				redisDAO.deleteData(ServerConsts.WRONG_PASSWORD + userId);
-				// 计算到期时间
+				/* 计算到期时间 */
 				Calendar time = Calendar.getInstance();
 				time.add(Calendar.HOUR_OF_DAY,
 						configManager.getConfigLongValue(ConfigKeyEnum.LOGIN_UNAVAILIABLE_TIME, 24l).intValue());
@@ -446,7 +446,7 @@ public class UserManagerImpl implements UserManager {
 		accountingManager.snapshotToBefore(userId);
 		// 根据UNregistered 更新新用户钱包 将资金从系统帐户划给新用户
 		updateWalletsFromUnregistered(userId, areaCode, userPhone);
-		
+
 		return userId;
 	}
 
@@ -579,12 +579,11 @@ public class UserManagerImpl implements UserManager {
 			logger.info("+ {} : {}", unregistered.getCurrency(), unregistered.getAmount());
 
 			Transfer payerTransfer = transferDAO.getTransferById(unregistered.getTransferId());
-			
-			if (payerTransfer == null 
-					|| !unregistered.getUserPhone().equals(payerTransfer.getPhone()) 
-						|| !unregistered.getAreaCode().equals(payerTransfer.getAreaCode())
-							|| unregistered.getAmount().compareTo(payerTransfer.getTransferAmount()) != 0
-								|| !unregistered.getCurrency().equals(payerTransfer.getCurrency())) {
+
+			if (payerTransfer == null || !unregistered.getUserPhone().equals(payerTransfer.getPhone())
+					|| !unregistered.getAreaCode().equals(payerTransfer.getAreaCode())
+					|| unregistered.getAmount().compareTo(payerTransfer.getTransferAmount()) != 0
+					|| !unregistered.getCurrency().equals(payerTransfer.getCurrency())) {
 				logger.warn("Did not find the corresponding transfer information");
 				unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_ERROR);
 				unregisteredDAO.updateUnregistered(unregistered);

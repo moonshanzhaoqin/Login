@@ -22,7 +22,7 @@ import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.dao.AccountingDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
-import com.yuyutechnology.exchange.utils.DateFormatUtils;
+import com.yuyutechnology.exchange.util.DateFormatUtils;
 
 /**
  * @author silent.sun

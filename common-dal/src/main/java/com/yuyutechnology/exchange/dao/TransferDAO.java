@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.yuyutechnology.exchange.pojo.Transfer;
-import com.yuyutechnology.exchange.utils.page.PageBean;
+import com.yuyutechnology.exchange.util.page.PageBean;
 
 public interface TransferDAO {
 

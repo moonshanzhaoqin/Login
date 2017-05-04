@@ -49,7 +49,7 @@ import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.sms.SmsManager;
-import com.yuyutechnology.exchange.utils.DateFormatUtils;
+import com.yuyutechnology.exchange.util.DateFormatUtils;
 
 @Service
 public class TransferManagerImpl implements TransferManager{

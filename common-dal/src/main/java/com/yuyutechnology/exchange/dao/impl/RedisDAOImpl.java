@@ -10,7 +10,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.dao.RedisDAO;
-import com.yuyutechnology.exchange.utils.JsonBinder;
+import com.yuyutechnology.exchange.util.JsonBinder;
 
 @Repository
 public class RedisDAOImpl implements RedisDAO {

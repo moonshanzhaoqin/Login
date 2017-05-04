@@ -17,9 +17,9 @@ public interface UserManager {
 	 * 
 	 * @param areaCode
 	 * @param userPhone
-	 * @return 
+	 * @return
 	 */
-	public SendMessageResponse getPinCode(String func, String areaCode, String userPhone);
+	SendMessageResponse getPinCode(String func, String areaCode, String userPhone);
 
 	/**
 	 * 根据手机号码获取userID(用作判断是否为注册用户)
@@ -28,7 +28,7 @@ public interface UserManager {
 	 * @param userPhone
 	 * @return
 	 */
-	public Integer getUserId(String areaCode, String userPhone);
+	Integer getUserId(String areaCode, String userPhone);
 
 	/**
 	 * 获取用户基本信息
@@ -36,19 +36,7 @@ public interface UserManager {
 	 * @param userId
 	 * @return
 	 */
-	public UserInfo getUserInfo(Integer userId);
-
-	/**
-	 * 登录
-	 * 
-	 * @param areaCode
-	 * @param userPhone
-	 * @param userPassword
-	 * @param ip
-	 * @return
-	 */
-	// public Integer login(String areaCode, String userPhone, String
-	// userPassword, String ip);
+	UserInfo getUserInfo(Integer userId);
 
 	/**
 	 * 添加新用户
@@ -59,7 +47,7 @@ public interface UserManager {
 	 * @param userPassword
 	 * @return
 	 */
-	public Integer register(String areaCode, String userPhone, String userName, String userPassword, String loginIp,
+	Integer register(String areaCode, String userPhone, String userName, String userPassword, String loginIp,
 			String pushId, String language);
 
 	/**
@@ -70,7 +58,7 @@ public interface UserManager {
 	 * @param verificationCode
 	 * @return
 	 */
-	public boolean testPinCode(String func, String areaCode, String userPhone, String verificationCode);
+	boolean testPinCode(String func, String areaCode, String userPhone, String verificationCode);
 
 	/**
 	 * 更改密码
@@ -79,7 +67,7 @@ public interface UserManager {
 	 * @param newPassword
 	 * @return
 	 */
-	public void updatePassword(Integer userId, String newPassword);
+	void updatePassword(Integer userId, String newPassword);
 
 	/**
 	 * 更改支付密码
@@ -88,16 +76,7 @@ public interface UserManager {
 	 * @param userPayPwd
 	 * @return
 	 */
-	public void updateUserPayPwd(Integer userId, String userPayPwd);
-
-	// /**
-	// * 校验支付密码
-	// *
-	// * @param userId
-	// * @param userPayPwd
-	// * @return
-	// */
-	// public boolean checkUserPayPwd(Integer userId, String userPayPwd);
+	void updateUserPayPwd(Integer userId, String userPayPwd);
 
 	/**
 	 * 绑定goldpay
@@ -106,15 +85,7 @@ public interface UserManager {
 	 * @param goldpayToken
 	 * @return
 	 */
-	public String bindGoldpay(Integer userId, String goldpayToken);
-	//
-	// /**
-	// * 校验用户密码
-	// *
-	// * @param userId
-	// * @param oldPassword
-	// */
-	// public boolean checkUserPassword(Integer userId, String oldPassword) ;
+	String bindGoldpay(Integer userId, String goldpayToken);
 
 	/**
 	 * 校验Goldpay
@@ -123,7 +94,7 @@ public interface UserManager {
 	 * @param goldpayPassword
 	 * @return
 	 */
-	public String checkGoldpay(Integer userId, String goldpayName, String goldpayPassword);
+	String checkGoldpay(Integer userId, String goldpayName, String goldpayPassword);
 
 	/**
 	 * 获取好友列表
@@ -131,7 +102,7 @@ public interface UserManager {
 	 * @param userId
 	 * @return
 	 */
-	public List<Friend> getFriends(Integer userId);
+	List<Friend> getFriends(Integer userId);
 
 	/**
 	 * 添加好友
@@ -142,7 +113,7 @@ public interface UserManager {
 	 * @param userPhone
 	 * @return
 	 */
-	public String addfriend(Integer userId, String areaCode, String userPhone);
+	String addfriend(Integer userId, String areaCode, String userPhone);
 
 	/**
 	 * 换绑手机
@@ -151,7 +122,7 @@ public interface UserManager {
 	 * @param areaCode
 	 * @param userPhone
 	 */
-	public void changePhone(Integer userId, String areaCode, String userPhone);
+	void changePhone(Integer userId, String areaCode, String userPhone);
 
 	/**
 	 * 更新登录信息
@@ -161,14 +132,14 @@ public interface UserManager {
 	 * @param pushId
 	 * @param pushTag
 	 */
-	public void updateUser(Integer userId, String loginIp, String pushId, String pushTag);
+	void updateUser(Integer userId, String loginIp, String pushId, String pushTag);
 
 	/**
 	 * 更新钱包
 	 * 
 	 * @param userId
 	 */
-	public void updateWallet(Integer userId);
+	void updateWallet(Integer userId);
 
 	/**
 	 * 更新用户名
@@ -176,7 +147,7 @@ public interface UserManager {
 	 * @param userId
 	 * @param newUserName
 	 */
-	public void updateUserName(Integer userId, String newUserName);
+	void updateUserName(Integer userId, String newUserName);
 
 	/**
 	 * 切换语言
@@ -184,14 +155,14 @@ public interface UserManager {
 	 * @param userId
 	 * @param language
 	 */
-	public void switchLanguage(Integer userId, String language);
+	void switchLanguage(Integer userId, String language);
 
 	/**
 	 * 退出账号处理相关数据
 	 * 
 	 * @param userId
 	 */
-	public void logout(Integer userId);
+	void logout(Integer userId);
 
 	/**
 	 * 清除验证码
@@ -199,6 +170,7 @@ public interface UserManager {
 	 * @param func
 	 * @param areaCode
 	 * @param userPhone
+	 * @return
 	 */
 	void clearPinCode(String func, String areaCode, String userPhone);
 
@@ -209,7 +181,7 @@ public interface UserManager {
 	 * @return
 	 * @throws ParseException
 	 */
-	public long checkChangePhoneTime(Integer userId) throws ParseException;
+	long checkChangePhoneTime(Integer userId) throws ParseException;
 
 	/**
 	 * 删除好友
@@ -219,15 +191,20 @@ public interface UserManager {
 	 * @param phone
 	 * @return
 	 */
-	public String deleteFriend(Integer userId, String areaCode, String phone);
+	String deleteFriend(Integer userId, String areaCode, String phone);
 
-	public User getSystemUser();
+	/**
+	 * 获取系统用户
+	 * 
+	 * @return
+	 */
+	User getSystemUser();
 
-	public List<User> getUserList();
+	List<User> getUserList();
 
-	public void userFreeze(Integer userId, int userAvailable);
+	void userFreeze(Integer userId, int userAvailable);
 
-	public String getUserConfigAndUpdate(Integer userId, UserConfigKeyEnum key, String value);
+	String getUserConfigAndUpdate(Integer userId, UserConfigKeyEnum key, String value);
 
 	/**
 	 * 判断是否为新设备
@@ -236,7 +213,7 @@ public interface UserManager {
 	 * @param deviceId
 	 * @return
 	 */
-	public boolean isNewDevice(Integer userId, String deviceId);
+	boolean isNewDevice(Integer userId, String deviceId);
 
 	/**
 	 * 添加新设备
@@ -248,15 +225,21 @@ public interface UserManager {
 	void addDevice(Integer userId, String deviceId, String deviceName);
 
 	/**
-	 * 是否登录冻结
+	 * 校验登录密码
 	 * 
 	 * @param userId
+	 * @param userPassword
 	 * @return
 	 */
-	// public boolean isLoginAvailiable(Integer userId);
-
 	CheckPwdResult checkLoginPassword(Integer userId, String userPassword);
 
+	/**
+	 * 校验支付密码
+	 * 
+	 * @param userId
+	 * @param userPayPwd
+	 * @return
+	 */
 	CheckPwdResult checkPayPassword(Integer userId, String userPayPwd);
 
 	/**
@@ -266,6 +249,6 @@ public interface UserManager {
 	 * @param newUserPayPwd
 	 * @return
 	 */
-	public boolean isUserPayPwdEqualsOld(Integer userId, String newUserPayPwd);
+	boolean isUserPayPwdEqualsOld(Integer userId, String newUserPayPwd);
 
 }

@@ -1,4 +1,4 @@
-package com.yuyutechnology.exchange.utils.page;
+package com.yuyutechnology.exchange.util.page;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -206,8 +206,4 @@ public class PageUtils {
 		return pageTotal>=1?pageTotal:1;
 	}
 	
-	public static void main(String[] args){
-		int retCode = getPageTotal(0, 10);
-		log.info("retCode = {}",retCode);
-	}
 }

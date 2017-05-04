@@ -39,10 +39,10 @@ import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
-import com.yuyutechnology.exchange.utils.HttpTookit;
-import com.yuyutechnology.exchange.utils.JsonBinder;
-import com.yuyutechnology.exchange.utils.ResourceUtils;
-import com.yuyutechnology.exchange.utils.page.PageBean;
+import com.yuyutechnology.exchange.util.HttpTookit;
+import com.yuyutechnology.exchange.util.JsonBinder;
+import com.yuyutechnology.exchange.util.ResourceUtils;
+import com.yuyutechnology.exchange.util.page.PageBean;
 
 @Service
 public class GoldpayTransManagerImpl implements GoldpayTransManager {

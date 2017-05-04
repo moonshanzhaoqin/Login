@@ -55,7 +55,7 @@ import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody
 import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
-import com.yuyutechnology.exchange.utils.MathUtils;
+import com.yuyutechnology.exchange.util.MathUtils;
 
 @Controller
 public class TransferController {

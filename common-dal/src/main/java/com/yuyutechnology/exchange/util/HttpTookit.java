@@ -1,4 +1,4 @@
-package com.yuyutechnology.exchange.utils;
+package com.yuyutechnology.exchange.util;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;

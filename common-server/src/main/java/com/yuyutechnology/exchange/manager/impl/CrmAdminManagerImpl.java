@@ -13,8 +13,8 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.AdminDAO;
 import com.yuyutechnology.exchange.manager.CrmAdminManager;
 import com.yuyutechnology.exchange.pojo.Admin;
-import com.yuyutechnology.exchange.utils.MathUtils;
-import com.yuyutechnology.exchange.utils.PasswordUtils;
+import com.yuyutechnology.exchange.util.MathUtils;
+import com.yuyutechnology.exchange.util.PasswordUtils;
 
 @Service
 public class CrmAdminManagerImpl implements CrmAdminManager {
