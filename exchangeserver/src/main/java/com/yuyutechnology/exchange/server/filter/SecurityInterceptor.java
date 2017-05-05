@@ -4,7 +4,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
 import com.yuyutechnology.exchange.server.controller.request.BaseRequest;
-import com.yuyutechnology.exchange.utils.JsonBinder;
+import com.yuyutechnology.exchange.util.JsonBinder;
 
 public class SecurityInterceptor implements MethodInterceptor {
 

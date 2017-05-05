@@ -16,7 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.yuyutechnology.exchange.RetCodeConsts;
-import com.yuyutechnology.exchange.utils.JsonBinder;
+import com.yuyutechnology.exchange.util.JsonBinder;
 
 /**
  * 登录拦截器

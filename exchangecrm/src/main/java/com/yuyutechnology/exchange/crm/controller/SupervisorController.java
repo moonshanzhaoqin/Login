@@ -21,7 +21,7 @@ import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
 import com.yuyutechnology.exchange.pojo.CrmSupervisor;
-import com.yuyutechnology.exchange.utils.JsonBinder;
+import com.yuyutechnology.exchange.util.JsonBinder;
 
 @Controller
 public class SupervisorController {

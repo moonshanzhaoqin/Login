@@ -44,8 +44,8 @@ import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBod
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionManager;
 import com.yuyutechnology.exchange.sms.SendMessageResponse;
-import com.yuyutechnology.exchange.utils.HttpTookit;
-import com.yuyutechnology.exchange.utils.UidUtils;
+import com.yuyutechnology.exchange.util.HttpTookit;
+import com.yuyutechnology.exchange.util.UidUtils;
 
 /**
  * @author suzan.wu

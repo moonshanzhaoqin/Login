@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.dao.CrmUserInfoDAO;
 import com.yuyutechnology.exchange.pojo.CrmUserInfo;
-import com.yuyutechnology.exchange.utils.page.PageUtils;
+import com.yuyutechnology.exchange.util.page.PageUtils;
 
 @Repository
 public class CrmUserInfoDAOImpl implements CrmUserInfoDAO {

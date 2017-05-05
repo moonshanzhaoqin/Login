@@ -17,8 +17,8 @@ import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.manager.WalletManager;
 import com.yuyutechnology.exchange.pojo.BadAccount;
 import com.yuyutechnology.exchange.pojo.Wallet;
-import com.yuyutechnology.exchange.utils.ResourceUtils;
-import com.yuyutechnology.exchange.utils.page.PageBean;
+import com.yuyutechnology.exchange.util.ResourceUtils;
+import com.yuyutechnology.exchange.util.page.PageBean;
 
 @Service
 public class WalletManagerImpl implements WalletManager {

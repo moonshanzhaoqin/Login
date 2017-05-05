@@ -1,4 +1,4 @@
-package com.yuyutechnology.exchange.utils.exchangerate;
+package com.yuyutechnology.exchange.util.exchangerate;
 
 import java.math.BigDecimal;
 import java.util.Date;

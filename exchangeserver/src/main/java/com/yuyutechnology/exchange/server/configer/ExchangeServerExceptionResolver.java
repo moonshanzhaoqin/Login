@@ -16,7 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
-import com.yuyutechnology.exchange.utils.JsonBinder;
+import com.yuyutechnology.exchange.util.JsonBinder;
 /**
  * @author silent.sun
  *

@@ -1,4 +1,4 @@
-package com.yuyutechnology.exchange.utils;
+package com.yuyutechnology.exchange.util;
 
 import java.util.ResourceBundle;
 

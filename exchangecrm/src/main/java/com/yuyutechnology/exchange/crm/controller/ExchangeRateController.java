@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
-import com.yuyutechnology.exchange.utils.oanda.PriceInfo;
+import com.yuyutechnology.exchange.util.oanda.PriceInfo;
 
 @Controller
 public class ExchangeRateController {

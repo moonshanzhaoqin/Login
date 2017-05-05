@@ -17,8 +17,8 @@ import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.dao.BadAccountDAO;
 import com.yuyutechnology.exchange.pojo.BadAccount;
-import com.yuyutechnology.exchange.utils.page.PageBean;
-import com.yuyutechnology.exchange.utils.page.PageUtils;
+import com.yuyutechnology.exchange.util.page.PageBean;
+import com.yuyutechnology.exchange.util.page.PageUtils;
 
 /**
  * @author silent.sun

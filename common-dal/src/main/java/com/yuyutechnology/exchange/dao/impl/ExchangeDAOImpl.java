@@ -18,7 +18,7 @@ import org.springframework.stereotype.Repository;
 import com.yuyutechnology.exchange.dao.ExchangeDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.pojo.Exchange;
-import com.yuyutechnology.exchange.utils.page.PageUtils;
+import com.yuyutechnology.exchange.util.page.PageUtils;
 
 @Repository
 public class ExchangeDAOImpl implements ExchangeDAO {

@@ -20,7 +20,7 @@ import com.yuyutechnology.exchange.crm.request.GetWithdrawListRequest;
 import com.yuyutechnology.exchange.crm.request.WithdrawRequest;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
-import com.yuyutechnology.exchange.utils.page.PageBean;
+import com.yuyutechnology.exchange.util.page.PageBean;
 
 @Controller
 public class WithdrawController {
