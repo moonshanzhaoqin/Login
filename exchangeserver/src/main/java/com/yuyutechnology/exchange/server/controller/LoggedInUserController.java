@@ -205,7 +205,7 @@ public class LoggedInUserController {
 				logger.info(MessageConsts.TIME_NOT_ARRIVED);
 				rep.setRetCode(RetCodeConsts.TIME_NOT_ARRIVED);
 				rep.setMessage(MessageConsts.TIME_NOT_ARRIVED);
-				rep.setTime(time);
+//				rep.setTime(time);
 				rep.setOpts(new String[] { String.valueOf(time) });
 			} else if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_CHANGEPHONE,
 					changePhoneRequest.getCheckToken())) {
@@ -255,7 +255,7 @@ public class LoggedInUserController {
 			logger.info(MessageConsts.TIME_NOT_ARRIVED);
 			rep.setRetCode(RetCodeConsts.TIME_NOT_ARRIVED);
 			rep.setMessage(MessageConsts.TIME_NOT_ARRIVED);
-			rep.setTime(time);
+//			rep.setTime(time);
 			rep.setOpts(new String[] { String.valueOf(time) });
 		} else {
 			logger.info("********Operation succeeded********");
