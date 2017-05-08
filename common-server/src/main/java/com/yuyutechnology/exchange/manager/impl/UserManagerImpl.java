@@ -169,6 +169,7 @@ public class UserManagerImpl implements UserManager {
 		logger.info("Check {}  user's password {} ==>", userId, userPassword);
 		CheckPwdResult result = new CheckPwdResult();
 		User user = userDAO.getUser(userId);
+
 		/* 判断冻结 */
 		if (user.getLoginAvailable() == ServerConsts.LOGIN_AVAILABLE_OF_UNAVAILABLE) {
 			String timeString = redisDAO.getValueByKey(ServerConsts.LOGIN_FREEZE + userId);
@@ -176,7 +177,7 @@ public class UserManagerImpl implements UserManager {
 				Calendar time = Calendar.getInstance();
 				time.setTimeInMillis(Long.valueOf(timeString).longValue());
 				time.add(Calendar.HOUR_OF_DAY,
-						configManager.getConfigLongValue(ConfigKeyEnum.LOGIN_UNAVAILIABLE_TIME, 24l).intValue());
+						configManager.getConfigLongValue(ConfigKeyEnum.LOGIN_UNAVAILIABLE_TIME, 24L).intValue());
 
 				if (new Date().before(time.getTime())) {
 					logger.info("***Login is frozen!***");
@@ -190,6 +191,7 @@ public class UserManagerImpl implements UserManager {
 			user.setLoginAvailable(ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE);
 			userDAO.updateUser(user);
 		}
+
 		/* 校验密码 */
 		if (PasswordUtils.check(userPassword, user.getUserPassword(), user.getPasswordSalt())) {
 			logger.info("***match***");
@@ -203,7 +205,7 @@ public class UserManagerImpl implements UserManager {
 			if (times != null) {
 				t += Long.valueOf(times).longValue();
 			}
-			if (t >= configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PASSWORD_FREQUENCY, 3l).longValue()) {
+			if (t >= configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PASSWORD_FREQUENCY, 3L).longValue()) {
 				/* 输出超过次数，冻结 */
 				logger.info("***Does not match, login is frozen!***");
 				redisDAO.saveData(ServerConsts.LOGIN_FREEZE + userId, new Date().getTime());
@@ -220,13 +222,13 @@ public class UserManagerImpl implements UserManager {
 				result.setInfo(time.getTime().getTime());
 				return result;
 			}
-			// 每日24点错误次数清零
+			/*每日24点错误次数清零*/
 			Calendar cal = Calendar.getInstance();
 			cal.set(Calendar.HOUR_OF_DAY, 24);
 			cal.set(Calendar.SECOND, 0);
 			cal.set(Calendar.MINUTE, 0);
 			cal.set(Calendar.MILLISECOND, 0);
-			// 记录错误次数
+			/* 记录错误次数*/
 			redisDAO.saveData(ServerConsts.WRONG_PASSWORD + userId, t, cal.getTime());
 			logger.info("***Does not match,{}***", t);
 			result.setStatus(ServerConsts.CHECKPWD_STATUS_INCORRECT);
