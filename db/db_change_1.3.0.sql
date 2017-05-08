@@ -72,3 +72,10 @@ alter table `e_bind` add unique `index_user_id` (`user_id`);
 -- 2017/04/27 suzan
 ALTER TABLE `anytime_exchange`.`e_transfer`
   ADD COLUMN `goldpay_acount` varchar(255) NULL DEFAULT NULL;
+  
+ 
+--2017/0508 Niklaus
+alter table `e_transfer` add column `user_comment` varchar(255) after `transfer_comment`;
+  
+  
+  

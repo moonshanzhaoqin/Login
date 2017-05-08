@@ -31,6 +31,7 @@ public class Transfer implements java.io.Serializable {
 	private String currency;
 	private BigDecimal transferAmount;
 	private String transferComment;
+	private String userComment;
 	private Date createTime;
 	private Date finishTime;
 	private int transferStatus;
@@ -55,9 +56,13 @@ public class Transfer implements java.io.Serializable {
 		this.transferType = transferType;
 	}
 
+
+
 	public Transfer(String transferId, int userFrom, int userTo, String areaCode, String phone, String currency,
-			BigDecimal transferAmount, String transferComment, Date createTime, Date finishTime, int transferStatus,
-			int transferType, Integer noticeId,String goldpayResult,String goldpayName,String goldpayAcount) {
+			BigDecimal transferAmount, String transferComment, String userComment, Date createTime, Date finishTime,
+			int transferStatus, int transferType, Integer noticeId, Integer version, String goldpayResult,
+			String goldpayName, String goldpayAcount) {
+		super();
 		this.transferId = transferId;
 		this.userFrom = userFrom;
 		this.userTo = userTo;
@@ -66,11 +71,13 @@ public class Transfer implements java.io.Serializable {
 		this.currency = currency;
 		this.transferAmount = transferAmount;
 		this.transferComment = transferComment;
+		this.userComment = userComment;
 		this.createTime = createTime;
 		this.finishTime = finishTime;
 		this.transferStatus = transferStatus;
 		this.transferType = transferType;
 		this.noticeId = noticeId;
+		this.version = version;
 		this.goldpayResult = goldpayResult;
 		this.goldpayName = goldpayName;
 		this.goldpayAcount = goldpayAcount;
@@ -147,6 +154,15 @@ public class Transfer implements java.io.Serializable {
 
 	public void setTransferComment(String transferComment) {
 		this.transferComment = transferComment;
+	}
+
+	@Column(name = "user_comment")
+	public String getUserComment() {
+		return userComment;
+	}
+
+	public void setUserComment(String userComment) {
+		this.userComment = userComment;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
