@@ -116,7 +116,10 @@ public class MessageConsts {
 	 */
 	public static final String GOLDPAY_NOT_MATCH_BIND = "GOLDPAY_NOT_MATCH_BIND";
 	
-	
+	/**
+	 * 没有获取验证码
+	 */
+	public static final String NOT_GET_CODE = "NOT_GET_CODE";
 	
 	
 	

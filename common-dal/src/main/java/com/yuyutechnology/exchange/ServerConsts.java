@@ -107,14 +107,6 @@ public class ServerConsts {
 	 * 审核失败
 	 */
 	public static final int TRANSFER_STATUS_OF_AUTOREVIEW_FAIL = 5;
-	// /**
-	// * 提现二审成功 ，待支付
-	// */
-	// public static final int TRANSFER_STATUS_OF_MANUALREVIEW_SUCCESS = 6;
-	// /**
-	// * 提现二审失败，待退回
-	// */
-	// public static final int TRANSFER_STATUS_OF_MANUALREVIEW_FAIL = 7;
 	/**
 	 * 支付失败
 	 */

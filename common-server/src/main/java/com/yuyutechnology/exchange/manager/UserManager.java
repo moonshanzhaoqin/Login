@@ -58,7 +58,7 @@ public interface UserManager {
 	 * @param verificationCode
 	 * @return
 	 */
-	boolean testPinCode(String func, String areaCode, String userPhone, String verificationCode);
+	Boolean testPinCode(String func, String areaCode, String userPhone, String verificationCode);
 
 	/**
 	 * 更改密码

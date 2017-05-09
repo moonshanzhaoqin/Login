@@ -103,6 +103,34 @@ public class PushManager {
 	// zh_hk
 	private StringBuffer offline_hk = new StringBuffer();
 
+	/* 提现成功 withdraw_complete */
+	// en_us
+	private StringBuffer withdraw_complete_title_en = new StringBuffer();
+	// zh_cn
+	private StringBuffer withdraw_complete_title_cn = new StringBuffer();
+	// zh_hk
+	private StringBuffer withdraw_complete_title_hk = new StringBuffer();
+	// en_us
+	private StringBuffer withdraw_complete_en = new StringBuffer();
+	// zh_cn
+	private StringBuffer withdraw_complete_cn = new StringBuffer();
+	// zh_hk
+	private StringBuffer withdraw_complete_hk = new StringBuffer();
+
+	/* 提现退回 withdraw_refund */
+	// en_us
+	private StringBuffer withdraw_refund_title_en = new StringBuffer();
+	// zh_cn
+	private StringBuffer withdraw_refund_title_cn = new StringBuffer();
+	// zh_hk
+	private StringBuffer withdraw_refund_title_hk = new StringBuffer();
+	// en_us
+	private StringBuffer withdraw_refund_en = new StringBuffer();
+	// zh_cn
+	private StringBuffer withdraw_refund_cn = new StringBuffer();
+	// zh_hk
+	private StringBuffer withdraw_refund_hk = new StringBuffer();
+
 	private final String PUSH_REPLACE_FROM = "[FROM]";
 	private final String PUSH_REPLACE_TO = "[TO]";
 	private final String PUSH_REPLACE_CURRENCY = "[CURRENCY]";
@@ -129,6 +157,17 @@ public class PushManager {
 		readTemplate("template/push/en_US/offline.template", offline_title_en, offline_en);
 		readTemplate("template/push/zh_CN/offline.template", offline_title_cn, offline_cn);
 		readTemplate("template/push/zh_HK/offline.template", offline_title_hk, offline_hk);
+
+		readTemplate("template/push/en_US/withdraw_complete.template", withdraw_complete_title_en,
+				withdraw_complete_en);
+		readTemplate("template/push/zh_CN/withdraw_complete.template", withdraw_complete_title_cn,
+				withdraw_complete_cn);
+		readTemplate("template/push/zh_HK/withdraw_complete.template", withdraw_complete_title_hk,
+				withdraw_complete_hk);
+
+		readTemplate("template/push/en_US/withdraw_refund.template", withdraw_refund_title_en, withdraw_refund_en);
+		readTemplate("template/push/zh_CN/withdraw_refund.template", withdraw_refund_title_cn, withdraw_refund_cn);
+		readTemplate("template/push/zh_HK/withdraw_refund.template", withdraw_refund_title_hk, withdraw_refund_hk);
 
 	}
 
@@ -236,6 +275,33 @@ public class PushManager {
 	}
 
 	/**
+	 * 提现成功
+	 * 
+	 * @param pushId
+	 * @param pushTag
+	 * @param amount
+	 */
+	@Async
+	public void push4WithdrawComplete(String pushId, Language pushTag, BigDecimal amount) {
+		String title = titleChoose("withdraw_complete", pushTag);
+		String offlineBody = templateChoose("withdraw_complete", pushTag);
+		String body = offlineBody.replace(PUSH_REPLACE_AMOUNT, GDQ.format(amount));
+		Map<String, String> ext = new HashMap<>();
+		ext.put("type", "withdraw_complete");
+		pushToCustom(pushId, title, body, JsonBinder.getInstance().toJson(ext));
+	}
+
+	@Async
+	public void push4WithdrawRefund(String pushId, Language pushTag, BigDecimal amount) {
+		String title = titleChoose("withdraw_refund", pushTag);
+		String offlineBody = templateChoose("withdraw_refund", pushTag);
+		String body = offlineBody.replace(PUSH_REPLACE_AMOUNT, GDQ.format(amount));
+		Map<String, String> ext = new HashMap<>();
+		ext.put("type", "withdraw_refund");
+		pushToCustom(pushId, title, body, JsonBinder.getInstance().toJson(ext));
+	}
+
+	/**
 	 * 绑定Tag
 	 * 
 	 * @param user
@@ -326,6 +392,36 @@ public class PushManager {
 				break;
 			}
 			break;
+		case "withdraw_complete":
+			switch (pushTag) {
+			case en_US:
+				body = withdraw_complete_en;
+				break;
+			case zh_CN:
+				body = withdraw_complete_cn;
+				break;
+			case zh_TW:
+				body = withdraw_complete_hk;
+				break;
+			default:
+				break;
+			}
+			break;
+		case "withdraw_refund":
+			switch (pushTag) {
+			case en_US:
+				body = withdraw_refund_en;
+				break;
+			case zh_CN:
+				body = withdraw_refund_cn;
+				break;
+			case zh_TW:
+				body = withdraw_refund_hk;
+				break;
+			default:
+				break;
+			}
+			break;
 		default:
 			body = new StringBuffer();
 		}
@@ -397,6 +493,36 @@ public class PushManager {
 				break;
 			case zh_TW:
 				title = offline_title_hk;
+				break;
+			default:
+				break;
+			}
+			break;
+		case "withdraw_complete":
+			switch (pushTag) {
+			case en_US:
+				title = withdraw_complete_title_en;
+				break;
+			case zh_CN:
+				title = withdraw_complete_title_cn;
+				break;
+			case zh_TW:
+				title = withdraw_complete_title_hk;
+				break;
+			default:
+				break;
+			}
+			break;
+		case "withdraw_refund":
+			switch (pushTag) {
+			case en_US:
+				title = withdraw_refund_title_en;
+				break;
+			case zh_CN:
+				title = withdraw_refund_title_cn;
+				break;
+			case zh_TW:
+				title = withdraw_refund_title_hk;
 				break;
 			default:
 				break;

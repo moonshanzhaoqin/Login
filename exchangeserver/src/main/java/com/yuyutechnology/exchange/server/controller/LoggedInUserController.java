@@ -205,13 +205,20 @@ public class LoggedInUserController {
 				logger.info(MessageConsts.TIME_NOT_ARRIVED);
 				rep.setRetCode(RetCodeConsts.TIME_NOT_ARRIVED);
 				rep.setMessage(MessageConsts.TIME_NOT_ARRIVED);
-//				rep.setTime(time);
+				// rep.setTime(time);
 				rep.setOpts(new String[] { String.valueOf(time) });
 			} else if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_CHANGEPHONE,
 					changePhoneRequest.getCheckToken())) {
+				// TODO 判断是否获取过验证码
 				// 校验手机验证码
-				if (userManager.testPinCode(ServerConsts.PIN_FUNC_CHANGEPHONE, changePhoneRequest.getAreaCode(),
-						changePhoneRequest.getUserPhone(), changePhoneRequest.getVerificationCode())) {
+				Boolean resultBool = userManager.testPinCode(ServerConsts.PIN_FUNC_CHANGEPHONE,
+						changePhoneRequest.getAreaCode(), changePhoneRequest.getUserPhone(),
+						changePhoneRequest.getVerificationCode());
+				if (resultBool == null) {
+					logger.info(MessageConsts.NOT_GET_CODE);
+					rep.setRetCode(RetCodeConsts.NOT_GET_CODE);
+					rep.setMessage(MessageConsts.NOT_GET_CODE);
+				} else if (resultBool.booleanValue()) {
 					userManager.changePhone(sessionData.getUserId(), changePhoneRequest.getAreaCode(),
 							changePhoneRequest.getUserPhone());
 					sessionManager.cleanSession(sessionData.getSessionId());
@@ -255,7 +262,7 @@ public class LoggedInUserController {
 			logger.info(MessageConsts.TIME_NOT_ARRIVED);
 			rep.setRetCode(RetCodeConsts.TIME_NOT_ARRIVED);
 			rep.setMessage(MessageConsts.TIME_NOT_ARRIVED);
-//			rep.setTime(time);
+			// rep.setTime(time);
 			rep.setOpts(new String[] { String.valueOf(time) });
 		} else {
 			logger.info("********Operation succeeded********");
@@ -292,14 +299,14 @@ public class LoggedInUserController {
 				logger.info(MessageConsts.PAY_FREEZE);
 				rep.setRetCode(RetCodeConsts.PAY_FREEZE);
 				rep.setMessage(String.valueOf(result.getInfo()));
-				rep.setOpts(new String[]{String.valueOf(result.getInfo())});
+				rep.setOpts(new String[] { String.valueOf(result.getInfo()) });
 				break;
 
 			case ServerConsts.CHECKPWD_STATUS_INCORRECT:
 				logger.info(MessageConsts.PAY_PWD_NOT_MATCH);
 				rep.setRetCode(RetCodeConsts.PAY_PWD_NOT_MATCH);
 				rep.setMessage(String.valueOf(result.getInfo()));
-				rep.setOpts(new String[]{String.valueOf(result.getInfo())});
+				rep.setOpts(new String[] { String.valueOf(result.getInfo()) });
 				break;
 
 			case ServerConsts.CHECKPWD_STATUS_CORRECT:
@@ -392,13 +399,13 @@ public class LoggedInUserController {
 				logger.info(MessageConsts.LOGIN_FREEZE);
 				rep.setRetCode(RetCodeConsts.LOGIN_FREEZE);
 				rep.setMessage(String.valueOf(result.getInfo()));
-				rep.setOpts(new String[]{String.valueOf(result.getInfo())});
+				rep.setOpts(new String[] { String.valueOf(result.getInfo()) });
 				break;
 			case ServerConsts.CHECKPWD_STATUS_INCORRECT:
 				logger.info(MessageConsts.PASSWORD_NOT_MATCH);
 				rep.setRetCode(RetCodeConsts.PASSWORD_NOT_MATCH);
 				rep.setMessage(String.valueOf(result.getInfo()));
-				rep.setOpts(new String[]{String.valueOf(result.getInfo())});
+				rep.setOpts(new String[] { String.valueOf(result.getInfo()) });
 				break;
 			case ServerConsts.CHECKPWD_STATUS_CORRECT:
 				if (modifyPasswordRequest.getOldPassword().equals(modifyPasswordRequest.getNewPassword())) {
