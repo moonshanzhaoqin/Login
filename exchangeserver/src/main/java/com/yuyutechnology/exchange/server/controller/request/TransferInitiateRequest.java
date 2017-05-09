@@ -6,7 +6,7 @@ public class TransferInitiateRequest {
 	private String userPhone;
 	private String currency;
 	private double amount;
-	private String userComment;
+	private String transferComment;
 	
 	public String getAreaCode() {
 		return areaCode;
@@ -32,10 +32,11 @@ public class TransferInitiateRequest {
 	public void setAmount(double amount) {
 		this.amount = amount;
 	}
-	public String getUserComment() {
-		return userComment;
+	public String getTransferComment() {
+		return transferComment;
 	}
-	public void setUserComment(String userComment) {
-		this.userComment = userComment;
+	public void setTransferComment(String transferComment) {
+		this.transferComment = transferComment;
 	}
+
 }

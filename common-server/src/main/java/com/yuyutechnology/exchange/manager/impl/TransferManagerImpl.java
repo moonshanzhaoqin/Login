@@ -94,7 +94,7 @@ public class TransferManagerImpl implements TransferManager{
 	@SuppressWarnings("serial")
 	@Override
 	public HashMap<String, String> transferInitiate(final int userId,String areaCode,String userPhone, final String currency, 
-			final BigDecimal amount, String userComment,int noticeId) {
+			final BigDecimal amount, String transferComment,int noticeId) {
 
 		//干扰条件过滤
 		LinkedHashMap<String, Object> args = new LinkedHashMap<>();		
@@ -132,8 +132,7 @@ public class TransferManagerImpl implements TransferManager{
 		transfer.setCreateTime(new Date());
 		transfer.setCurrency(currency);
 		transfer.setTransferAmount(amount);
-//		transfer.setTransferComment(transferComment);
-		transfer.setUserComment(userComment);
+		transfer.setTransferComment(transferComment);
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		transfer.setUserFrom(userId);
 		transfer.setAreaCode(areaCode);

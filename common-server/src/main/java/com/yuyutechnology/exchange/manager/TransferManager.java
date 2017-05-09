@@ -20,7 +20,7 @@ public interface TransferManager {
 	 * @return
 	 */
 	public HashMap<String, String> transferInitiate(int userId,String areaCode,
-			String userPhone,String currency,BigDecimal amount,String userComment,int noticeId);
+			String userPhone,String currency,BigDecimal amount,String transferComment,int noticeId);
 	
 	/**
 	 * @Descrition : 支付密码验证

@@ -75,7 +75,7 @@ ALTER TABLE `anytime_exchange`.`e_transfer`
   
  
 --2017/0508 Niklaus
-alter table `e_transfer` add column `user_comment` varchar(255) after `transfer_comment`;
+--alter table `e_transfer` add column `user_comment` varchar(255) after `transfer_comment`;
   
   
   
