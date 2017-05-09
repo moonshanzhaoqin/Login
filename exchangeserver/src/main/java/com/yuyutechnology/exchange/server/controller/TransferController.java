@@ -108,10 +108,9 @@ public class TransferController {
 		}
 
 		HashMap<String, String> map = transferManager.transferInitiate(sessionData.getUserId(), reqMsg.getAreaCode(),
-				reqMsg.getUserPhone(), reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())),
-				reqMsg.getUserComment(), 0);
-
-		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
+				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())),reqMsg.getTransferComment(),0);
+		
+		if(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)){
 			rep.setTransferId(map.get("transferId"));
 		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY)) {
 			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit"), map.get("thawTime") });
@@ -455,7 +454,7 @@ public class TransferController {
 				rep.setTransferType(1);
 			}
 			rep.setGoldpayName(MathUtils.hideString(transfer.getGoldpayName()));
-			rep.setUserComment(transfer.getUserComment());
+			rep.setTransferComment(transfer.getTransferComment());
 			rep.setCreateTime(transfer.getCreateTime());
 			rep.setFinishTime(transfer.getFinishTime());
 			rep.setTransferId(transfer.getTransferId());

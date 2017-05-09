@@ -84,30 +84,29 @@ public class SmsManager {
 	@PostConstruct
 	@Scheduled(cron = "0 1/2 * * * ?")
 	public void init() {
-		readTemplate("template/sms/en_US/phoneVerify.template", phoneVerify_en);
-		readTemplate("template/sms/zh_CN/phoneVerify.template", phoneVerify_cn);
-		readTemplate("template/sms/zh_HK/phoneVerify.template", phoneVerify_hk);
+		readTemplate("template/sms/en_US/phoneVerify.template", phoneVerify_en, true);
+		readTemplate("template/sms/zh_CN/phoneVerify.template", phoneVerify_cn, true);
+		readTemplate("template/sms/zh_HK/phoneVerify.template", phoneVerify_hk, true);
 
-		readTemplate("template/sms/en_US/transfer.template", transfer_en);
-		readTemplate("template/sms/zh_CN/transfer.template", transfer_cn);
-		readTemplate("template/sms/zh_HK/transfer.template", transfer_hk);
+		readTemplate("template/sms/en_US/transfer.template", transfer_en, true);
+		readTemplate("template/sms/zh_CN/transfer.template", transfer_cn, true);
+		readTemplate("template/sms/zh_HK/transfer.template", transfer_hk, true);
 
-		readTemplate("template/sms/zh_CN/criticalAlarm.template", criticalAlarm_cn);
+		readTemplate("template/sms/zh_CN/criticalAlarm.template", criticalAlarm_cn, true);
 
-		readTemplate("template/sms/zh_CN/largeTrans.template", largeTrans_cn);
-		readTemplate("template/sms/zh_CN/largeExchangeWarn.template", largeExchange_cn);
+		readTemplate("template/sms/zh_CN/largeTrans.template", largeTrans_cn, true);
+		readTemplate("template/sms/zh_CN/largeExchangeWarn.template", largeExchange_cn, true);
 
-		readTemplate("template/sms/zh_CN/badAccountAlarm.template", badAccountAlarm_cn);
+		readTemplate("template/sms/zh_CN/badAccountAlarm.template", badAccountAlarm_cn, true);
 	}
 
-	private void readTemplate(String filePath, StringBuffer content) {
+	private void readTemplate(String filePath, StringBuffer content, boolean init) {
 		try {
 			content.setLength(0);
 			Resource resource = new ClassPathResource(filePath);
 			content.append(IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", ""));
 		} catch (Exception e) {
-			logger.warn("SMS template ({}) read error , can't send this msg : {} ",
-					new Object[] { filePath, e.getMessage() });
+			if (init) logger.warn("SMS template ({}) read error , can't send this msg : {} ", new Object[]{filePath, e.getMessage()});
 		}
 	}
 

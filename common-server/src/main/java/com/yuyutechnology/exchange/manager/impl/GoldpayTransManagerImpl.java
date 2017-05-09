@@ -575,7 +575,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		Transfer transfer = transferDAO.getTransferById(transferId);
 		User user = userDAO.getUser(transfer.getUserFrom());
 		if (user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE
-				|| !accountingManager.accountingUser(transfer.getUserFrom())) {
+				|| !accountingManager.accountingUser(transfer.getUserFrom(), transferId)) {
 			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_FAIL);
 		} else {
 			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS);
