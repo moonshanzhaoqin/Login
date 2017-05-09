@@ -108,7 +108,7 @@ public class TransferController {
 		
 		HashMap<String, String> map = transferManager.transferInitiate(sessionData.getUserId(), reqMsg.getAreaCode(),
 				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())), 
-				reqMsg.getTransferComment(),0);
+				reqMsg.getUserComment(),0);
 		
 		if(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)){
 			rep.setTransferId(map.get("transferId"));
@@ -451,6 +451,7 @@ public class TransferController {
 				rep.setTransferType(1);	
 			}
 			rep.setGoldpayName(MathUtils.hideString(transfer.getGoldpayName()));
+			rep.setUserComment(transfer.getUserComment());
 			rep.setCreateTime(transfer.getCreateTime());
 			rep.setFinishTime(transfer.getFinishTime());
 			rep.setTransferId(transfer.getTransferId());

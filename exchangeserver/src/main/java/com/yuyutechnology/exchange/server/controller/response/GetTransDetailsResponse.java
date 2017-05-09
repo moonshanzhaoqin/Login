@@ -16,6 +16,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 	private Date finishTime;
 	private String transferId;
 	private String goldpayName;
+	private String userComment;
 
 	private boolean isFriend;
 	private boolean isRegiste;
@@ -106,6 +107,14 @@ public class GetTransDetailsResponse extends BaseResponse {
 
 	public void setGoldpayName(String goldpayName) {
 		this.goldpayName = goldpayName;
+	}
+
+	public String getUserComment() {
+		return userComment;
+	}
+
+	public void setUserComment(String userComment) {
+		this.userComment = userComment;
 	}
 
 	public boolean isFriend() {
