@@ -108,16 +108,9 @@ public class TransferController {
 		}
 
 		HashMap<String, String> map = transferManager.transferInitiate(sessionData.getUserId(), reqMsg.getAreaCode(),
-				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())), 
-<<<<<<< .mine
-				reqMsg.getTransferComment(),0);
+				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())),reqMsg.getTransferComment(),0);
 		
 		if(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)){
-=======
-				reqMsg.getUserComment(), 0);
-
-		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
->>>>>>> .theirs
 			rep.setTransferId(map.get("transferId"));
 		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY)) {
 			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit"), map.get("thawTime") });
