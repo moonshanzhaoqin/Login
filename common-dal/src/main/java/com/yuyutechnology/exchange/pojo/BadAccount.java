@@ -34,6 +34,7 @@ public class BadAccount implements java.io.Serializable {
 	private long startSeqId;
 	private long endSeqId;
 	private int badAccountStatus;
+	private String transferId;
 
 	public BadAccount() {
 	}
@@ -155,5 +156,13 @@ public class BadAccount implements java.io.Serializable {
 	public void setBadAccountStatus(int badAccountStatus) {
 		this.badAccountStatus = badAccountStatus;
 	}
+	
+	@Column(name = "transfer_id", nullable = true)
+	public String getTransferId() {
+		return this.transferId;
+	}
 
+	public void setTransferId(String transferId) {
+		this.transferId = transferId;
+	}
 }

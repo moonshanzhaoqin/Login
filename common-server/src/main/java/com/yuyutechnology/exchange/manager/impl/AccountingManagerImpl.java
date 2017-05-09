@@ -79,13 +79,13 @@ public class AccountingManagerImpl implements AccountingManager{
 		return userSize;
 	}
 	
-	public boolean accountingUser(int userId) {
+	public boolean accountingUser(int userId, String transferId) {
 		Date startDate = accountingDAO.getLastAccountingTime();
 		Date endDate = new Date();
 		long startSeqId = accountingDAO.getMAXSeqId4WalletBeforeByUserId(userId);
 		long endSeqId  = accountingDAO.getMAXSeqId4WalletUserId(userId);
 		if (startSeqId <= endSeqId) {
-			int size = accountingDAO.calculatorWalletSeqByUserId(startSeqId, endSeqId, startDate, endDate, userId);
+			int size = accountingDAO.calculatorWalletSeqByUserId(startSeqId, endSeqId, startDate, endDate, userId, transferId);
 			if (size >= 1) {
 				goldpayTransManager.forbiddenGoldpayRemitWithdraws("true");
 				badAccountWarn();
