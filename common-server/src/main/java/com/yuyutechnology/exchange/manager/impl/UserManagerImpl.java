@@ -469,17 +469,22 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public boolean testPinCode(String func, String areaCode, String userPhone, String verificationCode) {
+	public Boolean testPinCode(String func, String areaCode, String userPhone, String verificationCode) {
 		logger.info("Check phone number {} and verify code {} ==>", areaCode + userPhone, verificationCode);
 		
-		if (StringUtils.equals(DigestUtils.md5Hex(verificationCode),
-				redisDAO.getValueByKey(func + areaCode + userPhone))) {
+		String pinCode=redisDAO.getValueByKey(func + areaCode + userPhone);
+		if (pinCode==null) {
+			logger.info("***not get verify code***");
+			return null;
+		}
+		if (pinCode.equals(verificationCode)) {
 			logger.info("***match***");
 			return true;
 		}
 		logger.info("***Does not match***");
 		return false;
 	}
+	
 
 	@Override
 	public void updatePassword(Integer userId, String newPassword) {

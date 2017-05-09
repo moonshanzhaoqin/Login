@@ -59,7 +59,7 @@ import com.yuyutechnology.exchange.util.MathUtils;
 
 @Controller
 public class TransferController {
-	
+
 	@Autowired
 	UserManager userManager;
 	@Autowired
@@ -70,99 +70,100 @@ public class TransferController {
 	ConfigManager configManager;
 	@Autowired
 	CommonManager commonManager;
-	
+
 	public static Logger logger = LogManager.getLogger(TransferController.class);
 
 	@ApiOperation(value = "交易初始化")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transferInitiate")
-	public @ResponseEncryptBody
-	TransferInitiateResponse transferInitiate(@PathVariable String token,
-			@RequestDecryptBody TransferInitiateRequest reqMsg){
-		//从Session中获取Id
+	public @ResponseEncryptBody TransferInitiateResponse transferInitiate(@PathVariable String token,
+			@RequestDecryptBody TransferInitiateRequest reqMsg) {
+		// 从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		TransferInitiateResponse rep = new TransferInitiateResponse();
-		
-		if(StringUtils.isEmpty(reqMsg.getAreaCode()) || StringUtils.isEmpty(reqMsg.getUserPhone())){
+
+		if (StringUtils.isEmpty(reqMsg.getAreaCode()) || StringUtils.isEmpty(reqMsg.getUserPhone())) {
 			logger.warn("Phone number is empty");
 			rep.setRetCode(RetCodeConsts.TRANSFER_PHONE_NUMBER_IS_EMPTY);
 			rep.setMessage("Phone number is empty");
 			return rep;
 		}
-		//装张金额上限
-		if(!reqMsg.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY) && reqMsg.getAmount() < 0.0001){
+		// 装张金额上限
+		if (!reqMsg.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY) && reqMsg.getAmount() < 0.0001) {
 			logger.warn("The input amount is less than the minimum amount");
 			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The input amount is less than the minimum amount");
 			return rep;
-		}else if((reqMsg.getCurrency()).equals(ServerConsts.CURRENCY_OF_GOLDPAY) &&( reqMsg.getAmount()%1 > 0 || reqMsg.getAmount()==0)){
+		} else if ((reqMsg.getCurrency()).equals(ServerConsts.CURRENCY_OF_GOLDPAY)
+				&& (reqMsg.getAmount() % 1 > 0 || reqMsg.getAmount() == 0)) {
 			logger.warn("The GDQ must be an integer value");
 			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The GDQ must be an integer value");
 			return rep;
-		}else if(reqMsg.getAmount() > configManager.getConfigLongValue(ConfigKeyEnum.ENTERMAXIMUMAMOUNT, 1000000000L)){
+		} else if (reqMsg.getAmount() > configManager.getConfigLongValue(ConfigKeyEnum.ENTERMAXIMUMAMOUNT,
+				1000000000L)) {
 			logger.warn("Fill out the allowable amount");
 			rep.setRetCode(RetCodeConsts.TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT);
 			rep.setMessage("Fill out the allowable amount");
 			return rep;
 		}
-		
+
 		HashMap<String, String> map = transferManager.transferInitiate(sessionData.getUserId(), reqMsg.getAreaCode(),
-				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())), 
-				reqMsg.getUserComment(),0);
-		
-		if(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)){
+				reqMsg.getUserPhone(), reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())),
+				reqMsg.getUserComment(), 0);
+
+		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			rep.setTransferId(map.get("transferId"));
-		}else if(map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY)){
-			rep.setOpts(new String[]{map.get("msg")+" "+map.get("unit"),map.get("thawTime")});
-		}else if(map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)){
-			rep.setOpts(new String[]{map.get("msg")+" "+map.get("unit")});
-		}else if(map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY)){
-			rep.setOpts(new String[]{map.get("msg"),map.get("thawTime")});
+		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY)) {
+			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit"), map.get("thawTime") });
+		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)) {
+			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit") });
+		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY)) {
+			rep.setOpts(new String[] { map.get("msg"), map.get("thawTime") });
 		}
-		
+
 		rep.setRetCode(map.get("retCode"));
 		rep.setMessage(map.get("msg"));
 
 		return rep;
-		
+
 	}
-	
+
 	@ApiOperation(value = "验证支付密码")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transPwdConfirm")
-	public @ResponseEncryptBody
-	TransPwdConfirmResponse transPwdConfirm(@PathVariable String token,@RequestDecryptBody TransPwdConfirmRequest reqMsg){
-		//从Session中获取Id
+	public @ResponseEncryptBody TransPwdConfirmResponse transPwdConfirm(@PathVariable String token,
+			@RequestDecryptBody TransPwdConfirmRequest reqMsg) {
+		// 从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		TransPwdConfirmResponse rep = new TransPwdConfirmResponse();
-		HashMap<String,String> result = transferManager.payPwdConfirm(sessionData.getUserId(), 
-				reqMsg.getTransferId(), reqMsg.getUserPayPwd());
-		
-		if(result.get("retCode").equals(RetCodeConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION)){
-			//发PIN码
+		HashMap<String, String> result = transferManager.payPwdConfirm(sessionData.getUserId(), reqMsg.getTransferId(),
+				reqMsg.getUserPayPwd());
+
+		if (result.get("retCode").equals(RetCodeConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION)) {
+			// 发PIN码
 			UserInfo user = userManager.getUserInfo(sessionData.getUserId());
-			userManager.getPinCode(reqMsg.getTransferId(),user.getAreaCode(), user.getPhone());
+			userManager.getPinCode(reqMsg.getTransferId(), user.getAreaCode(), user.getPhone());
 			rep.setRetCode(result.get("retCode"));
 			rep.setMessage("Need to send pin code verification");
-		}else{
+		} else {
 			rep.setRetCode(result.get("retCode"));
 			rep.setMessage(result.get("msg"));
 		}
 
 		return rep;
 	}
-	
+
 	@ApiOperation(value = "重新发送pin")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/resendPhonePin")
-	public @ResponseEncryptBody
-	ResendTransferPinResponse resendTransferPin(@PathVariable String token,@RequestDecryptBody ResendTransferPinRequest reqMsg){
-		//从Session中获取Id
+	public @ResponseEncryptBody ResendTransferPinResponse resendTransferPin(@PathVariable String token,
+			@RequestDecryptBody ResendTransferPinRequest reqMsg) {
+		// 从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		ResendTransferPinResponse rep = new ResendTransferPinResponse();
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		try {
 			UserInfo user = userManager.getUserInfo(sessionData.getUserId());
-			userManager.getPinCode(reqMsg.getTransferId(),user.getAreaCode(), user.getPhone());
+			userManager.getPinCode(reqMsg.getTransferId(), user.getAreaCode(), user.getPhone());
 		} catch (Exception e) {
 			e.printStackTrace();
 			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
@@ -170,64 +171,69 @@ public class TransferController {
 		}
 		return rep;
 	}
-	
-	
+
 	@ApiOperation(value = "交易确认")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transferConfirm")
-	public  @ResponseEncryptBody
-	TransferConfirmResponse transferConfirm(@PathVariable String token,@RequestDecryptBody TransferConfirmRequest reqMsg){
-		//从Session中获取Id
+	public @ResponseEncryptBody TransferConfirmResponse transferConfirm(@PathVariable String token,
+			@RequestDecryptBody TransferConfirmRequest reqMsg) {
+		// 从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		
+
 		UserInfo user = userManager.getUserInfo(sessionData.getUserId());
 		TransferConfirmResponse rep = new TransferConfirmResponse();
-		//判断PinCode是否正确
-		if(userManager.testPinCode(reqMsg.getTransferId(), user.getAreaCode(), user.getPhone(),reqMsg.getPinCode())){
-			String result = transferManager.transferConfirm(sessionData.getUserId(),reqMsg.getTransferId());
-			
-			if(result.equals(RetCodeConsts.RET_CODE_SUCCESS)){
+		// 判断PinCode是否正确
+		Boolean resultBool = userManager.testPinCode(reqMsg.getTransferId(), user.getAreaCode(), user.getPhone(),
+				reqMsg.getPinCode());
+		if (resultBool == null) {
+			logger.info(MessageConsts.NOT_GET_CODE);
+			rep.setRetCode(RetCodeConsts.NOT_GET_CODE);
+			rep.setMessage(MessageConsts.NOT_GET_CODE);
+		} else if (resultBool.booleanValue()) {
+
+			String result = transferManager.transferConfirm(sessionData.getUserId(), reqMsg.getTransferId());
+
+			if (result.equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-			}else{
+			} else {
 				rep.setRetCode(result);
 				rep.setMessage("Current balance is insufficient");
 			}
 
-		}else{
+		} else {
 			rep.setRetCode(RetCodeConsts.PIN_CODE_INCORRECT);
 			rep.setMessage("The pin code is incorrect");
 		}
 		return rep;
 	}
-	
+
 	@ApiOperation(value = "发起转账请求")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/makeRequest")
-	public  @ResponseEncryptBody
-	MakeRequestResponse makeRequest(@PathVariable String token,@RequestDecryptBody MakeRequestRequest reqMsg){
-		//从Session中获取Id
+	public @ResponseEncryptBody MakeRequestResponse makeRequest(@PathVariable String token,
+			@RequestDecryptBody MakeRequestRequest reqMsg) {
+		// 从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		MakeRequestResponse rep = new MakeRequestResponse();		
+		MakeRequestResponse rep = new MakeRequestResponse();
 
-		HashMap<String,Object> result = transferManager.makeRequest(sessionData.getUserId(), 
-				reqMsg.getAreaCode(), reqMsg.getPhone(),
-				reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()));
-		
+		HashMap<String, Object> result = transferManager.makeRequest(sessionData.getUserId(), reqMsg.getAreaCode(),
+				reqMsg.getPhone(), reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()));
+
 		rep.setRetCode((String) result.get("retCode"));
 		rep.setMessage((String) result.get("msg"));
-		
-		if(result.get("transferLimitPerPay") != null){
-			rep.setOpts(new String[]{(String)result.get("transferLimitPerPay")+" "+result.get("unit")});
+
+		if (result.get("transferLimitPerPay") != null) {
+			rep.setOpts(new String[] { (String) result.get("transferLimitPerPay") + " " + result.get("unit") });
 		}
-		
+
 		return rep;
 	}
-	
+
 	@ApiOperation(value = "重新生成二维码")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/regenerateQRCode")
-	public  @ResponseEncryptBody 
-	RegenerateQRCodeResponse regenerateQRCode(@PathVariable String token,@RequestDecryptBody RegenerateQRCodeRequest reqMsg){
+	public @ResponseEncryptBody RegenerateQRCodeResponse regenerateQRCode(@PathVariable String token,
+			@RequestDecryptBody RegenerateQRCodeRequest reqMsg) {
 		RegenerateQRCodeResponse rep = new RegenerateQRCodeResponse();
-		if(reqMsg == null || StringUtils.isEmpty(reqMsg.getCurrency())){
+		if (reqMsg == null || StringUtils.isEmpty(reqMsg.getCurrency())) {
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			return rep;
@@ -235,48 +241,47 @@ public class TransferController {
 		HashMap<String, String> result = transferManager.regenerateQRCode(reqMsg.getCurrency(), reqMsg.getAmount());
 		rep.setRetCode(result.get("retCode"));
 		rep.setMessage(result.get("msg"));
-		if(result.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)){
-			rep.setOpts(new String[]{result.get("msg")+" "+result.get("unit")});
+		if (result.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)) {
+			rep.setOpts(new String[] { result.get("msg") + " " + result.get("unit") });
 		}
 		return rep;
 	}
-	
-	
+
 	@ApiOperation(value = "请求转账回应")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/requestATransfer")
-	public @ResponseEncryptBody
-	Respond2RequestResponse respond2Request(@PathVariable String token,@RequestDecryptBody Respond2RequestRequest reqMsg){
-		//从Session中获取Id
+	public @ResponseEncryptBody Respond2RequestResponse respond2Request(@PathVariable String token,
+			@RequestDecryptBody Respond2RequestRequest reqMsg) {
+		// 从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		Respond2RequestResponse rep = new Respond2RequestResponse();
-		
-		//装张金额上限
-		if(reqMsg.getCurrency() != ServerConsts.CURRENCY_OF_GOLDPAY && reqMsg.getAmount() < 0.01){
+
+		// 装张金额上限
+		if (reqMsg.getCurrency() != ServerConsts.CURRENCY_OF_GOLDPAY && reqMsg.getAmount() < 0.01) {
 			logger.warn("The input amount is less than the minimum amount");
 			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The input amount is less than the minimum amount");
 			return rep;
-		}else if (reqMsg.getCurrency() == ServerConsts.CURRENCY_OF_GOLDPAY && reqMsg.getAmount() < 1){
+		} else if (reqMsg.getCurrency() == ServerConsts.CURRENCY_OF_GOLDPAY && reqMsg.getAmount() < 1) {
 			logger.warn("The input amount is less than the minimum amount");
 			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The input amount is less than the minimum amount");
 			return rep;
 		}
-		
+
 		HashMap<String, String> map = transferManager.respond2Request(sessionData.getUserId(), reqMsg.getAreaCode(),
-				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())), 
-				null,reqMsg.getNoticeId());
-		
-		if(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)){
+				reqMsg.getUserPhone(), reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())), null,
+				reqMsg.getNoticeId());
+
+		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			rep.setTransferId(map.get("transferId"));
-		}else if(map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY)){
-			rep.setOpts(new String[]{map.get("msg")+" "+map.get("unit"),map.get("thawTime")});
-		}else if(map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)){
-			rep.setOpts(new String[]{map.get("msg")+" "+map.get("unit")});
-		}else if(map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY)){
-			rep.setOpts(new String[]{map.get("msg"),map.get("thawTime")});
+		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY)) {
+			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit"), map.get("thawTime") });
+		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)) {
+			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit") });
+		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY)) {
+			rep.setOpts(new String[] { map.get("msg"), map.get("thawTime") });
 		}
-		
+
 		rep.setRetCode(map.get("retCode"));
 		rep.setMessage(map.get("msg"));
 
@@ -286,59 +291,59 @@ public class TransferController {
 
 	@ApiOperation(value = "获取交易明细")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransactionRecord")
-	public @ResponseEncryptBody
-	GetTransactionRecordResponse getTransactionRecord(@PathVariable String token,@RequestDecryptBody GetTransactionRecordRequest reqMsq){
-		
-		//从Session中获取Id
+	public @ResponseEncryptBody GetTransactionRecordResponse getTransactionRecord(@PathVariable String token,
+			@RequestDecryptBody GetTransactionRecordRequest reqMsq) {
+
+		// 从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		GetTransactionRecordResponse rep = new GetTransactionRecordResponse();
-		HashMap<String,Object> map = transferManager.getTransactionRecordByPage(reqMsq.getPeriod(),reqMsq.getType() ,sessionData.getUserId(),
-				reqMsq.getCurrentPage(), reqMsq.getPageSize());
+		HashMap<String, Object> map = transferManager.getTransactionRecordByPage(reqMsq.getPeriod(), reqMsq.getType(),
+				sessionData.getUserId(), reqMsq.getCurrentPage(), reqMsq.getPageSize());
 
 		User systemUser = userManager.getSystemUser();
 		ArrayList<TransferDTO> dtos = new ArrayList<>();
 		rep.setList(dtos);
-		if(((ArrayList<?>)map.get("list")).isEmpty()){
+		if (((ArrayList<?>) map.get("list")).isEmpty()) {
 			rep.setRetCode(RetCodeConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
 			rep.setMessage("Transaction history not acquired");
-		}else{
-			List<?> list = (ArrayList<?>)map.get("list");
+		} else {
+			List<?> list = (ArrayList<?>) map.get("list");
 			for (Object object : list) {
 				Object[] obj = (Object[]) object;
-				
+
 				TransferDTO dto = new TransferDTO();
 				dto.setCurrency((String) obj[1]);
 				dto.setCurrencyUnit(commonManager.getCurreny(dto.getCurrency()).getCurrencyUnit());
-				
-				if((int) obj[7] == ServerConsts.TRANSFER_TYPE_TRANSACTION){
-					if(sessionData.getUserId() == (int) obj[0]){
-						dto.setAmount(new BigDecimal("-"+obj[2]+"") );
+
+				if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_TRANSACTION) {
+					if (sessionData.getUserId() == (int) obj[0]) {
+						dto.setAmount(new BigDecimal("-" + obj[2] + ""));
 						dto.setTransferType(0);
 						dto.setPhoneNum((String) obj[3]);
-					}else{
-						dto.setAmount(new BigDecimal("+"+obj[2]+"") );
+					} else {
+						dto.setAmount(new BigDecimal("+" + obj[2] + ""));
 						dto.setTransferType(1);
-						
-						if((systemUser.getAreaCode()+systemUser.getUserPhone()).equals((String) obj[4])){
+
+						if ((systemUser.getAreaCode() + systemUser.getUserPhone()).equals((String) obj[4])) {
 							dto.setPhoneNum((String) obj[3]);
-						}else{
+						} else {
 							dto.setPhoneNum((String) obj[4]);
 						}
 					}
-				}else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_OUT_INVITE) {
-					dto.setAmount(new BigDecimal("-"+obj[2]+"") );
+				} else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_OUT_INVITE) {
+					dto.setAmount(new BigDecimal("-" + obj[2] + ""));
 					dto.setTransferType((int) obj[7]);
 					dto.setPhoneNum((String) obj[3]);
-				}else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND) {
-					dto.setAmount(new BigDecimal("+"+obj[2]+"") );
+				} else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND) {
+					dto.setAmount(new BigDecimal("+" + obj[2] + ""));
 					dto.setTransferType((int) obj[7]);
 					dto.setPhoneNum((String) obj[3]);
-				}else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW) {
-					dto.setAmount(new BigDecimal("-"+obj[2]+"") );
+				} else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW) {
+					dto.setAmount(new BigDecimal("-" + obj[2] + ""));
 					dto.setTransferType((int) obj[7]);
 					dto.setPhoneNum((String) obj[3]);
-				}else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE) {
-					dto.setAmount(new BigDecimal("+"+obj[2]+"") );
+				} else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE) {
+					dto.setAmount(new BigDecimal("+" + obj[2] + ""));
 					dto.setTransferType((int) obj[7]);
 					dto.setPhoneNum((String) obj[4]);
 				}
@@ -348,55 +353,54 @@ public class TransferController {
 
 				dtos.add(dto);
 			}
-			
+
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			rep.setCurrentPage((int) map.get("currentPage"));
 			rep.setPageSize((int) map.get("pageSize"));
 			rep.setPageTotal((int) map.get("pageTotal"));
-			rep.setTotal(Integer.parseInt(map.get("total")+""));
+			rep.setTotal(Integer.parseInt(map.get("total") + ""));
 		}
-		
+
 		return rep;
-		
+
 	}
-	
+
 	@ApiOperation(value = "交易通知列表")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getNotificationRecords")
-	public @ResponseEncryptBody 
-	GetNotificationRecordsResponse getNotificationRecords(@PathVariable String token,
-			@RequestDecryptBody GetNotificationRecordsRequest reqMsg){
-		//从Session中获取Id
+	public @ResponseEncryptBody GetNotificationRecordsResponse getNotificationRecords(@PathVariable String token,
+			@RequestDecryptBody GetNotificationRecordsRequest reqMsg) {
+		// 从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		GetNotificationRecordsResponse rep = new GetNotificationRecordsResponse();
-		
-		HashMap<String, Object> map = transferManager.getNotificationRecordsByPage(
-				sessionData.getUserId(),reqMsg.getCurrentPage(), reqMsg.getPageSize());
-		
+
+		HashMap<String, Object> map = transferManager.getNotificationRecordsByPage(sessionData.getUserId(),
+				reqMsg.getCurrentPage(), reqMsg.getPageSize());
+
 		ArrayList<NotificationDTO> dtos = new ArrayList<>();
 		rep.setList(dtos);
-		if(((ArrayList<?>)map.get("list")).isEmpty()){
+		if (((ArrayList<?>) map.get("list")).isEmpty()) {
 			rep.setRetCode(RetCodeConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
 			rep.setMessage("Notification Records not acquired");
-		}else{
-			
-			List<?> list = (ArrayList<?>)map.get("list");
+		} else {
+
+			List<?> list = (ArrayList<?>) map.get("list");
 			for (Object object : list) {
 				Object[] obj = (Object[]) object;
-				
+
 				NotificationDTO dto = new NotificationDTO();
-				
+
 				dto.setNoticeId((int) obj[0]);
 				dto.setAreaCode((String) obj[1]);
 				dto.setSponsorPhone((String) obj[2]);
 				dto.setCurrency((String) obj[3]);
-				dto.setAmount((new BigDecimal(obj[4]+"")).doubleValue());
+				dto.setAmount((new BigDecimal(obj[4] + "")).doubleValue());
 				dto.setCreateAt((Date) obj[5]);
 				dto.setTradingStatus((int) obj[6]);
 				Currency currency = commonManager.getCurreny(dto.getCurrency());
 				if (currency != null) {
 					dto.setCurrencyUnit(currency.getCurrencyUnit());
-				}else{
+				} else {
 					dto.setCurrencyUnit("");
 				}
 				dtos.add(dto);
@@ -406,49 +410,49 @@ public class TransferController {
 			rep.setCurrentPage((int) map.get("currentPage"));
 			rep.setPageSize((int) map.get("pageSize"));
 			rep.setPageTotal((int) map.get("pageTotal"));
-			rep.setTotal(Integer.parseInt(map.get("total")+""));
+			rep.setTotal(Integer.parseInt(map.get("total") + ""));
 		}
 		return rep;
 	}
-	
+
 	@ApiOperation(value = "获取交易详情")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransDetails")
-	public @ResponseEncryptBody 
-	GetTransDetailsResponse getTransDetails(@PathVariable String token,
-			@RequestDecryptBody GetTransDetailsRequest reqMsg){
-		
+	public @ResponseEncryptBody GetTransDetailsResponse getTransDetails(@PathVariable String token,
+			@RequestDecryptBody GetTransDetailsRequest reqMsg) {
+
 		GetTransDetailsResponse rep = new GetTransDetailsResponse();
-		
+
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		HashMap<String, Object> result = transferManager.getTransDetails(reqMsg.getTransferId(), sessionData.getUserId());
-		if(result.isEmpty()){
+		HashMap<String, Object> result = transferManager.getTransDetails(reqMsg.getTransferId(),
+				sessionData.getUserId());
+		if (result.isEmpty()) {
 			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 			rep.setMessage("something wrong!");
-		}else{
-			
+		} else {
+
 			User user = (User) result.get("user");
 			Transfer transfer = (Transfer) result.get("transfer");
-			
-			if(user!= null){
+
+			if (user != null) {
 				rep.setTrader(user.getUserName());
 				rep.setRegiste(true);
-			}else{
+			} else {
 				rep.setTrader(transfer.getPhone());
 				rep.setRegiste(false);
 			}
 
-			rep.setAreaCode((String)(result.get("areaCode")));
-			rep.setPhone((String)(result.get("phone")));
-			rep.setCurrency(transfer.getCurrency());	
-			rep.setUnit((String)(result.get("unit")));
-			
+			rep.setAreaCode((String) (result.get("areaCode")));
+			rep.setPhone((String) (result.get("phone")));
+			rep.setCurrency(transfer.getCurrency());
+			rep.setUnit((String) (result.get("unit")));
+
 			rep.setAmount(transfer.getTransferAmount());
 			rep.setTransferType(transfer.getTransferType());
-			
-			if(!(boolean)result.get("isPlus")){
+
+			if (!(boolean) result.get("isPlus")) {
 				rep.setAmount(transfer.getTransferAmount().negate());
-			}else if(transfer.getTransferType() == 0){
-				rep.setTransferType(1);	
+			} else if (transfer.getTransferType() == 0) {
+				rep.setTransferType(1);
 			}
 			rep.setGoldpayName(MathUtils.hideString(transfer.getGoldpayName()));
 			rep.setUserComment(transfer.getUserComment());
@@ -456,15 +460,14 @@ public class TransferController {
 			rep.setFinishTime(transfer.getFinishTime());
 			rep.setTransferId(transfer.getTransferId());
 			rep.setFriend((boolean) result.get("isFriend"));
-			
+
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 
 		}
-		
+
 		return rep;
-		
+
 	}
-	
-	
+
 }

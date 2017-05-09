@@ -119,7 +119,10 @@ public class RetCodeConsts {
 	 * Goldpay与已绑定账号不符
 	 */
 	public static final String GOLDPAY_NOT_MATCH_BIND = "01022";
-
+	/**
+	 * 没有获取验证码
+	 */
+	public static final String NOT_GET_CODE = "01023";
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息

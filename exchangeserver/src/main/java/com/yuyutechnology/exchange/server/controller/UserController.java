@@ -3,6 +3,8 @@
  */
 package com.yuyutechnology.exchange.server.controller;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -346,8 +348,13 @@ public class UserController {
 			if (userManager.getUserId(registerRequest.getAreaCode(), registerRequest.getUserPhone()) == null) {
 				// TODO 判断是否获取过验证码
 				// 校验验证码
-				if (userManager.testPinCode(ServerConsts.PIN_FUNC_REGISTER, registerRequest.getAreaCode(),
-						registerRequest.getUserPhone(), registerRequest.getRegistrationCode())) {
+				Boolean resultBool = userManager.testPinCode(ServerConsts.PIN_FUNC_REGISTER, registerRequest.getAreaCode(),
+						registerRequest.getUserPhone(), registerRequest.getRegistrationCode());
+				if (resultBool == null) {
+					logger.info(MessageConsts.NOT_GET_CODE);
+					rep.setRetCode(RetCodeConsts.NOT_GET_CODE);
+					rep.setMessage(MessageConsts.NOT_GET_CODE);
+				} else if (resultBool.booleanValue()) {
 					Integer userId = userManager.register(registerRequest.getAreaCode(), registerRequest.getUserPhone(),
 							registerRequest.getUserName(), registerRequest.getUserPassword(), HttpTookit.getIp(request),
 							registerRequest.getPushId(), registerRequest.getLanguage());
@@ -415,8 +422,13 @@ public class UserController {
 		} else {
 			// TODO 判断是否获取过验证码
 			// 校验验证码
-			if (userManager.testPinCode(testRequest.getPurpose(), testRequest.getAreaCode(), testRequest.getUserPhone(),
-					testRequest.getVerificationCode())) {
+			Boolean resultBool = userManager.testPinCode(testRequest.getPurpose(), testRequest.getAreaCode(),
+					testRequest.getUserPhone(), testRequest.getVerificationCode());
+			if (resultBool == null) {
+				logger.info(MessageConsts.NOT_GET_CODE);
+				rep.setRetCode(RetCodeConsts.NOT_GET_CODE);
+				rep.setMessage(MessageConsts.NOT_GET_CODE);
+			} else if (resultBool.booleanValue()) {
 				logger.info(MessageConsts.RET_CODE_SUCCESS);
 				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
@@ -459,8 +471,14 @@ public class UserController {
 
 					// TODO 判断是否获取过验证码
 					/* 验证短信验证码 */
-					if (userManager.testPinCode(ServerConsts.PIN_FUNC_NEWDEVICE, loginValidateRequest.getAreaCode(),
-							loginValidateRequest.getUserPhone(), loginValidateRequest.getVerificationCode())) {
+					Boolean resultBool = userManager.testPinCode(ServerConsts.PIN_FUNC_NEWDEVICE,
+							loginValidateRequest.getAreaCode(), loginValidateRequest.getUserPhone(),
+							loginValidateRequest.getVerificationCode());
+					if (resultBool == null) {
+						logger.info(MessageConsts.NOT_GET_CODE);
+						rep.setRetCode(RetCodeConsts.NOT_GET_CODE);
+						rep.setMessage(MessageConsts.NOT_GET_CODE);
+					} else if (resultBool.booleanValue()) {
 						/* 设备登记 */
 						userManager.addDevice(userId, loginValidateRequest.getDeviceId(),
 								loginValidateRequest.getDeviceName());
@@ -474,7 +492,7 @@ public class UserController {
 						sessionManager.saveSessionData(sessionData);
 						rep.setSessionToken(sessionData.getSessionId());
 						rep.setLoginToken(sessionManager.createLoginToken(userId));
-						// 获取用户信息
+						/* 获取用户信息*/
 						rep.setUser(userManager.getUserInfo(userId));
 
 						logger.info(MessageConsts.RET_CODE_SUCCESS);
