@@ -21,7 +21,6 @@
 	<%@ include file="common/header.jsp"%>
 	<div class="container">
 		<div class="row">
-
 			<form class="form-inline " id="searchWithdraw">
 				<div class="form-group">
 					<label class="sr-only" for="userPhone">userPhone</label> <input
@@ -36,9 +35,6 @@
 				<button type="button" class="btn btn-primary pull-right"
 					onclick="searchWithdraw(1)">搜索</button>
 				<div class="form-group">
-					<!-- 					<label class="checkbox-inline"> <input type="checkbox" -->
-					<!-- 						name="transferStatus" value="">all -->
-					<!-- 					</label>  -->
 					<label class="checkbox-inline"> <input type="checkbox"
 						name="transferStatus" value="1" checked>待审核
 					</label> <label class="checkbox-inline"> <input type="checkbox"
@@ -49,33 +45,13 @@
 						name="transferStatus" value="4" checked>待支付
 					</label> <label class="checkbox-inline"> <input type="checkbox"
 						name="transferStatus" value="5" checked>审核失败
-					</label>
-					<!-- 					<label class="checkbox-inline"> <input type="checkbox" -->
-					<!-- 						name="transferStatus" value="6" checked>二审成功 ，待支付 -->
-					<!-- 					</label>  -->
-					<!-- 					<label class="checkbox-inline"> <input type="checkbox" -->
-					<!-- 						name="transferStatus" value="7" checked>二审失败，待退回 -->
-					<!-- 					</label>  -->
-					<label class="checkbox-inline"> <input type="checkbox"
+					</label> <label class="checkbox-inline"> <input type="checkbox"
 						name="transferStatus" value="8" checked>支付失败
 					</label>
-
-					<!-- 					<label class="sr-only" for="transferStatus">transferStatus</label> -->
-					<!-- 					<select class="form-control selectpicker" name="transferStatus" multiple> -->
-					<!-- 						<option value="">审批状态</option> -->
-					<!-- 						<option value="1">未审核</option> -->
-					<!-- 						<option value="2">已完成</option> -->
-					<!-- 						<option value="3">已退回</option> -->
-					<!-- 						<option value="4">一审成功，待支付</option> -->
-					<!-- 						<option value="5">一审失败，待二审</option> -->
-					<!-- 						<option value="6">二审成功 ，待支付</option> -->
-					<!-- 						<option value="7">二审失败，待退回</option> -->
-					<!-- 						<option value="8">支付失败，待退回，待支付</option> -->
-					<!-- 					</select> -->
 				</div>
-
 			</form>
 		</div>
+
 		<div class="row">
 			<table class="table table-bordered table-hover table-striped"
 				id="withdraw">
@@ -90,6 +66,7 @@
 						<th>操作</th>
 						<th>创建时间(UTC)</th>
 						<th>最新更新时间(UTC)</th>
+						<th>详情</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -98,70 +75,27 @@
 			<!--分页插件-->
 			<div id="paginator"></div>
 		</div>
+		<hr style="background-color: grey; height: 1px;" />
+		<div id="detail" class="row "
+			style="height: 400px; overflow: auto; width: 100%;">
+			<table class="table table-bordered table-hover table-striped"
+				id="walletSeq">
+				<thead>
+					<tr>
+						<th>流水号</th>
+						<th>币种</th>
+						<th>数量</th>
+						<th>交易类型</th>
+						<th>交易ID</th>
+						<th>创建时间(UTC)</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
 	</div>
-	<!-- 模态框（Modal） -->
-	<!-- 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" -->
-	<!-- 		aria-labelledby="myModalLabel" aria-hidden="true"> -->
-	<!-- 		<div class="modal-dialog"> -->
-	<!-- 			<div class="modal-content"> -->
-	<!-- 				<div class="modal-header"> -->
-	<!-- 					<button type="button" class="close" data-dismiss="modal" -->
-	<!-- 						aria-hidden="true">&times;</button> -->
-	<!-- 					<h4 class="modal-title" id="myModalLabel">用户信息：</h4> -->
-	<!-- 				</div> -->
-	<!-- 				<div class="modal-body"> -->
-	<!-- 					<form class="form-horizontal" role="form"> -->
-	<!-- 						<div class="form-group"> -->
-	<!-- 							<label class="col-sm-3 control-label">用户ID：</label> -->
-	<!-- 							<div class="col-sm-9" id="userId"></div> -->
-	<!-- 						</div> -->
-	<!-- 						<div class="form-group"> -->
-	<!-- 							<label class="col-sm-3 control-label">用户名：</label> -->
-	<!-- 							<div class="col-sm-9" id="userName"></div> -->
-	<!-- 						</div> -->
-	<!-- 						<div class="form-group"> -->
-	<!-- 							<label class="col-sm-3 control-label">手机号：</label> -->
-	<!-- 							<div class="col-sm-9" id="userPhone"></div> -->
-	<!-- 						</div> -->
-	<!-- 						<div class="form-group"> -->
-	<!-- 							<label class="col-sm-3 control-label">Goldpay账号：</label> -->
-	<!-- 							<div class="col-sm-9" id="goldpayAcount"></div> -->
-	<!-- 						</div> -->
-	<!-- 						<div class="form-group"> -->
-	<!-- 							<label class="col-sm-3 control-label">Goldpay用户名：</label> -->
-	<!-- 							<div class="col-sm-9" id="goldpayName"></div> -->
-	<!-- 						</div> -->
-	<!-- 						<div class="form-group"> -->
-	<!-- 							<label class="col-sm-3 control-label">交易ID：</label> -->
-	<!-- 							<div class="col-sm-9" id="transferId"></div> -->
-	<!-- 						</div> -->
 
-	<!-- 						<div class="form-group"> -->
-	<!-- 							<label class="col-sm-3 control-label">交易数量：</label> -->
-	<!-- 							<div class="col-sm-9" id="transferAmount"></div> -->
-	<!-- 						</div> -->
-
-	<!-- 						<div class="form-group"> -->
-	<!-- 							<label class="col-sm-3 control-label">交易创建时间：</label> -->
-	<!-- 							<div class="col-sm-9" id="createTime"></div> -->
-	<!-- 						</div> -->
-	<!-- 						<div class="form-group"> -->
-	<!-- 							<label class="col-sm-3 control-label">审核状态：</label> -->
-	<!-- 							<div class="col-sm-9" id="reviewStatus"></div> -->
-	<!-- 						</div> -->
-	<!-- 						<div class="form-group"> -->
-	<!-- 							<label class="col-sm-3 control-label">Goldpay划账：</label> -->
-	<!-- 							<div class="col-sm-9" id="goldpayRemit"></div> -->
-	<!-- 						</div> -->
-	<!-- 					</form> -->
-	<!-- 				</div> -->
-	<!-- 				<div class="modal-footer"> -->
-	<!-- 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button> -->
-	<!-- 				</div> -->
-	<!-- 			</div> -->
-	<!-- 		</div> -->
-	<!-- 	</div> -->
-
+	<%@ include file="badAccountDetail.jsp"%>
 
 	<script type="text/javascript"
 		src="<c:url value="/resources/js/jquery.min.js" />"></script>
@@ -174,20 +108,6 @@
 			var userPhone, transferId, transferStatus = [];
 			//页面初始化，加载数据
 			searchWithdraw(1);
-			// 			$('#myModal').on('show.bs.modal', function(e) {
-			// 				// do something...
-			// 				var tr = $(e.relatedTarget) // Button that triggered the modal
-			// 				var withdrawId = tr.data('whatever') // Extract info from data-* attributes
-			// 				console.log(withdrawId);
-			// 				initModel(withdrawId);
-			// 			})
-
-			// 			//模态框关闭
-			// 			$('#myModal').on('hidden.bs.modal', function(e) {
-			// 				// 				console.log($("#paginator .active a").html());
-			// 				// 				console.log($("#paginator").data("currentPage"));
-			// 				searchWithdraw($("#paginator .active a").html());
-			// 			})
 		});
 
 		function searchWithdraw(page) {
@@ -236,94 +156,6 @@
 			//分页控件
 			$('#paginator').bootstrapPaginator(options);
 		}
-
-		// 		// 模态框初始化
-		// 		function initModel(withdrawId) {
-		// 			data = {
-		// 				withdrawId : withdrawId
-		// 			};
-		// 			$
-		// 					.ajax({
-		// 						type : "post",
-		// 						url : "/crm/getWithdrawDetail",
-		// 						dataType : 'json',
-		// 						contentType : "application/json; charset=utf-8",
-		// 						data : JSON.stringify(data),
-		// 						success : function(data) {
-		// 							$('#userId').html(
-		// 									'<p class="form-control-static">'
-		// 											+ data.userId + '</p>');
-		// 							$('#userName').html(
-		// 									'<p class="form-control-static">'
-		// 											+ data.userName + '</p>');
-		// 							$('#userPhone').html(
-		// 									'<p class="form-control-static">'
-		// 											+ data.areaCode + data.userPhone
-		// 											+ '</p>');
-		// 							$('#goldpayAcount').html(
-		// 									'<p class="form-control-static">'
-		// 											+ data.goldpayAcount + '</p>');
-		// 							$('#goldpayName').html(
-		// 									'<p class="form-control-static">'
-		// 											+ data.goldpayName + '</p>');
-		// 							$('#transferId').html(
-		// 									'<p class="form-control-static">'
-		// 											+ data.transferId + '</p>');
-		// 							$('#transferAmount').html(
-		// 									'<p class="form-control-static">'
-		// 											+ data.transferAmount + '</p>');
-		// 							$('#createTime').html(
-		// 									'<p class="form-control-static">'
-		// 											+ new Date(Number(data.createTime))
-		// 											+ '</p>');
-		// 							if (data.reviewStatus == 0) {
-		// 								$('#reviewStatus')
-		// 										.html(
-		// 												'<p class="form-control-static" style="color: blue">未审批</p>'
-		// 														+ '<button type="button" class="btn btn-primary"onclick="withdrawReview('
-		// 														+ withdrawId
-		// 														+ ')">审批</button>');
-		// 							} else if (data.reviewStatus == 1) {
-		// 								$('#reviewStatus')
-		// 										.html(
-		// 												'<p class="form-control-static" style="color: red">未通过</p>'
-		// 														+ '<button type="button" class="btn btn-primary"onclick="withdrawReview('
-		// 														+ withdrawId
-		// 														+ ')">审批</button>');
-		// 							} else {
-		// 								$('#reviewStatus')
-		// 										.html(
-		// 												'<p class="form-control-static" style="color: green">通过</p>');
-		// 							}
-
-		// 							if (data.goldpayRemit == 0) {
-		// 								if (data.reviewStatus == 2) {
-		// 									$('#goldpayRemit')
-		// 											.html(
-		// 													'<p class="form-control-static" style="color: green">未执行</p>'
-		// 															+ '<button type="button" class="btn btn-primary"onclick="goldpayRemit('
-		// 															+ withdrawId
-		// 															+ ')">执行</button>');
-		// 								} else {
-		// 									$('#goldpayRemit')
-		// 											.html(
-		// 													'<p class="form-control-static" style="color: green">未执行</p>');
-		// 								}
-		// 							} else if (data.goldpayRemit == 1) {
-		// 								$('#goldpayRemit')
-		// 										.html(
-		// 												'<p class="form-control-static" style="color: red">失败</p>'
-		// 														+ '<button type="button" class="btn btn-primary"onclick="goldpayRemit('
-		// 														+ withdrawId
-		// 														+ ')">执行</button>');
-		// 							} else {
-		// 								$('#goldpayRemit')
-		// 										.html(
-		// 												'<p class="form-control-static" style="color: green">成功</p>');
-		// 							}
-		// 						}
-		// 					})
-		// 		}
 
 		function getWithdrawList(currentPage, userPhone, transferId,
 				transferStatus) {
