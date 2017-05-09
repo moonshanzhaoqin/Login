@@ -87,6 +87,7 @@ public class UserController {
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
+			// TODO 判断是否获取过验证码
 			// 验证码校验
 			if (userManager.testPinCode(ServerConsts.PIN_FUNC_FORGETPASSWORD, forgetPasswordRequest.getAreaCode(),
 					forgetPasswordRequest.getUserPhone(), forgetPasswordRequest.getVerificationCode())) {
@@ -227,9 +228,9 @@ public class UserController {
 				logger.info(MessageConsts.TOKEN_NOT_MATCH);
 				rep.setRetCode(RetCodeConsts.TOKEN_NOT_MATCH);
 				rep.setMessage(MessageConsts.TOKEN_NOT_MATCH);
-			}else {
-				UserInfo userInfo=userManager.getUserInfo(userId);
-				if(userInfo!=null){
+			} else {
+				UserInfo userInfo = userManager.getUserInfo(userId);
+				if (userInfo != null) {
 					// 生成session Token
 					SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 					sessionManager.saveSessionData(sessionData);
@@ -245,7 +246,7 @@ public class UserController {
 					logger.info(MessageConsts.RET_CODE_SUCCESS);
 					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-				}else{
+				} else {
 					logger.info(MessageConsts.TOKEN_NOT_MATCH);
 					rep.setRetCode(RetCodeConsts.TOKEN_NOT_MATCH);
 					rep.setMessage(MessageConsts.TOKEN_NOT_MATCH);
@@ -267,9 +268,11 @@ public class UserController {
 				CheckPwdResult result = userManager.checkLoginPassword(userId, loginRequest.getUserPassword());
 				switch (result.getStatus()) {
 				case ServerConsts.CHECKPWD_STATUS_CORRECT:
-					if (userManager.isNewDevice(userId, loginRequest.getDeviceId())){
+					if (userManager.isNewDevice(userId, loginRequest.getDeviceId())) {
 						// 新设备，需要手机验证
-//						userManager.getPinCode(ServerConsts.PIN_FUNC_NEWDEVICE, loginRequest.getAreaCode(), loginRequest.getUserPhone());
+						// userManager.getPinCode(ServerConsts.PIN_FUNC_NEWDEVICE,
+						// loginRequest.getAreaCode(),
+						// loginRequest.getUserPhone());
 						logger.info(MessageConsts.NEW_DEVICE);
 						rep.setRetCode(RetCodeConsts.NEW_DEVICE);
 						rep.setMessage(MessageConsts.NEW_DEVICE);
@@ -296,13 +299,13 @@ public class UserController {
 					logger.info(MessageConsts.PASSWORD_NOT_MATCH);
 					rep.setRetCode(RetCodeConsts.PASSWORD_NOT_MATCH);
 					rep.setMessage(String.valueOf(result.getInfo()));
-					rep.setOpts(new String[]{String.valueOf(result.getInfo())});
+					rep.setOpts(new String[] { String.valueOf(result.getInfo()) });
 					break;
 				case ServerConsts.CHECKPWD_STATUS_FREEZE:
 					logger.info(MessageConsts.LOGIN_FREEZE);
 					rep.setRetCode(RetCodeConsts.LOGIN_FREEZE);
 					rep.setMessage(String.valueOf(result.getInfo()));
-					rep.setOpts(new String[]{String.valueOf(result.getInfo())});
+					rep.setOpts(new String[] { String.valueOf(result.getInfo()) });
 					break;
 				default:
 					break;
@@ -341,6 +344,7 @@ public class UserController {
 		} else {
 			// 判断用户是否已注册
 			if (userManager.getUserId(registerRequest.getAreaCode(), registerRequest.getUserPhone()) == null) {
+				// TODO 判断是否获取过验证码
 				// 校验验证码
 				if (userManager.testPinCode(ServerConsts.PIN_FUNC_REGISTER, registerRequest.getAreaCode(),
 						registerRequest.getUserPhone(), registerRequest.getRegistrationCode())) {
@@ -409,6 +413,7 @@ public class UserController {
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
+			// TODO 判断是否获取过验证码
 			// 校验验证码
 			if (userManager.testPinCode(testRequest.getPurpose(), testRequest.getAreaCode(), testRequest.getUserPhone(),
 					testRequest.getVerificationCode())) {
@@ -451,18 +456,20 @@ public class UserController {
 				CheckPwdResult result = userManager.checkLoginPassword(userId, loginValidateRequest.getUserPassword());
 				switch (result.getStatus()) {
 				case ServerConsts.CHECKPWD_STATUS_CORRECT:
-					// 验证短信验证码
+
+					// TODO 判断是否获取过验证码
+					/* 验证短信验证码 */
 					if (userManager.testPinCode(ServerConsts.PIN_FUNC_NEWDEVICE, loginValidateRequest.getAreaCode(),
 							loginValidateRequest.getUserPhone(), loginValidateRequest.getVerificationCode())) {
-						// 设备登记
+						/* 设备登记 */
 						userManager.addDevice(userId, loginValidateRequest.getDeviceId(),
 								loginValidateRequest.getDeviceName());
-						// 记录登录信息
+						/* 记录登录信息 */
 						userManager.updateUser(userId, HttpTookit.getIp(request), loginValidateRequest.getPushId(),
 								loginValidateRequest.getLanguage());
-						// 更新钱包
+						/* 更新钱包 */
 						userManager.updateWallet(userId);
-						// 生成session Token
+						/* 生成session Token */
 						SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 						sessionManager.saveSessionData(sessionData);
 						rep.setSessionToken(sessionData.getSessionId());
@@ -486,13 +493,13 @@ public class UserController {
 					logger.info(MessageConsts.PASSWORD_NOT_MATCH);
 					rep.setRetCode(RetCodeConsts.PASSWORD_NOT_MATCH);
 					rep.setMessage(String.valueOf(result.getInfo()));
-					rep.setOpts(new String[]{String.valueOf(result.getInfo())});
+					rep.setOpts(new String[] { String.valueOf(result.getInfo()) });
 					break;
 				case ServerConsts.CHECKPWD_STATUS_FREEZE:
 					logger.info(MessageConsts.LOGIN_FREEZE);
 					rep.setRetCode(RetCodeConsts.LOGIN_FREEZE);
 					rep.setMessage(String.valueOf(result.getInfo()));
-					rep.setOpts(new String[]{String.valueOf(result.getInfo())});
+					rep.setOpts(new String[] { String.valueOf(result.getInfo()) });
 					break;
 				default:
 					break;

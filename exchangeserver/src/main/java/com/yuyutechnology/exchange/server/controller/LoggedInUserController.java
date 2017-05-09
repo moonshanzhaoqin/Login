@@ -209,6 +209,7 @@ public class LoggedInUserController {
 				rep.setOpts(new String[] { String.valueOf(time) });
 			} else if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_CHANGEPHONE,
 					changePhoneRequest.getCheckToken())) {
+				// TODO 判断是否获取过验证码
 				// 校验手机验证码
 				if (userManager.testPinCode(ServerConsts.PIN_FUNC_CHANGEPHONE, changePhoneRequest.getAreaCode(),
 						changePhoneRequest.getUserPhone(), changePhoneRequest.getVerificationCode())) {
