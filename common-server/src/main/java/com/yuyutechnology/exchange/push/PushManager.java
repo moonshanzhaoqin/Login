@@ -159,15 +159,15 @@ public class PushManager {
 		readTemplate("template/push/zh_HK/offline.template", offline_title_hk, offline_hk, true);
 
 		readTemplate("template/push/en_US/withdraw_complete.template", withdraw_complete_title_en,
-				withdraw_complete_en);
+				withdraw_complete_en, true);
 		readTemplate("template/push/zh_CN/withdraw_complete.template", withdraw_complete_title_cn,
-				withdraw_complete_cn);
+				withdraw_complete_cn, true);
 		readTemplate("template/push/zh_HK/withdraw_complete.template", withdraw_complete_title_hk,
-				withdraw_complete_hk);
+				withdraw_complete_hk, true);
 
-		readTemplate("template/push/en_US/withdraw_refund.template", withdraw_refund_title_en, withdraw_refund_en);
-		readTemplate("template/push/zh_CN/withdraw_refund.template", withdraw_refund_title_cn, withdraw_refund_cn);
-		readTemplate("template/push/zh_HK/withdraw_refund.template", withdraw_refund_title_hk, withdraw_refund_hk);
+		readTemplate("template/push/en_US/withdraw_refund.template", withdraw_refund_title_en, withdraw_refund_en, true);
+		readTemplate("template/push/zh_CN/withdraw_refund.template", withdraw_refund_title_cn, withdraw_refund_cn, true);
+		readTemplate("template/push/zh_HK/withdraw_refund.template", withdraw_refund_title_hk, withdraw_refund_hk, true);
 
 	}
 
