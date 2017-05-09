@@ -9,7 +9,7 @@
 <body>
 
 	<!-- Modal -->
-	<div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+	<div class="modal fade" id="transfer" tabindex="-1" role="dialog">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -31,39 +31,99 @@
 						</div>
 						<div class="form-group">
 							<label class="col-sm-3 control-label">发款人ID:</label>
-							<div class="col-sm-9" id=fromId></div>
+							<div class="col-sm-9" id="fromId"></div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-3 control-label">发款人手机号:</label>
-							<div class="col-sm-9" id=fromPhone></div>
+							<div class="col-sm-9" id="fromPhone"></div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-3 control-label">收款人ID:</label>
-							<div class="col-sm-9" id=toId></div>
+							<div class="col-sm-9" id="toId"></div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-3 control-label">收款人手机号:</label>
-							<div class="col-sm-9" id=toPhone></div>
+							<div class="col-sm-9" id="toPhone"></div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-3 control-label">币种:</label>
-							<div class="col-sm-9" id=currency></div>
+							<div class="col-sm-9" id="currency"></div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-3 control-label">数量:</label>
-							<div class="col-sm-9" id=transferAmount></div>
+							<div class="col-sm-9" id="transferAmount"></div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-3 control-label">创建时间:</label>
-							<div class="col-sm-9" id=createTime></div>
+							<div class="col-sm-9" id="createTime"></div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-3 control-label">最新更新时间:</label>
-							<div class="col-sm-9" id=finishTime></div>
+							<div class="col-sm-9" id="finishTime"></div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-3 control-label">交易状态:</label>
-							<div class="col-sm-9" id=transferStatus></div>
+							<div class="col-sm-9" id="transferStatus"></div>
+						</div>
+
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+
+	<!-- Modal -->
+	<div class="modal fade" id="exchange" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">详情</h4>
+				</div>
+				<div class="modal-body" style="overflow: auto;">
+					<form class="form-horizontal">
+						<div class="form-group">
+							<label class="col-sm-3 control-label">兑换ID:</label>
+							<div class="col-sm-9" id="exchangeId"></div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label">用户ID:</label>
+							<div class="col-sm-9" id="userId"></div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">手机号:</label>
+							<div class="col-sm-9" id="userPhone"></div>
+						</div>
+						<!--                        <div class="form-group"> -->
+						<!--                            <label class="col-sm-3 control-label">币种:</label> -->
+						<!--                            <div class="col-sm-9" id=currency></div> -->
+						<!--                        </div> -->
+						<div class="form-group">
+							<label class="col-sm-3 control-label">数量:</label>
+							<div class="col-sm-9" id="exchangeAmount"></div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">汇率:</label>
+							<div class="col-sm-9" id="exchangeRate"></div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">创建时间:</label>
+							<div class="col-sm-9" id="EcreateTime"></div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">最新更新时间:</label>
+							<div class="col-sm-9" id="EfinishTime"></div>
 						</div>
 					</form>
 				</div>
@@ -76,6 +136,8 @@
 		<!-- /.modal-dialog -->
 	</div>
 	<!-- /.modal -->
+
+
 	<script type="text/javascript"
 		src="<c:url value="/resources/js/jquery.min.js" />"></script>
 	<script type="text/javascript"
@@ -118,8 +180,11 @@
 											+ transferType(data[i].transferType)
 											+ '</td>'
 											+ '<td>'
-											+ ((data[i].transferType == "1") ? data[i].transactionId
-													: ('<a href="" data-toggle="modal" data-target="#myModal" onclick= "getTransfer(\''
+											+ ((data[i].transferType == "1") ? ('<a href="" data-toggle="modal" data-target="#exchange" onclick= "getExchange(\''
+													+ data[i].transactionId
+													+ '\')">    '
+													+ data[i].transactionId + '</a>')
+													: ('<a href="" data-toggle="modal" data-target="#transfer" onclick= "getTransfer(\''
 															+ data[i].transactionId
 															+ '\')">	'
 															+ data[i].transactionId + '</a>'))
@@ -205,6 +270,63 @@
 						},
 						async : false
 					});
+		}
+		function getExchange(exchangeId) {
+			var data = {
+				exchangeId : exchangeId
+			};
+			$.ajax({
+				type : "post",
+				url : "/crm/getExchange",
+				dataType : 'json',
+				contentType : "application/json; charset=utf-8",
+				data : JSON.stringify(data),
+				success : function(data) {
+					if (data.retCode == "00002") {
+						location.href = loginUrl;
+					} else {
+						$('#exchangeId').html(
+								'<p class="form-control-static">'
+										+ data[0].exchangeId + '</p>');
+						$('#userId').html(
+								'<p class="form-control-static">'
+										+ data[0].userId + '</p>');
+						$('#userPhone').html(
+								'<p class="form-control-static">'
+										+ data[1].areaCode + data[1].userPhone
+										+ '</p>');
+
+						// 								$('#currency').html(
+						// 										'<p class="form-control-static">'
+						// 												+ data[0].currency + '</p>');
+						$('#exchangeAmount').html(
+								'<p class="form-control-static">'
+										+ data[0].amountOut +"  "
+										+ data[0].currencyOut + " ——> "
+										+ data[0].amountIn+" "
+										+ data[0].currencyIn + '</p>');
+						$('#exchangeRate').html(
+								'<p class="form-control-static">'
+										+ data[0].exchangeRate + '</p>');
+						$('#EcreateTime')
+								.html(
+										'<p class="form-control-static">'
+												+ timeDate(data[0].createTime)
+												+ '</p>');
+						$('#EfinishTime')
+								.html(
+										'<p class="form-control-static">'
+												+ timeDate(data[0].finishTime)
+												+ '</p>');
+
+					}
+				},
+				error : function(xhr, err) {
+					alert("未知错误");
+					console.log(err);
+				},
+				async : false
+			});
 		}
 
 		function transferType(transferType) {
