@@ -632,7 +632,7 @@ public class LoggedInUserController {
 		LogoutResponse rep = new LogoutResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		int userId = 0;
-		SessionData activeSessionData = sessionManager.getByUserid(userId);
+		SessionData activeSessionData = sessionManager.getByUserid(logoutRequest.getUserId());
 		if (sessionData == null && activeSessionData == null) {
 			userId = logoutRequest.getUserId();
 		} else if (sessionData != null) {
