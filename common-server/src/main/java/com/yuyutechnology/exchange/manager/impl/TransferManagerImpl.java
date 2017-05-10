@@ -533,8 +533,8 @@ public class TransferManagerImpl implements TransferManager{
 				"t1.user_from,"
 				+ "t1.currency,"
 				+ "t1.transfer_amount,"
-				+ "CONCAT(t1.area_code,t1.phone),"
-				+ "CONCAT(t2.area_code,t2.user_phone),"
+				+ "CONCAT(t1.area_code,' ',t1.phone),"
+				+ "CONCAT(t2.area_code,' ',t2.user_phone),"
 				+ "t1.transfer_comment,"
 				+ "t1.finish_time,"
 				+ "t1.transfer_type,t1.transfer_id  ";
