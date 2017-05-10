@@ -7,6 +7,12 @@ public class ContactUsRequest {
 	private String email;
 	private String category;
 	private String enquiry;
+	private String versionNum ;
+	private String deviceName;
+	private String deviceId;
+	private String system;
+	private String phoneModel;
+	
 
 	public String getName() {
 		return name;
@@ -40,12 +46,52 @@ public class ContactUsRequest {
 		this.enquiry = enquiry;
 	}
 
+	public String getVersionNum() {
+		return versionNum;
+	}
+
+	public void setVersionNum(String versionNum) {
+		this.versionNum = versionNum;
+	}
+
+	public String getDeviceName() {
+		return deviceName;
+	}
+
+	public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
+	}
+
+	public String getDeviceId() {
+		return deviceId;
+	}
+
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
+	}
+
+	public String getSystem() {
+		return system;
+	}
+
+	public void setSystem(String system) {
+		this.system = system;
+	}
+
+	public String getPhoneModel() {
+		return phoneModel;
+	}
+
+	public void setPhoneModel(String phoneModel) {
+		this.phoneModel = phoneModel;
+	}
+
 	/**
 	 * 判断参数是否为空
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty() {
+	public boolean empty() {
 		if (StringUtils.isBlank(this.name)) {
 			return true;
 		}

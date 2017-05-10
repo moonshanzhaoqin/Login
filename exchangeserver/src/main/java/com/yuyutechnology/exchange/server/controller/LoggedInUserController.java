@@ -708,13 +708,15 @@ public class LoggedInUserController {
 			@RequestDecryptBody ContactUsRequest contactUsRequest) {
 		logger.info("========contactUs : {}============", token);
 		ContactUsResponse rep = new ContactUsResponse();
-		if (contactUsRequest.isEmpty()) {
+		if (contactUsRequest.empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			mailManager.mail4contact(contactUsRequest.getName(), contactUsRequest.getEmail(),
-					contactUsRequest.getCategory(), contactUsRequest.getEnquiry());
+					contactUsRequest.getCategory(), contactUsRequest.getEnquiry(), contactUsRequest.getVersionNum(),
+					contactUsRequest.getDeviceName(), contactUsRequest.getDeviceId(), contactUsRequest.getSystem(),
+					contactUsRequest.getPhoneModel());
 			logger.info("********Operation succeeded********");
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
