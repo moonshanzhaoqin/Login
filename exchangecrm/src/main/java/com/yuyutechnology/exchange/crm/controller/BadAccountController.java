@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
 import com.yuyutechnology.exchange.crm.request.GetBadAccountByPageRequest;
+import com.yuyutechnology.exchange.crm.request.GetDetailSeqByTransferIdRequest;
 import com.yuyutechnology.exchange.crm.request.GetDetailSeqRequest;
 import com.yuyutechnology.exchange.crm.request.GetExchangeRequest;
 import com.yuyutechnology.exchange.crm.request.GetTransferRequest;
@@ -74,6 +75,14 @@ public class BadAccountController {
 	public List<?> getDetailSeq(@RequestBody GetDetailSeqRequest getDetailSeqRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		return walletManager.getDetailSeq(getDetailSeqRequest.getBadAccountId());
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/getDetailSeqByTransferId", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public List<?> getDetailSeqByTransferId(@RequestBody GetDetailSeqByTransferIdRequest getDetailSeqByTransferIdSeqRequest, HttpServletRequest request,
+			HttpServletResponse response) {
+		return walletManager.getDetailSeqByTransferId(getDetailSeqByTransferIdSeqRequest.getTransferId());
 	}
 
 	/**

@@ -23,4 +23,6 @@ public interface WalletManager {
 
 	List<?> getDetailSeq(Integer badAccountId);
 
+	List<?> getDetailSeqByTransferId(String transferId);
+
 }

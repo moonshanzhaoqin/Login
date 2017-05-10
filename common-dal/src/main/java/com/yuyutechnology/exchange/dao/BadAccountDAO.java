@@ -23,4 +23,6 @@ public interface BadAccountDAO {
 	public PageBean getBadAccountByPage(int currentPage, int pageSize);
 
 	BadAccount getBadAccount(Integer badAccountId);
+
+	BadAccount getBadAccountByTransferId(String transferId);
 }

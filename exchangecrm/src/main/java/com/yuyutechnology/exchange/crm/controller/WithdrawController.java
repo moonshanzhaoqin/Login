@@ -48,23 +48,6 @@ public class WithdrawController {
 				getWithdrawListRequest.getTransferStatus());
 	}
 
-	/**
-	 * 获取提现详细信息
-	 * 
-	 * @param withdrawRequest
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	// @ResponseBody
-	// @RequestMapping(value = "/getWithdrawDetail", method =
-	// RequestMethod.POST, produces = "application/json; charset=utf-8")
-	// public WithdrawDetail getWithdrawDetail(@RequestBody WithdrawRequest
-	// withdrawRequest, HttpServletRequest request,
-	// HttpServletResponse response) {
-	// return
-	// goldpayTransManager.getWithdrawDetail(withdrawRequest.getWithdrawId());
-	// }
 
 	/**
 	 * 提现审批

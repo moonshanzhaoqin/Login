@@ -1,6 +1,3 @@
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ page isELIgnored="false"%>
 <%@page contentType="text/html; charset=utf-8"%>
 <!DOCTYPE html>
 <html>
@@ -144,66 +141,6 @@
 		src="<c:url value="/resources/bootstrap/js/bootstrap.min.js" />"></script>
 
 	<script type="text/javascript">
-		function getDetailSeq(badAccountId) {
-			$("tr").removeClass("success")
-			$("#" + badAccountId).addClass("success")
-
-			var data = {
-				badAccountId : badAccountId
-			};
-			$
-					.ajax({
-						type : "post",
-						url : "/crm/getDetailSeq",
-						dataType : 'json',
-						contentType : "application/json; charset=utf-8",
-						data : JSON.stringify(data),
-						success : function(data) {
-							if (data.retCode == "00002") {
-								location.href = loginUrl;
-							} else {
-								console.log("success");
-								var html = "";
-								for ( var i in data) {
-									html += '<tr>'
-											+ '<td>'
-											+ data[i].seqId
-											+ '</td>'
-											+ '<td>'
-											+ data[i].currency
-											+ '</td>'
-											+ '<td>'
-											+ new Number(data[i].amount)
-													.toFixed(4)
-											+ '</td>'
-											+ '<td>'
-											+ transferType(data[i].transferType)
-											+ '</td>'
-											+ '<td>'
-											+ ((data[i].transferType == "1") ? ('<a href="" data-toggle="modal" data-target="#exchange" onclick= "getExchange(\''
-													+ data[i].transactionId
-													+ '\')">    '
-													+ data[i].transactionId + '</a>')
-													: ('<a href="" data-toggle="modal" data-target="#transfer" onclick= "getTransfer(\''
-															+ data[i].transactionId
-															+ '\')">	'
-															+ data[i].transactionId + '</a>'))
-											+ '</td>' + '<td>'
-											+ timeDate(data[i].createTime)
-											+ '</td>' + '</tr>'
-								}
-								$('#walletSeq tbody').html(html);
-								$('#detail').show();
-							}
-						},
-						error : function(xhr, err) {
-							alert("未知错误");
-							console.log(err);
-						},
-						async : false
-					});
-		}
-
 		function getTransfer(transferId) {
 			var data = {
 				transferId : transferId
@@ -301,9 +238,9 @@
 						// 												+ data[0].currency + '</p>');
 						$('#exchangeAmount').html(
 								'<p class="form-control-static">'
-										+ data[0].amountOut +"  "
+										+ data[0].amountOut + "  "
 										+ data[0].currencyOut + " ——> "
-										+ data[0].amountIn+" "
+										+ data[0].amountIn + " "
 										+ data[0].currencyIn + '</p>');
 						$('#exchangeRate').html(
 								'<p class="form-control-static">'
