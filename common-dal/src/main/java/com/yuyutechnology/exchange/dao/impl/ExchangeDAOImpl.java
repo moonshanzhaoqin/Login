@@ -100,4 +100,12 @@ public class ExchangeDAOImpl implements ExchangeDAO {
 		return sum;
 	}
 
+	@Override
+	public Object getExchangeByIdJoinUser(String exchangeId) {
+		List<?> list = hibernateTemplate.find(
+				"from Exchange e,User u where e.exchangeId = ? and e.userId = u.userId",
+				exchangeId);
+		return list.isEmpty() ?null:list.get(0);
+	}
+
 }

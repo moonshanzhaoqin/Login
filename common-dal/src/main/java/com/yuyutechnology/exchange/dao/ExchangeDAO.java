@@ -7,15 +7,16 @@ import com.yuyutechnology.exchange.pojo.Exchange;
 
 public interface ExchangeDAO {
 
-	public String createExchangeId(int transferType);
-	
-	public void addExchange(Exchange exchange);
-	
-	public Exchange getExchangeById(String exchangeId);
-	
-	public HashMap<String, Object> getExchangeRecordsByPage(
-			String sql,List<Object> values,int currentPage, int pageSize);
-	
-	public Integer getTotalNumOfDailyExchange();
+	String createExchangeId(int transferType);
+
+	void addExchange(Exchange exchange);
+
+	Exchange getExchangeById(String exchangeId);
+
+	HashMap<String, Object> getExchangeRecordsByPage(String sql, List<Object> values, int currentPage, int pageSize);
+
+	Integer getTotalNumOfDailyExchange();
+
+	Object getExchangeByIdJoinUser(String exchangeId);
 
 }

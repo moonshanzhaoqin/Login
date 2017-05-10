@@ -19,12 +19,15 @@ import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
 import com.yuyutechnology.exchange.crm.request.GetBadAccountByPageRequest;
 import com.yuyutechnology.exchange.crm.request.GetDetailSeqRequest;
+import com.yuyutechnology.exchange.crm.request.GetExchangeRequest;
 import com.yuyutechnology.exchange.crm.request.GetTransferRequest;
 import com.yuyutechnology.exchange.crm.request.SetGoldpayRemitTaskStatusRequest;
 import com.yuyutechnology.exchange.manager.CommonManager;
+import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.WalletManager;
+import com.yuyutechnology.exchange.pojo.Exchange;
 import com.yuyutechnology.exchange.util.page.PageBean;
 
 @Controller
@@ -39,6 +42,8 @@ public class BadAccountController {
 	GoldpayTransManager goldpayTransManager;
 	@Autowired
 	TransferManager transferManager;
+	@Autowired
+	ExchangeManager exchangeManager;
 
 	/**
 	 * 分页获取坏账列表
@@ -84,6 +89,19 @@ public class BadAccountController {
 	public Object getTransfer(@RequestBody GetTransferRequest getTransferRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		return transferManager.getTransfer(getTransferRequest.getTransferId());
+	}
+	/**
+	 *  获取兑换详情
+	 * @param getExchangeRequest
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getExchange", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public Object getExchange(@RequestBody GetExchangeRequest getExchangeRequest, HttpServletRequest request,
+			HttpServletResponse response) {
+		return exchangeManager.getExchange(getExchangeRequest.getExchangeId());
 	}
 
 	/**

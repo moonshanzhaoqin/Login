@@ -957,6 +957,7 @@ public class TransferManagerImpl implements TransferManager{
 		}
 		return map;
 	}
+	
 
 	@Override
 	public HashMap<String, Object> getTransDetails(String transferId, int userId) {
@@ -1033,4 +1034,6 @@ public class TransferManagerImpl implements TransferManager{
 		return map;
 
 	}
+
+	
 }
