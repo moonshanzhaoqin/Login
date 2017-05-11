@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -96,6 +97,7 @@ public class WalletManagerImpl implements WalletManager {
 	@Override
 	public List<?> getDetailSeq(Integer badAccountId) {
 		BadAccount badAccount = badAccountDAO.getBadAccount(badAccountId);
+//		logger.info("badAccount:{}", badAccount.getBadAccountId());
 		return walletSeqDAO.getWalletSeq(badAccount.getUserId(), badAccount.getCurrency(), badAccount.getStartSeqId(),
 				badAccount.getEndSeqId());
 	}
@@ -103,7 +105,8 @@ public class WalletManagerImpl implements WalletManager {
 	@Override
 	public List<?> getDetailSeqByTransferId(String transferId) {
 		BadAccount badAccount = badAccountDAO.getBadAccountByTransferId(transferId);
-		return badAccount == null ? null
+//		logger.info("badAccount:{}", badAccount.getBadAccountId());
+		return badAccount == null ? new ArrayList<>()
 				: walletSeqDAO.getWalletSeq(badAccount.getUserId(), badAccount.getCurrency(),
 						badAccount.getStartSeqId(), badAccount.getEndSeqId());
 

@@ -76,13 +76,20 @@ public class BadAccountController {
 			HttpServletResponse response) {
 		return walletManager.getDetailSeq(getDetailSeqRequest.getBadAccountId());
 	}
-	
+	/**
+	 * 
+	 * @param getDetailSeqByTransferIdSeqRequest
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	
 	@ResponseBody
 	@RequestMapping(value = "/getDetailSeqByTransferId", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public List<?> getDetailSeqByTransferId(@RequestBody GetDetailSeqByTransferIdRequest getDetailSeqByTransferIdSeqRequest, HttpServletRequest request,
+	public List<?> getDetailSeqByTransferId(@RequestBody GetDetailSeqByTransferIdRequest getDetailSeqByTransferIdRequest, HttpServletRequest request,
 			HttpServletResponse response) {
-		return walletManager.getDetailSeqByTransferId(getDetailSeqByTransferIdSeqRequest.getTransferId());
+		logger.info("getDetailSeqByTransferId==>transferId:{}",getDetailSeqByTransferIdRequest.getTransferId());
+		return walletManager.getDetailSeqByTransferId(getDetailSeqByTransferIdRequest.getTransferId());
 	}
 
 	/**

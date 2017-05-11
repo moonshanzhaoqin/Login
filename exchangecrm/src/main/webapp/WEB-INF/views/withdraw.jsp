@@ -76,7 +76,7 @@
 			<div id="paginator"></div>
 		</div>
 		<hr style="background-color: grey; height: 1px;" />
-		<div id="detail" class="row "
+		<div id="detail" class="row"
 			style="height: 400px; overflow: auto; width: 100%;">
 			<table class="table table-bordered table-hover table-striped"
 				id="walletSeq">
@@ -212,9 +212,9 @@
 									+ '</td>' + '<td>'
 									+ timeDate(data.rows[i][0].finishTime)
 									+ '</td>'+ '<td>'
-                                    +'<a href="javascript:void(0)" onclick="getDetailSeqByTransferId('
+                                    +'<a href="javascript:void(0)" onclick="getDetailSeqByTransferId(\''
                                     + data.rows[i][0].transferId
-                                    + ')">详情</a>' 
+                                    + '\')">详情</a>' 
                                     + '</td>' + '</tr>'
 						}
 						$('#withdraw tbody').html(html);
