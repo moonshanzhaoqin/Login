@@ -146,6 +146,7 @@ public class TransferController {
 		} else {
 			rep.setRetCode(result.get("retCode"));
 			rep.setMessage(result.get("msg"));
+			rep.setOpts(new String[]{result.get("msg")});
 		}
 
 		return rep;
