@@ -182,6 +182,7 @@ public class GoldpayTransController {
 		// }
 		rep.setRetCode(map.get("retCode"));
 		rep.setMessage(map.get("msg"));
+		rep.setOpts(new String[]{map.get("msg")});
 		return rep;
 	}
 
