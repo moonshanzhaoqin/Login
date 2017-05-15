@@ -433,12 +433,12 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		for (String[] instrument : commonManager.getInstruments()) {
 			if (!ArrayUtils.contains(existentInstrumentsList, instrument[0]) && !ArrayUtils.contains(existentInstrumentsList, instrument[1])) {
 				String instrumentTmp = instrument[0].replace(ServerConsts.CURRENCY_OF_CNY, ServerConsts.CURRENCY_OF_CNH).replace(ServerConsts.CURRENCY_OF_GOLDPAY, ServerConsts.CURRENCY_OF_GOLD);
-				logger.info("instruments : {}",instrumentTmp);
+//				logger.info("instruments : {}",instrumentTmp);
 				if (saveExchangeRatesMultiParams(instrumentTmp)) {
 					existentInstruments = generateParams(instrumentTmp, existentInstruments);
 				}else{
 					instrumentTmp = instrument[1].replace(ServerConsts.CURRENCY_OF_CNY, ServerConsts.CURRENCY_OF_CNH).replace(ServerConsts.CURRENCY_OF_GOLDPAY, ServerConsts.CURRENCY_OF_GOLD);
-					logger.info("instruments : {}",instrumentTmp);
+//					logger.info("instruments : {}",instrumentTmp);
 					if (saveExchangeRatesMultiParams(instrumentTmp)) {
 						existentInstruments = generateParams(instrumentTmp, existentInstruments);
 					}
