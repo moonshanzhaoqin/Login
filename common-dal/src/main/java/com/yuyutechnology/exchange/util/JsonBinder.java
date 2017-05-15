@@ -7,7 +7,7 @@
  * mestry.ma/modify time/modify reason
  * 
  */
-package com.yuyutechnology.exchange.utils;
+package com.yuyutechnology.exchange.util;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

@@ -23,7 +23,7 @@ import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.pojo.CrmSupervisor;
 import com.yuyutechnology.exchange.sms.SmsManager;
-import com.yuyutechnology.exchange.utils.DateFormatUtils;
+import com.yuyutechnology.exchange.util.DateFormatUtils;
 
 @Service
 public class CrmAlarmManagerImpl implements CrmAlarmManager {

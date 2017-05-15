@@ -28,7 +28,7 @@
          	<DefaultRolloverStrategy>  
 	        	<Delete basePath="/srv/logs" maxDepth="1">  
                      <IfFileName glob="task.log.*" />  
-                     <IfLastModified age="30d" />  
+                     <IfLastModified age="1d" />  
 	            </Delete>  
             </DefaultRolloverStrategy> 
         </RollingFile>

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 
-import com.yuyutechnology.exchange.utils.page.PageBean;
+import com.yuyutechnology.exchange.util.page.PageBean;
 
 public interface WalletManager {
 
@@ -15,12 +15,14 @@ public interface WalletManager {
 	 * @param userId
 	 * @return
 	 */
-	public HashMap<String, BigDecimal> getTotalAmoutGold(int userId);
+	HashMap<String, BigDecimal> getTotalAmoutGold(int userId);
 
-	public void getUserTotalBalance(int systemUserId);
+	void getUserTotalBalance(int systemUserId);
 
-	public PageBean getBadAccountByPage(int parseInt);
+	PageBean getBadAccountByPage(int parseInt);
 
-	public List<?> getDetailSeq(Integer badAccountId);
+	List<?> getDetailSeq(Integer badAccountId);
+
+	List<?> getDetailSeqByTransferId(String transferId);
 
 }

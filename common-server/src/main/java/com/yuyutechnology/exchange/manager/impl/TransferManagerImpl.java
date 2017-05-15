@@ -49,7 +49,7 @@ import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.sms.SmsManager;
-import com.yuyutechnology.exchange.utils.DateFormatUtils;
+import com.yuyutechnology.exchange.util.DateFormatUtils;
 
 @Service
 public class TransferManagerImpl implements TransferManager{
@@ -533,8 +533,8 @@ public class TransferManagerImpl implements TransferManager{
 				"t1.user_from,"
 				+ "t1.currency,"
 				+ "t1.transfer_amount,"
-				+ "CONCAT(t1.area_code,t1.phone),"
-				+ "CONCAT(t2.area_code,t2.user_phone),"
+				+ "CONCAT(t1.area_code,' ',t1.phone),"
+				+ "CONCAT(t2.area_code,' ',t2.user_phone),"
 				+ "t1.transfer_comment,"
 				+ "t1.finish_time,"
 				+ "t1.transfer_type,t1.transfer_id  ";
@@ -957,6 +957,7 @@ public class TransferManagerImpl implements TransferManager{
 		}
 		return map;
 	}
+	
 
 	@Override
 	public HashMap<String, Object> getTransDetails(String transferId, int userId) {
@@ -1033,4 +1034,6 @@ public class TransferManagerImpl implements TransferManager{
 		return map;
 
 	}
+
+	
 }

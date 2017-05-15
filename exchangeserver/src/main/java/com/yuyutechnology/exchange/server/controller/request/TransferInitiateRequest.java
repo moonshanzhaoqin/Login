@@ -38,4 +38,5 @@ public class TransferInitiateRequest {
 	public void setTransferComment(String transferComment) {
 		this.transferComment = transferComment;
 	}
+
 }

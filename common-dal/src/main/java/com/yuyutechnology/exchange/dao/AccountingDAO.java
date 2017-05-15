@@ -31,7 +31,7 @@ public interface AccountingDAO {
 	public Long getMAXSeqId4WalletUserId(final int userId);
 	
 	public Integer calculatorWalletSeqByUserId(final long seqIdStart, final long seqIdEnd, final Date startDate,
-			final Date endDate, final int userId);
+			final Date endDate, final int userId,final String transferId);
 	
 	public Date getLastAccountingTime();
 	

@@ -44,8 +44,8 @@ import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBod
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionManager;
 import com.yuyutechnology.exchange.sms.SendMessageResponse;
-import com.yuyutechnology.exchange.utils.HttpTookit;
-import com.yuyutechnology.exchange.utils.UidUtils;
+import com.yuyutechnology.exchange.util.HttpTookit;
+import com.yuyutechnology.exchange.util.UidUtils;
 
 /**
  * @author suzan.wu
@@ -87,6 +87,7 @@ public class UserController {
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
+			// TODO 判断是否获取过验证码
 			// 验证码校验
 			if (userManager.testPinCode(ServerConsts.PIN_FUNC_FORGETPASSWORD, forgetPasswordRequest.getAreaCode(),
 					forgetPasswordRequest.getUserPhone(), forgetPasswordRequest.getVerificationCode())) {
@@ -150,21 +151,23 @@ public class UserController {
 					rep.setRetCode(RetCodeConsts.PHONE_IS_REGISTERED);
 					rep.setMessage(MessageConsts.PHONE_IS_REGISTERED);
 				} else {
-					SendMessageResponse sendMessageResponse= userManager.getPinCode(getVerificationCodeRequest.getPurpose(),
-							getVerificationCodeRequest.getAreaCode(), getVerificationCodeRequest.getUserPhone());
-					if (sendMessageResponse==null) {
+					SendMessageResponse sendMessageResponse = userManager.getPinCode(
+							getVerificationCodeRequest.getPurpose(), getVerificationCodeRequest.getAreaCode(),
+							getVerificationCodeRequest.getUserPhone());
+					if (sendMessageResponse == null) {
 						logger.info(MessageConsts.RET_CODE_FAILUE);
 						rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 						rep.setMessage(MessageConsts.RET_CODE_FAILUE);
-					}else if(sendMessageResponse.isOk()){
+					} else if (sendMessageResponse.isOk()) {
 						logger.info(MessageConsts.RET_CODE_SUCCESS);
 						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-					}else{
+					} else {
 						logger.info(MessageConsts.SEND_MORE_THAN_LIMIT);
 						rep.setRetCode(RetCodeConsts.SEND_MORE_THAN_LIMIT);
 						rep.setMessage(MessageConsts.SEND_MORE_THAN_LIMIT);
-						rep.setOpts(new String[]{sendMessageResponse.getLimitCount().toString(),sendMessageResponse.getLimitTime().toString()});
+						rep.setOpts(new String[] { sendMessageResponse.getLimitCount().toString(),
+								sendMessageResponse.getLimitTime().toString() });
 					}
 				}
 			} else {
@@ -177,23 +180,25 @@ public class UserController {
 					rep.setRetCode(RetCodeConsts.USER_BLOCKED);
 					rep.setMessage(MessageConsts.USER_BLOCKED);
 				} else {
-					SendMessageResponse sendMessageResponse=  userManager.getPinCode(getVerificationCodeRequest.getPurpose(),
-							getVerificationCodeRequest.getAreaCode(), getVerificationCodeRequest.getUserPhone());
-					if (sendMessageResponse==null) {
+					SendMessageResponse sendMessageResponse = userManager.getPinCode(
+							getVerificationCodeRequest.getPurpose(), getVerificationCodeRequest.getAreaCode(),
+							getVerificationCodeRequest.getUserPhone());
+					if (sendMessageResponse == null) {
 						logger.info(MessageConsts.RET_CODE_FAILUE);
 						rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 						rep.setMessage(MessageConsts.RET_CODE_FAILUE);
-					}else if(sendMessageResponse.isOk()){
+					} else if (sendMessageResponse.isOk()) {
 						logger.info(MessageConsts.RET_CODE_SUCCESS);
 						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-					}else{
+					} else {
 						logger.info(MessageConsts.SEND_MORE_THAN_LIMIT);
 						rep.setRetCode(RetCodeConsts.SEND_MORE_THAN_LIMIT);
 						rep.setMessage(MessageConsts.SEND_MORE_THAN_LIMIT);
-						rep.setOpts(new String[]{sendMessageResponse.getLimitCount().toString(),sendMessageResponse.getLimitTime().toString()});
+						rep.setOpts(new String[] { sendMessageResponse.getLimitCount().toString(),
+								sendMessageResponse.getLimitTime().toString() });
 					}
-					
+
 				}
 			}
 		}
@@ -223,9 +228,9 @@ public class UserController {
 				logger.info(MessageConsts.TOKEN_NOT_MATCH);
 				rep.setRetCode(RetCodeConsts.TOKEN_NOT_MATCH);
 				rep.setMessage(MessageConsts.TOKEN_NOT_MATCH);
-			}else {
-				UserInfo userInfo=userManager.getUserInfo(userId);
-				if(userInfo!=null){
+			} else {
+				UserInfo userInfo = userManager.getUserInfo(userId);
+				if (userInfo != null) {
 					// 生成session Token
 					SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 					sessionManager.saveSessionData(sessionData);
@@ -241,7 +246,7 @@ public class UserController {
 					logger.info(MessageConsts.RET_CODE_SUCCESS);
 					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-				}else{
+				} else {
 					logger.info(MessageConsts.TOKEN_NOT_MATCH);
 					rep.setRetCode(RetCodeConsts.TOKEN_NOT_MATCH);
 					rep.setMessage(MessageConsts.TOKEN_NOT_MATCH);
@@ -263,9 +268,11 @@ public class UserController {
 				CheckPwdResult result = userManager.checkLoginPassword(userId, loginRequest.getUserPassword());
 				switch (result.getStatus()) {
 				case ServerConsts.CHECKPWD_STATUS_CORRECT:
-					if (userManager.isNewDevice(userId, loginRequest.getDeviceId())){
+					if (userManager.isNewDevice(userId, loginRequest.getDeviceId())) {
 						// 新设备，需要手机验证
-//						userManager.getPinCode(ServerConsts.PIN_FUNC_NEWDEVICE, loginRequest.getAreaCode(), loginRequest.getUserPhone());
+						// userManager.getPinCode(ServerConsts.PIN_FUNC_NEWDEVICE,
+						// loginRequest.getAreaCode(),
+						// loginRequest.getUserPhone());
 						logger.info(MessageConsts.NEW_DEVICE);
 						rep.setRetCode(RetCodeConsts.NEW_DEVICE);
 						rep.setMessage(MessageConsts.NEW_DEVICE);
@@ -292,11 +299,13 @@ public class UserController {
 					logger.info(MessageConsts.PASSWORD_NOT_MATCH);
 					rep.setRetCode(RetCodeConsts.PASSWORD_NOT_MATCH);
 					rep.setMessage(String.valueOf(result.getInfo()));
+					rep.setOpts(new String[] { String.valueOf(result.getInfo()) });
 					break;
 				case ServerConsts.CHECKPWD_STATUS_FREEZE:
 					logger.info(MessageConsts.LOGIN_FREEZE);
 					rep.setRetCode(RetCodeConsts.LOGIN_FREEZE);
 					rep.setMessage(String.valueOf(result.getInfo()));
+					rep.setOpts(new String[] { String.valueOf(result.getInfo()) });
 					break;
 				default:
 					break;
@@ -335,9 +344,15 @@ public class UserController {
 		} else {
 			// 判断用户是否已注册
 			if (userManager.getUserId(registerRequest.getAreaCode(), registerRequest.getUserPhone()) == null) {
+				// TODO 判断是否获取过验证码
 				// 校验验证码
-				if (userManager.testPinCode(ServerConsts.PIN_FUNC_REGISTER, registerRequest.getAreaCode(),
-						registerRequest.getUserPhone(), registerRequest.getRegistrationCode())) {
+				Boolean resultBool = userManager.testPinCode(ServerConsts.PIN_FUNC_REGISTER, registerRequest.getAreaCode(),
+						registerRequest.getUserPhone(), registerRequest.getRegistrationCode());
+				if (resultBool == null) {
+					logger.info(MessageConsts.NOT_GET_CODE);
+					rep.setRetCode(RetCodeConsts.NOT_GET_CODE);
+					rep.setMessage(MessageConsts.NOT_GET_CODE);
+				} else if (resultBool.booleanValue()) {
 					Integer userId = userManager.register(registerRequest.getAreaCode(), registerRequest.getUserPhone(),
 							registerRequest.getUserName(), registerRequest.getUserPassword(), HttpTookit.getIp(request),
 							registerRequest.getPushId(), registerRequest.getLanguage());
@@ -403,9 +418,15 @@ public class UserController {
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
+			// TODO 判断是否获取过验证码
 			// 校验验证码
-			if (userManager.testPinCode(testRequest.getPurpose(), testRequest.getAreaCode(), testRequest.getUserPhone(),
-					testRequest.getVerificationCode())) {
+			Boolean resultBool = userManager.testPinCode(testRequest.getPurpose(), testRequest.getAreaCode(),
+					testRequest.getUserPhone(), testRequest.getVerificationCode());
+			if (resultBool == null) {
+				logger.info(MessageConsts.NOT_GET_CODE);
+				rep.setRetCode(RetCodeConsts.NOT_GET_CODE);
+				rep.setMessage(MessageConsts.NOT_GET_CODE);
+			} else if (resultBool.booleanValue()) {
 				logger.info(MessageConsts.RET_CODE_SUCCESS);
 				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
@@ -445,23 +466,31 @@ public class UserController {
 				CheckPwdResult result = userManager.checkLoginPassword(userId, loginValidateRequest.getUserPassword());
 				switch (result.getStatus()) {
 				case ServerConsts.CHECKPWD_STATUS_CORRECT:
-					// 验证短信验证码
-					if (userManager.testPinCode(ServerConsts.PIN_FUNC_NEWDEVICE, loginValidateRequest.getAreaCode(),
-							loginValidateRequest.getUserPhone(), loginValidateRequest.getVerificationCode())) {
-						// 设备登记
+
+					// TODO 判断是否获取过验证码
+					/* 验证短信验证码 */
+					Boolean resultBool = userManager.testPinCode(ServerConsts.PIN_FUNC_NEWDEVICE,
+							loginValidateRequest.getAreaCode(), loginValidateRequest.getUserPhone(),
+							loginValidateRequest.getVerificationCode());
+					if (resultBool == null) {
+						logger.info(MessageConsts.NOT_GET_CODE);
+						rep.setRetCode(RetCodeConsts.NOT_GET_CODE);
+						rep.setMessage(MessageConsts.NOT_GET_CODE);
+					} else if (resultBool.booleanValue()) {
+						/* 设备登记 */
 						userManager.addDevice(userId, loginValidateRequest.getDeviceId(),
 								loginValidateRequest.getDeviceName());
-						// 记录登录信息
+						/* 记录登录信息 */
 						userManager.updateUser(userId, HttpTookit.getIp(request), loginValidateRequest.getPushId(),
 								loginValidateRequest.getLanguage());
-						// 更新钱包
+						/* 更新钱包 */
 						userManager.updateWallet(userId);
-						// 生成session Token
+						/* 生成session Token */
 						SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 						sessionManager.saveSessionData(sessionData);
 						rep.setSessionToken(sessionData.getSessionId());
 						rep.setLoginToken(sessionManager.createLoginToken(userId));
-						// 获取用户信息
+						/* 获取用户信息*/
 						rep.setUser(userManager.getUserInfo(userId));
 
 						logger.info(MessageConsts.RET_CODE_SUCCESS);
@@ -480,11 +509,13 @@ public class UserController {
 					logger.info(MessageConsts.PASSWORD_NOT_MATCH);
 					rep.setRetCode(RetCodeConsts.PASSWORD_NOT_MATCH);
 					rep.setMessage(String.valueOf(result.getInfo()));
+					rep.setOpts(new String[] { String.valueOf(result.getInfo()) });
 					break;
 				case ServerConsts.CHECKPWD_STATUS_FREEZE:
 					logger.info(MessageConsts.LOGIN_FREEZE);
 					rep.setRetCode(RetCodeConsts.LOGIN_FREEZE);
 					rep.setMessage(String.valueOf(result.getInfo()));
+					rep.setOpts(new String[] { String.valueOf(result.getInfo()) });
 					break;
 				default:
 					break;
@@ -493,6 +524,7 @@ public class UserController {
 		}
 		return rep;
 	}
+
 	/**
 	 * contactUs 联系我们
 	 * 
@@ -506,13 +538,15 @@ public class UserController {
 	public ContactUsResponse contactUs(@RequestBody ContactUsRequest contactUsRequest) {
 		logger.info("========contactUs : {}============");
 		ContactUsResponse rep = new ContactUsResponse();
-		if (contactUsRequest.isEmpty()) {
+		if (contactUsRequest.empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			mailManager.mail4contact(contactUsRequest.getName(), contactUsRequest.getEmail(),
-					contactUsRequest.getCategory(), contactUsRequest.getEnquiry());
+					contactUsRequest.getCategory(), contactUsRequest.getEnquiry(), contactUsRequest.getVersionNum(),
+					contactUsRequest.getDeviceName(), contactUsRequest.getDeviceId(), contactUsRequest.getSystem(),
+					contactUsRequest.getPhoneModel());
 			logger.info("********Operation succeeded********");
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);

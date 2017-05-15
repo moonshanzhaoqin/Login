@@ -20,9 +20,9 @@ import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
 import com.yuyutechnology.exchange.session.SessionManager;
 import com.yuyutechnology.exchange.startup.ServerContext;
-import com.yuyutechnology.exchange.utils.AESCipher;
-import com.yuyutechnology.exchange.utils.JsonBinder;
-import com.yuyutechnology.exchange.utils.ResourceUtils;
+import com.yuyutechnology.exchange.util.AESCipher;
+import com.yuyutechnology.exchange.util.JsonBinder;
+import com.yuyutechnology.exchange.util.ResourceUtils;
 
 /**
  * 登录拦截器
@@ -49,7 +49,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 	 * @param uri
 	 * @return
 	 */
-	private String getToeknFromURI(String uri) {
+	private String getTokenFromURI(String uri) {
 		int index = StringUtils.indexOf(uri, "/token");
 		if (index > -1) {
 			String param = uri.substring(index);
@@ -78,7 +78,11 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Headers", "accept, content-type");
 		String requestURI = request.getRequestURI();
-		String sessionId = getToeknFromURI(request.getRequestURI());
+		if (requestURI.contains("/user/logout")) {
+			logger.info("request URI:" + requestURI + " ok");
+			return true;
+		}
+		String sessionId = getTokenFromURI(request.getRequestURI());
 		SessionData sessionData = sessionManager.get(sessionId);
 		// 判断是否需要拦截或者是否登录
 		if (sessionData != null) {

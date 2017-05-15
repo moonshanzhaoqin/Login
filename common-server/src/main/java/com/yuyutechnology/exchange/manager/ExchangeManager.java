@@ -12,7 +12,7 @@ import com.yuyutechnology.exchange.pojo.Exchange;
  *
  */
 public interface ExchangeManager {
-	
+
 	/**
 	 * @Descrition : 根据UserId获取用户的wallets
 	 * @author : nicholas.chi
@@ -20,8 +20,8 @@ public interface ExchangeManager {
 	 * @param userId
 	 * @return
 	 */
-	public List<WalletInfo> getWalletsByUserId(int userId);
-	
+	List<WalletInfo> getWalletsByUserId(int userId);
+
 	/**
 	 * @Descrition : 兑换金额计算
 	 * @author : nicholas.chi
@@ -32,12 +32,11 @@ public interface ExchangeManager {
 	 * @param amountOut
 	 * @return
 	 */
-	public HashMap<String, String> exchangeCalculation(int userId,String currencyOut,
-			String currencyIn,BigDecimal amountOut);
-	
+	HashMap<String, String> exchangeCalculation(int userId, String currencyOut, String currencyIn,
+			BigDecimal amountOut);
 
 	/**
-	 * @Descrition : 
+	 * @Descrition :
 	 * @author : nicholas.chi
 	 * @time : 2016年12月16日 下午4:19:38
 	 * @param userId
@@ -47,11 +46,10 @@ public interface ExchangeManager {
 	 * @param amountIn
 	 * @return
 	 */
-	public HashMap<String, String> exchangeConfirm(int userId,String currencyOut,
-			String currencyIn,BigDecimal amountOut);
+	HashMap<String, String> exchangeConfirm(int userId, String currencyOut, String currencyIn, BigDecimal amountOut);
 
 	/**
-	 * @Descrition : 
+	 * @Descrition :
 	 * @author : nicholas.chi
 	 * @time : 2016年12月9日 下午4:35:28
 	 * @param currencyOut
@@ -60,9 +58,11 @@ public interface ExchangeManager {
 	 * @return
 	 */
 	HashMap<String, BigDecimal> exchangeCalculation(String currencyOut, String currencyIn, BigDecimal outAmount);
-		
-	public HashMap<String, Object> getExchangeRecordsByPage(int userId,String period,int currentPage,int pageSize);
-	
-	public Exchange getExchangeById(String exchangeId);
+
+	HashMap<String, Object> getExchangeRecordsByPage(int userId, String period, int currentPage, int pageSize);
+
+	Exchange getExchangeById(String exchangeId);
+
+	Object getExchange(String exchangeId);
 
 }

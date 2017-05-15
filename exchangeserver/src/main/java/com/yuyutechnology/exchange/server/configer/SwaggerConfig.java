@@ -16,7 +16,7 @@ import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
 import com.mangofactory.swagger.models.dto.ApiInfo;
 import com.mangofactory.swagger.plugin.EnableSwagger;
 import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
-import com.yuyutechnology.exchange.utils.ResourceUtils;
+import com.yuyutechnology.exchange.util.ResourceUtils;
 
 /**
  * Class description goes here.

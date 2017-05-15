@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.dao.NotificationDAO;
 import com.yuyutechnology.exchange.pojo.TransactionNotification;
-import com.yuyutechnology.exchange.utils.page.PageUtils;
+import com.yuyutechnology.exchange.util.page.PageUtils;
 
 @Repository
 public class NotificationDAOImpl implements NotificationDAO {

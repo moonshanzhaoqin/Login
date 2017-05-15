@@ -18,7 +18,7 @@ import org.springframework.stereotype.Repository;
 import com.yuyutechnology.exchange.dao.ExchangeDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.pojo.Exchange;
-import com.yuyutechnology.exchange.utils.page.PageUtils;
+import com.yuyutechnology.exchange.util.page.PageUtils;
 
 @Repository
 public class ExchangeDAOImpl implements ExchangeDAO {
@@ -98,6 +98,14 @@ public class ExchangeDAOImpl implements ExchangeDAO {
 		});
 
 		return sum;
+	}
+
+	@Override
+	public Object getExchangeByIdJoinUser(String exchangeId) {
+		List<?> list = hibernateTemplate.find(
+				"from Exchange e,User u where e.exchangeId = ? and e.userId = u.userId",
+				exchangeId);
+		return list.isEmpty() ?null:list.get(0);
 	}
 
 }

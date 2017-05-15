@@ -17,8 +17,9 @@ import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.dao.BadAccountDAO;
 import com.yuyutechnology.exchange.pojo.BadAccount;
-import com.yuyutechnology.exchange.utils.page.PageBean;
-import com.yuyutechnology.exchange.utils.page.PageUtils;
+import com.yuyutechnology.exchange.pojo.User;
+import com.yuyutechnology.exchange.util.page.PageBean;
+import com.yuyutechnology.exchange.util.page.PageUtils;
 
 /**
  * @author silent.sun
@@ -40,6 +41,7 @@ public class BadAccountDAOImpl implements BadAccountDAO {
 		hibernateTemplate.saveOrUpdate(badAccount);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Integer> findBadAccountList(int badAccountStatus) {
 		List<?> list = hibernateTemplate.find("select distinct(userId) from BadAccount where badAccountStatus = ?", badAccountStatus);
@@ -66,6 +68,12 @@ public class BadAccountDAOImpl implements BadAccountDAO {
 		StringBuilder hql = new StringBuilder("from BadAccount b,User u where u.userId=b.userId order by b.startTime desc");
 		PageBean pageBean = PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
 		return pageBean;
+	}
+
+	@Override
+	public BadAccount getBadAccountByTransferId(String transferId) {
+		List<?> list = hibernateTemplate.find("from BadAccount where transferId = ? ", transferId);
+		return list.isEmpty() ? null : (BadAccount) list.get(0);
 	}
 
 }

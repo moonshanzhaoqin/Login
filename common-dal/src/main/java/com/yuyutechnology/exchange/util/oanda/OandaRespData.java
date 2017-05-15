@@ -1,4 +1,4 @@
-package com.yuyutechnology.exchange.utils.oanda;
+package com.yuyutechnology.exchange.util.oanda;
 
 public class OandaRespData {
 	

@@ -5,20 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.yuyutechnology.exchange.pojo.Transfer;
-import com.yuyutechnology.exchange.utils.page.PageBean;
+import com.yuyutechnology.exchange.util.page.PageBean;
 
 public interface GoldpayTransManager {
 
-	public HashMap<String, String> goldpayPurchase(int userId, BigDecimal amount);
+	HashMap<String, String> goldpayPurchase(int userId, BigDecimal amount);
 
-	public HashMap<String, String> requestPin(int userId, String transferId);
+	HashMap<String, String> requestPin(int userId, String transferId);
 
-	public HashMap<String, String> goldpayTransConfirm(int userId, String pin, String transferId);
+	HashMap<String, String> goldpayTransConfirm(int userId, String pin, String transferId);
 
-	public HashMap<String, String> goldpayWithdraw(int userId, double amount);
-
-	// public HashMap<String, String> withdrawConfirm(int userId, String payPwd,
-	// String transferId);
+	HashMap<String, String> goldpayWithdraw(int userId, double amount);
 
 	/**
 	 * 提现第一步：exanytime划账
@@ -28,38 +25,30 @@ public interface GoldpayTransManager {
 	 * @param transferId
 	 * @return
 	 */
+	HashMap<String, String> withdrawConfirm1(int userId, String payPwd, String transferId);
 
-	public HashMap<String, String> withdrawConfirm1(int userId, String payPwd, String transferId);
+	List<Transfer> getNeedGoldpayRemitWithdraws();
 
-	// public void withdrawRefund(int userId, String transferId, String
-	// transferCurrency, BigDecimal transferAmount);
+	List<Transfer> getNeedReviewWithdraws();
 
-//	public List<Transfer> findGoldpayWithdrawByTimeBefore(Date date);
-
-	// public WithdrawDetail getWithdrawDetail(Integer withdrawId);
-
-	public List<Transfer> getNeedGoldpayRemitWithdraws();
-
-	public List<Transfer> getNeedReviewWithdraws();
-
-	public PageBean getWithdrawRecordByPage(Integer userId, int currentPage, int pageSize);
+	PageBean getWithdrawRecordByPage(Integer userId, int currentPage, int pageSize);
 
 	HashMap<String, String> goldpayRemit(String transferId);
 
-	public PageBean getWithdrawList(int currentPage, String userPhone, String transferId, String[] transferStatus);
+	PageBean getWithdrawList(int currentPage, String userPhone, String transferId, String[] transferStatus);
 
 	void withdrawRefund(String transferId);
 
-//	void withdrawReviewManual(String transferId);
-	
-	public void forbiddenGoldpayRemitWithdraws(String forbidden);
-	
-	public boolean getGoldpayRemitWithdrawsforbidden();
+	// void withdrawReviewManual(String transferId);
+
+	void forbiddenGoldpayRemitWithdraws(String forbidden);
+
+	boolean getGoldpayRemitWithdrawsforbidden();
 
 	void withdrawReviewAuto(String transferId);
 
-	public void withdrawReviewPending(String transferId);
+	void withdrawReviewPending(String transferId);
 
-	public void goldpayRemitPending(String transferId);
+	void goldpayRemitPending(String transferId);
 
 }

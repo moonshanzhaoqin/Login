@@ -1,4 +1,4 @@
-package com.yuyutechnology.exchange.utils;
+package com.yuyutechnology.exchange.util;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.RandomUtils;
 /**

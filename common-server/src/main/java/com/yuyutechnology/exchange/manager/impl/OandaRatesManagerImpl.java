@@ -22,12 +22,12 @@ import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Wallet;
-import com.yuyutechnology.exchange.utils.DateFormatUtils;
-import com.yuyutechnology.exchange.utils.HttpClientUtils;
-import com.yuyutechnology.exchange.utils.JsonBinder;
-import com.yuyutechnology.exchange.utils.ResourceUtils;
-import com.yuyutechnology.exchange.utils.oanda.OandaRespData;
-import com.yuyutechnology.exchange.utils.oanda.PriceInfo;
+import com.yuyutechnology.exchange.util.DateFormatUtils;
+import com.yuyutechnology.exchange.util.HttpClientUtils;
+import com.yuyutechnology.exchange.util.JsonBinder;
+import com.yuyutechnology.exchange.util.ResourceUtils;
+import com.yuyutechnology.exchange.util.oanda.OandaRespData;
+import com.yuyutechnology.exchange.util.oanda.PriceInfo;
 
 @Service
 public class OandaRatesManagerImpl implements OandaRatesManager {

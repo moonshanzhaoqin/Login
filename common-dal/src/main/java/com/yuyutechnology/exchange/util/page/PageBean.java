@@ -1,4 +1,4 @@
-package com.yuyutechnology.exchange.utils.page;
+package com.yuyutechnology.exchange.util.page;
 
 import java.util.List;
 

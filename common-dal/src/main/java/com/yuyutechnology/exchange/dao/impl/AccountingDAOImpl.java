@@ -22,7 +22,7 @@ import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.dao.AccountingDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
-import com.yuyutechnology.exchange.utils.DateFormatUtils;
+import com.yuyutechnology.exchange.util.DateFormatUtils;
 
 /**
  * @author silent.sun
@@ -188,7 +188,7 @@ public class AccountingDAOImpl implements AccountingDAO{
 	}
 	
 	public Integer calculatorWalletSeqByUserId(final long seqIdStart, final long seqIdEnd, final Date startDate,
-			final Date endDate, final int userId) {
+			final Date endDate, final int userId, final String transferId) {
 		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
 			@Override
 			public Integer doInHibernate(Session session) throws HibernateException {
@@ -200,8 +200,8 @@ public class AccountingDAOImpl implements AccountingDAO{
 //						.append("where ws.seq_id > ? and ws.seq_id <= ? and ws.user_id = ? group by ws.currency")
 //						.append(") tmp where sum_amount + coalesce(balance_before,0) != coalesce(balance_now,0)");
 
-				sql.append("insert into e_bad_account (user_id,currency,sum_amount,balance_history,balance_now,start_time,end_time,start_seq_id,end_seq_id,bad_account_status) ")
-				.append("select w.user_id,w.currency,coalesce(ws.sum_amount, 0),coalesce(w2.balance,0), w.balance,?,?,?,?,1 from e_wallet w ")
+				sql.append("insert into e_bad_account (user_id,currency,sum_amount,balance_history,balance_now,start_time,end_time,start_seq_id,end_seq_id,bad_account_status,transfer_id) ")
+				.append("select w.user_id,w.currency,coalesce(ws.sum_amount, 0),coalesce(w2.balance,0), w.balance,?,?,?,?,1,? from e_wallet w ")
 				.append("left join (select user_id,currency, SUM(amount) as sum_amount from e_wallet_seq ")
 				.append("where seq_id > ? and seq_id <= ? and user_id = ? group by currency ")
 				.append(") ws on w.user_id = ws.user_id and ws.currency = w.currency left join e_wallet_before w2 on w.user_id = w2.user_id and w.currency = w2.currency ")
@@ -212,10 +212,11 @@ public class AccountingDAOImpl implements AccountingDAO{
 				query.setString(1, DateFormatUtils.formatDate(endDate));
 				query.setLong(2, seqIdStart);
 				query.setLong(3, seqIdEnd);
-				query.setLong(4, seqIdStart);
-				query.setLong(5, seqIdEnd);
-				query.setLong(6, userId);
+				query.setString(4, transferId);
+				query.setLong(5, seqIdStart);
+				query.setLong(6, seqIdEnd);
 				query.setLong(7, userId);
+				query.setLong(8, userId);
 				return query.executeUpdate();
 			}
 		});

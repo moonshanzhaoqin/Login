@@ -22,8 +22,8 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.pojo.Transfer;
-import com.yuyutechnology.exchange.utils.page.PageBean;
-import com.yuyutechnology.exchange.utils.page.PageUtils;
+import com.yuyutechnology.exchange.util.page.PageBean;
+import com.yuyutechnology.exchange.util.page.PageUtils;
 
 @Repository
 public class TransferDAOImpl implements TransferDAO {
@@ -114,14 +114,14 @@ public class TransferDAOImpl implements TransferDAO {
 	public void updateAccumulatedAmount(String key, BigDecimal amoumt) {
 		redisDAO.incrementValue(ACCUMULATED_AMOUNT_KEY.replace("[key]", key), amoumt.doubleValue());
 		redisDAO.expireAtData(ACCUMULATED_AMOUNT_KEY.replace("[key]", key),
-				com.yuyutechnology.exchange.utils.DateFormatUtils.getIntervalDay(new Date(), 1));
+				com.yuyutechnology.exchange.util.DateFormatUtils.getIntervalDay(new Date(), 1));
 	}
 
 	@Override
 	public void updateCumulativeNumofTimes(String key, BigDecimal amoumt) {
 		redisDAO.incrementValue(ACCUMULATED_TIMES_KEY.replace("[key]", key), amoumt.doubleValue());
 		redisDAO.expireAtData(ACCUMULATED_TIMES_KEY.replace("[key]", key),
-				com.yuyutechnology.exchange.utils.DateFormatUtils.getIntervalDay(new Date(), 1));
+				com.yuyutechnology.exchange.util.DateFormatUtils.getIntervalDay(new Date(), 1));
 	}
 
 	@Override
