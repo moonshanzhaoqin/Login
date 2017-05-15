@@ -477,7 +477,7 @@ public class UserManagerImpl implements UserManager {
 			logger.info("***not get verify code***");
 			return null;
 		}
-		if (pinCode.equals(verificationCode)) {
+		if (pinCode.equals(DigestUtils.md5Hex(verificationCode))) {
 			logger.info("***match***");
 			return true;
 		}
