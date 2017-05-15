@@ -30,7 +30,8 @@ import com.yuyutechnology.exchange.util.ResourceUtils;
 @Service
 public class MailManager {
 	public static Logger logger = LogManager.getLogger(MailManager.class);
-
+	private boolean initMail = false;
+	
 	private StringBuffer contactTital = new StringBuffer();
 	private StringBuffer contactContent = new StringBuffer();
 
@@ -78,8 +79,9 @@ public class MailManager {
 		readTemplate("template/mail/zh_CN/largeExchangeWarn.template", largeExchangeWarnTital,
 				largeExchangeWarnContent);
 		readTemplate("template/mail/zh_CN/badAccountAlarm.template", badAccountWarnTital, badAccountWarnContent);
+		initMail = true;
 	}
-
+	
 	private void readTemplate(String filePath, StringBuffer tital, StringBuffer content) {
 		try {
 			tital.setLength(0);
@@ -90,8 +92,7 @@ public class MailManager {
 					fileString.substring(0, fileString.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", ""));
 			content.append(fileString.substring(fileString.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", ""));
 		} catch (Exception e) {
-			logger.warn("Mail template ({}) read error , can't send this email : {} ",
-					new Object[] { filePath, e.getMessage() });
+			if (!initMail) logger.warn("Mail template ({}) read error , can't send this email : {} ", new Object[] { filePath, e.getMessage() });
 		}
 	}
 

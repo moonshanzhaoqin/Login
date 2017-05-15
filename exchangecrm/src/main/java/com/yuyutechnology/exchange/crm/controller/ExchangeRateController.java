@@ -24,15 +24,13 @@ public class ExchangeRateController {
 	
 	@RequestMapping(value = "/exchangeRate/getAllExchangeRates", method = { RequestMethod.GET })
 	public ModelAndView getAllExchangeRates(){
-		
 		mav = new ModelAndView();
-		
 		List<PriceInfo> priceInfos = oandaRatesManager.getAllPrices();	
-		if(priceInfos!= null){
-			for (PriceInfo priceInfo : priceInfos) {
-				logger.info("  priceInfo : instrument : {}",priceInfo.getInstrument());
-			}
-		}
+//		if(priceInfos!= null){
+//			for (PriceInfo priceInfo : priceInfos) {
+//				logger.info("  priceInfo : instrument : {}",priceInfo.getInstrument());
+//			}
+//		}
 		mav.addObject("priceInfos", priceInfos);
 		mav.setViewName("exchangeRate/priceInfos");
 		return mav;
