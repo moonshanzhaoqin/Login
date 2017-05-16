@@ -107,7 +107,7 @@ public class WalletManagerImpl implements WalletManager {
 		BadAccount badAccount = badAccountDAO.getBadAccountByTransferId(transferId);
 		logger.info("badAccount:{}", badAccount.getBadAccountId());
 		return badAccount == null ? new ArrayList<>()
-				: walletSeqDAO.getWalletSeq(badAccount.getUserId(), badAccount.getCurrency(),
+				: walletSeqDAO.getWalletSeq2(badAccount.getUserId(), 
 						badAccount.getStartSeqId(), badAccount.getEndSeqId());
 
 	}
