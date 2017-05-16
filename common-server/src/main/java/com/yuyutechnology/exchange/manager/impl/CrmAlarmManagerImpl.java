@@ -383,6 +383,43 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 			}
 			
 			break;
+			
+		case "goldpayRemitFailWarning":
+			//短信
+			if(earlyWarningMode == 1){
+				for (String supervisorId : arr) {
+					CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
+					if(crmSupervisor != null){
+						smsManager.sendSMS4RemitFail(crmSupervisor.getSupervisorMobile(), 
+								DateFormatUtils.formatDateGMT8(new Date()));
+					}
+				}
+			}
+			//邮件
+			if(earlyWarningMode == 2){
+				for (String supervisorId : arr) {
+					CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId.trim()));
+					if(crmSupervisor != null){
+						mailManager.mail4RemitFail(crmSupervisor.getSupervisorEmail(),
+								DateFormatUtils.formatDateGMT8(new Date()));
+					}
+				}
+			}
+			//短信邮件
+			if(earlyWarningMode == 3){
+				for (String supervisorId : arr) {
+					CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
+					if(crmSupervisor != null){
+						mailManager.mail4RemitFail(crmSupervisor.getSupervisorEmail(),
+								DateFormatUtils.formatDateGMT8(new Date()));
+						smsManager.sendSMS4RemitFail(crmSupervisor.getSupervisorMobile(), 
+								DateFormatUtils.formatDateGMT8(new Date()));
+					}
+				}
+			}
+			
+			break;
+			
 		case "badAccountWarning":
 			//短信
 			if(earlyWarningMode == 1){
