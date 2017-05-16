@@ -639,6 +639,7 @@ public class LoggedInUserController {
 			userId = sessionData.getUserId();
 			sessionManager.cleanSession(sessionData.getSessionId());
 		}
+		logger.info("userId={}",userId);
 		sessionManager.delLoginToken(userId);
 		userManager.logout(userId);
 		logger.info("********Operation succeeded********");
