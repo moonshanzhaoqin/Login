@@ -633,13 +633,15 @@ public class LoggedInUserController {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		int userId = 0;
 		SessionData activeSessionData = sessionManager.getByUserid(logoutRequest.getUserId());
+		logger.info("sessionData:{}", sessionData);
+		logger.info("activeSessionData:{}", activeSessionData);
 		if (sessionData == null && activeSessionData == null) {
 			userId = logoutRequest.getUserId();
 		} else if (sessionData != null) {
 			userId = sessionData.getUserId();
 			sessionManager.cleanSession(sessionData.getSessionId());
 		}
-		logger.info("userId={}",userId);
+		logger.info("userId={}", userId);
 		sessionManager.delLoginToken(userId);
 		userManager.logout(userId);
 		logger.info("********Operation succeeded********");
