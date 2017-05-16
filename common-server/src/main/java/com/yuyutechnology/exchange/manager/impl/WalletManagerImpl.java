@@ -97,7 +97,7 @@ public class WalletManagerImpl implements WalletManager {
 	@Override
 	public List<?> getDetailSeq(Integer badAccountId) {
 		BadAccount badAccount = badAccountDAO.getBadAccount(badAccountId);
-//		logger.info("badAccount:{}", badAccount.getBadAccountId());
+		// logger.info("badAccount:{}", badAccount.getBadAccountId());
 		return walletSeqDAO.getWalletSeq(badAccount.getUserId(), badAccount.getCurrency(), badAccount.getStartSeqId(),
 				badAccount.getEndSeqId());
 	}
@@ -105,10 +105,10 @@ public class WalletManagerImpl implements WalletManager {
 	@Override
 	public List<?> getDetailSeqByTransferId(String transferId) {
 		BadAccount badAccount = badAccountDAO.getBadAccountByTransferId(transferId);
-		logger.info("badAccount:{}", badAccount.getBadAccountId());
+		logger.info("badAccount:{}", badAccount == null ? "null" : badAccount.getBadAccountId());
 		return badAccount == null ? new ArrayList<>()
-				: walletSeqDAO.getWalletSeq(badAccount.getUserId(), badAccount.getCurrency(),
-						badAccount.getStartSeqId(), badAccount.getEndSeqId());
+				: walletSeqDAO.getWalletSeq2(badAccount.getUserId(), badAccount.getStartSeqId(),
+						badAccount.getEndSeqId());
 
 	}
 

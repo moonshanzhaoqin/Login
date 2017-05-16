@@ -9,6 +9,7 @@
 	<script src="<c:url value="/resources/js/dateFormat.min.js" />"></script>
 	<script>
 		$(function() {
+			$('.dropdown-toggle').dropdown();
 			$('#modifyPassword').bootstrapValidator({
 				message : 'This value is not valid',
 				feedbackIcons : {/*输入框不同状态，显示图片的样式*/
