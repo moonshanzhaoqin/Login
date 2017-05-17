@@ -253,7 +253,7 @@ public class PushManager {
 		String title = titleChoose("refund", userFrom.getPushTag());
 		String refundBody = templateChoose("refund", userFrom.getPushTag());
 		logger.info("refund,{}=={}", userFrom.getPushTag(), refundBody);
-		String body = refundBody.replace(PUSH_REPLACE_TO, areaCode + phone)
+		String body = refundBody.replace(PUSH_REPLACE_TO, areaCode + " " + phone)
 				.replace(PUSH_REPLACE_CURRENCY, commonManager.getCurreny(currency).getCurrencyUnit())
 				.replace(PUSH_REPLACE_AMOUNT,
 						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? GDQ.format(amount)
