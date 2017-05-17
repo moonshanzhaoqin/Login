@@ -47,25 +47,25 @@
 		
 		<hr style="background-color: grey; height: 1px;" />
 		
-		<div id="detail" class="row "
-			style="height: 400px; overflow: auto; width: 100%;">
-			<table class="table table-bordered table-hover table-striped"
-				id="walletSeq">
-				<thead>
-					<tr>
-						<th>流水号</th>
-						<th>币种</th>
-						<th>数量</th>
-						<th>交易类型</th>
-						<th>交易ID</th>
-						<th>创建时间(UTC)</th>
-					</tr>
-				</thead>
-				<tbody></tbody>
-			</table>
+		<div id="detail" class="row"  style="height: 400px; overflow: auto;">
+		 <table class="table table-bordered table-hover table-striped" 
+                id="walletSeq">
+                <thead >
+                    <tr>
+                        <th>流水号</th>
+                        <th>币种</th>
+                        <th>数量</th>
+                        <th>交易类型</th>
+                        <th>交易ID</th>
+                        <th>创建时间(UTC)</th>
+                    </tr>
+                </thead>
+                <tbody style="display:table-row-group;height: 400px; overflow: auto;"></tbody>
+            </table>
 		</div>
 		
 	</div>
+	
 	<%@ include file="badAccountDetail.jsp"%>
 
 	<script type="text/javascript"
