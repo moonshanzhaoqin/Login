@@ -462,7 +462,7 @@ public class TransferController {
 				rep.setTransferType(1);
 			}
 			rep.setGoldpayName(MathUtils.hideString(transfer.getGoldpayName()));
-			rep.setTransferComment(transfer.getTransferComment());
+			rep.setTransferComment(StringUtils.isNotBlank((String) result.get("comments"))?(String) result.get("comments"):transfer.getTransferComment());
 			rep.setCreateTime(transfer.getCreateTime());
 			rep.setFinishTime(transfer.getFinishTime());
 			rep.setTransferId(transfer.getTransferId());
