@@ -319,40 +319,35 @@ public class TransferController {
 					if (sessionData.getUserId() == (int) obj[0]) {
 						dto.setAmount(new BigDecimal("-" + obj[2] + ""));
 						dto.setTransferType(0);
-//						dto.setPhoneNum((String) obj[3]);
-						dto.setPhoneNum(transferManager.updateSystemPhone((String) obj[8], (String) obj[3]));
+						dto.setPhoneNum((String) obj[3]);
 					} else {
 						dto.setAmount(new BigDecimal("+" + obj[2] + ""));
 						dto.setTransferType(1);
 
-						if ((systemUser.getAreaCode() + systemUser.getUserPhone()).equals((String) obj[4])) {
-//							dto.setPhoneNum((String) obj[3]);
-							dto.setPhoneNum(transferManager.updateSystemPhone((String) obj[8], (String) obj[3]));
+						if ((systemUser.getAreaCode() + " " + systemUser.getUserPhone()).equals((String) obj[4])) {
+							dto.setPhoneNum((String) obj[3]);
+//							dto.setPhoneNum(transferManager.updateSystemPhone((String) obj[8], (String) obj[3]));
 						} else {
-//							dto.setPhoneNum((String) obj[4]);
-							dto.setPhoneNum(transferManager.updateSystemPhone((String) obj[8], (String) obj[4]));
+							dto.setPhoneNum((String) obj[4]);
+//							dto.setPhoneNum(transferManager.updateSystemPhone((String) obj[8], (String) obj[4]));
 						}
 					}
 				} else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_OUT_INVITE) {
 					dto.setAmount(new BigDecimal("-" + obj[2] + ""));
 					dto.setTransferType((int) obj[7]);
-//					dto.setPhoneNum((String) obj[3]);
-					dto.setPhoneNum(transferManager.updateSystemPhone((String) obj[8], (String) obj[3]));
+					dto.setPhoneNum((String) obj[3]);
 				} else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND) {
 					dto.setAmount(new BigDecimal("+" + obj[2] + ""));
 					dto.setTransferType((int) obj[7]);
-//					dto.setPhoneNum((String) obj[3]);
-					dto.setPhoneNum(transferManager.updateSystemPhone((String) obj[8], (String) obj[3]));
+					dto.setPhoneNum((String) obj[3]);
 				} else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW) {
 					dto.setAmount(new BigDecimal("-" + obj[2] + ""));
 					dto.setTransferType((int) obj[7]);
-//					dto.setPhoneNum((String) obj[3]);
-					dto.setPhoneNum(transferManager.updateSystemPhone((String) obj[8], (String) obj[3]));
+					dto.setPhoneNum((String) obj[3]);
 				} else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE) {
 					dto.setAmount(new BigDecimal("+" + obj[2] + ""));
 					dto.setTransferType((int) obj[7]);
-//					dto.setPhoneNum((String) obj[4]);
-					dto.setPhoneNum(transferManager.updateSystemPhone((String) obj[8], (String) obj[4]));
+					dto.setPhoneNum((String) obj[4]);
 				}
 				dto.setComments("");
 				dto.setFinishAt((Date) obj[6]);
