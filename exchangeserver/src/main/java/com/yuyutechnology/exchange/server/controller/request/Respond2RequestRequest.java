@@ -7,6 +7,7 @@ public class Respond2RequestRequest {
 	private String currency;
 	private double amount;
 	private int noticeId;
+	private String transferComment;
 	
 	public String getAreaCode() {
 		return areaCode;
@@ -37,6 +38,12 @@ public class Respond2RequestRequest {
 	}
 	public void setNoticeId(int noticeId) {
 		this.noticeId = noticeId;
+	}
+	public String getTransferComment() {
+		return transferComment;
+	}
+	public void setTransferComment(String transferComment) {
+		this.transferComment = transferComment;
 	}
 	
 

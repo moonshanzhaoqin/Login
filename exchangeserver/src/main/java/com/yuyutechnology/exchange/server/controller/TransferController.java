@@ -269,7 +269,7 @@ public class TransferController {
 		}
 
 		HashMap<String, String> map = transferManager.respond2Request(sessionData.getUserId(), reqMsg.getAreaCode(),
-				reqMsg.getUserPhone(), reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())), null,
+				reqMsg.getUserPhone(), reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())), reqMsg.getTransferComment(),
 				reqMsg.getNoticeId());
 
 		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
@@ -319,33 +319,40 @@ public class TransferController {
 					if (sessionData.getUserId() == (int) obj[0]) {
 						dto.setAmount(new BigDecimal("-" + obj[2] + ""));
 						dto.setTransferType(0);
-						dto.setPhoneNum((String) obj[3]);
+//						dto.setPhoneNum((String) obj[3]);
+						dto.setPhoneNum(transferManager.updateSystemPhone((String) obj[8], (String) obj[3]));
 					} else {
 						dto.setAmount(new BigDecimal("+" + obj[2] + ""));
 						dto.setTransferType(1);
 
 						if ((systemUser.getAreaCode() + systemUser.getUserPhone()).equals((String) obj[4])) {
-							dto.setPhoneNum((String) obj[3]);
+//							dto.setPhoneNum((String) obj[3]);
+							dto.setPhoneNum(transferManager.updateSystemPhone((String) obj[8], (String) obj[3]));
 						} else {
-							dto.setPhoneNum((String) obj[4]);
+//							dto.setPhoneNum((String) obj[4]);
+							dto.setPhoneNum(transferManager.updateSystemPhone((String) obj[8], (String) obj[4]));
 						}
 					}
 				} else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_OUT_INVITE) {
 					dto.setAmount(new BigDecimal("-" + obj[2] + ""));
 					dto.setTransferType((int) obj[7]);
-					dto.setPhoneNum((String) obj[3]);
+//					dto.setPhoneNum((String) obj[3]);
+					dto.setPhoneNum(transferManager.updateSystemPhone((String) obj[8], (String) obj[3]));
 				} else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND) {
 					dto.setAmount(new BigDecimal("+" + obj[2] + ""));
 					dto.setTransferType((int) obj[7]);
-					dto.setPhoneNum((String) obj[3]);
+//					dto.setPhoneNum((String) obj[3]);
+					dto.setPhoneNum(transferManager.updateSystemPhone((String) obj[8], (String) obj[3]));
 				} else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW) {
 					dto.setAmount(new BigDecimal("-" + obj[2] + ""));
 					dto.setTransferType((int) obj[7]);
-					dto.setPhoneNum((String) obj[3]);
+//					dto.setPhoneNum((String) obj[3]);
+					dto.setPhoneNum(transferManager.updateSystemPhone((String) obj[8], (String) obj[3]));
 				} else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE) {
 					dto.setAmount(new BigDecimal("+" + obj[2] + ""));
 					dto.setTransferType((int) obj[7]);
-					dto.setPhoneNum((String) obj[4]);
+//					dto.setPhoneNum((String) obj[4]);
+					dto.setPhoneNum(transferManager.updateSystemPhone((String) obj[8], (String) obj[4]));
 				}
 				dto.setComments("");
 				dto.setFinishAt((Date) obj[6]);
@@ -455,7 +462,7 @@ public class TransferController {
 				rep.setTransferType(1);
 			}
 			rep.setGoldpayName(MathUtils.hideString(transfer.getGoldpayName()));
-			rep.setTransferComment(transfer.getTransferComment());
+			rep.setTransferComment(StringUtils.isNotBlank((String) result.get("comments"))?(String) result.get("comments"):transfer.getTransferComment());
 			rep.setCreateTime(transfer.getCreateTime());
 			rep.setFinishTime(transfer.getFinishTime());
 			rep.setTransferId(transfer.getTransferId());

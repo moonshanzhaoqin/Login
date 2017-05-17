@@ -981,8 +981,8 @@ public class TransferManagerImpl implements TransferManager{
 		if(transfer.getUserFrom() == userId){
 			if(transfer.getUserTo() == systemUser.getUserId()){
 				map.put("areaCode", transfer.getAreaCode());
-				map.put("phone", transfer.getPhone());	
-				
+				map.put("phone", transfer.getPhone());
+
 				//如果当时交易对象中有System，查看交易未注册一方此时此时是否已经注册
 				User trander = userDAO.getUserByUserPhone(transfer.getAreaCode(), transfer.getPhone());
 				if(trander != null){
@@ -1001,7 +1001,14 @@ public class TransferManagerImpl implements TransferManager{
 			map.put("isPlus",false);
 		}else if(transfer.getUserFrom() == systemUser.getUserId()){
 			map.put("areaCode", transfer.getAreaCode());
-			map.put("phone", transfer.getPhone());	
+			map.put("phone", transfer.getPhone());
+			
+			//当UserFrom为System时，该transfer的comment存的另一条transfer的Id
+			Transfer transfer2 = transferDAO.getTransferById(transfer.getTransferComment());
+			if(transfer2 != null){
+				map.put("comments", transfer2.getTransferComment());
+			}
+			
 			//如果当时交易对象中有System，查看交易未注册一方此时此时是否已经注册
 			User trander = userDAO.getUserByUserPhone(transfer.getAreaCode(), transfer.getPhone());
 			if(trander != null){
@@ -1034,6 +1041,19 @@ public class TransferManagerImpl implements TransferManager{
 		
 		return map;
 
+	}
+
+	@Override
+	public String updateSystemPhone(String transferId, String phoneNum) {
+		User system = userDAO.getSystemUser();
+		if((system!= null && StringUtils.isNotBlank(phoneNum)) && (phoneNum.equals(system.getAreaCode()+" " + system.getUserPhone()))){
+			Unregistered unregistered = unregisteredDAO.getUnregisteredByTransId(transferId);
+			if(unregistered != null){
+				return unregistered.getAreaCode()+" "+unregistered.getUserPhone();
+			}
+			
+		}
+		return phoneNum;
 	}
 
 	
