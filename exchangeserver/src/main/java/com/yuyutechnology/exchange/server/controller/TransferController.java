@@ -269,7 +269,7 @@ public class TransferController {
 		}
 
 		HashMap<String, String> map = transferManager.respond2Request(sessionData.getUserId(), reqMsg.getAreaCode(),
-				reqMsg.getUserPhone(), reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())), null,
+				reqMsg.getUserPhone(), reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())), reqMsg.getTransferComment(),
 				reqMsg.getNoticeId());
 
 		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
