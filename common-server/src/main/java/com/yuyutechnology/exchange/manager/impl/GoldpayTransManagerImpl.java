@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
+import com.yuyutechnology.exchange.dao.CrmAlarmDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
@@ -33,9 +34,11 @@ import com.yuyutechnology.exchange.goldpay.transaction.PayConfirm;
 import com.yuyutechnology.exchange.goldpay.transaction.PayModel;
 import com.yuyutechnology.exchange.manager.AccountingManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
+import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Bind;
+import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
@@ -68,6 +71,10 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	AccountingManager accountingManager;
 	@Autowired
 	PushManager pushManager;
+	@Autowired
+	CrmAlarmDAO crmAlarmDAO;
+	@Autowired
+	CrmAlarmManager crmAlarmManager;
 
 	private final String GOLDPAY_WITHDRAW_FORBIDDEN = "goldpayWithdrawForbidden";
 
@@ -515,7 +522,8 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 					map.put("msg", "ok");
 					return map;
 				} else {
-
+					goldpayRemitFailWarn();
+					
 					transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL);
 					transferDAO.updateTransfer(transfer);
 
@@ -639,5 +647,19 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS);
 		transfer.setFinishTime(new Date());
 		transferDAO.updateTransfer(transfer);
+	}
+	/**
+	 * goldpay划账失败 预警
+	 */
+	private void goldpayRemitFailWarn(){
+		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(3, 1);
+		if(list != null && !list.isEmpty()){
+			logger.info("goldpay remit fail Warn listSize: {}", list.size());
+			for (int i = 0; i < list.size(); i++) {
+				CrmAlarm crmAlarm = list.get(i);
+				logger.info("goldpay remit fail Warn crmAlarm: {}", crmAlarm.getSupervisorIdArr());
+				crmAlarmManager.alarmNotice(crmAlarm.getSupervisorIdArr(), "goldpayRemitFailWarning", crmAlarm.getAlarmMode(),null);
+			}
+		}
 	}
 }
