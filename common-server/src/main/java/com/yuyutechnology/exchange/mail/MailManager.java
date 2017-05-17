@@ -46,6 +46,9 @@ public class MailManager {
 
 	private StringBuffer badAccountWarnTital = new StringBuffer();
 	private StringBuffer badAccountWarnContent = new StringBuffer();
+	
+	private StringBuffer remitFailWarnTital = new StringBuffer();
+	private StringBuffer remitFailWarnContent = new StringBuffer();
 
 	private final String MAIL_REPLACE_EMAIL = "[EMAIL]";
 	private final String MAIL_REPLACE_NAME = "[NAME]";
@@ -79,6 +82,7 @@ public class MailManager {
 		readTemplate("template/mail/zh_CN/largeExchangeWarn.template", largeExchangeWarnTital,
 				largeExchangeWarnContent);
 		readTemplate("template/mail/zh_CN/badAccountAlarm.template", badAccountWarnTital, badAccountWarnContent);
+		readTemplate("template/mail/zh_CN/remitFailAlarm.template", remitFailWarnTital, remitFailWarnContent);
 		initMail = true;
 	}
 	
@@ -156,6 +160,17 @@ public class MailManager {
 		sendMail(toMails, badAccountWarnTital.toString(), content);
 	}
 
+	@Async
+	public void mail4RemitFail(String email, String dateTime) {
+		String content =remitFailWarnContent.toString().replace(MAIL_REPLACE_TIME, dateTime);
+		logger.info("content : {},tital : {}", content, remitFailWarnTital.toString());
+		List<String> toMails = new ArrayList<>();
+		toMails.add(email);
+		sendMail(toMails, remitFailWarnTital.toString(), content);
+	}
+
+	
+	
 	public void sendMail(List<String> toMails, String tital, String content) {
 		logger.info("sendMail,tital : {}, content : {}", tital, content);
 		if (StringUtils.isNotBlank(content)) {
@@ -170,4 +185,6 @@ public class MailManager {
 			HttpTookit.sendPost(ResourceUtils.getBundleValue4String("sendMail.url"), param);
 		}
 	}
+
+	
 }

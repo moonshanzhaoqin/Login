@@ -42,7 +42,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		sessionManager = ServerContext.getBean(SessionManager.class);
 	}
 
-
 	/**
 	 * 从URI中获取token
 	 * 
@@ -73,15 +72,12 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-        //logger.info("interceptor excute order:1.preHandle================");
+		// logger.info("interceptor excute order:1.preHandle================");
 		// 允许跨域访问
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Headers", "accept, content-type");
 		String requestURI = request.getRequestURI();
-		if (requestURI.contains("/user/logout")) {
-			logger.info("request URI:" + requestURI + " ok");
-			return true;
-		}
+
 		String sessionId = getTokenFromURI(request.getRequestURI());
 		SessionData sessionData = sessionManager.get(sessionId);
 		// 判断是否需要拦截或者是否登录
@@ -90,19 +86,23 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			sessionManager.refreshSessionDataExpireTime(sessionData);
 			SessionDataHolder.setSessionData(sessionData);
 			return true;
+		} else if (requestURI.contains("/user/logout")) {
+			logger.info("request URI:" + requestURI + " ok");
+			return true;
 		} else {
-			logger.info("request URI:" + requestURI + " session : " + sessionId + " " +MessageConsts.SESSION_TIMEOUT);
+			logger.info("request URI:" + requestURI + " session : " + sessionId + " " + MessageConsts.SESSION_TIMEOUT);
 			BaseResponse re = new BaseResponse();
 			re.setRetCode(RetCodeConsts.SESSION_TIMEOUT);
 			re.setMessage(MessageConsts.SESSION_TIMEOUT);
 			String json = JsonBinder.getInstance().toJson(re);
-	        String key = ResourceUtils.getBundleValue4String("aes.key");
-	        if (StringUtils.isNotBlank(key) && ((HandlerMethod)handler).getMethodAnnotation(ResponseEncryptBody.class) != null) {
-	        	json = AESCipher.encryptAES(json,key);
-	        	EncryptResponse encryptResponse = new EncryptResponse();
-	        	encryptResponse.setContent(json);
-	        	json = JsonBinder.getInstance().toJson(encryptResponse);
-	        }
+			String key = ResourceUtils.getBundleValue4String("aes.key");
+			if (StringUtils.isNotBlank(key)
+					&& ((HandlerMethod) handler).getMethodAnnotation(ResponseEncryptBody.class) != null) {
+				json = AESCipher.encryptAES(json, key);
+				EncryptResponse encryptResponse = new EncryptResponse();
+				encryptResponse.setContent(json);
+				json = JsonBinder.getInstance().toJson(encryptResponse);
+			}
 			response.getOutputStream().print(json);
 			response.getOutputStream().close();
 			return false;
@@ -113,7 +113,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-//		 logger.info("interceptor excute order:2.postHandle================");
+		// logger.info("interceptor excute order:2.postHandle================");
 	}
 
 	/**
@@ -124,7 +124,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
-//		 logger.info("interceptor excute order:3.afterCompletion================");
+		// logger.info("interceptor excute
+		// order:3.afterCompletion================");
 	}
 
 }

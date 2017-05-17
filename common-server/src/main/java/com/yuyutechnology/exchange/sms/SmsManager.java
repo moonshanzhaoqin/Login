@@ -81,6 +81,8 @@ public class SmsManager {
 	private StringBuffer largeExchange_cn = new StringBuffer();
 	// zh_CN
 	private StringBuffer badAccountAlarm_cn = new StringBuffer();
+	// zh_CN
+	private StringBuffer remitFailAlarm_cn = new StringBuffer();
 
 	@PostConstruct
 	@Scheduled(cron = "0 1/2 * * * ?")
@@ -94,11 +96,14 @@ public class SmsManager {
 		readTemplate("template/sms/zh_HK/transfer.template", transfer_hk);
 
 		readTemplate("template/sms/zh_CN/criticalAlarm.template", criticalAlarm_cn);
-
+		
 		readTemplate("template/sms/zh_CN/largeTrans.template", largeTrans_cn);
+		
 		readTemplate("template/sms/zh_CN/largeExchangeWarn.template", largeExchange_cn);
-
+		
 		readTemplate("template/sms/zh_CN/badAccountAlarm.template", badAccountAlarm_cn);
+		
+		readTemplate("template/sms/zh_CN/remitFailAlarm.template", remitFailAlarm_cn);
 		
 		initSMS = true;
 	}
@@ -191,6 +196,13 @@ public class SmsManager {
 		content = content.replace(SMS_REPLACE_TIME, dateTime);
 		sendSMS(phone, content, "");
 	}
+	@Async
+	public void sendSMS4RemitFail(String phone, String dateTime) {
+		String content = remitFailAlarm_cn.toString();
+		content = content.replace(SMS_REPLACE_TIME, dateTime);
+		sendSMS(phone, content, "");
+	}
+
 
 	/**
 	 * 根据功能和国家码选择模板
@@ -243,4 +255,5 @@ public class SmsManager {
 		return null;
 	}
 
+	
 }

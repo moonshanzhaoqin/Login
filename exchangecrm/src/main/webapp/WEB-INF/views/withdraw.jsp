@@ -19,6 +19,7 @@
 </head>
 <body>
 	<%@ include file="common/header.jsp"%>
+
 	<div class="container">
 		<div class="row">
 			<form class="form-inline " id="searchWithdraw">
@@ -66,7 +67,7 @@
 						<th>操作</th>
 						<th>创建时间(UTC)</th>
 						<th>最新更新时间(UTC)</th>
-						<th>详情</th>
+						<th>坏账详情</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -176,121 +177,125 @@
 				transferStatus : transferStatus
 			};
 
-			$.ajax({
-				type : "post",
-				url : "/crm/getWithdrawList",
-				dataType : 'json',
-				contentType : "application/json; charset=utf-8",
-				data : JSON.stringify(data),
-				success : function(data) {
-					console.log(data);
-					if (data.retCode == "00002") {
-						location.href = loginUrl;
-					} else {
-						console.log("success");
-						var html = "";
-						for ( var i in data.rows) {
-							html += '<tr id="'+data.rows[i][0].transferId+'">' + '<td>'
-									+ data.rows[i][0].userFrom
-									+ '</td>'
-									+ '<td>'
-									+ data.rows[i][1].areaCode
-									+ '</td>'
-									+ '<td>'
-									+ data.rows[i][1].userPhone
-									+ '</td>'
-									+ '<td>'
-									+ data.rows[i][0].transferId
-									+ '</td>'
-									+ '<td>'
-									+ data.rows[i][0].transferAmount
-									+ '</td>'
-									+ status(data.rows[i][0].transferId,
-											data.rows[i][0].transferStatus)
-									+ '<td>'
-									+ timeDate(data.rows[i][0].createTime)
-									+ '</td>' + '<td>'
-									+ timeDate(data.rows[i][0].finishTime)
-									+ '</td>'+ '<td>'
-                                    +'<a href="javascript:void(0)" onclick="getDetailSeqByTransferId(\''
-                                    + data.rows[i][0].transferId
-                                    + '\')">详情</a>' 
-                                    + '</td>' + '</tr>'
+			$
+					.ajax({
+						type : "post",
+						url : "/crm/getWithdrawList",
+						dataType : 'json',
+						contentType : "application/json; charset=utf-8",
+						data : JSON.stringify(data),
+						success : function(data) {
+							console.log(data);
+							if (data.retCode == "00002") {
+								location.href = loginUrl;
+							} else {
+								console.log("success");
+								var html = "";
+								for ( var i in data.rows) {
+									html += '<tr id="'+data.rows[i][0].transferId+'">'
+											+ '<td>'
+											+ data.rows[i][0].userFrom
+											+ '</td>'
+											+ '<td>'
+											+ data.rows[i][1].areaCode
+											+ '</td>'
+											+ '<td>'
+											+ data.rows[i][1].userPhone
+											+ '</td>'
+											+ '<td>'
+											+ data.rows[i][0].transferId
+											+ '</td>'
+											+ '<td>'
+											+ data.rows[i][0].transferAmount
+											+ '</td>'
+											+ status(
+													data.rows[i][0].transferId,
+													data.rows[i][0].transferStatus)
+											+ '<td>'
+											+ timeDate(data.rows[i][0].createTime)
+											+ '</td>'
+											+ '<td>'
+											+ timeDate(data.rows[i][0].finishTime)
+											+ '</td>'
+											+ '<td>'
+											+ (data.rows[i][0].transferStatus == 5 ? ('<a href="javascript:void(0)" onclick="getDetailSeqByTransferId(\''
+											+ data.rows[i][0].transferId + '\')">详情</a>')
+											: '' )+ '</td>' + '</tr>'
+								}
+								$('#withdraw tbody').html(html);
+								if (data.currentPage == 1) {
+									paginator(data.currentPage, data.pageTotal);
+								}
+							}
+						},
+						error : function(xhr, err) {
+							alert("未知错误");
+							console.log(err);
 						}
-						$('#withdraw tbody').html(html);
-						if (data.currentPage == 1) {
-							paginator(data.currentPage, data.pageTotal);
-						}
-					}
-				},
-				error : function(xhr, err) {
-					alert("未知错误");
-					console.log(err);
-				}
-			});
+					});
 		}
 		function getDetailSeqByTransferId(transferId) {
-            $("tr").removeClass("success");
-            $("#" + transferId).addClass("success");
+			$("tr").removeClass("success");
+			$("#" + transferId).addClass("success");
 
-            var data = {
-                transferId : transferId
-            };
-            $
-                    .ajax({
-                        type : "post",
-                        url : "/crm/getDetailSeqByTransferId",
-                        dataType : 'json',
-                        contentType : "application/json; charset=utf-8",
-                        data : JSON.stringify(data),
-                        success : function(data) {
-                            if (data.retCode == "00002") {
-                                location.href = loginUrl;
-                            } else {
-                                console.log("success");
-                                var html = "";
-                                for ( var i in data) {
-                                    html += '<tr>'
-                                            + '<td>'
-                                            + data[i].seqId
-                                            + '</td>'
-                                            + '<td>'
-                                            + data[i].currency
-                                            + '</td>'
-                                            + '<td>'
-                                            + new Number(data[i].amount)
-                                                    .toFixed(4)
-                                            + '</td>'
-                                            + '<td>'
-                                            + transferType(data[i].transferType)
-                                            + '</td>'
-                                            + '<td>'
-                                            + ((data[i].transferType == "1") ? ('<a href="" data-toggle="modal" data-target="#exchange" onclick= "getExchange(\''
-                                                    + data[i].transactionId
-                                                    + '\')">    '
-                                                    + data[i].transactionId + '</a>')
-                                                    : ('<a href="" data-toggle="modal" data-target="#transfer" onclick= "getTransfer(\''
-                                                            + data[i].transactionId
-                                                            + '\')">    '
-                                                            + data[i].transactionId + '</a>'))
-                                            + '</td>' + '<td>'
-                                            + timeDate(data[i].createTime)
-                                            + '</td>' + '</tr>'
-                                }
-                                if (html == "") {
-                                    alert("没有坏账")
-                                }
-                                $('#walletSeq tbody').html(html);
-                                $('#detail').show();
-                            }
-                        },
-                        error : function(xhr, err) {
-                            alert("未知错误");
-                            console.log(err);
-                        },
-                        async : false
-                    });
-        }
+			var data = {
+				transferId : transferId
+			};
+			$
+					.ajax({
+						type : "post",
+						url : "/crm/getDetailSeqByTransferId",
+						dataType : 'json',
+						contentType : "application/json; charset=utf-8",
+						data : JSON.stringify(data),
+						success : function(data) {
+							if (data.retCode == "00002") {
+								location.href = loginUrl;
+							} else {
+								console.log("success");
+								var html = "";
+								for ( var i in data) {
+									html += '<tr>'
+											+ '<td>'
+											+ data[i].seqId
+											+ '</td>'
+											+ '<td>'
+											+ data[i].currency
+											+ '</td>'
+											+ '<td>'
+											+ new Number(data[i].amount)
+													.toFixed(4)
+											+ '</td>'
+											+ '<td>'
+											+ transferType(data[i].transferType)
+											+ '</td>'
+											+ '<td>'
+											+ ((data[i].transferType == "1") ? ('<a href="" data-toggle="modal" data-target="#exchange" onclick= "getExchange(\''
+													+ data[i].transactionId
+													+ '\')">    '
+													+ data[i].transactionId + '</a>')
+													: ('<a href="" data-toggle="modal" data-target="#transfer" onclick= "getTransfer(\''
+															+ data[i].transactionId
+															+ '\')">    '
+															+ data[i].transactionId + '</a>'))
+											+ '</td>' + '<td>'
+											+ timeDate(data[i].createTime)
+											+ '</td>' + '</tr>'
+								}
+								if (html == "") {
+									alert("没有坏账")
+								}
+								$('#walletSeq tbody').html(html);
+								$('#detail').show();
+							}
+						},
+						error : function(xhr, err) {
+							alert("未知错误");
+							console.log(err);
+						},
+						async : false
+					});
+		}
 
 		//审批
 		function withdrawReview(transferId) {

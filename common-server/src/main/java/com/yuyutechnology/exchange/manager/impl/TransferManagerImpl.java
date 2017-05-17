@@ -398,6 +398,7 @@ public class TransferManagerImpl implements TransferManager{
 		transfer2.setCurrency(transfer.getCurrency());
 		transfer2.setTransferAmount(transfer.getTransferAmount());
 		transfer2.setTransferComment(unregistered.getUserPhone()+"对方逾期未注册,系统退款");
+//		transfer2.setTransferComment(unregistered.getUserPhone());
 		transfer2.setTransferType(ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND);
 		transfer2.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		transfer2.setCreateTime(new Date());

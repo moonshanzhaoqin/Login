@@ -23,9 +23,15 @@ public class WalletSeqDAOImpl implements WalletSeqDAO {
 
 	@Override
 	public List<?> getWalletSeq(int userId, String currency, long startSeqId, long endSeqId) {
-		// TODO Auto-generated method stub
 		List<?> list = hibernateTemplate.find(
 				"from WalletSeq where userId = ? and currency = ? and seqId > ? and seqId <= ?", userId, currency,
+				startSeqId, endSeqId);
+		return list;
+	}
+
+	@Override
+	public List<?> getWalletSeq2(int userId, long startSeqId, long endSeqId) {
+		List<?> list = hibernateTemplate.find("from WalletSeq where userId = ?  and seqId > ? and seqId <= ?", userId,
 				startSeqId, endSeqId);
 		return list;
 	}

@@ -39,16 +39,30 @@ public interface GoldpayTransManager {
 
 	void withdrawRefund(String transferId);
 
-	// void withdrawReviewManual(String transferId);
-
+	/**
+	 * 开关定时任务
+	 * 
+	 * @param forbidden
+	 */
 	void forbiddenGoldpayRemitWithdraws(String forbidden);
 
+	/**
+	 * 获取定时任务开启状态 true=关闭
+	 * 
+	 * @return
+	 */
 	boolean getGoldpayRemitWithdrawsforbidden();
 
+	/**
+	 * 提现审批
+	 * 
+	 * @param transferId
+	 */
 	void withdrawReviewAuto(String transferId);
 
 	void withdrawReviewPending(String transferId);
 
 	void goldpayRemitPending(String transferId);
 
+	
 }
