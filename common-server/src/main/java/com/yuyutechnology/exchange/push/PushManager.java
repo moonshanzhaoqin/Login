@@ -38,6 +38,7 @@ public class PushManager {
 	public static Logger logger = LogManager.getLogger(PushManager.class);
 	public static DecimalFormat CURRENCY = new DecimalFormat(",##0.00");
 	public static DecimalFormat GDQ = new DecimalFormat(",##0");
+	private boolean initPush = false;
 	@Autowired
 	CommonManager commonManager;
 	@Autowired
@@ -142,42 +143,33 @@ public class PushManager {
 	public void init() {
 		logger.info("==========init PushManager==========");
 
-		readTemplate("template/push/en_US/transfer.template", transfer_title_en, transfer_en, true);
-		readTemplate("template/push/zh_CN/transfer.template", transfer_title_cn, transfer_cn, true);
-		readTemplate("template/push/zh_HK/transfer.template", transfer_title_hk, transfer_hk, true);
+		readTemplate("template/push/en_US/transfer.template", transfer_title_en, transfer_en);
+		readTemplate("template/push/zh_CN/transfer.template", transfer_title_cn, transfer_cn);
+		readTemplate("template/push/zh_HK/transfer.template", transfer_title_hk, transfer_hk);
 
-		readTemplate("template/push/en_US/transfer_request.template", transfer_request_title_en, transfer_request_en,
-				true);
-		readTemplate("template/push/zh_CN/transfer_request.template", transfer_request_title_cn, transfer_request_cn,
-				true);
-		readTemplate("template/push/zh_HK/transfer_request.template", transfer_request_title_hk, transfer_request_hk,
-				true);
+		readTemplate("template/push/en_US/transfer_request.template", transfer_request_title_en, transfer_request_en);
+		readTemplate("template/push/zh_CN/transfer_request.template", transfer_request_title_cn, transfer_request_cn);
+		readTemplate("template/push/zh_HK/transfer_request.template", transfer_request_title_hk, transfer_request_hk);
 
-		readTemplate("template/push/en_US/refund.template", refund_title_en, refund_en, true);
-		readTemplate("template/push/zh_CN/refund.template", refund_title_cn, refund_cn, true);
-		readTemplate("template/push/zh_HK/refund.template", refund_title_hk, refund_hk, true);
+		readTemplate("template/push/en_US/refund.template", refund_title_en, refund_en);
+		readTemplate("template/push/zh_CN/refund.template", refund_title_cn, refund_cn);
+		readTemplate("template/push/zh_HK/refund.template", refund_title_hk, refund_hk);
 
-		readTemplate("template/push/en_US/offline.template", offline_title_en, offline_en, true);
-		readTemplate("template/push/zh_CN/offline.template", offline_title_cn, offline_cn, true);
-		readTemplate("template/push/zh_HK/offline.template", offline_title_hk, offline_hk, true);
+		readTemplate("template/push/en_US/offline.template", offline_title_en, offline_en);
+		readTemplate("template/push/zh_CN/offline.template", offline_title_cn, offline_cn);
+		readTemplate("template/push/zh_HK/offline.template", offline_title_hk, offline_hk);
 
-		readTemplate("template/push/en_US/withdraw_complete.template", withdraw_complete_title_en, withdraw_complete_en,
-				true);
-		readTemplate("template/push/zh_CN/withdraw_complete.template", withdraw_complete_title_cn, withdraw_complete_cn,
-				true);
-		readTemplate("template/push/zh_HK/withdraw_complete.template", withdraw_complete_title_hk, withdraw_complete_hk,
-				true);
+		readTemplate("template/push/en_US/withdraw_complete.template", withdraw_complete_title_en, withdraw_complete_en);
+		readTemplate("template/push/zh_CN/withdraw_complete.template", withdraw_complete_title_cn, withdraw_complete_cn);
+		readTemplate("template/push/zh_HK/withdraw_complete.template", withdraw_complete_title_hk, withdraw_complete_hk);
 
-		readTemplate("template/push/en_US/withdraw_refund.template", withdraw_refund_title_en, withdraw_refund_en,
-				true);
-		readTemplate("template/push/zh_CN/withdraw_refund.template", withdraw_refund_title_cn, withdraw_refund_cn,
-				true);
-		readTemplate("template/push/zh_HK/withdraw_refund.template", withdraw_refund_title_hk, withdraw_refund_hk,
-				true);
-
+		readTemplate("template/push/en_US/withdraw_refund.template", withdraw_refund_title_en, withdraw_refund_en);
+		readTemplate("template/push/zh_CN/withdraw_refund.template", withdraw_refund_title_cn, withdraw_refund_cn);
+		readTemplate("template/push/zh_HK/withdraw_refund.template", withdraw_refund_title_hk, withdraw_refund_hk);
+		initPush = true;
 	}
 
-	private void readTemplate(String filePath, StringBuffer tital, StringBuffer content, boolean init) {
+	private void readTemplate(String filePath, StringBuffer tital, StringBuffer content) {
 		try {
 			tital.setLength(0);
 			content.setLength(0);
@@ -187,7 +179,7 @@ public class PushManager {
 					fileString.substring(0, fileString.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", ""));
 			content.append(fileString.substring(fileString.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", ""));
 		} catch (Exception e) {
-			if (init)
+			if (!initPush)
 				logger.warn("push template ({}) read error , can't push this msg : {} ",
 						new Object[] { filePath, e.getMessage() });
 		}
