@@ -1041,7 +1041,10 @@ public class TransferManagerImpl implements TransferManager{
 		User system = userDAO.getSystemUser();
 		if((system!= null && StringUtils.isNotBlank(phoneNum)) && (phoneNum.equals(system.getAreaCode()+" " + system.getUserPhone()))){
 			Unregistered unregistered = unregisteredDAO.getUnregisteredByTransId(transferId);
-			return unregistered.getAreaCode()+" "+unregistered.getUserPhone();
+			if(unregistered != null){
+				return unregistered.getAreaCode()+" "+unregistered.getUserPhone();
+			}
+			
 		}
 		return phoneNum;
 	}
