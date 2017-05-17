@@ -1036,5 +1036,15 @@ public class TransferManagerImpl implements TransferManager{
 
 	}
 
+	@Override
+	public String updateSystemPhone(String transferId, String phoneNum) {
+		User system = userDAO.getSystemUser();
+		if((system!= null && StringUtils.isNotBlank(phoneNum)) && (phoneNum.equals(system.getAreaCode()+" " + system.getUserPhone()))){
+			Unregistered unregistered = unregisteredDAO.getUnregisteredByTransId(transferId);
+			return unregistered.getAreaCode()+" "+unregistered.getUserPhone();
+		}
+		return phoneNum;
+	}
+
 	
 }

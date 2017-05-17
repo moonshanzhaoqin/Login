@@ -122,6 +122,8 @@ public interface TransferManager {
 	 
 	 
 	 HashMap<String, Object> getTransDetails(String transferId,int userId);
+	 
+	 String updateSystemPhone(String transferId,String phoneNum);
 
 	 
 	
