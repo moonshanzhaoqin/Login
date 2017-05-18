@@ -419,6 +419,7 @@ public class LoggedInUserController {
 					userManager.updatePassword(sessionData.getUserId(), modifyPasswordRequest.getNewPassword());
 					sessionManager.cleanSession(sessionData.getSessionId());
 					sessionManager.delLoginToken(sessionData.getUserId());
+					userManager.logout(sessionData.getUserId());
 					logger.info("********Operation succeeded********");
 					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
