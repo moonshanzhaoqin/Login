@@ -536,8 +536,9 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	private void clearPushId(Integer userId, String pushId) {
+//		logger.info("clearPushId {}",pushId);
 		String hql = "update User set pushId = ? where pushId = ? and userId <> ?";
-		userDAO.updateHQL(hql, new Object[]{pushId,pushId,userId});
+		userDAO.updateHQL(hql, new Object[]{null,pushId,userId});
 	}
 
 	@Override
