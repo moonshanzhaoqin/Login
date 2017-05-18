@@ -199,7 +199,7 @@ public class TransferController {
 				rep.setRetCode(result);
 				rep.setMessage("Current balance is insufficient");
 			}
-
+			userManager.clearPinCode(reqMsg.getTransferId(), user.getAreaCode(), user.getPhone());
 		} else {
 			rep.setRetCode(RetCodeConsts.PIN_CODE_INCORRECT);
 			rep.setMessage("The pin code is incorrect");
