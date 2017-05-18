@@ -19,7 +19,7 @@ public class JsonObjectMapper extends ObjectMapper {
 
     public JsonObjectMapper(){
         super();
-        this.setSerializationInclusion(Include.NON_EMPTY);
+        this.setSerializationInclusion(Include.NON_NULL);
 //        // 空值处理为空串  
 //        this.getSerializerProvider().setNullValueSerializer(new JsonSerializer<Object>() {  
 //            @Override  
