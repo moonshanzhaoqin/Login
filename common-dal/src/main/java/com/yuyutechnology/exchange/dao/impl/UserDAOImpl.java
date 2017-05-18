@@ -83,7 +83,10 @@ public class UserDAOImpl implements UserDAO {
 	public List<User> getUserByPushId(String pushId) {
 		List<?> list = hibernateTemplate.find("from User where pushId = ? ",pushId);
 		return list.isEmpty() ? null : (List<User>) list;
-		
 	}
 
+	@Override
+	public void updateHQL(String hql,Object[] values) {
+		hibernateTemplate.bulkUpdate(hql, values);
+	}
 }

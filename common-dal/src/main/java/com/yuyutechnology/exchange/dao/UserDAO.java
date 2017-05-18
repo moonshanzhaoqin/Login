@@ -34,4 +34,6 @@ public interface UserDAO {
 
 	public List<User> getUserByPushId(String pushId);
 
+	void updateHQL(String hql, Object[] values);
+
 }

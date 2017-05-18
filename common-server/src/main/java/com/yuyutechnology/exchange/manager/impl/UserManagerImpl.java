@@ -523,15 +523,21 @@ public class UserManagerImpl implements UserManager {
 		pushManager.bindPushTag(user.getPushId(), user.getPushTag());
 
 		/* 清除其他账号的此pushId */
-		List<User> users = userDAO.getUserByPushId(pushId);
-		if (users != null) {
-			for (User user2 : users) {
-				if (user2.getUserId() != userId) {
-					user2.setPushId(null);
-					userDAO.updateUser(user2);
-				}
-			}
-		}
+		clearPushId(userId,pushId);
+//		List<User> users = userDAO.getUserByPushId(pushId);
+//		if (users != null) {
+//			for (User user2 : users) {
+//				if (user2.getUserId() != userId) {
+//					user2.setPushId(null);
+//					userDAO.updateUser(user2);
+//				}
+//			}
+//		}
+	}
+
+	private void clearPushId(Integer userId, String pushId) {
+		String hql = "update User set pushId = ? where pushId = ? and userId <> ?";
+		userDAO.updateHQL(hql, new Object[]{pushId,pushId,userId});
 	}
 
 	@Override

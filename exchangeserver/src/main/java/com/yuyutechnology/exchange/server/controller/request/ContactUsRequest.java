@@ -7,12 +7,11 @@ public class ContactUsRequest {
 	private String email;
 	private String category;
 	private String enquiry;
-	private String versionNum ;
-	private String deviceName;
-	private String deviceId;
-	private String system;
-	private String phoneModel;
-	
+	private String versionNum = "";
+	private String deviceName = "";
+	private String deviceId = "";
+	private String system = "";
+	private String phoneModel = "";
 
 	public String getName() {
 		return name;
