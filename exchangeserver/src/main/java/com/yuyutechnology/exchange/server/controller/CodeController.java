@@ -63,6 +63,8 @@ public class CodeController {
     public static class Message {
         private String name;
         private int    age;
+        private double    double1;
+        private Double    double2;
 
         public String getName() {
             return name;
@@ -79,6 +81,22 @@ public class CodeController {
         public void setAge(int age) {
             this.age = age;
         }
+
+		public double getDouble1() {
+			return double1;
+		}
+
+		public void setDouble1(double double1) {
+			this.double1 = double1;
+		}
+
+		public Double getDouble2() {
+			return double2;
+		}
+
+		public void setDouble2(Double double2) {
+			this.double2 = double2;
+		}
 
 		@Override
 		public String toString() {
