@@ -987,11 +987,13 @@ public class TransferManagerImpl implements TransferManager{
 				User trander = userDAO.getUserByUserPhone(transfer.getAreaCode(), transfer.getPhone());
 				if(trander != null){
 					friendId = trander.getUserId();
+					user = trander;
 				}else {
 					friendId = -1;
+					user = null;
 				}
 				
-				user = null;
+				
 			}else{
 				user = userDAO.getUser(transfer.getUserTo()); 
 				friendId = transfer.getUserTo();
@@ -1013,10 +1015,12 @@ public class TransferManagerImpl implements TransferManager{
 			User trander = userDAO.getUserByUserPhone(transfer.getAreaCode(), transfer.getPhone());
 			if(trander != null){
 				friendId = trander.getUserId();
+				user = trander;
 			}else {
 				friendId = -1;
+				user = null;
 			}
-			user = null;
+			
 		}else{
 			user = userDAO.getUser(transfer.getUserFrom());
 			friendId = transfer.getUserFrom();
