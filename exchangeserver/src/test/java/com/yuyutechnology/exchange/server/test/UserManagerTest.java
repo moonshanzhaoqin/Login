@@ -11,10 +11,10 @@ public class UserManagerTest extends BaseSpringJunit4 {
 	@Autowired
 	UserManager userManager;
 	
-	@Test
-	public void testRegister(){
-		int userId = userManager.register("+86", "12345", "test", "test", "", "", "en_US");
-		
-		userManager.userFreeze(userId, ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE);
-	}
+//	@Test
+//	public void testRegister(){
+//		int userId = userManager.register("+86", "12345", "test", "test", "", "", "en_US");
+//		
+//		userManager.userFreeze(userId, ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE);
+//	}
 }
