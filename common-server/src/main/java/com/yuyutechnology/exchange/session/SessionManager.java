@@ -190,8 +190,7 @@ public class SessionManager {
 	}
 
 	public void delCheckToken(Integer userId, String purpose) {
-		String key = StringUtils.replace(CHECK_TOKEN_KEY, ":userid", userId + "");
-		key = StringUtils.replace(key, ":purpose", purpose);
+		String key = CHECK_TOKEN_KEY.replace(":userid", userId.toString()).replace(":purpose", purpose);
 		redisDAO.deleteData(key);
 	}
 }
