@@ -19,6 +19,10 @@ import com.yuyutechnology.exchange.util.UidUtils;
  * @author silent.sun
  * 
  */
+/**
+ * @author suzan.wu
+ *
+ */
 @Component
 public class SessionManager {
 	public static Logger logger = LogManager.getLogger(SessionManager.class);
@@ -127,6 +131,10 @@ public class SessionManager {
 	 * @param userId
 	 * @return
 	 */
+	/**
+	 * @param userId
+	 * @return
+	 */
 	public SessionData getByUserid(int userId) {
 		String key = StringUtils.replace(SESSION_DATA_KEY_USERID, "userid", userId + "");
 		String jsonContent = redisDAO.getValueByKey(key);
@@ -137,6 +145,10 @@ public class SessionManager {
 		}
 	}
 
+	/**
+	 * @param userId
+	 * @return
+	 */
 	public String createLoginToken(int userId) {
 		delLoginToken(userId);
 		String userIdKey = StringUtils.replace(LOGIN_TOKEN_USERID_KEY, ":userid", userId + "");
@@ -149,6 +161,10 @@ public class SessionManager {
 		return loginToken;
 	}
 
+	/**
+	 * @param loginToken
+	 * @return
+	 */
 	public int validateLoginToken(String loginToken) {
 		int userId = 0;
 		String tokenKey = StringUtils.replace(LOGIN_TOKEN_TOKEN_KEY, ":token", loginToken);
@@ -161,6 +177,9 @@ public class SessionManager {
 		return userId;
 	}
 
+	/**
+	 * @param userId
+	 */
 	public void delLoginToken(int userId) {
 		if (userId != 0) {
 			String userIdKey = StringUtils.replace(LOGIN_TOKEN_USERID_KEY, ":userid", userId + "");
@@ -173,6 +192,11 @@ public class SessionManager {
 		}
 	}
 
+	/**
+	 * @param userId
+	 * @param purpose
+	 * @return
+	 */
 	public String createCheckToken(Integer userId, String purpose) {
 		String checkToken = DigestUtils.md5Hex(UidUtils.genUid());
 		String key = CHECK_TOKEN_KEY.replace(":userid", userId.toString()).replace(":purpose", purpose);
@@ -181,6 +205,14 @@ public class SessionManager {
 		return checkToken;
 	}
 
+	/**
+	 * 验证checkToken
+	 * 
+	 * @param userId
+	 * @param purpose
+	 * @param checkToken
+	 * @return
+	 */
 	public boolean validateCheckToken(Integer userId, String purpose, String checkToken) {
 		String key = CHECK_TOKEN_KEY.replace(":userid", userId.toString()).replace(":purpose", purpose);
 		if (checkToken.equals(redisDAO.getValueByKey(key))) {
@@ -189,6 +221,10 @@ public class SessionManager {
 		return false;
 	}
 
+	/**
+	 * @param userId
+	 * @param purpose
+	 */
 	public void delCheckToken(Integer userId, String purpose) {
 		String key = CHECK_TOKEN_KEY.replace(":userid", userId.toString()).replace(":purpose", purpose);
 		redisDAO.deleteData(key);

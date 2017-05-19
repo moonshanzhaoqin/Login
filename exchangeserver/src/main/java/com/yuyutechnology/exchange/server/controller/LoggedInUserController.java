@@ -200,17 +200,15 @@ public class LoggedInUserController {
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
-			long time = userManager.checkChangePhoneTime(sessionData.getUserId());
+			long time = userManager.getChangePhoneTime(sessionData.getUserId());
 			if (time > new Date().getTime()) {
 				logger.info(MessageConsts.TIME_NOT_ARRIVED);
 				rep.setRetCode(RetCodeConsts.TIME_NOT_ARRIVED);
 				rep.setMessage(MessageConsts.TIME_NOT_ARRIVED);
-				// rep.setTime(time);
 				rep.setOpts(new String[] { String.valueOf(time) });
 			} else if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_CHANGEPHONE,
 					changePhoneRequest.getCheckToken())) {
-				// TODO 判断是否获取过验证码
-				// 校验手机验证码
+				 /*校验手机验证码*/
 				Boolean resultBool = userManager.testPinCode(ServerConsts.PIN_FUNC_CHANGEPHONE,
 						changePhoneRequest.getAreaCode(), changePhoneRequest.getUserPhone(),
 						changePhoneRequest.getVerificationCode());
@@ -260,7 +258,7 @@ public class LoggedInUserController {
 		logger.info("========checkChangePhone : {}============", token);
 		CheckChangePhoneResponse rep = new CheckChangePhoneResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		long time = userManager.checkChangePhoneTime(sessionData.getUserId());
+		long time = userManager.getChangePhoneTime(sessionData.getUserId());
 		if (time > new Date().getTime()) {
 			logger.info(MessageConsts.TIME_NOT_ARRIVED);
 			rep.setRetCode(RetCodeConsts.TIME_NOT_ARRIVED);
@@ -517,7 +515,7 @@ public class LoggedInUserController {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_MODIFYPAYPWD,
 					modifyPayPwdByOldRequest.getCheckToken())) {
-				// PayPwd 6位数字
+				 /*PayPwd 6位数字*/
 				if (modifyPayPwdByOldRequest.getNewUserPayPwd().length() == 6
 						&& StringUtils.isNumeric(modifyPayPwdByOldRequest.getNewUserPayPwd())) {
 					if (userManager.isUserPayPwdEqualsOld(sessionData.getUserId(),
@@ -570,7 +568,7 @@ public class LoggedInUserController {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.RESETPAYPWD,
 					resetPayPwdRequest.getCheckToken())) {
-				// PayPwd 6位数字
+				 /*PayPwd 6位数字*/
 				if (resetPayPwdRequest.getNewUserPayPwd().length() == 6
 						&& StringUtils.isNumeric(resetPayPwdRequest.getNewUserPayPwd())) {
 					userManager.updateUserPayPwd(sessionData.getUserId(), resetPayPwdRequest.getNewUserPayPwd());

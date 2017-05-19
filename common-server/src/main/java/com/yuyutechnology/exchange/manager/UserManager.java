@@ -158,6 +158,7 @@ public interface UserManager {
 
 	/**
 	 * 退出账号处理相关数据
+	 * 清理pushId，pushTag
 	 * 
 	 * @param userId
 	 */
@@ -174,13 +175,13 @@ public interface UserManager {
 	void clearPinCode(String func, String areaCode, String userPhone);
 
 	/**
-	 * 检查换绑手机的时间限制是否已到
+	 * 获取可换绑时间
 	 * 
 	 * @param userId
-	 * @return
+	 * @return 
 	 * @throws ParseException
 	 */
-	long checkChangePhoneTime(Integer userId) throws ParseException;
+	long getChangePhoneTime(Integer userId) throws ParseException;
 
 	/**
 	 * 删除好友
@@ -199,10 +200,23 @@ public interface UserManager {
 	 */
 	User getSystemUser();
 
+	/**
+	 * @return
+	 */
 	List<User> getUserList();
 
+	/**
+	 * @param userId
+	 * @param userAvailable
+	 */
 	void userFreeze(Integer userId, int userAvailable);
 
+	/**
+	 * @param userId
+	 * @param key
+	 * @param value
+	 * @return
+	 */
 	String getUserConfigAndUpdate(Integer userId, UserConfigKeyEnum key, String value);
 
 	/**
