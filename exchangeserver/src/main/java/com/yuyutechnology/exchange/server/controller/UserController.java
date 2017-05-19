@@ -346,15 +346,17 @@ public class UserController {
 			if (userManager.getUserId(registerRequest.getAreaCode(), registerRequest.getUserPhone()) == null) {
 				// TODO 判断是否获取过验证码
 				// 校验验证码
-				Boolean resultBool = userManager.testPinCode(ServerConsts.PIN_FUNC_REGISTER, registerRequest.getAreaCode(),
-						registerRequest.getUserPhone(), registerRequest.getRegistrationCode());
+				Boolean resultBool = userManager.testPinCode(ServerConsts.PIN_FUNC_REGISTER,
+						registerRequest.getAreaCode(), registerRequest.getUserPhone(),
+						registerRequest.getRegistrationCode());
 				if (resultBool == null) {
 					logger.info(MessageConsts.NOT_GET_CODE);
 					rep.setRetCode(RetCodeConsts.NOT_GET_CODE);
 					rep.setMessage(MessageConsts.NOT_GET_CODE);
 				} else if (resultBool.booleanValue()) {
 					Integer userId = userManager.register(registerRequest.getAreaCode(), registerRequest.getUserPhone(),
-							registerRequest.getUserName(), registerRequest.getUserPassword(), registerRequest.getLanguage());
+							registerRequest.getUserName(), registerRequest.getUserPassword(),
+							registerRequest.getLanguage());
 
 					logger.info("userId==={}", userId);
 					if (userId == null) {
@@ -362,17 +364,17 @@ public class UserController {
 						rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 						rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 					} else {
-						// 设备登记
+						/* 设备登记 */
 						userManager.addDevice(userId, registerRequest.getDeviceId(), registerRequest.getDeviceName());
-						// 记录登录信息
+						/* 记录登录信息 */
 						userManager.updateUser(userId, HttpTookit.getIp(request), registerRequest.getPushId(),
 								registerRequest.getLanguage());
-						// 生成session Token
+						/* 生成session Token */
 						SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 						sessionManager.saveSessionData(sessionData);
 						rep.setSessionToken(sessionData.getSessionId());
 						rep.setLoginToken(sessionManager.createLoginToken(userId));
-						// 获取用户信息
+						/* 获取用户信息 */
 						rep.setUser(userManager.getUserInfo(userId));
 
 						logger.info(MessageConsts.RET_CODE_SUCCESS);
@@ -417,8 +419,7 @@ public class UserController {
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
-			// TODO 判断是否获取过验证码
-			// 校验验证码
+			/* 校验验证码 */
 			Boolean resultBool = userManager.testPinCode(testRequest.getPurpose(), testRequest.getAreaCode(),
 					testRequest.getUserPhone(), testRequest.getVerificationCode());
 			if (resultBool == null) {
@@ -438,9 +439,16 @@ public class UserController {
 		return rep;
 	}
 
-	// 登录验证 loginValidate
+	/**
+	 * 新设备登录验证 loginValidate
+	 * 
+	 * @param loginValidateRequest
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@ResponseEncryptBody
-	@ApiOperation(value = "登录验证", httpMethod = "POST", notes = "")
+	@ApiOperation(value = "新设备登录验证", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/loginValidate", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public LoginValidateResponse loginValidate(@RequestDecryptBody LoginValidateRequest loginValidateRequest,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -489,7 +497,7 @@ public class UserController {
 						sessionManager.saveSessionData(sessionData);
 						rep.setSessionToken(sessionData.getSessionId());
 						rep.setLoginToken(sessionManager.createLoginToken(userId));
-						/* 获取用户信息*/
+						/* 获取用户信息 */
 						rep.setUser(userManager.getUserInfo(userId));
 
 						logger.info(MessageConsts.RET_CODE_SUCCESS);

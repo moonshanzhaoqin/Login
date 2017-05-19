@@ -567,11 +567,9 @@ public class UserManagerImpl implements UserManager {
 		for (Wallet wallet : wallets) {
 			mapwallet.put(wallet.getCurrency().getCurrency(), wallet);
 		}
-		// logger.info("mapwallet",mapwallet);
 		/* 获取当前可用的货币 */
 		List<Currency> currencies = commonManager.getCurrentCurrencies();
 		for (Currency currency : currencies) {
-			// logger.info("{}",currency.getCurrency());
 			if (mapwallet.get(currency.getCurrency()) == null) {
 				/* 没有该货币的钱包，需要新增 */
 				walletDAO.addwallet(new Wallet(currency, userId, BigDecimal.ZERO, new Date(), 0));
