@@ -39,7 +39,7 @@ public interface UserManager {
 	UserInfo getUserInfo(Integer userId);
 
 	/**
-	 * 添加新用户
+	 * 新用户注册
 	 * 
 	 * @param areaCode
 	 * @param userPhone
@@ -47,8 +47,7 @@ public interface UserManager {
 	 * @param userPassword
 	 * @return
 	 */
-	Integer register(String areaCode, String userPhone, String userName, String userPassword, String loginIp,
-			String pushId, String language);
+	Integer register(String areaCode, String userPhone, String userName, String userPassword, String language);
 
 	/**
 	 * 验证手机号与验证码是否匹配

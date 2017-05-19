@@ -1,5 +1,7 @@
 package com.yuyutechnology.exchange.push;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -159,9 +161,12 @@ public class PushManager {
 		readTemplate("template/push/zh_CN/offline.template", offline_title_cn, offline_cn);
 		readTemplate("template/push/zh_HK/offline.template", offline_title_hk, offline_hk);
 
-		readTemplate("template/push/en_US/withdraw_complete.template", withdraw_complete_title_en, withdraw_complete_en);
-		readTemplate("template/push/zh_CN/withdraw_complete.template", withdraw_complete_title_cn, withdraw_complete_cn);
-		readTemplate("template/push/zh_HK/withdraw_complete.template", withdraw_complete_title_hk, withdraw_complete_hk);
+		readTemplate("template/push/en_US/withdraw_complete.template", withdraw_complete_title_en,
+				withdraw_complete_en);
+		readTemplate("template/push/zh_CN/withdraw_complete.template", withdraw_complete_title_cn,
+				withdraw_complete_cn);
+		readTemplate("template/push/zh_HK/withdraw_complete.template", withdraw_complete_title_hk,
+				withdraw_complete_hk);
 
 		readTemplate("template/push/en_US/withdraw_refund.template", withdraw_refund_title_en, withdraw_refund_en);
 		readTemplate("template/push/zh_CN/withdraw_refund.template", withdraw_refund_title_cn, withdraw_refund_cn);
@@ -564,7 +569,7 @@ public class PushManager {
 		tagRequest.setDeviceIds(deviceID);
 		tagRequest.setTagName(pushTag);
 		String param = JsonBinder.getInstance().toJson(tagRequest);
-		logger.info("TagRequest : {}", param);
+		logger.info("{} -> TagRequest : {}", func, param);
 		switch (func) {
 		case bindTag:
 			HttpTookit.sendPost(ResourceUtils.getBundleValue4String("push.url") + "bindTag.do", param);
