@@ -354,8 +354,7 @@ public class UserController {
 					rep.setMessage(MessageConsts.NOT_GET_CODE);
 				} else if (resultBool.booleanValue()) {
 					Integer userId = userManager.register(registerRequest.getAreaCode(), registerRequest.getUserPhone(),
-							registerRequest.getUserName(), registerRequest.getUserPassword(), HttpTookit.getIp(request),
-							registerRequest.getPushId(), registerRequest.getLanguage());
+							registerRequest.getUserName(), registerRequest.getUserPassword(), registerRequest.getLanguage());
 
 					logger.info("userId==={}", userId);
 					if (userId == null) {

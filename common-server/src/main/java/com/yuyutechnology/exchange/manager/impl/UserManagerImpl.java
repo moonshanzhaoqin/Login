@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scripting.config.LangNamespaceUtils;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.RetCodeConsts;
@@ -54,6 +55,7 @@ import com.yuyutechnology.exchange.sms.SendMessageResponse;
 import com.yuyutechnology.exchange.sms.SmsManager;
 import com.yuyutechnology.exchange.util.JsonBinder;
 import com.yuyutechnology.exchange.util.LanguageUtils;
+import com.yuyutechnology.exchange.util.LanguageUtils.Language;
 import com.yuyutechnology.exchange.util.MathUtils;
 import com.yuyutechnology.exchange.util.PasswordUtils;
 import com.yuyutechnology.exchange.util.ResourceUtils;
@@ -429,43 +431,44 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public Integer register(String areaCode, String userPhone, String userName, String userPassword, String loginIp,
-			String pushId, String language) {
-		// 清除验证码
-		redisDAO.deleteData(ServerConsts.PIN_FUNC_REGISTER + areaCode + userPhone);
-		// 随机生成盐值
+	public Integer register(String areaCode, String userPhone, String userName, String userPassword, String language) {
+		/* 随机生成盐值 */
 		String passwordSalt = DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(6));
 		logger.info("Randomly generated salt values===salt={}", passwordSalt);
-		// 添加用户
+		/* 添加用户 */
 		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName,
 				PasswordUtils.encrypt(userPassword, passwordSalt), new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER,
 				ServerConsts.USER_AVAILABLE_OF_AVAILABLE, ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE,
 				ServerConsts.PAY_AVAILABLE_OF_AVAILABLE, passwordSalt, LanguageUtils.standard(language)));
 		logger.info("Add user complete!");
+		/*记录换绑手机时间*/
 		redisDAO.saveData("changephonetime" + userId, new Date().getTime());
-		// 添加钱包信息
+		/* 添加钱包信息 */
 		createWallets4NewUser(userId);
 		accountingManager.snapshotToBefore(userId);
-		// 根据UNregistered 更新新用户钱包 将资金从系统帐户划给新用户
+		/* 根据Unregistered表 更新新用户钱包 将资金从系统帐户划给新用户 */
 		updateWalletsFromUnregistered(userId, areaCode, userPhone);
-
 		return userId;
 	}
 
 	@Override
 	public void switchLanguage(Integer userId, String language) {
-		logger.info("{} switchLanguage to {} ==>", userId, language);
+		Language newLanguage=LanguageUtils.standard(language);
+		logger.info("{} switchLanguage to {} ==>", userId, newLanguage.toString());
 		User user = userDAO.getUser(userId);
-		if (!user.getPushTag().equals(LanguageUtils.standard(language))) {
-			// 语言不一致，解绑Tag
-			logger.info("***Language inconsistency, unbind Tag***");
+		if (!user.getPushTag().equals(newLanguage)) {
+			/*语言不一致，解绑Tag*/
+			logger.info("***Language inconsistency***");
 			pushManager.unbindPushTag(user.getPushId(), user.getPushTag());
+			
+			/* 绑定Tag */
+			pushManager.bindPushTag(user.getPushId(), newLanguage);
+			
+			user.setPushTag(newLanguage);
+			userDAO.updateUser(user);
+		}else {
+			logger.info("***Language consistency,do nothing!***");
 		}
-		user.setPushTag(LanguageUtils.standard(language));
-		userDAO.updateUser(user);
-		/* 绑定Tag */
-		logger.info("***bind Tag***");
-		pushManager.bindPushTag(user.getPushId(), user.getPushTag());
 	}
 
 	@Override
@@ -523,22 +526,22 @@ public class UserManagerImpl implements UserManager {
 		pushManager.bindPushTag(user.getPushId(), user.getPushTag());
 
 		/* 清除其他账号的此pushId */
-		clearPushId(userId,pushId);
-//		List<User> users = userDAO.getUserByPushId(pushId);
-//		if (users != null) {
-//			for (User user2 : users) {
-//				if (user2.getUserId() != userId) {
-//					user2.setPushId(null);
-//					userDAO.updateUser(user2);
-//				}
-//			}
-//		}
+		clearPushId(userId, pushId);
+		// List<User> users = userDAO.getUserByPushId(pushId);
+		// if (users != null) {
+		// for (User user2 : users) {
+		// if (user2.getUserId() != userId) {
+		// user2.setPushId(null);
+		// userDAO.updateUser(user2);
+		// }
+		// }
+		// }
 	}
 
 	private void clearPushId(Integer userId, String pushId) {
-//		logger.info("clearPushId {}",pushId);
+		// logger.info("clearPushId {}",pushId);
 		String hql = "update User set pushId = ? where pushId = ? and userId <> ?";
-		userDAO.updateHQL(hql, new Object[]{null,pushId,userId});
+		userDAO.updateHQL(hql, new Object[] { null, pushId, userId });
 	}
 
 	@Override
