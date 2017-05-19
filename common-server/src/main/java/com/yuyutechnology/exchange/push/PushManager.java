@@ -1,7 +1,5 @@
 package com.yuyutechnology.exchange.push;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.HashMap;
