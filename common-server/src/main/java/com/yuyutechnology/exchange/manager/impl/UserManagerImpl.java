@@ -152,16 +152,16 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public long checkChangePhoneTime(Integer userId) throws ParseException {
+	public long getChangePhoneTime(Integer userId) throws ParseException {
 		String timeString = redisDAO.getValueByKey("changephonetime" + userId);
 		if (timeString != null) {
 			Calendar time = Calendar.getInstance();
 			time.setTimeInMillis(Long.valueOf(timeString).longValue());
 			time.add(Calendar.DATE, configManager.getConfigLongValue(ConfigKeyEnum.CHANGEPHONETIME, 10l).intValue());
-			logger.info("checkChangePhoneTime ==>{}", time.getTime());
+			logger.info("ChangePhoneTime : {}", time.getTime());
 			return time.getTime().getTime();
 		}
-		logger.info("checkChangePhoneTime ==>{}", new Date());
+		logger.info("ChangePhoneTime : {}", new Date());
 		return new Date().getTime();
 
 	}

@@ -17,12 +17,35 @@ public interface WalletManager {
 	 */
 	HashMap<String, BigDecimal> getTotalAmoutGold(int userId);
 
+	/**
+	 * 获取用户总账
+	 * 
+	 * @param systemUserId
+	 */
 	void getUserTotalBalance(int systemUserId);
 
+	/**
+	 * 分页获取坏账记录
+	 * 
+	 * @param parseInt
+	 * @return
+	 */
 	PageBean getBadAccountByPage(int parseInt);
 
+	/**
+	 * 根据badAccountId获取坏账流水
+	 * 
+	 * @param badAccountId
+	 * @return
+	 */
 	List<?> getDetailSeq(Integer badAccountId);
 
+	/**
+	 * 根据transferId获取坏账流水
+	 * 
+	 * @param transferId
+	 * @return
+	 */
 	List<?> getDetailSeqByTransferId(String transferId);
 
 }

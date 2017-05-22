@@ -87,8 +87,7 @@ public class UserController {
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
-			// TODO 判断是否获取过验证码
-			// 验证码校验
+			/* 验证码校验 */
 			if (userManager.testPinCode(ServerConsts.PIN_FUNC_FORGETPASSWORD, forgetPasswordRequest.getAreaCode(),
 					forgetPasswordRequest.getUserPhone(), forgetPasswordRequest.getVerificationCode())) {
 				Integer userId = userManager.getUserId(forgetPasswordRequest.getAreaCode(),
@@ -141,7 +140,7 @@ public class UserController {
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
-			// 检验手机号是否存在
+			/* 检验手机号是否存在 */
 			Integer userId = userManager.getUserId(getVerificationCodeRequest.getAreaCode(),
 					getVerificationCodeRequest.getUserPhone());
 			if (getVerificationCodeRequest.getPurpose().equals(ServerConsts.PIN_FUNC_REGISTER)
