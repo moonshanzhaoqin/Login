@@ -74,7 +74,7 @@ public class CrmUserInfoDAOImpl implements CrmUserInfoDAO {
 	public PageBean getUserInfoByPage(String userPhone, String userName, int currentPage, int pageSize) {
 		List<Object> values = new ArrayList<Object>();
 		StringBuilder hql = new StringBuilder(
-				"from User");
+				"from CrmUserInfo");
 		if (StringUtils.isNotBlank(userPhone)) {
 			if (hql.length()>9) {
 				hql.append(" and");

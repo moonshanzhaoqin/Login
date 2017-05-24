@@ -30,7 +30,7 @@ public class CrmUserInfo {
 		super();
 	}
 
-	public CrmUserInfo(Integer userId, String areaCode, String userPhone, String userName,Date createTime, int userType,
+	public CrmUserInfo(Integer userId, String areaCode, String userPhone, String userName,Date createTime,Date loginTime, int userType,
 			int userAvailable, int loginAvailable, int payAvailable, BigDecimal userTotalAssets, Date updateAt) {
 		super();
 		// this.infoId = infoId;
@@ -39,6 +39,7 @@ public class CrmUserInfo {
 		this.userPhone = userPhone;
 		this.userName = userName;
 		this.createTime = createTime;
+		this.loginTime = loginTime;
 		this.userType = userType;
 		this.userAvailable = userAvailable;
 		this.loginAvailable = loginAvailable;
@@ -54,6 +55,7 @@ public class CrmUserInfo {
 		this.userPhone = user.getUserPhone();
 		this.userName = user.getUserName();
 		this.createTime = user.getCreateTime();
+		this.loginTime = user.getLoginTime();
 		this.userType = user.getUserType();
 		this.userAvailable = user.getUserAvailable();
 		this.loginAvailable = user.getLoginAvailable();
