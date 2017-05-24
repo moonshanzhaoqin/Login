@@ -31,7 +31,13 @@
 				id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav navbar-left">
 					<li><a href="<c:url value='/account/getTotalAssetsDetails' />">账户汇总</a></li>
-					<li><a href="<c:url value='/account/accountOverview' />">用户管理</a></li>
+					<li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">用户管理<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="<c:url value='/account/accountOverview' />">用户资产</a></li>
+                            <li><a href="<c:url value='/userInfo' />">用户信息</a></li>
+                        </ul>
+                    </li>
 					<li><a href="<c:url value='/badAccount' />">坏账管理</a></li>
 					<li><a href="<c:url value='/withdraw' />">提现管理</a></li>
 					<li class="dropdown">

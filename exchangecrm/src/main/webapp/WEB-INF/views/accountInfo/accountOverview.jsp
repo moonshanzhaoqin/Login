@@ -130,6 +130,7 @@
 							<th>手机号</th>
 							<th>用户名</th>
 							<th>注册时间（GMT+8）</th>
+<!-- 							<th>登录时间（GMT+8）</th> -->
 							<th>用户类型</th>
 							<th>账户冻结</th>
 							<th>登录冻结</th>
@@ -147,6 +148,7 @@
 									<td>${userInfo.userPhone }</td>
 									<td>${userInfo.userName }</td>
 									<td><fmt:formatDate value="${userInfo.createTime }" pattern="yyyy-MM-dd HH:mm:ss" timeZone="GMT+8"/></td>
+<!-- 									<td></td> -->
 									<td>
 										<c:if test="${userInfo.userType eq 1}"><font color="red">系统用户</font></c:if>
 						        		<c:if test="${userInfo.userType eq 0}">普通用户</c:if>

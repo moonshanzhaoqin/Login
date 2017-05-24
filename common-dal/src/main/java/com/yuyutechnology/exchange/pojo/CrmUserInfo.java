@@ -18,6 +18,7 @@ public class CrmUserInfo {
 	private String userPhone;
 	private String userName;
 	private Date createTime;
+	private Date loginTime;
 	private int userType;
 	private int userAvailable;
 	private int loginAvailable;
@@ -103,6 +104,15 @@ public class CrmUserInfo {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+	
+	@Column(name = "login_time")
+	public Date getLoginTime() {
+		return this.loginTime;
+	}
+
+	public void setLoginTime(Date loginTime) {
+		this.loginTime = loginTime;
 	}
 
 	@Column(name = "user_type")

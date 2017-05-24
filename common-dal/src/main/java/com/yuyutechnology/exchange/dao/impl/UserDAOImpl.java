@@ -36,7 +36,7 @@ public class UserDAOImpl implements UserDAO {
 		List<?> list = hibernateTemplate.find("from User where areaCode = ? and userPhone = ?", areaCode, userPhone);
 		return list.isEmpty() ? null : (User) list.get(0);
 	}
-	
+
 	@Override
 	public User getUserByPhone(String userPhone) {
 		List<?> list = hibernateTemplate.find("from User where and userPhone = ?", userPhone);
@@ -81,12 +81,14 @@ public class UserDAOImpl implements UserDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<User> getUserByPushId(String pushId) {
-		List<?> list = hibernateTemplate.find("from User where pushId = ? ",pushId);
+		List<?> list = hibernateTemplate.find("from User where pushId = ? ", pushId);
 		return list.isEmpty() ? null : (List<User>) list;
 	}
 
 	@Override
-	public void updateHQL(String hql,Object[] values) {
+	public void updateHQL(String hql, Object[] values) {
 		hibernateTemplate.bulkUpdate(hql, values);
 	}
+
+	
 }

@@ -117,6 +117,38 @@
 		  fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));   
 		  return fmt;   
 		}  
+
+		//分页
+        function paginator(currentPage, pageTotal) {
+            console.log("paginator:currentPage=" + currentPage + ",pageTotal="
+                    + pageTotal);
+            var options = {
+                currentPage : currentPage,//当前页
+                totalPages : pageTotal,//总页数
+                size : 'normal',
+                alignment : 'right',
+                numberOfPages : 10,//显示页数
+                itemTexts : function(type, page, current) {
+                    switch (type) {
+                    case "first":
+                        return "<<";
+                    case "prev":
+                        return "<";
+                        case "next":
+                            return ">";
+                    case "last":
+                        return ">>";
+                    case "page":
+                        return "" + page;
+                    }
+                },
+                onPageClicked : function(event, originalEvent, type, page) {
+                    getWithdrawList(page, userPhone, transferId, transferStatus);
+                }
+            }
+            //分页控件
+            $('#paginator').bootstrapPaginator(options);
+        }
 	</script>
 </body>
 </html>
