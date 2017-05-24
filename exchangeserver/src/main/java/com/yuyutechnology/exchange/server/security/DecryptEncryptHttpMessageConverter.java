@@ -42,7 +42,7 @@ public class DecryptEncryptHttpMessageConverter extends MappingJackson2HttpMessa
 			public void serialize(Double value, JsonGenerator gen, SerializerProvider serializers)
 					throws IOException, JsonProcessingException {
 				gen.writeNumber(value);
-				gen.writeStringField(gen.getOutputContext().getCurrentName()+"4iOS",Double.toString(value));
+				gen.writeStringField(gen.getOutputContext().getCurrentName()+"4String",Double.toString(value));
 			}
         });
         s.addSerializer(BigDecimal.class, new JsonSerializer<BigDecimal>(){
@@ -50,7 +50,7 @@ public class DecryptEncryptHttpMessageConverter extends MappingJackson2HttpMessa
 			public void serialize(BigDecimal value, JsonGenerator gen, SerializerProvider serializers)
 					throws IOException, JsonProcessingException {
 				gen.writeNumber(value);
-				gen.writeStringField(gen.getOutputContext().getCurrentName()+"4iOS",value.toString());
+				gen.writeStringField(gen.getOutputContext().getCurrentName()+"4String",value.toString());
 			}
         });
         objectMapper.registerModule(s);
