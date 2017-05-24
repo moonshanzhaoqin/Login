@@ -2,6 +2,9 @@ package com.yuyutechnology.exchange.server.security;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+
+import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpInputMessage;
@@ -13,8 +16,12 @@ import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**
  * @author silent.sun
@@ -25,6 +32,29 @@ public class DecryptEncryptHttpMessageConverter extends MappingJackson2HttpMessa
 
 	@Autowired
     private DecryptEncryptBodyProcessor decryptEncryptBodyProcessor;
+	
+	@PostConstruct
+	public void init () {
+//		objectMapper.setSerializationInclusion(Include.ALWAYS);
+        SimpleModule s = new SimpleModule();
+        s.addSerializer(Double.class, new JsonSerializer<Double>(){
+			@Override
+			public void serialize(Double value, JsonGenerator gen, SerializerProvider serializers)
+					throws IOException, JsonProcessingException {
+				gen.writeNumber(value);
+				gen.writeStringField(gen.getOutputContext().getCurrentName()+"4String",Double.toString(value));
+			}
+        });
+        s.addSerializer(BigDecimal.class, new JsonSerializer<BigDecimal>(){
+			@Override
+			public void serialize(BigDecimal value, JsonGenerator gen, SerializerProvider serializers)
+					throws IOException, JsonProcessingException {
+				gen.writeNumber(value);
+				gen.writeStringField(gen.getOutputContext().getCurrentName()+"4String",value.toString());
+			}
+        });
+        objectMapper.registerModule(s);
+	}
     
 	@Override
 	public Object read(Type type, Class<?> contextClass, HttpInputMessage inputMessage)
