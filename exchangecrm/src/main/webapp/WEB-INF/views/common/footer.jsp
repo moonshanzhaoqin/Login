@@ -90,7 +90,7 @@
 		//时间戳变格式化
 		function timeDate(time) {
 			var date = new Date();
-			date.setTime(time);
+			date.setTime(time+8*60*60*1000);
 			return date.UTCFormat("yyyy-MM-dd hh:mm:ss");
 		}
 

@@ -14,53 +14,53 @@
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<h4 class="modal-title">详情</h4>
+					<h4 class="modal-title">交易详情</h4>
 				</div>
 				<div class="modal-body" style="overflow: auto;">
 					<form class="form-horizontal">
 						<div class="form-group">
-							<label class="col-sm-3 control-label">交易ID:</label>
-							<div class="col-sm-9" id="transferId"></div>
+							<label class="col-sm-5 control-label">交易ID:</label>
+							<div class="col-sm-7" id="transferId"></div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-3 control-label">交易类型:</label>
-							<div class="col-sm-9" id="transferType"></div>
+							<label class="col-sm-5 control-label">交易类型:</label>
+							<div class="col-sm-7" id="transferType"></div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-3 control-label">发款人ID:</label>
-							<div class="col-sm-9" id="fromId"></div>
+							<label class="col-sm-5 control-label">发款人ID:</label>
+							<div class="col-sm-7" id="fromId"></div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-3 control-label">发款人手机号:</label>
-							<div class="col-sm-9" id="fromPhone"></div>
+							<label class="col-sm-5 control-label">发款人手机号:</label>
+							<div class="col-sm-7" id="fromPhone"></div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-3 control-label">收款人ID:</label>
-							<div class="col-sm-9" id="toId"></div>
+							<label class="col-sm-5 control-label">收款人ID:</label>
+							<div class="col-sm-7" id="toId"></div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-3 control-label">收款人手机号:</label>
-							<div class="col-sm-9" id="toPhone"></div>
+							<label class="col-sm-5 control-label">收款人手机号:</label>
+							<div class="col-sm-7" id="toPhone"></div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-3 control-label">币种:</label>
-							<div class="col-sm-9" id="currency"></div>
+							<label class="col-sm-5 control-label">币种:</label>
+							<div class="col-sm-7" id="currency"></div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-3 control-label">数量:</label>
-							<div class="col-sm-9" id="transferAmount"></div>
+							<label class="col-sm-5 control-label">数量:</label>
+							<div class="col-sm-7" id="transferAmount"></div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-3 control-label">创建时间:</label>
-							<div class="col-sm-9" id="createTime"></div>
+							<label class="col-sm-5 control-label">创建时间（GMT+8）:</label>
+							<div class="col-sm-7" id="createTime"></div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-3 control-label">最新更新时间:</label>
-							<div class="col-sm-9" id="finishTime"></div>
+							<label class="col-sm-5 control-label">最新更新时间（GMT+8）:</label>
+							<div class="col-sm-7" id="finishTime"></div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-3 control-label">交易状态:</label>
-							<div class="col-sm-9" id="transferStatus"></div>
+							<label class="col-sm-5 control-label">交易状态:</label>
+							<div class="col-sm-7" id="transferStatus"></div>
 						</div>
 
 					</form>
@@ -85,42 +85,42 @@
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<h4 class="modal-title">详情</h4>
+					<h4 class="modal-title">兑换详情</h4>
 				</div>
 				<div class="modal-body" style="overflow: auto;">
 					<form class="form-horizontal">
 						<div class="form-group">
-							<label class="col-sm-3 control-label">兑换ID:</label>
-							<div class="col-sm-9" id="exchangeId"></div>
+							<label class="col-sm-5 control-label">兑换ID:</label>
+							<div class="col-sm-7" id="exchangeId"></div>
 						</div>
 
 						<div class="form-group">
-							<label class="col-sm-3 control-label">用户ID:</label>
-							<div class="col-sm-9" id="userId"></div>
+							<label class="col-sm-5 control-label">用户ID:</label>
+							<div class="col-sm-7" id="userId"></div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-3 control-label">手机号:</label>
-							<div class="col-sm-9" id="userPhone"></div>
+							<label class="col-sm-5 control-label">手机号:</label>
+							<div class="col-sm-7" id="userPhone"></div>
 						</div>
 						<!--                        <div class="form-group"> -->
 						<!--                            <label class="col-sm-3 control-label">币种:</label> -->
 						<!--                            <div class="col-sm-9" id=currency></div> -->
 						<!--                        </div> -->
 						<div class="form-group">
-							<label class="col-sm-3 control-label">数量:</label>
-							<div class="col-sm-9" id="exchangeAmount"></div>
+							<label class="col-sm-5 control-label">数量:</label>
+							<div class="col-sm-7" id="exchangeAmount"></div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-3 control-label">汇率:</label>
-							<div class="col-sm-9" id="exchangeRate"></div>
+							<label class="col-sm-5 control-label">汇率:</label>
+							<div class="col-sm-7" id="exchangeRate"></div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-3 control-label">创建时间:</label>
-							<div class="col-sm-9" id="EcreateTime"></div>
+							<label class="col-sm-5 control-label">创建时间（GMT+8）:</label>
+							<div class="col-sm-7" id="EcreateTime"></div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-3 control-label">最新更新时间:</label>
-							<div class="col-sm-9" id="EfinishTime"></div>
+							<label class="col-sm-5 control-label">最新更新时间（GMT+8）:</label>
+							<div class="col-sm-7" id="EfinishTime"></div>
 						</div>
 					</form>
 				</div>

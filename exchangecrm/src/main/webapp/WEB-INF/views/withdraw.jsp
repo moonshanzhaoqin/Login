@@ -65,8 +65,8 @@
 						<th>交易数量(GDQ)</th>
 						<th>交易状态</th>
 						<th>操作</th>
-						<th>创建时间(UTC)</th>
-						<th>最新更新时间(UTC)</th>
+						<th>创建时间（GMT+8）</th>
+						<th>最新更新时间（GMT+8）</th>
 						<th>坏账详情</th>
 					</tr>
 				</thead>

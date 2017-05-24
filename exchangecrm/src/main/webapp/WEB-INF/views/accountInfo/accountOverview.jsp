@@ -129,13 +129,13 @@
 							<th>国家码</th>
 							<th>手机号</th>
 							<th>用户名</th>
-							<th>注册时间</th>
+							<th>注册时间（GMT+8）</th>
 							<th>用户类型</th>
 							<th>账户冻结</th>
 							<th>登录冻结</th>
 							<th>支付冻结</th>
 							<th>总资产（USD）</th>
-							<th>更新时间（UTC）</th>
+							<th>更新时间（GMT+8）</th>
 							<th>操作</th>
 						</tr>
 					</thead>
@@ -146,7 +146,7 @@
 									<td>${userInfo.areaCode }</td>
 									<td>${userInfo.userPhone }</td>
 									<td>${userInfo.userName }</td>
-									<td><fmt:formatDate value="${userInfo.createTime }" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+									<td><fmt:formatDate value="${userInfo.createTime }" pattern="yyyy-MM-dd HH:mm:ss" timeZone="GMT+8"/></td>
 									<td>
 										<c:if test="${userInfo.userType eq 1}"><font color="red">系统用户</font></c:if>
 						        		<c:if test="${userInfo.userType eq 0}">普通用户</c:if>
@@ -164,7 +164,7 @@
 						        		<c:if test="${userInfo.payAvailable eq 0}">已冻结</c:if>
 									</td>
 									<td>${userInfo.userTotalAssets }</td>
-									<td><fmt:formatDate value="${userInfo.updateAt }" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+									<td><fmt:formatDate value="${userInfo.updateAt }" pattern="yyyy-MM-dd HH:mm:ss" timeZone="GMT+8"/></td>
 									<td>
 										<c:if test="${userInfo.userAvailable eq 1}">
 											<a href="#" onclick="userFreeze(this,0)">冻结用户</a>
