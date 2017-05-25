@@ -202,6 +202,9 @@ public class RetCodeConsts {
 	public static final String TRANSFER_LIMIT_DAILY_PAY = "03021";
 
 	public static final String TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY = "03022";
+	
+	public static final String TRANSFER_PAYPALTRANS_ILLEGAL_DATA = "03023";
+	
 
 	// crm 管理员04
 	/**

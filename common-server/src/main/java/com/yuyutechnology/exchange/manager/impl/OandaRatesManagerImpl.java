@@ -245,90 +245,6 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		return getExchangedAmount(currencyLeft, new BigDecimal("1"), currencyRight);
 	}
 	
-	/*@Override
-	public BigDecimal getSingleExchangeRate(String currencyLeft, String currencyRight) {
-		if((!currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLDPAY)&&!currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLD))
-				&&(!currencyRight.equals(ServerConsts.CURRENCY_OF_GOLDPAY)&&!currencyRight.equals(ServerConsts.CURRENCY_OF_GOLD))){
-			
-			//获取汇率，如果存在  amountIn*汇率
-			BigDecimal exchangeRate = getExchangeRate(currencyLeft,currencyRight,"bid");
-			
-			if(exchangeRate != null){
-				return exchangeRate;
-			}else{
-				//如果不存在  amount/汇率
-				exchangeRate = getExchangeRate(currencyRight,currencyLeft,"ask");
-				if(exchangeRate != null){
-					return (new BigDecimal("1")).divide(exchangeRate, 8, BigDecimal.ROUND_DOWN);
-				}else{
-					return new BigDecimal("-1");
-				}
-			}
-		}
-		//黄金与其他货币的兑换
-		
-		
-		
-		
-		//GDQ与其他货币的兑换
-		if(currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLDPAY) || currencyRight.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
-			
-			//首先获取 1oz黄金对应的美元价值
-			BigDecimal rate4XAU2USD = getExchangeRate(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_USD, "bid");
-			//计算1GDQ对应的美元价值
-			BigDecimal rate4GDQ2USD = rate4XAU2USD.divide(new BigDecimal("10000").
-					multiply(new BigDecimal(ResourceUtils.getBundleValue4String("exchange.oz4g", "31.1034768"))),
-					8,BigDecimal.ROUND_DOWN);
-			
-			//首先获取 1oz黄金对应的美元价值
-			BigDecimal rate4XAU2USDASK = getExchangeRate(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_USD, "ask");
-			//计算1GDQ对应的美元价值
-			BigDecimal rate4GDQ2USDASK = rate4XAU2USDASK.divide(
-					new BigDecimal("10000").multiply(new BigDecimal(ResourceUtils.getBundleValue4String("exchange.oz4g", "31.1034768"))),
-					8,BigDecimal.ROUND_DOWN);
-			
-			logger.info("rate4XAU2USD :{} ,rate4GDQ2USD : {}",rate4XAU2USD,rate4GDQ2USD);
-			
-			if(currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
-				if(currencyRight.equals(ServerConsts.CURRENCY_OF_USD)){
-					return rate4GDQ2USD;
-				}else{
-					BigDecimal rateUSD2Other = getExchangeRate(ServerConsts.CURRENCY_OF_USD,currencyRight,"bid");
-					if(rateUSD2Other != null){
-						return rate4GDQ2USD.multiply(rateUSD2Other);
-					}else{
-						BigDecimal rateOther2USD = getExchangeRate(currencyRight,ServerConsts.CURRENCY_OF_USD,"ask");
-						if(rateOther2USD != null){
-							return rate4GDQ2USD.multiply(new BigDecimal("1")
-									.divide(rateOther2USD,8,BigDecimal.ROUND_DOWN));
-						}
-
-					}
-				}
-			}
-			
-			
-			if(currencyRight .equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
-				if(currencyLeft.equals(ServerConsts.CURRENCY_OF_USD)){
-					return (new BigDecimal("1")).divide(rate4GDQ2USDASK, 8, BigDecimal.ROUND_DOWN);
-				}else{
-					BigDecimal rateOther2USD = getExchangeRate(currencyLeft,ServerConsts.CURRENCY_OF_USD,"bid");
-					if(rateOther2USD!= null){
-						return rateOther2USD.divide(rate4GDQ2USDASK,8,BigDecimal.ROUND_DOWN);
-					}else{
-						BigDecimal rateUSD2Other = getExchangeRate(ServerConsts.CURRENCY_OF_USD,currencyLeft,"ask");
-						if(rateUSD2Other != null){
-							return new BigDecimal("1")
-									.divide(rate4GDQ2USDASK.multiply(rateUSD2Other),8,BigDecimal.ROUND_DOWN);
-						}
-					}
-				}
-			}
-
-		}
-		
-		return null;
-	}*/
 	
 	@Override
 	public List<PriceInfo> getAllPrices(){
@@ -356,79 +272,11 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		return priceInfos;
 		
 	}
-	
-	/*@Override
-	public BigDecimal getInputValue(String currencyLeft,BigDecimal amount, String currencyRight){
-		
-		if((!currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLDPAY)&&!currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLD))
-				&&(!currencyRight.equals(ServerConsts.CURRENCY_OF_GOLDPAY)&&!currencyRight.equals(ServerConsts.CURRENCY_OF_GOLD))){
-			
-			BigDecimal exchangeRate = getExchangeRate(currencyLeft,currencyRight,"bid");
-			if(exchangeRate != null){
-				return amount.divide(exchangeRate,8, BigDecimal.ROUND_UP);
-			}else{
-				exchangeRate = getExchangeRate(currencyRight,currencyLeft,"ask");
-				if(exchangeRate!= null){
-					return amount.multiply(exchangeRate);
-				}
-			}
-			
-		}else{
-			//首先获取 1oz黄金对应的美元价值
-			BigDecimal rate4XAU2USD = getExchangeRate(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_USD, "bid");
-			//计算1GDQ对应的美元价值
-			BigDecimal rate4GDQ2USD = rate4XAU2USD.divide(new BigDecimal("10000").
-					multiply(new BigDecimal(ResourceUtils.getBundleValue4String("exchange.oz4g", "31.1034768"))),
-					8,BigDecimal.ROUND_DOWN);
-			
-			//首先获取 1oz黄金对应的美元价值
-			BigDecimal rate4XAU2USDASK = getExchangeRate(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_USD, "ask");
-			//计算1GDQ对应的美元价值
-			BigDecimal rate4GDQ2USDASK = rate4XAU2USDASK.divide(
-					new BigDecimal("10000").multiply(new BigDecimal(ResourceUtils.getBundleValue4String("exchange.oz4g", "31.1034768"))),
-					8,BigDecimal.ROUND_DOWN);
-			
-			
-			if(currencyLeft.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
-				
-				if(currencyRight.equals(ServerConsts.CURRENCY_OF_USD)){
-					return amount.divide(rate4GDQ2USD, 8, BigDecimal.ROUND_UP);
-				}else{
-					BigDecimal rateUSD2Other = getExchangeRate(ServerConsts.CURRENCY_OF_USD, currencyRight, "bid");
-					if(rateUSD2Other != null){
-						return amount.divide(rateUSD2Other.multiply(rate4GDQ2USD),8, BigDecimal.ROUND_UP);
-					}else{
-						BigDecimal rateOther2USD = getExchangeRate(currencyRight,ServerConsts.CURRENCY_OF_USD,  "ask");
-						if(rateOther2USD != null){
-							return amount.multiply(rateOther2USD).
-									divide(rate4GDQ2USD, 8, BigDecimal.ROUND_UP);
-						}
-					}
-				}
-			}
-			
-			if(currencyRight .equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
-				if(currencyLeft.equals(ServerConsts.CURRENCY_OF_USD)){
-					return amount.multiply(rate4GDQ2USDASK);
-				}else{
-					BigDecimal rateOther2USD = getExchangeRate(currencyLeft,ServerConsts.CURRENCY_OF_USD,"bid");
-					if(rateOther2USD!= null){
-						return amount.multiply(rate4GDQ2USDASK).divide(rateOther2USD,8,BigDecimal.ROUND_DOWN);
-					}else{
-						BigDecimal rateUSD2Other = getExchangeRate(ServerConsts.CURRENCY_OF_USD,currencyLeft,"ask");
-						if(rateUSD2Other != null){
-							return amount.multiply(rate4GDQ2USDASK).multiply(rateUSD2Other);
-						}
-					}
-				}
-			}
-		}
-		return null;
-		
-	}*/
 
 	private String incrementalUpdateExchangeRates(String existentInstruments){
-		String replacedStr = existentInstruments.replaceAll(ServerConsts.CURRENCY_OF_CNH, ServerConsts.CURRENCY_OF_CNY).replaceAll(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_GOLDPAY);
+		String replacedStr = existentInstruments.replaceAll(ServerConsts.CURRENCY_OF_CNH, 
+				ServerConsts.CURRENCY_OF_CNY).
+				replaceAll(ServerConsts.CURRENCY_OF_GOLD, ServerConsts.CURRENCY_OF_GOLDPAY);
 		String[] existentInstrumentsList = replacedStr.split(URL_AND_SYMBOL);
 		for (String[] instrument : commonManager.getInstruments()) {
 			if (!ArrayUtils.contains(existentInstrumentsList, instrument[0]) && !ArrayUtils.contains(existentInstrumentsList, instrument[1])) {
@@ -519,7 +367,6 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		String params = "instruments="+instruments;
 		BasicHeader basicHeader = new BasicHeader("Authorization", "Bearer " + bearer);
 		String result = HttpClientUtils.sendGet(domain,params,basicHeader);
-//		String result = HttpTookit.sendGet4Oanda(domain,params,bearer);
 		logger.info("result : {}",result);
 		if(result.contains("#errors")){
         	return null;
@@ -540,6 +387,24 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		return result;
 		
 	}
-	
+
+	@Override
+	public HashMap<String, Double> getExchangeRateDiffLeft4OneRight(String currencyRight) {
+		
+		HashMap<String, Double> result = new HashMap<>();
+		
+		List<Currency> list = commonManager.getCurrentCurrencies();
+		
+		for (Currency currency : list) {
+			if(!currency.getCurrency().equals(currencyRight)){
+				BigDecimal rate = getExchangedAmount(currency.getCurrency(), new BigDecimal("1"), currencyRight);
+				result.put(currency.getCurrency(), rate.doubleValue());
+			}
+		}
+		
+		return result;
+	}
+
+
 
 }
