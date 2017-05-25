@@ -70,6 +70,7 @@
 		$(function() {
 			searchUserInfo(1);
 		});
+		
 
 		function searchUserInfo(page) {
 			console.log("searchUserInfo:page=" + page);
@@ -130,6 +131,37 @@
 						}
 					});
 		}
+		//分页
+        function paginator(currentPage, pageTotal) {
+            console.log("paginator:currentPage=" + currentPage + ",pageTotal="
+                    + pageTotal);
+            var options = {
+                currentPage : currentPage,//当前页
+                totalPages : pageTotal,//总页数
+                size : 'normal',
+                alignment : 'right',
+                numberOfPages : 10,//显示页数
+                itemTexts : function(type, page, current) {
+                    switch (type) {
+                    case "first":
+                        return "<<";
+                    case "prev":
+                        return "<";
+                        case "next":
+                            return ">";
+                    case "last":
+                        return ">>";
+                    case "page":
+                        return "" + page;
+                    }
+                },
+                onPageClicked : function(event, originalEvent, type, page) {
+                    getWithdrawList(page, userPhone, userName);
+                }
+            }
+            //分页控件
+            $('#paginator').bootstrapPaginator(options);
+        }
 	</script>
 	<%@ include file="common/footer.jsp"%>
 </body>

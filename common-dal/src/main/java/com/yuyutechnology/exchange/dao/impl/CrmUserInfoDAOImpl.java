@@ -76,7 +76,7 @@ public class CrmUserInfoDAOImpl implements CrmUserInfoDAO {
 		StringBuilder hql = new StringBuilder(
 				"from CrmUserInfo");
 		if (StringUtils.isNotBlank(userPhone)) {
-			if (hql.length()>9) {
+			if (hql.length()>16) {
 				hql.append(" and");
 			}else{
 				hql.append(" where");
@@ -85,7 +85,7 @@ public class CrmUserInfoDAOImpl implements CrmUserInfoDAO {
 			values.add(userPhone);
 		}
 		if (StringUtils.isNotBlank(userName)) {
-			if (hql.length()>9) {
+			if (hql.length()>16) {
 				hql.append(" and");
 			}else{
 				hql.append(" where");
