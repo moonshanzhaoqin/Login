@@ -139,7 +139,8 @@
 		src="<c:url value="/resources/js/jquery.min.js" />"></script>
 	<script type="text/javascript"
 		src="<c:url value="/resources/bootstrap/js/bootstrap.min.js" />"></script>
-
+	<script type="text/javascript"
+		src="<c:url value="/resources/js/accounting.min.js" />"></script>
 	<script type="text/javascript">
 		function getTransfer(transferId) {
 			var data = {
@@ -179,7 +180,7 @@
 												+ data[0].currency + '</p>');
 								$('#transferAmount').html(
 										'<p class="form-control-static">'
-												+ data[0].transferAmount
+												+ accounting.formatNumber(data[0].transferAmount)
 												+ '</p>');
 								$('#createTime').html(
 										'<p class="form-control-static">'

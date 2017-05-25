@@ -1,11 +1,13 @@
 package com.yuyutechnology.exchange.dao.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.hibernate.ReplicationMode;
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.orm.hibernate4.HibernateTemplate;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.dao.CrmUserInfoDAO;
 import com.yuyutechnology.exchange.pojo.CrmUserInfo;
+import com.yuyutechnology.exchange.util.page.PageBean;
 import com.yuyutechnology.exchange.util.page.PageUtils;
 
 @Repository
@@ -65,5 +68,35 @@ public class CrmUserInfoDAOImpl implements CrmUserInfoDAO {
 			crmUserInfo.setUserAvailable(userAvailable);
 			hibernateTemplate.update(crmUserInfo);
 		}
+	}
+	
+	@Override
+	public PageBean getUserInfoByPage(String userPhone, String userName, int currentPage, int pageSize) {
+		List<Object> values = new ArrayList<Object>();
+		StringBuilder hql = new StringBuilder(
+				"from CrmUserInfo");
+		if (StringUtils.isNotBlank(userPhone)) {
+			if (hql.length()>9) {
+				hql.append(" and");
+			}else{
+				hql.append(" where");
+			}
+			hql.append(" userPhone = ?");
+			values.add(userPhone);
+		}
+		if (StringUtils.isNotBlank(userName)) {
+			if (hql.length()>9) {
+				hql.append(" and");
+			}else{
+				hql.append(" where");
+			}
+			hql.append(" userName like ?");
+			values.add("%"+userName+"%");
+		}
+		
+		hql.append(" order by loginTime desc");
+
+		PageBean pageBean =PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
+		return pageBean;
 	}
 }

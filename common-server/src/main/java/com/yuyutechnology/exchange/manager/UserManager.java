@@ -6,7 +6,6 @@ import java.util.List;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
-import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Friend;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.sms.SendMessageResponse;
@@ -263,5 +262,7 @@ public interface UserManager {
 	 * @return
 	 */
 	boolean isUserPayPwdEqualsOld(Integer userId, String newUserPayPwd);
+
+
 
 }
