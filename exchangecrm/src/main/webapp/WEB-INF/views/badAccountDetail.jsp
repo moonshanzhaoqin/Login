@@ -193,12 +193,12 @@
 								$('#transferStatus')
 										.html(
 												'<p class="form-control-static">'
-														+ transferStatus(data[0].transferStatus)
+														+ transferStatusName(data[0].transferStatus)
 														+ '</p>');
 								$('#transferType')
 										.html(
 												'<p class="form-control-static">'
-														+ transferType(data[0].transferType)
+														+ transferTypeName(data[0].transferType)
 														+ '</p>');
 							}
 						},
@@ -267,7 +267,7 @@
 			});
 		}
 
-		function transferType(transferType) {
+		function transferTypeName(transferType) {
 			switch (transferType) {
 			case 0:
 				return "交易";
@@ -285,7 +285,7 @@
 				return "金沛提现退款";
 			}
 		}
-		function transferStatus(transferStatus) {
+		function transferStatusName(transferStatus) {
 			switch (transferStatus) {
 			case 0:
 				return "交易初始化";
