@@ -51,6 +51,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 				new Object[] { new Date(), user.getUserId(), totalBalance });
 		crmUserInfo.setUserTotalAssets(totalBalance);
 		crmUserInfo.setUpdateAt(new Date());
+		crmUserInfo.setLoginTime(user.getLoginTime());
 		crmUserInfoDAO.updateUserInfo(crmUserInfo);
 	}
 
