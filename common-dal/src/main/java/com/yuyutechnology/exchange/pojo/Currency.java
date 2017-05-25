@@ -132,4 +132,11 @@ public class Currency implements java.io.Serializable {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Currency [currency=" + currency + ", currencyUnit=" + currencyUnit + ", nameEn=" + nameEn + ", nameCn="
+				+ nameCn + ", nameHk=" + nameHk + ", currencyStatus=" + currencyStatus + ", currencyOrder="
+				+ currencyOrder + "]";
+	}
 }

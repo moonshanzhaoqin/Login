@@ -1,5 +1,5 @@
 package pojo;
-// Generated May 25, 2017 2:15:02 PM by Hibernate Tools 5.2.1.Final
+// Generated May 25, 2017 5:41:24 PM by Hibernate Tools 5.2.1.Final
 
 import java.util.Date;
 import javax.persistence.Column;
@@ -19,24 +19,21 @@ import javax.persistence.TemporalType;
 public class ECrmLog implements java.io.Serializable {
 
 	private Integer logId;
-	private int adminId;
 	private String adminName;
 	private Date operateTime;
-	private int operation;
+	private String operation;
 	private String target;
 
 	public ECrmLog() {
 	}
 
-	public ECrmLog(int adminId, String adminName, Date operateTime, int operation) {
-		this.adminId = adminId;
+	public ECrmLog(String adminName, Date operateTime, String operation) {
 		this.adminName = adminName;
 		this.operateTime = operateTime;
 		this.operation = operation;
 	}
 
-	public ECrmLog(int adminId, String adminName, Date operateTime, int operation, String target) {
-		this.adminId = adminId;
+	public ECrmLog(String adminName, Date operateTime, String operation, String target) {
 		this.adminName = adminName;
 		this.operateTime = operateTime;
 		this.operation = operation;
@@ -53,15 +50,6 @@ public class ECrmLog implements java.io.Serializable {
 
 	public void setLogId(Integer logId) {
 		this.logId = logId;
-	}
-
-	@Column(name = "admin_id", nullable = false)
-	public int getAdminId() {
-		return this.adminId;
-	}
-
-	public void setAdminId(int adminId) {
-		this.adminId = adminId;
 	}
 
 	@Column(name = "admin_name", nullable = false)
@@ -84,11 +72,11 @@ public class ECrmLog implements java.io.Serializable {
 	}
 
 	@Column(name = "operation", nullable = false)
-	public int getOperation() {
+	public String getOperation() {
 		return this.operation;
 	}
 
-	public void setOperation(int operation) {
+	public void setOperation(String operation) {
 		this.operation = operation;
 	}
 

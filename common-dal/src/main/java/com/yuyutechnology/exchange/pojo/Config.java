@@ -82,4 +82,10 @@ public class Config implements java.io.Serializable {
 		this.configCanChange = configCanChange;
 	}
 
+	@Override
+	public String toString() {
+		return "Config [configKey=" + configKey + ", configValue=" + configValue + ", configName=" + configName
+				+ ", configOrder=" + configOrder + ", configCanChange=" + configCanChange + "]";
+	}
+
 }

@@ -3,6 +3,8 @@
  */
 package com.yuyutechnology.exchange.crm.controller;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,8 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.yuyutechnology.exchange.crm.request.GetUserInfoByPageRequest;
+import com.yuyutechnology.exchange.enums.Operation;
+import com.yuyutechnology.exchange.manager.CrmLogManager;
 import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
 import com.yuyutechnology.exchange.manager.UserManager;
+import com.yuyutechnology.exchange.pojo.CrmLog;
 import com.yuyutechnology.exchange.util.page.PageBean;
 
 /**
@@ -30,7 +35,9 @@ public class UserInfoController {
 	UserManager userManager;
 	@Autowired
 	CrmUserInfoManager crmUserInfoManager;
-
+	@Autowired
+	CrmLogManager CrmLogManager;
+	
 	/**
 	 * 获取用户信息
 	 * 
@@ -57,6 +64,8 @@ public class UserInfoController {
 	@RequestMapping(value = "/updateUserInfo", method = RequestMethod.GET)
 	public void updateUserInfo(HttpServletRequest request, HttpServletResponse response) {
 		crmUserInfoManager.updateImmediately();
+		CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+				Operation.UPDATE_USER_INFO.getOperationName()));
 	}
 
 }

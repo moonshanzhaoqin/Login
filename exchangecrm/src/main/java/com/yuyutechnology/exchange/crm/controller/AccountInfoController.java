@@ -2,8 +2,12 @@ package com.yuyutechnology.exchange.crm.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,9 +21,12 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.crm.dto.TotalAsset;
 import com.yuyutechnology.exchange.crm.request.GetTotalAssetsInfoRequest;
 import com.yuyutechnology.exchange.crm.request.UserFreezeRequest;
+import com.yuyutechnology.exchange.enums.Operation;
 import com.yuyutechnology.exchange.manager.CommonManager;
+import com.yuyutechnology.exchange.manager.CrmLogManager;
 import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
 import com.yuyutechnology.exchange.manager.UserManager;
+import com.yuyutechnology.exchange.pojo.CrmLog;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionManager;
@@ -36,7 +43,9 @@ public class AccountInfoController {
 	CommonManager commonManager;
 	@Autowired
 	SessionManager sessionManager;
-
+	@Autowired
+	CrmLogManager CrmLogManager;
+	
 	ModelAndView mav;
 
 	private static Logger log = LogManager.getLogger(AccountInfoController.class);
@@ -115,27 +124,32 @@ public class AccountInfoController {
 	}
 
 	@RequestMapping(value = "/account/userFreeze", method = RequestMethod.GET)
-	public ModelAndView userFreeze(UserFreezeRequest request) {
+	public ModelAndView userFreeze(UserFreezeRequest userFreezeRequest,HttpServletRequest request, HttpServletResponse response) {
 		mav = new ModelAndView();
-
-		if (request.getOperate() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
-			SessionData sessionData = sessionManager.getByUserid(request.getUserId());
+		userManager.userFreeze(userFreezeRequest.getUserId(), userFreezeRequest.getOperate());
+		if (userFreezeRequest.getOperate() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
+			SessionData sessionData = sessionManager.getByUserid(userFreezeRequest.getUserId());
 			if (sessionData != null) {
 				sessionManager.cleanSession(sessionData.getSessionId());
 			}
-			sessionManager.delLoginToken(request.getUserId());
-			userManager.logout(request.getUserId());
+			sessionManager.delLoginToken(userFreezeRequest.getUserId());
+			userManager.logout(userFreezeRequest.getUserId());
+			CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+					Operation.FREEZE_USER.getOperationName(),userFreezeRequest.getUserId().toString()));
+		}else {
+			CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+					Operation.DEFROST_USER.getOperationName(),userFreezeRequest.getUserId().toString()));
 		}
-
-		userManager.userFreeze(request.getUserId(), request.getOperate());
 		mav.setViewName("redirect:/account/accountOverview");
 		return mav;
 	}
 
 	@RequestMapping(value = "/account/updateImmediately", method = RequestMethod.GET)
-	public ModelAndView updateImmediately() {
+	public ModelAndView updateImmediately(HttpServletRequest request, HttpServletResponse response) {
 		mav = new ModelAndView();
 		crmUserInfoManager.updateImmediately();
+		CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+				Operation.UPDATE_USER_INFO.getOperationName()));
 		mav.setViewName("redirect:/account/accountOverview");
 		return mav;
 	}

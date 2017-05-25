@@ -1,5 +1,6 @@
 package com.yuyutechnology.exchange.crm.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuyutechnology.exchange.RetCodeConsts;
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
 import com.yuyutechnology.exchange.crm.request.GetBadAccountByPageRequest;
 import com.yuyutechnology.exchange.crm.request.GetDetailSeqByTransferIdRequest;
@@ -22,11 +24,14 @@ import com.yuyutechnology.exchange.crm.request.GetDetailSeqRequest;
 import com.yuyutechnology.exchange.crm.request.GetExchangeRequest;
 import com.yuyutechnology.exchange.crm.request.GetTransferRequest;
 import com.yuyutechnology.exchange.crm.request.SetGoldpayRemitTaskStatusRequest;
+import com.yuyutechnology.exchange.enums.Operation;
 import com.yuyutechnology.exchange.manager.CommonManager;
+import com.yuyutechnology.exchange.manager.CrmLogManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.WalletManager;
+import com.yuyutechnology.exchange.pojo.CrmLog;
 import com.yuyutechnology.exchange.util.page.PageBean;
 
 @Controller
@@ -43,6 +48,8 @@ public class BadAccountController {
 	TransferManager transferManager;
 	@Autowired
 	ExchangeManager exchangeManager;
+	@Autowired
+	CrmLogManager CrmLogManager;
 
 	/**
 	 * 分页获取坏账列表
@@ -91,7 +98,7 @@ public class BadAccountController {
 	}
 
 	/**
-	 * TODO 获取交易详情
+	 *获取交易详情
 	 * 
 	 * @param getTransferRequest
 	 * @param request
@@ -134,6 +141,13 @@ public class BadAccountController {
 		logger.info(forbidden.getStatus());
 		BaseResponse rep = new BaseResponse();
 		goldpayTransManager.forbiddenGoldpayRemitWithdraws(forbidden.getStatus());
+		if (forbidden.getStatus() == ServerConsts.ACCOUTING_TASK_OPEN) {
+			CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+					Operation.OPEN_ACCOUTING_TASK.getOperationName()));
+		}else {
+			CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+					Operation.CLOSE_ACCOUTING_TASK.getOperationName()));
+		}
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
@@ -148,7 +162,6 @@ public class BadAccountController {
 	@ResponseBody
 	@RequestMapping(value = "/getGoldpayRemitTaskStatus", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public boolean getGoldpayRemitTaskStatus(HttpServletRequest request, HttpServletResponse response) {
-
 		return goldpayTransManager.getGoldpayRemitWithdrawsforbidden();
 	}
 }
