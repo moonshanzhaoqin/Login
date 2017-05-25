@@ -81,6 +81,10 @@ public class ServerConsts {
 	 * 金沛提现退款
 	 */
 	public static final int TRANSFER_TYPE_IN_GOLDPAY_REFUND = 6;
+	/**
+	 * 金沛提现退款
+	 */
+	public static final int TRANSFER_TYPE_IN_PAYPAL_RECHAEGE = 7;
 
 	// 交易状态
 	/**
