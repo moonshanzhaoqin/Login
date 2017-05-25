@@ -62,7 +62,7 @@ public class PayPalTransController {
 		PaypalTransInitResponse rep = new PaypalTransInitResponse();
 		
 		//判断条件.币种合法，GDQ数量为整数且大于100
-		if(reqMsg.getAmount() == null ||(reqMsg.getAmount().compareTo(new BigDecimal("100"))<100 || reqMsg.getAmount().longValue()%1 > 0)){
+		if(reqMsg.getAmount() == null ||(reqMsg.getAmount().compareTo(new BigDecimal("100")) == -1 || reqMsg.getAmount().longValue()%1 > 0)){
 			logger.warn("The number of inputs does not meet the requirements");
 			rep.setRetCode(RetCodeConsts.TRANSFER_PAYPALTRANS_ILLEGAL_DATA);
 			rep.setMessage("The number of inputs does not meet the requirements");
@@ -79,7 +79,7 @@ public class PayPalTransController {
 		
 		rep.setTransId((String) result.get("transId"));
 		rep.setAccessToken((String) result.get("token"));
-		rep.setAmount((Double) result.get("amount"));
+		rep.setAmount(((BigDecimal) result.get("amount")).doubleValue());
 		
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
