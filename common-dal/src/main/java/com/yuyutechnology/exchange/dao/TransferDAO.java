@@ -10,49 +10,48 @@ import com.yuyutechnology.exchange.util.page.PageBean;
 
 public interface TransferDAO {
 
-	public String createTransId(int transferType);
+	String createTransId(int transferType);
 
-	public void addTransfer(Transfer transfer);
-	
-	public void updateTransfer(Transfer transfer);
+	void addTransfer(Transfer transfer);
 
-	public Transfer getTransferById(String transferId);
-	
-	public Transfer getTranByIdAndStatus(String transferId,int transferStatus);
+	void updateTransfer(Transfer transfer);
 
-	public void updateAccumulatedAmount(String key, BigDecimal amoumt);
-	
-	public void updateCumulativeNumofTimes(String key, BigDecimal amoumt);
+	Transfer getTransferById(String transferId);
 
-	public BigDecimal getAccumulatedAmount(String key);
-	
-	public int getCumulativeNumofTimes(String key);
+	Transfer getTranByIdAndStatus(String transferId, int transferStatus);
 
-	public void updateTransferStatus(String transferId, int transferStatus);
+	void updateAccumulatedAmount(String key, BigDecimal amoumt);
 
-	public void updateTransferStatusAndUserTo(String transferId,
-			int transferStatus, Integer userTo);
-	
-	public HashMap<String, Object> getTransactionRecordByPage(
-			String sql,String countSql,List<Object> values,int currentPage, int pageSize);
-	
-	public List<Transfer> findTransferByStatusAndTimeBefore(int transferStatus, int transferType, Date date);
-	
-	public BigDecimal sumGoldpayTransAmount(int transferType);
-	
-	public Integer getDayTradubgVolume(final int transferType);
+	void updateCumulativeNumofTimes(String key, BigDecimal amoumt);
 
-	public PageBean getWithdrawRecordByPage(Integer userId, int currentPage, int pageSize);
+	BigDecimal getAccumulatedAmount(String key);
 
-	public List<Transfer> getNeedGoldpayRemitWithdraws();
+	int getCumulativeNumofTimes(String key);
 
-	public List<Transfer> getNeedReviewWithdraws();
+	void updateTransferStatus(String transferId, int transferStatus);
 
-	public PageBean searchWithdrawsByPage(String userPhone, String reviewStatus, String[] transferStatus, int currentPage,
+	void updateTransferStatusAndUserTo(String transferId, int transferStatus, Integer userTo);
+
+	HashMap<String, Object> getTransactionRecordByPage(String sql, String countSql, List<Object> values,
+			int currentPage, int pageSize);
+
+	List<Transfer> findTransferByStatusAndTimeBefore(int transferStatus, int transferType, Date date);
+
+	BigDecimal sumGoldpayTransAmount(int transferType);
+
+	Integer getDayTradubgVolume(final int transferType);
+
+	PageBean getWithdrawRecordByPage(Integer userId, int currentPage, int pageSize);
+
+	List<Transfer> getNeedGoldpayRemitWithdraws();
+
+	List<Transfer> getNeedReviewWithdraws();
+
+	PageBean searchWithdrawsByPage(String userPhone, String reviewStatus, String[] transferStatus, int currentPage,
 			int pageSize);
 
-	public Object getTransferByIdJoinUser(String transferId);
+	Object getTransferByIdJoinUser(String transferId);
 
-//	void testByPage();
-	
+	// void testByPage();
+
 }

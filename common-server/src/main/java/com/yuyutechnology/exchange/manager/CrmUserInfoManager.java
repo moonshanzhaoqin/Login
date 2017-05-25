@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 
 import com.yuyutechnology.exchange.pojo.User;
+import com.yuyutechnology.exchange.util.page.PageBean;
 
 public interface CrmUserInfoManager {
 	
@@ -20,5 +21,13 @@ public interface CrmUserInfoManager {
 	public void updateImmediately();
 	
 	public int getUpdateFlag();
+
+	/**
+	 * @param currentPage
+	 * @param userPhone
+	 * @param userName
+	 * @return
+	 */
+	PageBean getUserInfoByPage(int currentPage, String userPhone, String userName);
 
 }

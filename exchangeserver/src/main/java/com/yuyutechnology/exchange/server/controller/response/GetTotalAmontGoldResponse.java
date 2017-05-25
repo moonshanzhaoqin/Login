@@ -2,23 +2,23 @@ package com.yuyutechnology.exchange.server.controller.response;
 
 public class GetTotalAmontGoldResponse extends BaseResponse {
 	
-	private double amountOfGold;
+	private Double amountOfGold;
 	
-	private double amountOfGoldOz;
+	private Double amountOfGoldOz;
 
-	public double getAmountOfGold() {
+	public Double getAmountOfGold() {
 		return amountOfGold;
 	}
 
-	public void setAmountOfGold(double amountOfGold) {
+	public void setAmountOfGold(Double amountOfGold) {
 		this.amountOfGold = amountOfGold;
 	}
 
-	public double getAmountOfGoldOz() {
+	public Double getAmountOfGoldOz() {
 		return amountOfGoldOz;
 	}
 
-	public void setAmountOfGoldOz(double amountOfGoldOz) {
+	public void setAmountOfGoldOz(Double amountOfGoldOz) {
 		this.amountOfGoldOz = amountOfGoldOz;
 	}
 }

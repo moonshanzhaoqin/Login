@@ -14,26 +14,27 @@ import com.yuyutechnology.exchange.pojo.UserConfig;
  */
 public interface UserDAO {
 
-	public User getSystemUser();
+	User getSystemUser();
 
-	public User getUser(Integer userId);
+	User getUser(Integer userId);
 
-	public User getUserByUserPhone(String areaCode, String userPhone);
+	User getUserByUserPhone(String areaCode, String userPhone);
 
-	public Integer addUser(User user);
+	Integer addUser(User user);
 
-	public void updateUser(User user);
-	
-	public List<User> getUserList();
-	
-	public UserConfig getUserConfig(Integer userId);
-	
-	public void saveUserConfig(UserConfig userConfig);
+	void updateUser(User user);
+
+	List<User> getUserList();
+
+	UserConfig getUserConfig(Integer userId);
+
+	void saveUserConfig(UserConfig userConfig);
 
 	User getUserByPhone(String userPhone);
 
-	public List<User> getUserByPushId(String pushId);
+	List<User> getUserByPushId(String pushId);
 
 	void updateHQL(String hql, Object[] values);
 
+	
 }

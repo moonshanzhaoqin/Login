@@ -3,15 +3,12 @@ package com.yuyutechnology.exchange.crm.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class PageController {
-	private static Logger logger = LogManager.getLogger(PageController.class);
 
 	@RequestMapping(value = "/login", method = { RequestMethod.GET })
 	public String login(HttpServletRequest request, HttpServletResponse response) {
@@ -34,5 +31,9 @@ public class PageController {
 	@RequestMapping(value = "/badAccount", method = { RequestMethod.GET })
 	public String badAccount(HttpServletRequest request, HttpServletResponse response) {
 		return "badAccount";
+	}
+	@RequestMapping(value = "/userInfo", method = { RequestMethod.GET })
+	public String userInfo(HttpServletRequest request, HttpServletResponse response) {
+		return "userInfo";
 	}
 }

@@ -21,8 +21,10 @@ import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.UserInfo;
+import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.mail.MailManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
+import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
@@ -66,6 +68,8 @@ public class UserController {
 	CommonManager commonManager;
 	@Autowired
 	MailManager mailManager;
+	@Autowired
+	ConfigManager configManager;
 
 	/**
 	 * forget password 忘记密码
@@ -219,6 +223,7 @@ public class UserController {
 			HttpServletResponse response) {
 		logger.info("============login==========");
 		LoginResponse rep = new LoginResponse();
+		rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
 		switch (loginRequest.isEmpty()) {
 		case 1:
 			// loginToken

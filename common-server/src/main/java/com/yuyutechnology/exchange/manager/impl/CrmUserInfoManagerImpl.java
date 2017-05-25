@@ -24,6 +24,7 @@ import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.pojo.CrmUserInfo;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.util.page.PageBean;
 
 @Service
 public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
@@ -50,6 +51,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 				new Object[] { new Date(), user.getUserId(), totalBalance });
 		crmUserInfo.setUserTotalAssets(totalBalance);
 		crmUserInfo.setUpdateAt(new Date());
+		crmUserInfo.setLoginTime(user.getLoginTime());
 		crmUserInfoDAO.updateUserInfo(crmUserInfo);
 	}
 
@@ -196,5 +198,9 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 
 		return 0;
 	}
-
+	@Override
+	public PageBean getUserInfoByPage(int currentPage, String userPhone, String userName) {
+		logger.info("currentPage={},userPhone={},userName={},transferStatus={}", currentPage, userPhone, userName);
+		return crmUserInfoDAO.getUserInfoByPage(userPhone, userName, currentPage, 10);
+	}
 }
