@@ -156,7 +156,7 @@
                     }
                 },
                 onPageClicked : function(event, originalEvent, type, page) {
-                    getWithdrawList(page, userPhone, userName);
+                	getUserInfoByPage(page, userPhone, userName);
                 }
             }
             //分页控件
