@@ -41,10 +41,9 @@ public class PageUtils {
 		int firstResult = (currentPage -1)*pageSize;
 		int masResult = pageSize;
 		List<?> list = PageUtils.getListByPage(hibernateTemplate, hql, values, firstResult, masResult);
-		log.info(list);
+		log.info(list.size());
 		long total = PageUtils.getTotal(hibernateTemplate, hql, values);
 		int pageTotal = PageUtils.getPageTotal(total, pageSize);
-		
 		PageBean pageBean = new PageBean(total, currentPage, pageSize, pageTotal, list);
 		return pageBean;
 		
