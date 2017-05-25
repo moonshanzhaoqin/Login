@@ -125,10 +125,7 @@
 		function updateUserInfo(currentPage, userPhone, userName) {
 			$("#updateImmediately").attr("disabled", true);
 			$("#updateImmediately").text("更新中...");
-// 			$("#updateimmediately").attr("disabled","");
-//             $("#updateimmediately").text("立即更新");
 			$.ajax({
-// 				async : false,//同步请求
 				type : "GET",
 				url : "/crm/updateUserInfo",
 				contentType : "application/json; charset=utf-8",
@@ -140,12 +137,10 @@
 				error : function(xhr, err) {
 					alert("未知错误");
 					console.log(err);
+					$("#updateImmediately").attr("disabled", false);
+                    $("#updateImmediately").text("立即更新");
 				}
 			});
-// 			$("#updateimmediately").attr("disabled", false);
-//             $("#updateimmediately").text("立即更新");
-// 			$("#updateimmediately").removeAttr("disabled");
-//             $("#updateimmediately").html("立即更新");
 
 		}
 
