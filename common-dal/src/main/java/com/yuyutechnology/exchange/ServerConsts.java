@@ -81,6 +81,10 @@ public class ServerConsts {
 	 * 金沛提现退款
 	 */
 	public static final int TRANSFER_TYPE_IN_GOLDPAY_REFUND = 6;
+	/**
+	 * 金沛提现退款
+	 */
+	public static final int TRANSFER_TYPE_IN_PAYPAL_RECHAEGE = 7;
 
 	// 交易状态
 	/**
@@ -160,6 +164,7 @@ public class ServerConsts {
 	 * 短信验证码功能——新设备登录
 	 */
 	public static final String PIN_FUNC_NEWDEVICE = "NEWDEVICE";
+	
 	/**
 	 * 币种状态——可用
 	 */
@@ -209,4 +214,31 @@ public class ServerConsts {
 	 */
 	public static final String RESETPAYPWD = "RESETPAYPWD";
 
+	//CRM操作类型
+	
+//	更新用户信息
+//	public static final String UPDATE_USER_INFO = "RESETPAYPWD";
+//	冻结用户
+//	public static final String FREEZE_USER = "RESETPAYPWD";
+	//解冻用户
+//	public static final String DEFROST_USER = "RESETPAYPWD";
+//	开启核账功能
+//	关闭核账
+//	提现退回
+//	提现重新审核
+//	提现重新划账
+//	添加币种
+//	编辑币种
+//	下架币种
+//	上架币种
+//	更新配置
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

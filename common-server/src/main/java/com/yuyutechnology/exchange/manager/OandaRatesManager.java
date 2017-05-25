@@ -24,12 +24,12 @@ public interface OandaRatesManager {
 
 	public HashMap<String, Double> getExchangeRate(String base);
 	
+	public HashMap<String, Double> getExchangeRateDiffLeft4OneRight(String currencyRight);
+	
 	public BigDecimal getSingleExchangeRate(String currencyLeft, String currencyRight);
 
 	public List<PriceInfo> getAllPrices();
 
-//	public BigDecimal getInputValue(String currencyLeft, BigDecimal amount, String currencyRight);
-
-	OandaRespData getCurrentPrices(String instruments);
+	public OandaRespData getCurrentPrices(String instruments);
 
 }

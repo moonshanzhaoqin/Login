@@ -264,7 +264,7 @@ CREATE TABLE `e_user` (
   `user_name` varchar(255) NOT NULL DEFAULT '' COMMENT '用户名',
   `user_password` varchar(255) NOT NULL DEFAULT '' COMMENT '用户密码',
   `user_pay_pwd` varchar(255) DEFAULT NULL COMMENT '用户支付密码',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '用户注册时间',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '用户注册时间',
   `login_time` timestamp NULL DEFAULT NULL COMMENT '最近登录时间',
   `login_ip` varchar(255) DEFAULT NULL COMMENT '最近登录IP',
   `user_type` int(1) NOT NULL DEFAULT '0' COMMENT '用户类型',

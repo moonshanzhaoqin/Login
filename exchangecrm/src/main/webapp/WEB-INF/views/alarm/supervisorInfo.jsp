@@ -56,7 +56,7 @@
 							<th>姓名</th>
 							<th>手机</th>
 							<th>邮箱</th>
-							<th>更新时间</th>
+							<th>更新时间（GMT+8）</th>
 							<th>操作</th>
 						</tr>
 					</thead>
@@ -68,7 +68,7 @@
 									<td>${supervisor.supervisorName }</td>
 									<td>${supervisor.supervisorMobile }</td>
 									<td>${supervisor.supervisorEmail }</td>
-									<td><fmt:formatDate value="${supervisor.updateAt }" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+									<td><fmt:formatDate value="${supervisor.updateAt }" pattern="yyyy-MM-dd HH:mm:ss" timeZone="GMT+8"/></td>
 									<td>
 										<a href="#" onclick="delSupervisor(this)">删除</a>
 									</td>
