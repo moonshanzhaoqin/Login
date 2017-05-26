@@ -147,7 +147,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			saleResult = gateway.transaction().sale(request);
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.warn("paypal error !", e);
 			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 			map.put("msg", "fail");
 			return map;
