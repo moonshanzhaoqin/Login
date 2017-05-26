@@ -20,7 +20,6 @@ import com.yuyutechnology.exchange.crm.request.GetWithdrawListRequest;
 import com.yuyutechnology.exchange.crm.request.WithdrawRequest;
 import com.yuyutechnology.exchange.enums.Operation;
 import com.yuyutechnology.exchange.manager.CommonManager;
-import com.yuyutechnology.exchange.manager.CrmAdminManager;
 import com.yuyutechnology.exchange.manager.CrmLogManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.pojo.CrmLog;
