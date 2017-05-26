@@ -203,7 +203,13 @@ public class RetCodeConsts {
 
 	public static final String TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY = "03022";
 	
-	public static final String TRANSFER_PAYPALTRANS_ILLEGAL_DATA = "03023";
+	public static final String TRANSFER_PAYPALTRANS_ORDER_STATUS_EXCEPTION = "03024";
+	
+	public static final String TRANSFER_PAYPALTRANS_TIME_OUT = "03025";
+	
+	public static final String TRANSFER_PAYPALTRANS_PAYMENT_FAILED = "03026";
+	
+	public static final String TRANSFER_PAYPALTRANS_ILLEGAL_DATA = "03027";
 	
 
 	// crm 管理员04
