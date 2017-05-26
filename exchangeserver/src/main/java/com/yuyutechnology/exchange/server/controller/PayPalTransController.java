@@ -18,8 +18,10 @@ import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.manager.PayPalTransManager;
+import com.yuyutechnology.exchange.server.controller.request.PaypalTransConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.PaypalTransInitRequest;
 import com.yuyutechnology.exchange.server.controller.response.GetExchangeRate4GDQResponse;
+import com.yuyutechnology.exchange.server.controller.response.PaypalTransConfirmResponse;
 import com.yuyutechnology.exchange.server.controller.response.PaypalTransInitResponse;
 import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
 import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
@@ -67,7 +69,6 @@ public class PayPalTransController {
 			rep.setRetCode(RetCodeConsts.TRANSFER_PAYPALTRANS_ILLEGAL_DATA);
 			rep.setMessage("The number of inputs does not meet the requirements");
 			return rep;
-			
 		}
 		
 		HashMap<String, Object> result = payPalTransManager.paypalTransInit(sessionData.getUserId(), reqMsg.getCurrency(), reqMsg.getAmount());
@@ -79,7 +80,13 @@ public class PayPalTransController {
 		
 		rep.setTransId((String) result.get("transId"));
 		rep.setAccessToken((String) result.get("token"));
+		rep.setCurrency(reqMsg.getCurrency());
 		rep.setAmount(((BigDecimal) result.get("amount")).doubleValue());
+		rep.setUnit((String) result.get("unit"));
+		
+		rep.setCreateAt((java.sql.Date) result.get("createTime"));
+		rep.setExpiration((long) result.get("expiration"));
+		
 		
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
@@ -89,7 +96,20 @@ public class PayPalTransController {
 	
 	@ApiOperation(value = "paypal交易  交易确认")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/paypalTrans/paypalTransConfirm")
-	public void paypalTransConfirm(@PathVariable String token,String transId,String paypalCallback){
+	public @ResponseEncryptBody PaypalTransConfirmResponse 
+	paypalTransConfirm(@PathVariable String token,@RequestDecryptBody PaypalTransConfirmRequest reqMsg){
+		
+		// 从Session中获取Id
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		PaypalTransConfirmResponse rep = new PaypalTransConfirmResponse();
+		
+		HashMap<String, String> result = payPalTransManager.paypalTransConfirm(sessionData.getUserId(), 
+				reqMsg.getTransId(), reqMsg.getPaymentMethodNonce());
+		
+		rep.setRetCode(result.get("retCode"));
+		rep.setMessage(result.get("msg"));
+		
+		return rep;
 		
 	}
 
