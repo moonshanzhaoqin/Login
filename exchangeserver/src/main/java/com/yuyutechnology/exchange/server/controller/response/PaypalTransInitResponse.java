@@ -1,6 +1,6 @@
 package com.yuyutechnology.exchange.server.controller.response;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class PaypalTransInitResponse extends BaseResponse {
 	

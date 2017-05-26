@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.aspectj.weaver.reflect.ReflectionBasedResolvedMemberImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import com.braintreegateway.Customer;
 import com.braintreegateway.Result;
 import com.braintreegateway.Transaction;
 import com.braintreegateway.TransactionRequest;
+import com.braintreegateway.exceptions.AuthorizationException;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
@@ -130,17 +132,26 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		//paypal
 		String accessToken = ResourceUtils.getBundleValue4String("paypal.accessToken", 
 				"access_token$sandbox$h32wtjg3dw3jt4kd$e0a3535f2b04517e66258c0cbe9b118d");
-		BraintreeGateway gateway = new BraintreeGateway(accessToken);
-		
-		TransactionRequest request = new TransactionRequest();
-		request.amount(transfer.getTransferAmount());
-		request.merchantAccountId(transfer.getCurrency());
-		request.paymentMethodNonce(nonce);
-		request.orderId(transfer.getTransferId());
-		
-		request.options().paypal().customField("PayPal custom field").description("Description for PayPal email receipt").done();
-		
-		Result<Transaction> saleResult = gateway.transaction().sale(request);
+		Result<Transaction> saleResult = null;
+		try {
+			BraintreeGateway gateway = new BraintreeGateway(accessToken);
+			
+			TransactionRequest request = new TransactionRequest();
+			request.amount(transfer.getTransferAmount());
+			request.merchantAccountId(transfer.getCurrency());
+			request.paymentMethodNonce(nonce);
+			request.orderId(transfer.getTransferId());
+			
+			request.options().paypal().customField("PayPal custom field").description("Description for PayPal email receipt").done();
+			
+			saleResult = gateway.transaction().sale(request);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+			map.put("msg", "fail");
+			return map;
+		}
 		
 		//验证PayPal回调结果
 		if (saleResult.isSuccess()) {
