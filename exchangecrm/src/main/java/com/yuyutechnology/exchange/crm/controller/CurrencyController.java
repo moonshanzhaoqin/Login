@@ -117,7 +117,6 @@ public class CurrencyController {
 	@RequestMapping(value = "/changeCurrencyStatus", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse changeCurrencyStatus(@RequestBody ChangeCurrencyStatusRequest changeCurrencyStatusRequest,
 			HttpServletRequest request, HttpServletResponse response) {
-		logger.info("adminName=",(String) request.getSession().getAttribute("adminName"));
 		BaseResponse rep = new BaseResponse();
 		if (changeCurrencyStatusRequest.isEmpty()) {
 			logger.info("parameter is empty");

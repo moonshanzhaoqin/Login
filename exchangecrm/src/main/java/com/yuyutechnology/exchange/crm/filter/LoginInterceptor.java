@@ -16,6 +16,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.yuyutechnology.exchange.RetCodeConsts;
+import com.yuyutechnology.exchange.session.SessionData;
+import com.yuyutechnology.exchange.session.SessionDataHolder;
 import com.yuyutechnology.exchange.util.JsonBinder;
 
 /**
@@ -86,6 +88,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		logger.info("request URI:" + requestURI + "======== adminName: " + adminName);
 		// 判断是否需要拦截或者是否登录
 		if (validURL(requestURI) || adminName != null) {
+			request.setAttribute("adminName", adminName);
 			return true;
 		} else {
 			logger.info("Back to the login page : " + LOGIN_PAGE);

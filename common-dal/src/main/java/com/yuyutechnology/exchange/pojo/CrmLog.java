@@ -52,6 +52,11 @@ public class CrmLog implements java.io.Serializable {
 		this.logId = logId;
 	}
 
+	@Column(name = "admin_name", nullable = false)
+	public String getAdminName() {
+		return this.adminName;
+	}
+
 	public void setAdminName(String adminName) {
 		this.adminName = adminName;
 	}
