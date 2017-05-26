@@ -235,18 +235,21 @@ public class UserController {
 			} else {
 				UserInfo userInfo = userManager.getUserInfo(userId);
 				if (userInfo != null) {
-					// 生成session Token
+					/* 生成session Token */
 					SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 					sessionManager.saveSessionData(sessionData);
 					rep.setSessionToken(sessionData.getSessionId());
 					rep.setLoginToken(sessionManager.createLoginToken(userId));
-					// 记录登录信息
+					/* 记录登录信息 */
 					userManager.updateUser(userId, HttpTookit.getIp(request), loginRequest.getPushId(),
 							loginRequest.getLanguage());
-					// 更新钱包
+					/* 更新钱包 */
 					userManager.updateWallet(userId);
-					// 获取用户信息
+					/* 获取用户信息 */
 					rep.setUser(userInfo);
+					/* Paypal开启状态 */
+					rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
+
 					logger.info(MessageConsts.RET_CODE_SUCCESS);
 					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
@@ -273,26 +276,25 @@ public class UserController {
 				switch (result.getStatus()) {
 				case ServerConsts.CHECKPWD_STATUS_CORRECT:
 					if (userManager.isNewDevice(userId, loginRequest.getDeviceId())) {
-						// 新设备，需要手机验证
-						// userManager.getPinCode(ServerConsts.PIN_FUNC_NEWDEVICE,
-						// loginRequest.getAreaCode(),
-						// loginRequest.getUserPhone());
+						/* 新设备，需要手机验证 */
 						logger.info(MessageConsts.NEW_DEVICE);
 						rep.setRetCode(RetCodeConsts.NEW_DEVICE);
 						rep.setMessage(MessageConsts.NEW_DEVICE);
 					} else {
-						// 记录登录信息
+						/* 记录登录信息 */
 						userManager.updateUser(userId, HttpTookit.getIp(request), loginRequest.getPushId(),
 								loginRequest.getLanguage());
-						// 更新钱包
+						/* 更新钱包 */
 						userManager.updateWallet(userId);
-						// 生成session Token
+						/* 生成session Token */
 						SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 						sessionManager.saveSessionData(sessionData);
 						rep.setSessionToken(sessionData.getSessionId());
 						rep.setLoginToken(sessionManager.createLoginToken(userId));
-						// 获取用户信息
+						/* 获取用户信息 */
 						rep.setUser(userManager.getUserInfo(userId));
+						/* Paypal开启状态 */
+						rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
 
 						logger.info(MessageConsts.RET_CODE_SUCCESS);
 						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
@@ -346,10 +348,9 @@ public class UserController {
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
-			// 判断用户是否已注册
+			/* 判断用户是否已注册 */
 			if (userManager.getUserId(registerRequest.getAreaCode(), registerRequest.getUserPhone()) == null) {
-				// TODO 判断是否获取过验证码
-				// 校验验证码
+				/* 校验验证码 */
 				Boolean resultBool = userManager.testPinCode(ServerConsts.PIN_FUNC_REGISTER,
 						registerRequest.getAreaCode(), registerRequest.getUserPhone(),
 						registerRequest.getRegistrationCode());
@@ -380,6 +381,8 @@ public class UserController {
 						rep.setLoginToken(sessionManager.createLoginToken(userId));
 						/* 获取用户信息 */
 						rep.setUser(userManager.getUserInfo(userId));
+						/* Paypal开启状态 */
+						rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
 
 						logger.info(MessageConsts.RET_CODE_SUCCESS);
 						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
@@ -478,7 +481,6 @@ public class UserController {
 				switch (result.getStatus()) {
 				case ServerConsts.CHECKPWD_STATUS_CORRECT:
 
-					// TODO 判断是否获取过验证码
 					/* 验证短信验证码 */
 					Boolean resultBool = userManager.testPinCode(ServerConsts.PIN_FUNC_NEWDEVICE,
 							loginValidateRequest.getAreaCode(), loginValidateRequest.getUserPhone(),
@@ -503,6 +505,8 @@ public class UserController {
 						rep.setLoginToken(sessionManager.createLoginToken(userId));
 						/* 获取用户信息 */
 						rep.setUser(userManager.getUserInfo(userId));
+						/* Paypal开启状态 */
+						rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
 
 						logger.info(MessageConsts.RET_CODE_SUCCESS);
 						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
