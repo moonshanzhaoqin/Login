@@ -7,6 +7,30 @@ package com.yuyutechnology.exchange.enums;
  * @author suzan.wu
  *
  */
+/**
+ * @author suzan.wu
+ *
+ */
+/**
+ * @author suzan.wu
+ *
+ */
+/**
+ * @author suzan.wu
+ *
+ */
+/**
+ * @author suzan.wu
+ *
+ */
+/**
+ * @author suzan.wu
+ *
+ */
+/**
+ * @author suzan.wu
+ *
+ */
 public enum Operation {
 	/**
 	 * 更新用户信息
@@ -15,23 +39,23 @@ public enum Operation {
 	/**
 	 * 冻结用户
 	 */
-	FREEZE_USER("freeze_user"), 
+	FREEZE_USER("freeze_user"),
 	/**
 	 * 解冻用户
 	 */
-	DEFROST_USER("defrost_user"), 
+	DEFROST_USER("defrost_user"),
 	/**
 	 * 开启核账
 	 */
-	OPEN_ACCOUTING_TASK("open_accouting_task"), 
+	OPEN_ACCOUTING_TASK("open_accouting_task"),
 	/**
 	 * 关闭核账
 	 */
-	CLOSE_ACCOUTING_TASK("close_accouting_task"), 
+	CLOSE_ACCOUTING_TASK("close_accouting_task"),
 	/**
 	 * 提现退回
 	 */
-	WITHDRAW_REFUND("withdraw_refund"), 
+	WITHDRAW_REFUND("withdraw_refund"),
 	/**
 	 * 提现重新审核
 	 */
@@ -41,7 +65,7 @@ public enum Operation {
 	 */
 	WITHDRAW_RE_REMIT("withdraw_re_remit"),
 	/**
-	 *  添加币种
+	 * 添加币种
 	 */
 	ADD_CURRENCY("add_currency"),
 	/**
@@ -59,8 +83,35 @@ public enum Operation {
 	/**
 	 * 更新配置
 	 */
-	UPDATE_CONFIG("update_config");
-	
+	UPDATE_CONFIG("update_config"),
+	/**
+	 * 删除预警人
+	 */
+	DELETE_SUPERVISOR("delete_supervisor"),
+	/**
+	 * 添加预警人
+	 */
+	ADD_SUPERVISOR("add_supervisor"),
+	/**
+	 * 删除预警信息
+	 */
+	DELETE_ALARM("delete_alarm"),
+	/**
+	 * 编辑预警信息
+	 */
+	EDIT_ALARM("edit_alarm"),
+	/**
+	 * 添加预警信息
+	 */
+	ADD_ALARM("add_alarm"),
+	/**
+	 *开启预警 
+	 */
+	ON_ALARM("on_alarm"),
+	/**
+	 *关闭预警 
+	 */
+	OFF_ALARM("off_alarm");
 	private String operationName;
 
 	private Operation(String operationName) {

@@ -3,10 +3,12 @@ package com.yuyutechnology.exchange.crm.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
@@ -19,42 +21,47 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yuyutechnology.exchange.crm.request.SaveAlarmConfigRequest;
 import com.yuyutechnology.exchange.crm.request.UpdateAlarmConfigInfoRequest;
+import com.yuyutechnology.exchange.enums.Operation;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
+import com.yuyutechnology.exchange.manager.CrmLogManager;
 import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
+import com.yuyutechnology.exchange.pojo.CrmLog;
 import com.yuyutechnology.exchange.pojo.CrmSupervisor;
 import com.yuyutechnology.exchange.util.JsonBinder;
 
 @Controller
 public class AlarmController {
-	
+
 	@Autowired
 	CrmAlarmManager crmAlarmManager;
 	@Autowired
 	CrmUserInfoManager crmUserInfoManager;
 	@Autowired
 	ConfigManager configManager;
-	
+	@Autowired
+	CrmLogManager crmLogManager;
+
 	ModelAndView mav;
-	
+
 	private static Logger logger = LogManager.getLogger(AlarmController.class);
-	
-	@RequestMapping(value="/alarm/getAlarmConfigList",method=RequestMethod.GET)
-	public ModelAndView getAlarmConfigList(){
+
+	@RequestMapping(value = "/alarm/getAlarmConfigList", method = RequestMethod.GET)
+	public ModelAndView getAlarmConfigList() {
 		mav = new ModelAndView();
-	
+
 		HashMap<String, BigDecimal> userTotalAssets = crmUserInfoManager.getUserAccountTotalAssets();
-		
-		if(userTotalAssets !=null ){
+
+		if (userTotalAssets != null) {
 			List<CrmAlarm> list = crmAlarmManager.getCrmAlarmConfigList();
-			HashMap<String, BigDecimal> map =crmAlarmManager.getAccountInfo(userTotalAssets.get("totalAssets"));
-			
-			
+			HashMap<String, BigDecimal> map = crmAlarmManager.getAccountInfo(userTotalAssets.get("totalAssets"));
+
 			BigDecimal difference = (map.get("userHoldingTotalAssets")).subtract(map.get("exHoldingTotalAssets"));
 			BigDecimal remaining = (map.get("reserveFunds")).subtract(difference);
-			
-			logger.info("reserveFunds : {},difference: {},remaining : {}",new Object[]{map.get("reserveFunds"),difference,remaining});
+
+			logger.info("reserveFunds : {},difference: {},remaining : {}",
+					new Object[] { map.get("reserveFunds"), difference, remaining });
 
 			mav.addObject("exHoldingTotalAssets", map.get("exHoldingTotalAssets"));
 			mav.addObject("userHoldingTotalAssets", map.get("userHoldingTotalAssets"));
@@ -68,16 +75,15 @@ public class AlarmController {
 		mav.setViewName("alarm/alarmConfigInfo");
 		return mav;
 	}
-	
-	
-	@RequestMapping(value="/alarm/getLargeTransAlarmConfigList",method=RequestMethod.GET)
-	public ModelAndView getLargeTransAlarmConfigList(){
+
+	@RequestMapping(value = "/alarm/getLargeTransAlarmConfigList", method = RequestMethod.GET)
+	public ModelAndView getLargeTransAlarmConfigList() {
 		mav = new ModelAndView();
 		List<CrmAlarm> list = crmAlarmManager.getCrmAlarmConfigList();
 		List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
-		
+
 		HashMap<String, BigDecimal> map = crmAlarmManager.getLargeTransLimit();
-		
+
 		mav.addObject("supervisorList", supervisorList);
 		mav.addObject("list", list);
 		mav.addObject("transferLimitPerPay", map.get("transferLimitPerPay"));
@@ -85,9 +91,9 @@ public class AlarmController {
 		mav.setViewName("alarm/largeTransAlarmConfig");
 		return mav;
 	}
-	
-	@RequestMapping(value="/alarm/getBadAccountAlarmConfigList",method=RequestMethod.GET)
-	public ModelAndView getBadAccountAlarmConfigList(){
+
+	@RequestMapping(value = "/alarm/getBadAccountAlarmConfigList", method = RequestMethod.GET)
+	public ModelAndView getBadAccountAlarmConfigList() {
 		mav = new ModelAndView();
 		List<CrmAlarm> list = crmAlarmManager.getCrmAlarmConfigList();
 		mav.addObject("list", list);
@@ -97,23 +103,29 @@ public class AlarmController {
 		return mav;
 	}
 
-	@RequestMapping(value="/alarm/delAlarmConfig",method=RequestMethod.GET)
-	public ModelAndView delAlarmConfig(Integer alarmId){
+	@RequestMapping(value = "/alarm/delAlarmConfig", method = RequestMethod.GET)
+	public ModelAndView delAlarmConfig(Integer alarmId,	HttpServletRequest request, HttpServletResponse response) {
 		mav = new ModelAndView();
 		int alarmType = crmAlarmManager.delAlarmConfig(alarmId);
-		if(alarmType == 0){
+		if (alarmType == 0) {
 			mav.setViewName("redirect:/alarm/getAlarmConfigList");
 		} else if (alarmType == 3) {
 			mav.setViewName("redirect:/alarm/getBadAccountAlarmConfigList");
-		}else{
+		} else {
 			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
 		}
+		
+		
+		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+				Operation.DELETE_ALARM.getOperationName(), alarmId.toString()));
+		
+		
 		return mav;
 	}
-	
-	@RequestMapping(value="/alarm/updateAlarmConfig",method=RequestMethod.POST)
-	public void updateAlarmConfig(HttpServletResponse response,Integer alarmId){
-		
+
+	@RequestMapping(value = "/alarm/updateAlarmConfig", method = RequestMethod.POST)
+	public void updateAlarmConfig(HttpServletResponse response, Integer alarmId) {
+
 		Map<String, Object> map = new HashMap<String, Object>();
 		PrintWriter out = null;
 		try {
@@ -121,64 +133,86 @@ public class AlarmController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		CrmAlarm crmAlarm = crmAlarmManager.getAlarmConfigById(alarmId);
 		List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
-		
+
 		map.put("retCode", 1);
 		map.put("crmAlarm", crmAlarm);
 		map.put("supervisorList", supervisorList);
 		out.print(JsonBinder.getInstance().toJson(map));
 
 	}
-	
-	@RequestMapping(value="/alarm/updateAlarmConfigInfo",method=RequestMethod.POST)
-	public ModelAndView updateAlarmConfigInfo(UpdateAlarmConfigInfoRequest request){
+
+	@RequestMapping(value = "/alarm/updateAlarmConfigInfo", method = RequestMethod.POST)
+	public ModelAndView updateAlarmConfigInfo(UpdateAlarmConfigInfoRequest updateAlarmConfigInfoRequest,
+			HttpServletRequest request, HttpServletResponse response) {
 		mav = new ModelAndView();
-		crmAlarmManager.updateAlarmConfig(request.getAlarmId(), request.getAlarmType(), 
-				request.getCriticalThresholdLowerLimit(), request.getCriticalThresholdUpperLimit(),
-				request.getAlarmMode(), 0,JsonBinder.getInstance().toJson(request.getSupervisorId()));
-		
-		if(request.getAlarmType() == 0){
+		crmAlarmManager.updateAlarmConfig(updateAlarmConfigInfoRequest.getAlarmId(),
+				updateAlarmConfigInfoRequest.getAlarmType(),
+				updateAlarmConfigInfoRequest.getCriticalThresholdLowerLimit(),
+				updateAlarmConfigInfoRequest.getCriticalThresholdUpperLimit(),
+				updateAlarmConfigInfoRequest.getAlarmMode(), 0,
+				JsonBinder.getInstance().toJson(updateAlarmConfigInfoRequest.getSupervisorId()));
+		if (updateAlarmConfigInfoRequest.getAlarmType() == 0) {
 			mav.setViewName("redirect:/alarm/getAlarmConfigList");
-		} else if (request.getAlarmType() == 3) {
+		} else if (updateAlarmConfigInfoRequest.getAlarmType() == 3) {
 			mav.setViewName("redirect:/alarm/getBadAccountAlarmConfigList");
-		}else{
+		} else {
 			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
 		}
+		
+		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+				Operation.EDIT_ALARM.getOperationName(), updateAlarmConfigInfoRequest.toString()));
+		
 		return mav;
 	}
-	
-	@RequestMapping(value="/alarm/saveAlarmConfig",method=RequestMethod.POST)
-	public ModelAndView saveAlarmConfig(HttpServletResponse response,SaveAlarmConfigRequest request){
+
+	@RequestMapping(value = "/alarm/saveAlarmConfig", method = RequestMethod.POST)
+	public ModelAndView saveAlarmConfig(SaveAlarmConfigRequest saveAlarmConfigRequest, HttpServletRequest request,
+			HttpServletResponse response) {
 		mav = new ModelAndView();
-		crmAlarmManager.addAlarmConfig(request.getAlarmType(), request.getCriticalThresholdLowerLimit()
-				,request.getCriticalThresholdUpperLimit(),
-				request.getAlarmMode(), 0,JsonBinder.getInstance().toJson(request.getSupervisorId()));
+		crmAlarmManager.addAlarmConfig(saveAlarmConfigRequest.getAlarmType(),
+				saveAlarmConfigRequest.getCriticalThresholdLowerLimit(),
+				saveAlarmConfigRequest.getCriticalThresholdUpperLimit(), saveAlarmConfigRequest.getAlarmMode(), 0,
+				JsonBinder.getInstance().toJson(saveAlarmConfigRequest.getSupervisorId()));
 		
-		if(request.getAlarmType() == 0){
+		if (saveAlarmConfigRequest.getAlarmType() == 0) {
 			mav.setViewName("redirect:/alarm/getAlarmConfigList");
-		} else if (request.getAlarmType() == 3) {
+		} else if (saveAlarmConfigRequest.getAlarmType() == 3) {
 			mav.setViewName("redirect:/alarm/getBadAccountAlarmConfigList");
-		}else{
+		} else {
 			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
 		}
+		
+		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+				Operation.ADD_ALARM.getOperationName(), saveAlarmConfigRequest.toString()));
+		
 		return mav;
 	}
-	
-	@RequestMapping(value="/alarm/updateAlarmAvailable",method=RequestMethod.GET)
-	public ModelAndView updateAlarmAvailable(Integer alarmId,int alarmAvailable){
+
+	@RequestMapping(value = "/alarm/updateAlarmAvailable", method = RequestMethod.GET)
+	public ModelAndView updateAlarmAvailable(Integer alarmId, int alarmAvailable, HttpServletRequest request,
+			HttpServletResponse response) {
 		mav = new ModelAndView();
 		int alarmType = crmAlarmManager.updateAlarmAvailable(alarmId, alarmAvailable);
-		if(alarmType == 0){
+		if (alarmAvailable == 0) {
+			crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+					Operation.OFF_ALARM.getOperationName(), alarmId.toString()));
+		} else {
+			crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+					Operation.ON_ALARM.getOperationName(), alarmId.toString()));
+		}
+
+		if (alarmType == 0) {
 			mav.setViewName("redirect:/alarm/getAlarmConfigList");
 		} else if (alarmType == 3) {
 			mav.setViewName("redirect:/alarm/getBadAccountAlarmConfigList");
-		}else{
+		} else {
 			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
 		}
-//		mav.setViewName("redirect:/alarm/getAlarmConfigList");
+		// mav.setViewName("redirect:/alarm/getAlarmConfigList");
 		return mav;
 	}
-	
+
 }
