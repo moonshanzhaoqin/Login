@@ -348,6 +348,10 @@ public class TransferController {
 					dto.setAmount(new BigDecimal("+" + obj[2] + ""));
 					dto.setTransferType((int) obj[7]);
 					dto.setPhoneNum((String) obj[4]);
+				}else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE) {
+					dto.setAmount(new BigDecimal("-" + obj[2] + ""));
+					dto.setTransferType((int) obj[7]);
+					dto.setPhoneNum((String) obj[4]);
 				}
 				dto.setComments("");
 				dto.setFinishAt((Date) obj[6]);
