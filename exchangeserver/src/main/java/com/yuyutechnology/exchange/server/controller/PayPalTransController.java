@@ -109,6 +109,8 @@ public class PayPalTransController {
 		rep.setRetCode(result.get("retCode"));
 		rep.setMessage(result.get("msg"));
 		
+		rep.setTransId(reqMsg.getTransId());
+		
 		return rep;
 		
 	}

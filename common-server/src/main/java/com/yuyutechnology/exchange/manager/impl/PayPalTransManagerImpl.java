@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.CreditCard;
 import com.braintreegateway.Customer;
+import com.braintreegateway.PayPalDetails;
 import com.braintreegateway.Result;
 import com.braintreegateway.Transaction;
 import com.braintreegateway.TransactionRequest;
@@ -110,8 +111,8 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		Transaction transaction;
 		
 		//条件 验证1.transId，amount	
-		Transfer transfer = transferDAO.getTransferById(transId);
-		if(transfer == null || transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION){
+		Transfer transfer = transferDAO.getTranByIdAndStatus(transId, ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
+		if(transfer == null || userId != transfer.getUserFrom()){
 			logger.warn("Order status exception");
 			map.put("retCode", RetCodeConsts.TRANSFER_PAYPALTRANS_ORDER_STATUS_EXCEPTION);
 			map.put("msg", "Order status exception");
@@ -157,11 +158,20 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			transaction = saleResult.getTarget();
 			logger.info("Success ID: {}",transaction.getId());
 			
-			CreditCard creditCard = transaction.getCreditCard();
-			logger.info("The cardholder name: {}",creditCard.getCardholderName());
+//			logger.info("PaymentInstrumentType : {}",transaction.getPaymentInstrumentType());
+//			
+//			CreditCard creditCard = transaction.getCreditCard();
+//			logger.info("The cardholder name: {}",creditCard.getCardholderName());
+//			
+//			Customer customer = transaction.getCustomer();
+//			logger.info("Name : {} {},Phone : {},Id : {}",customer.getFirstName(),customer.getLastName(),customer.getPhone(),customer.getId());
 			
-			Customer customer = transaction.getCustomer();
-			logger.info("Name : {} {},Phone : {},Id : {}",customer.getFirstName(),customer.getLastName(),customer.getPhone(),customer.getId());
+			PayPalDetails payPalDetails = transaction.getPayPalDetails();
+			logger.info("Name : {} {},Email : {}",payPalDetails.getPayerFirstName(),payPalDetails.getPayerLastName(),payPalDetails.getPayeeEmail());
+			
+			transfer.setGoldpayName(payPalDetails.getPayerFirstName()+" "+payPalDetails.getPayerLastName());
+			transfer.setTransferComment(transaction.getId());
+			
 			
 		} else {
 			logger.warn("Message: {}",saleResult.getMessage());
@@ -180,7 +190,9 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 				"+", ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE, transfer.getTransferId());
 		
 		//更改transfer状态
-		transferDAO.updateTransferStatus(transfer.getTransferId(), ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+//		transferDAO.updateTransferStatus(transfer.getTransferId(), ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		transferDAO.updateTransfer(transfer);
 		
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");

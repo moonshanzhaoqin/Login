@@ -203,12 +203,21 @@ public class RetCodeConsts {
 
 	public static final String TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY = "03022";
 	
+	/**
+	 * 订单状态异常
+	 */
 	public static final String TRANSFER_PAYPALTRANS_ORDER_STATUS_EXCEPTION = "03024";
-	
+	/**
+	 * 支付超时
+	 */
 	public static final String TRANSFER_PAYPALTRANS_TIME_OUT = "03025";
-	
+	/**
+	 * 支付失败
+	 */
 	public static final String TRANSFER_PAYPALTRANS_PAYMENT_FAILED = "03026";
-	
+	/**
+	 * GDP输入违法，小数或者低于100
+	 */
 	public static final String TRANSFER_PAYPALTRANS_ILLEGAL_DATA = "03027";
 	
 

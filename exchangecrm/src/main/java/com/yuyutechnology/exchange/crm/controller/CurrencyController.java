@@ -36,7 +36,7 @@ public class CurrencyController {
 	@Autowired
 	CommonManager commonManager;
 	@Autowired
-	CrmLogManager CrmLogManager;
+	CrmLogManager crmLogManager;
 
 	/**
 	 * 获取货币列表 getCurrencyList
@@ -63,7 +63,7 @@ public class CurrencyController {
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
 		currencyManager.updateCurrency(currency);
-		CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.EDIT_CURRENCY.getOperationName(),currency.toString()));		
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		return rep;
@@ -99,7 +99,7 @@ public class CurrencyController {
 		} else {
 			logger.info("add {}", addCurrencyRequest.getCurrency());
 			String retCode = currencyManager.addCurrency(addCurrencyRequest.getCurrency());
-			CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+			crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 					Operation.ADD_CURRENCY.getOperationName(),addCurrencyRequest.getCurrency()));		
 			rep.setRetCode(retCode);
 		}
@@ -127,10 +127,10 @@ public class CurrencyController {
 			String retCode = currencyManager.changeCurrencyStatus(changeCurrencyStatusRequest.getCurrency(),
 					changeCurrencyStatusRequest.getStatus());
 			if (changeCurrencyStatusRequest.getStatus()==ServerConsts.CURRENCY_AVAILABLE) {
-				CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+				crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 						Operation.ON_CURRENCY.getOperationName(),changeCurrencyStatusRequest.getCurrency()));		
 			}else{
-				CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+				crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 						Operation.OFF_CURRENCY.getOperationName(),changeCurrencyStatusRequest.getCurrency()));	
 			}
 			rep.setRetCode(retCode);
