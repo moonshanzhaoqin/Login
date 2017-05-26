@@ -6,7 +6,6 @@ import java.util.HashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.aspectj.weaver.reflect.ReflectionBasedResolvedMemberImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,6 @@ import com.braintreegateway.Customer;
 import com.braintreegateway.Result;
 import com.braintreegateway.Transaction;
 import com.braintreegateway.TransactionRequest;
-import com.braintreegateway.exceptions.AuthorizationException;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
@@ -143,6 +141,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			request.orderId(transfer.getTransferId());
 			
 			request.options().paypal().customField("PayPal custom field").description("Description for PayPal email receipt").done();
+			request.options().storeInVaultOnSuccess(true).done();
 			
 			saleResult = gateway.transaction().sale(request);
 			
