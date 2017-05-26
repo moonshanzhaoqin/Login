@@ -15,3 +15,8 @@ CREATE TABLE `e_crm_log` (
   `target` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`log_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='管理员日志';
+
+
+--2017-05-26 Niklaus
+INSERT INTO `e_config` VALUES ('paypal_accessToken', 'access_token$sandbox$h32wtjg3dw3jt4kd$e0a3535f2b04517e66258c0cbe9b118d', 'paypal_accessToken', '0', '0');
+INSERT INTO `e_config` VALUES ('paypal_expiration', '600', 'paypal支付过期时间', '0', '0');
