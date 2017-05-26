@@ -164,6 +164,7 @@ public class ServerConsts {
 	 * 短信验证码功能——新设备登录
 	 */
 	public static final String PIN_FUNC_NEWDEVICE = "NEWDEVICE";
+	
 	/**
 	 * 币种状态——可用
 	 */
@@ -213,4 +214,21 @@ public class ServerConsts {
 	 */
 	public static final String RESETPAYPWD = "RESETPAYPWD";
 
+	/**
+	 * 提现审核开启
+	 * GOLDPAY_WITHDRAW_FORBIDDEN=
+	 */
+	public static final String ACCOUTING_TASK_OPEN = "false";
+	
+	/**
+	 * 提现审核关闭
+	 * GOLDPAY_WITHDRAW_FORBIDDEN=
+	 */
+	public static final String ACCOUTING_TASK_CLOSED = "true";
+	
+	
+	
+	
+	
+	
 }

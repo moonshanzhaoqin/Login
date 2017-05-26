@@ -18,10 +18,15 @@ public class AddCurrencyRequest {
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty() {
+	public boolean Empty() {
 		if (StringUtils.isBlank(this.currency)) {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public String toString() {
+		return "AddCurrencyRequest [currency=" + currency + "]";
 	}
 }

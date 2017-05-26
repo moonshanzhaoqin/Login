@@ -451,7 +451,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		transfer.setFinishTime(new Date());
 		transferDAO.updateTransfer(transfer);
 
-		// TODO 推送：提现退回
+		//  推送：提现退回
 		pushManager.push4WithdrawRefund(user.getPushId(), user.getPushTag(), transfer.getTransferAmount());
 	}
 
@@ -508,7 +508,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 					transferDAO.updateTransfer(transfer);
 
 					User user = userDAO.getUser(transfer.getUserFrom());
-					// TODO 推送：提现成功
+					//  推送：提现成功
 					pushManager.push4WithdrawComplete(user.getPushId(), user.getPushTag(),
 							transfer.getTransferAmount());
 

@@ -88,7 +88,7 @@
 						<th>数量</th>
 						<th>交易类型</th>
 						<th>交易ID</th>
-						<th>创建时间(UTC)</th>
+						<th>创建时间（GMT+8）</th>
 					</tr>
 				</thead>
 				<tbody></tbody>

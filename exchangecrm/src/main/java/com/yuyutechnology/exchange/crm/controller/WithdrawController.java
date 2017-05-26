@@ -1,5 +1,7 @@
 package com.yuyutechnology.exchange.crm.controller;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,8 +18,12 @@ import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
 import com.yuyutechnology.exchange.crm.request.GetWithdrawListRequest;
 import com.yuyutechnology.exchange.crm.request.WithdrawRequest;
+import com.yuyutechnology.exchange.enums.Operation;
 import com.yuyutechnology.exchange.manager.CommonManager;
+import com.yuyutechnology.exchange.manager.CrmAdminManager;
+import com.yuyutechnology.exchange.manager.CrmLogManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
+import com.yuyutechnology.exchange.pojo.CrmLog;
 import com.yuyutechnology.exchange.util.page.PageBean;
 
 @Controller
@@ -28,6 +34,8 @@ public class WithdrawController {
 	GoldpayTransManager goldpayTransManager;
 	@Autowired
 	CommonManager commonManager;
+	@Autowired
+	CrmLogManager CrmLogManager;
 
 	/**
 	 * 获取提现列表 getWithdrawList
@@ -46,7 +54,6 @@ public class WithdrawController {
 				getWithdrawListRequest.getTransferStatus());
 	}
 
-
 	/**
 	 * 提现审批
 	 * 
@@ -60,6 +67,8 @@ public class WithdrawController {
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
 		goldpayTransManager.withdrawReviewPending(withdrawRequest.getTransferId());
+		CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+				Operation.WITHDRAW_RE_REVIEW.getOperationName(), withdrawRequest.toString()));
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
@@ -77,6 +86,8 @@ public class WithdrawController {
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
 		goldpayTransManager.goldpayRemitPending(withdrawRequest.getTransferId());
+		CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+				Operation.WITHDRAW_RE_REMIT.getOperationName(), withdrawRequest.toString()));
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
@@ -95,9 +106,10 @@ public class WithdrawController {
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
 		goldpayTransManager.withdrawRefund(withdrawRequest.getTransferId());
+		CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+				Operation.WITHDRAW_REFUND.getOperationName(), withdrawRequest.toString()));
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
 
-	
 }

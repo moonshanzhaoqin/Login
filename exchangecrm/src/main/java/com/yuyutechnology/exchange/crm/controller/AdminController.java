@@ -53,7 +53,7 @@ public class AdminController {
 			case RetCodeConsts.RET_CODE_SUCCESS:
 				// 写入session
 				request.getSession().setAttribute("adminName", loginRquest.getAdminName());
-				mav.setViewName("redirect:/account/getTotalAssetsDetails");
+				mav.setViewName("redirect:/exchangeRate/getAllExchangeRates");
 				break;
 			default:
 				break;
