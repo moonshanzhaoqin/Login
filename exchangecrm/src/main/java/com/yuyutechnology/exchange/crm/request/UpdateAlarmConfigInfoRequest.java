@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.crm.request;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 public class UpdateAlarmConfigInfoRequest {
 
@@ -47,6 +48,13 @@ public class UpdateAlarmConfigInfoRequest {
 	}
 	public void setSupervisorId(int[] supervisorId) {
 		this.supervisorId = supervisorId;
+	}
+	@Override
+	public String toString() {
+		return "UpdateAlarmConfigInfoRequest [alarmId=" + alarmId + ", alarmType=" + alarmType
+				+ ", criticalThresholdLowerLimit=" + criticalThresholdLowerLimit + ", criticalThresholdUpperLimit="
+				+ criticalThresholdUpperLimit + ", alarmMode=" + alarmMode + ", supervisorId="
+				+ Arrays.toString(supervisorId) + "]";
 	}
 	
 	

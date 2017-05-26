@@ -158,16 +158,20 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			transaction = saleResult.getTarget();
 			logger.info("Success ID: {}",transaction.getId());
 			
-			logger.info("PaymentInstrumentType : {}",transaction.getPaymentInstrumentType());
-			
-			CreditCard creditCard = transaction.getCreditCard();
-			logger.info("The cardholder name: {}",creditCard.getCardholderName());
-			
-			Customer customer = transaction.getCustomer();
-			logger.info("Name : {} {},Phone : {},Id : {}",customer.getFirstName(),customer.getLastName(),customer.getPhone(),customer.getId());
+//			logger.info("PaymentInstrumentType : {}",transaction.getPaymentInstrumentType());
+//			
+//			CreditCard creditCard = transaction.getCreditCard();
+//			logger.info("The cardholder name: {}",creditCard.getCardholderName());
+//			
+//			Customer customer = transaction.getCustomer();
+//			logger.info("Name : {} {},Phone : {},Id : {}",customer.getFirstName(),customer.getLastName(),customer.getPhone(),customer.getId());
 			
 			PayPalDetails payPalDetails = transaction.getPayPalDetails();
 			logger.info("Name : {} {},Email : {}",payPalDetails.getPayerFirstName(),payPalDetails.getPayerLastName(),payPalDetails.getPayeeEmail());
+			
+			transfer.setGoldpayName(payPalDetails.getPayerFirstName()+" "+payPalDetails.getPayerLastName());
+			transfer.setTransferComment(transaction.getId());
+			
 			
 		} else {
 			logger.warn("Message: {}",saleResult.getMessage());
@@ -186,7 +190,9 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 				"+", ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE, transfer.getTransferId());
 		
 		//更改transfer状态
-		transferDAO.updateTransferStatus(transfer.getTransferId(), ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+//		transferDAO.updateTransferStatus(transfer.getTransferId(), ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		transferDAO.updateTransfer(transfer);
 		
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");

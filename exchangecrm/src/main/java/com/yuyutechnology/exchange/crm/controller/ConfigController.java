@@ -29,7 +29,7 @@ public class ConfigController {
 	@Autowired
 	ConfigManager configManager;
 	@Autowired
-	CrmLogManager CrmLogManager;
+	CrmLogManager crmLogManager;
 
 	@ResponseBody
 	@RequestMapping(value = "/updateConfig", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
@@ -38,7 +38,7 @@ public class ConfigController {
 		logger.info("updateConfig({}, {})",config.getConfigKey(),config.getConfigValue());
 		String retCode=configManager.updateConfig(config.getConfigKey(), config.getConfigValue());
 		configManager.refreshConfig();
-		CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.UPDATE_CONFIG.getOperationName(),config.toString()));
 		rep.setRetCode(retCode);
 		return rep;

@@ -267,7 +267,7 @@
 													.toFixed(4)
 											+ '</td>'
 											+ '<td>'
-											+ transferType(data[i].transferType)
+											+ transferTypeName(data[i].transferType)
 											+ '</td>'
 											+ '<td>'
 											+ ((data[i].transferType == "1") ? ('<a href="" data-toggle="modal" data-target="#exchange" onclick= "getExchange(\''

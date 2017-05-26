@@ -24,4 +24,9 @@ public class SaveSupervisorRequest {
 	public void setSupervisorEmail(String supervisorEmail) {
 		this.supervisorEmail = supervisorEmail;
 	}
+	@Override
+	public String toString() {
+		return "SaveSupervisorRequest [supervisorName=" + supervisorName + ", supervisorMobile=" + supervisorMobile
+				+ ", supervisorEmail=" + supervisorEmail + "]";
+	}
 }

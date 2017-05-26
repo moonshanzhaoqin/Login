@@ -24,6 +24,7 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 			</list>
 		</property>
 	</bean>
+
 	<context:component-scan base-package="com.yuyutechnology" >   
 		<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>   
 	</context:component-scan>   
