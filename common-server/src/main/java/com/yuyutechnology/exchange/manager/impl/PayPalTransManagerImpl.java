@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.braintreegateway.BraintreeGateway;
-import com.braintreegateway.CreditCard;
-import com.braintreegateway.Customer;
 import com.braintreegateway.PayPalDetails;
 import com.braintreegateway.Result;
 import com.braintreegateway.Transaction;
@@ -19,6 +17,7 @@ import com.braintreegateway.TransactionRequest;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dao.ConfigDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
@@ -27,7 +26,6 @@ import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.manager.PayPalTransManager;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
-import com.yuyutechnology.exchange.util.ResourceUtils;
 
 @Service
 public class PayPalTransManagerImpl implements PayPalTransManager {
@@ -36,6 +34,8 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 	UserDAO userDAO;
 	@Autowired
 	WalletDAO walletDAO;
+	@Autowired
+	ConfigDAO configDAO;
 	@Autowired
 	TransferDAO transferDAO;
 	
@@ -83,9 +83,11 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		transferDAO.addTransfer(transfer);
 		
 		//获取PayPal的token
-		String accessToken = ResourceUtils.getBundleValue4String("paypal.accessToken", 
-				"access_token$sandbox$h32wtjg3dw3jt4kd$e0a3535f2b04517e66258c0cbe9b118d");
-		BraintreeGateway gateway = new BraintreeGateway(accessToken);
+		
+//		Config config = configDAO.getConfig("paypal_accessToken");
+//		String accessToken = ResourceUtils.getBundleValue4String("paypal.accessToken", 
+//				"access_token$sandbox$h32wtjg3dw3jt4kd$e0a3535f2b04517e66258c0cbe9b118d");
+		BraintreeGateway gateway = new BraintreeGateway(configDAO.getConfig("paypal_accessToken").getConfigValue());
 		String  clientToken = gateway.clientToken().generate();
 		
 		
@@ -98,7 +100,8 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		result.put("token", clientToken);
 		
 		result.put("createTime", transfer.getCreateTime());
-		result.put("expiration", ResourceUtils.getBundleValue4Long("paypal.expiration", 600L));
+//		result.put("expiration", ResourceUtils.getBundleValue4Long("paypal.expiration", 600L));
+		result.put("expiration", new Long(configDAO.getConfig("paypal_expiration").getConfigValue()));
 		
 		return result;
 	}
@@ -120,7 +123,8 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		}
 		
 		//验证时间过期
-		long expirationTime = ResourceUtils.getBundleValue4Long("paypal.expiration", 600L);
+//		long expirationTime = ResourceUtils.getBundleValue4Long("paypal.expiration", 600L);
+		long expirationTime = new Long(configDAO.getConfig("paypal_expiration").getConfigValue());
 		if((new Date().getTime() - transfer.getCreateTime().getTime()) > 1000*expirationTime){
 			logger.warn("time out");
 			map.put("retCode", RetCodeConsts.TRANSFER_PAYPALTRANS_TIME_OUT);
@@ -129,11 +133,11 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		}
 		
 		//paypal
-		String accessToken = ResourceUtils.getBundleValue4String("paypal.accessToken", 
-				"access_token$sandbox$h32wtjg3dw3jt4kd$e0a3535f2b04517e66258c0cbe9b118d");
+//		String accessToken = ResourceUtils.getBundleValue4String("paypal.accessToken", 
+//				"access_token$sandbox$h32wtjg3dw3jt4kd$e0a3535f2b04517e66258c0cbe9b118d");
 		Result<Transaction> saleResult = null;
 		try {
-			BraintreeGateway gateway = new BraintreeGateway(accessToken);
+			BraintreeGateway gateway = new BraintreeGateway(configDAO.getConfig("paypal_accessToken").getConfigValue());
 			
 			TransactionRequest request = new TransactionRequest();
 			request.amount(transfer.getTransferAmount());
@@ -158,11 +162,9 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			transaction = saleResult.getTarget();
 			logger.info("Success ID: {}",transaction.getId());
 			
-//			logger.info("PaymentInstrumentType : {}",transaction.getPaymentInstrumentType());
-//			
+//			logger.info("PaymentInstrumentType : {}",transaction.getPaymentInstrumentType());			
 //			CreditCard creditCard = transaction.getCreditCard();
 //			logger.info("The cardholder name: {}",creditCard.getCardholderName());
-//			
 //			Customer customer = transaction.getCustomer();
 //			logger.info("Name : {} {},Phone : {},Id : {}",customer.getFirstName(),customer.getLastName(),customer.getPhone(),customer.getId());
 			
@@ -171,7 +173,6 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			
 			transfer.setGoldpayName(payPalDetails.getPayerFirstName()+" "+payPalDetails.getPayerLastName());
 			transfer.setTransferComment(transaction.getId());
-			
 			
 		} else {
 			logger.warn("Message: {}",saleResult.getMessage());
