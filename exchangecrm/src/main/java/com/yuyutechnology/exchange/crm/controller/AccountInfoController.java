@@ -44,7 +44,7 @@ public class AccountInfoController {
 	@Autowired
 	SessionManager sessionManager;
 	@Autowired
-	CrmLogManager CrmLogManager;
+	CrmLogManager crmLogManager;
 	
 	ModelAndView mav;
 
@@ -134,10 +134,10 @@ public class AccountInfoController {
 			}
 			sessionManager.delLoginToken(userFreezeRequest.getUserId());
 			userManager.logout(userFreezeRequest.getUserId());
-			CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+			crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 					Operation.FREEZE_USER.getOperationName(),userFreezeRequest.getUserId().toString()));
 		}else {
-			CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+			crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 					Operation.DEFROST_USER.getOperationName(),userFreezeRequest.getUserId().toString()));
 		}
 		mav.setViewName("redirect:/account/accountOverview");
@@ -148,7 +148,7 @@ public class AccountInfoController {
 	public ModelAndView updateImmediately(HttpServletRequest request, HttpServletResponse response) {
 		mav = new ModelAndView();
 		crmUserInfoManager.updateImmediately();
-		CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.UPDATE_USER_INFO.getOperationName()));
 		mav.setViewName("redirect:/account/accountOverview");
 		return mav;

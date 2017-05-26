@@ -36,7 +36,7 @@ public class UserInfoController {
 	@Autowired
 	CrmUserInfoManager crmUserInfoManager;
 	@Autowired
-	CrmLogManager CrmLogManager;
+	CrmLogManager crmLogManager;
 	
 	/**
 	 * 获取用户信息
@@ -64,7 +64,7 @@ public class UserInfoController {
 	@RequestMapping(value = "/updateUserInfo", method = RequestMethod.GET)
 	public void updateUserInfo(HttpServletRequest request, HttpServletResponse response) {
 		crmUserInfoManager.updateImmediately();
-		CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.UPDATE_USER_INFO.getOperationName()));
 	}
 

@@ -35,7 +35,7 @@ public class WithdrawController {
 	@Autowired
 	CommonManager commonManager;
 	@Autowired
-	CrmLogManager CrmLogManager;
+	CrmLogManager crmLogManager;
 
 	/**
 	 * 获取提现列表 getWithdrawList
@@ -67,7 +67,7 @@ public class WithdrawController {
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
 		goldpayTransManager.withdrawReviewPending(withdrawRequest.getTransferId());
-		CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.WITHDRAW_RE_REVIEW.getOperationName(), withdrawRequest.toString()));
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		return rep;
@@ -86,7 +86,7 @@ public class WithdrawController {
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
 		goldpayTransManager.goldpayRemitPending(withdrawRequest.getTransferId());
-		CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.WITHDRAW_RE_REMIT.getOperationName(), withdrawRequest.toString()));
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		return rep;
@@ -106,7 +106,7 @@ public class WithdrawController {
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
 		goldpayTransManager.withdrawRefund(withdrawRequest.getTransferId());
-		CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.WITHDRAW_REFUND.getOperationName(), withdrawRequest.toString()));
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		return rep;

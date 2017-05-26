@@ -49,7 +49,7 @@ public class BadAccountController {
 	@Autowired
 	ExchangeManager exchangeManager;
 	@Autowired
-	CrmLogManager CrmLogManager;
+	CrmLogManager crmLogManager;
 
 	/**
 	 * 分页获取坏账列表
@@ -142,10 +142,10 @@ public class BadAccountController {
 		BaseResponse rep = new BaseResponse();
 		goldpayTransManager.forbiddenGoldpayRemitWithdraws(forbidden.getStatus());
 		if (forbidden.getStatus() == ServerConsts.ACCOUTING_TASK_OPEN) {
-			CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+			crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 					Operation.OPEN_ACCOUTING_TASK.getOperationName()));
 		}else {
-			CrmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+			crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 					Operation.CLOSE_ACCOUTING_TASK.getOperationName()));
 		}
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
