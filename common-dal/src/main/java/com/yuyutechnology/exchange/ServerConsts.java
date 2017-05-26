@@ -214,27 +214,17 @@ public class ServerConsts {
 	 */
 	public static final String RESETPAYPWD = "RESETPAYPWD";
 
-	//CRM操作类型
+	/**
+	 * 提现审核开启
+	 * GOLDPAY_WITHDRAW_FORBIDDEN=
+	 */
+	public static final String ACCOUTING_TASK_OPEN = "false";
 	
-//	更新用户信息
-//	public static final String UPDATE_USER_INFO = "RESETPAYPWD";
-//	冻结用户
-//	public static final String FREEZE_USER = "RESETPAYPWD";
-	//解冻用户
-//	public static final String DEFROST_USER = "RESETPAYPWD";
-//	开启核账功能
-//	关闭核账
-//	提现退回
-//	提现重新审核
-//	提现重新划账
-//	添加币种
-//	编辑币种
-//	下架币种
-//	上架币种
-//	更新配置
-	
-	
-	
+	/**
+	 * 提现审核关闭
+	 * GOLDPAY_WITHDRAW_FORBIDDEN=
+	 */
+	public static final String ACCOUTING_TASK_CLOSED = "true";
 	
 	
 	

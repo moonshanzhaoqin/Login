@@ -1,5 +1,5 @@
 package pojo;
-// Generated May 25, 2017 2:15:02 PM by Hibernate Tools 5.2.1.Final
+// Generated May 25, 2017 5:41:24 PM by Hibernate Tools 5.2.1.Final
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

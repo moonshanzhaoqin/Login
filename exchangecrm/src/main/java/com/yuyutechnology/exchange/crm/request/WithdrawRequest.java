@@ -11,4 +11,9 @@ public class WithdrawRequest {
 		this.transferId = transferId;
 	}
 
+	@Override
+	public String toString() {
+		return "WithdrawRequest [transferId=" + transferId + "]";
+	}
+
 }
