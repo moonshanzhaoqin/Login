@@ -289,7 +289,7 @@ public class TransferController {
 
 	}
 
-	@ApiOperation(value = "获取交易明细")
+	@ApiOperation(value = "获取交易列表")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransactionRecord")
 	public @ResponseEncryptBody GetTransactionRecordResponse getTransactionRecord(@PathVariable String token,
 			@RequestDecryptBody GetTransactionRecordRequest reqMsq) {
