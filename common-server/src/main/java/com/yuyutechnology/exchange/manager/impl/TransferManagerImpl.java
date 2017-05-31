@@ -407,10 +407,6 @@ public class TransferManagerImpl implements TransferManager{
 		
 		transferDAO.addTransfer(transfer2);
 		///////////////////////////end////////////////////////////
-		//添加Seq记录
-//		walletSeqDAO.addWalletSeq4Transaction(systemUser.getUserId(), transfer.getUserFrom(), 
-//				ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND,transferId2 , 
-//				transfer.getCurrency(), transfer.getTransferAmount());
 		//修改gift记录
 		unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_BACK);
 		unregistered.setRefundTransId(transferId2);
