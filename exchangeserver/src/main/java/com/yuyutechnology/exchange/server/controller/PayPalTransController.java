@@ -46,6 +46,7 @@ public class PayPalTransController {
 		GetExchangeRate4GDQResponse rep = new GetExchangeRate4GDQResponse();
 		HashMap<String, Double> result = oandaRatesManager.getExchangeRateDiffLeft4OneRight(ServerConsts.CURRENCY_OF_GOLDPAY);
 		Date updateDate = oandaRatesManager.getExchangeRateUpdateDate();
+		result.remove(ServerConsts.CURRENCY_OF_CNY);
 		
 		rep.setRates(result);
 		rep.setUpdateDate(updateDate);
