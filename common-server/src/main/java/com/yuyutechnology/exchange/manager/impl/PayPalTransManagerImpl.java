@@ -21,9 +21,7 @@ import com.yuyutechnology.exchange.dao.ConfigDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
-import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
-import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.manager.PayPalTransManager;
 import com.yuyutechnology.exchange.pojo.Transfer;
@@ -204,6 +202,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		// transferDAO.updateTransferStatus(transfer.getTransferId(),
 		// ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		transfer.setFinishTime(new Date());
 		transferDAO.updateTransfer(transfer);
 
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
