@@ -144,8 +144,8 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			BraintreeGateway gateway = new BraintreeGateway(configDAO.getConfig("paypal_accessToken").getConfigValue());
 
 			TransactionRequest request = new TransactionRequest();
-			request.amount(transfer.getTransferAmount());
-			request.merchantAccountId(transfer.getCurrency());
+			request.amount(transfer.getPaypalExchange());
+			request.merchantAccountId(transfer.getPaypalCurrency());
 			request.paymentMethodNonce(nonce);
 			request.orderId(transfer.getTransferId());
 
