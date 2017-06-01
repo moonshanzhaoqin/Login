@@ -479,9 +479,10 @@ public class TransferController {
 			rep.setAreaCode((String) (result.get("areaCode")));
 			rep.setPhone((String) (result.get("phone")));
 			rep.setCurrency(transfer.getCurrency());
+			rep.setAmount(transfer.getTransferAmount());
 			rep.setUnit((String) (result.get("unit")));
 
-			rep.setAmount(transfer.getTransferAmount());
+			rep.setPaypalCurrency(transfer.getPaypalCurrency());
 			rep.setPaypalExchange(transfer.getPaypalExchange());
 			rep.setTransferType(transfer.getTransferType());
 
