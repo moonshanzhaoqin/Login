@@ -71,12 +71,14 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		Transfer transfer = new Transfer();
 		transfer.setTransferId(transferId);
 		transfer.setCreateTime(new Date());
-		transfer.setCurrency(currencyLeft);
-		transfer.setTransferAmount(baseAmout);
+		transfer.setCurrency(ServerConsts.CURRENCY_OF_GOLDPAY);
+		transfer.setTransferAmount(amount);
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		transfer.setUserFrom(userId);
 		transfer.setUserTo(systemUser.getUserId());
-		transfer.setPaypalExchange(amount);
+		transfer.setPaypalCurrency(currencyLeft);
+		transfer.setPaypalExchange(baseAmout);
+		
 
 		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE);
 		// 保存
