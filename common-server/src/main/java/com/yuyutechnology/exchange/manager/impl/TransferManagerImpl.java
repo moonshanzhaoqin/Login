@@ -647,7 +647,7 @@ public class TransferManagerImpl implements TransferManager{
 			dto.setAmount(((BigDecimal) obj[2]).doubleValue());
 			dto.setCurrencyUnit((String) obj[3]);
 			
-			if((int) obj[4] == ServerConsts.TRANSFER_TYPE_TRANSACTION && ((Double) obj[2])>0){
+			if((int) obj[4] == ServerConsts.TRANSFER_TYPE_TRANSACTION && (((BigDecimal) obj[2]).doubleValue())>0){
 				dto.setTransferType(1);
 			}else{
 				dto.setTransferType((int) obj[4]);
