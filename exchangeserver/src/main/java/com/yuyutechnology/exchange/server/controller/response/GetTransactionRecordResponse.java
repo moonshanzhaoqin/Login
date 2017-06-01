@@ -2,7 +2,7 @@ package com.yuyutechnology.exchange.server.controller.response;
 
 import java.util.List;
 
-import com.yuyutechnology.exchange.server.controller.dto.TransferDTO;
+import com.yuyutechnology.exchange.dto.TransferDTO;
 
 public class GetTransactionRecordResponse extends BaseResponse {
 

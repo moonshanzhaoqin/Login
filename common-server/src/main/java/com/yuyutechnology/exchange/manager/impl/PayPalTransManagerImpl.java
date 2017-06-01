@@ -78,6 +78,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		transfer.setUserFrom(userId);
 		transfer.setUserTo(systemUser.getUserId());
+		transfer.setPaypalExchange(amount);
 
 		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE);
 		// 保存

@@ -125,6 +125,8 @@ public interface TransferManager {
 	 
 	 String updateSystemPhone(String transferId,String phoneNum);
 
+	 HashMap<String, Object> getTransactionRecord(String period, String type, int userId, int currentPage, int pageSize);
+
 	 
 	
 }

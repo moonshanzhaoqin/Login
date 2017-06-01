@@ -32,6 +32,7 @@ import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
+import com.yuyutechnology.exchange.dto.TransferDTO;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
@@ -521,56 +522,205 @@ public class TransferManagerImpl implements TransferManager{
 
 
 	
+//	@Override
+//	public HashMap<String, Object> getTransactionRecordByPage(String period,String type, 
+//			int userId,int currentPage, int pageSize) {
+//		
+//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//		String sql = "SELECT "+
+//				"t1.user_from,"
+//				+ "t1.currency,"
+//				+ "t1.transfer_amount,"
+//				+ "CONCAT(t1.area_code,' ',t1.phone),"
+//				+ "CONCAT(t2.area_code,' ',t2.user_phone),"
+//				+ "t1.transfer_comment,"
+//				+ "t1.finish_time,"
+//				+ "t1.transfer_type,t1.transfer_id  ";
+//		StringBuilder sb = new StringBuilder(
+//				"FROM `e_transfer` t1 "+
+//				"LEFT JOIN `e_user` t2  "+
+//				"ON  "+
+//				"t1.user_from = t2.user_id  "+
+//				"LEFT JOIN `e_wallet_seq` t3  "+
+//				"ON  "+
+//				"t1.transfer_id = t3.transaction_id  "+
+//				"where " +
+//				"t1.transfer_status=? "+
+//				"and (t1.user_from = ? or t1.user_to = ?) "+ 
+//				"and t3.user_id = ?  ");
+//		
+//		List<Object> values = new ArrayList<Object>();
+//		values.add(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+//		values.add(userId);
+//		values.add(userId);
+//		values.add(userId);
+//		
+//		if(StringUtils.isNotBlank(type)){
+//			
+//			switch(type){
+//				case "expenses"://支出
+//					sb.append("and t3.amount < 0 and t1.transfer_type in (0,?) ");
+//					values.add(ServerConsts.TRANSFER_TYPE_OUT_INVITE+"");
+//					break;
+//				case "income"://收入
+//					sb.append("and t3.amount > 0 and t1.transfer_type in (0,?) ");
+//					values.add(ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND+"");
+//					break;
+//				case "withdraw"://体现
+//					sb.append("and t1.transfer_type = ? ");
+//					values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW+"");
+//					break;
+//				case "recharge"://充值
+//					sb.append("and t1.transfer_type = ? ");
+//					values.add(ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE+"");
+//					break;
+//				default:
+//					break;	
+//				
+//			}
+//
+//		}
+//		
+//		if(!period.equals("all")){
+//			switch (period) {
+//				case "today":
+//					sb.append("and t1.finish_time > ?");
+//					values.add(DateFormatUtils.getStartTime(sdf.format(new Date())));
+//					break;
+//					
+//				case "lastMonth":
+//					sb.append("and t1.finish_time > ?");
+//					Date date = DateFormatUtils.getpreDays(-30);
+//					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+//					break;
+//				case "last3Month":
+//					sb.append("and t1.finish_time > ?");
+//					date = DateFormatUtils.getpreDays(-90);
+//					values.add(DateFormatUtils.getStartTime(sdf.format(date)));		
+//					break;
+//				case "lastYear":
+//					sb.append("and t1.finish_time > ?");
+//					date = DateFormatUtils.getpreDays(-365);
+//					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+//					break;
+//				case "aYearAgo":
+//					sb.append("and t1.finish_time < ?");
+//					date = DateFormatUtils.getpreDays(-365);
+//					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+//					break;
+//		
+//				default:
+//					break;
+//			}
+//		}
+//		
+//		sb.append(" order by t1.finish_time desc");
+//
+//		HashMap<String, Object> map = transferDAO.getTransactionRecordByPage(sql+sb.toString(),
+//				sb.toString(),values,currentPage, pageSize);
+//		//读交易标记
+//		commonManager.readMsgFlag(userId, 1);
+//		return map;
+//	}
+	
+	@Override
+	public HashMap<String, Object> getTransactionRecord(String period,String type, 
+			int userId,int currentPage, int pageSize) {
+		
+		HashMap<String, Object> map = getTransactionRecordByPage(period,type,userId,currentPage,pageSize);
+		
+		if(map.isEmpty()){
+			return null;
+		}
+		
+		User system = userDAO.getSystemUser();
+		List<?> list = (List<?>) map.get("list");
+		List<TransferDTO> dtos = new ArrayList<>();
+		
+		for (Object object : list) {
+			Object[] obj = (Object[]) object;
+			
+			TransferDTO dto = new TransferDTO();
+			
+			dto.setTransferId((String) obj[0]);
+			dto.setCurrency((String) obj[1]);
+			dto.setAmount((Double) obj[2]);
+			dto.setCurrencyUnit((String) obj[3]);
+			
+			if((int) obj[4] == ServerConsts.TRANSFER_TYPE_TRANSACTION && ((Double) obj[2])>0){
+				dto.setTransferType(1);
+			}else{
+				dto.setTransferType((int) obj[4]);
+			}
+			
+			dto.setFinishAt((Date) obj[5]);
+			
+			if((int) obj[6] == system.getUserId()){
+				dto.setPhoneNum((String) obj[10]);
+				dto.setTrader(null);
+			}else{
+				dto.setPhoneNum((String) obj[7]+" "+(String) obj[7]);
+				dto.setTrader((String) obj[9]);
+			}
+			
+			dtos.add(dto);
+		}
+		
+		map.put("dtos", dtos);
+		
+		return map;
+	}
+	
+	
 	@Override
 	public HashMap<String, Object> getTransactionRecordByPage(String period,String type, 
 			int userId,int currentPage, int pageSize) {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String sql = "SELECT "+
-				"t1.user_from,"
+		
+		String sql = "SELECT "
+				+ "t1.transaction_id,"
 				+ "t1.currency,"
-				+ "t1.transfer_amount,"
-				+ "CONCAT(t1.area_code,' ',t1.phone),"
-				+ "CONCAT(t2.area_code,' ',t2.user_phone),"
-				+ "t1.transfer_comment,"
-				+ "t1.finish_time,"
-				+ "t1.transfer_type,t1.transfer_id  ";
-		StringBuilder sb = new StringBuilder(
-				"FROM `e_transfer` t1 "+
-				"LEFT JOIN `e_user` t2  "+
-				"ON  "+
-				"t1.user_from = t2.user_id  "+
-				"LEFT JOIN `e_wallet_seq` t3  "+
-				"ON  "+
-				"t1.transfer_id = t3.transaction_id  "+
-				"where " +
-				"t1.transfer_status=? "+
-				"and (t1.user_from = ? or t1.user_to = ?) "+ 
-				"and t3.user_id = ?  ");
+				+ "t1.amount,"
+				+ "t4.currency_unit,"
+				+ "t2.transfer_type,"
+				+ "t2.finish_time,"
+				+ "t3.user_id,"
+				+ "t3.area_code,"
+				+ "t3.user_phone,"
+				+ "t3.user_name,"
+				+ "if(t1.user_id = t2.user_from,CONCAT(t2.area_code,' ',t2.phone),NULL) as trader ";
+		StringBuffer sb = new StringBuffer(""
+				+ "FROM `e_wallet_seq` t1 "
+				+ "LEFT JOIN e_transfer t2 ON t1.transaction_id = t2.transfer_id "
+				+ "LEFT JOIN e_user t3 ON if(t1.user_id = t2.user_from,t2.user_to,t2.user_from) = t3.user_id "
+				+ "LEFT JOIN e_currency t4 ON t1.currency = t4.currency "
+				+ "where "
+				+ "t2.transfer_status = ? "
+				+ "AND t1.user_id = ? ");
 		
 		List<Object> values = new ArrayList<Object>();
 		values.add(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		values.add(userId);
-		values.add(userId);
-		values.add(userId);
+		
 		
 		if(StringUtils.isNotBlank(type)){
 			
 			switch(type){
 				case "expenses"://支出
-					sb.append("and t3.amount < 0 and t1.transfer_type in (0,?) ");
+					sb.append("and t1.amount < 0 and t2.transfer_type in (0,?) ");
 					values.add(ServerConsts.TRANSFER_TYPE_OUT_INVITE+"");
 					break;
 				case "income"://收入
-					sb.append("and t3.amount > 0 and t1.transfer_type in (0,?) ");
+					sb.append("and t1.amount > 0 and t2.transfer_type in (0,?) ");
 					values.add(ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND+"");
 					break;
 				case "withdraw"://体现
-					sb.append("and t1.transfer_type = ? ");
+					sb.append("and t2.transfer_type = ? ");
 					values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW+"");
 					break;
 				case "recharge"://充值
-					sb.append("and t1.transfer_type = ? ");
+					sb.append("and t2.transfer_type = ? ");
 					values.add(ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE+"");
 					break;
 				default:
@@ -583,27 +733,27 @@ public class TransferManagerImpl implements TransferManager{
 		if(!period.equals("all")){
 			switch (period) {
 				case "today":
-					sb.append("and t1.finish_time > ?");
+					sb.append("and t2.finish_time > ?");
 					values.add(DateFormatUtils.getStartTime(sdf.format(new Date())));
 					break;
 					
 				case "lastMonth":
-					sb.append("and t1.finish_time > ?");
+					sb.append("and t2.finish_time > ?");
 					Date date = DateFormatUtils.getpreDays(-30);
 					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
 					break;
 				case "last3Month":
-					sb.append("and t1.finish_time > ?");
+					sb.append("and t2.finish_time > ?");
 					date = DateFormatUtils.getpreDays(-90);
 					values.add(DateFormatUtils.getStartTime(sdf.format(date)));		
 					break;
 				case "lastYear":
-					sb.append("and t1.finish_time > ?");
+					sb.append("and t2.finish_time > ?");
 					date = DateFormatUtils.getpreDays(-365);
 					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
 					break;
 				case "aYearAgo":
-					sb.append("and t1.finish_time < ?");
+					sb.append("and t2.finish_time < ?");
 					date = DateFormatUtils.getpreDays(-365);
 					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
 					break;
@@ -613,7 +763,7 @@ public class TransferManagerImpl implements TransferManager{
 			}
 		}
 		
-		sb.append(" order by t1.finish_time desc");
+		sb.append(" order by t2.finish_time desc");
 
 		HashMap<String, Object> map = transferDAO.getTransactionRecordByPage(sql+sb.toString(),
 				sb.toString(),values,currentPage, pageSize);
@@ -1015,10 +1165,7 @@ public class TransferManagerImpl implements TransferManager{
 			}else {
 				friendId = -1;
 				user = null;
-			}
-			
-//			user = null;
-			
+			}	
 		}else{
 			user = userDAO.getUser(transfer.getUserFrom());
 			friendId = transfer.getUserFrom();
@@ -1057,6 +1204,8 @@ public class TransferManagerImpl implements TransferManager{
 		}
 		return phoneNum;
 	}
+	
+	
 
 	
 }

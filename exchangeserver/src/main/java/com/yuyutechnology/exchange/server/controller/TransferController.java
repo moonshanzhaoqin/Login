@@ -19,6 +19,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dto.TransferDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
@@ -30,7 +31,6 @@ import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.server.controller.dto.NotificationDTO;
-import com.yuyutechnology.exchange.server.controller.dto.TransferDTO;
 import com.yuyutechnology.exchange.server.controller.request.GetNotificationRecordsRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetTransDetailsRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetTransactionRecordRequest;
@@ -289,6 +289,90 @@ public class TransferController {
 
 	}
 
+//	@ApiOperation(value = "获取交易列表")
+//	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransactionRecord")
+//	public @ResponseEncryptBody GetTransactionRecordResponse getTransactionRecord(@PathVariable String token,
+//			@RequestDecryptBody GetTransactionRecordRequest reqMsq) {
+//
+//		// 从Session中获取Id
+//		SessionData sessionData = SessionDataHolder.getSessionData();
+//		GetTransactionRecordResponse rep = new GetTransactionRecordResponse();
+//		HashMap<String, Object> map = transferManager.getTransactionRecordByPage(reqMsq.getPeriod(), reqMsq.getType(),
+//				sessionData.getUserId(), reqMsq.getCurrentPage(), reqMsq.getPageSize());
+//
+//		User systemUser = userManager.getSystemUser();
+//		ArrayList<TransferDTO> dtos = new ArrayList<>();
+//		rep.setList(dtos);
+//		if (((ArrayList<?>) map.get("list")).isEmpty()) {
+//			rep.setRetCode(RetCodeConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
+//			rep.setMessage("Transaction history not acquired");
+//		} else {
+//			List<?> list = (ArrayList<?>) map.get("list");
+//			for (Object object : list) {
+//				Object[] obj = (Object[]) object;
+//
+//				TransferDTO dto = new TransferDTO();
+//				dto.setCurrency((String) obj[1]);
+//				dto.setCurrencyUnit(commonManager.getCurreny(dto.getCurrency()).getCurrencyUnit());
+//
+//				if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_TRANSACTION) {
+//					if (sessionData.getUserId() == (int) obj[0]) {
+//						dto.setAmount(new BigDecimal("-" + obj[2] + ""));
+//						dto.setTransferType(0);
+//						dto.setPhoneNum((String) obj[3]);
+//					} else {
+//						dto.setAmount(new BigDecimal("+" + obj[2] + ""));
+//						dto.setTransferType(1);
+//
+//						if ((systemUser.getAreaCode() + " " + systemUser.getUserPhone()).equals((String) obj[4])) {
+//							dto.setPhoneNum((String) obj[3]);
+////							dto.setPhoneNum(transferManager.updateSystemPhone((String) obj[8], (String) obj[3]));
+//						} else {
+//							dto.setPhoneNum((String) obj[4]);
+////							dto.setPhoneNum(transferManager.updateSystemPhone((String) obj[8], (String) obj[4]));
+//						}
+//					}
+//				} else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_OUT_INVITE) {
+//					dto.setAmount(new BigDecimal("-" + obj[2] + ""));
+//					dto.setTransferType((int) obj[7]);
+//					dto.setPhoneNum((String) obj[3]);
+//				} else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND) {
+//					dto.setAmount(new BigDecimal("+" + obj[2] + ""));
+//					dto.setTransferType((int) obj[7]);
+//					dto.setPhoneNum((String) obj[3]);
+//				} else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW) {
+//					dto.setAmount(new BigDecimal("-" + obj[2] + ""));
+//					dto.setTransferType((int) obj[7]);
+//					dto.setPhoneNum((String) obj[3]);
+//				} else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE) {
+//					dto.setAmount(new BigDecimal("+" + obj[2] + ""));
+//					dto.setTransferType((int) obj[7]);
+//					dto.setPhoneNum((String) obj[4]);
+//				}else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE) {
+//					dto.setAmount(new BigDecimal("-" + obj[2] + ""));
+//					dto.setTransferType((int) obj[7]);
+//					dto.setPhoneNum((String) obj[4]);
+//				}
+//				dto.setComments("");
+//				dto.setFinishAt((Date) obj[6]);
+//				dto.setTransferId((String) obj[8]);
+//
+//				dtos.add(dto);
+//			}
+//
+//			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+//			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+//			rep.setCurrentPage((int) map.get("currentPage"));
+//			rep.setPageSize((int) map.get("pageSize"));
+//			rep.setPageTotal((int) map.get("pageTotal"));
+//			rep.setTotal(Integer.parseInt(map.get("total") + ""));
+//		}
+//
+//		return rep;
+//
+//	}
+	
+	@SuppressWarnings("unchecked")
 	@ApiOperation(value = "获取交易列表")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransactionRecord")
 	public @ResponseEncryptBody GetTransactionRecordResponse getTransactionRecord(@PathVariable String token,
@@ -297,75 +381,20 @@ public class TransferController {
 		// 从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		GetTransactionRecordResponse rep = new GetTransactionRecordResponse();
-		HashMap<String, Object> map = transferManager.getTransactionRecordByPage(reqMsq.getPeriod(), reqMsq.getType(),
+		HashMap<String, Object> map = transferManager.getTransactionRecord(reqMsq.getPeriod(), reqMsq.getType(),
 				sessionData.getUserId(), reqMsq.getCurrentPage(), reqMsq.getPageSize());
 
-		User systemUser = userManager.getSystemUser();
-		ArrayList<TransferDTO> dtos = new ArrayList<>();
-		rep.setList(dtos);
-		if (((ArrayList<?>) map.get("list")).isEmpty()) {
+		if (((ArrayList<?>) map.get("dtos")).isEmpty()) {
 			rep.setRetCode(RetCodeConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
 			rep.setMessage("Transaction history not acquired");
 		} else {
-			List<?> list = (ArrayList<?>) map.get("list");
-			for (Object object : list) {
-				Object[] obj = (Object[]) object;
-
-				TransferDTO dto = new TransferDTO();
-				dto.setCurrency((String) obj[1]);
-				dto.setCurrencyUnit(commonManager.getCurreny(dto.getCurrency()).getCurrencyUnit());
-
-				if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_TRANSACTION) {
-					if (sessionData.getUserId() == (int) obj[0]) {
-						dto.setAmount(new BigDecimal("-" + obj[2] + ""));
-						dto.setTransferType(0);
-						dto.setPhoneNum((String) obj[3]);
-					} else {
-						dto.setAmount(new BigDecimal("+" + obj[2] + ""));
-						dto.setTransferType(1);
-
-						if ((systemUser.getAreaCode() + " " + systemUser.getUserPhone()).equals((String) obj[4])) {
-							dto.setPhoneNum((String) obj[3]);
-//							dto.setPhoneNum(transferManager.updateSystemPhone((String) obj[8], (String) obj[3]));
-						} else {
-							dto.setPhoneNum((String) obj[4]);
-//							dto.setPhoneNum(transferManager.updateSystemPhone((String) obj[8], (String) obj[4]));
-						}
-					}
-				} else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_OUT_INVITE) {
-					dto.setAmount(new BigDecimal("-" + obj[2] + ""));
-					dto.setTransferType((int) obj[7]);
-					dto.setPhoneNum((String) obj[3]);
-				} else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND) {
-					dto.setAmount(new BigDecimal("+" + obj[2] + ""));
-					dto.setTransferType((int) obj[7]);
-					dto.setPhoneNum((String) obj[3]);
-				} else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW) {
-					dto.setAmount(new BigDecimal("-" + obj[2] + ""));
-					dto.setTransferType((int) obj[7]);
-					dto.setPhoneNum((String) obj[3]);
-				} else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE) {
-					dto.setAmount(new BigDecimal("+" + obj[2] + ""));
-					dto.setTransferType((int) obj[7]);
-					dto.setPhoneNum((String) obj[4]);
-				}else if ((int) obj[7] == ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE) {
-					dto.setAmount(new BigDecimal("-" + obj[2] + ""));
-					dto.setTransferType((int) obj[7]);
-					dto.setPhoneNum((String) obj[4]);
-				}
-				dto.setComments("");
-				dto.setFinishAt((Date) obj[6]);
-				dto.setTransferId((String) obj[8]);
-
-				dtos.add(dto);
-			}
-
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			rep.setCurrentPage((int) map.get("currentPage"));
 			rep.setPageSize((int) map.get("pageSize"));
 			rep.setPageTotal((int) map.get("pageTotal"));
 			rep.setTotal(Integer.parseInt(map.get("total") + ""));
+			rep.setList((List<TransferDTO>) map.get("dtos"));
 		}
 
 		return rep;
@@ -453,6 +482,7 @@ public class TransferController {
 			rep.setUnit((String) (result.get("unit")));
 
 			rep.setAmount(transfer.getTransferAmount());
+			rep.setPaypalExchange(transfer.getPaypalExchange());
 			rep.setTransferType(transfer.getTransferType());
 
 			if (!(boolean) result.get("isPlus")) {

@@ -41,6 +41,7 @@ public class Transfer implements java.io.Serializable {
 	private String goldpayResult;
 	private String goldpayName;
 	private String goldpayAcount;
+	private BigDecimal paypalExchange;
 	
 	public Transfer() {
 	}
@@ -247,5 +248,16 @@ public class Transfer implements java.io.Serializable {
 	public void setGoldpayAcount(String goldpayAcount) {
 		this.goldpayAcount = goldpayAcount;
 	}
+	
+	@Column(name = "paypal_exchange")
+	public BigDecimal getPaypalExchange() {
+		return paypalExchange;
+	}
 
+	public void setPaypalExchange(BigDecimal paypalExchange) {
+		this.paypalExchange = paypalExchange;
+	}
+
+
+	
 }
