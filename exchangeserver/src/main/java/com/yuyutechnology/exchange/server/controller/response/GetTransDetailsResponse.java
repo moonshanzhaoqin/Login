@@ -10,6 +10,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 	private String phone;
 	private String currency;
 	private BigDecimal amount;
+	private BigDecimal paypalExchange;
 	private String unit;
 	private int transferType;
 	private Date createTime;
@@ -59,6 +60,14 @@ public class GetTransDetailsResponse extends BaseResponse {
 
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
+	}
+
+	public BigDecimal getPaypalExchange() {
+		return paypalExchange;
+	}
+
+	public void setPaypalExchange(BigDecimal paypalExchange) {
+		this.paypalExchange = paypalExchange;
 	}
 
 	public String getUnit() {
