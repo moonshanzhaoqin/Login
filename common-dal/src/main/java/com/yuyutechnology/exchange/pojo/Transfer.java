@@ -255,19 +255,18 @@ public class Transfer implements java.io.Serializable {
 		return paypalExchange;
 	}
 
-	public String getPaypalCurrency() {
-		return paypalCurrency;
-	}
-
-	@Column(name = "paypal_currency")
-	public void setPaypalCurrency(String paypalCurrency) {
-		this.paypalCurrency = paypalCurrency;
-	}
-
 	public void setPaypalExchange(BigDecimal paypalExchange) {
 		this.paypalExchange = paypalExchange;
 	}
 
+	@Column(name = "paypal_currency")
+	public String getPaypalCurrency() {
+		return paypalCurrency;
+	}
 
+
+	public void setPaypalCurrency(String paypalCurrency) {
+		this.paypalCurrency = paypalCurrency;
+	}
 	
 }
