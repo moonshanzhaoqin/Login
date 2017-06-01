@@ -657,7 +657,7 @@ public class TransferManagerImpl implements TransferManager{
 			
 			if((int) obj[6] == system.getUserId()){
 				dto.setPhoneNum((String) obj[10]);
-				dto.setTrader(null);
+				dto.setTrader("");
 			}else{
 				dto.setPhoneNum((String) obj[7]+" "+(String) obj[7]);
 				dto.setTrader((String) obj[9]);
@@ -689,7 +689,7 @@ public class TransferManagerImpl implements TransferManager{
 				+ "t3.area_code,"
 				+ "t3.user_phone,"
 				+ "t3.user_name,"
-				+ "if(t1.user_id = t2.user_from,CONCAT(t2.area_code,' ',t2.phone),NULL) as trader ";
+				+ "if(t1.user_id = t2.user_from,CONCAT(t2.area_code,' ',t2.phone),'') as trader ";
 		StringBuffer sb = new StringBuffer(""
 				+ "FROM `e_wallet_seq` t1 "
 				+ "LEFT JOIN e_transfer t2 ON t1.transaction_id = t2.transfer_id "
