@@ -74,8 +74,8 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		transfer.setCurrency(ServerConsts.CURRENCY_OF_GOLDPAY);
 		transfer.setTransferAmount(amount);
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
-		transfer.setUserFrom(userId);
-		transfer.setUserTo(systemUser.getUserId());
+		transfer.setUserFrom(systemUser.getUserId());
+		transfer.setUserTo(userId);
 		transfer.setPaypalCurrency(currencyLeft);
 		transfer.setPaypalExchange(baseAmout);
 		
