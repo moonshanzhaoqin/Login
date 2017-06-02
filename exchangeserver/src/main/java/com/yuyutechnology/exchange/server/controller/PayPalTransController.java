@@ -85,7 +85,7 @@ public class PayPalTransController {
 		rep.setAmount(((BigDecimal) result.get("amount")).doubleValue());
 		rep.setUnit((String) result.get("unit"));
 		
-		rep.setCreateAt((Date) result.get("createTime"));
+		rep.setCreateAt(oandaRatesManager.getExchangeRateUpdateDate());
 		rep.setExpiration((long) result.get("expiration"));
 		
 		
