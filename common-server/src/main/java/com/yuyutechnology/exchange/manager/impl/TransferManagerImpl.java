@@ -659,7 +659,7 @@ public class TransferManagerImpl implements TransferManager{
 				dto.setPhoneNum((String) obj[10]);
 				dto.setTrader("");
 			}else{
-				dto.setPhoneNum((String) obj[7]+" "+(String) obj[7]);
+				dto.setPhoneNum((String) obj[7]+" "+(String) obj[8]);
 				dto.setTrader((String) obj[9]);
 			}
 			

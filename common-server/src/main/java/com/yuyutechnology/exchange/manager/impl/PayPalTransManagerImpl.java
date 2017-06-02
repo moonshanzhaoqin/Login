@@ -117,7 +117,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 
 		// 条件 验证1.transId，amount
 		Transfer transfer = transferDAO.getTranByIdAndStatus(transId, ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
-		if (transfer == null || userId != transfer.getUserFrom()) {
+		if (transfer == null || userId != transfer.getUserTo()) {
 			logger.warn("Order status exception");
 			map.put("retCode", RetCodeConsts.TRANSFER_PAYPALTRANS_ORDER_STATUS_EXCEPTION);
 			map.put("msg", "Order status exception");
