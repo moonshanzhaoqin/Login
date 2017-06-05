@@ -1,5 +1,7 @@
 package com.yuyutechnology.exchange.crm.controller;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,8 +19,12 @@ import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
 import com.yuyutechnology.exchange.crm.request.LoginRquest;
 import com.yuyutechnology.exchange.crm.request.ModifyPasswordRquest;
+import com.yuyutechnology.exchange.enums.Operation;
 import com.yuyutechnology.exchange.manager.CrmAdminManager;
+import com.yuyutechnology.exchange.manager.CrmLogManager;
 import com.yuyutechnology.exchange.pojo.Admin;
+import com.yuyutechnology.exchange.pojo.CrmLog;
+import com.yuyutechnology.exchange.util.HttpTookit;
 
 @Controller
 public class AdminController {
@@ -26,6 +32,8 @@ public class AdminController {
 
 	@Autowired
 	CrmAdminManager adminManager;
+	@Autowired
+	CrmLogManager crmLogManager;
 
 	ModelAndView mav;
 
@@ -49,6 +57,10 @@ public class AdminController {
 				request.getSession().setAttribute("adminName",admin.getAdminName());
 				request.getSession().setAttribute("adminPower", admin.getAdminPower());
 				mav.setViewName("redirect:/exchangeRate/getAllExchangeRates");
+				
+				crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+						Operation.ADMIN_LOGIN.getOperationName(), HttpTookit.getIp(request)));
+				
 			}else{
 				mav.setViewName("login");
 				mav.addObject("retCode", RetCodeConsts.PASSWORD_NOT_MATCH_NAME);
@@ -87,6 +99,8 @@ public class AdminController {
 
 	@RequestMapping(value = "/exit", method = RequestMethod.GET)
 	public String exit(HttpServletRequest request) {
+		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+				Operation.ADMIN_LOGOUT.getOperationName(), HttpTookit.getIp(request)));
 		request.getSession().invalidate();
 		return "login";
 	}
