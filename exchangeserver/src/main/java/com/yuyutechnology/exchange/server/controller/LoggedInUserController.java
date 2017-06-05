@@ -387,7 +387,7 @@ public class LoggedInUserController {
 			@RequestDecryptBody ModifyPasswordRequest modifyPasswordRequest) {
 		logger.info("========modifyPassword : {}============", token);
 		ModifyPasswordResponse rep = new ModifyPasswordResponse();
-		if (modifyPasswordRequest.isEmpty()) {
+		if (modifyPasswordRequest.Empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
@@ -443,7 +443,7 @@ public class LoggedInUserController {
 		logger.info("========modifyUserName : {}============", token);
 		ModifyUserNameResponse rep = new ModifyUserNameResponse();
 
-		if (modifyUserNameRequest.isEmpty()) {
+		if (modifyUserNameRequest.Empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
@@ -507,7 +507,7 @@ public class LoggedInUserController {
 			@RequestDecryptBody ModifyPayPwdByOldRequest modifyPayPwdByOldRequest) {
 		logger.info("========modifyPayPwdByOld : {}============", token);
 		ModifyPayPwdByOldResponse rep = new ModifyPayPwdByOldResponse();
-		if (modifyPayPwdByOldRequest.isEmpty()) {
+		if (modifyPayPwdByOldRequest.Empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);

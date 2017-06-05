@@ -28,7 +28,7 @@ public class ModifyPayPwdByOldRequest {
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty() {
+	public boolean Empty() {
 		if (StringUtils.isEmpty(this.checkToken)) {
 			return true;
 		}

@@ -18,6 +18,7 @@ import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
 import com.yuyutechnology.exchange.crm.request.LoginRquest;
 import com.yuyutechnology.exchange.crm.request.ModifyPasswordRquest;
 import com.yuyutechnology.exchange.manager.CrmAdminManager;
+import com.yuyutechnology.exchange.pojo.Admin;
 
 @Controller
 public class AdminController {
@@ -38,25 +39,20 @@ public class AdminController {
 			mav.addObject("retCode", RetCodeConsts.PARAMETER_IS_EMPTY);
 			mav.addObject("message", "请输入用户名、密码");
 		} else {
-			String retCode = adminManager.login(loginRquest.getAdminName(), loginRquest.getAdminPassword());
-			switch (retCode) {
-			case RetCodeConsts.ADMIN_NOT_EXIST:
+			Admin admin=adminManager.getAdminByName(loginRquest.getAdminName());
+			if (admin==null) {
 				mav.setViewName("login");
 				mav.addObject("retCode", RetCodeConsts.ADMIN_NOT_EXIST);
 				mav.addObject("message", "Admin不存在");
-				break;
-			case RetCodeConsts.PASSWORD_NOT_MATCH_NAME:
+			}else if(adminManager.checkPassword(admin.getAdminId(), loginRquest.getAdminPassword())){
+				// 写入session
+				request.getSession().setAttribute("adminName",admin.getAdminName());
+				request.getSession().setAttribute("adminPower", admin.getAdminPower());
+				mav.setViewName("redirect:/exchangeRate/getAllExchangeRates");
+			}else{
 				mav.setViewName("login");
 				mav.addObject("retCode", RetCodeConsts.PASSWORD_NOT_MATCH_NAME);
 				mav.addObject("message", "用户名密码不匹配");
-				break;
-			case RetCodeConsts.RET_CODE_SUCCESS:
-				// 写入session
-				request.getSession().setAttribute("adminName", loginRquest.getAdminName());
-				mav.setViewName("redirect:/exchangeRate/getAllExchangeRates");
-				break;
-			default:
-				break;
 			}
 		}
 		return mav;

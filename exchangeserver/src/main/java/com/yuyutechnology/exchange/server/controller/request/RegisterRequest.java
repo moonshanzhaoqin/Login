@@ -91,7 +91,7 @@ public class RegisterRequest {
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty() {
+	public boolean Empty() {
 		if (StringUtils.isEmpty(this.language)) {
 			this.language = "zh_CN";
 		}
