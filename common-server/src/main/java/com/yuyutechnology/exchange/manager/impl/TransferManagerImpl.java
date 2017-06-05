@@ -720,8 +720,9 @@ public class TransferManagerImpl implements TransferManager{
 					values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW+"");
 					break;
 				case "recharge"://充值
-					sb.append("and t2.transfer_type = ? ");
+					sb.append("and t2.transfer_type in (?,?) ");
 					values.add(ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE+"");
+					values.add(ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE+"");
 					break;
 				default:
 					break;	
