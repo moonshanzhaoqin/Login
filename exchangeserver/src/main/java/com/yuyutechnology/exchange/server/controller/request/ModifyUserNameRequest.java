@@ -17,7 +17,7 @@ public class ModifyUserNameRequest {
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty() {
+	public boolean Empty() {
 		if (StringUtils.isEmpty(this.newUserName)) {
 			return true;
 		}

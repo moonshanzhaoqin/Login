@@ -121,7 +121,7 @@
 				}
 			});
 		}
-
+        /* 立即更新 */
 		function updateUserInfo(currentPage, userPhone, userName) {
 			$("#updateImmediately").attr("disabled", true);
 			$("#updateImmediately").text("更新中...");
