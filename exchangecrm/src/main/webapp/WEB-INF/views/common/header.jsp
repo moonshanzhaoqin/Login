@@ -33,8 +33,10 @@
 				<ul class="nav navbar-nav navbar-left">
 					<li><a
 						href="<c:url value='/exchangeRate/getAllExchangeRates' />">Oanda汇率</a></li>
-					<li><a href="<c:url value='/account/getTotalAssetsDetails' />">账户汇总</a></li>
 					<c:forTokens items="${sessionScope.adminPower}" delims="," var="adminPower">
+					   <c:if test="${adminPower eq 0}">
+					       <li><a href="<c:url value='/account/getTotalAssetsDetails' />">账户汇总</a></li>
+					   </c:if>
 						<c:if test="${adminPower eq 1}">
 							<li class="dropdown"><a href="#" class="dropdown-toggle"
 								data-toggle="dropdown" aria-expanded="true">用户管理 <span
