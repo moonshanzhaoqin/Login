@@ -28,3 +28,8 @@ ALTER TABLE `e_transfer`
   
 ALTER TABLE e_transfer MODIFY paypal_currency CHAR(3) DEFAULT '';
 ALTER TABLE e_transfer MODIFY paypal_exchange DECIMAL(20,4) DEFAULT 0;
+
+
+--2017-06-05 Suzan
+ALTER TABLE `e_crm_admin`
+  ADD COLUMN `admin_power` varchar(255) NULL DEFAULT NULL COMMENT '权限';

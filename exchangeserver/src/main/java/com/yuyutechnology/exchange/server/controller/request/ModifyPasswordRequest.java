@@ -28,7 +28,7 @@ public class ModifyPasswordRequest {
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty() {
+	public boolean Empty() {
 		if (StringUtils.isEmpty(this.oldPassword)) {
 			return true;
 		}

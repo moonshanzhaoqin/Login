@@ -223,8 +223,7 @@ public class UserController {
 			HttpServletResponse response) {
 		logger.info("============login==========");
 		LoginResponse rep = new LoginResponse();
-		rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
-		switch (loginRequest.isEmpty()) {
+		switch (loginRequest.Empty()) {
 		case 1:
 			// loginToken
 			Integer userId = sessionManager.validateLoginToken(loginRequest.getLoginToken());
@@ -343,7 +342,7 @@ public class UserController {
 			HttpServletResponse response) {
 		logger.info("register : {}", registerRequest.getAreaCode() + registerRequest.getUserPhone());
 		RegisterResponse rep = new RegisterResponse();
-		if (registerRequest.isEmpty()) {
+		if (registerRequest.Empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
@@ -461,7 +460,7 @@ public class UserController {
 			HttpServletRequest request, HttpServletResponse response) {
 		logger.info("loginValidate : ");
 		LoginValidateResponse rep = new LoginValidateResponse();
-		if (loginValidateRequest.isEmpty()) {
+		if (loginValidateRequest.Empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);

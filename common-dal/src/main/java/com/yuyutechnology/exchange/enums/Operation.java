@@ -4,34 +4,20 @@
 package com.yuyutechnology.exchange.enums;
 
 /**
+ * crm 动作
+ * 
  * @author suzan.wu
- *
- */
-/**
- * @author suzan.wu
- *
- */
-/**
- * @author suzan.wu
- *
- */
-/**
- * @author suzan.wu
- *
- */
-/**
- * @author suzan.wu
- *
- */
-/**
- * @author suzan.wu
- *
- */
-/**
- * @author suzan.wu
- *
  */
 public enum Operation {
+
+	/**
+	 * 登录
+	 */
+	ADMIN_LOGIN("admin_login"),
+	/**
+	 * 登出
+	 */
+	ADMIN_LOGOUT("admin_logout"),
 	/**
 	 * 更新用户信息
 	 */
@@ -105,11 +91,11 @@ public enum Operation {
 	 */
 	ADD_ALARM("add_alarm"),
 	/**
-	 *开启预警 
+	 * 开启预警
 	 */
 	ON_ALARM("on_alarm"),
 	/**
-	 *关闭预警 
+	 * 关闭预警
 	 */
 	OFF_ALARM("off_alarm");
 	private String operationName;

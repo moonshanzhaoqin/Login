@@ -76,7 +76,7 @@ public class LoginValidateRequest {
 		this.verificationCode = verificationCode;
 	}
 
-	public boolean isEmpty() {
+	public boolean Empty() {
 		if (StringUtils.isBlank(this.verificationCode)) {
 			return true;
 		}

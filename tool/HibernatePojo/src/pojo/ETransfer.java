@@ -1,5 +1,5 @@
 package pojo;
-// Generated May 25, 2017 5:41:24 PM by Hibernate Tools 5.2.1.Final
+// Generated Jun 5, 2017 10:04:57 AM by Hibernate Tools 5.2.1.Final
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -36,6 +36,8 @@ public class ETransfer implements java.io.Serializable {
 	private String goldpayResult;
 	private String goldpayName;
 	private String goldpayAcount;
+	private String paypalCurrency;
+	private Long paypalExchange;
 
 	public ETransfer() {
 	}
@@ -54,7 +56,7 @@ public class ETransfer implements java.io.Serializable {
 	public ETransfer(String transferId, int userFrom, int userTo, String areaCode, String phone, String currency,
 			BigDecimal transferAmount, String transferComment, String userComment, Date createTime, Date finishTime,
 			int transferStatus, int transferType, Integer noticeId, String goldpayResult, String goldpayName,
-			String goldpayAcount) {
+			String goldpayAcount, String paypalCurrency, Long paypalExchange) {
 		this.transferId = transferId;
 		this.userFrom = userFrom;
 		this.userTo = userTo;
@@ -72,6 +74,8 @@ public class ETransfer implements java.io.Serializable {
 		this.goldpayResult = goldpayResult;
 		this.goldpayName = goldpayName;
 		this.goldpayAcount = goldpayAcount;
+		this.paypalCurrency = paypalCurrency;
+		this.paypalExchange = paypalExchange;
 	}
 
 	@Id
@@ -239,6 +243,24 @@ public class ETransfer implements java.io.Serializable {
 
 	public void setGoldpayAcount(String goldpayAcount) {
 		this.goldpayAcount = goldpayAcount;
+	}
+
+	@Column(name = "paypal_currency", length = 3)
+	public String getPaypalCurrency() {
+		return this.paypalCurrency;
+	}
+
+	public void setPaypalCurrency(String paypalCurrency) {
+		this.paypalCurrency = paypalCurrency;
+	}
+
+	@Column(name = "paypal_exchange", precision = 10, scale = 0)
+	public Long getPaypalExchange() {
+		return this.paypalExchange;
+	}
+
+	public void setPaypalExchange(Long paypalExchange) {
+		this.paypalExchange = paypalExchange;
 	}
 
 }
