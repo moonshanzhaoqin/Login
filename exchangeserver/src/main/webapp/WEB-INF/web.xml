@@ -65,8 +65,8 @@
 	    <init-param>  
 	    <!-- 允许清空统计数据 -->  
 	    <param-name>resetEnable</param-name>  
-	    <param-value>true</param-value>  
-	    </init-param>  
+	    <param-value>false</param-value>  
+	    </init-param>
 	    <init-param>  
 	    <!-- 用户名 -->  
 	    <param-name>loginUsername</param-name>  

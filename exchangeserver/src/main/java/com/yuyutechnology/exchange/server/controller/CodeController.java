@@ -60,7 +60,7 @@ public class CodeController {
         return message;
     }
 
-    public static class Message {
+    public class Message {
         private String name;
         private int    age;
         private double    double1;
