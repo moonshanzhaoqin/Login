@@ -51,7 +51,7 @@ public class AdminController {
 			if (admin==null) {
 				mav.setViewName("login");
 				mav.addObject("retCode", RetCodeConsts.ADMIN_NOT_EXIST);
-				mav.addObject("message", "Admin不存在");
+				mav.addObject("message", "用戶不存在");
 			}else if(adminManager.checkPassword(admin.getAdminId(), loginRquest.getAdminPassword())){
 				// 写入session
 				request.getSession().setAttribute("adminName",admin.getAdminName());
