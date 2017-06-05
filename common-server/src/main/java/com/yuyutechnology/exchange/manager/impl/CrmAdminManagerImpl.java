@@ -24,19 +24,25 @@ public class CrmAdminManagerImpl implements CrmAdminManager {
 	AdminDAO adminDAO;
 
 	@Override
-	public String login(String adminName, String adminPassword) {
-		Admin admin = adminDAO.getAdminByName(adminName);
-		if (admin == null) {
-			logger.info("no admin!");
-			return RetCodeConsts.ADMIN_NOT_EXIST;
-		} else if (PasswordUtils.check(adminPassword, admin.getAdminPassword(), admin.getPasswordSalt())) {
-			logger.info("login successs");
-			return RetCodeConsts.RET_CODE_SUCCESS;
-		} else {
-			logger.info("password not match name");
-			return RetCodeConsts.PASSWORD_NOT_MATCH_NAME;
-		}
+	public Admin getAdminByName(String adminName) {
+		return adminDAO.getAdminByName(adminName);
 	}
+
+	// @Override
+	// public String login(String adminName, String adminPassword) {
+	// Admin admin = adminDAO.getAdminByName(adminName);
+	// if (admin == null) {
+	// logger.info("no admin!");
+	// return RetCodeConsts.ADMIN_NOT_EXIST;
+	// } else if (PasswordUtils.check(adminPassword, admin.getAdminPassword(),
+	// admin.getPasswordSalt())) {
+	// logger.info("login successs");
+	// return RetCodeConsts.RET_CODE_SUCCESS;
+	// } else {
+	// logger.info("password not match name");
+	// return RetCodeConsts.PASSWORD_NOT_MATCH_NAME;
+	// }
+	// }
 
 	@Override
 	public void addAdmin(String adminName) {
@@ -54,22 +60,28 @@ public class CrmAdminManagerImpl implements CrmAdminManager {
 	}
 
 	@Override
-	public String modifyPassword(String adminName,String oldPassword, String newPassword) {
+	public String modifyPassword(String adminName, String oldPassword, String newPassword) {
 		Admin admin = adminDAO.getAdminByName(adminName);
 		if (PasswordUtils.check(oldPassword, admin.getAdminPassword(), admin.getPasswordSalt())) {
 			admin.setAdminPassword(PasswordUtils.encrypt(newPassword, admin.getPasswordSalt()));
 			logger.info("modifyPassword sucess");
 			return RetCodeConsts.RET_CODE_SUCCESS;
-		}else{
+		} else {
 			logger.info("oldPassword is wrong");
 			return RetCodeConsts.PASSWORD_NOT_MATCH_NAME;
 		}
 	}
-	
+
 	@Override
-	public List<Admin> getAdminList(){
+	public boolean checkPassword(Integer adminId, String adminPassword) {
+		Admin admin = adminDAO.getAdmin(adminId);
+		return PasswordUtils.check(adminPassword, admin.getAdminPassword(), admin.getPasswordSalt());
+
+	}
+
+	@Override
+	public List<Admin> getAdminList() {
 		return adminDAO.getAdminList();
 	}
-	
 
 }

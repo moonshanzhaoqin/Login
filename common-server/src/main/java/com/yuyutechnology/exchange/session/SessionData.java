@@ -41,4 +41,9 @@ public class SessionData implements Serializable {
 		this.verify = verify;
 	}
 
+	@Override
+	public String toString() {
+		return "SessionData [userId=" + userId + ", sessionId=" + sessionId + ", verify=" + verify + "]";
+	}
+
 }

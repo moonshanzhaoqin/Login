@@ -15,6 +15,7 @@ public class Admin {
 	private String adminName;
 	private String adminPassword;
 	private String passwordSalt;
+	private String adminPower;
 
 	public Admin() {
 
@@ -25,6 +26,13 @@ public class Admin {
 		this.adminName = adminName;
 		this.adminPassword = adminPassword;
 		this.passwordSalt = passwordSalt;
+	}
+
+	public Admin(String adminName, String adminPassword, String passwordSalt, String adminPower) {
+		this.adminName = adminName;
+		this.adminPassword = adminPassword;
+		this.passwordSalt = passwordSalt;
+		this.adminPower = adminPower;
 	}
 
 	@Id
@@ -65,4 +73,14 @@ public class Admin {
 	public void setPasswordSalt(String passwordSalt) {
 		this.passwordSalt = passwordSalt;
 	}
+
+	@Column(name = "admin_power")
+	public String getAdminPower() {
+		return this.adminPower;
+	}
+
+	public void setAdminPower(String adminPower) {
+		this.adminPower = adminPower;
+	}
+
 }

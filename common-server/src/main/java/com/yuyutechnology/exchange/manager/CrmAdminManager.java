@@ -6,12 +6,26 @@ import com.yuyutechnology.exchange.pojo.Admin;
 
 public interface CrmAdminManager {
 
-	String login(String adminName, String adminPassword);
+//	String login(String adminName, String adminPassword);
 
 	void addAdmin(String adminName);
 
 	String modifyPassword(String adminName, String oldPassword, String newPassword);
 
-	public List<Admin> getAdminList();
+	List<Admin> getAdminList();
+
+
+	/**
+	 * @param adminId
+	 * @param adminPassword
+	 * @return
+	 */
+	boolean checkPassword(Integer adminId, String adminPassword);
+
+	/**
+	 * @param adminName
+	 * @return
+	 */
+	Admin getAdminByName(String adminName);
 
 }

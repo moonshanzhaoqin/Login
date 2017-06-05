@@ -87,7 +87,7 @@ public class LoginRequest extends BaseRequest{
 	 * 
 	 * @return
 	 */
-	public int isEmpty() {
+	public int Empty() {
 		if (StringUtils.isEmpty(this.language)) {
 			this.language = "zh_CN";
 		}

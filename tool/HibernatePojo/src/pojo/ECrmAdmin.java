@@ -1,5 +1,5 @@
 package pojo;
-// Generated May 25, 2017 5:41:24 PM by Hibernate Tools 5.2.1.Final
+// Generated Jun 5, 2017 10:04:57 AM by Hibernate Tools 5.2.1.Final
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,6 +19,7 @@ public class ECrmAdmin implements java.io.Serializable {
 	private String adminName;
 	private String adminPassword;
 	private String passwordSalt;
+	private String adminPower;
 
 	public ECrmAdmin() {
 	}
@@ -27,6 +28,13 @@ public class ECrmAdmin implements java.io.Serializable {
 		this.adminName = adminName;
 		this.adminPassword = adminPassword;
 		this.passwordSalt = passwordSalt;
+	}
+
+	public ECrmAdmin(String adminName, String adminPassword, String passwordSalt, String adminPower) {
+		this.adminName = adminName;
+		this.adminPassword = adminPassword;
+		this.passwordSalt = passwordSalt;
+		this.adminPower = adminPower;
 	}
 
 	@Id
@@ -66,6 +74,15 @@ public class ECrmAdmin implements java.io.Serializable {
 
 	public void setPasswordSalt(String passwordSalt) {
 		this.passwordSalt = passwordSalt;
+	}
+
+	@Column(name = "admin_power")
+	public String getAdminPower() {
+		return this.adminPower;
+	}
+
+	public void setAdminPower(String adminPower) {
+		this.adminPower = adminPower;
 	}
 
 }

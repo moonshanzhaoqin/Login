@@ -61,7 +61,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 
 		// 计算结果值
 		BigDecimal rate = oandaRatesManager.getSingleExchangeRate(currencyLeft, ServerConsts.CURRENCY_OF_GOLDPAY);
-		BigDecimal baseAmout = amount.divide(rate, 2, BigDecimal.ROUND_UP);
+		BigDecimal baseAmout = amount.divide(rate, currencyLeft.equals(ServerConsts.CURRENCY_OF_JPY)?0:2, BigDecimal.ROUND_UP);
 		logger.info("amount{} / rate {} = baseAmount {}", amount, rate, baseAmout);
 
 		// 生成TransId
@@ -71,12 +71,14 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		Transfer transfer = new Transfer();
 		transfer.setTransferId(transferId);
 		transfer.setCreateTime(new Date());
-		transfer.setCurrency(currencyLeft);
-		transfer.setTransferAmount(baseAmout);
+		transfer.setCurrency(ServerConsts.CURRENCY_OF_GOLDPAY);
+		transfer.setTransferAmount(amount);
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
-		transfer.setUserFrom(userId);
-		transfer.setUserTo(systemUser.getUserId());
-		transfer.setPaypalExchange(amount);
+		transfer.setUserFrom(systemUser.getUserId());
+		transfer.setUserTo(userId);
+		transfer.setPaypalCurrency(currencyLeft);
+		transfer.setPaypalExchange(baseAmout);
+		
 
 		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE);
 		// 保存
@@ -115,7 +117,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 
 		// 条件 验证1.transId，amount
 		Transfer transfer = transferDAO.getTranByIdAndStatus(transId, ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
-		if (transfer == null || userId != transfer.getUserFrom()) {
+		if (transfer == null || userId != transfer.getUserTo()) {
 			logger.warn("Order status exception");
 			map.put("retCode", RetCodeConsts.TRANSFER_PAYPALTRANS_ORDER_STATUS_EXCEPTION);
 			map.put("msg", "Order status exception");
@@ -142,8 +144,8 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			BraintreeGateway gateway = new BraintreeGateway(configDAO.getConfig("paypal_accessToken").getConfigValue());
 
 			TransactionRequest request = new TransactionRequest();
-			request.amount(transfer.getTransferAmount());
-			request.merchantAccountId(transfer.getCurrency());
+			request.amount(transfer.getPaypalExchange());
+			request.merchantAccountId(transfer.getPaypalCurrency());
 			request.paymentMethodNonce(nonce);
 			request.orderId(transfer.getTransferId());
 

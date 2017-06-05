@@ -23,3 +23,13 @@ INSERT INTO `e_config` VALUES ('paypal_expiration', '600', 'paypal支付过期�
 
 ALTER TABLE `e_transfer`
   ADD COLUMN `paypal_exchange` decimal(20,4) NOT NULL  COMMENT 'paypald兑换gp' AFTER `goldpay_acount`;
+ALTER TABLE `e_transfer`
+  ADD COLUMN `paypal_currency` char(3) NOT NULL AFTER `goldpay_acount`;
+  
+ALTER TABLE e_transfer MODIFY paypal_currency CHAR(3) DEFAULT '';
+ALTER TABLE e_transfer MODIFY paypal_exchange DECIMAL(20,4) DEFAULT 0;
+
+
+--2017-06-05 Suzan
+ALTER TABLE `e_crm_admin`
+  ADD COLUMN `admin_power` varchar(255) NULL DEFAULT NULL COMMENT '权限';
