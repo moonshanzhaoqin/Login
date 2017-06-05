@@ -78,10 +78,12 @@
 			getUserInfoByPage(page, userPhone, userName);
 		}
 
-		function getUserInfoByPage(currentPage, userPhone, userName) {
+		function getUserInfoByPage(currentPage, userPhone1, userName1) {
 			form = document.getElementById("searchUserInfo");
-			form.userPhone.value = userPhone;
-			form.userName.value = userName;
+			form.userPhone.value = userPhone1;
+			form.userName.value = userName1;
+			userPhone=userPhone1;
+			userName=userName1;
 			var data = {
 				currentPage : currentPage,
 				userPhone : userPhone,
@@ -122,7 +124,7 @@
 			});
 		}
         /* 立即更新 */
-		function updateUserInfo(currentPage, userPhone, userName) {
+		function updateUserInfo() {
 			$("#updateImmediately").attr("disabled", true);
 			$("#updateImmediately").text("更新中...");
 			$.ajax({
