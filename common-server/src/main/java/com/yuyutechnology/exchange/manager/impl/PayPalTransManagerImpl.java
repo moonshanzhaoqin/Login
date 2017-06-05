@@ -61,7 +61,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 
 		// 计算结果值
 		BigDecimal rate = oandaRatesManager.getSingleExchangeRate(currencyLeft, ServerConsts.CURRENCY_OF_GOLDPAY);
-		BigDecimal baseAmout = amount.divide(rate, 2, BigDecimal.ROUND_UP);
+		BigDecimal baseAmout = amount.divide(rate, currencyLeft.equals(ServerConsts.CURRENCY_OF_JPY)?0:2, BigDecimal.ROUND_UP);
 		logger.info("amount{} / rate {} = baseAmount {}", amount, rate, baseAmout);
 
 		// 生成TransId
