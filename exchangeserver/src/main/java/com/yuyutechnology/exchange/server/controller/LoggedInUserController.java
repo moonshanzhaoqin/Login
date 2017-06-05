@@ -208,7 +208,7 @@ public class LoggedInUserController {
 				rep.setOpts(new String[] { String.valueOf(time) });
 			} else if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_CHANGEPHONE,
 					changePhoneRequest.getCheckToken())) {
-				 /*校验手机验证码*/
+				/* 校验手机验证码 */
 				Boolean resultBool = userManager.testPinCode(ServerConsts.PIN_FUNC_CHANGEPHONE,
 						changePhoneRequest.getAreaCode(), changePhoneRequest.getUserPhone(),
 						changePhoneRequest.getVerificationCode());
@@ -222,11 +222,11 @@ public class LoggedInUserController {
 					sessionManager.cleanSession(sessionData.getSessionId());
 					sessionManager.delLoginToken(sessionData.getUserId());
 					userManager.logout(sessionData.getUserId());
-					
+
 					logger.info("********Operation succeeded********");
 					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-					
+
 					userManager.clearPinCode(ServerConsts.PIN_FUNC_CHANGEPHONE, changePhoneRequest.getAreaCode(),
 							changePhoneRequest.getUserPhone());
 					sessionManager.delCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_CHANGEPHONE);
@@ -515,7 +515,7 @@ public class LoggedInUserController {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_MODIFYPAYPWD,
 					modifyPayPwdByOldRequest.getCheckToken())) {
-				 /*PayPwd 6位数字*/
+				/* PayPwd 6位数字 */
 				if (modifyPayPwdByOldRequest.getNewUserPayPwd().length() == 6
 						&& StringUtils.isNumeric(modifyPayPwdByOldRequest.getNewUserPayPwd())) {
 					if (userManager.isUserPayPwdEqualsOld(sessionData.getUserId(),
@@ -568,7 +568,7 @@ public class LoggedInUserController {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.RESETPAYPWD,
 					resetPayPwdRequest.getCheckToken())) {
-				 /*PayPwd 6位数字*/
+				/* PayPwd 6位数字 */
 				if (resetPayPwdRequest.getNewUserPayPwd().length() == 6
 						&& StringUtils.isNumeric(resetPayPwdRequest.getNewUserPayPwd())) {
 					userManager.updateUserPayPwd(sessionData.getUserId(), resetPayPwdRequest.getNewUserPayPwd());
@@ -635,8 +635,8 @@ public class LoggedInUserController {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		int userId = 0;
 		SessionData activeSessionData = sessionManager.getByUserid(logoutRequest.getUserId());
-		logger.info("sessionData:{}", sessionData);
-		logger.info("activeSessionData:{}", activeSessionData);
+		logger.info("sessionData:{}", sessionData == null ? null : sessionData.toString());
+		logger.info("activeSessionData:{}", activeSessionData == null ? null : activeSessionData.toString());
 		if (sessionData == null && activeSessionData == null) {
 			userId = logoutRequest.getUserId();
 		} else if (sessionData != null) {
