@@ -704,7 +704,7 @@ public class TransferManagerImpl implements TransferManager{
 				+ "LEFT JOIN e_user t3 ON if(t1.user_id = t2.user_from,t2.user_to,t2.user_from) = t3.user_id "
 				+ "LEFT JOIN e_currency t4 ON t1.currency = t4.currency "
 				+ "LEFT JOIN e_transfer t5 ON t5.transfer_id = t2.transfer_comment "
-				+ "LEFT JOIN e_user t6 ON t5.user_from  = t6.user_id"
+				+ "LEFT JOIN e_user t6 ON t5.user_from  = t6.user_id "
 				+ "where "
 				+ "t2.transfer_status = ? "
 				+ "AND t1.user_id = ? ");
