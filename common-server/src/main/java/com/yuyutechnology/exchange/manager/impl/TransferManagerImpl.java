@@ -656,8 +656,15 @@ public class TransferManagerImpl implements TransferManager{
 			dto.setFinishAt((Date) obj[5]);
 			
 			if((int) obj[6] == system.getUserId()){
-				dto.setPhoneNum((String) obj[10]);
-				dto.setTrader("");
+				
+				if(StringUtils.isNotBlank((String)obj[10])){
+					dto.setPhoneNum((String) obj[10]);
+					dto.setTrader("");
+				}else{
+					dto.setPhoneNum((String) obj[11]);
+					dto.setTrader("");
+				}
+
 			}else{
 				dto.setPhoneNum((String) obj[7]+" "+(String) obj[8]);
 				dto.setTrader((String) obj[9]);
@@ -689,12 +696,15 @@ public class TransferManagerImpl implements TransferManager{
 				+ "t3.area_code,"
 				+ "t3.user_phone,"
 				+ "t3.user_name,"
-				+ "if(t1.user_id = t2.user_from,CONCAT(t2.area_code,' ',t2.phone),'') as trader ";
+				+ "CONCAT(t2.area_code,' ',t2.phone) as trader,"
+				+ "CONCAT(t6.area_code,' ',t6.user_phone) as invitee ";
 		StringBuffer sb = new StringBuffer(""
 				+ "FROM `e_wallet_seq` t1 "
 				+ "LEFT JOIN e_transfer t2 ON t1.transaction_id = t2.transfer_id "
 				+ "LEFT JOIN e_user t3 ON if(t1.user_id = t2.user_from,t2.user_to,t2.user_from) = t3.user_id "
 				+ "LEFT JOIN e_currency t4 ON t1.currency = t4.currency "
+				+ "LEFT JOIN e_transfer t5 ON t5.transfer_id = t2.transfer_comment "
+				+ "LEFT JOIN e_user t6 ON t5.user_from  = t6.user_id"
 				+ "where "
 				+ "t2.transfer_status = ? "
 				+ "AND t1.user_id = ? ");
