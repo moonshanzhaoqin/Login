@@ -160,6 +160,11 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 			transfer.setUserTo(userId);
 			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE);
 			transfer.setNoticeId(0);
+			
+			//add by Niklaus at 2017-06-07
+			transfer.setGoldpayName(bind.getGoldpayName());
+			transfer.setGoldpayAcount(bind.getGoldpayAcount());
+			
 			// 保存
 			transferDAO.addTransfer(transfer);
 
