@@ -79,10 +79,10 @@ public class SupervisorController {
 		String retCode = crmAlarmManager.saveSupervisor(saveSupervisorRequest.getSupervisorName().trim(),
 				saveSupervisorRequest.getSupervisorMobile().trim(), saveSupervisorRequest.getSupervisorEmail().trim());
 		
-		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
-				Operation.ADD_SUPERVISOR.getOperationName(), saveSupervisorRequest.toString()));
-		
-		
+		if(retCode=="success"){
+			crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+					Operation.ADD_SUPERVISOR.getOperationName(), saveSupervisorRequest.toString()));
+		}
 		map.put("retCode", retCode);
 		out.print(JsonBinder.getInstanceNonNull().toJson(map));
 	}
