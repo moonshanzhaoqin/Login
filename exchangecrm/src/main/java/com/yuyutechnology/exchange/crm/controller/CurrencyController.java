@@ -99,8 +99,10 @@ public class CurrencyController {
 		} else {
 			logger.info("add {}", addCurrencyRequest.getCurrency());
 			String retCode = currencyManager.addCurrency(addCurrencyRequest.getCurrency());
-			crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
-					Operation.ADD_CURRENCY.getOperationName(),addCurrencyRequest.getCurrency()));		
+			if (retCode==RetCodeConsts.RET_CODE_SUCCESS) {
+				crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+						Operation.ADD_CURRENCY.getOperationName(),addCurrencyRequest.getCurrency()));
+			}
 			rep.setRetCode(retCode);
 		}
 		return rep;
