@@ -64,6 +64,14 @@ public class PayPalTransController {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		PaypalTransInitResponse rep = new PaypalTransInitResponse();
 		
+		//货币不能为人民币和GDQ
+		if(reqMsg.getCurrency().equals(ServerConsts.CURRENCY_OF_CNY) || reqMsg.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
+			logger.warn("fail");
+			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+			rep.setMessage("fail");
+			return rep;
+		}
+		
 		//判断条件.币种合法，GDQ数量为整数且大于100
 		if(reqMsg.getAmount() == null ||(reqMsg.getAmount().compareTo(new BigDecimal("100")) == -1 || reqMsg.getAmount().longValue()%1 > 0)){
 			logger.warn("The number of inputs does not meet the requirements");
