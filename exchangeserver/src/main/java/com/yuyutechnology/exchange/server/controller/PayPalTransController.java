@@ -30,98 +30,91 @@ import com.yuyutechnology.exchange.session.SessionDataHolder;
 
 @Controller
 public class PayPalTransController {
-	
+
 	@Autowired
 	OandaRatesManager oandaRatesManager;
 	@Autowired
 	PayPalTransManager payPalTransManager;
-	
+
 	public static Logger logger = LogManager.getLogger(PayPalTransController.class);
-	
+
 	@ApiOperation(value = "paypal交易  获取汇率")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/paypalTrans/getExchangeRate4GDQ")
-	public @ResponseEncryptBody GetExchangeRate4GDQResponse 
-	getExchangeRate4GDQ(@PathVariable String token){
-		
+	public @ResponseEncryptBody GetExchangeRate4GDQResponse getExchangeRate4GDQ(@PathVariable String token) {
+
 		GetExchangeRate4GDQResponse rep = new GetExchangeRate4GDQResponse();
-		HashMap<String, Double> result = oandaRatesManager.getExchangeRateDiffLeft4OneRight(ServerConsts.CURRENCY_OF_GOLDPAY);
+		HashMap<String, Double> result = oandaRatesManager
+				.getExchangeRateDiffLeft4OneRight(ServerConsts.CURRENCY_OF_GOLDPAY);
 		Date updateDate = oandaRatesManager.getExchangeRateUpdateDate();
 		result.remove(ServerConsts.CURRENCY_OF_CNY);
-		
+
 		rep.setRates(result);
 		rep.setUpdateDate(updateDate);
-		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-		
-		return rep;
-	}
-	
-	@ApiOperation(value = "paypal交易 订单初始化")
-	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/paypalTrans/paypalTransInit")
-	public @ResponseEncryptBody PaypalTransInitResponse 
-	paypalTransInit(@PathVariable String token,@RequestDecryptBody PaypalTransInitRequest reqMsg){
-		// 从Session中获取Id
-		SessionData sessionData = SessionDataHolder.getSessionData();
-		PaypalTransInitResponse rep = new PaypalTransInitResponse();
-		
-		//货币不能为人民币和GDQ
-		if(reqMsg.getCurrency().equals(ServerConsts.CURRENCY_OF_CNY) || reqMsg.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
-			logger.warn("fail");
-			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-			rep.setMessage("fail");
-			return rep;
-		}
-		
-		//判断条件.币种合法，GDQ数量为整数且大于100
-		if(reqMsg.getAmount() == null ||(reqMsg.getAmount().compareTo(new BigDecimal("100")) == -1 || reqMsg.getAmount().longValue()%1 > 0)){
-			logger.warn("The number of inputs does not meet the requirements");
-			rep.setRetCode(RetCodeConsts.TRANSFER_PAYPALTRANS_ILLEGAL_DATA);
-			rep.setMessage("The number of inputs does not meet the requirements");
-			return rep;
-		}
-		
-		HashMap<String, Object> result = payPalTransManager.paypalTransInit(sessionData.getUserId(), reqMsg.getCurrency(), reqMsg.getAmount());
-		if(RetCodeConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY.equals(result.get("retCode"))){
-			rep.setRetCode(RetCodeConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
-			rep.setMessage((String) result.get("msg"));
-			return rep;
-		}
-		
-		rep.setTransId((String) result.get("transId"));
-		rep.setAccessToken((String) result.get("token"));
-		rep.setCurrency(reqMsg.getCurrency());
-		rep.setAmount(((BigDecimal) result.get("amount")).doubleValue());
-		rep.setUnit((String) result.get("unit"));
-		
-		rep.setCreateAt(oandaRatesManager.getExchangeRateUpdateDate());
-		rep.setExpiration((long) result.get("expiration"));
-		
-		
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 
 		return rep;
 	}
-	
+
+	@ApiOperation(value = "paypal交易 订单初始化")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/paypalTrans/paypalTransInit")
+	public @ResponseEncryptBody PaypalTransInitResponse paypalTransInit(@PathVariable String token,
+			@RequestDecryptBody PaypalTransInitRequest reqMsg) {
+		// 从Session中获取Id
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		PaypalTransInitResponse rep = new PaypalTransInitResponse();
+
+		// 判断条件.币种合法，GDQ数量为整数且大于100
+		if (reqMsg.getAmount() == null || (reqMsg.getAmount().compareTo(new BigDecimal("100")) == -1
+				|| reqMsg.getAmount().longValue() % 1 > 0)) {
+			logger.warn("The number of inputs does not meet the requirements");
+			rep.setRetCode(RetCodeConsts.TRANSFER_PAYPALTRANS_ILLEGAL_DATA);
+			rep.setMessage("The number of inputs does not meet the requirements");
+			return rep;
+		}
+
+		HashMap<String, Object> result = payPalTransManager.paypalTransInit(sessionData.getUserId(),
+				reqMsg.getCurrency(), reqMsg.getAmount());
+		if (RetCodeConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY.equals(result.get("retCode"))) {
+			rep.setRetCode(RetCodeConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
+			rep.setMessage((String) result.get("msg"));
+			return rep;
+		}
+
+		rep.setTransId((String) result.get("transId"));
+		rep.setAccessToken((String) result.get("token"));
+		rep.setCurrency(reqMsg.getCurrency());
+		rep.setAmount(((BigDecimal) result.get("amount")).doubleValue());
+		rep.setUnit((String) result.get("unit"));
+
+		rep.setCreateAt(oandaRatesManager.getExchangeRateUpdateDate());
+		rep.setExpiration((long) result.get("expiration"));
+
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+
+		return rep;
+	}
+
 	@ApiOperation(value = "paypal交易  交易确认")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/paypalTrans/paypalTransConfirm")
-	public @ResponseEncryptBody PaypalTransConfirmResponse 
-	paypalTransConfirm(@PathVariable String token,@RequestDecryptBody PaypalTransConfirmRequest reqMsg){
-		
+	public @ResponseEncryptBody PaypalTransConfirmResponse paypalTransConfirm(@PathVariable String token,
+			@RequestDecryptBody PaypalTransConfirmRequest reqMsg) {
+
 		// 从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		PaypalTransConfirmResponse rep = new PaypalTransConfirmResponse();
-		
-		HashMap<String, String> result = payPalTransManager.paypalTransConfirm(sessionData.getUserId(), 
+
+		HashMap<String, String> result = payPalTransManager.paypalTransConfirm(sessionData.getUserId(),
 				reqMsg.getTransId(), reqMsg.getPaymentMethodNonce());
-		
+
 		rep.setRetCode(result.get("retCode"));
 		rep.setMessage(result.get("msg"));
-		
+
 		rep.setTransId(reqMsg.getTransId());
-		
+
 		return rep;
-		
+
 	}
 
 }
