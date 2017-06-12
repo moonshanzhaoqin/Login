@@ -62,7 +62,7 @@ public class MonitorController {
 			commonRedisTemplate.opsForValue().set("monitorValue", "1");
 			commonRedisTemplate.opsForValue().get("monitorValue");
 		} catch (Exception e) {
-			serverInfo.setDb(e.getMessage());
+			serverInfo.setRedis(e.getMessage());
 		}
 		return JsonBinder.getInstance().toJson(serverInfo);
 	}
