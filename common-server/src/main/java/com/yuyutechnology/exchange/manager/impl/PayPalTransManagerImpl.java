@@ -155,7 +155,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			request.merchantAccountId(transfer.getPaypalCurrency());
 			request.paymentMethodNonce(nonce);
 			request.orderId(transfer.getTransferId());
-			request.options().submitForSettlement(true);
+//			request.options().submitForSettlement(true);
 //			request.options().paypal().customField("PayPal custom field")
 //					.description("Description for PayPal email receipt").done();
 			request.options().storeInVaultOnSuccess(true).done();
@@ -173,14 +173,14 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		if (saleResult.isSuccess()) {
 			Transaction transaction = saleResult.getTarget();
 			logger.info("Success ID: {}", transaction.getId());
-			try {
-				Result<Transaction> result = gateway.transaction().submitForSettlement(transaction.getId());
-				if (!result.isSuccess()) {
-				  logger.warn("submitForSettlement failure, transactionId : {}, PayPal transactionId : {}",  transaction.getId(), transfer.getTransferId());
-				}
-			} catch (Exception e) {
-				 logger.warn("submitForSettlement error, transactionId : {}, PayPal transactionId : {}",  transaction.getId(), transfer.getTransferId());
-			}
+//			try {
+//				Result<Transaction> result = gateway.transaction().submitForSettlement(transaction.getId());
+//				if (!result.isSuccess()) {
+//				  logger.warn("submitForSettlement failure, transactionId : {}, PayPal transactionId : {}",  transaction.getId(), transfer.getTransferId());
+//				}
+//			} catch (Exception e) {
+//				 logger.warn("submitForSettlement error, transactionId : {}, PayPal transactionId : {}",  transaction.getId(), transfer.getTransferId());
+//			}
 			// logger.info("PaymentInstrumentType :
 			// {}",transaction.getPaymentInstrumentType());
 			// CreditCard creditCard = transaction.getCreditCard();
