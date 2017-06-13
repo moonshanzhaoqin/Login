@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,8 @@ import com.yuyutechnology.exchange.pojo.User;
 @Service
 public class PayPalTransManagerImpl implements PayPalTransManager {
 
+	public static Logger logger = LogManager.getLogger(PayPalTransManagerImpl.class);
+	
 	@Autowired
 	UserDAO userDAO;
 	@Autowired
@@ -38,13 +42,17 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 	ConfigDAO configDAO;
 	@Autowired
 	TransferDAO transferDAO;
-
 	@Autowired
 	CommonManager commonManager;
 	@Autowired
 	OandaRatesManager oandaRatesManager;
 
-	public static Logger logger = LogManager.getLogger(PayPalTransManagerImpl.class);
+	BraintreeGateway gateway;
+	
+	@PostConstruct
+	public void init() {
+		gateway = new BraintreeGateway(configDAO.getConfig("paypal_accessToken").getConfigValue());
+	}
 
 	@Override
 	public HashMap<String, Object> paypalTransInit(Integer userId, String currencyLeft, BigDecimal amount) {
@@ -90,7 +98,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		// String accessToken =
 		// ResourceUtils.getBundleValue4String("paypal.accessToken",
 		// "access_token$sandbox$h32wtjg3dw3jt4kd$e0a3535f2b04517e66258c0cbe9b118d");
-		BraintreeGateway gateway = new BraintreeGateway(configDAO.getConfig("paypal_accessToken").getConfigValue());
+//		BraintreeGateway gateway = new BraintreeGateway(configDAO.getConfig("paypal_accessToken").getConfigValue());
 		String clientToken = gateway.clientToken().generate();
 
 		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
@@ -113,7 +121,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 
 		HashMap<String, String> map = new HashMap<>();
 
-		Transaction transaction;
+		
 
 		// 条件 验证1.transId，amount
 		Transfer transfer = transferDAO.getTranByIdAndStatus(transId, ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
@@ -141,8 +149,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		// "access_token$sandbox$h32wtjg3dw3jt4kd$e0a3535f2b04517e66258c0cbe9b118d");
 		Result<Transaction> saleResult = null;
 		try {
-			BraintreeGateway gateway = new BraintreeGateway(configDAO.getConfig("paypal_accessToken").getConfigValue());
-
+//			BraintreeGateway gateway = new BraintreeGateway(configDAO.getConfig("paypal_accessToken").getConfigValue());
 			TransactionRequest request = new TransactionRequest();
 			request.amount(transfer.getPaypalExchange());
 			request.merchantAccountId(transfer.getPaypalCurrency());
@@ -164,9 +171,16 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 
 		// 验证PayPal回调结果
 		if (saleResult.isSuccess()) {
-			transaction = saleResult.getTarget();
+			Transaction transaction = saleResult.getTarget();
 			logger.info("Success ID: {}", transaction.getId());
-
+			try {
+				Result<Transaction> result = gateway.transaction().submitForSettlement(transaction.getId());
+				if (!result.isSuccess()) {
+				  logger.warn("submitForSettlement failure, transactionId : {}, PayPal transactionId : {}",  transaction.getId(), transfer.getTransferId());
+				}
+			} catch (Exception e) {
+				 logger.warn("submitForSettlement error, transactionId : {}, PayPal transactionId : {}",  transaction.getId(), transfer.getTransferId());
+			}
 			// logger.info("PaymentInstrumentType :
 			// {}",transaction.getPaymentInstrumentType());
 			// CreditCard creditCard = transaction.getCreditCard();
