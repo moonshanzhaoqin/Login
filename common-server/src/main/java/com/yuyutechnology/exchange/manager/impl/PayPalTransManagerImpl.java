@@ -148,7 +148,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			request.merchantAccountId(transfer.getPaypalCurrency());
 			request.paymentMethodNonce(nonce);
 			request.orderId(transfer.getTransferId());
-//			request.options().submitForSettlement(true);
+			request.options().submitForSettlement(true);
 //			request.options().paypal().customField("PayPal custom field")
 //					.description("Description for PayPal email receipt").done();
 			request.options().storeInVaultOnSuccess(true).done();
