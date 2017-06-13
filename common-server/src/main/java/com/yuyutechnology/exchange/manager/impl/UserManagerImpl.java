@@ -365,11 +365,14 @@ public class UserManagerImpl implements UserManager {
 		}
 		logger.info("getPinCode : phone={}, pincode={}", areaCode + userPhone, random);
 		final String md5random = DigestUtils.md5Hex(random);
-		// 存入redis userPhone:md5random
-		redisDAO.saveData(func + areaCode + userPhone, md5random,
-				configManager.getConfigLongValue(ConfigKeyEnum.VERIFYTIME, 10l).intValue(), TimeUnit.MINUTES);
-		// 发送验证码
-		return smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random, func);
+		/* 发送验证码 */
+		SendMessageResponse sendMessageResponse = smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random, func);
+		if (sendMessageResponse.isOk()) {
+			/* 存入redis userPhone:md5random */
+			redisDAO.saveData(func + areaCode + userPhone, md5random,
+					configManager.getConfigLongValue(ConfigKeyEnum.VERIFYTIME, 10l).intValue(), TimeUnit.MINUTES);
+		}
+		return sendMessageResponse;
 	}
 
 	@Override
@@ -440,7 +443,7 @@ public class UserManagerImpl implements UserManager {
 				ServerConsts.USER_AVAILABLE_OF_AVAILABLE, ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE,
 				ServerConsts.PAY_AVAILABLE_OF_AVAILABLE, passwordSalt, LanguageUtils.standard(language)));
 		logger.info("Add user complete!");
-		/*记录换绑手机时间*/
+		/* 记录换绑手机时间 */
 		redisDAO.saveData("changephonetime" + userId, new Date().getTime());
 		/* 添加钱包信息 */
 		createWallets4NewUser(userId);
@@ -452,20 +455,20 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void switchLanguage(Integer userId, String language) {
-		Language newLanguage=LanguageUtils.standard(language);
+		Language newLanguage = LanguageUtils.standard(language);
 		logger.info("{} switchLanguage to {} ==>", userId, newLanguage.toString());
 		User user = userDAO.getUser(userId);
 		if (!user.getPushTag().equals(newLanguage)) {
-			/*语言不一致，解绑Tag*/
+			/* 语言不一致，解绑Tag */
 			logger.info("***Language inconsistency***");
 			pushManager.unbindPushTag(user.getPushId(), user.getPushTag());
-			
+
 			/* 绑定Tag */
 			pushManager.bindPushTag(user.getPushId(), newLanguage);
-			
+
 			user.setPushTag(newLanguage);
 			userDAO.updateUser(user);
-		}else {
+		} else {
 			logger.info("***Language consistency,do nothing!***");
 		}
 	}
@@ -745,6 +748,5 @@ public class UserManagerImpl implements UserManager {
 		logger.info("***not equal***");
 		return false;
 	}
-
 
 }
