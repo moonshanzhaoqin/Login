@@ -50,6 +50,12 @@
 				<env>test65</env>
 			</properties>
 		</profile>
+		<profile>
+			<id>auto</id>
+			<properties>
+				<env>auto</env>
+			</properties>
+		</profile>
 	</profiles>
 	<dependencies>
 		<dependency>
