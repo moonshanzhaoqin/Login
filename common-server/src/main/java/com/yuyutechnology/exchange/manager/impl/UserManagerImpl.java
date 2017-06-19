@@ -365,14 +365,10 @@ public class UserManagerImpl implements UserManager {
 		}
 		logger.info("getPinCode : phone={}, pincode={}", areaCode + userPhone, random);
 		final String md5random = DigestUtils.md5Hex(random);
-		/* 发送验证码 */
-		SendMessageResponse sendMessageResponse = smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random, func);
-		if (sendMessageResponse!=null && sendMessageResponse.isOk()) {
-			/* 存入redis userPhone:md5random */
-			redisDAO.saveData(func + areaCode + userPhone, md5random,
-					configManager.getConfigLongValue(ConfigKeyEnum.VERIFYTIME, 10l).intValue(), TimeUnit.MINUTES);
-		}
-		return sendMessageResponse;
+		/* 存入redis userPhone:md5random */
+		redisDAO.saveData(func + areaCode + userPhone, md5random,
+				configManager.getConfigLongValue(ConfigKeyEnum.VERIFYTIME, 10l).intValue(), TimeUnit.MINUTES);
+		return smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random, func);
 	}
 
 	@Override
