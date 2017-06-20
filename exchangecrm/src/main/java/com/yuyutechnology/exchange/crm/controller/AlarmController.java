@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yuyutechnology.exchange.crm.request.SaveAlarmConfigRequest;
 import com.yuyutechnology.exchange.crm.request.UpdateAlarmConfigInfoRequest;
+import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.enums.Operation;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
@@ -42,6 +43,10 @@ public class AlarmController {
 	ConfigManager configManager;
 	@Autowired
 	CrmLogManager crmLogManager;
+	
+	private static final String[] VIEWNAMEARR = {"getAlarmConfigList",
+			"getLargeTransAlarmConfigList","getLargeTransAlarmConfigList",
+			"getBadAccountAlarmConfigList","getTotalGDQAlarmConfigList"};
 
 	ModelAndView mav;
 
@@ -102,18 +107,38 @@ public class AlarmController {
 		mav.setViewName("alarm/badAccountAlarmConfigInfo");
 		return mav;
 	}
+	
+	@RequestMapping(value = "/alarm/getTotalGDQAlarmConfigList", method = RequestMethod.GET)
+	public ModelAndView getTotalGDQAlarmConfigList() {
+		mav = new ModelAndView();
+		
+		List<CrmAlarm> list = crmAlarmManager.getCrmAlarmConfigList();
+		List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
+
+		mav.addObject("list", list);
+		mav.addObject("supervisorList", supervisorList);
+		mav.addObject("totalAmountOfGDQ", configManager.getConfigStringValue(ConfigKeyEnum.TOTALGDQCANBESOLD, "100000000"));
+		mav.setViewName("alarm/totalGDQAlarmConfigInfo");
+		return mav;
+	}
+	
+	
+	
+	
 
 	@RequestMapping(value = "/alarm/delAlarmConfig", method = RequestMethod.GET)
 	public ModelAndView delAlarmConfig(Integer alarmId,	HttpServletRequest request, HttpServletResponse response) {
 		mav = new ModelAndView();
 		int alarmType = crmAlarmManager.delAlarmConfig(alarmId);
-		if (alarmType == 0) {
-			mav.setViewName("redirect:/alarm/getAlarmConfigList");
-		} else if (alarmType == 3) {
-			mav.setViewName("redirect:/alarm/getBadAccountAlarmConfigList");
-		} else {
-			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
-		}
+		mav.setViewName("redirect:/alarm/"+VIEWNAMEARR[alarmType]);
+		
+//		if (alarmType == 0) {
+//			mav.setViewName("redirect:/alarm/getAlarmConfigList");
+//		} else if (alarmType == 3) {
+//			mav.setViewName("redirect:/alarm/getBadAccountAlarmConfigList");
+//		} else {
+//			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
+//		}
 		
 		
 		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
@@ -154,13 +179,16 @@ public class AlarmController {
 				updateAlarmConfigInfoRequest.getCriticalThresholdUpperLimit(),
 				updateAlarmConfigInfoRequest.getAlarmMode(), 0,
 				JsonBinder.getInstance().toJson(updateAlarmConfigInfoRequest.getSupervisorId()));
-		if (updateAlarmConfigInfoRequest.getAlarmType() == 0) {
-			mav.setViewName("redirect:/alarm/getAlarmConfigList");
-		} else if (updateAlarmConfigInfoRequest.getAlarmType() == 3) {
-			mav.setViewName("redirect:/alarm/getBadAccountAlarmConfigList");
-		} else {
-			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
-		}
+		
+		mav.setViewName("redirect:/alarm/"+VIEWNAMEARR[updateAlarmConfigInfoRequest.getAlarmType()]);
+		
+//		if (updateAlarmConfigInfoRequest.getAlarmType() == 0) {
+//			mav.setViewName("redirect:/alarm/getAlarmConfigList");
+//		} else if (updateAlarmConfigInfoRequest.getAlarmType() == 3) {
+//			mav.setViewName("redirect:/alarm/getBadAccountAlarmConfigList");
+//		} else {
+//			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
+//		}
 		
 		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.EDIT_ALARM.getOperationName(), updateAlarmConfigInfoRequest.toString()));
@@ -177,13 +205,15 @@ public class AlarmController {
 				saveAlarmConfigRequest.getCriticalThresholdUpperLimit(), saveAlarmConfigRequest.getAlarmMode(), 0,
 				JsonBinder.getInstance().toJson(saveAlarmConfigRequest.getSupervisorId()));
 		
-		if (saveAlarmConfigRequest.getAlarmType() == 0) {
-			mav.setViewName("redirect:/alarm/getAlarmConfigList");
-		} else if (saveAlarmConfigRequest.getAlarmType() == 3) {
-			mav.setViewName("redirect:/alarm/getBadAccountAlarmConfigList");
-		} else {
-			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
-		}
+		mav.setViewName("redirect:/alarm/"+VIEWNAMEARR[saveAlarmConfigRequest.getAlarmType()]);
+		
+//		if (saveAlarmConfigRequest.getAlarmType() == 0) {
+//			mav.setViewName("redirect:/alarm/getAlarmConfigList");
+//		} else if (saveAlarmConfigRequest.getAlarmType() == 3) {
+//			mav.setViewName("redirect:/alarm/getBadAccountAlarmConfigList");
+//		} else {
+//			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
+//		}
 		
 		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.ADD_ALARM.getOperationName(), saveAlarmConfigRequest.toString()));
@@ -204,13 +234,15 @@ public class AlarmController {
 					Operation.ON_ALARM.getOperationName(), alarmId.toString()));
 		}
 
-		if (alarmType == 0) {
-			mav.setViewName("redirect:/alarm/getAlarmConfigList");
-		} else if (alarmType == 3) {
-			mav.setViewName("redirect:/alarm/getBadAccountAlarmConfigList");
-		} else {
-			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
-		}
+		mav.setViewName("redirect:/alarm/"+VIEWNAMEARR[alarmType]);
+		
+//		if (alarmType == 0) {
+//			mav.setViewName("redirect:/alarm/getAlarmConfigList");
+//		} else if (alarmType == 3) {
+//			mav.setViewName("redirect:/alarm/getBadAccountAlarmConfigList");
+//		} else {
+//			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
+//		}
 		// mav.setViewName("redirect:/alarm/getAlarmConfigList");
 		return mav;
 	}
