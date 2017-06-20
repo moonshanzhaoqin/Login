@@ -44,6 +44,18 @@
 									class="input-group-addon">%</span>
 							</div></div>
 						</div>
+						
+						<div class="form-group" id="limitPercent" style="display: none;" >
+							<label class="col-sm-3 control-label">预警百分比</label>
+							<div class="col-sm-5 ">
+								<div class="input-group">
+									<input type="text" class="form-control"
+										name="criticalThresholdLowerLimit"
+										id="percentageWarning" /> <span
+										class="input-group-addon">%</span>
+								</div>
+							</div>
+						</div>
 
 
 						<div class="form-group">

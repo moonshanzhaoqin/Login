@@ -98,7 +98,7 @@ function updateAlarmAvailable(obj,alarmAvailable){
 
 
 $("#addAlarmConfigBtn").click(function(){			
-	if ($("#alarmType").val().trim() != 3) {
+	if ($("#alarmType").val().trim() != 3 && $("#alarmType").val().trim() != 4) {
 		var lowerLimit = $("#criticalThresholdLowerLimit").val().trim();
 		var upperLimit = $("#criticalThresholdUpperLimit").val().trim();
 		if( checkNotBlank(lowerLimit) && checkNotBlank(upperLimit)){
@@ -108,6 +108,12 @@ $("#addAlarmConfigBtn").click(function(){
 			}
 		}else{
 			alert("有未填写完整的信息，请填写完善后再提交！");
+			return ;
+		}
+	}else if($("#alarmType").val().trim() == 4){
+		var percentageWarning = $("#percentageWarning").val().trim();
+		if( !checkNotBlank(percentageWarning)){
+			alert("有未填写完整的信息，请填写完善后再提交！！");
 			return ;
 		}
 	}
@@ -147,7 +153,14 @@ function isNumeric(obj) {
 function addLargeTransConfig(alarmType){
 	$("#addAlarmConfigModal").modal('show');
 	$("#alarmType").val(alarmType);
-	if (alarmType == 3) {
+	if(alarmType == 3) {
 		$("#limitConfig").hide();
 	}
+	
+	if(alarmType == 4){
+		$("#limitConfig").hide();
+		$('#limitConfig :input').attr('disabled', true);
+		$("#limitPercent").show();
+	}
+	
 }

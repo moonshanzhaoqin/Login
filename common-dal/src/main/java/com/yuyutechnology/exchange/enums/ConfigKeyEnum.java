@@ -104,7 +104,9 @@ public enum ConfigKeyEnum {
 	/**
 	 * 开启Paypal充值Goldpay
 	 */
-	PAYPAL_RECHARGE("paypal_recharge");
+	PAYPAL_RECHARGE("paypal_recharge"),
+	
+	TOTALGDQCANBESOLD("total_gdq_can_be_sold");
 
 	private String key;
 
