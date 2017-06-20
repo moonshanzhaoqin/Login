@@ -64,5 +64,14 @@ public interface GoldpayTransManager {
 
 	void goldpayRemitPending(String transferId);
 
+	/**
+	 * @param currentPage
+	 * @param startTime
+	 * @param endTime
+	 * @param transferType
+	 * @return
+	 */
+	PageBean getRechargeList(int currentPage, String startTime, String endTime, String transferType);
+
 	
 }

@@ -36,4 +36,8 @@ public class PageController {
 	public String userInfo(HttpServletRequest request, HttpServletResponse response) {
 		return "userInfo";
 	}
+	@RequestMapping(value = "/recharge", method = { RequestMethod.GET })
+	public String recharge(HttpServletRequest request, HttpServletResponse response) {
+		return "recharge";
+	}
 }

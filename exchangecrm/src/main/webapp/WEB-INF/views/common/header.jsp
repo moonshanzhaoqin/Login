@@ -5,8 +5,21 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title></title>
+<title>Exanytime</title>
+<link rel='icon' href='<c:url value="/resources/img/ex_28x28.ico" />'
+	type='image/x-ico' />
+<link rel="stylesheet"
+	href='<c:url value="/resources/bootstrap/css/bootstrap.min.css" />' />
+<link rel="stylesheet"
+	href='<c:url value="/resources/bootstrap/css/bootstrap-paginator.min.css" />' />
+<link rel="stylesheet"
+	href="<c:url value="/resources/css/common.css" />" />
+<script type="text/javascript"
+	src="<c:url value="/resources/js/jquery.min.js" />"></script>
+<script type="text/javascript"
+	src="<c:url value="/resources/bootstrap/js/bootstrap.min.js" />"></script>
+<script type="text/javascript"
+	src="<c:url value="/resources/bootstrap/js/bootstrap-paginator.min.js" />"></script>
 </head>
 <body>
 	<!--
@@ -33,10 +46,12 @@
 				<ul class="nav navbar-nav navbar-left">
 					<li><a
 						href="<c:url value='/exchangeRate/getAllExchangeRates' />">Oanda汇率</a></li>
-					<c:forTokens items="${sessionScope.adminPower}" delims="," var="adminPower">
-					   <c:if test="${adminPower eq 0}">
-					       <li><a href="<c:url value='/account/getTotalAssetsDetails' />">账户汇总</a></li>
-					   </c:if>
+					<c:forTokens items="${sessionScope.adminPower}" delims=","
+						var="adminPower">
+						<c:if test="${adminPower eq 0}">
+							<li><a
+								href="<c:url value='/account/getTotalAssetsDetails' />">账户汇总</a></li>
+						</c:if>
 						<c:if test="${adminPower eq 1}">
 							<li class="dropdown"><a href="#" class="dropdown-toggle"
 								data-toggle="dropdown" aria-expanded="true">用户管理 <span
@@ -71,6 +86,9 @@
 						</c:if>
 						<c:if test="${adminPower eq 6}">
 							<li><a href="<c:url value='/config' />">系统配置管理</a></li>
+						</c:if>
+						<c:if test="${adminPower eq 7}">
+							<li><a href="<c:url value='/recharge' />">充值管理</a></li>
 						</c:if>
 					</c:forTokens>
 				</ul>
