@@ -42,7 +42,7 @@ public class MonitorController {
 	
 	public static Logger logger = LogManager.getLogger(PayPalTransController.class);
 	
-	@RequestMapping(method = RequestMethod.POST, value = "/getServerInfo")
+	@RequestMapping(method = RequestMethod.GET, value = "/getServerInfo")
 	public @ResponseBody String getServerInfo(){
 		ServerInfo serverInfo = new ServerInfo();
 		serverInfo.setServerTime(new Date().toString());
