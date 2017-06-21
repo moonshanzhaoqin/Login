@@ -596,10 +596,56 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	public PageBean getWithdrawList(int currentPage, String userPhone, String transferId, String[] transferStatus) {
 		logger.info("currentPage={},userPhone={},transferId={},transferStatus={}", currentPage, userPhone, transferId,
 				transferStatus);
-		return transferDAO.searchWithdrawsByPage(userPhone, transferId, transferStatus, currentPage, 10);
-
+		
+		List<Object> values = new ArrayList<Object>();
+		StringBuilder hql = new StringBuilder(
+				"from Transfer t, User u where t.userFrom = u.userId and t.transferType = ? and t.transferStatus<>? ");
+		values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
+		values.add(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
+		if (StringUtils.isNotBlank(userPhone)) {
+			hql.append(" and u.userPhone = ?");
+			values.add(userPhone);
+		}
+		if (StringUtils.isNotBlank(transferId)) {
+			hql.append(" and t.transferId = ?");
+			values.add(transferId);
+		}
+		// System.out.println(transferStatus.length);
+		if (transferStatus.length > 0) {
+			hql.append(" and ( t.transferStatus = ?");
+			values.add(Integer.parseInt(transferStatus[0]));
+			for (int i = 1; i < transferStatus.length; i++) {
+				hql.append(" or t.transferStatus = ?");
+				values.add(Integer.parseInt(transferStatus[i]));
+			}
+			hql.append(")");
+		}
+		hql.append(" order by t.transferStatus,t.finishTime desc");
+		return transferDAO.searchTransfersByPage(hql.toString(), values, currentPage, 10);
 	}
 
+	@Override
+	public PageBean getRechargeList(int currentPage, String startTime, String endTime, String transferType) {
+		logger.info("currentPage={},startTime={},endTime={},transferType={}", currentPage, startTime, endTime,
+				transferType);
+		
+		List<Object> values = new ArrayList<Object>();
+		StringBuilder hql = new StringBuilder(
+				"from Transfer t, User u where t.userFrom = u.userId and t.transferStatus = ? and t.transferType = ? ");
+		values.add(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		values.add(Integer.parseInt(transferType));
+		if (StringUtils.isNotBlank(startTime)) {
+			hql.append(" and t.finishTime >  ?");
+			values.add(startTime);
+		}
+		if (StringUtils.isNotBlank(endTime)) {
+			hql.append(" and t.finishTime < ?");
+			values.add(endTime);
+		}
+		hql.append(" order by t.finishTime desc");
+		return transferDAO.searchTransfersByPage(hql.toString(), values, currentPage, 10);
+	}
+	
 	@Override
 	public List<Transfer> getNeedGoldpayRemitWithdraws() {
 		// if (!getGoldpayRemitWithdrawsforbidden()) {

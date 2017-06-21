@@ -275,7 +275,12 @@ public class TransferDAOImpl implements TransferDAO {
 		PageBean pageBean = PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
 		return pageBean;
 	}
-
+	@Override
+	public PageBean searchTransfersByPage(String hql,List<Object> values,int currentPage,
+			int pageSize) {
+		return  PageUtils.getPageContent(hibernateTemplate, hql, values, currentPage, pageSize);
+		
+	}
 	@Override
 	public Object getTransferByIdJoinUser(String transferId) {
 		List<?> list = hibernateTemplate.find(
