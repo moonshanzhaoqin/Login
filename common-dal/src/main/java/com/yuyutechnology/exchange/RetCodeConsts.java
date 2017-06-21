@@ -148,6 +148,8 @@ public class RetCodeConsts {
 	public static final String EXCHANGE_LIMIT_DAILY_PAY = "02008";
 
 	public static final String EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY = "02009";
+	
+	public static final String EXCHANGE_LIMIT_NUM_OF_TOTAL_AMOUNT_OF_GDQ = "02010";
 
 	// 交易03
 	/**

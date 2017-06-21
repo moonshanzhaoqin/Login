@@ -229,7 +229,7 @@ public class ServerConsts {
 	public static final String ACCOUTING_TASK_CLOSED = "true";
 	
 	
-	
+	public static final String REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ = "totalAmountOfGDQ";
 	
 	
 	

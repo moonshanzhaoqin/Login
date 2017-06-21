@@ -58,6 +58,7 @@ public class SmsManager {
 	private final String SMS_REPLACE_AMOUNT = "[AMOUNT]";
 	private final String SMS_REPLACE_CURRENCYIN = "[CURRENCYIN]";
 	private final String SMS_REPLACE_AMOUNTIN = "[AMOUNTIN]";
+	private final String SMS_REPLACE_PERCENT = "[PERCENT]";
 
 	// en
 	private StringBuffer phoneVerify_en = new StringBuffer();
@@ -83,6 +84,8 @@ public class SmsManager {
 	private StringBuffer badAccountAlarm_cn = new StringBuffer();
 	// zh_CN
 	private StringBuffer remitFailAlarm_cn = new StringBuffer();
+	// zh_CN
+	private StringBuffer reachTotalGDQLimitAlarm_cn = new StringBuffer();
 
 	@PostConstruct
 	@Scheduled(cron = "0 1/2 * * * ?")
@@ -104,6 +107,8 @@ public class SmsManager {
 		readTemplate("template/sms/zh_CN/badAccountAlarm.template", badAccountAlarm_cn);
 		
 		readTemplate("template/sms/zh_CN/remitFailAlarm.template", remitFailAlarm_cn);
+		
+		readTemplate("template/sms/zh_CN/reachTotalGDQLimitAlarm.template", reachTotalGDQLimitAlarm_cn);
 		
 		initSMS = true;
 	}
@@ -200,6 +205,13 @@ public class SmsManager {
 	public void sendSMS4RemitFail(String phone, String dateTime) {
 		String content = remitFailAlarm_cn.toString();
 		content = content.replace(SMS_REPLACE_TIME, dateTime);
+		sendSMS(phone, content, "");
+	}
+	
+	@Async
+	public void sendSMS4ReachTotalGDQLimit(String phone,String amount,String percent) {
+		String content = reachTotalGDQLimitAlarm_cn.toString();
+		content = content.replace(SMS_REPLACE_AMOUNT, amount).replace(SMS_REPLACE_PERCENT, percent);
 		sendSMS(phone, content, "");
 	}
 

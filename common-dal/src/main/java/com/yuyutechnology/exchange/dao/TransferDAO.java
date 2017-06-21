@@ -52,6 +52,8 @@ public interface TransferDAO {
 
 	Object getTransferByIdJoinUser(String transferId);
 
+	BigDecimal getTotalPaypalExchange(Date finishTime, int transferType, int transferStatus);
+
 	// void testByPage();
 
 }

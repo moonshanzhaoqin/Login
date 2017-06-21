@@ -171,8 +171,6 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 
 		map.put("exHoldingTotalAssets", exHoldingTotalAssets.setScale(4, RoundingMode.DOWN));
 		map.put("userHoldingTotalAssets", userHoldingTotalAssets);
-//		map.put("exHoldingTotalAssets", new BigDecimal("273.1973"));
-//		map.put("userHoldingTotalAssets", new BigDecimal("273.0218"));
 		map.put("reserveFunds", reserveFunds.setScale(4, RoundingMode.DOWN));
 		map.put("reserveAvailability", reserveAvailability.setScale(2, RoundingMode.DOWN));
 
@@ -213,6 +211,36 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 				// 生成警报记录
 			}
 		}
+	}
+	
+	@Override
+	public void reachtotalGDQLimitAlarm(final BigDecimal totalGDQCanBeSold,final BigDecimal percent){
+		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(4, 1);
+		if (list == null) {
+			logger.warn("No related alarm information is configured ! {}", new Date());
+			return;
+		}
+		for (final CrmAlarm crmAlarm : list) {
+			if (percent.compareTo(crmAlarm.getLowerLimit()) >= 0) {
+				
+				logger.info("Initiate an alarm, alarmId : {},alarmMode: {}",
+						new Object[] { crmAlarm.getAlarmId(), crmAlarm.getAlarmMode() });
+				
+				alarmNotice(crmAlarm.getSupervisorIdArr(),"reachTotalGQDLimtWarning",crmAlarm.getAlarmMode(),new HashMap<String,Object>(){
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = 1L;
+
+					{
+						put("totalGDQCanBeSold", totalGDQCanBeSold.toString());
+						put("percent", percent.toString());
+					}
+				});
+				// 生成警报记录
+			}
+		}
+		
 	}
 
 	@Override
@@ -450,6 +478,42 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 								DateFormatUtils.formatDateGMT8(new Date()));
 						smsManager.sendSMS4BadAccount(crmSupervisor.getSupervisorMobile(), 
 								DateFormatUtils.formatDateGMT8(new Date()));
+					}
+				}
+			}
+			
+			break;
+			
+		case "reachTotalGQDLimtWarning":
+			//短信
+			if(earlyWarningMode == 1){
+				for (String supervisorId : arr) {
+					CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
+					if(crmSupervisor != null){
+						smsManager.sendSMS4ReachTotalGDQLimit(crmSupervisor.getSupervisorMobile(), 
+								(String)params.get("totalGDQCanBeSold"),(String)params.get("percent"));
+					}
+				}
+			}
+			//邮件
+			if(earlyWarningMode == 2){
+				for (String supervisorId : arr) {
+					CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId.trim()));
+					if(crmSupervisor != null){
+						mailManager.mail4ReachTotalGDQLimit(crmSupervisor.getSupervisorEmail(),
+								(String)params.get("totalGDQCanBeSold"),(String)params.get("percent"));
+					}
+				}
+			}
+			//短信邮件
+			if(earlyWarningMode == 3){
+				for (String supervisorId : arr) {
+					CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
+					if(crmSupervisor != null){
+						mailManager.mail4ReachTotalGDQLimit(crmSupervisor.getSupervisorEmail(),
+								(String)params.get("totalGDQCanBeSold"),(String)params.get("percent"));
+						smsManager.sendSMS4ReachTotalGDQLimit(crmSupervisor.getSupervisorMobile(), 
+								(String)params.get("totalGDQCanBeSold"),(String)params.get("percent"));
 					}
 				}
 			}
