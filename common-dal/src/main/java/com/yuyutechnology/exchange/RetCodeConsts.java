@@ -149,7 +149,7 @@ public class RetCodeConsts {
 
 	public static final String EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY = "02009";
 	
-	public static final String EXCHANGE_LIMIT_NUM_OF_TOTAL_AMOUNT_OF_GDQ = "02010";
+	
 
 	// 交易03
 	/**
@@ -221,6 +221,8 @@ public class RetCodeConsts {
 	 * GDP输入违法，小数或者低于100
 	 */
 	public static final String TRANSFER_PAYPALTRANS_ILLEGAL_DATA = "03027";
+	
+	public static final String TRANSFER_PAYPALTRANS_TOTAL_AMOUNT_OF_GDQ = "03028";
 	
 
 	// crm 管理员04

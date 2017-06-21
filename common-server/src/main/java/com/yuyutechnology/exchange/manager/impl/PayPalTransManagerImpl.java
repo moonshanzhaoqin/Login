@@ -78,7 +78,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		
 		if(!isOverlimit(baseAmout)){
 			logger.warn("Reach or exceed 100%,The transaction is forbidden");
-			result.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_NUM_OF_TOTAL_AMOUNT_OF_GDQ);
+			result.put("retCode", RetCodeConsts.TRANSFER_PAYPALTRANS_TOTAL_AMOUNT_OF_GDQ);
 			result.put("msg", "Reach or exceed 100%,The transaction is forbidden");
 			return result;
 		}
