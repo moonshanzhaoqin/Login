@@ -106,7 +106,11 @@ public enum ConfigKeyEnum {
 	 */
 	PAYPAL_RECHARGE("paypal_recharge"),
 	
-	TOTALGDQCANBESOLD("total_gdq_can_be_sold");
+	TOTALGDQCANBESOLD("total_gdq_can_be_sold"),
+	
+	PAYPALMAXLIMITEACHTIME("paypal_max_limit_each_time"),
+	
+	PAYPALMINILIMITEACHTIME("paypal_mini_limit_each_time");
 
 	private String key;
 
