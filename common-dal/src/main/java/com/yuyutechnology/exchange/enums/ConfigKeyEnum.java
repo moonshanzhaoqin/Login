@@ -7,6 +7,10 @@ package com.yuyutechnology.exchange.enums;
  * @author silent.sun
  *
  */
+/**
+ * @author suzan.wu
+ *
+ */
 public enum ConfigKeyEnum {
 
 	/**
@@ -105,7 +109,9 @@ public enum ConfigKeyEnum {
 	 * 开启Paypal充值Goldpay
 	 */
 	PAYPAL_RECHARGE("paypal_recharge"),
-	
+	/**
+	 * 可售沛金条总量
+	 */
 	TOTALGDQCANBESOLD("total_gdq_can_be_sold");
 
 	private String key;
