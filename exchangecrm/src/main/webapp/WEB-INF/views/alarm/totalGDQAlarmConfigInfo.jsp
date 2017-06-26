@@ -17,21 +17,21 @@
 		
 		<div class="container">
 			<!-- -->
-			<div class="row well">
-				<table class = "table"> 
-					<thead>
-						<tr>
-							<th>可售沛金条总量(USD)</th>
-							<th>已售沛金条总量 (USD)</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<th>${totalAmountOfGDQ}</th>
-						</tr>
-					</tbody>
-				</table>
-			</div><!--row 结束-->
+<!-- 			<div class="row well"> -->
+<!-- 				<table class = "table">  -->
+<!-- 					<thead> -->
+<!-- 						<tr> -->
+<!-- 							<th>可售沛金条总量(USD)</th> -->
+<!-- 							<th>已售沛金条总量 (USD)</th> -->
+<!-- 						</tr> -->
+<!-- 					</thead> -->
+<!-- 					<tbody> -->
+<!-- 						<tr> -->
+<%-- 							<th>${totalAmountOfGDQ}</th> --%>
+<!-- 						</tr> -->
+<!-- 					</tbody> -->
+<!-- 				</table> -->
+<!-- 			</div>row 结束 -->
 
 			<div class="row">
 				<div class="col-sm-6">
