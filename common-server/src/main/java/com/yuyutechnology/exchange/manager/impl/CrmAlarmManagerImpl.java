@@ -214,7 +214,7 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	}
 	
 	@Override
-	public void reachtotalGDQLimitAlarm(final BigDecimal totalGDQCanBeSold,final BigDecimal percent){
+	public void reachtotalGDQLimitAlarm(final BigDecimal accumulatedAmount,final BigDecimal percent){
 		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(4, 1);
 		if (list == null) {
 			logger.warn("No related alarm information is configured ! {}", new Date());
@@ -233,7 +233,7 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 					private static final long serialVersionUID = 1L;
 
 					{
-						put("totalGDQCanBeSold", totalGDQCanBeSold.toString());
+						put("totalGDQCanBeSold", accumulatedAmount.toString());
 						put("percent", (percent.multiply(new BigDecimal("100"))).toString());
 					}
 				});
