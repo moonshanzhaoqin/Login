@@ -71,13 +71,13 @@ public class PayPalTransController {
 		Double max = configManager.getConfigDoubleValue(ConfigKeyEnum.PAYPALMAXLIMITEACHTIME, 100000000d);
 		Double mini = configManager.getConfigDoubleValue(ConfigKeyEnum.PAYPALMINILIMITEACHTIME, 100d);
 		
-		logger.info("Maximum amount of single transaction",max);
-		logger.info("The minimum amount of a single transaction",mini);
+		logger.info("Maximum amount of single transaction : {}",max);
+		logger.info("The minimum amount of a single transaction : {}",mini);
 
 		// 判断条件.币种合法，GDQ数量为整数且大于100
 //		if (reqMsg.getAmount() == null || (reqMsg.getAmount().compareTo(new BigDecimal("100")) == -1
 //				|| reqMsg.getAmount().longValue() % 1 > 0)) {
-		if (reqMsg.getAmount() == null || ((rep.getAmount().doubleValue() < mini || rep.getAmount().doubleValue()>max)
+		if (reqMsg.getAmount() == null || ((reqMsg.getAmount().doubleValue() < mini || reqMsg.getAmount().doubleValue()>max)
 				|| reqMsg.getAmount().longValue() % 1 > 0)) {
 			logger.warn("The number of inputs does not meet the requirements");
 			rep.setRetCode(RetCodeConsts.TRANSFER_PAYPALTRANS_ILLEGAL_DATA);
