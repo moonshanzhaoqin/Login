@@ -3,6 +3,8 @@
  */
 package com.yuyutechnology.exchange.crm.controller;
 
+import java.text.ParseException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -42,11 +44,13 @@ public class RechargeController {
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws ParseException 
+	 * @throws NumberFormatException 
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getRechargeList", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public PageBean getRechargeList(@RequestBody GetRechargeListRequest getRechargeListRequest,
-			HttpServletRequest request, HttpServletResponse response) {
+			HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, ParseException {
 		logger.info(getRechargeListRequest.toString());
 		return goldpayTransManager.getRechargeList(Integer.parseInt(getRechargeListRequest.getCurrentPage()),
 				getRechargeListRequest.getStartTime(), getRechargeListRequest.getEndTime(),

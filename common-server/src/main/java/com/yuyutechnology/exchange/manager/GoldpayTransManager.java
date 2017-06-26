@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.manager;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -70,8 +71,9 @@ public interface GoldpayTransManager {
 	 * @param endTime
 	 * @param transferType
 	 * @return
+	 * @throws ParseException 
 	 */
-	PageBean getRechargeList(int currentPage, String startTime, String endTime, String transferType);
+	PageBean getRechargeList(int currentPage, String startTime, String endTime, String transferType) throws ParseException;
 
 	
 }
