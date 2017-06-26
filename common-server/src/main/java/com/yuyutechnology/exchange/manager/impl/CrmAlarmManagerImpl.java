@@ -221,7 +221,7 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 			return;
 		}
 		for (final CrmAlarm crmAlarm : list) {
-			if (percent.compareTo(crmAlarm.getLowerLimit()) >= 0) {
+			if ((percent.multiply(new BigDecimal("100"))).compareTo(crmAlarm.getLowerLimit()) >= 0) {
 				
 				logger.info("Initiate an alarm, alarmId : {},alarmMode: {}",
 						new Object[] { crmAlarm.getAlarmId(), crmAlarm.getAlarmMode() });
@@ -234,7 +234,7 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 
 					{
 						put("totalGDQCanBeSold", totalGDQCanBeSold.toString());
-						put("percent", percent.toString());
+						put("percent", (percent.multiply(new BigDecimal("100"))).toString());
 					}
 				});
 				// 生成警报记录
