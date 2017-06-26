@@ -91,6 +91,12 @@ public class PayPalTransController {
 			rep.setMessage((String) result.get("msg"));
 			return rep;
 		}
+		
+		if (RetCodeConsts.TRANSFER_PAYPALTRANS_TOTAL_AMOUNT_OF_GDQ.equals(result.get("retCode"))) {
+			rep.setRetCode(RetCodeConsts.TRANSFER_PAYPALTRANS_TOTAL_AMOUNT_OF_GDQ);
+			rep.setMessage((String) result.get("msg"));
+			return rep;
+		}
 
 		rep.setTransId((String) result.get("transId"));
 		rep.setAccessToken((String) result.get("token"));
