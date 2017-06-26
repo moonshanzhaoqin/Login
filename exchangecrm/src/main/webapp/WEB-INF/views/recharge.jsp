@@ -127,7 +127,7 @@
 								var html = "";
 								for ( var i in data.rows) {
 									html += '<tr>' + '<td>'
-											+ data.rows[i][0].userFrom
+											+ data.rows[i][0].userTo
 											+ '</td>'
 											+ '<td>'
 											+ data.rows[i][1].areaCode
