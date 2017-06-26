@@ -232,17 +232,17 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		
 	}
 	
-	private void alarmWhileReachLimitOfTotalAmountOfGDQ(BigDecimal amount){
+	public void alarmWhileReachLimitOfTotalAmountOfGDQ(BigDecimal amount){
 		//更新redis值
 		transferDAO.updateAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ, amount);
 		//计算百分比
 		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ);
 		BigDecimal totalGDQCanBeSold = new BigDecimal(configDAO.getConfig("total_gdq_can_be_sold").getConfigValue());
-		BigDecimal percent = (accumulatedAmount).divide(totalGDQCanBeSold,2);
+		BigDecimal percent = (accumulatedAmount).divide(totalGDQCanBeSold,3,BigDecimal.ROUND_DOWN);
 
 		logger.info("accumulatedAmount : {}",accumulatedAmount);
 		logger.info("totalGDQCanBeSold : {}",totalGDQCanBeSold);
-		logger.info("(accumulatedAmount).divide(totalGDQCanBeSold,2) : {}",percent);
+		logger.info("(accumulatedAmount).divide(totalGDQCanBeSold,3) : {}",percent);
 		
 		//获取Alarm配置信息
 		crmAlarmManager.reachtotalGDQLimitAlarm(totalGDQCanBeSold, percent);
