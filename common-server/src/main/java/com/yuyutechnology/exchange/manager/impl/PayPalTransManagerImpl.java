@@ -208,7 +208,9 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		if(accumulatedAmount.compareTo(new BigDecimal("0")) == 0 ){
 			accumulatedAmount = transferDAO.getTotalPaypalExchange(new Date(), 
 					ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-			transferDAO.updateAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ, amount);
+			logger.info("redis AccumulatedAmount is 0,and mysql sum() is {} :",accumulatedAmount);
+			
+			transferDAO.updateAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ, accumulatedAmount);
 			
 		}
 		
