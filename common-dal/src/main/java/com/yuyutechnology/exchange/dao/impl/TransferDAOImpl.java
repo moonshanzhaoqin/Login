@@ -294,7 +294,7 @@ public class TransferDAOImpl implements TransferDAO {
 		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<BigDecimal>() {
 			@Override
 			public BigDecimal doInHibernate(Session session) throws HibernateException {
-				Query query = session.createSQLQuery("select sum(paypal_exchange) from e_transfer "
+				Query query = session.createSQLQuery("select sum(transfer_amount) from e_transfer "
 						+ "where transfer_status = ? and transfer_type = ? and finish_time > ?");
 				
 				query.setInteger(0, transferStatus);
