@@ -300,11 +300,14 @@ public class TransferDAOImpl implements TransferDAO {
 				query.setInteger(0, transferStatus);
 				query.setInteger(1, transferType);
 				query.setDate(2, finishTime);
-				List list = query.list();
+				@SuppressWarnings("unchecked")
+				List<BigDecimal> list = query.list();
 				if (list == null || list.isEmpty() || list.get(0) == null) {
 					return new BigDecimal("0");
 				}
-				return new BigDecimal(((BigInteger) list.get(0)).toString());
+				
+				return new BigDecimal(list.get(0).toString());
+//				return new BigDecimal(((BigInteger) list.get(0)).toString());
 			}
 		});
 	}
