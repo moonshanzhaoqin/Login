@@ -245,7 +245,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		logger.info("(accumulatedAmount).divide(totalGDQCanBeSold,3) : {}",percent);
 		
 		//获取Alarm配置信息
-		crmAlarmManager.reachtotalGDQLimitAlarm(totalGDQCanBeSold, percent);
+		crmAlarmManager.reachtotalGDQLimitAlarm(accumulatedAmount, percent);
 		
 	}
 	
