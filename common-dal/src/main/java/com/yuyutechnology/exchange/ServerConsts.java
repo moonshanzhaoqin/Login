@@ -10,11 +10,12 @@ public class ServerConsts {
 	 * 系统用户
 	 */
 	public static final int USER_TYPE_OF_SYSTEM = 1;
+	
+	// 冻结状态
 	/**
 	 * 用户可用
 	 */
 	public static final int USER_AVAILABLE_OF_AVAILABLE = 1;
-	// 冻结状态
 	/**
 	 * 用户冻结
 	 */
@@ -105,6 +106,8 @@ public class ServerConsts {
 	 * 交易退回
 	 */
 	public static final int TRANSFER_STATUS_OF_REFUND = 3;
+	
+	
 	/**
 	 * 待支付
 	 */
@@ -229,7 +232,7 @@ public class ServerConsts {
 	public static final String ACCOUTING_TASK_CLOSED = "true";
 	
 	
-	
+	public static final String REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ = "totalAmountOfGDQ";
 	
 	
 	

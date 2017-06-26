@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.dao.impl;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -274,7 +275,12 @@ public class TransferDAOImpl implements TransferDAO {
 		PageBean pageBean = PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
 		return pageBean;
 	}
-
+	@Override
+	public PageBean searchTransfersByPage(String hql,List<Object> values,int currentPage,
+			int pageSize) {
+		return  PageUtils.getPageContent(hibernateTemplate, hql, values, currentPage, pageSize);
+		
+	}
 	@Override
 	public Object getTransferByIdJoinUser(String transferId) {
 		List<?> list = hibernateTemplate.find(
@@ -283,4 +289,24 @@ public class TransferDAOImpl implements TransferDAO {
 		return list.isEmpty() ?null:list.get(0);
 	}
 
+	@Override
+	public BigDecimal getTotalPaypalExchange(final Date finishTime,final int transferType,final int transferStatus){
+		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<BigDecimal>() {
+			@Override
+			public BigDecimal doInHibernate(Session session) throws HibernateException {
+				Query query = session.createSQLQuery("select sum(paypal_exchange) from e_transfer "
+						+ "where transfer_status = ? and transfer_type = ? and finish_time > ?");
+				
+				query.setInteger(0, transferStatus);
+				query.setInteger(1, transferType);
+				query.setDate(2, finishTime);
+				List list = query.list();
+				if (list == null || list.isEmpty() || list.get(0) == null) {
+					return new BigDecimal("0");
+				}
+				return new BigDecimal(((BigInteger) list.get(0)).toString());
+			}
+		});
+	}
+	
 }

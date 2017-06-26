@@ -45,4 +45,6 @@ public interface CrmAlarmManager {
 	public void alarmNotice(String supervisorIdArr, String features, int earlyWarningMode,
 			HashMap<String, Object> params);
 
+	void reachtotalGDQLimitAlarm(BigDecimal totalGDQCanBeSold, BigDecimal percent);
+
 }

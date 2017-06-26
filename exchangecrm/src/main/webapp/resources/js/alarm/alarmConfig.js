@@ -40,8 +40,14 @@ function updateAlarmConfig(obj){
 						$("#updateAlarmType").val(data.crmAlarm.alarmType);
 					}
 					
-					if (data.crmAlarm.alarmType == 3) {
+					if (data.crmAlarm.alarmType == 3 || data.crmAlarm.alarmType == 4) {
 						$("#updateLimitConfig").hide();
+						$('#updateLimitConfig :input').attr('disabled', true);
+						if(data.crmAlarm.alarmType == 4){
+							$("#updatelimitPercent").show();
+							console.log(data.crmAlarm.lowerLimit)
+							$("#updatePercentageWarning").val(data.crmAlarm.lowerLimit);
+						}
 					}else{
 						$("#updateLowerLimit").val(data.crmAlarm.lowerLimit);
 						$("#updateUpperLimit").val(data.crmAlarm.upperLimit);
@@ -98,7 +104,7 @@ function updateAlarmAvailable(obj,alarmAvailable){
 
 
 $("#addAlarmConfigBtn").click(function(){			
-	if ($("#alarmType").val().trim() != 3) {
+	if ($("#alarmType").val().trim() != 3 && $("#alarmType").val().trim() != 4) {
 		var lowerLimit = $("#criticalThresholdLowerLimit").val().trim();
 		var upperLimit = $("#criticalThresholdUpperLimit").val().trim();
 		if( checkNotBlank(lowerLimit) && checkNotBlank(upperLimit)){
@@ -110,6 +116,12 @@ $("#addAlarmConfigBtn").click(function(){
 			alert("有未填写完整的信息，请填写完善后再提交！");
 			return ;
 		}
+	}else if($("#alarmType").val().trim() == 4){
+		var percentageWarning = $("#percentageWarning").val().trim();
+		if( !checkNotBlank(percentageWarning)){
+			alert("有未填写完整的信息，请填写完善后再提交！！");
+			return ;
+		}
 	}
 	$("#addAlarmConfig").submit();
 });
@@ -117,7 +129,7 @@ $("#addAlarmConfigBtn").click(function(){
 
 $("#updateAlarmConfigBtn").click(function(){		
 	
-	if ($("#updateAlarmType").val().trim() != 3) {
+	if ($("#updateAlarmType").val().trim() != 3 && $("#updateAlarmType").val().trim() != 4) {
 		var lowerLimit = $("#updateLowerLimit").val().trim();
 		var upperLimit = $("#updateUpperLimit").val().trim();
 		if(checkNotBlank(lowerLimit) && checkNotBlank(upperLimit)){
@@ -127,6 +139,12 @@ $("#updateAlarmConfigBtn").click(function(){
 			}
 		}else{
 			alert("有未填写完整的信息，请填写完善后再提交！");
+			return ;
+		}
+	}else if($("#updateAlarmType").val().trim() == 4){
+		var updatePercentageWarning = $("#updatePercentageWarning").val().trim();
+		if( !checkNotBlank(updatePercentageWarning)){
+			alert("有未填写完整的信息，请填写完善后再提交！！");
 			return ;
 		}
 	}
@@ -147,7 +165,14 @@ function isNumeric(obj) {
 function addLargeTransConfig(alarmType){
 	$("#addAlarmConfigModal").modal('show');
 	$("#alarmType").val(alarmType);
-	if (alarmType == 3) {
+	if(alarmType == 3) {
 		$("#limitConfig").hide();
 	}
+	
+	if(alarmType == 4){
+		$("#limitConfig").hide();
+		$('#limitConfig :input').attr('disabled', true);
+		$("#limitPercent").show();
+	}
+	
 }

@@ -24,6 +24,7 @@ import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.manager.CommonManager;
+import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.manager.PayPalTransManager;
 import com.yuyutechnology.exchange.pojo.Transfer;
@@ -42,6 +43,9 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 	ConfigDAO configDAO;
 	@Autowired
 	TransferDAO transferDAO;
+	
+	@Autowired
+	CrmAlarmManager crmAlarmManager;
 	@Autowired
 	CommonManager commonManager;
 	@Autowired
@@ -71,6 +75,14 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		BigDecimal rate = oandaRatesManager.getSingleExchangeRate(currencyLeft, ServerConsts.CURRENCY_OF_GOLDPAY);
 		BigDecimal baseAmout = amount.divide(rate, currencyLeft.equals(ServerConsts.CURRENCY_OF_JPY)?0:2, BigDecimal.ROUND_UP);
 		logger.info("amount{} / rate {} = baseAmount {}", amount, rate, baseAmout);
+		
+		if(!isOverlimit(baseAmout)){
+			logger.warn("Reach or exceed 100%,The transaction is forbidden");
+			result.put("retCode", RetCodeConsts.TRANSFER_PAYPALTRANS_TOTAL_AMOUNT_OF_GDQ);
+			result.put("msg", "Reach or exceed 100%,The transaction is forbidden");
+			return result;
+		}
+		
 
 		// 生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
@@ -86,32 +98,18 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		transfer.setUserTo(userId);
 		transfer.setPaypalCurrency(currencyLeft);
 		transfer.setPaypalExchange(baseAmout);
-		
-
 		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE);
 		// 保存
 		transferDAO.addTransfer(transfer);
-
-		// 获取PayPal的token
-
-		// Config config = configDAO.getConfig("paypal_accessToken");
-		// String accessToken =
-		// ResourceUtils.getBundleValue4String("paypal.accessToken",
-		// "access_token$sandbox$h32wtjg3dw3jt4kd$e0a3535f2b04517e66258c0cbe9b118d");
-//		BraintreeGateway gateway = new BraintreeGateway(configDAO.getConfig("paypal_accessToken").getConfigValue());
 		String clientToken = gateway.clientToken().generate();
 
 		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		result.put("msg", MessageConsts.RET_CODE_SUCCESS);
-
 		result.put("amount", baseAmout);
 		result.put("unit", (commonManager.getCurrentCurreny(currencyLeft)).getCurrencyUnit());
 		result.put("transId", transferId);
 		result.put("token", clientToken);
-
 		result.put("createTime", transfer.getCreateTime());
-		// result.put("expiration",
-		// ResourceUtils.getBundleValue4Long("paypal.expiration", 600L));
 		result.put("expiration", new Long(configDAO.getConfig("paypal_expiration").getConfigValue()));
 
 		return result;
@@ -120,8 +118,6 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 	public HashMap<String, String> paypalTransConfirm(Integer userId, String transId, String nonce) {
 
 		HashMap<String, String> map = new HashMap<>();
-
-		
 
 		// 条件 验证1.transId，amount
 		Transfer transfer = transferDAO.getTranByIdAndStatus(transId, ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
@@ -133,8 +129,6 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		}
 
 		// 验证时间过期
-		// long expirationTime =
-		// ResourceUtils.getBundleValue4Long("paypal.expiration", 600L);
 		long expirationTime = new Long(configDAO.getConfig("paypal_expiration").getConfigValue());
 		if ((new Date().getTime() - transfer.getCreateTime().getTime()) > 1000 * expirationTime) {
 			logger.warn("time out");
@@ -144,22 +138,14 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		}
 
 		// paypal
-		// String accessToken =
-		// ResourceUtils.getBundleValue4String("paypal.accessToken",
-		// "access_token$sandbox$h32wtjg3dw3jt4kd$e0a3535f2b04517e66258c0cbe9b118d");
 		Result<Transaction> saleResult = null;
 		try {
-//			BraintreeGateway gateway = new BraintreeGateway(configDAO.getConfig("paypal_accessToken").getConfigValue());
 			TransactionRequest request = new TransactionRequest();
 			request.amount(transfer.getPaypalExchange());
 			request.merchantAccountId(transfer.getPaypalCurrency());
 			request.paymentMethodNonce(nonce);
 			request.orderId(transfer.getTransferId());
 			request.options().submitForSettlement(true).storeInVaultOnSuccess(true).done();
-//			request.options().paypal().customField("PayPal custom field")
-//					.description("Description for PayPal email receipt").done();
-//			request.options().storeInVaultOnSuccess(true).done();
-			
 			
 			saleResult = gateway.transaction().sale(request);
 
@@ -174,14 +160,6 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		if (saleResult.isSuccess()) {
 			Transaction transaction = saleResult.getTarget();
 			logger.info("Success ID: {}", transaction.getId());
-			// logger.info("PaymentInstrumentType :
-			// {}",transaction.getPaymentInstrumentType());
-			// CreditCard creditCard = transaction.getCreditCard();
-			// logger.info("The cardholder name:
-			// {}",creditCard.getCardholderName());
-			// Customer customer = transaction.getCustomer();
-			// logger.info("Name : {} {},Phone : {},Id :
-			// {}",customer.getFirstName(),customer.getLastName(),customer.getPhone(),customer.getId());
 
 			PayPalDetails payPalDetails = transaction.getPayPalDetails();
 			logger.info("Name : {} {},Email : {}", payPalDetails.getPayerFirstName(), payPalDetails.getPayerLastName(),
@@ -208,16 +186,70 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 				ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE, transfer.getTransferId());
 
 		// 更改transfer状态
-		// transferDAO.updateTransferStatus(transfer.getTransferId(),
-		// ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		transfer.setFinishTime(new Date());
 		transferDAO.updateTransfer(transfer);
-
+		
+		//预警
+		alarmWhileReachLimitOfTotalAmountOfGDQ(transfer.getPaypalExchange());
+		
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");
 
 		return map;
 
 	}
+	
+	
+	private boolean isOverlimit(BigDecimal amount){
+		
+		String a = null;
+
+		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ);
+		
+		if(accumulatedAmount.compareTo(new BigDecimal("0")) == 0 ){
+			accumulatedAmount = transferDAO.getTotalPaypalExchange(new Date(), 
+					ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		}
+		
+//		BigDecimal totalGDQCanBeSold = new BigDecimal( a = configDAO.getConfig("total_gdq_can_be_sold").getConfigValue() == null? "10000000": a );
+		BigDecimal totalGDQCanBeSold = new BigDecimal(configDAO.getConfig("total_gdq_can_be_sold").getConfigValue());
+		BigDecimal percent = (amount.add(accumulatedAmount)).divide(totalGDQCanBeSold,2);
+		
+		
+		logger.info("amount : {}",amount);
+		logger.info("accumulatedAmount : {}",accumulatedAmount);
+		logger.info("totalGDQCanBeSold : {}",totalGDQCanBeSold);
+		logger.info("(amount.add(accumulatedAmount)).divide(totalGDQCanBeSold,2) : {}",percent);
+		
+		
+		if(percent.doubleValue() >= 1){
+			logger.warn("Reach or exceed 100%,The transaction is forbidden !");
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
+	private void alarmWhileReachLimitOfTotalAmountOfGDQ(BigDecimal amount){
+		//更新redis值
+		transferDAO.updateAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ, amount);
+		//计算百分比
+		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ);
+		BigDecimal totalGDQCanBeSold = new BigDecimal(configDAO.getConfig("total_gdq_can_be_sold").getConfigValue());
+		BigDecimal percent = (accumulatedAmount).divide(totalGDQCanBeSold,2);
+
+		logger.info("accumulatedAmount : {}",accumulatedAmount);
+		logger.info("totalGDQCanBeSold : {}",totalGDQCanBeSold);
+		logger.info("(accumulatedAmount).divide(totalGDQCanBeSold,2) : {}",percent);
+		
+		//获取Alarm配置信息
+		crmAlarmManager.reachtotalGDQLimitAlarm(totalGDQCanBeSold, percent);
+		
+	}
+	
+	
+	
+	
 }

@@ -33,3 +33,11 @@ ALTER TABLE e_transfer MODIFY paypal_exchange DECIMAL(20,4) DEFAULT 0;
 --2017-06-05 Suzan
 ALTER TABLE `e_crm_admin`
   ADD COLUMN `admin_power` varchar(255) NULL DEFAULT NULL COMMENT '权限';
+  
+  
+insert into `e_config` (`config_key`, `config_value`, `config_name`, `config_order`, `config_canChange`) 
+values('total_gdq_can_be_sold','100000000','可售沛金条总量','0','1'); 
+insert into `e_config` (`config_key`, `config_value`, `config_name`, `config_order`, `config_canChange`) 
+values('paypal_max_limit_each_time','100000000','paypal单笔交易金额上限','0','1');  
+insert into `e_config` (`config_key`, `config_value`, `config_name`, `config_order`, `config_canChange`) 
+values('paypal_mini_limit_each_time','100','paypal单笔交易金额下限','0','1');  

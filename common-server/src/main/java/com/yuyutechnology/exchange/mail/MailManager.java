@@ -49,7 +49,10 @@ public class MailManager {
 	
 	private StringBuffer remitFailWarnTital = new StringBuffer();
 	private StringBuffer remitFailWarnContent = new StringBuffer();
-
+	
+	private StringBuffer totalGDQWarnTital = new StringBuffer();
+	private StringBuffer totalGDQWarnContent = new StringBuffer();
+	
 	private final String MAIL_REPLACE_EMAIL = "[EMAIL]";
 	private final String MAIL_REPLACE_NAME = "[NAME]";
 	private final String MAIL_REPLACE_CATEGORY = "[CATEGORY]";
@@ -71,6 +74,8 @@ public class MailManager {
 
 	private final String MAIL_REPLACE_AMOUNTIN = "[AMOUNTIN]";
 	private final String MAIL_REPLACE_CURRENCYIN = "[CURRENCYIN]";
+	
+	private final String MAIL_REPLACE_PERCENT = "[PERCENT]";
 
 	@PostConstruct
 	@Scheduled(cron = "0 1/10 * * * ?")
@@ -83,6 +88,7 @@ public class MailManager {
 				largeExchangeWarnContent);
 		readTemplate("template/mail/zh_CN/badAccountAlarm.template", badAccountWarnTital, badAccountWarnContent);
 		readTemplate("template/mail/zh_CN/remitFailAlarm.template", remitFailWarnTital, remitFailWarnContent);
+		readTemplate("template/mail/zh_CN/totalGDQWarn.template", totalGDQWarnTital, totalGDQWarnContent);
 		initMail = true;
 	}
 	
@@ -168,9 +174,16 @@ public class MailManager {
 		toMails.add(email);
 		sendMail(toMails, remitFailWarnTital.toString(), content);
 	}
+	
+	@Async
+	public void mail4ReachTotalGDQLimit(String email,String amount,String percent) {
+		String content = totalGDQWarnContent.toString().replace(MAIL_REPLACE_AMOUNT, amount).replace(MAIL_REPLACE_PERCENT, percent);
+		logger.info("content : {},tital : {}", content, totalGDQWarnTital.toString());
+		List<String> toMails = new ArrayList<>();
+		toMails.add(email);
+		sendMail(toMails, totalGDQWarnTital.toString(), content);
+	}
 
-	
-	
 	public void sendMail(List<String> toMails, String tital, String content) {
 		logger.info("sendMail,tital : {}, content : {}", tital, content);
 		if (StringUtils.isNotBlank(content)) {

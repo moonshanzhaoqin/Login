@@ -52,6 +52,18 @@ public interface TransferDAO {
 
 	Object getTransferByIdJoinUser(String transferId);
 
+
+	BigDecimal getTotalPaypalExchange(Date finishTime, int transferType, int transferStatus);
+
+	/**
+	 * @param hql
+	 * @param values
+	 * @param currentPage
+	 * @param pageSize
+	 * @return
+	 */
+	PageBean searchTransfersByPage(String hql, List<Object> values, int currentPage, int pageSize);
+
 	// void testByPage();
 
 }
