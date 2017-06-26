@@ -112,8 +112,7 @@
 				transferType : transferType
 			};
 
-			$
-					.ajax({
+			$.ajax({
 						type : "post",
 						url : "/crm/getRechargeList",
 						dataType : 'json',
