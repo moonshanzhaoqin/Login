@@ -4,17 +4,8 @@
 <%@page contentType="text/html; charset=utf-8"%>
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Exanytime</title>
-<link rel='icon' href='<c:url value="/resources/img/ex_28x28.ico" />'
-	type='image/x-ico' />
-<link rel="stylesheet"
-	href='<c:url value="/resources/bootstrap/css/bootstrap.min.css" />' />
-</head>
+<%@ include file="common/header.jsp"%>
 <body>
-	<%@ include file="common/header.jsp"%>
 	<div class="container">
 		<div class="row">
 			<div class="alert alert-info alert-dismissible" role="alert">

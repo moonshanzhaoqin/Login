@@ -394,7 +394,7 @@ public class TransferController {
 			rep.setPageSize((int) map.get("pageSize"));
 			rep.setPageTotal((int) map.get("pageTotal"));
 			rep.setTotal(Integer.parseInt(map.get("total") + ""));
-			rep.setList((List<TransferDTO>) map.get("dtos"));
+			rep.setList((List<TransferDTO>) map.get("dtos") );
 		}
 
 		return rep;

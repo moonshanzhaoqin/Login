@@ -24,6 +24,7 @@
 					
 					
 						<div class="modal-body">
+						
 							<div class="row" id="updateLimitConfig">
 								<div class="col-md-4">
 			            			<h4 class="text-right">预警范围 :</h4>	
@@ -44,6 +45,18 @@
 										<span class="input-group-addon">%</span>
 									</div>	
 										
+								</div>
+							</div>
+							
+							<div class="row" id="updatelimitPercent" style="display: none;">
+								<div class="col-md-4">
+			            			<h4 class="text-right">预警百分比 :</h4>	
+			            		</div>
+								<div class="col-md-4">
+									<div class="input-group">
+										<input type="text" class="form-control" name="criticalThresholdLowerLimit" id="updatePercentageWarning" /> 
+										<span class="input-group-addon">%</span>
+									</div>
 								</div>
 							</div>
 
