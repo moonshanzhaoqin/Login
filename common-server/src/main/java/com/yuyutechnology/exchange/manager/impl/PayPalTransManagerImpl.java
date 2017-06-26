@@ -191,7 +191,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		transferDAO.updateTransfer(transfer);
 		
 		//预警
-		alarmWhileReachLimitOfTotalAmountOfGDQ(transfer.getPaypalExchange());
+		alarmWhileReachLimitOfTotalAmountOfGDQ(transfer.getTransferAmount());
 		
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");

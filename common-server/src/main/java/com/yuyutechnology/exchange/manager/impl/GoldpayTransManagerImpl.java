@@ -640,11 +640,11 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		values.add(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		values.add(Integer.parseInt(transferType));
 		if (StringUtils.isNotBlank(startTime)) {
-			hql.append(" and t.finishTime >  ?");
+			hql.append(" and t.finishTime >=  ?");
 			values.add(simpleDateFormat.parse(startTime));
 		}
 		if (StringUtils.isNotBlank(endTime)) {
-			hql.append(" and t.finishTime < ?");
+			hql.append(" and t.finishTime <= ?");
 			values.add(simpleDateFormat.parse(endTime));
 		}
 		hql.append(" order by t.finishTime desc");
