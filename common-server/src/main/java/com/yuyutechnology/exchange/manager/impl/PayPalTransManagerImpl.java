@@ -203,16 +203,15 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 	
 	private boolean isOverlimit(BigDecimal amount){
 		
-		String a = null;
-
 		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ);
 		
 		if(accumulatedAmount.compareTo(new BigDecimal("0")) == 0 ){
 			accumulatedAmount = transferDAO.getTotalPaypalExchange(new Date(), 
 					ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+			transferDAO.updateAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ, amount);
+			
 		}
 		
-//		BigDecimal totalGDQCanBeSold = new BigDecimal( a = configDAO.getConfig("total_gdq_can_be_sold").getConfigValue() == null? "10000000": a );
 		BigDecimal totalGDQCanBeSold = new BigDecimal(configDAO.getConfig("total_gdq_can_be_sold").getConfigValue());
 		BigDecimal percent = (amount.add(accumulatedAmount)).divide(totalGDQCanBeSold,2);
 		

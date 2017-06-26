@@ -295,7 +295,7 @@ public class TransferDAOImpl implements TransferDAO {
 			@Override
 			public BigDecimal doInHibernate(Session session) throws HibernateException {
 				Query query = session.createSQLQuery("select sum(transfer_amount) from e_transfer "
-						+ "where transfer_status = ? and transfer_type = ? and finish_time > ?");
+						+ "where transfer_status = ? and transfer_type = ? and finish_time < now()");
 				
 				query.setInteger(0, transferStatus);
 				query.setInteger(1, transferType);
