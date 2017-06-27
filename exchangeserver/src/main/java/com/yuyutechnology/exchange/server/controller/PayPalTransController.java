@@ -47,6 +47,15 @@ public class PayPalTransController {
 	public @ResponseEncryptBody GetExchangeRate4GDQResponse getExchangeRate4GDQ(@PathVariable String token) {
 
 		GetExchangeRate4GDQResponse rep = new GetExchangeRate4GDQResponse();
+		
+		
+		Double max = configManager.getConfigDoubleValue(ConfigKeyEnum.PAYPALMAXLIMITEACHTIME, 100000000d);
+		Double mini = configManager.getConfigDoubleValue(ConfigKeyEnum.PAYPALMINILIMITEACHTIME, 100d);
+		
+		logger.info("Maximum amount of single transaction : {}",max);
+		logger.info("The minimum amount of a single transaction : {}",mini);
+		
+		
 		HashMap<String, Double> result = oandaRatesManager
 				.getExchangeRateDiffLeft4OneRight(ServerConsts.CURRENCY_OF_GOLDPAY);
 		Date updateDate = oandaRatesManager.getExchangeRateUpdateDate();
@@ -54,6 +63,7 @@ public class PayPalTransController {
 
 		rep.setRates(result);
 		rep.setUpdateDate(updateDate);
+		rep.setOpts(new String[]{mini.toString(),max.toString()});
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 
