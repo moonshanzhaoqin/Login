@@ -259,7 +259,7 @@ public class TransferDAOImpl implements TransferDAO {
 			hql.append(" and t.transferId = ?");
 			values.add(transferId);
 		}
-		// System.out.println(transferStatus.length);
+		
 		if (transferStatus.length > 0) {
 			hql.append(" and ( t.transferStatus = ?");
 			values.add(Integer.parseInt(transferStatus[0]));
@@ -294,11 +294,11 @@ public class TransferDAOImpl implements TransferDAO {
 			@Override
 			public BigDecimal doInHibernate(Session session) throws HibernateException {
 				Query query = session.createSQLQuery("select sum(transfer_amount) from e_transfer "
-						+ "where transfer_status = ? and transfer_type = ? and finish_time < now()");
+						+ "where transfer_status = ? and transfer_type = ? and finish_time < ?");
 				
 				query.setInteger(0, transferStatus);
 				query.setInteger(1, transferType);
-//				query.setDate(2, finishTime);
+				query.setDate(2, finishTime);
 				@SuppressWarnings("unchecked")
 				List<BigDecimal> list = query.list();
 				if (list == null || list.isEmpty() || list.get(0) == null) {
