@@ -233,7 +233,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		
 	}
 	
-	public void alarmWhileReachLimitOfTotalAmountOfGDQ(BigDecimal amount){
+	private void alarmWhileReachLimitOfTotalAmountOfGDQ(BigDecimal amount){
 		//更新redis值
 		transferDAO.updateAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ, amount);
 		//计算百分比

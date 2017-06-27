@@ -1,7 +1,6 @@
 package com.yuyutechnology.exchange.dao.impl;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -299,7 +298,7 @@ public class TransferDAOImpl implements TransferDAO {
 				
 				query.setInteger(0, transferStatus);
 				query.setInteger(1, transferType);
-				query.setDate(2, finishTime);
+//				query.setDate(2, finishTime);
 				@SuppressWarnings("unchecked")
 				List<BigDecimal> list = query.list();
 				if (list == null || list.isEmpty() || list.get(0) == null) {
@@ -307,7 +306,6 @@ public class TransferDAOImpl implements TransferDAO {
 				}
 				
 				return new BigDecimal(list.get(0).toString());
-//				return new BigDecimal(((BigInteger) list.get(0)).toString());
 			}
 		});
 	}
