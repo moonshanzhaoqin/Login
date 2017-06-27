@@ -56,6 +56,16 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 	@PostConstruct
 	public void init() {
 		gateway = new BraintreeGateway(configDAO.getConfig("paypal_accessToken").getConfigValue());
+		
+		//初始化accumulatedAmount
+		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ);
+		if(accumulatedAmount.compareTo(new BigDecimal("0")) == 0 ){
+			accumulatedAmount = transferDAO.getTotalPaypalExchange(new Date(), 
+					ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+			logger.info("redis AccumulatedAmount is 0,and mysql sum() is {} :",accumulatedAmount);
+			transferDAO.updateAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ, accumulatedAmount);
+		}
+		
 	}
 
 	@Override
@@ -204,25 +214,13 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 	private boolean isOverlimit(BigDecimal amount){
 		
 		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ);
-		
-		if(accumulatedAmount.compareTo(new BigDecimal("0")) == 0 ){
-			accumulatedAmount = transferDAO.getTotalPaypalExchange(new Date(), 
-					ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-			logger.info("redis AccumulatedAmount is 0,and mysql sum() is {} :",accumulatedAmount);
-			
-			transferDAO.updateAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ, accumulatedAmount);
-			
-		}
-		
 		BigDecimal totalGDQCanBeSold = new BigDecimal(configDAO.getConfig("total_gdq_can_be_sold").getConfigValue());
 		BigDecimal percent = (amount.add(accumulatedAmount)).divide(totalGDQCanBeSold,2);
-		
 		
 		logger.info("amount : {}",amount);
 		logger.info("accumulatedAmount : {}",accumulatedAmount);
 		logger.info("totalGDQCanBeSold : {}",totalGDQCanBeSold);
 		logger.info("(amount.add(accumulatedAmount)).divide(totalGDQCanBeSold,2) : {}",percent);
-		
 		
 		if(percent.doubleValue() >= 1){
 			logger.warn("Reach or exceed 100%,The transaction is forbidden !");
