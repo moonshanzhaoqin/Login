@@ -45,6 +45,7 @@ import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.push.PushManager;
+import com.yuyutechnology.exchange.util.DateFormatUtils;
 import com.yuyutechnology.exchange.util.HttpTookit;
 import com.yuyutechnology.exchange.util.JsonBinder;
 import com.yuyutechnology.exchange.util.ResourceUtils;
@@ -82,9 +83,6 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 	public static Logger logger = LogManager.getLogger(GoldpayTransManagerImpl.class);
 
-	private   SimpleDateFormat simpleDateFormat =   new SimpleDateFormat( "yyyy-MM-dd" );
-	
-	
 	@Override
 	public HashMap<String, String> goldpayPurchase(int userId, BigDecimal amount) {
 
@@ -165,11 +163,11 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 			transfer.setUserTo(userId);
 			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE);
 			transfer.setNoticeId(0);
-			
-			//add by Niklaus at 2017-06-07
+
+			// add by Niklaus at 2017-06-07
 			transfer.setGoldpayName(bind.getGoldpayName());
 			transfer.setGoldpayAcount(bind.getGoldpayAcount());
-			
+
 			// 保存
 			transferDAO.addTransfer(transfer);
 
@@ -461,7 +459,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		transfer.setFinishTime(new Date());
 		transferDAO.updateTransfer(transfer);
 
-		//  推送：提现退回
+		// 推送：提现退回
 		pushManager.push4WithdrawRefund(user.getPushId(), user.getPushTag(), transfer.getTransferAmount());
 	}
 
@@ -518,7 +516,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 					transferDAO.updateTransfer(transfer);
 
 					User user = userDAO.getUser(transfer.getUserFrom());
-					//  推送：提现成功
+					// 推送：提现成功
 					pushManager.push4WithdrawComplete(user.getPushId(), user.getPushTag(),
 							transfer.getTransferAmount());
 
@@ -527,7 +525,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 					return map;
 				} else {
 					goldpayRemitFailWarn();
-					
+
 					transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL);
 					transferDAO.updateTransfer(transfer);
 
@@ -601,7 +599,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	public PageBean getWithdrawList(int currentPage, String userPhone, String transferId, String[] transferStatus) {
 		logger.info("currentPage={},userPhone={},transferId={},transferStatus={}", currentPage, userPhone, transferId,
 				transferStatus);
-		
+
 		List<Object> values = new ArrayList<Object>();
 		StringBuilder hql = new StringBuilder(
 				"from Transfer t, User u where t.userFrom = u.userId and t.transferType = ? and t.transferStatus<>? ");
@@ -630,10 +628,11 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	}
 
 	@Override
-	public PageBean getRechargeList(int currentPage, String startTime, String endTime, String transferType) throws ParseException {
+	public PageBean getRechargeList(int currentPage, String startTime, String endTime, String transferType)
+			throws ParseException {
 		logger.info("currentPage={},startTime={},endTime={},transferType={}", currentPage, startTime, endTime,
 				transferType);
-		
+
 		List<Object> values = new ArrayList<Object>();
 		StringBuilder hql = new StringBuilder(
 				"from Transfer t, User u where t.userTo = u.userId and t.transferStatus = ? and t.transferType = ? ");
@@ -641,16 +640,16 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		values.add(Integer.parseInt(transferType));
 		if (StringUtils.isNotBlank(startTime)) {
 			hql.append(" and t.finishTime >=  ?");
-			values.add(simpleDateFormat.parse(startTime));
+			values.add(DateFormatUtils.getStartTime(startTime));
 		}
 		if (StringUtils.isNotBlank(endTime)) {
 			hql.append(" and t.finishTime <= ?");
-			values.add(simpleDateFormat.parse(endTime));
+			values.add(DateFormatUtils.getEndTime(endTime));
 		}
 		hql.append(" order by t.finishTime desc");
 		return transferDAO.searchTransfersByPage(hql.toString(), values, currentPage, 10);
 	}
-	
+
 	@Override
 	public List<Transfer> getNeedGoldpayRemitWithdraws() {
 		// if (!getGoldpayRemitWithdrawsforbidden()) {
@@ -698,17 +697,19 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		transfer.setFinishTime(new Date());
 		transferDAO.updateTransfer(transfer);
 	}
+
 	/**
 	 * goldpay划账失败 预警
 	 */
-	private void goldpayRemitFailWarn(){
+	private void goldpayRemitFailWarn() {
 		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(3, 1);
-		if(list != null && !list.isEmpty()){
+		if (list != null && !list.isEmpty()) {
 			logger.info("goldpay remit fail Warn listSize: {}", list.size());
 			for (int i = 0; i < list.size(); i++) {
 				CrmAlarm crmAlarm = list.get(i);
 				logger.info("goldpay remit fail Warn crmAlarm: {}", crmAlarm.getSupervisorIdArr());
-				crmAlarmManager.alarmNotice(crmAlarm.getSupervisorIdArr(), "goldpayRemitFailWarning", crmAlarm.getAlarmMode(),null);
+				crmAlarmManager.alarmNotice(crmAlarm.getSupervisorIdArr(), "goldpayRemitFailWarning",
+						crmAlarm.getAlarmMode(), null);
 			}
 		}
 	}
