@@ -52,11 +52,8 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 	@Autowired
 	OandaRatesManager oandaRatesManager;
 
-	BraintreeGateway gateway;
-	
 	@PostConstruct
 	public void init() {
-		gateway = new BraintreeGateway(configManager.getConfigStringValue(ConfigKeyEnum.PAYPAL_ACCESSTOKEN, ""));
 		//初始化accumulatedAmount
 		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ);
 		if(accumulatedAmount.compareTo(new BigDecimal("0")) == 0 ){
@@ -87,6 +84,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		logger.info("amount{} / rate {} = baseAmount {}", amount, rate, baseAmout);
 		
 		if(!isOverlimit(baseAmout)){
+		if(!isOverlimit(amount)){
 			logger.warn("Reach or exceed 100%,The transaction is forbidden");
 			result.put("retCode", RetCodeConsts.TRANSFER_PAYPALTRANS_TOTAL_AMOUNT_OF_GDQ);
 			result.put("msg", "Reach or exceed 100%,The transaction is forbidden");
@@ -111,6 +109,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE);
 		// 保存
 		transferDAO.addTransfer(transfer);
+		BraintreeGateway gateway = new BraintreeGateway(configManager.getConfigStringValue(ConfigKeyEnum.PAYPAL_ACCESSTOKEN, ""));
 		String clientToken = gateway.clientToken().generate();
 
 		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
@@ -156,7 +155,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			request.paymentMethodNonce(nonce);
 			request.orderId(transfer.getTransferId());
 			request.options().submitForSettlement(true).storeInVaultOnSuccess(true).done();
-			
+			BraintreeGateway gateway = new BraintreeGateway(configManager.getConfigStringValue(ConfigKeyEnum.PAYPAL_ACCESSTOKEN, ""));
 			saleResult = gateway.transaction().sale(request);
 
 		} catch (Exception e) {
@@ -223,7 +222,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		logger.info("amount : {}",amount);
 		logger.info("accumulatedAmount : {}",accumulatedAmount);
 		logger.info("totalGDQCanBeSold : {}",totalGDQCanBeSold);
-		logger.info("(accumulatedAmount).divide(totalGDQCanBeSold,3,BigDecimal.ROUND_DOWN) : {}",percent);
+		logger.info("(accumulatedAmount.add(amount)).divide(totalGDQCanBeSold,3,BigDecimal.ROUND_DOWN) : {}",percent);
 		
 		if(percent.doubleValue() >= 1){
 			logger.warn("Reach or exceed 100%,The transaction is forbidden !");
