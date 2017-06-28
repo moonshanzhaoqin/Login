@@ -181,7 +181,10 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		} else {
 			logger.warn("Message: {}", saleResult.getMessage());
 			map.put("retCode", RetCodeConsts.TRANSFER_PAYPALTRANS_PAYMENT_FAILED);
-			map.put("msg", saleResult.getMessage());
+			map.put("msg", saleResult.getMessage() + " Status : " + saleResult.getTransaction().getStatus().name());
+			
+			
+			
 			return map;
 		}
 
