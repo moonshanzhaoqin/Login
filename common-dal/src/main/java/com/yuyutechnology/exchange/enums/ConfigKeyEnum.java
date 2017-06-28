@@ -116,8 +116,12 @@ public enum ConfigKeyEnum {
 	
 	PAYPALMAXLIMITEACHTIME("paypal_max_limit_each_time"),
 	
-	PAYPALMINILIMITEACHTIME("paypal_mini_limit_each_time");
+	PAYPALMINILIMITEACHTIME("paypal_mini_limit_each_time"),
 
+	PAYPAL_ACCESSTOKEN("paypal_accessToken"),
+	
+	PAYPAL_EXPIRATION("paypal_expiration");
+	
 	private String key;
 
 	private ConfigKeyEnum(String key) {
