@@ -19,11 +19,12 @@ import com.braintreegateway.TransactionRequest;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
-import com.yuyutechnology.exchange.dao.ConfigDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
+import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
+import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.manager.PayPalTransManager;
@@ -40,7 +41,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 	@Autowired
 	WalletDAO walletDAO;
 	@Autowired
-	ConfigDAO configDAO;
+	ConfigManager configManager;
 	@Autowired
 	TransferDAO transferDAO;
 	
@@ -55,8 +56,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 	
 	@PostConstruct
 	public void init() {
-		gateway = new BraintreeGateway(configDAO.getConfig("paypal_accessToken").getConfigValue());
-		
+		gateway = new BraintreeGateway(configManager.getConfigStringValue(ConfigKeyEnum.PAYPAL_ACCESSTOKEN, ""));
 		//初始化accumulatedAmount
 		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ);
 		if(accumulatedAmount.compareTo(new BigDecimal("0")) == 0 ){
@@ -120,7 +120,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		result.put("transId", transferId);
 		result.put("token", clientToken);
 		result.put("createTime", transfer.getCreateTime());
-		result.put("expiration", new Long(configDAO.getConfig("paypal_expiration").getConfigValue()));
+		result.put("expiration", configManager.getConfigLongValue(ConfigKeyEnum.PAYPAL_EXPIRATION, 600l));
 
 		return result;
 	}
@@ -139,7 +139,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		}
 
 		// 验证时间过期
-		long expirationTime = new Long(configDAO.getConfig("paypal_expiration").getConfigValue());
+		long expirationTime = configManager.getConfigLongValue(ConfigKeyEnum.PAYPAL_EXPIRATION, 600l);
 		if ((new Date().getTime() - transfer.getCreateTime().getTime()) > 1000 * expirationTime) {
 			logger.warn("time out");
 			map.put("retCode", RetCodeConsts.TRANSFER_PAYPALTRANS_TIME_OUT);
@@ -181,7 +181,10 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		} else {
 			logger.warn("Message: {}", saleResult.getMessage());
 			map.put("retCode", RetCodeConsts.TRANSFER_PAYPALTRANS_PAYMENT_FAILED);
-			map.put("msg", saleResult.getMessage());
+			map.put("msg", saleResult.getMessage() + " Status : " + saleResult.getTransaction().getStatus().name());
+			
+			
+			
 			return map;
 		}
 
@@ -214,7 +217,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 	private boolean isOverlimit(BigDecimal amount){
 		
 		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ);
-		BigDecimal totalGDQCanBeSold = new BigDecimal(configDAO.getConfig("total_gdq_can_be_sold").getConfigValue());
+		BigDecimal totalGDQCanBeSold = new BigDecimal(configManager.getConfigStringValue(ConfigKeyEnum.TOTALGDQCANBESOLD, "0"));
 		BigDecimal percent = (accumulatedAmount).divide(totalGDQCanBeSold,3,BigDecimal.ROUND_DOWN);
 		
 		logger.info("amount : {}",amount);
@@ -236,7 +239,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		transferDAO.updateAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ, amount);
 		//计算百分比
 		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ);
-		BigDecimal totalGDQCanBeSold = new BigDecimal(configDAO.getConfig("total_gdq_can_be_sold").getConfigValue());
+		BigDecimal totalGDQCanBeSold = new BigDecimal(configManager.getConfigStringValue(ConfigKeyEnum.TOTALGDQCANBESOLD, "0"));
 		BigDecimal percent = (accumulatedAmount).divide(totalGDQCanBeSold,3,BigDecimal.ROUND_DOWN);
 
 		logger.info("accumulatedAmount : {}",accumulatedAmount);
