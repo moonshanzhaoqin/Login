@@ -215,7 +215,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		
 		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ);
 		BigDecimal totalGDQCanBeSold = new BigDecimal(configDAO.getConfig("total_gdq_can_be_sold").getConfigValue());
-		BigDecimal percent = (accumulatedAmount).divide(totalGDQCanBeSold,3,BigDecimal.ROUND_DOWN);
+		BigDecimal percent = (accumulatedAmount.add(amount)).divide(totalGDQCanBeSold,3,BigDecimal.ROUND_DOWN);
 		
 		logger.info("amount : {}",amount);
 		logger.info("accumulatedAmount : {}",accumulatedAmount);
