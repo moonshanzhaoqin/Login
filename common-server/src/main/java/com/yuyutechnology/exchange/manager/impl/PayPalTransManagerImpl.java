@@ -86,7 +86,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		BigDecimal baseAmout = amount.divide(rate, currencyLeft.equals(ServerConsts.CURRENCY_OF_JPY)?0:2, BigDecimal.ROUND_UP);
 		logger.info("amount{} / rate {} = baseAmount {}", amount, rate, baseAmout);
 		
-		if(!isOverlimit(baseAmout)){
+		if(!isOverlimit(amount)){
 			logger.warn("Reach or exceed 100%,The transaction is forbidden");
 			result.put("retCode", RetCodeConsts.TRANSFER_PAYPALTRANS_TOTAL_AMOUNT_OF_GDQ);
 			result.put("msg", "Reach or exceed 100%,The transaction is forbidden");
@@ -223,7 +223,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		logger.info("amount : {}",amount);
 		logger.info("accumulatedAmount : {}",accumulatedAmount);
 		logger.info("totalGDQCanBeSold : {}",totalGDQCanBeSold);
-		logger.info("(accumulatedAmount).divide(totalGDQCanBeSold,3,BigDecimal.ROUND_DOWN) : {}",percent);
+		logger.info("(accumulatedAmount.add(amount)).divide(totalGDQCanBeSold,3,BigDecimal.ROUND_DOWN) : {}",percent);
 		
 		if(percent.doubleValue() >= 1){
 			logger.warn("Reach or exceed 100%,The transaction is forbidden !");
