@@ -185,7 +185,7 @@
 											+ ')">详情</a>' + '</td>' + '</tr>'
 								}
 								$('#badAccount tbody').html(html);
-								if (data.currentPage == 1) {
+								if (data.currentPage == 1 && data.pageTotal>1) {
 									paginator(data.currentPage, data.pageTotal);
 								}
 							}
@@ -244,6 +244,9 @@
                                             + '</td>' + '<td>'
                                             + timeDate(data[i].createTime)
                                             + '</td>' + '</tr>'
+                                }
+                                if (html == "") {
+                                    alert("没有坏账")
                                 }
                                 $('#walletSeq tbody').html(html);
                                 $('#detail').show();

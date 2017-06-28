@@ -40,6 +40,8 @@
 						<th>手机号</th>
 						<th>交易号</th>
 						<th>交易数量(GDQ)</th>
+						<th>支付币种</th>
+                        <th>支付金额</th>
 						<th>交易方式</th>
 						<th>交易时间（GMT+8）</th>
 					</tr>
@@ -141,6 +143,12 @@
 											+ '<td>'
 											+ data.rows[i][0].transferAmount
 											+ '</td>'
+											+ '<td>'
+                                            + data.rows[i][0].paypalCurrency
+                                            + '</td>'
+                                            + '<td>'
+                                            + data.rows[i][0].paypalExchange
+                                            + '</td>'
 											+ '<td>'
 											+ (data.rows[i][0].transferType == 5 ? "GoldPay"
 													: "PayPal")

@@ -83,8 +83,13 @@
 	</div>
 
 	<%@ include file="badAccountDetail.jsp"%>
-
-	<script>
+	<script type="text/javascript"
+		src="<c:url value="/resources/js/jquery.min.js" />"></script>
+	<script type="text/javascript"
+		src="<c:url value="/resources/bootstrap/js/bootstrap.min.js" />"></script>
+	<script type="text/javascript"
+		src="<c:url value="/resources/bootstrap/js/bootstrap-paginator.min.js" />"></script>
+	<script type="text/javascript">
 		$(function() {
 			var userPhone, transferId, transferStatus = [];
 			//页面初始化，加载数据
@@ -199,11 +204,11 @@
 											+ '</td>'
 											+ '<td>'
 											+ (data.rows[i][0].transferStatus == 5 ? ('<a href="javascript:void(0)" onclick="getDetailSeqByTransferId(\''
-											+ data.rows[i][0].transferId + '\')">详情</a>')
-											: '' )+ '</td>' + '</tr>'
+													+ data.rows[i][0].transferId + '\')">详情</a>')
+													: '') + '</td>' + '</tr>'
 								}
 								$('#withdraw tbody').html(html);
-								if (data.currentPage == 1) {
+								if (data.currentPage == 1 && data.pageTotal>1) {
 									paginator(data.currentPage, data.pageTotal);
 								}
 							}
