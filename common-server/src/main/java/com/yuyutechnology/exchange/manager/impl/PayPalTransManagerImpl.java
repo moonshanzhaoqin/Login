@@ -83,7 +83,6 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		BigDecimal baseAmout = amount.divide(rate, currencyLeft.equals(ServerConsts.CURRENCY_OF_JPY)?0:2, BigDecimal.ROUND_UP);
 		logger.info("amount{} / rate {} = baseAmount {}", amount, rate, baseAmout);
 		
-		if(!isOverlimit(baseAmout)){
 		if(!isOverlimit(amount)){
 			logger.warn("Reach or exceed 100%,The transaction is forbidden");
 			result.put("retCode", RetCodeConsts.TRANSFER_PAYPALTRANS_TOTAL_AMOUNT_OF_GDQ);
