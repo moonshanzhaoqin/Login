@@ -349,7 +349,7 @@ CREATE TABLE `e_wallet` (
   `update_time` datetime DEFAULT NULL COMMENT '最新变动时间',
   `update_seq_id` bigint(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`wallet_id`),
-  KEY `userid_currency` (`user_id`,`currency`),
+  UNIQUE KEY `userid_currency` (`user_id`,`currency`),
   KEY `index_update_time` (`update_time`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='钱包';
 
