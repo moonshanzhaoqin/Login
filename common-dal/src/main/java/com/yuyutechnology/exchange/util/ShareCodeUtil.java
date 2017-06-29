@@ -13,10 +13,10 @@ import java.util.Random;
 public class ShareCodeUtil {
 
     /** 自定义进制(0,1没有加入,容易与o,l混淆) */
-    private static final char[] r=new char[]{'q', 'w', 'e', '8', 'a', 's', '2', 'd', 'z', 'x', '9', 'c', '7', 'p', '5', 'i', 'k', '3', 'm', 'j', 'u', 'f', 'r', '4', 'v', 'y', 'l', 't', 'n', '6', 'b', 'g', 'h'};
+    private static final char[] r=new char[]{'Q', 'W', 'E', '8', 'A', 'S', '2', 'D', 'Z', 'X', '9', 'C', '7', 'P', '5', 'I', 'K', '3', 'M', 'J', 'U', 'F', 'R', '4', 'V', 'Y', 'L', 'T', 'N', '6', 'B', 'G', 'H'};
 
     /** (不能与自定义进制有重复) */
-    private static final char b='o';
+    private static final char b='O';
 
     /** 进制长度 */
     private static final int binLen=r.length;
@@ -52,11 +52,11 @@ public class ShareCodeUtil {
             }
             str+=sb.toString();
         }
-        return str.toUpperCase();
+        return str;
     }
 
     public static long codeToId(String code) {
-        char chs[]=code.toLowerCase().toCharArray();
+        char chs[]=code.toUpperCase().toCharArray();
         long res=0L;
         for(int i=0; i < chs.length; i++) {
             int ind=0;
@@ -80,8 +80,7 @@ public class ShareCodeUtil {
     }
     
     public static void main(String[] args) {
-		for (int i = 1; i <= 1000000000; i++) {
-			System.out.println(toSerialCode(i));
+		for (int i = 1; i <= 10000; i++) {
 //			if (codeToId(toSerialCode(i)) != i) {
 //				System.out.println(i);
 //			}
