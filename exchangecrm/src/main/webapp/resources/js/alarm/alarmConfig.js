@@ -66,9 +66,11 @@ function updateAlarmConfig(obj){
 					$("#updateAlarmMode").html(optionStr);
 					
 					var supervisorGroup = '';
+					var alarmSupervisor=JSON.parse(data.crmAlarm.supervisorIdArr);
+//					console.log(alarmSupervisor);
 					for(var i = 0; i<data.supervisorList.length;i++){
 						var supervisor = data.supervisorList[i];
-						if((data.crmAlarm.supervisorIdArr).indexOf(supervisor.supervisorId) != -1){
+						if($.inArray(supervisor.supervisorId,alarmSupervisor) != -1){
 							supervisorGroup +='<div class="col-lg-4"><input class="panel-group" name="supervisorId" type="checkbox" value='+supervisor.supervisorId+' checked/>'+supervisor.supervisorName+'</div>';
 						}else{
 							supervisorGroup +='<div class="col-lg-4"><input class="panel-group" name="supervisorId" type="checkbox" value='+supervisor.supervisorId+' />'+supervisor.supervisorName+'</div>';
