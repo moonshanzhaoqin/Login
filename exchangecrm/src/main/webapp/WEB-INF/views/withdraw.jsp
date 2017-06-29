@@ -208,7 +208,7 @@
 													: '') + '</td>' + '</tr>'
 								}
 								$('#withdraw tbody').html(html);
-								if (data.currentPage == 1 && data.pageTotal>1) {
+								if (data.currentPage == 1) {
 									paginator(data.currentPage, data.pageTotal);
 								}
 							}
@@ -354,6 +354,8 @@
 		//退回
 		function refund(transferId) {
 			if (confirm("确认退回吗？")) {
+				var currentPage=$("#paginator .active a").html();
+				console.log("currentPage="+currentPage);
 				data = {
 					transferId : transferId
 				};
@@ -366,13 +368,13 @@
 					success : function(data) {
 						if (data.retCode == "00000") {
 							alert("操作成功");
-							searchWithdraw($("#paginator .active a").html());
+							searchWithdraw(currentPage);
 						} else if (data.retCode == "00002") {
 							location.href = loginUrl;
 						} else {
 							console.log("refund" + data.message);
 							alert("操作失败");
-							searchWithdraw($("#paginator .active a").html());
+							searchWithdraw(currentPage);
 						}
 					},
 					error : function(xhr, err) {
