@@ -144,10 +144,10 @@
 											+ data.rows[i][0].transferAmount
 											+ '</td>'
 											+ '<td>'
-                                            + data.rows[i][0].paypalCurrency
+                                            + (data.rows[i][0].paypalCurrency==null?"":data.rows[i][0].paypalCurrency)
                                             + '</td>'
                                             + '<td>'
-                                            + data.rows[i][0].paypalExchange
+                                            + (data.rows[i][0].paypalExchange==null?"":data.rows[i][0].paypalExchange)
                                             + '</td>'
 											+ '<td>'
 											+ (data.rows[i][0].transferType == 5 ? "GoldPay"
