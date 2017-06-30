@@ -72,7 +72,7 @@
 								data-toggle="dropdown" aria-expanded="true">预警管理 <span
 									class="caret"></span></a>
 								<ul class="dropdown-menu" role="menu">
-									<li><a href="<c:url value='/alarm/getAlarmConfigList' />">预警设置</a></li>
+									<li><a href="<c:url value='/alarm/getAlarmConfigList' />">预备金预警设置</a></li>
 									<li><a href="<c:url value='/alarm/getLargeTransAlarmConfigList' />">大额预警设置</a></li>
 									<li><a href="<c:url value='/alarm/getBadAccountAlarmConfigList' />">坏账预警设置</a></li>
 									<li><a href="<c:url value='/alarm/getTotalGDQAlarmConfigList' />">已售沛金条总量预警设置</a></li>
