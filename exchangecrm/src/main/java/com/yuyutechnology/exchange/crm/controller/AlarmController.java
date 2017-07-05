@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.crm.request.SaveAlarmConfigRequest;
 import com.yuyutechnology.exchange.crm.request.UpdateAlarmConfigInfoRequest;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
@@ -27,6 +28,7 @@ import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.CrmLogManager;
 import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
+import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.pojo.CrmLog;
 import com.yuyutechnology.exchange.pojo.CrmSupervisor;
@@ -43,6 +45,8 @@ public class AlarmController {
 	ConfigManager configManager;
 	@Autowired
 	CrmLogManager crmLogManager;
+	@Autowired
+	TransferManager transferManager;
 	
 	private static final String[] VIEWNAMEARR = {"getAlarmConfigList",
 			"getLargeTransAlarmConfigList","getLargeTransAlarmConfigList",
@@ -111,36 +115,33 @@ public class AlarmController {
 	@RequestMapping(value = "/alarm/getTotalGDQAlarmConfigList", method = RequestMethod.GET)
 	public ModelAndView getTotalGDQAlarmConfigList() {
 		mav = new ModelAndView();
+		//显示 总量，已售，剩余，剩余百分比
+		BigDecimal totalAmountOfGDQ = new BigDecimal(configManager.getConfigStringValue(ConfigKeyEnum.TOTALGDQCANBESOLD, "100000000"));
+		BigDecimal soldAmountOfGDQ = transferManager.getAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ);
+		BigDecimal remainingAmountOfGDQ = totalAmountOfGDQ.subtract(soldAmountOfGDQ);
+		BigDecimal percent = (remainingAmountOfGDQ).divide(totalAmountOfGDQ,3,BigDecimal.ROUND_DOWN).multiply(new BigDecimal("100"));
 		
 		List<CrmAlarm> list = crmAlarmManager.getCrmAlarmConfigList();
 		List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
 
 		mav.addObject("list", list);
 		mav.addObject("supervisorList", supervisorList);
-		mav.addObject("totalAmountOfGDQ", configManager.getConfigStringValue(ConfigKeyEnum.TOTALGDQCANBESOLD, "100000000"));
+		
+		mav.addObject("totalAmountOfGDQ", totalAmountOfGDQ);
+		mav.addObject("soldAmountOfGDQ", soldAmountOfGDQ);
+		mav.addObject("remainingAmountOfGDQ", remainingAmountOfGDQ);
+		mav.addObject("percent", percent);
+		
 		mav.setViewName("alarm/totalGDQAlarmConfigInfo");
 		return mav;
 	}
 	
-	
-	
-	
-
 	@RequestMapping(value = "/alarm/delAlarmConfig", method = RequestMethod.GET)
 	public ModelAndView delAlarmConfig(Integer alarmId,	HttpServletRequest request, HttpServletResponse response) {
 		mav = new ModelAndView();
 		int alarmType = crmAlarmManager.delAlarmConfig(alarmId);
 		mav.setViewName("redirect:/alarm/"+VIEWNAMEARR[alarmType]);
-		
-//		if (alarmType == 0) {
-//			mav.setViewName("redirect:/alarm/getAlarmConfigList");
-//		} else if (alarmType == 3) {
-//			mav.setViewName("redirect:/alarm/getBadAccountAlarmConfigList");
-//		} else {
-//			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
-//		}
-		
-		
+
 		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.DELETE_ALARM.getOperationName(), alarmId.toString()));
 		
@@ -182,14 +183,6 @@ public class AlarmController {
 		
 		mav.setViewName("redirect:/alarm/"+VIEWNAMEARR[updateAlarmConfigInfoRequest.getAlarmType()]);
 		
-//		if (updateAlarmConfigInfoRequest.getAlarmType() == 0) {
-//			mav.setViewName("redirect:/alarm/getAlarmConfigList");
-//		} else if (updateAlarmConfigInfoRequest.getAlarmType() == 3) {
-//			mav.setViewName("redirect:/alarm/getBadAccountAlarmConfigList");
-//		} else {
-//			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
-//		}
-		
 		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.EDIT_ALARM.getOperationName(), updateAlarmConfigInfoRequest.toString()));
 		
@@ -206,14 +199,6 @@ public class AlarmController {
 				JsonBinder.getInstance().toJson(saveAlarmConfigRequest.getSupervisorId()));
 		
 		mav.setViewName("redirect:/alarm/"+VIEWNAMEARR[saveAlarmConfigRequest.getAlarmType()]);
-		
-//		if (saveAlarmConfigRequest.getAlarmType() == 0) {
-//			mav.setViewName("redirect:/alarm/getAlarmConfigList");
-//		} else if (saveAlarmConfigRequest.getAlarmType() == 3) {
-//			mav.setViewName("redirect:/alarm/getBadAccountAlarmConfigList");
-//		} else {
-//			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
-//		}
 		
 		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.ADD_ALARM.getOperationName(), saveAlarmConfigRequest.toString()));
@@ -235,15 +220,7 @@ public class AlarmController {
 		}
 
 		mav.setViewName("redirect:/alarm/"+VIEWNAMEARR[alarmType]);
-		
-//		if (alarmType == 0) {
-//			mav.setViewName("redirect:/alarm/getAlarmConfigList");
-//		} else if (alarmType == 3) {
-//			mav.setViewName("redirect:/alarm/getBadAccountAlarmConfigList");
-//		} else {
-//			mav.setViewName("redirect:/alarm/getLargeTransAlarmConfigList");
-//		}
-		// mav.setViewName("redirect:/alarm/getAlarmConfigList");
+
 		return mav;
 	}
 
