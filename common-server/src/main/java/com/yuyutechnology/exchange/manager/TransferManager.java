@@ -31,7 +31,6 @@ public interface TransferManager {
 	 * @param userPayPwd
 	 * @return
 	 */
-//	public String payPwdConfirm(int userId,String transferId,String userPayPwd);
 	 HashMap<String, String> payPwdConfirm(int userId,String transferId,String userPayPwd);
 	
 	/**
@@ -127,6 +126,6 @@ public interface TransferManager {
 
 	 HashMap<String, Object> getTransactionRecord(String period, String type, int userId, int currentPage, int pageSize);
 
-	 
+	BigDecimal getAccumulatedAmount(String key); 
 	
 }

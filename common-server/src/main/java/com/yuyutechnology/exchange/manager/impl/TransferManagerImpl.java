@@ -1216,6 +1216,12 @@ public class TransferManagerImpl implements TransferManager{
 		return phoneNum;
 	}
 	
+	@Override
+	public BigDecimal getAccumulatedAmount(String key){
+		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount(key);
+		return accumulatedAmount;
+	}
+	
 	
 
 	
