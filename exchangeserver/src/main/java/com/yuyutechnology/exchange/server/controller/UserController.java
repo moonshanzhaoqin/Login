@@ -312,7 +312,7 @@ public class UserController {
 						/* 获取用户信息 */
 						rep.setUser(userManager.getUserInfo(userId));
 						/* Paypal开启状态 */
-						rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
+//						rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
 
 						logger.info(MessageConsts.RET_CODE_SUCCESS);
 						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
@@ -400,7 +400,7 @@ public class UserController {
 						/* 获取用户信息 */
 						rep.setUser(userManager.getUserInfo(userId));
 						/* Paypal开启状态 */
-						rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
+//						rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
 
 						logger.info(MessageConsts.RET_CODE_SUCCESS);
 						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
@@ -524,7 +524,7 @@ public class UserController {
 						/* 获取用户信息 */
 						rep.setUser(userManager.getUserInfo(userId));
 						/* Paypal开启状态 */
-						rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
+//						rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
 
 						logger.info(MessageConsts.RET_CODE_SUCCESS);
 						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
