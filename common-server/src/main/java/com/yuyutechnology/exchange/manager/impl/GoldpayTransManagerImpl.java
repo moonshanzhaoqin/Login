@@ -302,6 +302,14 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 		HashMap<String, String> map = new HashMap<String, String>();
 
+		/*提取沛金条是否开启*/
+		if(!configManager.getConfigBooleanValue(ConfigKeyEnum.GOLDPAY_WITHDRAW)) {
+			map.put("msg", "goldpay_withdraw is closed。");
+			map.put("retCode", RetCodeConsts.GOLDPAY_WITHDRAW_OFF);
+			return map;
+		}
+		
+		
 		User systemUser = userDAO.getSystemUser();
 		User payer = userDAO.getUser(userId);
 		if (payer == null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
@@ -384,6 +392,9 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	public HashMap<String, String> withdrawConfirm1(int userId, String payPwd, String transferId) {
 
 		HashMap<String, String> map = new HashMap<String, String>();
+		
+		
+		
 		User systemUser = userDAO.getSystemUser();
 		User user = userDAO.getUser(userId);
 		if (user == null || user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
@@ -628,7 +639,8 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	}
 
 	@Override
-	public PageBean getRechargeList(int currentPage, String startTime, String endTime, String transferType)
+	public PageBean getRechargeList(int currentPage,String userPhone,String lowerAmount,String
+			upperAmount, String startTime, String endTime, String transferType)
 			throws ParseException {
 		logger.info("currentPage={},startTime={},endTime={},transferType={}", currentPage, startTime, endTime,
 				transferType);
@@ -638,6 +650,19 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 				"from Transfer t, User u where t.userTo = u.userId and t.transferStatus = ? and t.transferType = ? ");
 		values.add(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		values.add(Integer.parseInt(transferType));
+		
+		if (StringUtils.isNotBlank(userPhone)) {
+			hql.append(" and u.userPhone =  ?");
+			values.add(userPhone);
+		}
+		if (StringUtils.isNotBlank(lowerAmount)) {
+			hql.append(" and t.transferAmount >=  ?");
+			values.add(new BigDecimal(lowerAmount));
+		}
+		if (StringUtils.isNotBlank(upperAmount)) {
+			hql.append(" and t.transferAmount <=  ?");
+			values.add(new BigDecimal(upperAmount));
+		}
 		if (StringUtils.isNotBlank(startTime)) {
 			hql.append(" and t.finishTime >=  ?");
 			values.add(DateFormatUtils.getStartTime(startTime));

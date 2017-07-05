@@ -16,14 +16,14 @@
 		<%@ include file="../common/header.jsp"%>
 		
 		<div class="container">
-			<!-- -->
+			
 			<div class="row well">
 				<table class = "table"> 
 					<thead>
 						<tr>
-							<th>可售沛金条总量(GDQ)</th>
-							<th>已售沛金条总量 (GDQ)</th>
-							<th>剩余沛金条总量 (GDQ)</th>
+							<th>paypal可售沛金条总量(GDQ)</th>
+							<th>paypal已售沛金条总量(GDQ)</th>
+							<th>paypal剩余沛金条总量(GDQ)</th>
 							<th>剩余百分比</th>
 						</tr>
 					</thead>
@@ -36,8 +36,8 @@
 						</tr>
 					</tbody>
 				</table>
-			</div>row 结束
-
+			</div><!--row 结束 -->
+			
 			<div class="row">
 				<div class="col-sm-6">
 					<h4 class="text-left">预警信息详情</h4>	

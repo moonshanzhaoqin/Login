@@ -9,6 +9,9 @@ package com.yuyutechnology.exchange.crm.request;
  */
 public class GetRechargeListRequest {
 	private String currentPage;
+	private String userPhone;
+	private String lowerAmount;
+	private String upperAmount;
 	private String startTime;
 	private String endTime;
 	private String transferType;
@@ -19,6 +22,30 @@ public class GetRechargeListRequest {
 
 	public void setCurrentPage(String currentPage) {
 		this.currentPage = currentPage;
+	}
+
+	public String getUserPhone() {
+		return userPhone;
+	}
+
+	public void setUserPhone(String userPhone) {
+		this.userPhone = userPhone;
+	}
+
+	public String getLowerAmount() {
+		return lowerAmount;
+	}
+
+	public void setLowerAmount(String lowerAmount) {
+		this.lowerAmount = lowerAmount;
+	}
+
+	public String getUpperAmount() {
+		return upperAmount;
+	}
+
+	public void setUpperAmount(String upperAmount) {
+		this.upperAmount = upperAmount;
 	}
 
 	public String getStartTime() {

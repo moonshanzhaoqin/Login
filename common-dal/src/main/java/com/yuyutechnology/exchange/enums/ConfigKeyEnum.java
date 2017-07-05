@@ -16,43 +16,43 @@ public enum ConfigKeyEnum {
 	/**
 	 * 短信验证每日转账最大阈值（美元）
 	 */
-	DAILYTRANSFERTHRESHOLD("daily_transfer_threshold"), 
+	DAILYTRANSFERTHRESHOLD("daily_transfer_threshold"),
 	/**
 	 * 短信验证每笔转账阈值（美元）
 	 */
-	EACHTRANSFERTHRESHOLD("each_transfer_threshold"), 
+	EACHTRANSFERTHRESHOLD("each_transfer_threshold"),
 	/**
 	 * 短信验证总账阈值（美元）
 	 */
-	TOTALBALANCETHRESHOLD("total_balance_threshold"), 
+	TOTALBALANCETHRESHOLD("total_balance_threshold"),
 	/**
 	 * 最大输入
 	 */
-	ENTERMAXIMUMAMOUNT("enter_maximum_amount"), 
+	ENTERMAXIMUMAMOUNT("enter_maximum_amount"),
 	/**
 	 * 第三方支付商户ID
 	 */
-	TPPSCLIENTID("tpps_client_id"), 
+	TPPSCLIENTID("tpps_client_id"),
 	/**
 	 * 第三方支付商户Key
 	 */
-	TPPSCLIENTKEY("tpps_client_key"), 
+	TPPSCLIENTKEY("tpps_client_key"),
 	/**
 	 * 第三方支付商户Token
 	 */
-	TPPSTRANSTOKEN("tpps_trans_token"), 
+	TPPSTRANSTOKEN("tpps_trans_token"),
 	/**
 	 * refund_time
 	 */
-	REFUNTIME("refund_time"), 
+	REFUNTIME("refund_time"),
 	/**
 	 * download_link
 	 */
-	DOWNLOADLINK("download_link"), 
+	DOWNLOADLINK("download_link"),
 	/**
 	 * 换绑手机间隔（DAY）
 	 */
-	CHANGEPHONETIME("change_phone_time"), 
+	CHANGEPHONETIME("change_phone_time"),
 	/**
 	 * 验证码过期时间（MIN）
 	 */
@@ -88,7 +88,7 @@ public enum ConfigKeyEnum {
 	/**
 	 * 登录冻结时间（H）
 	 */
-	LOGIN_UNAVAILIABLE_TIME("login_unavailiable_time"), 
+	LOGIN_UNAVAILIABLE_TIME("login_unavailiable_time"),
 	/**
 	 * 错误支付密码次数
 	 */
@@ -113,15 +113,28 @@ public enum ConfigKeyEnum {
 	 * 可售沛金条总量
 	 */
 	TOTALGDQCANBESOLD("total_gdq_can_be_sold"),
-	
+	/**
+	 * PayPal单笔交易金额上限
+	 */
 	PAYPALMAXLIMITEACHTIME("paypal_max_limit_each_time"),
-	
-	PAYPALMINILIMITEACHTIME("paypal_mini_limit_each_time"),
 
+	/**
+	 * PayPal单笔交易金额下限
+	 */
+	PAYPALMINILIMITEACHTIME("paypal_mini_limit_each_time"),
+	/**
+	 * PayPal_accessToken
+	 */
 	PAYPAL_ACCESSTOKEN("paypal_accessToken"),
-	
-	PAYPAL_EXPIRATION("paypal_expiration");
-	
+	/**
+	 * PayPal支付过期时间(秒)
+	 */
+	PAYPAL_EXPIRATION("paypal_expiration"),
+	/**
+	 * 提取沛金条开关
+	 */
+	GOLDPAY_WITHDRAW("goldpay_withdraw");
+
 	private String key;
 
 	private ConfigKeyEnum(String key) {

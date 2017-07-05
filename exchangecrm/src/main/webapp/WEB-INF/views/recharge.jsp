@@ -10,6 +10,21 @@
 		<div class="row">
 			<form class="form-inline  pull-right" id="searchRecharge">
 				<div class="form-group">
+					<label class="sr-only" for="userPhone">userPhone</label> <input
+						type="text" class="form-control" name="userPhone"
+						placeholder="手机号">
+				</div>
+				<div class="form-group">
+					<label class="sr-only" for="lowerAmount">userPhone</label> <input
+						type="text" class="form-control" name="lowerAmount"
+						placeholder="交易数量>=">
+				</div>
+				<div class="form-group">
+					<label class="sr-only" for="upperAmount">userPhone</label> <input
+						type="text" class="form-control" name="upperAmount"
+						placeholder="交易数量<=">
+				</div>
+				<div class="form-group">
 					<label class="sr-only" for="startTime">startTime</label> <input
 						type="date" class="form-control" name="startTime"
 						placeholder="开始时间" />
@@ -41,7 +56,7 @@
 						<th>交易号</th>
 						<th>交易数量(GDQ)</th>
 						<th>支付币种</th>
-                        <th>支付金额</th>
+						<th>支付金额</th>
 						<th>交易方式</th>
 						<th>交易时间（GMT+8）</th>
 					</tr>
@@ -56,19 +71,27 @@
 	</div>
 	<script>
 		$(function() {
-			var startTime = '', endTime = '', transferType;
+			var userPhone = '', lowerAmount = '', upperAmount = '', startTime = '', endTime = '', transferType;
 			//页面初始化，加载数据
 			searchRecharge(1);
 		});
 		function searchRecharge(page) {
 			console.log("searchRecharge:page=" + page);
 			form = document.getElementById("searchRecharge");
+
+			userPhone = form.userPhone.value;
+			lowerAmount = form.lowerAmount.value;
+			upperAmount = form.upperAmount.value;
 			startTime = form.startTime.value;
 			endTime = form.endTime.value;
 			transferType = form.transferType.value;
-			console.log("startTime=" + startTime + ",endTime=" + endTime
-					+ ",transferType=" + transferType);
-			getRechargeList(page, startTime, endTime, transferType);
+
+			console.log("userPhone=" + userPhone + "lowerAmount=" + lowerAmount
+					+ "upperAmount=" + upperAmount + "startTime=" + startTime
+					+ ",endTime=" + endTime + ",transferType=" + transferType);
+
+			getRechargeList(page, userPhone, lowerAmount, upperAmount,
+					startTime, endTime, transferType);
 		}
 		//分页
 		function paginator(currentPage, pageTotal) {
@@ -95,26 +118,37 @@
 					}
 				},
 				onPageClicked : function(event, originalEvent, type, page) {
-					getRechargeList(page, startTime, endTime, transferType);
+					getRechargeList(page, userPhone, lowerAmount, upperAmount,
+							startTime, endTime, transferType);
 				}
 			}
 			//分页控件
 			$('#paginator').bootstrapPaginator(options);
 		}
 
-		function getRechargeList(currentPage, startTime, endTime, transferType) {
+		function getRechargeList(currentPage, userPhone, lowerAmount,
+				upperAmount, startTime, endTime, transferType) {
 			form = document.getElementById("searchRecharge");
+			
+			form.userPhone.value = userPhone;
+			form.lowerAmount.value = lowerAmount;
+			form.upperAmount.value = upperAmount;
 			form.startTime.value = startTime;
 			form.endTime.value = endTime;
 			form.transferType.value = transferType;
+			
 			var data = {
 				currentPage : currentPage,
+				userPhone : userPhone,
+				lowerAmount : lowerAmount,
+				upperAmount : upperAmount,
 				startTime : startTime,
 				endTime : endTime,
 				transferType : transferType
 			};
 
-			$.ajax({
+			$
+					.ajax({
 						type : "post",
 						url : "/crm/getRechargeList",
 						dataType : 'json',
@@ -144,11 +178,13 @@
 											+ data.rows[i][0].transferAmount
 											+ '</td>'
 											+ '<td>'
-                                            + (!data.rows[i][0].paypalCurrency?"":data.rows[i][0].paypalCurrency)
-                                            + '</td>'
-                                            + '<td>'
-                                            + (!data.rows[i][0].paypalExchange?"":data.rows[i][0].paypalExchange)
-                                            + '</td>'
+											+ (!data.rows[i][0].paypalCurrency ? ""
+													: data.rows[i][0].paypalCurrency)
+											+ '</td>'
+											+ '<td>'
+											+ (!data.rows[i][0].paypalExchange ? ""
+													: data.rows[i][0].paypalExchange)
+											+ '</td>'
 											+ '<td>'
 											+ (data.rows[i][0].transferType == 5 ? "GoldPay"
 													: "PayPal")

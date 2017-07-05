@@ -223,8 +223,14 @@ public class RetCodeConsts {
 	public static final String TRANSFER_PAYPALTRANS_ILLEGAL_DATA = "03027";
 	
 	public static final String TRANSFER_PAYPALTRANS_TOTAL_AMOUNT_OF_GDQ = "03028";
-	
-
+	/**
+	 *提取沛金条关闭 
+	 */
+	public static final String GOLDPAY_WITHDRAW_OFF = "03029";
+	/**
+	 * PayPal关闭
+	 */
+	public static final String PAYPAL_RECHARGE_OFF = "03030";
 	// crm 管理员04
 	/**
 	 * 管理员不存在
@@ -240,6 +246,7 @@ public class RetCodeConsts {
 	 * 币种已存在
 	 */
 	public static final String CURRENCY_IS_EXIST = "05001";
+	
 
 	static {
 		successCodeList.add(RET_CODE_SUCCESS);
