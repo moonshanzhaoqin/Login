@@ -67,13 +67,17 @@ public interface GoldpayTransManager {
 
 	/**
 	 * @param currentPage
+	 * @param userPhone
+	 * @param lowerAmount
+	 * @param upperAmount
 	 * @param startTime
 	 * @param endTime
 	 * @param transferType
 	 * @return
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
-	PageBean getRechargeList(int currentPage, String startTime, String endTime, String transferType) throws ParseException;
+	PageBean getRechargeList(int currentPage,String userPhone,String lowerAmount,String
+			upperAmount, String startTime, String endTime, String transferType) throws ParseException;
 
 	
 }
