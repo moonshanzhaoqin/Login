@@ -206,8 +206,6 @@ public class GoldpayTransController {
 				if (transfer.getTransferStatus() == ServerConsts.TRANSFER_STATUS_OF_PROCESSING
 						|| transfer.getTransferStatus() == ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS
 						|| transfer.getTransferStatus() == ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_FAIL
-//						||transfer.getTransferStatus()==ServerConsts.TRANSFER_STATUS_OF_MANUALREVIEW_FAIL
-//						||transfer.getTransferStatus()==ServerConsts.TRANSFER_STATUS_OF_MANUALREVIEW_SUCCESS
 						||transfer.getTransferStatus()==ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL) {
 					withdrawDTO.setWithdrawStatus(0);
 				} else if (transfer.getTransferStatus() == ServerConsts.TRANSFER_STATUS_OF_REFUND) {
