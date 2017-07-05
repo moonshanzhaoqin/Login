@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,6 +37,7 @@ import com.yuyutechnology.exchange.server.controller.request.RegisterRequest;
 import com.yuyutechnology.exchange.server.controller.request.TestCodeRequest;
 import com.yuyutechnology.exchange.server.controller.response.ContactUsResponse;
 import com.yuyutechnology.exchange.server.controller.response.ForgetPasswordResponse;
+import com.yuyutechnology.exchange.server.controller.response.FunctionalModulesAvailabilityResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetVerificationCodeResponse;
 import com.yuyutechnology.exchange.server.controller.response.LoginResponse;
 import com.yuyutechnology.exchange.server.controller.response.LoginValidateResponse;
@@ -71,6 +73,23 @@ public class UserController {
 	@Autowired
 	ConfigManager configManager;
 
+	@ResponseEncryptBody
+	@ApiOperation(value = "功能模块的可用性", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/functionalModulesAvailability", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public FunctionalModulesAvailabilityResponse functionalModulesAvailability() {
+		logger.info("========functionalModulesAvailability============" );
+		FunctionalModulesAvailabilityResponse rep = new FunctionalModulesAvailabilityResponse();
+		/* Paypal开启状态 */
+		rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
+		/*提取沛金条开启状态*/
+		rep.setGoldpayWithdraw(configManager.getConfigBooleanValue(ConfigKeyEnum.GOLDPAY_WITHDRAW));
+		
+		logger.info(MessageConsts.RET_CODE_SUCCESS);
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		return rep;
+	}
+	
 	/**
 	 * forget password 忘记密码
 	 * 
@@ -247,7 +266,7 @@ public class UserController {
 					/* 获取用户信息 */
 					rep.setUser(userInfo);
 					/* Paypal开启状态 */
-					rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
+//					rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
 
 					logger.info(MessageConsts.RET_CODE_SUCCESS);
 					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
