@@ -38,7 +38,7 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 			fixed-delay="300000" initial-delay="60000" />
 
 		<task:scheduled ref="autoUpdateExchangeRateTask"
-			method="autoUpdateExchangeRateTask" fixed-delay="86400000" initial-delay="60000" />
+			method="autoUpdateExchangeRateTask" fixed-delay="86400000" initial-delay="600000" />
 
 		<task:scheduled ref="autoUpdateExchangeRateTask"
 			method="autoSystemRefundBatch" fixed-delay="300000" initial-delay="300000" />
