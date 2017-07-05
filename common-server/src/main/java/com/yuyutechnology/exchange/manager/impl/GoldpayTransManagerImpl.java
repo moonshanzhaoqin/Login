@@ -302,6 +302,14 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 		HashMap<String, String> map = new HashMap<String, String>();
 
+		/*提取沛金条是否开启*/
+		if(!configManager.getConfigBooleanValue(ConfigKeyEnum.GOLDPAY_WITHDRAW)) {
+			map.put("msg", "goldpay_withdraw is closed。");
+			map.put("retCode", RetCodeConsts.GOLDPAY_WITHDRAW_OFF);
+			return map;
+		}
+		
+		
 		User systemUser = userDAO.getSystemUser();
 		User payer = userDAO.getUser(userId);
 		if (payer == null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
@@ -384,6 +392,9 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	public HashMap<String, String> withdrawConfirm1(int userId, String payPwd, String transferId) {
 
 		HashMap<String, String> map = new HashMap<String, String>();
+		
+		
+		
 		User systemUser = userDAO.getSystemUser();
 		User user = userDAO.getUser(userId);
 		if (user == null || user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {

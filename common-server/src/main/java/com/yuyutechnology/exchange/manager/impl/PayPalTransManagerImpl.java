@@ -69,7 +69,14 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 	public HashMap<String, Object> paypalTransInit(Integer userId, String currencyLeft, BigDecimal amount) {
 
 		HashMap<String, Object> result = new HashMap<>();
-
+		
+		/*PayPal是否开启*/
+		if(!configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE)) {
+			result.put("msg", "paypal_recharge is closed。");
+			result.put("retCode", RetCodeConsts.PAYPAL_RECHARGE_OFF);
+			return result;
+		}
+		
 		// 判断条件.币种合法，GDQ数量为整数且大于100
 		if (!commonManager.verifyCurrency(currencyLeft)) {
 			logger.warn("This currency is not a tradable currency");
