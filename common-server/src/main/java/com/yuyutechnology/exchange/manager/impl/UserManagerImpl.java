@@ -148,6 +148,8 @@ public class UserManagerImpl implements UserManager {
 		user.setUserPhone(userPhone);
 		userDAO.updateUser(user);
 		redisDAO.saveData("changephonetime" + userId, new Date().getTime());
+		/* 根据Unregistered表 更新新用户钱包 将资金从系统帐户划给新用户 */
+		updateWalletsFromUnregistered(userId, areaCode, userPhone);
 	}
 
 	@Override
