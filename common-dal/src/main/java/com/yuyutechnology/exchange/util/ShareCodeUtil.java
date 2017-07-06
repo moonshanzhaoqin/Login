@@ -13,7 +13,7 @@ import java.util.Random;
 public class ShareCodeUtil {
 
     /** 自定义进制(0,1没有加入,容易与o,l混淆) */
-    private static final char[] r=new char[]{'Q', 'W', 'E', '8', 'A', 'S', '2', 'D', 'Z', 'X', '9', 'C', '7', 'P', '5', 'I', 'K', '3', 'M', 'J', 'U', 'F', 'R', '4', 'V', 'Y', 'L', 'T', 'N', '6', 'B', 'G', 'H'};
+    private static final char[] r=new char[]{'F', 'V', 'E', '8', 'A', 'G', '2', 'D', 'Z', 'W', '9', 'C', '7', 'P', '5', 'K', 'I', '6', 'M', 'J', 'U', 'Q', 'R', '4', 'X', 'Y', 'L', 'T', 'N', '3', 'B', 'S', 'H'};
 
     /** (不能与自定义进制有重复) */
     private static final char b='O';
