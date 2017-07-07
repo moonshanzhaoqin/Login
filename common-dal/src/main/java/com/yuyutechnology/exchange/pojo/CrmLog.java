@@ -18,6 +18,10 @@ import javax.persistence.TemporalType;
 @Table(name = "e_crm_log")
 public class CrmLog implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5344113285015503444L;
 	private Integer logId;
 	private String adminName;
 	private Date operateTime;
