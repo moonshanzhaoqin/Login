@@ -274,7 +274,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			}
 		}
 		
-		sb.append(" order by createTime desc");
+		sb.append(" order by createTime desc, exchangeId desc");
 		
 		HashMap<String, Object> map = exchangeDAO.getExchangeRecordsByPage(sb.toString(), values, currentPage, pageSize);
 		
