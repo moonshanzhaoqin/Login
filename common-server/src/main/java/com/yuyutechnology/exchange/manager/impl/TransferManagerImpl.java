@@ -774,7 +774,7 @@ public class TransferManagerImpl implements TransferManager{
 			}
 		}
 		
-		sb.append(" order by t2.finish_time desc");
+		sb.append(" order by t2.finish_time desc ,t2.transfer_id desc ");
 
 		HashMap<String, Object> map = transferDAO.getTransactionRecordByPage(sql+sb.toString(),
 				sb.toString(),values,currentPage, pageSize);

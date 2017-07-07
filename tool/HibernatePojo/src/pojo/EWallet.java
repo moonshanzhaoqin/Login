@@ -1,16 +1,13 @@
 package pojo;
-// Generated Jun 5, 2017 10:04:57 AM by Hibernate Tools 5.2.1.Final
+// Generated Jul 7, 2017 3:04:02 PM by Hibernate Tools 5.2.3.Final
 
 import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -23,8 +20,8 @@ import javax.persistence.TemporalType;
 public class EWallet implements java.io.Serializable {
 
 	private Integer walletId;
-	private ECurrency ECurrency;
 	private int userId;
+	private String currency;
 	private BigDecimal balance;
 	private Date updateTime;
 	private long updateSeqId;
@@ -32,9 +29,16 @@ public class EWallet implements java.io.Serializable {
 	public EWallet() {
 	}
 
-	public EWallet(ECurrency ECurrency, int userId, BigDecimal balance, Date updateTime, long updateSeqId) {
-		this.ECurrency = ECurrency;
+	public EWallet(int userId, String currency, BigDecimal balance, long updateSeqId) {
 		this.userId = userId;
+		this.currency = currency;
+		this.balance = balance;
+		this.updateSeqId = updateSeqId;
+	}
+
+	public EWallet(int userId, String currency, BigDecimal balance, Date updateTime, long updateSeqId) {
+		this.userId = userId;
+		this.currency = currency;
 		this.balance = balance;
 		this.updateTime = updateTime;
 		this.updateSeqId = updateSeqId;
@@ -52,16 +56,6 @@ public class EWallet implements java.io.Serializable {
 		this.walletId = walletId;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "currency", nullable = false)
-	public ECurrency getECurrency() {
-		return this.ECurrency;
-	}
-
-	public void setECurrency(ECurrency ECurrency) {
-		this.ECurrency = ECurrency;
-	}
-
 	@Column(name = "user_id", nullable = false)
 	public int getUserId() {
 		return this.userId;
@@ -69,6 +63,15 @@ public class EWallet implements java.io.Serializable {
 
 	public void setUserId(int userId) {
 		this.userId = userId;
+	}
+
+	@Column(name = "currency", nullable = false, length = 3)
+	public String getCurrency() {
+		return this.currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
 	}
 
 	@Column(name = "balance", nullable = false, precision = 20, scale = 4)
@@ -81,7 +84,7 @@ public class EWallet implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "update_time", nullable = false, length = 19)
+	@Column(name = "update_time", length = 19)
 	public Date getUpdateTime() {
 		return this.updateTime;
 	}

@@ -1,5 +1,5 @@
 package pojo;
-// Generated Jun 5, 2017 10:04:57 AM by Hibernate Tools 5.2.1.Final
+// Generated Jul 7, 2017 3:04:02 PM by Hibernate Tools 5.2.3.Final
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -17,7 +17,7 @@ import javax.persistence.TemporalType;
 @Table(name = "e_crm_user_info", catalog = "anytime_exchange")
 public class ECrmUserInfo implements java.io.Serializable {
 
-	private int userId;
+	private long userId;
 	private String areaCode;
 	private String userPhone;
 	private String userName;
@@ -33,15 +33,15 @@ public class ECrmUserInfo implements java.io.Serializable {
 	public ECrmUserInfo() {
 	}
 
-	public ECrmUserInfo(int userId, int loginAvailable, int payAvailable) {
+	public ECrmUserInfo(long userId, int loginAvailable, int payAvailable) {
 		this.userId = userId;
 		this.loginAvailable = loginAvailable;
 		this.payAvailable = payAvailable;
 	}
 
-	public ECrmUserInfo(int userId, String areaCode, String userPhone, String userName, Date createTime, Date loginTime,
-			Integer userType, Integer userAvailable, int loginAvailable, int payAvailable, BigDecimal userTotalAssets,
-			Date updateAt) {
+	public ECrmUserInfo(long userId, String areaCode, String userPhone, String userName, Date createTime,
+			Date loginTime, Integer userType, Integer userAvailable, int loginAvailable, int payAvailable,
+			BigDecimal userTotalAssets, Date updateAt) {
 		this.userId = userId;
 		this.areaCode = areaCode;
 		this.userPhone = userPhone;
@@ -59,15 +59,15 @@ public class ECrmUserInfo implements java.io.Serializable {
 	@Id
 
 	@Column(name = "user_id", unique = true, nullable = false)
-	public int getUserId() {
+	public long getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 
-	@Column(name = "area_code", length = 5)
+	@Column(name = "area_code", length = 10)
 	public String getAreaCode() {
 		return this.areaCode;
 	}

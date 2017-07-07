@@ -1,13 +1,9 @@
 package pojo;
-// Generated Jun 5, 2017 10:04:57 AM by Hibernate Tools 5.2.1.Final
+// Generated Jul 7, 2017 3:04:02 PM by Hibernate Tools 5.2.3.Final
 
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -24,7 +20,6 @@ public class ECurrency implements java.io.Serializable {
 	private String currencyUnit;
 	private int currencyStatus;
 	private Integer currencyOrder;
-	private Set<EWallet> EWallets = new HashSet<EWallet>(0);
 
 	public ECurrency() {
 	}
@@ -35,7 +30,7 @@ public class ECurrency implements java.io.Serializable {
 	}
 
 	public ECurrency(String currency, String nameEn, String nameCn, String nameHk, String currencyUnit,
-			int currencyStatus, Integer currencyOrder, Set<EWallet> EWallets) {
+			int currencyStatus, Integer currencyOrder) {
 		this.currency = currency;
 		this.nameEn = nameEn;
 		this.nameCn = nameCn;
@@ -43,7 +38,6 @@ public class ECurrency implements java.io.Serializable {
 		this.currencyUnit = currencyUnit;
 		this.currencyStatus = currencyStatus;
 		this.currencyOrder = currencyOrder;
-		this.EWallets = EWallets;
 	}
 
 	@Id
@@ -109,15 +103,6 @@ public class ECurrency implements java.io.Serializable {
 
 	public void setCurrencyOrder(Integer currencyOrder) {
 		this.currencyOrder = currencyOrder;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "ECurrency")
-	public Set<EWallet> getEWallets() {
-		return this.EWallets;
-	}
-
-	public void setEWallets(Set<EWallet> EWallets) {
-		this.EWallets = EWallets;
 	}
 
 }

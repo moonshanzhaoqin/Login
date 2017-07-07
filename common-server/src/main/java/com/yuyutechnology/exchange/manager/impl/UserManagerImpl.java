@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.output.ThresholdingOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -448,6 +449,12 @@ public class UserManagerImpl implements UserManager {
 		accountingManager.snapshotToBefore(userId);
 		/* 根据Unregistered表 更新新用户钱包 将资金从系统帐户划给新用户 */
 		updateWalletsFromUnregistered(userId, areaCode, userPhone);
+		//TODO 发放奖励金
+		
+		
+		
+		
+		
 		return userId;
 	}
 

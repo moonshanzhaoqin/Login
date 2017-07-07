@@ -1,5 +1,5 @@
 package pojo;
-// Generated Jun 5, 2017 10:04:57 AM by Hibernate Tools 5.2.1.Final
+// Generated Jul 7, 2017 3:04:02 PM by Hibernate Tools 5.2.3.Final
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -27,7 +27,6 @@ public class ETransfer implements java.io.Serializable {
 	private String currency;
 	private BigDecimal transferAmount;
 	private String transferComment;
-	private String userComment;
 	private Date createTime;
 	private Date finishTime;
 	private int transferStatus;
@@ -37,7 +36,7 @@ public class ETransfer implements java.io.Serializable {
 	private String goldpayName;
 	private String goldpayAcount;
 	private String paypalCurrency;
-	private Long paypalExchange;
+	private BigDecimal paypalExchange;
 
 	public ETransfer() {
 	}
@@ -54,9 +53,9 @@ public class ETransfer implements java.io.Serializable {
 	}
 
 	public ETransfer(String transferId, int userFrom, int userTo, String areaCode, String phone, String currency,
-			BigDecimal transferAmount, String transferComment, String userComment, Date createTime, Date finishTime,
-			int transferStatus, int transferType, Integer noticeId, String goldpayResult, String goldpayName,
-			String goldpayAcount, String paypalCurrency, Long paypalExchange) {
+			BigDecimal transferAmount, String transferComment, Date createTime, Date finishTime, int transferStatus,
+			int transferType, Integer noticeId, String goldpayResult, String goldpayName, String goldpayAcount,
+			String paypalCurrency, BigDecimal paypalExchange) {
 		this.transferId = transferId;
 		this.userFrom = userFrom;
 		this.userTo = userTo;
@@ -65,7 +64,6 @@ public class ETransfer implements java.io.Serializable {
 		this.currency = currency;
 		this.transferAmount = transferAmount;
 		this.transferComment = transferComment;
-		this.userComment = userComment;
 		this.createTime = createTime;
 		this.finishTime = finishTime;
 		this.transferStatus = transferStatus;
@@ -117,7 +115,7 @@ public class ETransfer implements java.io.Serializable {
 		this.userTo = userTo;
 	}
 
-	@Column(name = "area_code", length = 5)
+	@Column(name = "area_code")
 	public String getAreaCode() {
 		return this.areaCode;
 	}
@@ -160,15 +158,6 @@ public class ETransfer implements java.io.Serializable {
 
 	public void setTransferComment(String transferComment) {
 		this.transferComment = transferComment;
-	}
-
-	@Column(name = "user_comment", length = 500)
-	public String getUserComment() {
-		return this.userComment;
-	}
-
-	public void setUserComment(String userComment) {
-		this.userComment = userComment;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -254,12 +243,12 @@ public class ETransfer implements java.io.Serializable {
 		this.paypalCurrency = paypalCurrency;
 	}
 
-	@Column(name = "paypal_exchange", precision = 10, scale = 0)
-	public Long getPaypalExchange() {
+	@Column(name = "paypal_exchange", precision = 20, scale = 4)
+	public BigDecimal getPaypalExchange() {
 		return this.paypalExchange;
 	}
 
-	public void setPaypalExchange(Long paypalExchange) {
+	public void setPaypalExchange(BigDecimal paypalExchange) {
 		this.paypalExchange = paypalExchange;
 	}
 
