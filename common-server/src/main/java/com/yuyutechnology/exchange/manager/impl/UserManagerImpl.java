@@ -37,6 +37,7 @@ import com.yuyutechnology.exchange.goldpay.GoldpayUser;
 import com.yuyutechnology.exchange.manager.AccountingManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
+import com.yuyutechnology.exchange.manager.TransDetailsManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Currency;
@@ -94,6 +95,8 @@ public class UserManagerImpl implements UserManager {
 	ConfigManager configManager;
 	@Autowired
 	AccountingManager accountingManager;
+	@Autowired
+	TransDetailsManager transDetailsManager;
 
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
@@ -631,6 +634,14 @@ public class UserManagerImpl implements UserManager {
 			transfer.setNoticeId(0);
 
 			transferDAO.addTransfer(transfer);
+			
+			//add by Niklaus.chi at 2017/07/07
+			
+			transDetailsManager.addTransDetails(transferId, userId, payer.getUserId(), 
+					payer.getUserName(), payer.getAreaCode(), payer.getUserPhone(), 
+					unregistered.getCurrency(), unregistered.getAmount(), payerTransfer.getTransferComment(), ServerConsts.TRANSFER_TYPE_TRANSACTION-1);
+			
+			//end
 
 			// 增加seq记录
 			// walletSeqDAO.addWalletSeq4Transaction(systemUserId, userId,
