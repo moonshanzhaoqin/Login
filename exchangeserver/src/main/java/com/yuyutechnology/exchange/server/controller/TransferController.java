@@ -317,6 +317,35 @@ public class TransferController {
 		return rep;
 
 	}
+	
+	@SuppressWarnings("unchecked")
+	@ApiOperation(value = "获取交易列表")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransactionRecordNew")
+	public @ResponseEncryptBody GetTransactionRecordResponse getTransactionRecordNew(@PathVariable String token,
+			@RequestDecryptBody GetTransactionRecordRequest reqMsq) {
+
+		// 从Session中获取Id
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		GetTransactionRecordResponse rep = new GetTransactionRecordResponse();
+		HashMap<String, Object> map = transferManager.getTransactionRecordNew(reqMsq.getPeriod(), reqMsq.getType(),
+				sessionData.getUserId(), reqMsq.getCurrentPage(), reqMsq.getPageSize());
+
+		if (((ArrayList<?>) map.get("dtos")).isEmpty()) {
+			rep.setRetCode(RetCodeConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
+			rep.setMessage("Transaction history not acquired");
+		} else {
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+			rep.setCurrentPage((int) map.get("currentPage"));
+			rep.setPageSize((int) map.get("pageSize"));
+			rep.setPageTotal((int) map.get("pageTotal"));
+			rep.setTotal(Integer.parseInt(map.get("total") + ""));
+			rep.setList((List<TransferDTO>) map.get("dtos") );
+		}
+
+		return rep;
+
+	}
 
 	@ApiOperation(value = "交易通知列表")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getNotificationRecords")

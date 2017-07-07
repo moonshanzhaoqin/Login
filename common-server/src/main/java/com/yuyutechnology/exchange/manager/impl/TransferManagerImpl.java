@@ -1129,6 +1129,137 @@ public class TransferManagerImpl implements TransferManager{
 		return accumulatedAmount;
 	}
 	
+
+	@Override
+	public HashMap<String, Object> getTransactionRecordByPageNew(String period,String type, 
+			int userId,int currentPage, int pageSize) {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		
+		StringBuffer sb = new StringBuffer("select t1.transfer_id,t1.trans_currency,t1.trans_amount, ");
+		sb.append("t3.currency_unit,t2.transfer_type,t2.finish_time, ");
+		sb.append("t1.trader_name,t1.trader_area_code,t1.trader_phone ");
+		sb.append("FROM e_trans_details t1 ");
+		sb.append("LEFT JOIN e_transfer t2 ON t1.transfer_id = t2.transfer_id ");
+		sb.append("LEFT JOIN e_currency t3 ON t1.trans_currency = t3.currency ");
+		sb.append("where ");
+		sb.append("t2.transfer_status = ? AND t1.user_id = ?");
+		
+		
+		List<Object> values = new ArrayList<Object>();
+		values.add(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		values.add(userId);
+		
+		
+		if(StringUtils.isNotBlank(type)){
+			
+			switch(type){
+				case "expenses"://支出
+					sb.append("and t1.trans_amount < 0 and t2.transfer_type in (0,?) ");
+					values.add(ServerConsts.TRANSFER_TYPE_OUT_INVITE+"");
+					break;
+				case "income"://收入
+					sb.append("and t1.trans_amount > 0 and t2.transfer_type in (0,?) ");
+					values.add(ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND+"");
+					break;
+				case "withdraw"://体现
+					sb.append("and t2.transfer_type = ? ");
+					values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW+"");
+					break;
+				case "recharge"://充值
+					sb.append("and t2.transfer_type in (?,?) ");
+					values.add(ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE+"");
+					values.add(ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE+"");
+					break;
+				default:
+					break;	
+				
+			}
+
+		}
+		
+		if(!period.equals("all")){
+			switch (period) {
+				case "today":
+					sb.append("and t2.finish_time > ?");
+					values.add(DateFormatUtils.getStartTime(sdf.format(new Date())));
+					break;
+					
+				case "lastMonth":
+					sb.append("and t2.finish_time > ?");
+					Date date = DateFormatUtils.getpreDays(-30);
+					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+					break;
+				case "last3Month":
+					sb.append("and t2.finish_time > ?");
+					date = DateFormatUtils.getpreDays(-90);
+					values.add(DateFormatUtils.getStartTime(sdf.format(date)));		
+					break;
+				case "lastYear":
+					sb.append("and t2.finish_time > ?");
+					date = DateFormatUtils.getpreDays(-365);
+					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+					break;
+				case "aYearAgo":
+					sb.append("and t2.finish_time < ?");
+					date = DateFormatUtils.getpreDays(-365);
+					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+					break;
+		
+				default:
+					break;
+			}
+		}
+		
+		sb.append(" order by t2.finish_time desc");
+
+		HashMap<String, Object> map = transferDAO.getTransactionRecordByPage(sb.toString(),
+				sb.toString(),values,currentPage, pageSize);
+		//读交易标记
+		commonManager.readMsgFlag(userId, 1);
+		return map;
+	}
+	
+	@Override
+	public HashMap<String, Object> getTransactionRecordNew(String period,String type, 
+			int userId,int currentPage, int pageSize) {
+		
+		HashMap<String, Object> map = getTransactionRecordByPageNew(period,type,userId,currentPage,pageSize);
+		
+		if(map.isEmpty()){
+			return null;
+		}
+
+		List<?> list = (List<?>) map.get("list");
+		List<TransferDTO> dtos = new ArrayList<>();
+		
+		for (Object object : list) {
+			Object[] obj = (Object[]) object;
+			
+			TransferDTO dto = new TransferDTO();
+			
+			dto.setTransferId((String) obj[0]);
+			dto.setCurrency((String) obj[1]);
+			dto.setAmount(((BigDecimal) obj[2]).doubleValue());
+			dto.setCurrencyUnit((String) obj[3]);
+			
+			if((int) obj[4] == ServerConsts.TRANSFER_TYPE_TRANSACTION && (((BigDecimal) obj[2]).doubleValue())>0){
+				dto.setTransferType(1);
+			}else{
+				dto.setTransferType((int) obj[4]);
+			}
+			
+			dto.setFinishAt((Date) obj[5]);
+			dto.setTrader((String) obj[6]);
+			dto.setPhoneNum((String) obj[7]+" "+(String) obj[8]);
+
+			dtos.add(dto);
+		}
+		
+		map.put("dtos", dtos);
+		
+		return map;
+	}
 	
 
 	

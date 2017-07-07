@@ -126,6 +126,12 @@ public interface TransferManager {
 
 	 HashMap<String, Object> getTransactionRecord(String period, String type, int userId, int currentPage, int pageSize);
 
-	BigDecimal getAccumulatedAmount(String key); 
+	BigDecimal getAccumulatedAmount(String key);
+
+	HashMap<String, Object> getTransactionRecordByPageNew(String period, String type, int userId, int currentPage,
+			int pageSize);
+
+	HashMap<String, Object> getTransactionRecordNew(String period, String type, int userId, int currentPage,
+			int pageSize); 
 	
 }
