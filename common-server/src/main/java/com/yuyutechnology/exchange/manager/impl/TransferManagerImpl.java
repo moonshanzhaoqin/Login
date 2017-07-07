@@ -38,6 +38,7 @@ import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
+import com.yuyutechnology.exchange.manager.TransDetailsManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
@@ -89,6 +90,8 @@ public class TransferManagerImpl implements TransferManager{
 	ConfigManager configManager;
 	@Autowired
 	CrmAlarmManager crmAlarmManager;
+	@Autowired
+	TransDetailsManager transDetailsManager;
 	
 	public static Logger logger = LogManager.getLogger(TransferManagerImpl.class);
 
@@ -138,6 +141,7 @@ public class TransferManagerImpl implements TransferManager{
 		transfer.setUserFrom(userId);
 		transfer.setAreaCode(areaCode);
 		transfer.setPhone(userPhone);
+		
 		//判断接收人是否是已注册账号
 		if(receiver != null){
 			transfer.setUserTo(receiver.getUserId());
@@ -145,10 +149,21 @@ public class TransferManagerImpl implements TransferManager{
 			//判断对方是否有该种货币
 			commonManager.checkAndUpdateWallet(receiver.getUserId(), currency);
 			
+			//add by Niklaus.chi at 2017/07/07
+			transDetailsManager.addTransDetails(transferId, userId, receiver.getUserId(), 
+					receiver.getUserName(), areaCode, userPhone, currency, amount, 
+					transferComment, ServerConsts.TRANSFER_TYPE_TRANSACTION);
+			
 		}else{
 			User systemUser = userDAO.getSystemUser();
 			transfer.setUserTo(systemUser.getUserId());
 			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_OUT_INVITE);
+			
+			//add by Niklaus.chi at 2017/07/07
+			transDetailsManager.addTransDetails(transferId, userId, null, 
+					null, areaCode, userPhone, currency, amount, 
+					transferComment, ServerConsts.TRANSFER_TYPE_OUT_INVITE);
+			
 		}
 		transfer.setNoticeId(noticeId);
 		//保存
@@ -309,14 +324,9 @@ public class TransferManagerImpl implements TransferManager{
 				unregistered.setAmount(transfer.getTransferAmount());
 				unregisteredDAO.addUnregistered(unregistered);
 			}
-
-			//增加seq记录
-//			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), systemUser.getUserId(), 
-//					ServerConsts.TRANSFER_TYPE_OUT_INVITE, transfer.getTransferId(), 
-//					transfer.getCurrency(), transfer.getTransferAmount());
 			
 			//更改Transfer状态
-			transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+//			transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 			
 			//向未注册用户发送短信
 			smsManager.sendSMS4Transfer(transfer.getAreaCode(), transfer.getPhone(), payer,
@@ -337,11 +347,6 @@ public class TransferManagerImpl implements TransferManager{
 			//加款
 			walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserTo(), 
 					transfer.getCurrency(), transfer.getTransferAmount(), "+", ServerConsts.TRANSFER_TYPE_TRANSACTION, transfer.getTransferId());
-			
-			//添加seq记录
-//			walletSeqDAO.addWalletSeq4Transaction(transfer.getUserFrom(), transfer.getUserTo(), 
-//					ServerConsts.TRANSFER_TYPE_TRANSACTION, transfer.getTransferId(), 
-//					transfer.getCurrency(), transfer.getTransferAmount());	
 			
 			//如果是请求转账还需要更改消息通知中的状态
 			if(transfer.getNoticeId() != 0){
@@ -399,7 +404,6 @@ public class TransferManagerImpl implements TransferManager{
 		transfer2.setCurrency(transfer.getCurrency());
 		transfer2.setTransferAmount(transfer.getTransferAmount());
 		transfer2.setTransferComment(unregistered.getUserPhone()+"对方逾期未注册,系统退款");
-//		transfer2.setTransferComment(unregistered.getUserPhone());
 		transfer2.setTransferType(ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND);
 		transfer2.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		transfer2.setCreateTime(new Date());
@@ -408,6 +412,12 @@ public class TransferManagerImpl implements TransferManager{
 		
 		transferDAO.addTransfer(transfer2);
 		///////////////////////////end////////////////////////////
+		
+		//add by Niklaus.chi at 2017/07/07
+		transDetailsManager.addTransDetails(transferId2, transfer.getUserFrom(), null, null, unregistered.getAreaCode(),
+				unregistered.getUserPhone(), transfer.getCurrency(), transfer.getTransferAmount(), 
+				unregistered.getUserPhone()+"对方逾期未注册,系统退款", ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND);
+		
 		//修改gift记录
 		unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_BACK);
 		unregistered.setRefundTransId(transferId2);
@@ -520,109 +530,6 @@ public class TransferManagerImpl implements TransferManager{
 		return result;
 	}
 
-
-	
-//	@Override
-//	public HashMap<String, Object> getTransactionRecordByPage(String period,String type, 
-//			int userId,int currentPage, int pageSize) {
-//		
-//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//		String sql = "SELECT "+
-//				"t1.user_from,"
-//				+ "t1.currency,"
-//				+ "t1.transfer_amount,"
-//				+ "CONCAT(t1.area_code,' ',t1.phone),"
-//				+ "CONCAT(t2.area_code,' ',t2.user_phone),"
-//				+ "t1.transfer_comment,"
-//				+ "t1.finish_time,"
-//				+ "t1.transfer_type,t1.transfer_id  ";
-//		StringBuilder sb = new StringBuilder(
-//				"FROM `e_transfer` t1 "+
-//				"LEFT JOIN `e_user` t2  "+
-//				"ON  "+
-//				"t1.user_from = t2.user_id  "+
-//				"LEFT JOIN `e_wallet_seq` t3  "+
-//				"ON  "+
-//				"t1.transfer_id = t3.transaction_id  "+
-//				"where " +
-//				"t1.transfer_status=? "+
-//				"and (t1.user_from = ? or t1.user_to = ?) "+ 
-//				"and t3.user_id = ?  ");
-//		
-//		List<Object> values = new ArrayList<Object>();
-//		values.add(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-//		values.add(userId);
-//		values.add(userId);
-//		values.add(userId);
-//		
-//		if(StringUtils.isNotBlank(type)){
-//			
-//			switch(type){
-//				case "expenses"://支出
-//					sb.append("and t3.amount < 0 and t1.transfer_type in (0,?) ");
-//					values.add(ServerConsts.TRANSFER_TYPE_OUT_INVITE+"");
-//					break;
-//				case "income"://收入
-//					sb.append("and t3.amount > 0 and t1.transfer_type in (0,?) ");
-//					values.add(ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND+"");
-//					break;
-//				case "withdraw"://体现
-//					sb.append("and t1.transfer_type = ? ");
-//					values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW+"");
-//					break;
-//				case "recharge"://充值
-//					sb.append("and t1.transfer_type = ? ");
-//					values.add(ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE+"");
-//					break;
-//				default:
-//					break;	
-//				
-//			}
-//
-//		}
-//		
-//		if(!period.equals("all")){
-//			switch (period) {
-//				case "today":
-//					sb.append("and t1.finish_time > ?");
-//					values.add(DateFormatUtils.getStartTime(sdf.format(new Date())));
-//					break;
-//					
-//				case "lastMonth":
-//					sb.append("and t1.finish_time > ?");
-//					Date date = DateFormatUtils.getpreDays(-30);
-//					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
-//					break;
-//				case "last3Month":
-//					sb.append("and t1.finish_time > ?");
-//					date = DateFormatUtils.getpreDays(-90);
-//					values.add(DateFormatUtils.getStartTime(sdf.format(date)));		
-//					break;
-//				case "lastYear":
-//					sb.append("and t1.finish_time > ?");
-//					date = DateFormatUtils.getpreDays(-365);
-//					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
-//					break;
-//				case "aYearAgo":
-//					sb.append("and t1.finish_time < ?");
-//					date = DateFormatUtils.getpreDays(-365);
-//					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
-//					break;
-//		
-//				default:
-//					break;
-//			}
-//		}
-//		
-//		sb.append(" order by t1.finish_time desc");
-//
-//		HashMap<String, Object> map = transferDAO.getTransactionRecordByPage(sql+sb.toString(),
-//				sb.toString(),values,currentPage, pageSize);
-//		//读交易标记
-//		commonManager.readMsgFlag(userId, 1);
-//		return map;
-//	}
-	
 	@Override
 	public HashMap<String, Object> getTransactionRecord(String period,String type, 
 			int userId,int currentPage, int pageSize) {
