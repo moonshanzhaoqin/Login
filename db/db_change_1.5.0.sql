@@ -32,3 +32,8 @@ CREATE TABLE `e_collect` (
   `share_path` int(1) NOT NULL DEFAULT '0' COMMENT '分享途径',
   PRIMARY KEY (`collect_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='领取';
+
+
+--2017/07/10 Suzan
+INSERT INTO `e_config` SET `config_key`='collect_active_time',`config_value`='2',`config_name`='领取有效时间（H）',`config_order`=0,`config_canChange`=1;
+INSERT INTO `e_config` SET `config_key`='invite_quantity_restriction',`config_value`='10',`config_name`='邀请数量限制',`config_order`=0,`config_canChange`=1;

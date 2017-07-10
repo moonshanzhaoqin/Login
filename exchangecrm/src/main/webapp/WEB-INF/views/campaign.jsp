@@ -127,7 +127,38 @@
 
 		/* 	页面初始化 */
 		function initCampaign() {
+			$.ajax({
+				type : "post",
+				url : "/crm/getCampaignList",
+				contentType : "application/json; charset=utf-8",
+				dataType : 'json',
+				data : {},
+				success : function(data) {
+					var html = "";
+					for (var i = 0; i < data.length; i++) {
+						html += '<tr>' + '<td>' + data[i].campaignId + '</td>'
+								+ '<td>' + timeDate(data[i].startTime)
+								+ '</td>' + '<td>' + timeDate(data[i].endTime)
+								+ '</td>' + '<td>' + data[i].campaignStatus
+								+ '</td>' + '<td>' + data[i].campaignBudget
+								+ '</td>' + '<td>' + data[i].budgetSurplus
+								+ '</td>' + '<td>' + data[i].inviterBonus
+								+ '</td>' + '<td>' + data[i].inviteeBonus
+								+ '</td>' + '<td>'
+								+ timeDate(data[i].updateTime) + '</td>'
+								+ '</tr>'
+					}
+					$('#campaign tbody').html(html);
 
+				},
+				error : function(xhr, err) {
+					console.log("error");
+					console.log(err);
+					console.log(xhr);
+					alert("未知错误!");
+				},
+				async : false
+			});
 		}
 		/* 	新增活动 */
 		function addCampaign() {
