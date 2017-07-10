@@ -14,12 +14,17 @@
 	href='<c:url value="/resources/bootstrap/css/bootstrap-paginator.min.css" />' />
 <link rel="stylesheet"
 	href="<c:url value="/resources/css/common.css" />" />
+	<link rel="stylesheet"
+    href="<c:url value="/resources/laydate/need/laydate.css" />" />
 <script type="text/javascript"
 	src="<c:url value="/resources/js/jquery.min.js" />"></script>
 <script type="text/javascript"
 	src="<c:url value="/resources/bootstrap/js/bootstrap.min.js" />"></script>
 <script type="text/javascript"
 	src="<c:url value="/resources/bootstrap/js/bootstrap-paginator.min.js" />"></script>
+<script type="text/javascript"
+    src="<c:url value="/resources/laydate/laydate.js" />"></script>
+
 </head>
 <body>
 	<!--
@@ -89,6 +94,10 @@
 						<c:if test="${adminPower eq 7}">
 							<li><a href="<c:url value='/recharge' />">充值管理</a></li>
 						</c:if>
+						<c:if test="${adminPower eq 8}">
+                            <li><a href="<c:url value='/campaign' />">活动管理</a></li>
+                        </c:if>
+                        
 					</c:forTokens>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">

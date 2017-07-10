@@ -97,7 +97,13 @@ public enum Operation {
 	/**
 	 * 关闭预警
 	 */
-	OFF_ALARM("off_alarm");
+	OFF_ALARM("off_alarm"),
+	/**
+	 *新增活动 
+	 */
+	ADD_CAMPAIGN("add_campaign")
+	
+	;
 	private String operationName;
 
 	private Operation(String operationName) {

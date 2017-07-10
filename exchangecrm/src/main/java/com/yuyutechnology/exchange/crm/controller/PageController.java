@@ -40,4 +40,8 @@ public class PageController {
 	public String recharge(HttpServletRequest request, HttpServletResponse response) {
 		return "recharge";
 	}
+	@RequestMapping(value = "/campaign", method = { RequestMethod.GET })
+	public String campaign(HttpServletRequest request, HttpServletResponse response) {
+		return "campaign";
+	}
 }
