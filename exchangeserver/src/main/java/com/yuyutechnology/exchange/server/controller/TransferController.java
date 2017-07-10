@@ -19,6 +19,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dto.TransDetailsDTO;
 import com.yuyutechnology.exchange.dto.TransferDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
@@ -27,8 +28,6 @@ import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Currency;
-import com.yuyutechnology.exchange.pojo.Transfer;
-import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.server.controller.dto.NotificationDTO;
 import com.yuyutechnology.exchange.server.controller.request.GetNotificationRecordsRequest;
@@ -55,7 +54,6 @@ import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody
 import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
-import com.yuyutechnology.exchange.util.MathUtils;
 
 @Controller
 public class TransferController {
@@ -396,61 +394,77 @@ public class TransferController {
 		return rep;
 	}
 
+//	@ApiOperation(value = "获取交易详情")
+//	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransDetails")
+//	public @ResponseEncryptBody GetTransDetailsResponse getTransDetails(@PathVariable String token,
+//			@RequestDecryptBody GetTransDetailsRequest reqMsg) {
+//
+//		GetTransDetailsResponse rep = new GetTransDetailsResponse();
+//
+//		SessionData sessionData = SessionDataHolder.getSessionData();
+//		HashMap<String, Object> result = transferManager.getTransDetails(reqMsg.getTransferId(),
+//				sessionData.getUserId());
+//		if (result.isEmpty()) {
+//			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+//			rep.setMessage("something wrong!");
+//		} else {
+//
+//			User user = (User) result.get("user");
+//			Transfer transfer = (Transfer) result.get("transfer");
+//
+//			if (user != null) {
+//				rep.setTrader(user.getUserName());
+//				rep.setRegiste(true);
+//			} else {
+//				rep.setTrader(transfer.getPhone());
+//				rep.setRegiste(false);
+//			}
+//
+//			rep.setAreaCode((String) (result.get("areaCode")));
+//			rep.setPhone((String) (result.get("phone")));
+//			rep.setCurrency(transfer.getCurrency());
+//			rep.setAmount(transfer.getTransferAmount());
+//			rep.setUnit((String) (result.get("unit")));
+//
+//			rep.setPaypalCurrency(transfer.getPaypalCurrency());
+//			rep.setPaypalExchange(transfer.getPaypalExchange());
+//			rep.setTransferType(transfer.getTransferType());
+//
+//			if (!(boolean) result.get("isPlus")) {
+//				rep.setAmount(transfer.getTransferAmount().negate());
+//			} else if (transfer.getTransferType() == 0) {
+//				rep.setTransferType(1);
+//			}
+//			rep.setGoldpayName(MathUtils.hideString(transfer.getGoldpayName()));
+//			rep.setTransferComment(StringUtils.isNotBlank((String) result.get("comments"))?(String) result.get("comments"):transfer.getTransferComment());
+//			rep.setCreateTime(transfer.getCreateTime());
+//			rep.setFinishTime(transfer.getFinishTime());
+//			rep.setTransferId(transfer.getTransferId());
+//			rep.setFriend((boolean) result.get("isFriend"));
+//
+//			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+//			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+//
+//		}
+//
+//		return rep;
+//
+//	}
+	
 	@ApiOperation(value = "获取交易详情")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransDetails")
 	public @ResponseEncryptBody GetTransDetailsResponse getTransDetails(@PathVariable String token,
 			@RequestDecryptBody GetTransDetailsRequest reqMsg) {
 
-		GetTransDetailsResponse rep = new GetTransDetailsResponse();
-
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		HashMap<String, Object> result = transferManager.getTransDetails(reqMsg.getTransferId(),
-				sessionData.getUserId());
-		if (result.isEmpty()) {
-			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-			rep.setMessage("something wrong!");
-		} else {
-
-			User user = (User) result.get("user");
-			Transfer transfer = (Transfer) result.get("transfer");
-
-			if (user != null) {
-				rep.setTrader(user.getUserName());
-				rep.setRegiste(true);
-			} else {
-				rep.setTrader(transfer.getPhone());
-				rep.setRegiste(false);
-			}
-
-			rep.setAreaCode((String) (result.get("areaCode")));
-			rep.setPhone((String) (result.get("phone")));
-			rep.setCurrency(transfer.getCurrency());
-			rep.setAmount(transfer.getTransferAmount());
-			rep.setUnit((String) (result.get("unit")));
-
-			rep.setPaypalCurrency(transfer.getPaypalCurrency());
-			rep.setPaypalExchange(transfer.getPaypalExchange());
-			rep.setTransferType(transfer.getTransferType());
-
-			if (!(boolean) result.get("isPlus")) {
-				rep.setAmount(transfer.getTransferAmount().negate());
-			} else if (transfer.getTransferType() == 0) {
-				rep.setTransferType(1);
-			}
-			rep.setGoldpayName(MathUtils.hideString(transfer.getGoldpayName()));
-			rep.setTransferComment(StringUtils.isNotBlank((String) result.get("comments"))?(String) result.get("comments"):transfer.getTransferComment());
-			rep.setCreateTime(transfer.getCreateTime());
-			rep.setFinishTime(transfer.getFinishTime());
-			rep.setTransferId(transfer.getTransferId());
-			rep.setFriend((boolean) result.get("isFriend"));
-
-			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-
-		}
-
+		
+		TransDetailsDTO dto = transferManager.getTransDetails(reqMsg.getTransferId(),sessionData.getUserId());
+		GetTransDetailsResponse rep = new GetTransDetailsResponse(dto);
+		
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+				
 		return rep;
-
 	}
 
 }

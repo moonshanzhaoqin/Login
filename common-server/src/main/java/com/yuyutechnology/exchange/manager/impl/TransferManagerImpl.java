@@ -26,12 +26,14 @@ import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.dao.FriendDAO;
 import com.yuyutechnology.exchange.dao.NotificationDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
+import com.yuyutechnology.exchange.dao.TransDetailsDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
+import com.yuyutechnology.exchange.dto.TransDetailsDTO;
 import com.yuyutechnology.exchange.dto.TransferDTO;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
@@ -76,6 +78,8 @@ public class TransferManagerImpl implements TransferManager{
 	NotificationDAO notificationDAO;
 	@Autowired
 	CrmAlarmDAO crmAlarmDAO;
+	@Autowired
+	TransDetailsDAO transDetailsDAO;
 	@Autowired
 	OandaRatesManager oandaRatesManager;
 	@Autowired
@@ -1024,99 +1028,199 @@ public class TransferManagerImpl implements TransferManager{
 	}
 	
 
+//	@Override
+//	public HashMap<String, Object> getTransDetails(String transferId, int userId) {
+//		
+//		HashMap<String, Object> map = new HashMap<>();
+//		
+//		User user;
+//		Integer friendId;
+//		
+//		Transfer transfer = transferDAO.getTransferById(transferId);
+//		User systemUser = userDAO.getSystemUser();
+//		
+//		if(transfer.getUserFrom()!= userId && transfer.getUserTo() != userId){
+//			return map;
+//		}
+//		
+//		//amount正负号标识
+//		map.put("isPlus",true);
+//		
+//		if(transfer.getUserFrom() == userId){
+//			if(transfer.getUserTo() == systemUser.getUserId()){
+//				map.put("areaCode", transfer.getAreaCode());
+//				map.put("phone", transfer.getPhone());
+//
+//				//如果当时交易对象中有System，查看交易未注册一方此时此时是否已经注册
+//				User trander = userDAO.getUserByUserPhone(transfer.getAreaCode(), transfer.getPhone());
+//				if(trander != null){
+//					friendId = trander.getUserId();
+//					user = trander;
+//				}else {
+//					friendId = -1;
+//					user = null;
+//				}
+//				
+////				user = null;
+//			}else{
+//				user = userDAO.getUser(transfer.getUserTo()); 
+//				friendId = transfer.getUserTo();
+//				map.put("areaCode", transfer.getAreaCode());
+//				map.put("phone", transfer.getPhone());
+//			}
+//			map.put("isPlus",false);
+//		}else if(transfer.getUserFrom() == systemUser.getUserId()){
+//			map.put("areaCode", transfer.getAreaCode());
+//			map.put("phone", transfer.getPhone());
+//			
+//			//当UserFrom为System时，该transfer的comment存的另一条transfer的Id
+//			Transfer transfer2 = transferDAO.getTransferById(transfer.getTransferComment());
+//			if(transfer2 != null){
+//				map.put("comments", transfer2.getTransferComment());
+//			}
+//			
+//			
+//			//如果当时交易对象中有System，查看交易未注册一方此时此时是否已经注册
+//			User trander = userDAO.getUserByUserPhone(transfer.getAreaCode(), transfer.getPhone());
+//			if(trander != null){
+//				friendId = trander.getUserId();
+//				user = trander;
+//			}else {
+//				friendId = -1;
+//				user = null;
+//			}	
+//			
+//			
+//			
+//		}else{
+//			user = userDAO.getUser(transfer.getUserFrom());
+//			friendId = transfer.getUserFrom();
+//			map.put("areaCode", user.getAreaCode());
+//			map.put("phone", user.getUserPhone());
+//		}
+//		
+//		if(userId != friendId){
+//			//判断是否已经是好友
+//			Friend friend = friendDAO.getFriendByUserIdAndFrindId(userId, friendId);
+//			if(friend == null){
+//				map.put("isFriend", false);
+//			}else{
+//				map.put("isFriend", true);
+//			}
+//		}else{
+//			map.put("isFriend", true);
+//		}
+//
+//		//获取单位
+//		Currency currency = currencyDAO.getCurrency(transfer.getCurrency());
+//		
+//		map.put("user", user);
+//		map.put("transfer", transfer);
+//		map.put("unit", currency.getCurrencyUnit());
+//		
+//		return map;
+//
+//	}
+	
 	@Override
-	public HashMap<String, Object> getTransDetails(String transferId, int userId) {
-		
-		HashMap<String, Object> map = new HashMap<>();
-		
-		User user;
-		Integer friendId;
-		
+	@SuppressWarnings("unused")
+	public TransDetailsDTO getTransDetails(String transferId, int userId){
+
 		Transfer transfer = transferDAO.getTransferById(transferId);
-		User systemUser = userDAO.getSystemUser();
+		User user = userDAO.getUser(userId);
 		
 		if(transfer.getUserFrom()!= userId && transfer.getUserTo() != userId){
-			return map;
+			return null;
 		}
 		
-		//amount正负号标识
-		map.put("isPlus",true);
+		List<?> list = transDetailsDAO.getTransDetailsByTransIdAndUserId(userId, transferId);
+		if(list == null || list.isEmpty()){
+			return null;
+		}
 		
-		if(transfer.getUserFrom() == userId){
-			if(transfer.getUserTo() == systemUser.getUserId()){
-				map.put("areaCode", transfer.getAreaCode());
-				map.put("phone", transfer.getPhone());
-
-				//如果当时交易对象中有System，查看交易未注册一方此时此时是否已经注册
-				User trander = userDAO.getUserByUserPhone(transfer.getAreaCode(), transfer.getPhone());
-				if(trander != null){
-					friendId = trander.getUserId();
-					user = trander;
-				}else {
-					friendId = -1;
-					user = null;
+		TransDetailsDTO dto = new TransDetailsDTO();
+		Object[] obj = (Object[]) list.get(0);
+		
+		dto.setUserId(userId);
+		dto.setTransId(transferId);
+		dto.setTransCurrency((String) obj[2]);
+		dto.setTransAmount((BigDecimal) obj[3]);
+		dto.setTransUnit((String) obj[4]);
+		dto.setTransRemarks((String) obj[5]);
+		dto.setTransType((Integer) obj[6]);
+		dto.setCreateTime((Date) obj[7]);
+		dto.setFinishTime((Date) obj[8]);
+		dto.setTraderName((String) obj[9]);
+		dto.setTraderAreaCode((String) obj[10]);
+		dto.setTraderPhone((String) obj[11]);
+		dto.setGoldpayName((String) obj[12]);
+		dto.setPaypalCurrency((String) obj[13]);
+		dto.setPaypalExchange((BigDecimal) obj[14]);
+		
+		//sb的要求开始了
+		if(user.getAreaCode().equals(dto.getTraderAreaCode()) && user.getUserPhone().equals(dto.getTraderPhone())){
+			dto.setFriend(true);
+			dto.setRegistered(true);
+		}else{
+			User otherOne = userDAO.getUserByUserPhone(dto.getTraderAreaCode(), dto.getTraderPhone());
+			if(otherOne != null){
+				Friend friend = friendDAO.getFriendByUserIdAndFrindId(userId, otherOne.getUserId());
+				if(friend != null){
+					dto.setFriend(true);
+				}else{
+					dto.setFriend(false);
 				}
-				
-//				user = null;
+				dto.setRegistered(true);
 			}else{
-				user = userDAO.getUser(transfer.getUserTo()); 
-				friendId = transfer.getUserTo();
-				map.put("areaCode", transfer.getAreaCode());
-				map.put("phone", transfer.getPhone());
+				//此时有可能用户已经修改手机号
+				User systemUser = userDAO.getSystemUser();
+				if(userId== transfer.getUserFrom() && systemUser.getUserId() != transfer.getUserTo()){
+					Friend friend = friendDAO.getFriendByUserIdAndFrindId(userId, transfer.getUserTo());
+					if(friend != null){
+						dto.setFriend(true);
+					}else{
+						dto.setFriend(false);
+					}
+					dto.setRegistered(true);
+				}else if(userId== transfer.getUserFrom() && systemUser.getUserId() == transfer.getUserTo()){
+					//对方之前未注册，注册后还tm改了手机号
+					dto.setFriend(false);
+					dto.setRegistered(false);
+					
+				}else if(userId == transfer.getUserTo() && systemUser.getUserId() != transfer.getUserFrom()){
+					Friend friend = friendDAO.getFriendByUserIdAndFrindId(userId, transfer.getUserFrom());
+					if(friend != null){
+						dto.setFriend(true);
+					}else{
+						dto.setFriend(false);
+					}
+					dto.setRegistered(true);
+				}else if(userId == transfer.getUserTo() && systemUser.getUserId() == transfer.getUserFrom()){
+					//本登陆用户在该交易之前未注册，并且还tm修改过手机号
+					Transfer transfer2 = transferDAO.getTransferById(transfer.getTransferComment());
+					if(transfer2 == null){
+						dto.setFriend(false);
+					}else{
+						Friend friend = friendDAO.getFriendByUserIdAndFrindId(userId, transfer2.getUserFrom());
+						if(friend != null){
+							dto.setFriend(true);
+						}else{
+							dto.setFriend(false);
+						}
+					}
+					dto.setRegistered(true);
+					
+				}else{
+					dto.setFriend(false);
+					dto.setRegistered(false);
+				}
 			}
-			map.put("isPlus",false);
-		}else if(transfer.getUserFrom() == systemUser.getUserId()){
-			map.put("areaCode", transfer.getAreaCode());
-			map.put("phone", transfer.getPhone());
-			
-			//当UserFrom为System时，该transfer的comment存的另一条transfer的Id
-			Transfer transfer2 = transferDAO.getTransferById(transfer.getTransferComment());
-			if(transfer2 != null){
-				map.put("comments", transfer2.getTransferComment());
-			}
-			
-			
-			//如果当时交易对象中有System，查看交易未注册一方此时此时是否已经注册
-			User trander = userDAO.getUserByUserPhone(transfer.getAreaCode(), transfer.getPhone());
-			if(trander != null){
-				friendId = trander.getUserId();
-				user = trander;
-			}else {
-				friendId = -1;
-				user = null;
-			}	
-			
-			
-			
-		}else{
-			user = userDAO.getUser(transfer.getUserFrom());
-			friendId = transfer.getUserFrom();
-			map.put("areaCode", user.getAreaCode());
-			map.put("phone", user.getUserPhone());
-		}
-		
-		if(userId != friendId){
-			//判断是否已经是好友
-			Friend friend = friendDAO.getFriendByUserIdAndFrindId(userId, friendId);
-			if(friend == null){
-				map.put("isFriend", false);
-			}else{
-				map.put("isFriend", true);
-			}
-		}else{
-			map.put("isFriend", true);
 		}
 
-		//获取单位
-		Currency currency = currencyDAO.getCurrency(transfer.getCurrency());
+		return dto;
 		
-		map.put("user", user);
-		map.put("transfer", transfer);
-		map.put("unit", currency.getCurrencyUnit());
-		
-		return map;
-
 	}
+	
 
 	@Override
 	public String updateSystemPhone(String transferId, String phoneNum) {

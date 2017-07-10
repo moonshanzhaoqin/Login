@@ -3,6 +3,8 @@ package com.yuyutechnology.exchange.server.controller.response;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.yuyutechnology.exchange.dto.TransDetailsDTO;
+
 public class GetTransDetailsResponse extends BaseResponse {
 
 	private String trader;
@@ -23,6 +25,54 @@ public class GetTransDetailsResponse extends BaseResponse {
 	private boolean isFriend;
 	private boolean isRegiste;
 
+	public GetTransDetailsResponse() {
+		super();
+	}
+
+	public GetTransDetailsResponse(String trader, String areaCode, String phone, String currency, BigDecimal amount,
+			String paypalCurrency, BigDecimal paypalExchange, String unit, int transferType, Date createTime,
+			Date finishTime, String transferId, String goldpayName, String transferComment, boolean isFriend,
+			boolean isRegiste) {
+		super();
+		this.trader = trader;
+		this.areaCode = areaCode;
+		this.phone = phone;
+		this.currency = currency;
+		this.amount = amount;
+		this.paypalCurrency = paypalCurrency;
+		this.paypalExchange = paypalExchange;
+		this.unit = unit;
+		this.transferType = transferType;
+		this.createTime = createTime;
+		this.finishTime = finishTime;
+		this.transferId = transferId;
+		this.goldpayName = goldpayName;
+		this.transferComment = transferComment;
+		this.isFriend = isFriend;
+		this.isRegiste = isRegiste;
+	}
+
+	public GetTransDetailsResponse(TransDetailsDTO dto) {
+		super();
+		this.trader = dto.getTraderName();
+		this.areaCode = dto.getTraderAreaCode();
+		this.phone = dto.getTraderPhone();
+		this.currency = dto.getTransCurrency();
+		this.amount = dto.getTransAmount();
+		this.paypalCurrency = dto.getPaypalCurrency();
+		this.paypalExchange = dto.getPaypalExchange();
+		this.unit = dto.getTransUnit();
+		this.transferType = dto.getTransType();
+		this.createTime = dto.getCreateTime();
+		this.finishTime = dto.getFinishTime();
+		this.transferId = dto.getTransId();
+		this.goldpayName = dto.getGoldpayName();
+		this.transferComment = dto.getTransRemarks();
+		this.isFriend = dto.isFriend();
+		this.isRegiste = dto.isRegistered();
+	}
+	
+	
 	public String getTrader() {
 		return trader;
 	}
