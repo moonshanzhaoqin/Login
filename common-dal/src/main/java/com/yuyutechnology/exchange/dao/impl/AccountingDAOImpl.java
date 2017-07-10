@@ -48,12 +48,7 @@ public class AccountingDAOImpl implements AccountingDAO{
 				Query query = session.createSQLQuery(
 						"replace into e_wallet_before (user_id,currency,balance,update_time,update_seq_id) "
 								+ "select user_id,currency,balance,update_time,update_seq_id from e_wallet where user_id = ?");
-//				Query query = session.createSQLQuery(
-//						"replace into e_wallet_now (user_id,currency,balance,update_time,update_seq_id) "
-//								+ "select user_id,currency,balance,update_time,update_seq_id from e_wallet "
-//								+ "where update_time > ? and update_time <= ?");
 				query.setInteger(0, userId);
-//				query.setString(1, DateFormatUtils.formatDate(endDate));
 				return query.executeUpdate();
 			}
 		});

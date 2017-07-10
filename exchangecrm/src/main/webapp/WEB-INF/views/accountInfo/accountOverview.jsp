@@ -89,10 +89,10 @@
         						</select>
         					</li>
         					<li>
-        						<input type="text" value="${model.lowerLimit }" class="form-control" placeholder="总资产>=(USD)" name="lowerLimit" size="12">
+        						<input type="text" value="${model.lowerLimit }" class="form-control" placeholder="总资产>=(USD)" id="lowerLimit" name="lowerLimit" size="12">
         					</li>
         					<li>
-        						<input type="text" value="${model.upperLimit }" class="form-control" placeholder="总资产<=(USD)" name="upperLimit" size="12">
+        						<input type="text" value="${model.upperLimit }" class="form-control" placeholder="总资产<=(USD)" id="upperLimit" name="upperLimit" size="12">
         					</li>
 
         					<li>
@@ -223,6 +223,12 @@
 			            return (page === current) ? "active" : "pointer-cursor";
 			        },
 			        onPageClicked:function(event, originalEvent, type,page){
+
+						if(!test()){
+							alert("输入金额必须为数字，请重填！");
+							return ;
+						}
+			        	
 			        	 $(".currentPage").val(page);
 			        	 $("#searchForm").submit();
 			        }
@@ -263,9 +269,39 @@
 			
 			
 			$("#searchBtn").click(function(){
+				
+				if(!test()){
+					alert("输入金额必须为数字，请重填！");
+					return ;
+				}
+
 				$("#currentPage").val(1);
 				 $("#searchForm").submit();
 			})
+			
+			
+			function test(){
+				
+				var lowerLimit = $("#lowerLimit").val();
+				if( !isEmpty(lowerLimit) && !$.isNumeric(lowerLimit)){
+					return false;
+				}
+				
+				var upperLimit = $("#upperLimit").val();
+				if(!isEmpty(upperLimit) && !$.isNumeric(upperLimit)){
+					return false;
+				}
+				
+				return true;
+				
+			}
+			
+			
+			function isEmpty(obj){
+				if((obj == undefined || obj == null) ||obj == ''){
+					return true;
+				}
+			}
 			
 			
 		</script>

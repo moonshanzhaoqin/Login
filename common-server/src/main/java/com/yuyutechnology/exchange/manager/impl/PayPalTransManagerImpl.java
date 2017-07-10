@@ -28,6 +28,7 @@ import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.manager.PayPalTransManager;
+import com.yuyutechnology.exchange.manager.TransDetailsManager;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
 
@@ -51,6 +52,8 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 	CommonManager commonManager;
 	@Autowired
 	OandaRatesManager oandaRatesManager;
+	@Autowired
+	TransDetailsManager transDetailsManager;
 
 	@PostConstruct
 	public void init() {
@@ -115,6 +118,12 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE);
 		// 保存
 		transferDAO.addTransfer(transfer);
+		
+		//add by Niklaus.chi at 2017/07/07
+		transDetailsManager.addTransDetails(transferId, userId, null, null, null, null, 
+				ServerConsts.CURRENCY_OF_GOLDPAY, amount, null, ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE);	
+		
+		
 		BraintreeGateway gateway = new BraintreeGateway(configManager.getConfigStringValue(ConfigKeyEnum.PAYPAL_ACCESSTOKEN, ""));
 		String clientToken = gateway.clientToken().generate();
 

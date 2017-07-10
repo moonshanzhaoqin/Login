@@ -2,7 +2,6 @@ package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,6 +37,7 @@ import com.yuyutechnology.exchange.manager.AccountingManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.GoldpayTransManager;
+import com.yuyutechnology.exchange.manager.TransDetailsManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
@@ -78,6 +78,8 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	CrmAlarmDAO crmAlarmDAO;
 	@Autowired
 	CrmAlarmManager crmAlarmManager;
+	@Autowired
+	TransDetailsManager transDetailsManager;
 
 	private final String GOLDPAY_WITHDRAW_FORBIDDEN = "goldpayWithdrawForbidden";
 
@@ -170,7 +172,12 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 			// 保存
 			transferDAO.addTransfer(transfer);
-
+			
+			//add by Niklaus.chi at 2017/07/07
+			transDetailsManager.addTransDetails(transferId, userId, null, null, null, null,
+					ServerConsts.CURRENCY_OF_GOLDPAY, amount, payModel.getPayOrderId(), 
+					ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE);
+			
 			map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 			map.put("msg", "ok");
 			map.put("transferId", transferId);
@@ -380,6 +387,12 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		transfer.setGoldpayAcount(bind.getGoldpayAcount());
 		// 保存
 		transferDAO.addTransfer(transfer);
+		
+		//add by Niklaus.chi at 2017/07/07
+		transDetailsManager.addTransDetails(transferId, userId, null, null, null, null,
+				ServerConsts.CURRENCY_OF_GOLDPAY, new BigDecimal(Double.toString(amount)), "goldpay withdraw", 
+				ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
+		
 
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");
@@ -548,12 +561,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 						logger.warn("goldpayPurchase tpps callback: INVALID SIGN");
 					} else if (payModel.getResultCode().equals(-101)) {
 						logger.warn("goldpayPurchase tpps callback: ORDERID REPEAT");
-					}
-					// else if(payModel.getResultCode().equals(-102)){
-					// logger.warn("goldpayPurchase tpps callback:
-					// ORDERID_COMPLETE");
-					// }
-					else if (payModel.getResultCode().equals(200001) || payModel.getResultCode().equals(200008)) {
+					}else if (payModel.getResultCode().equals(200001) || payModel.getResultCode().equals(200008)) {
 						logger.warn("goldpayPurchase tpps callback: NOT_ENOUGH_GOLDPAY");
 						map.put("msg", "not enough goldpay!");
 						map.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH);
