@@ -235,5 +235,13 @@ public class ServerConsts {
 	public static final String REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ = "totalAmountOfGDQ";
 	
 	
-	
+	/**
+	 *活动开启 
+	 */
+	public static final int CAMPAIGN_STATUS_ON=1;
+	/**
+	 *活动关闭 
+	 */
+	public static final int CAMPAIGN_STATUS_OFF=0;
+
 }
