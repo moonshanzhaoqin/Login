@@ -1,4 +1,3 @@
-<<<<<<< .mine
 --2017/07/05 Suzan
 INSERT INTO `e_config` SET `config_key`='goldpay_withdraw',`config_value`='true',`config_name`='提取沛金条开关',`config_order`=0,`config_canChange`=0;
 
@@ -34,56 +33,6 @@ CREATE TABLE `e_collect` (
   PRIMARY KEY (`collect_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='领取';
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
 DROP TABLE IF EXISTS `e_trans_details`;
 CREATE TABLE `e_trans_details` (
   `details_id` bigint(11) NOT NULL AUTO_INCREMENT,
@@ -168,4 +117,4 @@ t2.transfer_type = 7;
 
 ALTER TABLE `e_trans_details`     
 ADD COLUMN `details_create_time` datetime COMMENT 'details创建时间' AFTER `trans_remarks`,
->>>>>>> .theirs
+
