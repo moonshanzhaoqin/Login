@@ -1136,14 +1136,15 @@ public class TransferManagerImpl implements TransferManager{
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		
-		StringBuffer sb = new StringBuffer("select t1.transfer_id,t1.trans_currency,t1.trans_amount, ");
-		sb.append("t3.currency_unit,t2.transfer_type,t2.finish_time, ");
-		sb.append("t1.trader_name,t1.trader_area_code,t1.trader_phone ");
-		sb.append("FROM e_trans_details t1 ");
+		StringBuffer sql = new StringBuffer("select t1.transfer_id,t1.trans_currency,t1.trans_amount, ");
+		sql.append("t3.currency_unit,t2.transfer_type,t2.finish_time, ");
+		sql.append("t1.trader_name,t1.trader_area_code,t1.trader_phone ");
+		
+		StringBuffer sb = new StringBuffer("FROM e_trans_details t1 ");
 		sb.append("LEFT JOIN e_transfer t2 ON t1.transfer_id = t2.transfer_id ");
 		sb.append("LEFT JOIN e_currency t3 ON t1.trans_currency = t3.currency ");
 		sb.append("where ");
-		sb.append("t2.transfer_status = ? AND t1.user_id = ?");
+		sb.append("t2.transfer_status = ? AND t1.user_id = ? ");
 		
 		
 		List<Object> values = new ArrayList<Object>();
@@ -1213,7 +1214,7 @@ public class TransferManagerImpl implements TransferManager{
 		
 		sb.append(" order by t2.finish_time desc");
 
-		HashMap<String, Object> map = transferDAO.getTransactionRecordByPage(sb.toString(),
+		HashMap<String, Object> map = transferDAO.getTransactionRecordByPage(sql.append(sb).toString(),
 				sb.toString(),values,currentPage, pageSize);
 		//读交易标记
 		commonManager.readMsgFlag(userId, 1);

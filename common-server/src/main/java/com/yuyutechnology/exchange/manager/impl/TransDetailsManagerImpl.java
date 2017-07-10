@@ -30,8 +30,6 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 			String traderName,String traderAreaCode,String traderPhone,String transCurrency,
 			BigDecimal transAmount,String transRemarks,Integer transType){
 		
-		User payer = userDAO.getUser(payerId);
-		
 		switch (transType) {
 			case ServerConsts.TRANSFER_TYPE_TRANSACTION:
 				logger.info("the transType is {} ServerConsts.TRANSFER_TYPE_TRANSACTION",transType);
@@ -39,12 +37,16 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 				TransDetails payerTransDetails = new TransDetails(transferId,payerId,
 						traderName,traderAreaCode,traderPhone,transCurrency,
 						transAmount.negate(),transRemarks);
-				TransDetails payeeTransDetails = new TransDetails(transferId,traderId,
-						payer.getUserName(),payer.getAreaCode(),payer.getUserPhone(),
-						transCurrency,transAmount,transRemarks);
-				
 				transDetailsDAO.addTransDetails(payerTransDetails);
-				transDetailsDAO.addTransDetails(payeeTransDetails);
+
+				User payer = userDAO.getUser(payerId);
+				if(payer != null){
+					TransDetails payeeTransDetails = new TransDetails(transferId,traderId,
+							payer.getUserName(),payer.getAreaCode(),payer.getUserPhone(),
+							transCurrency,transAmount,transRemarks);
+					transDetailsDAO.addTransDetails(payeeTransDetails);
+				}
+
 				break;
 				
 			case ServerConsts.TRANSFER_TYPE_OUT_INVITE:

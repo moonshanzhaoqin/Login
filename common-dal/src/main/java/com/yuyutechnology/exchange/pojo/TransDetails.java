@@ -3,6 +3,7 @@ package com.yuyutechnology.exchange.pojo;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,6 +24,7 @@ public class TransDetails {
 	private String transCurrency;
 	private BigDecimal transAmount;
 	private String transRemarks;
+	private Date detailsCreateTime;
 	
 	public TransDetails() {
 		super();
@@ -39,6 +41,7 @@ public class TransDetails {
 		this.transCurrency = transCurrency;
 		this.transAmount = transAmount;
 		this.transRemarks = transRemarks;
+		this.detailsCreateTime = new Date();
 	}
 	
 	@Id
@@ -113,6 +116,15 @@ public class TransDetails {
 	}
 	public void setTransRemarks(String transRemarks) {
 		this.transRemarks = transRemarks;
+	}
+
+	@Column(name = "details_create_time")
+	public Date getDetailsCreateTime() {
+		return detailsCreateTime;
+	}
+
+	public void setDetailsCreateTime(Date detailsCreateTime) {
+		this.detailsCreateTime = detailsCreateTime;
 	}
 	
 	

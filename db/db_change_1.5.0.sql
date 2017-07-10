@@ -79,3 +79,6 @@ t2.currency,t2.transfer_amount,
 t2.transfer_comment 
 FROM e_transfer t2 WHERE
 t2.transfer_type = 7;
+
+ALTER TABLE `e_trans_details`     
+ADD COLUMN `details_create_time` datetime COMMENT 'details创建时间' AFTER `trans_remarks`,
