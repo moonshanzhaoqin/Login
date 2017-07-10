@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import com.yuyutechnology.exchange.dto.TransDetailsDTO;
+import com.yuyutechnology.exchange.util.MathUtils;
 
 public class GetTransDetailsResponse extends BaseResponse {
 
@@ -62,11 +63,11 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.paypalCurrency = dto.getPaypalCurrency();
 		this.paypalExchange = dto.getPaypalExchange();
 		this.unit = dto.getTransUnit();
-		this.transferType = dto.getTransType();
+		this.transferType = dto.getTransAmount().compareTo(BigDecimal.ZERO)>=0 && dto.getTransType()==0?1:dto.getTransType();
 		this.createTime = dto.getCreateTime();
 		this.finishTime = dto.getFinishTime();
 		this.transferId = dto.getTransId();
-		this.goldpayName = dto.getGoldpayName();
+		this.goldpayName = MathUtils.hideString(dto.getGoldpayName());
 		this.transferComment = dto.getTransRemarks();
 		this.isFriend = dto.isFriend();
 		this.isRegiste = dto.isRegistered();
