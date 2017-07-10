@@ -5,36 +5,22 @@ package com.yuyutechnology.exchange.server.controller.response;
 
 import java.math.BigDecimal;
 
+import com.yuyutechnology.exchange.dto.InviterInfo;
+
 /**
  * @author suzan.wu
  *
  */
 public class GetInviterInfoResponse extends BaseResponse{
-	private String userName;
-	private int inviteQuantity;
-	private BigDecimal inviteBonus;
+	private InviterInfo inviterInfo;
 
-	public String getUserName() {
-		return userName;
+	public InviterInfo getInviterInfo() {
+		return inviterInfo;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setInviterInfo(InviterInfo inviterInfo) {
+		this.inviterInfo = inviterInfo;
 	}
 
-	public int getInviteQuantity() {
-		return inviteQuantity;
-	}
-
-	public void setInviteQuantity(int inviteQuantity) {
-		this.inviteQuantity = inviteQuantity;
-	}
-
-	public BigDecimal getInviteBonus() {
-		return inviteBonus;
-	}
-
-	public void setInviteBonus(BigDecimal inviteBonus) {
-		this.inviteBonus = inviteBonus;
-	}
+	
 }
