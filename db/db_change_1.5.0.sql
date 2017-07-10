@@ -33,6 +33,7 @@ CREATE TABLE `e_collect` (
   PRIMARY KEY (`collect_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='领取';
 
+--2017/07/10 Niklaus Chi 
 DROP TABLE IF EXISTS `e_trans_details`;
 CREATE TABLE `e_trans_details` (
   `details_id` bigint(11) NOT NULL AUTO_INCREMENT,
