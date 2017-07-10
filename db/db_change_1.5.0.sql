@@ -122,3 +122,11 @@ ADD COLUMN `details_create_time` datetime COMMENT 'details创建时间' AFTER `t
 --2017/07/10 Suzan
 INSERT INTO `e_config` SET `config_key`='collect_active_time',`config_value`='2',`config_name`='领取有效时间（H）',`config_order`=0,`config_canChange`=1;
 INSERT INTO `e_config` SET `config_key`='invite_quantity_restriction',`config_value`='10',`config_name`='邀请数量限制',`config_order`=0,`config_canChange`=1;
+
+DROP TABLE IF EXISTS `e_inviter`;
+CREATE TABLE `e_inviter` (
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `invite_quantity` int(5) NOT NULL DEFAULT '0' COMMENT '邀请人数',
+  `invite_bonus` decimal(20,0) NOT NULL DEFAULT '0' COMMENT '邀请奖励金',
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='邀请人';

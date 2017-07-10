@@ -3,6 +3,7 @@ package com.yuyutechnology.exchange.manager;
 import java.math.BigDecimal;
 import java.util.HashMap;
 
+import com.yuyutechnology.exchange.dto.TransDetailsDTO;
 import com.yuyutechnology.exchange.pojo.Unregistered;
 
 public interface TransferManager {
@@ -120,7 +121,7 @@ public interface TransferManager {
 	 Object getTransfer(String transferId);
 	 
 	 
-	 HashMap<String, Object> getTransDetails(String transferId,int userId);
+	 TransDetailsDTO getTransDetails(String transferId,int userId);
 	 
 	 String updateSystemPhone(String transferId,String phoneNum);
 

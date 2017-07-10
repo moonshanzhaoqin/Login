@@ -43,16 +43,9 @@ public class UserDAOImpl implements UserDAO {
 		return list.isEmpty() ? null : (User) list.get(0);
 	}
 
-	// @SuppressWarnings("unchecked")
 	@Override
 	public Integer addUser(User user) {
 		Integer userId = (Integer) hibernateTemplate.save(user);
-		// List<Currency> currencies = (List<Currency>)
-		// hibernateTemplate.find("from Currency");
-		// for (Currency currency : currencies) {
-		// hibernateTemplate.saveOrUpdate(new Wallet(userId,
-		// currency.getCurrency(), new BigDecimal(0), new Date()));
-		// }
 		return userId;
 	}
 
