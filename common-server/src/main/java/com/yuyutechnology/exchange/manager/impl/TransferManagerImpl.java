@@ -1075,6 +1075,7 @@ public class TransferManagerImpl implements TransferManager{
 				map.put("comments", transfer2.getTransferComment());
 			}
 			
+			
 			//如果当时交易对象中有System，查看交易未注册一方此时此时是否已经注册
 			User trander = userDAO.getUserByUserPhone(transfer.getAreaCode(), transfer.getPhone());
 			if(trander != null){
@@ -1084,6 +1085,9 @@ public class TransferManagerImpl implements TransferManager{
 				friendId = -1;
 				user = null;
 			}	
+			
+			
+			
 		}else{
 			user = userDAO.getUser(transfer.getUserFrom());
 			friendId = transfer.getUserFrom();
@@ -1091,14 +1095,18 @@ public class TransferManagerImpl implements TransferManager{
 			map.put("phone", user.getUserPhone());
 		}
 		
-		//判断是否已经是好友
-		Friend friend = friendDAO.getFriendByUserIdAndFrindId(userId, friendId);
-		if(friend == null){
-			map.put("isFriend", false);
+		if(userId != friendId){
+			//判断是否已经是好友
+			Friend friend = friendDAO.getFriendByUserIdAndFrindId(userId, friendId);
+			if(friend == null){
+				map.put("isFriend", false);
+			}else{
+				map.put("isFriend", true);
+			}
 		}else{
 			map.put("isFriend", true);
 		}
-		
+
 		//获取单位
 		Currency currency = currencyDAO.getCurrency(transfer.getCurrency());
 		
