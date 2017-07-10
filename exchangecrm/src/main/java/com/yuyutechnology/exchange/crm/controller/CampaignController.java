@@ -5,6 +5,7 @@ package com.yuyutechnology.exchange.crm.controller;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,6 +27,7 @@ import com.yuyutechnology.exchange.enums.Operation;
 import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.CrmLogManager;
+import com.yuyutechnology.exchange.pojo.Campaign;
 import com.yuyutechnology.exchange.pojo.CrmLog;
 import com.yuyutechnology.exchange.util.DateFormatUtils;
 
@@ -43,11 +45,21 @@ public class CampaignController {
 	CommonManager commonManager;
 	@Autowired
 	CrmLogManager crmLogManager;
+	// TODO 获取活动
+	@ResponseBody
+	@RequestMapping(value = "/getCampaignList", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public List<Campaign> getCampaignList(HttpServletRequest request,
+			HttpServletResponse response) {
+		
 
+			return campaignManager.getCampaignList();
+
+	}
+	
 	// TODO 新增活动
 	@ResponseBody
 	@RequestMapping(value = "/addCampaign", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse addCurrency(@RequestBody AddCampaignRequest addCampaignRequest, HttpServletRequest request,
+	public BaseResponse addCampaign(@RequestBody AddCampaignRequest addCampaignRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
 		if (addCampaignRequest.Empty()) {

@@ -33,6 +33,7 @@ CREATE TABLE `e_collect` (
   PRIMARY KEY (`collect_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='领取';
 
+--2017/07/10 Niklaus Chi 
 DROP TABLE IF EXISTS `e_trans_details`;
 CREATE TABLE `e_trans_details` (
   `details_id` bigint(11) NOT NULL AUTO_INCREMENT,
@@ -118,3 +119,6 @@ t2.transfer_type = 7;
 ALTER TABLE `e_trans_details`     
 ADD COLUMN `details_create_time` datetime COMMENT 'details创建时间' AFTER `trans_remarks`,
 
+--2017/07/10 Suzan
+INSERT INTO `e_config` SET `config_key`='collect_active_time',`config_value`='2',`config_name`='领取有效时间（H）',`config_order`=0,`config_canChange`=1;
+INSERT INTO `e_config` SET `config_key`='invite_quantity_restriction',`config_value`='10',`config_name`='邀请数量限制',`config_order`=0,`config_canChange`=1;

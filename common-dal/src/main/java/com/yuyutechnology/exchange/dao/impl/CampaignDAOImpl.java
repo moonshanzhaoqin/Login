@@ -31,7 +31,7 @@ public class CampaignDAOImpl implements CampaignDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Campaign> getCampaigns() {
-		List<?> list = hibernateTemplate.find("from Campaign order by currencyOrder");
+		List<?> list = hibernateTemplate.find("from Campaign");
 		return list.isEmpty() ? null : (List<Campaign>) list;
 	}
 
@@ -39,4 +39,5 @@ public class CampaignDAOImpl implements CampaignDAO {
 	public void updateCampaign(Campaign campaign) {
 		hibernateTemplate.saveOrUpdate(campaign);
 	}
+	
 }
