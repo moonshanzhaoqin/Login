@@ -11,5 +11,6 @@ import com.yuyutechnology.exchange.pojo.Inviter;
  */
 public interface InviterDAO {
 	Inviter getInviter(Integer userId);
+
 	void updateInviter(Inviter inviter);
 }
