@@ -1,5 +1,7 @@
 package com.yuyutechnology.exchange;
 
+import org.apache.logging.log4j.message.Message;
+
 public class MessageConsts {
 	// RetCode: 通用 00; 用户 01;兑换 02; 转账 03
 
@@ -25,7 +27,7 @@ public class MessageConsts {
 	 * 短信发送次数超过限制
 	 */
 	public static final String SEND_MORE_THAN_LIMIT = "SEND_MORE_THAN_LIMIT";
-	
+
 	// 用户 01
 	/**
 	 * 手机号已注册
@@ -92,7 +94,7 @@ public class MessageConsts {
 	 */
 	public static final String PHONE_IS_NOT_FRIEND = "PHONE_IS_NOT_FRIEND";
 	/**
-	 *  Goldpay校验错误
+	 * Goldpay校验错误
 	 */
 	public static final String GOLDPAY_IS_INCORRECT = "GOLDPAY_IS_INCORRECT";
 	/**
@@ -100,7 +102,7 @@ public class MessageConsts {
 	 */
 	public static final String GOLDPAY_NOT_BIND = "GOLDPAY_NOT_BIND";
 	/**
-	 *新设备登录
+	 * 新设备登录
 	 */
 	public static final String NEW_DEVICE = "NEW_DEVICE";
 	/**
@@ -115,15 +117,15 @@ public class MessageConsts {
 	 * Goldpay与已绑定账号不符
 	 */
 	public static final String GOLDPAY_NOT_MATCH_BIND = "GOLDPAY_NOT_MATCH_BIND";
-	
 	/**
 	 * 没有获取验证码
 	 */
 	public static final String NOT_GET_CODE = "NOT_GET_CODE";
-	
-	
-	
-	
+	/**
+	 * 手机号已领取过奖励
+	 */
+	public static final String PHONE_IS_COLLECTED = "PHONE_IS_COLLECTED";
+
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息
@@ -158,11 +160,8 @@ public class MessageConsts {
 	public static final String TRANSFER_HISTORY_NOT_ACQUIRED = "TRANSFER_HISTORY_NOT_ACQUIRED";
 
 	public static final String TRANSFER_NOTIFICATION_NOT_ACQUIRED = "TRANSFER_NOTIFICATION_NOT_ACQUIRED";
-	
-	
+
 	public static final String TRANSFER_PAYPALTRANS_ORDER_STATUS_EXCEPTION = "ORDER_STATUS_EXCEPTION";
 	public static final String TRANSFER_PAYPALTRANS_TIME_OUT = "TRANSFER_NOTIFICATION_NOT_ACQUIRED";
-	
-	
 
 }

@@ -129,7 +129,7 @@ public class BadAccount implements java.io.Serializable {
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
-	
+
 	@Column(name = "start_seq_id", nullable = false)
 	public long getStartSeqId() {
 		return this.startSeqId;
@@ -156,7 +156,7 @@ public class BadAccount implements java.io.Serializable {
 	public void setBadAccountStatus(int badAccountStatus) {
 		this.badAccountStatus = badAccountStatus;
 	}
-	
+
 	@Column(name = "transfer_id", nullable = true)
 	public String getTransferId() {
 		return this.transferId;

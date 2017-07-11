@@ -39,6 +39,24 @@ public interface CampaignManager {
 	 */
 	InviterInfo getInviterInfo(Integer userId);
 
+	/**
+	 * 手机号是否领取过
+	 * @param areaCode
+	 * @param userPhone
+	 * @return
+	 */
+	boolean isCollected(String areaCode, String userPhone);
+
+	/**
+	 * @param areaCode
+	 * @param userPhone
+	 * @param inviterCode
+	 * @param sharePath
+	 */
+	void collect(String areaCode, String userPhone, String inviterCode, int sharePath);
+
+
+
 	// TODO 开启关闭活动
 	// TODO 修改奖励金
 	// TODO 追加预算

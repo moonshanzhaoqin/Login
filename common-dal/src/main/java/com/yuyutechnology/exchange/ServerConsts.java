@@ -10,7 +10,7 @@ public class ServerConsts {
 	 * 系统用户
 	 */
 	public static final int USER_TYPE_OF_SYSTEM = 1;
-	
+
 	// 冻结状态
 	/**
 	 * 用户可用
@@ -52,7 +52,7 @@ public class ServerConsts {
 	public static final String CURRENCY_OF_CNY = "CNY";
 
 	public static final String CURRENCY_OF_USD = "USD";
-	
+
 	public static final String CURRENCY_OF_JPY = "JPY";
 
 	// 交易类型
@@ -106,8 +106,7 @@ public class ServerConsts {
 	 * 交易退回
 	 */
 	public static final int TRANSFER_STATUS_OF_REFUND = 3;
-	
-	
+
 	/**
 	 * 待支付
 	 */
@@ -169,7 +168,7 @@ public class ServerConsts {
 	 * 短信验证码功能——新设备登录
 	 */
 	public static final String PIN_FUNC_NEWDEVICE = "NEWDEVICE";
-	
+
 	/**
 	 * 币种状态——可用
 	 */
@@ -220,28 +219,27 @@ public class ServerConsts {
 	public static final String RESETPAYPWD = "RESETPAYPWD";
 
 	/**
-	 * 提现审核开启
-	 * GOLDPAY_WITHDRAW_FORBIDDEN=
+	 * 提现审核开启 GOLDPAY_WITHDRAW_FORBIDDEN=
 	 */
 	public static final String ACCOUTING_TASK_OPEN = "false";
-	
+
 	/**
-	 * 提现审核关闭
-	 * GOLDPAY_WITHDRAW_FORBIDDEN=
+	 * 提现审核关闭 GOLDPAY_WITHDRAW_FORBIDDEN=
 	 */
 	public static final String ACCOUTING_TASK_CLOSED = "true";
-	
-	
-	public static final String REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ = "totalAmountOfGDQ";
-	
-	
-	/**
-	 *活动开启 
-	 */
-	public static final int CAMPAIGN_STATUS_ON=1;
-	/**
-	 *活动关闭 
-	 */
-	public static final int CAMPAIGN_STATUS_OFF=0;
 
+	public static final String REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ = "totalAmountOfGDQ";
+
+	/**
+	 * 活动开启
+	 */
+	public static final int CAMPAIGN_STATUS_ON = 1;
+	/**
+	 * 活动关闭
+	 */
+	public static final int CAMPAIGN_STATUS_OFF = 0;
+	public static final String REDIS_KEY_ACTIVE_CAMPAIGN = "ACTIVE_CAMPAIGN";
+	
+	public static final int COLLECT_STATUS_UNREGISTER = 0;
+	public static final int COLLECT_STATUS_REGISTER = 1;
 }

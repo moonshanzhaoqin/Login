@@ -156,8 +156,7 @@ public interface UserManager {
 	void switchLanguage(Integer userId, String language);
 
 	/**
-	 * 退出账号处理相关数据
-	 * 清理pushId，pushTag
+	 * 退出账号处理相关数据 清理pushId，pushTag
 	 * 
 	 * @param userId
 	 */
@@ -177,7 +176,7 @@ public interface UserManager {
 	 * 获取可换绑时间
 	 * 
 	 * @param userId
-	 * @return 
+	 * @return
 	 * @throws ParseException
 	 */
 	long getChangePhoneTime(Integer userId) throws ParseException;
@@ -262,7 +261,5 @@ public interface UserManager {
 	 * @return
 	 */
 	boolean isUserPayPwdEqualsOld(Integer userId, String newUserPayPwd);
-
-
 
 }

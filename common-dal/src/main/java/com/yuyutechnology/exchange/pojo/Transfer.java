@@ -31,7 +31,7 @@ public class Transfer implements java.io.Serializable {
 	private String currency;
 	private BigDecimal transferAmount;
 	private String transferComment;
-//	private String userComment;
+	// private String userComment;
 	private Date createTime;
 	private Date finishTime;
 	private int transferStatus;
@@ -43,7 +43,7 @@ public class Transfer implements java.io.Serializable {
 	private String goldpayAcount;
 	private String paypalCurrency;
 	private BigDecimal paypalExchange;
-	
+
 	public Transfer() {
 	}
 
@@ -58,12 +58,10 @@ public class Transfer implements java.io.Serializable {
 		this.transferType = transferType;
 	}
 
-
-
 	public Transfer(String transferId, int userFrom, int userTo, String areaCode, String phone, String currency,
-			BigDecimal transferAmount, String transferComment, Date createTime, Date finishTime,
-			int transferStatus, int transferType, Integer noticeId, Integer version, String goldpayResult,
-			String goldpayName, String goldpayAcount) {
+			BigDecimal transferAmount, String transferComment, Date createTime, Date finishTime, int transferStatus,
+			int transferType, Integer noticeId, Integer version, String goldpayResult, String goldpayName,
+			String goldpayAcount) {
 		super();
 		this.transferId = transferId;
 		this.userFrom = userFrom;
@@ -157,14 +155,14 @@ public class Transfer implements java.io.Serializable {
 		this.transferComment = transferComment;
 	}
 
-//	@Column(name = "user_comment")
-//	public String getUserComment() {
-//		return userComment;
-//	}
-//
-//	public void setUserComment(String userComment) {
-//		this.userComment = userComment;
-//	}
+	// @Column(name = "user_comment")
+	// public String getUserComment() {
+	// return userComment;
+	// }
+	//
+	// public void setUserComment(String userComment) {
+	// this.userComment = userComment;
+	// }
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "create_time", length = 19)
@@ -222,7 +220,7 @@ public class Transfer implements java.io.Serializable {
 	public void setVersion(Integer version) {
 		this.version = version;
 	}
-	
+
 	@Column(name = "goldpay_result")
 	public String getGoldpayResult() {
 		return goldpayResult;
@@ -231,7 +229,7 @@ public class Transfer implements java.io.Serializable {
 	public void setGoldpayResult(String goldpayResult) {
 		this.goldpayResult = goldpayResult;
 	}
-	
+
 	@Column(name = "goldpay_name")
 	public String getGoldpayName() {
 		return goldpayName;
@@ -240,7 +238,7 @@ public class Transfer implements java.io.Serializable {
 	public void setGoldpayName(String goldpayName) {
 		this.goldpayName = goldpayName;
 	}
-	
+
 	@Column(name = "goldpay_acount")
 	public String getGoldpayAcount() {
 		return goldpayAcount;
@@ -249,7 +247,7 @@ public class Transfer implements java.io.Serializable {
 	public void setGoldpayAcount(String goldpayAcount) {
 		this.goldpayAcount = goldpayAcount;
 	}
-	
+
 	@Column(name = "paypal_exchange")
 	public BigDecimal getPaypalExchange() {
 		return paypalExchange;
@@ -264,9 +262,8 @@ public class Transfer implements java.io.Serializable {
 		return paypalCurrency;
 	}
 
-
 	public void setPaypalCurrency(String paypalCurrency) {
 		this.paypalCurrency = paypalCurrency;
 	}
-	
+
 }

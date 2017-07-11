@@ -6,7 +6,6 @@ public class ModifyPayPwdByOldRequest {
 	private String checkToken;
 	private String newUserPayPwd;
 
-
 	public String getCheckToken() {
 		return checkToken;
 	}

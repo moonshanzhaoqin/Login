@@ -172,12 +172,12 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 			// 保存
 			transferDAO.addTransfer(transfer);
-			
-			//add by Niklaus.chi at 2017/07/07
+
+			// add by Niklaus.chi at 2017/07/07
 			transDetailsManager.addTransDetails(transferId, userId, null, null, null, null,
-					ServerConsts.CURRENCY_OF_GOLDPAY, amount, payModel.getPayOrderId(), 
+					ServerConsts.CURRENCY_OF_GOLDPAY, amount, payModel.getPayOrderId(),
 					ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE);
-			
+
 			map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 			map.put("msg", "ok");
 			map.put("transferId", transferId);
@@ -309,14 +309,13 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 		HashMap<String, String> map = new HashMap<String, String>();
 
-		/*提取沛金条是否开启*/
-		if(!configManager.getConfigBooleanValue(ConfigKeyEnum.GOLDPAY_WITHDRAW)) {
+		/* 提取沛金条是否开启 */
+		if (!configManager.getConfigBooleanValue(ConfigKeyEnum.GOLDPAY_WITHDRAW)) {
 			map.put("msg", "goldpay_withdraw is closed。");
 			map.put("retCode", RetCodeConsts.GOLDPAY_WITHDRAW_OFF);
 			return map;
 		}
-		
-		
+
 		User systemUser = userDAO.getSystemUser();
 		User payer = userDAO.getUser(userId);
 		if (payer == null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
@@ -387,12 +386,11 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		transfer.setGoldpayAcount(bind.getGoldpayAcount());
 		// 保存
 		transferDAO.addTransfer(transfer);
-		
-		//add by Niklaus.chi at 2017/07/07
+
+		// add by Niklaus.chi at 2017/07/07
 		transDetailsManager.addTransDetails(transferId, userId, null, null, null, null,
-				ServerConsts.CURRENCY_OF_GOLDPAY, new BigDecimal(Double.toString(amount)), "goldpay withdraw", 
+				ServerConsts.CURRENCY_OF_GOLDPAY, new BigDecimal(Double.toString(amount)), "goldpay withdraw",
 				ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
-		
 
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");
@@ -405,9 +403,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	public HashMap<String, String> withdrawConfirm1(int userId, String payPwd, String transferId) {
 
 		HashMap<String, String> map = new HashMap<String, String>();
-		
-		
-		
+
 		User systemUser = userDAO.getSystemUser();
 		User user = userDAO.getUser(userId);
 		if (user == null || user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
@@ -483,7 +479,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 		transfer.setFinishTime(new Date());
 		transferDAO.updateTransfer(transfer);
 
-		// 推送：提现退回
+		/* 推送：提现退回 */
 		pushManager.push4WithdrawRefund(user.getPushId(), user.getPushTag(), transfer.getTransferAmount());
 	}
 
@@ -561,7 +557,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 						logger.warn("goldpayPurchase tpps callback: INVALID SIGN");
 					} else if (payModel.getResultCode().equals(-101)) {
 						logger.warn("goldpayPurchase tpps callback: ORDERID REPEAT");
-					}else if (payModel.getResultCode().equals(200001) || payModel.getResultCode().equals(200008)) {
+					} else if (payModel.getResultCode().equals(200001) || payModel.getResultCode().equals(200008)) {
 						logger.warn("goldpayPurchase tpps callback: NOT_ENOUGH_GOLDPAY");
 						map.put("msg", "not enough goldpay!");
 						map.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH);
@@ -647,9 +643,8 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 	}
 
 	@Override
-	public PageBean getRechargeList(int currentPage,String userPhone,String lowerAmount,String
-			upperAmount, String startTime, String endTime, String transferType)
-			throws ParseException {
+	public PageBean getRechargeList(int currentPage, String userPhone, String lowerAmount, String upperAmount,
+			String startTime, String endTime, String transferType) throws ParseException {
 		logger.info("currentPage={},startTime={},endTime={},transferType={}", currentPage, startTime, endTime,
 				transferType);
 
@@ -658,7 +653,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 				"from Transfer t, User u where t.userTo = u.userId and t.transferStatus = ? and t.transferType = ? ");
 		values.add(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		values.add(Integer.parseInt(transferType));
-		
+
 		if (StringUtils.isNotBlank(userPhone)) {
 			hql.append(" and u.userPhone =  ?");
 			values.add(userPhone);
@@ -701,7 +696,14 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 	@Override
 	public PageBean getWithdrawRecordByPage(Integer userId, int currentPage, int pageSize) {
-		return transferDAO.getWithdrawRecordByPage(userId, currentPage, pageSize);
+		List<Object> values = new ArrayList<Object>();
+		StringBuilder hql = new StringBuilder(
+				"from Transfer where userFrom = ? and transferType = ? and ( transferStatus <> ? and  transferStatus <> ? ) order by createTime desc");
+		values.add(userId);
+		values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
+		values.add(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
+		values.add(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		return transferDAO.searchTransfersByPage(hql.toString(), values, currentPage, pageSize);
 	}
 
 	@Override

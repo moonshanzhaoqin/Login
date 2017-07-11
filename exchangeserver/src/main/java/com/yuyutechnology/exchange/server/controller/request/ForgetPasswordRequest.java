@@ -24,7 +24,6 @@ public class ForgetPasswordRequest {
 		this.userPhone = userPhone;
 	}
 
-
 	public String getVerificationCode() {
 		return verificationCode;
 	}

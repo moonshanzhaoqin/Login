@@ -8,7 +8,7 @@ package com.yuyutechnology.exchange.server.controller.request;
  *
  */
 public class DecryptRequest {
-	
+
 	private String content;
 
 	public String getContent() {

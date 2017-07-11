@@ -70,14 +70,14 @@ public class CommonManagerImpl implements CommonManager {
 			if (currency.getCurrencyStatus() == ServerConsts.CURRENCY_AVAILABLE) {
 				currentCurrenciesTmp.add(currency);
 				currentCurrenciesMap.put(currency.getCurrency(), currency);
-			}else{
+			} else {
 				currentCurrenciesMap.remove(currency.getCurrency());
 			}
 		}
 		currentCurrencies = currentCurrenciesTmp;
 		initInstruments();
 	}
-	
+
 	private void initInstruments() {
 		List<String[]> temp = new ArrayList<String[]>();
 		int currencySize = allCurrencies.size();
@@ -87,12 +87,13 @@ public class CommonManagerImpl implements CommonManager {
 				for (int f = i + 1; f < currencySize; f++) {
 					if (!ServerConsts.CURRENCY_OF_GOLDPAY.equals(left)) {
 						String right = allCurrencies.get(f).getCurrency();
-						temp.add(new String[]{left +"_"+right,right +"_"+left});
+						temp.add(new String[] { left + "_" + right, right + "_" + left });
 					}
 				}
 			}
 		}
-		temp.add(new String[]{ServerConsts.CURRENCY_OF_GOLDPAY +"_"+ServerConsts.CURRENCY_OF_USD,ServerConsts.CURRENCY_OF_USD +"_"+ServerConsts.CURRENCY_OF_GOLDPAY});
+		temp.add(new String[] { ServerConsts.CURRENCY_OF_GOLDPAY + "_" + ServerConsts.CURRENCY_OF_USD,
+				ServerConsts.CURRENCY_OF_USD + "_" + ServerConsts.CURRENCY_OF_GOLDPAY });
 		instruments = temp;
 	}
 
@@ -120,7 +121,7 @@ public class CommonManagerImpl implements CommonManager {
 	public boolean verifyCurrency(String currency) {
 		return currentCurrenciesMap.get(currency) != null;
 	}
-	
+
 	@Override
 	public List<String[]> getInstruments() {
 		return instruments;
@@ -159,20 +160,23 @@ public class CommonManagerImpl implements CommonManager {
 
 	@Override
 	public List<String> getAllConfigurableCurrencies() {
-//		List<String> currencies = new ArrayList<String>();
-//		currencies.add(ServerConsts.STANDARD_CURRENCY);
-//		currencies.add(ServerConsts.CURRENCY_OF_GOLDPAY);
-//		String result = redisDAO.getValueByKey("redis_exchangeRate");
-//		if (StringUtils.isNotBlank(result)) {
-//			@SuppressWarnings("unchecked")
-//			HashMap<String, String> map = JsonBinder.getInstance().fromJson(result, HashMap.class);
-//			String value = map.get(ServerConsts.STANDARD_CURRENCY);
-//			ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().fromJson(value, ExchangeRate.class);
-//			currencies.addAll(exchangeRate.getRates().keySet());
-//			return currencies;
-//		}
-//		String[] currency = {"USD","GDQ","AUD","BGN","BRL","CAD","CHF","CNY","CZK","DKK","GBP","HKD","HRK","HUF","IDR","ILS","INR","JPY","KRW","MXN","MYR","NOK","NZD","PHP","PLN","RON","RUB","SEK","SGD","THB","TRY","ZAR","EUR"};
-		String[] currency = {"AUD","CAD","CHF","CNY","EUR","GBP","HKD","JPY","USD","GDQ"};
+		// List<String> currencies = new ArrayList<String>();
+		// currencies.add(ServerConsts.STANDARD_CURRENCY);
+		// currencies.add(ServerConsts.CURRENCY_OF_GOLDPAY);
+		// String result = redisDAO.getValueByKey("redis_exchangeRate");
+		// if (StringUtils.isNotBlank(result)) {
+		// @SuppressWarnings("unchecked")
+		// HashMap<String, String> map = JsonBinder.getInstance().fromJson(result,
+		// HashMap.class);
+		// String value = map.get(ServerConsts.STANDARD_CURRENCY);
+		// ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().fromJson(value,
+		// ExchangeRate.class);
+		// currencies.addAll(exchangeRate.getRates().keySet());
+		// return currencies;
+		// }
+		// String[] currency =
+		// {"USD","GDQ","AUD","BGN","BRL","CAD","CHF","CNY","CZK","DKK","GBP","HKD","HRK","HUF","IDR","ILS","INR","JPY","KRW","MXN","MYR","NOK","NZD","PHP","PLN","RON","RUB","SEK","SGD","THB","TRY","ZAR","EUR"};
+		String[] currency = { "AUD", "CAD", "CHF", "CNY", "EUR", "GBP", "HKD", "JPY", "USD", "GDQ" };
 		return Arrays.asList(currency);
 	}
 
@@ -182,7 +186,7 @@ public class CommonManagerImpl implements CommonManager {
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
 		if (wallet == null) {
 			// 没有该货币的钱包，需要新增
-			walletDAO.addwallet(new Wallet(allCurrenciesMap.get(currency), userId, BigDecimal.ZERO, new Date(),0));
+			walletDAO.addwallet(new Wallet(allCurrenciesMap.get(currency), userId, BigDecimal.ZERO, new Date(), 0));
 			logger.info("Added {} wallet to user {}", currency, userId);
 		}
 	}

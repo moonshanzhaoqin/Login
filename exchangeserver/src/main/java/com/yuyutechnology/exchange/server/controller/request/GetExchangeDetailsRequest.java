@@ -11,5 +11,5 @@ public class GetExchangeDetailsRequest {
 	public void setExchangeId(String exchangeId) {
 		this.exchangeId = exchangeId;
 	}
-	
+
 }

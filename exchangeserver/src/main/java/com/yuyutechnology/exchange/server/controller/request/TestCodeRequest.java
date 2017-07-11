@@ -11,7 +11,8 @@ public class TestCodeRequest {
 	private String userPhone;
 	private String verificationCode;
 
-	@ApiModelProperty(allowableValues = ServerConsts.PIN_FUNC_REGISTER+","+ServerConsts.PIN_FUNC_CHANGEPHONE+","+ServerConsts.PIN_FUNC_FORGETPASSWORD+","+ServerConsts.PIN_FUNC_MODIFYPAYPWD)
+	@ApiModelProperty(allowableValues = ServerConsts.PIN_FUNC_REGISTER + "," + ServerConsts.PIN_FUNC_CHANGEPHONE + ","
+			+ ServerConsts.PIN_FUNC_FORGETPASSWORD + "," + ServerConsts.PIN_FUNC_MODIFYPAYPWD)
 	public String getPurpose() {
 		return purpose;
 	}
@@ -35,7 +36,6 @@ public class TestCodeRequest {
 	public void setUserPhone(String userPhone) {
 		this.userPhone = userPhone;
 	}
-
 
 	public String getVerificationCode() {
 		return verificationCode;

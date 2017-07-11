@@ -39,7 +39,7 @@ public class Unregistered implements java.io.Serializable {
 	}
 
 	public Unregistered(String areaCode, String userPhone, String currency, BigDecimal amount, Date createTime,
-			int unregisteredStatus, String transferId,String refundTransId) {
+			int unregisteredStatus, String transferId, String refundTransId) {
 		this.areaCode = areaCode;
 		this.userPhone = userPhone;
 		this.currency = currency;

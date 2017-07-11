@@ -12,6 +12,7 @@ public class ModifyUserNameRequest {
 	public void setNewUserName(String newUserName) {
 		this.newUserName = newUserName;
 	}
+
 	/**
 	 * 判断参数是否为空
 	 * 

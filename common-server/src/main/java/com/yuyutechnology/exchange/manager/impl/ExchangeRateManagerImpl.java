@@ -121,11 +121,10 @@ public class ExchangeRateManagerImpl implements SpareExchangeRateManager {
 			for (Currency index : list) {
 				if (!index.getCurrency().equals(ServerConsts.STANDARD_CURRENCY)
 						&& !index.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
-					others4Gdp
-							.put(index.getCurrency(),
-									(new BigDecimal(Double.toString(getExchangeRateNoGoldq(index.getCurrency(),
-											ServerConsts.STANDARD_CURRENCY)))).divide(gdp4USDExchangeRate, scale,
-													BigDecimal.ROUND_DOWN));
+					others4Gdp.put(index.getCurrency(),
+							(new BigDecimal(Double.toString(
+									getExchangeRateNoGoldq(index.getCurrency(), ServerConsts.STANDARD_CURRENCY))))
+											.divide(gdp4USDExchangeRate, scale, BigDecimal.ROUND_DOWN));
 				}
 			}
 
@@ -171,7 +170,7 @@ public class ExchangeRateManagerImpl implements SpareExchangeRateManager {
 
 		return out;
 	}
-	
+
 	@Override
 	public Date getExchangeRateUpdateDate() {
 		String goldpayER = redisDAO.getValueByKey("redis_goldpay_exchangerate");
@@ -197,9 +196,10 @@ public class ExchangeRateManagerImpl implements SpareExchangeRateManager {
 
 		return map;
 	}
-    /**
-     * 兑换成美元
-     */
+
+	/**
+	 * 兑换成美元
+	 */
 	@Override
 	public BigDecimal getExchangeResult(String transCurrency, BigDecimal transAmount) {
 		BigDecimal result = null;
@@ -209,7 +209,8 @@ public class ExchangeRateManagerImpl implements SpareExchangeRateManager {
 		} else {
 			double exchangeRate = getExchangeRate(transCurrency, ServerConsts.STANDARD_CURRENCY);
 			result = transAmount.multiply(new BigDecimal(Double.toString(exchangeRate)));
-			logger.info("exchange to USD , transCurrency : {} , amount : {}, rate : {}, result : {}", new Object[]{transCurrency, transAmount, exchangeRate, result});
+			logger.info("exchange to USD , transCurrency : {} , amount : {}, rate : {}, result : {}",
+					new Object[] { transCurrency, transAmount, exchangeRate, result });
 		}
 		return result;
 	}
@@ -224,7 +225,8 @@ public class ExchangeRateManagerImpl implements SpareExchangeRateManager {
 				if (wallet.getCurrency().getCurrency().equals(ServerConsts.STANDARD_CURRENCY)) {
 					totalBalance = totalBalance.add(wallet.getBalance());
 				} else {
-					totalBalance = totalBalance.add(getExchangeResult(wallet.getCurrency().getCurrency(), wallet.getBalance()));
+					totalBalance = totalBalance
+							.add(getExchangeResult(wallet.getCurrency().getCurrency(), wallet.getBalance()));
 				}
 			}
 		}
@@ -248,13 +250,13 @@ public class ExchangeRateManagerImpl implements SpareExchangeRateManager {
 		// logger.info("result : {}",result);
 		map = JsonBinder.getInstance().fromJson(result, HashMap.class);
 		String value = map.get(base);
-//		logger.info("value : {}", value);
+		// logger.info("value : {}", value);
 		if (value.contains("no protocol")) {
 			return 0;
 		}
 		ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().fromJson(value, ExchangeRate.class);
 		out = exchangeRate.getRates().get(outCurrency);
-//		logger.info("base : {},out : {}", base, out);
+		// logger.info("base : {},out : {}", base, out);
 		return out;
 	}
 

@@ -34,7 +34,12 @@ public interface UserDAO {
 
 	List<User> getUserByPushId(String pushId);
 
+	/**
+	 * 批量更新
+	 * 
+	 * @param hql
+	 * @param values
+	 */
 	void updateHQL(String hql, Object[] values);
 
-	
 }

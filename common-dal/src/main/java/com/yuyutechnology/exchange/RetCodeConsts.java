@@ -123,6 +123,20 @@ public class RetCodeConsts {
 	 * 没有获取验证码
 	 */
 	public static final String NOT_GET_CODE = "01023";
+	/**
+	 * 手机号已领取过奖励
+	 */
+	public static final String PHONE_IS_COLLECTED = "01024";
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息
@@ -148,8 +162,6 @@ public class RetCodeConsts {
 	public static final String EXCHANGE_LIMIT_DAILY_PAY = "02008";
 
 	public static final String EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY = "02009";
-	
-	
 
 	// 交易03
 	/**
@@ -204,7 +216,7 @@ public class RetCodeConsts {
 	public static final String TRANSFER_LIMIT_DAILY_PAY = "03021";
 
 	public static final String TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY = "03022";
-	
+
 	/**
 	 * 订单状态异常
 	 */
@@ -221,10 +233,10 @@ public class RetCodeConsts {
 	 * GDP输入违法，小数或者低于100
 	 */
 	public static final String TRANSFER_PAYPALTRANS_ILLEGAL_DATA = "03027";
-	
+
 	public static final String TRANSFER_PAYPALTRANS_TOTAL_AMOUNT_OF_GDQ = "03028";
 	/**
-	 *提取沛金条关闭 
+	 * 提取沛金条关闭
 	 */
 	public static final String GOLDPAY_WITHDRAW_OFF = "03029";
 	/**
@@ -248,6 +260,16 @@ public class RetCodeConsts {
 	public static final String CURRENCY_IS_EXIST = "05001";
 	
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	static {
 		successCodeList.add(RET_CODE_SUCCESS);
 		successCodeList.add(TRANSFER_REQUIRES_PHONE_VERIFICATION);

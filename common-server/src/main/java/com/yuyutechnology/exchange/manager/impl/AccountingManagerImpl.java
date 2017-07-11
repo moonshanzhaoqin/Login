@@ -29,34 +29,34 @@ import com.yuyutechnology.exchange.session.SessionManager;
  *
  */
 @Service
-public class AccountingManagerImpl implements AccountingManager{
-	
+public class AccountingManagerImpl implements AccountingManager {
+
 	private static Logger logger = LogManager.getLogger(AccountingManagerImpl.class);
-	
+
 	@Autowired
 	AccountingDAO accountingDAO;
-	
+
 	@Autowired
 	BadAccountDAO badAccountDAO;
-	
+
 	@Autowired
 	WalletDAO walletDAO;
-	
+
 	@Autowired
 	CrmAlarmDAO crmAlarmDAO;
-	
+
 	@Autowired
 	CrmAlarmManager crmAlarmManager;
-	
+
 	@Autowired
 	SessionManager sessionManager;
-	
+
 	@Autowired
 	GoldpayTransManager goldpayTransManager;
-	
+
 	@Autowired
 	UserManager userManager;
-	
+
 	private void freezeUser(int userId) {
 		logger.info("badAccount freezeUser, userId : {}", userId);
 		SessionData sessionData = sessionManager.getByUserid(userId);
@@ -67,7 +67,7 @@ public class AccountingManagerImpl implements AccountingManager{
 		userManager.logout(userId);
 		userManager.userFreeze(userId, ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE);
 	}
-	
+
 	public int accountingAll() {
 		if (goldpayTransManager.getGoldpayRemitWithdrawsforbidden()) {
 			return 0;
@@ -78,14 +78,15 @@ public class AccountingManagerImpl implements AccountingManager{
 		accountingDAO.saveLastAccountingTime(endDate);
 		return userSize;
 	}
-	
+
 	public boolean accountingUser(int userId, String transferId) {
 		Date startDate = accountingDAO.getLastAccountingTime();
 		Date endDate = new Date();
 		long startSeqId = accountingDAO.getMAXSeqId4WalletBeforeByUserId(userId);
-		long endSeqId  = accountingDAO.getMAXSeqId4WalletUserId(userId);
+		long endSeqId = accountingDAO.getMAXSeqId4WalletUserId(userId);
 		if (startSeqId <= endSeqId) {
-			int size = accountingDAO.calculatorWalletSeqByUserId(startSeqId, endSeqId, startDate, endDate, userId, transferId);
+			int size = accountingDAO.calculatorWalletSeqByUserId(startSeqId, endSeqId, startDate, endDate, userId,
+					transferId);
 			if (size >= 1) {
 				goldpayTransManager.forbiddenGoldpayRemitWithdraws("true");
 				badAccountWarn();
@@ -95,7 +96,7 @@ public class AccountingManagerImpl implements AccountingManager{
 		}
 		return true;
 	}
-	
+
 	public int accounting(Date startDate, Date endDate) {
 		int updateRows = accountingDAO.snapshotWalletToNow();
 		logger.info("accounting new rows, size : {}", updateRows);
@@ -105,7 +106,7 @@ public class AccountingManagerImpl implements AccountingManager{
 			logger.info("accounting wallet_seq from {} to {}", startId, endId);
 			if (startId <= endId) {
 				updateRows = accountingDAO.accountingWalletSeq(startId, endId, startDate, endDate);
-			}else{
+			} else {
 				updateRows = 0;
 			}
 			logger.info("accounting finsh , bad account user size {}", updateRows);
@@ -119,7 +120,7 @@ public class AccountingManagerImpl implements AccountingManager{
 		}
 		return 0;
 	}
-	
+
 	public void freezeUsers() {
 		List<Integer> badAccountUserIds = badAccountDAO.findBadAccountList(ServerConsts.BAD_ACCOUNT_STATUS_DEFAULT);
 		if (badAccountUserIds != null && !badAccountUserIds.isEmpty()) {
@@ -134,19 +135,20 @@ public class AccountingManagerImpl implements AccountingManager{
 			}
 		}
 	}
-	
+
 	public void snapshotToBefore(int userId) {
 		accountingDAO.snapshotWalletToBeforeByUser(userId);
 	}
-	
-	private void badAccountWarn(){
+
+	private void badAccountWarn() {
 		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(3, 1);
-		if(list != null && !list.isEmpty()){
+		if (list != null && !list.isEmpty()) {
 			logger.info("accounting badAccountWarn listSize: {}", list.size());
 			for (int i = 0; i < list.size(); i++) {
 				CrmAlarm crmAlarm = list.get(i);
 				logger.info("accounting badAccountWarn crmAlarm: {}", crmAlarm.getSupervisorIdArr());
-				crmAlarmManager.alarmNotice(crmAlarm.getSupervisorIdArr(), "badAccountWarning", crmAlarm.getAlarmMode(),null);
+				crmAlarmManager.alarmNotice(crmAlarm.getSupervisorIdArr(), "badAccountWarning", crmAlarm.getAlarmMode(),
+						null);
 			}
 		}
 	}

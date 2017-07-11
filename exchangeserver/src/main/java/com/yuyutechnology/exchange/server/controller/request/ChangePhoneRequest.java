@@ -8,7 +8,6 @@ public class ChangePhoneRequest {
 	private String userPhone;
 	private String verificationCode;
 
-
 	public String getCheckToken() {
 		return checkToken;
 	}
