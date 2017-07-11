@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -219,10 +220,31 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 	
 
 	
+//	@Override
+//	public HashMap<String, Double> getExchangeRate(String base) {
+//		
+//		HashMap<String, Double> map = new HashMap<>();
+//
+//		List<Currency> list = commonManager.getCurrentCurrencies();
+//
+//		for (Currency currency : list) {
+//
+//			if (!currency.getCurrency().equals(base)) {
+//				BigDecimal value = getSingleExchangeRate(base, currency.getCurrency());
+//				if(value != null){
+//					map.put(currency.getCurrency(), value.doubleValue());
+//				}
+//			}
+//		}
+//
+//		return map;
+//	}
+	
+	
 	@Override
-	public HashMap<String, Double> getExchangeRate(String base) {
+	public LinkedHashMap<String, Double> getExchangeRate(String base) {
 		
-		HashMap<String, Double> map = new HashMap<>();
+		LinkedHashMap<String, Double> map = new LinkedHashMap<String, Double>();
 
 		List<Currency> list = commonManager.getCurrentCurrencies();
 
@@ -237,8 +259,9 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		}
 
 		return map;
-		
 	}
+	
+	
 	
 	@Override
 	public BigDecimal getSingleExchangeRate(String currencyLeft, String currencyRight) {
