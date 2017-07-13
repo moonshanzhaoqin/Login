@@ -1,5 +1,7 @@
 package com.yuyutechnology.exchange.server.controller;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +64,7 @@ public class CampaignController {
 
 		return rep;
 	}
+
 	// TODO 活动信息
 
 	// TODO 领取
@@ -86,12 +89,26 @@ public class CampaignController {
 			rep.setMessage(MessageConsts.PHONE_IS_COLLECTED);
 		} else {
 
-			campaignManager.collect(collectRequest.getAreaCode(), collectRequest.getUserPhone(),
+			String retCode = campaignManager.collect(collectRequest.getAreaCode(), collectRequest.getUserPhone(),
 					collectRequest.getInviterCode(), Integer.parseInt(collectRequest.getSharePath()));
+			switch (retCode) {
+			case RetCodeConsts.NO_CAMPAIGN:
+				logger.info(MessageConsts.NO_CAMPAIGN);
+				rep.setRetCode(RetCodeConsts.NO_CAMPAIGN);
+				rep.setMessage(MessageConsts.NO_CAMPAIGN);
+				break;
+			case RetCodeConsts.EXCESS_BUDGET:
+				logger.info(MessageConsts.EXCESS_BUDGET);
+				rep.setRetCode(RetCodeConsts.EXCESS_BUDGET);
+				rep.setMessage(MessageConsts.EXCESS_BUDGET);
+				break;
+			default:
+				logger.info("********Operation succeeded********");
+				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+				break;
+			}
 
-			logger.info("********Operation succeeded********");
-			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		}
 		return rep;
 	}
