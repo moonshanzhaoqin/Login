@@ -26,6 +26,7 @@ import com.yuyutechnology.exchange.pojo.Campaign;
 import com.yuyutechnology.exchange.pojo.Collect;
 import com.yuyutechnology.exchange.pojo.Inviter;
 import com.yuyutechnology.exchange.pojo.User;
+import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.util.ShareCodeUtil;
 
 /**
@@ -49,6 +50,8 @@ public class CampaignManagerImpl implements CampaignManager {
 	CollectDAO collectDAO;
 	@Autowired
 	ConfigManager configManager;
+	@Autowired
+	PushManager pushManager;
 
 	@Override
 	public InviterInfo getInviterInfo(Integer userId) {
@@ -204,9 +207,11 @@ public class CampaignManagerImpl implements CampaignManager {
 		inviterDAO.updateInviter(inviter);
 		
 		//TODO 推送邀请人
-		
+		User inviterUser=userDAO.getUser(collect.getInviterId());
+		pushManager.push4Invite(inviterUser.getPushId(), inviterUser.getPushTag(), collect.getInviterBonus());
 		//TODO 推送注册用户
-		
+		User inviteeUser=userDAO.getUser(userId);
+		pushManager.push4Invite(inviteeUser.getPushId(), inviteeUser.getPushTag(), collect.getInviteeBonus());
 	}
 
 }
