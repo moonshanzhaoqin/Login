@@ -66,7 +66,7 @@ public class CampaignController {
 
 	// TODO 领取
 	@ResponseBody
-	@ApiOperation(value = "邀请人信息", httpMethod = "POST", notes = "")
+	@ApiOperation(value = "领取", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/invite/collect", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public CollectResponse collect(@RequestBody CollectRequest collectRequest) {
 		logger.info("========collect : {}============");

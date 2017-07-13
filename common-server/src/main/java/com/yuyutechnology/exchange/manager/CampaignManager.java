@@ -52,8 +52,9 @@ public interface CampaignManager {
 	 * @param userPhone
 	 * @param inviterCode
 	 * @param sharePath
+	 * @return 
 	 */
-	void collect(String areaCode, String userPhone, String inviterCode, int sharePath);
+	String collect(String areaCode, String userPhone, String inviterCode, int sharePath);
 
 
 

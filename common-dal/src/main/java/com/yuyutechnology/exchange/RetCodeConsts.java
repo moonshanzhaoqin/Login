@@ -3,6 +3,10 @@ package com.yuyutechnology.exchange;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author suzan.wu
+ *
+ */
 public class RetCodeConsts {
 	// RetCode: 通用 00; 用户 01;兑换 02; 转账 03
 
@@ -127,16 +131,15 @@ public class RetCodeConsts {
 	 * 手机号已领取过奖励
 	 */
 	public static final String PHONE_IS_COLLECTED = "01024";
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	/**
+	 * 现在没有活动
+	 */
+	public static final String NO_CAMPAIGN = "01025";
+	/**
+	 * 奖励已被领光 ,超出预算
+	 */
+	public static final String EXCESS_BUDGET = "01026";
+
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息
@@ -258,18 +261,7 @@ public class RetCodeConsts {
 	 * 币种已存在
 	 */
 	public static final String CURRENCY_IS_EXIST = "05001";
-	
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	static {
 		successCodeList.add(RET_CODE_SUCCESS);
 		successCodeList.add(TRANSFER_REQUIRES_PHONE_VERIFICATION);
