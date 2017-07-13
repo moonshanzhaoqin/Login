@@ -2,7 +2,7 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 import org.apache.commons.lang.StringUtils;
 
-public class LoginRequest extends BaseRequest{
+public class LoginRequest extends BaseRequest {
 	/**
 	 * 
 	 */
@@ -80,10 +80,8 @@ public class LoginRequest extends BaseRequest{
 		this.pushId = pushId;
 	}
 
-	
 	/**
-	 * 判断参数是否为空
-	 * 以及走那个流程
+	 * 判断参数是否为空 以及走那个流程
 	 * 
 	 * @return
 	 */

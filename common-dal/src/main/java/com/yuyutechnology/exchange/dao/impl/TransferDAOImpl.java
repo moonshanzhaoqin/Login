@@ -1,7 +1,6 @@
 package com.yuyutechnology.exchange.dao.impl;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -214,19 +213,6 @@ public class TransferDAOImpl implements TransferDAO {
 		return sum;
 	}
 
-	@Override
-	public PageBean getWithdrawRecordByPage(Integer userId, int currentPage, int pageSize) {
-		List<Object> values = new ArrayList<Object>();
-		StringBuilder hql = new StringBuilder(
-				"from Transfer where userFrom = ? and transferType = ? and ( transferStatus <> ? and  transferStatus <> ? ) order by createTime desc");
-		values.add(userId);
-		values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
-		values.add(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
-		values.add(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-		PageBean pageBean = PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
-		return pageBean;
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Transfer> getNeedGoldpayRemitWithdraws() {
@@ -244,58 +230,27 @@ public class TransferDAOImpl implements TransferDAO {
 	}
 
 	@Override
-	public PageBean searchWithdrawsByPage(String userPhone, String transferId, String[] transferStatus, int currentPage,
-			int pageSize) {
-		List<Object> values = new ArrayList<Object>();
-		StringBuilder hql = new StringBuilder(
-				"from Transfer t, User u where t.userFrom = u.userId and t.transferType = ? and t.transferStatus<>? ");
-		values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
-		values.add(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
-		if (StringUtils.isNotBlank(userPhone)) {
-			hql.append(" and u.userPhone = ?");
-			values.add(userPhone);
-		}
-		if (StringUtils.isNotBlank(transferId)) {
-			hql.append(" and t.transferId = ?");
-			values.add(transferId);
-		}
-		
-		if (transferStatus.length > 0) {
-			hql.append(" and ( t.transferStatus = ?");
-			values.add(Integer.parseInt(transferStatus[0]));
-			for (int i = 1; i < transferStatus.length; i++) {
-				hql.append(" or t.transferStatus = ?");
-				values.add(Integer.parseInt(transferStatus[i]));
-			}
-			hql.append(")");
-		}
-		hql.append(" order by t.transferStatus,t.finishTime desc");
+	public PageBean searchTransfersByPage(String hql, List<Object> values, int currentPage, int pageSize) {
+		return PageUtils.getPageContent(hibernateTemplate, hql, values, currentPage, pageSize);
 
-		PageBean pageBean = PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
-		return pageBean;
 	}
-	@Override
-	public PageBean searchTransfersByPage(String hql,List<Object> values,int currentPage,
-			int pageSize) {
-		return  PageUtils.getPageContent(hibernateTemplate, hql, values, currentPage, pageSize);
-		
-	}
+
 	@Override
 	public Object getTransferByIdJoinUser(String transferId) {
 		List<?> list = hibernateTemplate.find(
 				"from Transfer t,User u1,User u2 where t.transferId = ? and t.userFrom = u1.userId and t.userTo = u2.userId ",
 				transferId);
-		return list.isEmpty() ?null:list.get(0);
+		return list.isEmpty() ? null : list.get(0);
 	}
 
 	@Override
-	public BigDecimal getTotalPaypalExchange(final Date finishTime,final int transferType,final int transferStatus){
+	public BigDecimal getTotalPaypalExchange(final Date finishTime, final int transferType, final int transferStatus) {
 		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<BigDecimal>() {
 			@Override
 			public BigDecimal doInHibernate(Session session) throws HibernateException {
 				Query query = session.createSQLQuery("select sum(transfer_amount) from e_transfer "
 						+ "where transfer_status = ? and transfer_type = ? and finish_time < ?");
-				
+
 				query.setInteger(0, transferStatus);
 				query.setInteger(1, transferType);
 				query.setDate(2, finishTime);
@@ -304,10 +259,10 @@ public class TransferDAOImpl implements TransferDAO {
 				if (list == null || list.isEmpty() || list.get(0) == null) {
 					return new BigDecimal("0");
 				}
-				
+
 				return new BigDecimal(list.get(0).toString());
 			}
 		});
 	}
-	
+
 }

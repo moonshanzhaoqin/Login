@@ -44,7 +44,7 @@ public class Wallet implements java.io.Serializable {
 		this.balance = balance;
 	}
 
-	public Wallet(Currency currency, int userId, BigDecimal balance, Date updateTime,Integer updateSeqId) {
+	public Wallet(Currency currency, int userId, BigDecimal balance, Date updateTime, Integer updateSeqId) {
 		this.currency = currency;
 		this.userId = userId;
 		this.balance = balance;

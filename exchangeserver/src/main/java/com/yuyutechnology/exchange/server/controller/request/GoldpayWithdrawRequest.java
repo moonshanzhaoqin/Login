@@ -1,7 +1,7 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
 public class GoldpayWithdrawRequest {
-	
+
 	private double amount;
 
 	public double getAmount() {

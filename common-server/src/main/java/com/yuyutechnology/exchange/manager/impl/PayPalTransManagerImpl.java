@@ -36,7 +36,7 @@ import com.yuyutechnology.exchange.pojo.User;
 public class PayPalTransManagerImpl implements PayPalTransManager {
 
 	public static Logger logger = LogManager.getLogger(PayPalTransManagerImpl.class);
-	
+
 	@Autowired
 	UserDAO userDAO;
 	@Autowired
@@ -45,7 +45,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 	ConfigManager configManager;
 	@Autowired
 	TransferDAO transferDAO;
-	
+
 	@Autowired
 	CrmAlarmManager crmAlarmManager;
 	@Autowired
@@ -57,29 +57,29 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 
 	@PostConstruct
 	public void init() {
-		//初始化accumulatedAmount
+		// 初始化accumulatedAmount
 		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ);
-		if(accumulatedAmount.compareTo(new BigDecimal("0")) == 0 ){
-			accumulatedAmount = transferDAO.getTotalPaypalExchange(new Date(), 
+		if (accumulatedAmount.compareTo(new BigDecimal("0")) == 0) {
+			accumulatedAmount = transferDAO.getTotalPaypalExchange(new Date(),
 					ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-			logger.info("redis AccumulatedAmount is 0,and mysql sum() is {} :",accumulatedAmount);
+			logger.info("redis AccumulatedAmount is 0,and mysql sum() is {} :", accumulatedAmount);
 			transferDAO.updateAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ, accumulatedAmount);
 		}
-		
+
 	}
 
 	@Override
 	public HashMap<String, Object> paypalTransInit(Integer userId, String currencyLeft, BigDecimal amount) {
 
 		HashMap<String, Object> result = new HashMap<>();
-		
-		/*PayPal是否开启*/
-		if(!configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE)) {
+
+		/* PayPal是否开启 */
+		if (!configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE)) {
 			result.put("msg", "paypal_recharge is closed。");
 			result.put("retCode", RetCodeConsts.PAYPAL_RECHARGE_OFF);
 			return result;
 		}
-		
+
 		// 判断条件.币种合法，GDQ数量为整数且大于100
 		if (!commonManager.verifyCurrency(currencyLeft)) {
 			logger.warn("This currency is not a tradable currency");
@@ -90,16 +90,16 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 
 		// 计算结果值
 		BigDecimal rate = oandaRatesManager.getSingleExchangeRate(currencyLeft, ServerConsts.CURRENCY_OF_GOLDPAY);
-		BigDecimal baseAmout = amount.divide(rate, currencyLeft.equals(ServerConsts.CURRENCY_OF_JPY)?0:2, BigDecimal.ROUND_UP);
+		BigDecimal baseAmout = amount.divide(rate, currencyLeft.equals(ServerConsts.CURRENCY_OF_JPY) ? 0 : 2,
+				BigDecimal.ROUND_UP);
 		logger.info("amount{} / rate {} = baseAmount {}", amount, rate, baseAmout);
-		
-		if(!isOverlimit(amount)){
+
+		if (!isOverlimit(amount)) {
 			logger.warn("Reach or exceed 100%,The transaction is forbidden");
 			result.put("retCode", RetCodeConsts.TRANSFER_PAYPALTRANS_TOTAL_AMOUNT_OF_GDQ);
 			result.put("msg", "Reach or exceed 100%,The transaction is forbidden");
 			return result;
 		}
-		
 
 		// 生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
@@ -118,13 +118,13 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE);
 		// 保存
 		transferDAO.addTransfer(transfer);
-		
-		//add by Niklaus.chi at 2017/07/07
-		transDetailsManager.addTransDetails(transferId, userId, null, null, null, null, 
-				ServerConsts.CURRENCY_OF_GOLDPAY, amount, null, ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE);	
-		
-		
-		BraintreeGateway gateway = new BraintreeGateway(configManager.getConfigStringValue(ConfigKeyEnum.PAYPAL_ACCESSTOKEN, ""));
+
+		// add by Niklaus.chi at 2017/07/07
+		transDetailsManager.addTransDetails(transferId, userId, null, null, null, null,
+				ServerConsts.CURRENCY_OF_GOLDPAY, amount, null, ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE);
+
+		BraintreeGateway gateway = new BraintreeGateway(
+				configManager.getConfigStringValue(ConfigKeyEnum.PAYPAL_ACCESSTOKEN, ""));
 		String clientToken = gateway.clientToken().generate();
 
 		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
@@ -170,7 +170,8 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			request.paymentMethodNonce(nonce);
 			request.orderId(transfer.getTransferId());
 			request.options().submitForSettlement(true).storeInVaultOnSuccess(true).done();
-			BraintreeGateway gateway = new BraintreeGateway(configManager.getConfigStringValue(ConfigKeyEnum.PAYPAL_ACCESSTOKEN, ""));
+			BraintreeGateway gateway = new BraintreeGateway(
+					configManager.getConfigStringValue(ConfigKeyEnum.PAYPAL_ACCESSTOKEN, ""));
 			saleResult = gateway.transaction().sale(request);
 
 		} catch (Exception e) {
@@ -196,9 +197,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			logger.warn("Message: {}", saleResult.getMessage());
 			map.put("retCode", RetCodeConsts.TRANSFER_PAYPALTRANS_PAYMENT_FAILED);
 			map.put("msg", saleResult.getMessage() + " Status : " + saleResult.getTransaction().getStatus().name());
-			
-			
-			
+
 			return map;
 		}
 
@@ -216,56 +215,54 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		transfer.setFinishTime(new Date());
 		transferDAO.updateTransfer(transfer);
-		
-		//预警
+
+		// 预警
 		alarmWhileReachLimitOfTotalAmountOfGDQ(transfer.getTransferAmount());
-		
+
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");
 
 		return map;
 
 	}
-	
-	
-	private boolean isOverlimit(BigDecimal amount){
-		
+
+	private boolean isOverlimit(BigDecimal amount) {
+
 		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ);
-		BigDecimal totalGDQCanBeSold = new BigDecimal(configManager.getConfigStringValue(ConfigKeyEnum.TOTALGDQCANBESOLD, "0"));
-		BigDecimal percent = (accumulatedAmount.add(amount)).divide(totalGDQCanBeSold,3,BigDecimal.ROUND_DOWN);
-		
-		logger.info("amount : {}",amount);
-		logger.info("accumulatedAmount : {}",accumulatedAmount);
-		logger.info("totalGDQCanBeSold : {}",totalGDQCanBeSold);
-		logger.info("(accumulatedAmount.add(amount)).divide(totalGDQCanBeSold,3,BigDecimal.ROUND_DOWN) : {}",percent);
-		
-		if(percent.doubleValue() >= 1){
+		BigDecimal totalGDQCanBeSold = new BigDecimal(
+				configManager.getConfigStringValue(ConfigKeyEnum.TOTALGDQCANBESOLD, "0"));
+		BigDecimal percent = (accumulatedAmount.add(amount)).divide(totalGDQCanBeSold, 3, BigDecimal.ROUND_DOWN);
+
+		logger.info("amount : {}", amount);
+		logger.info("accumulatedAmount : {}", accumulatedAmount);
+		logger.info("totalGDQCanBeSold : {}", totalGDQCanBeSold);
+		logger.info("(accumulatedAmount.add(amount)).divide(totalGDQCanBeSold,3,BigDecimal.ROUND_DOWN) : {}", percent);
+
+		if (percent.doubleValue() >= 1) {
 			logger.warn("Reach or exceed 100%,The transaction is forbidden !");
 			return false;
 		}
-		
-		return true;
-		
-	}
-	
-	private void alarmWhileReachLimitOfTotalAmountOfGDQ(BigDecimal amount){
-		//更新redis值
-		transferDAO.updateAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ, amount);
-		//计算百分比
-		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ);
-		BigDecimal totalGDQCanBeSold = new BigDecimal(configManager.getConfigStringValue(ConfigKeyEnum.TOTALGDQCANBESOLD, "0"));
-		BigDecimal percent = (accumulatedAmount).divide(totalGDQCanBeSold,3,BigDecimal.ROUND_DOWN);
 
-		logger.info("accumulatedAmount : {}",accumulatedAmount);
-		logger.info("totalGDQCanBeSold : {}",totalGDQCanBeSold);
-		logger.info("(accumulatedAmount).divide(totalGDQCanBeSold,3) : {}",percent);
-		
-		//获取Alarm配置信息
-		crmAlarmManager.reachtotalGDQLimitAlarm(accumulatedAmount, percent);
-		
+		return true;
+
 	}
-	
-	
-	
-	
+
+	private void alarmWhileReachLimitOfTotalAmountOfGDQ(BigDecimal amount) {
+		// 更新redis值
+		transferDAO.updateAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ, amount);
+		// 计算百分比
+		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ);
+		BigDecimal totalGDQCanBeSold = new BigDecimal(
+				configManager.getConfigStringValue(ConfigKeyEnum.TOTALGDQCANBESOLD, "0"));
+		BigDecimal percent = (accumulatedAmount).divide(totalGDQCanBeSold, 3, BigDecimal.ROUND_DOWN);
+
+		logger.info("accumulatedAmount : {}", accumulatedAmount);
+		logger.info("totalGDQCanBeSold : {}", totalGDQCanBeSold);
+		logger.info("(accumulatedAmount).divide(totalGDQCanBeSold,3) : {}", percent);
+
+		// 获取Alarm配置信息
+		crmAlarmManager.reachtotalGDQLimitAlarm(accumulatedAmount, percent);
+
+	}
+
 }

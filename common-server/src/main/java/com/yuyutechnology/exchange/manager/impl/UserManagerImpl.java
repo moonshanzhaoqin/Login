@@ -452,12 +452,8 @@ public class UserManagerImpl implements UserManager {
 		accountingManager.snapshotToBefore(userId);
 		/* 根据Unregistered表 更新新用户钱包 将资金从系统帐户划给新用户 */
 		updateWalletsFromUnregistered(userId, areaCode, userPhone);
-		//TODO 发放奖励金
-		
-		
-		
-		
-		
+		// TODO 发放奖励金
+
 		return userId;
 	}
 
@@ -643,14 +639,14 @@ public class UserManagerImpl implements UserManager {
 			transfer.setNoticeId(0);
 
 			transferDAO.addTransfer(transfer);
-			
-			//add by Niklaus.chi at 2017/07/07
-			
-			transDetailsManager.addTransDetails(transferId, userId, payer.getUserId(), 
-					payer.getUserName(), payer.getAreaCode(), payer.getUserPhone(), 
-					unregistered.getCurrency(), unregistered.getAmount(), payerTransfer.getTransferComment(), ServerConsts.TRANSFER_TYPE_TRANSACTION-1);
-			
-			//end
+
+			// add by Niklaus.chi at 2017/07/07
+
+			transDetailsManager.addTransDetails(transferId, userId, payer.getUserId(), payer.getUserName(),
+					payer.getAreaCode(), payer.getUserPhone(), unregistered.getCurrency(), unregistered.getAmount(),
+					payerTransfer.getTransferComment(), ServerConsts.TRANSFER_TYPE_TRANSACTION - 1);
+
+			// end
 
 			// 增加seq记录
 			// walletSeqDAO.addWalletSeq4Transaction(systemUserId, userId,

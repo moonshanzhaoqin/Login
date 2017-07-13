@@ -12,7 +12,7 @@ public class RegisterRequest {
 	private String deviceId;
 	private String language;
 	private String pushId;
-	
+
 	public String getAreaCode() {
 		return areaCode;
 	}
@@ -20,7 +20,6 @@ public class RegisterRequest {
 	public void setAreaCode(String areaCode) {
 		this.areaCode = areaCode;
 	}
-
 
 	public String getUserPassword() {
 		return userPassword;

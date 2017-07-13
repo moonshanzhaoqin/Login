@@ -30,10 +30,10 @@ public class Exchange implements java.io.Serializable {
 	private BigDecimal amountOut;
 	private BigDecimal amountIn;
 	private BigDecimal exchangeRate;
-	
+
 	private BigDecimal exchangeFeePerThousand;
 	private BigDecimal exchangeFeeAmount;
-	
+
 	private Date createTime;
 	private Date finishTime;
 	private int exchangeStatus;

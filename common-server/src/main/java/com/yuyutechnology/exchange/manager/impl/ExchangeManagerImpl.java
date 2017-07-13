@@ -61,7 +61,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	ConfigManager configManager;
 	@Autowired
 	CrmAlarmManager crmAlarmManager;
-	
+
 	public static Logger logger = LogManager.getLogger(ExchangeManagerImpl.class);
 
 	@Override
@@ -70,10 +70,10 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		List<Wallet> wallets = walletDAO.getWalletsByUserId(userId);
 		for (Wallet wallet : wallets) {
 			if (wallet.getCurrency().getCurrencyStatus() == ServerConsts.CURRENCY_AVAILABLE
-					|| wallet.getBalance().compareTo(BigDecimal.ZERO)!=0 ) {
-				list.add(new WalletInfo(wallet.getCurrency().getCurrency(),
-						wallet.getCurrency().getNameEn(), wallet.getCurrency().getNameCn(),
-						wallet.getCurrency().getNameHk(), wallet.getCurrency().getCurrencyStatus(), wallet.getCurrency().getCurrencyUnit(),
+					|| wallet.getBalance().compareTo(BigDecimal.ZERO) != 0) {
+				list.add(new WalletInfo(wallet.getCurrency().getCurrency(), wallet.getCurrency().getNameEn(),
+						wallet.getCurrency().getNameCn(), wallet.getCurrency().getNameHk(),
+						wallet.getCurrency().getCurrencyStatus(), wallet.getCurrency().getCurrencyUnit(),
 						wallet.getBalance()));
 			}
 		}
@@ -85,50 +85,51 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			BigDecimal amountOut) {
 
 		HashMap<String, String> map = new HashMap<String, String>();
-		if(!commonManager.verifyCurrency(currencyOut) || !commonManager.verifyCurrency(currencyIn)){
+		if (!commonManager.verifyCurrency(currencyOut) || !commonManager.verifyCurrency(currencyIn)) {
 			logger.warn("This currency is not a tradable currency");
 			map.put("retCode", RetCodeConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
 			map.put("msg", "This currency is not a tradable currency");
 			return map;
 		}
-		
+
 		Currency unit = commonManager.getCurreny("USD");
-		
-		//每次兑换金额限制
-		BigDecimal exchangeLimitPerPay =  BigDecimal.valueOf(configManager.
-				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITPERPAY, 100000d));
-		logger.info("exchangeLimitPerPay : {}",exchangeLimitPerPay.toString());
-		if((oandaRatesManager.getDefaultCurrencyAmount(currencyOut, amountOut)).compareTo(exchangeLimitPerPay) == 1){
+
+		// 每次兑换金额限制
+		BigDecimal exchangeLimitPerPay = BigDecimal
+				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITPERPAY, 100000d));
+		logger.info("exchangeLimitPerPay : {}", exchangeLimitPerPay.toString());
+		if ((oandaRatesManager.getDefaultCurrencyAmount(currencyOut, amountOut)).compareTo(exchangeLimitPerPay) == 1) {
 			logger.warn("Exceeds the maximum amount of each exchange");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_EACH_TIME);
 			map.put("msg", exchangeLimitPerPay.setScale(2).toString());
-			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
+			map.put("thawTime", DateFormatUtils.getIntervalDay(new Date(), 1).getTime() + "");
 			map.put("unit", unit.getCurrencyUnit());
 			return map;
 		}
-		//每天累计兑换金额限制
-		BigDecimal exchangeLimitDailyPay =  BigDecimal.valueOf(configManager.
-				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITDAILYPAY, 100000d));
-		logger.info("exchangeLimitDailyPay : {}",exchangeLimitDailyPay.toString());
-		BigDecimal accumulatedAmount =  transferDAO.getAccumulatedAmount("exchange_"+userId);
-		if((accumulatedAmount.add(oandaRatesManager.getDefaultCurrencyAmount(currencyOut, amountOut))).compareTo(exchangeLimitDailyPay) == 1){
+		// 每天累计兑换金额限制
+		BigDecimal exchangeLimitDailyPay = BigDecimal
+				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITDAILYPAY, 100000d));
+		logger.info("exchangeLimitDailyPay : {}", exchangeLimitDailyPay.toString());
+		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount("exchange_" + userId);
+		if ((accumulatedAmount.add(oandaRatesManager.getDefaultCurrencyAmount(currencyOut, amountOut)))
+				.compareTo(exchangeLimitDailyPay) == 1) {
 			logger.warn("More than the maximum daily exchange limit");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_DAILY_PAY);
 			map.put("msg", exchangeLimitDailyPay.setScale(2).toString());
-			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
+			map.put("thawTime", DateFormatUtils.getIntervalDay(new Date(), 1).getTime() + "");
 			map.put("unit", unit.getCurrencyUnit());
 			return map;
 		}
-		//每天累计兑换次数限制
-		Double exchangeLimitNumOfPayPerDay =  configManager.
-				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITNUMBEROFPAYPERDAY, 100000d);
-		logger.info("exchangeLimitNumOfPayPerDay : {}",exchangeLimitNumOfPayPerDay.toString());
-		Integer totalNumOfDailyExchange = transferDAO.getCumulativeNumofTimes("exchange_"+userId);
-		if(exchangeLimitNumOfPayPerDay <= new Double(totalNumOfDailyExchange)){
+		// 每天累计兑换次数限制
+		Double exchangeLimitNumOfPayPerDay = configManager
+				.getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITNUMBEROFPAYPERDAY, 100000d);
+		logger.info("exchangeLimitNumOfPayPerDay : {}", exchangeLimitNumOfPayPerDay.toString());
+		Integer totalNumOfDailyExchange = transferDAO.getCumulativeNumofTimes("exchange_" + userId);
+		if (exchangeLimitNumOfPayPerDay <= new Double(totalNumOfDailyExchange)) {
 			logger.warn("Exceeds the maximum number of exchange per day");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY);
-			map.put("msg", exchangeLimitNumOfPayPerDay.intValue()+"");
-			map.put("thawTime",DateFormatUtils.getIntervalDay(new Date(),1).getTime()+"");
+			map.put("msg", exchangeLimitNumOfPayPerDay.intValue() + "");
+			map.put("thawTime", DateFormatUtils.getIntervalDay(new Date(), 1).getTime() + "");
 			return map;
 		}
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currencyOut);
@@ -145,7 +146,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		}
 		// 然后判断换算后金额是否超过最小限额
 		BigDecimal result = oandaRatesManager.getExchangedAmount(currencyOut, amountOut, currencyIn);
-		
+
 		if (currencyIn.equals(ServerConsts.CURRENCY_OF_GOLDPAY) && result.compareTo(new BigDecimal(1)) == 1) {
 
 		} else if (!currencyIn.equals(ServerConsts.CURRENCY_OF_GOLDPAY)
@@ -169,30 +170,33 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	}
 
 	@Override
-	public HashMap<String, String> exchangeConfirm(int userId, String currencyOut, String currencyIn, BigDecimal amountOut) {
+	public HashMap<String, String> exchangeConfirm(int userId, String currencyOut, String currencyIn,
+			BigDecimal amountOut) {
 		HashMap<String, String> result = exchangeCalculation(userId, currencyOut, currencyIn, amountOut);
 		if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			// 用户账户
 			// 扣款
 			String exchangeId = exchangeDAO.createExchangeId(ServerConsts.TRANSFER_TYPE_EXCHANGE);
-			
-			int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut, new BigDecimal(result.get("out")), "-", ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
-			if(updateCount == 0){//余额不足
+
+			int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut,
+					new BigDecimal(result.get("out")), "-", ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+			if (updateCount == 0) {// 余额不足
 				result.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
 				result.put("msg", "Insufficient balance");
 				return result;
 			}
 			// 加款
-			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, new BigDecimal(result.get("in")), "+", ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, new BigDecimal(result.get("in")), "+",
+					ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
 
 			// 系统账户
 			int systemUserId = userDAO.getSystemUser().getUserId();
 			// 加款
-			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyOut, new BigDecimal(result.get("out")), "+", ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyOut, new BigDecimal(result.get("out")), "+",
+					ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
 			// 扣款
-			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new BigDecimal(result.get("in")), "-", ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
-			
-
+			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new BigDecimal(result.get("in")), "-",
+					ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
 
 			// 添加Exchange记录
 			Exchange exchange = new Exchange();
@@ -211,78 +215,86 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			exchangeDAO.addExchange(exchange);
 
 			// 添加seq记录
-//			walletSeqDAO.addWalletSeq4Exchange(userId, ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId, currencyOut,
-//					new BigDecimal(result.get("out")), currencyIn, new BigDecimal(result.get("in")));
-//			walletSeqDAO.addWalletSeq4Exchange(systemUserId, ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId,
-//					currencyIn, new BigDecimal(result.get("in")), currencyOut, new BigDecimal(result.get("out")));
-			
-			//添加累计金额
-			BigDecimal exchangeResult = oandaRatesManager.getDefaultCurrencyAmount(exchange.getCurrencyOut(),exchange.getAmountOut());
-			transferDAO.updateAccumulatedAmount("exchange_"+userId, exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
-			//更改累计次数
-			transferDAO.updateCumulativeNumofTimes("exchange_"+userId, new BigDecimal("1"));
-			
-			//预警
+			// walletSeqDAO.addWalletSeq4Exchange(userId,
+			// ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId, currencyOut,
+			// new BigDecimal(result.get("out")), currencyIn, new
+			// BigDecimal(result.get("in")));
+			// walletSeqDAO.addWalletSeq4Exchange(systemUserId,
+			// ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId,
+			// currencyIn, new BigDecimal(result.get("in")), currencyOut, new
+			// BigDecimal(result.get("out")));
+
+			// 添加累计金额
+			BigDecimal exchangeResult = oandaRatesManager.getDefaultCurrencyAmount(exchange.getCurrencyOut(),
+					exchange.getAmountOut());
+			transferDAO.updateAccumulatedAmount("exchange_" + userId,
+					exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
+			// 更改累计次数
+			transferDAO.updateCumulativeNumofTimes("exchange_" + userId, new BigDecimal("1"));
+
+			// 预警
 			largeExchangeWarn(exchange);
-			
+
 		}
 
 		return result;
 	}
-	
+
 	@Override
 	public HashMap<String, Object> getExchangeRecordsByPage(int userId, String period, int currentPage, int pageSize) {
-		
+
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 		StringBuilder sb = new StringBuilder("from Exchange where userId = ? and exchangeStatus = ? ");
-		
+
 		List<Object> values = new ArrayList<Object>();
 		values.add(userId);
 		values.add(0);
-		
-		if(!period.equals("all")){
+
+		if (!period.equals("all")) {
 			switch (period) {
-				case "today":
-					sb.append("and createTime > ?");
-					values.add(DateFormatUtils.getStartTime(sdf.format(new Date())));
-					break;
-					
-				case "lastMonth":
-					sb.append("and createTime > ?");
-					Date date = DateFormatUtils.getpreDays(-30);
-					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
-					break;
-				case "last3Month":
-					sb.append("and createTime > ?");
-					date = DateFormatUtils.getpreDays(-90);
-					values.add(DateFormatUtils.getStartTime(sdf.format(date)));		
-					break;
-				case "lastYear":
-					sb.append("and createTime > ?");
-					date = DateFormatUtils.getpreDays(-365);
-					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
-					break;
-				case "aYearAgo":
-					sb.append("and createTime  < ?");
-					date = DateFormatUtils.getpreDays(-365);
-					values.add(DateFormatUtils.getStartTime(sdf.format(date)));
-					break;
-		
-				default:
-					break;
+			case "today":
+				sb.append("and createTime > ?");
+				values.add(DateFormatUtils.getStartTime(sdf.format(new Date())));
+				break;
+
+			case "lastMonth":
+				sb.append("and createTime > ?");
+				Date date = DateFormatUtils.getpreDays(-30);
+				values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+				break;
+			case "last3Month":
+				sb.append("and createTime > ?");
+				date = DateFormatUtils.getpreDays(-90);
+				values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+				break;
+			case "lastYear":
+				sb.append("and createTime > ?");
+				date = DateFormatUtils.getpreDays(-365);
+				values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+				break;
+			case "aYearAgo":
+				sb.append("and createTime  < ?");
+				date = DateFormatUtils.getpreDays(-365);
+				values.add(DateFormatUtils.getStartTime(sdf.format(date)));
+				break;
+
+			default:
+				break;
 			}
 		}
-		
+
 		sb.append(" order by createTime desc, exchangeId desc");
-		
-		HashMap<String, Object> map = exchangeDAO.getExchangeRecordsByPage(sb.toString(), values, currentPage, pageSize);
-		
+
+		HashMap<String, Object> map = exchangeDAO.getExchangeRecordsByPage(sb.toString(), values, currentPage,
+				pageSize);
+
 		return map;
 	}
 
 	@Override
-	public HashMap<String, BigDecimal> exchangeCalculation(String currencyOut, String currencyIn, BigDecimal outAmount) {
+	public HashMap<String, BigDecimal> exchangeCalculation(String currencyOut, String currencyIn,
+			BigDecimal outAmount) {
 		// 取余位数
 		int bitsOut = 4;
 		int bitsIn = 4;
@@ -294,27 +306,30 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		if (currencyOut.equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
 			bitsOut = 0;
 		}
-		
+
 		String exchangeFeePerThousand = configManager.getConfigStringValue(ConfigKeyEnum.EXCHANGEFEE, "1.5");
-		
+
 		BigDecimal rate = oandaRatesManager.getSingleExchangeRate(currencyOut, currencyIn);
-		
+
 		BigDecimal in = (outAmount.multiply(rate)).setScale(bitsIn, BigDecimal.ROUND_DOWN);
-		
-//		BigDecimal in = (oandaRatesManager.getExchangedAmount(currencyOut, outAmount, currencyIn))
-//				.setScale(bitsIn, BigDecimal.ROUND_DOWN);
-		
-		BigDecimal fee = in.multiply(new BigDecimal(((Double.parseDouble(exchangeFeePerThousand))/1000)+""))
+
+		// BigDecimal in = (oandaRatesManager.getExchangedAmount(currencyOut, outAmount,
+		// currencyIn))
+		// .setScale(bitsIn, BigDecimal.ROUND_DOWN);
+
+		BigDecimal fee = in.multiply(new BigDecimal(((Double.parseDouble(exchangeFeePerThousand)) / 1000) + ""))
 				.setScale(bitsIn, BigDecimal.ROUND_DOWN);
-		
-//		BigDecimal out = (oandaRatesManager.getInputValue(currencyOut, in, currencyIn))
-//				.setScale(bitsOut, BigDecimal.ROUND_UP);
-		
+
+		// BigDecimal out = (oandaRatesManager.getInputValue(currencyOut, in,
+		// currencyIn))
+		// .setScale(bitsOut, BigDecimal.ROUND_UP);
+
 		BigDecimal out = in.divide(rate, bitsOut, BigDecimal.ROUND_UP);
-		
+
 		HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>();
-		
-		logger.info("{} to {} ,  out : {}, in : {} ,rate : {}, fee : {} ,per thousand : {}  ",currencyOut, currencyIn, out,in.subtract(fee),rate,fee,exchangeFeePerThousand);
+
+		logger.info("{} to {} ,  out : {}, in : {} ,rate : {}, fee : {} ,per thousand : {}  ", currencyOut, currencyIn,
+				out, in.subtract(fee), rate, fee, exchangeFeePerThousand);
 
 		map.put("out", out);
 		map.put("in", in.subtract(fee));
@@ -324,41 +339,42 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		return map;
 
 	}
-	
-	
+
 	@SuppressWarnings("serial")
-	private void largeExchangeWarn(final Exchange exchange){
-		BigDecimal exchangeLimitPerPay =  BigDecimal.valueOf(configManager.
-				getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITPERPAY, 100000d));
-		BigDecimal percentage = (oandaRatesManager.getDefaultCurrencyAmount(exchange.getCurrencyOut(), exchange.getAmountOut()))
-				.divide(exchangeLimitPerPay,5,RoundingMode.DOWN).multiply(new BigDecimal("100"));
-		
-		logger.info("exchangeLimitPerPay : {},percentage : {}",exchangeLimitPerPay.toString(),percentage.toString());
-		
+	private void largeExchangeWarn(final Exchange exchange) {
+		BigDecimal exchangeLimitPerPay = BigDecimal
+				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITPERPAY, 100000d));
+		BigDecimal percentage = (oandaRatesManager.getDefaultCurrencyAmount(exchange.getCurrencyOut(),
+				exchange.getAmountOut())).divide(exchangeLimitPerPay, 5, RoundingMode.DOWN)
+						.multiply(new BigDecimal("100"));
+
+		logger.info("exchangeLimitPerPay : {},percentage : {}", exchangeLimitPerPay.toString(), percentage.toString());
+
 		final User user = userDAO.getUser(exchange.getUserId());
-		
+
 		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(2, 1);
-		
-		if(list != null && !list.isEmpty()){
+
+		if (list != null && !list.isEmpty()) {
 			for (int i = 0; i < list.size(); i++) {
 				CrmAlarm crmAlarm = list.get(i);
-				
-				if((crmAlarm.getLowerLimit().compareTo(percentage)==0 || 
-						crmAlarm.getLowerLimit().compareTo(percentage)==-1) && 
-						crmAlarm.getUpperLimit().compareTo(percentage) == 1){
 
-					crmAlarmManager.alarmNotice(crmAlarm.getSupervisorIdArr(), "largeExchangeWarning", crmAlarm.getAlarmMode(),new HashMap<String,Object>(){
-						{
-							put("payerMobile", user.getAreaCode()+user.getUserPhone());
-							put("amountOut", exchange.getAmountOut());
-							put("currencyOut", exchange.getCurrencyOut());
-							put("amountIn", exchange.getAmountIn());
-							put("currencyIn", exchange.getCurrencyIn());
-						}
-					});
+				if ((crmAlarm.getLowerLimit().compareTo(percentage) == 0
+						|| crmAlarm.getLowerLimit().compareTo(percentage) == -1)
+						&& crmAlarm.getUpperLimit().compareTo(percentage) == 1) {
+
+					crmAlarmManager.alarmNotice(crmAlarm.getSupervisorIdArr(), "largeExchangeWarning",
+							crmAlarm.getAlarmMode(), new HashMap<String, Object>() {
+								{
+									put("payerMobile", user.getAreaCode() + user.getUserPhone());
+									put("amountOut", exchange.getAmountOut());
+									put("currencyOut", exchange.getCurrencyOut());
+									put("amountIn", exchange.getAmountIn());
+									put("currencyIn", exchange.getCurrencyIn());
+								}
+							});
 
 				}
-				
+
 			}
 		}
 	}

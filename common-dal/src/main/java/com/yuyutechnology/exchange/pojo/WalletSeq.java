@@ -43,7 +43,8 @@ public class WalletSeq implements java.io.Serializable {
 		this.createTime = createTime;
 	}
 
-	public WalletSeq(int userId, int transferType, String currency, BigDecimal amount, String transactionId, Date createTime) {
+	public WalletSeq(int userId, int transferType, String currency, BigDecimal amount, String transactionId,
+			Date createTime) {
 		this.userId = userId;
 		this.transferType = transferType;
 		this.currency = currency;

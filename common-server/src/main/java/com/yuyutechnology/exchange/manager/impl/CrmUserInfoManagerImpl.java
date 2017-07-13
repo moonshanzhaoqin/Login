@@ -51,7 +51,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 				new Object[] { new Date(), user.getUserId(), totalBalance });
 		crmUserInfo.setUserTotalAssets(totalBalance);
 		crmUserInfo.setUpdateAt(new Date());
-//		crmUserInfo.setLoginTime(user.getLoginTime());
+		// crmUserInfo.setLoginTime(user.getLoginTime());
 		crmUserInfoDAO.updateUserInfo(crmUserInfo);
 	}
 
@@ -78,10 +78,11 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 		for (Entry<String, BigDecimal> entry : map.entrySet()) {
 			if (entry.getKey().equals(ServerConsts.STANDARD_CURRENCY)) {
 				totalAssets = totalAssets.add(entry.getValue());
-				logger.info("SystemAccountTotalAssets : {}",totalAssets);
+				logger.info("SystemAccountTotalAssets : {}", totalAssets);
 			} else {
-				totalAssets = totalAssets.add(oandaRatesManager.getDefaultCurrencyAmount(entry.getKey(), entry.getValue()));
-				logger.info("SystemAccountTotalAssets : {}",totalAssets);
+				totalAssets = totalAssets
+						.add(oandaRatesManager.getDefaultCurrencyAmount(entry.getKey(), entry.getValue()));
+				logger.info("SystemAccountTotalAssets : {}", totalAssets);
 			}
 		}
 		map.put("totalAssets", totalAssets.setScale(4, RoundingMode.DOWN));
@@ -112,11 +113,11 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 			for (Entry<String, BigDecimal> entry : map.entrySet()) {
 				if (entry.getKey().equals(ServerConsts.STANDARD_CURRENCY)) {
 					totalAssets = totalAssets.add(entry.getValue());
-					logger.info("UserAccountTotalAssets : {}",totalAssets);
+					logger.info("UserAccountTotalAssets : {}", totalAssets);
 				} else {
 					totalAssets = totalAssets
 							.add(oandaRatesManager.getDefaultCurrencyAmount(entry.getKey(), entry.getValue()));
-					logger.info("UserAccountTotalAssets : {}",totalAssets);
+					logger.info("UserAccountTotalAssets : {}", totalAssets);
 				}
 			}
 		}
@@ -198,6 +199,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 
 		return 0;
 	}
+
 	@Override
 	public PageBean getUserInfoByPage(int currentPage, String userPhone, String userName) {
 		logger.info("currentPage={},userPhone={},userName={},transferStatus={}", currentPage, userPhone, userName);

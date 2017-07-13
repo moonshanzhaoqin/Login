@@ -6,12 +6,12 @@ public class GetUserConfigRequest {
 
 	private String key;
 	private String value;
-	
+
 	@ApiModelProperty(allowableValues = "SHOW_EXCHANGE_TIPS")
 	public String getKey() {
 		return key;
 	}
-	
+
 	public void setKey(String key) {
 		this.key = key;
 	}

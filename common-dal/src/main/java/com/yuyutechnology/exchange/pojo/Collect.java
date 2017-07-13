@@ -37,7 +37,7 @@ public class Collect implements java.io.Serializable {
 	public Collect() {
 	}
 
-	public Collect(String areaCode, String userPhone, int inviterId, int campaignId, BigDecimal inviterBonus,
+	public Collect(String areaCode, String userPhone, Integer inviterId, Integer campaignId, BigDecimal inviterBonus,
 			BigDecimal inviteeBonus, Date collectTime, int registerStatus, int sharePath) {
 		this.areaCode = areaCode;
 		this.userPhone = userPhone;
@@ -81,20 +81,20 @@ public class Collect implements java.io.Serializable {
 	}
 
 	@Column(name = "inviter_id", nullable = false)
-	public int getInviterId() {
+	public Integer getInviterId() {
 		return this.inviterId;
 	}
 
-	public void setInviterId(int inviterId) {
+	public void setInviterId(Integer inviterId) {
 		this.inviterId = inviterId;
 	}
 
 	@Column(name = "campaign_id", nullable = false)
-	public int getCampaignId() {
+	public Integer getCampaignId() {
 		return this.campaignId;
 	}
 
-	public void setCampaignId(int campaignId) {
+	public void setCampaignId(Integer campaignId) {
 		this.campaignId = campaignId;
 	}
 

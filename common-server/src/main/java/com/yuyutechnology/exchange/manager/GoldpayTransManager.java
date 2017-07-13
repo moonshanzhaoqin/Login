@@ -76,8 +76,7 @@ public interface GoldpayTransManager {
 	 * @return
 	 * @throws ParseException
 	 */
-	PageBean getRechargeList(int currentPage,String userPhone,String lowerAmount,String
-			upperAmount, String startTime, String endTime, String transferType) throws ParseException;
+	PageBean getRechargeList(int currentPage, String userPhone, String lowerAmount, String upperAmount,
+			String startTime, String endTime, String transferType) throws ParseException;
 
-	
 }

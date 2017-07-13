@@ -9,11 +9,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CampaignDAO;
-import com.yuyutechnology.exchange.dao.CurrencyDAO;
 import com.yuyutechnology.exchange.pojo.Campaign;
-import com.yuyutechnology.exchange.pojo.Currency;
 
 @Repository
 public class CampaignDAOImpl implements CampaignDAO {

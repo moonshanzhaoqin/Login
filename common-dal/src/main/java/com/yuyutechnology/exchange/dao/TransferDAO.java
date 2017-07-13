@@ -41,21 +41,17 @@ public interface TransferDAO {
 
 	Integer getDayTradubgVolume(final int transferType);
 
-	PageBean getWithdrawRecordByPage(Integer userId, int currentPage, int pageSize);
-
 	List<Transfer> getNeedGoldpayRemitWithdraws();
 
 	List<Transfer> getNeedReviewWithdraws();
 
-	PageBean searchWithdrawsByPage(String userPhone, String reviewStatus, String[] transferStatus, int currentPage,
-			int pageSize);
-
 	Object getTransferByIdJoinUser(String transferId);
-
 
 	BigDecimal getTotalPaypalExchange(Date finishTime, int transferType, int transferStatus);
 
 	/**
+	 * 分页搜索Transfer
+	 * 
 	 * @param hql
 	 * @param values
 	 * @param currentPage
@@ -63,7 +59,5 @@ public interface TransferDAO {
 	 * @return
 	 */
 	PageBean searchTransfersByPage(String hql, List<Object> values, int currentPage, int pageSize);
-
-	// void testByPage();
 
 }

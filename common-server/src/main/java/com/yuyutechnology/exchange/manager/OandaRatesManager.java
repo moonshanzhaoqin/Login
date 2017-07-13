@@ -13,20 +13,18 @@ public interface OandaRatesManager {
 
 	public void updateExchangeRates();
 
-	public BigDecimal getExchangedAmount(String currencyLeft, 
-			BigDecimal amount, String currencyRight);
+	public BigDecimal getExchangedAmount(String currencyLeft, BigDecimal amount, String currencyRight);
 
-	public BigDecimal getDefaultCurrencyAmount(String transCurrency, 
-			BigDecimal transAmount);
+	public BigDecimal getDefaultCurrencyAmount(String transCurrency, BigDecimal transAmount);
 
 	public Date getExchangeRateUpdateDate();
 
 	public BigDecimal getTotalBalance(int userId);
 
 	public LinkedHashMap<String, Double> getExchangeRate(String base);
-	
+
 	public HashMap<String, Double> getExchangeRateDiffLeft4OneRight(String currencyRight);
-	
+
 	public BigDecimal getSingleExchangeRate(String currencyLeft, String currencyRight);
 
 	public List<PriceInfo> getAllPrices();

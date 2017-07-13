@@ -54,10 +54,11 @@ public class CurrencyManagerImpl implements CurrencyManager {
 			currency = new Currency(currencyId, currencyId, currencyId, currencyId, currencyId,
 					ServerConsts.CURRENCY_UNAVAILABLE, 0);
 			currencyDAO.updateCurrency(currency);
-			 /*为系统用户添加新钱包*/
-			walletDAO.addwallet(new Wallet(currency, userDAO.getSystemUser().getUserId(), BigDecimal.ZERO, new Date(),0));
+			/* 为系统用户添加新钱包 */
+			walletDAO.addwallet(
+					new Wallet(currency, userDAO.getSystemUser().getUserId(), BigDecimal.ZERO, new Date(), 0));
 			// 强制刷新汇率缓存
-//			oandaRatesManager.updateExchangeRates();
+			// oandaRatesManager.updateExchangeRates();
 			return RetCodeConsts.RET_CODE_SUCCESS;
 		} else {
 			logger.info("Currency {} is exist", currencyId);

@@ -133,8 +133,15 @@ public enum ConfigKeyEnum {
 	/**
 	 * 提取沛金条开关
 	 */
-	GOLDPAY_WITHDRAW("goldpay_withdraw");
-
+	GOLDPAY_WITHDRAW("goldpay_withdraw"),
+	/**
+	 *邀请数量限制 
+	 */
+	INVITE_QUANTITY_RESTRICTION("invite_quantity_restriction"),
+	/**
+	 * 领取有效时间（H）
+	 */
+	COLLECT_ACTIVE_TIME("collect_active_time");
 	private String key;
 
 	private ConfigKeyEnum(String key) {
