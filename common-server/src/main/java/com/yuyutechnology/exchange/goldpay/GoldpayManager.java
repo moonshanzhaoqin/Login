@@ -42,15 +42,9 @@ public class GoldpayManager {
 		param.append("client_id=").append(ResourceUtils.getBundleValue4String("goldpayUas.client.id", "exchange-client")).append("&");
 		param.append("client_secret=").append(ResourceUtils.getBundleValue4String("goldpayUas.client.key", "exchange")).append("&");
 		param.append("grant_type=").append("password").append("&");
-		
-		//url参数中有+、空格、=、%、&、#等特殊符号,将这些字符转化成服务器可以识别的字符
-		
-		if(userName.startsWith("+") && userName.contains("-")){
-			param.append("username=").append(userName.replace("+", "%2B")).append("&");
-		}else{
-			param.append("username=").append(userName).append("&");
-		}
+		param.append("username=").append(userName.trim()).append("&");
 		param.append("password=").append(password);
+		logger.info("param to string : {}",param.toString());
 		String result = sendPost(ResourceUtils.getBundleValue4String("goldpayUas.url") + "oauth/token", param.toString());
 		logger.info("result==={}", result);
 		if (StringUtils.isNotEmpty(result)) {

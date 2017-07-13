@@ -1,7 +1,5 @@
 package com.yuyutechnology.exchange.server.controller;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +68,7 @@ public class CampaignController {
 	// TODO 活动信息
 	@ResponseBody
 	@ApiOperation(value = "活动信息", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/invite/getCampaignInfo", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	@RequestMapping(value = "/invite/getCampaignInfo", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public GetCampaignInfoResponse getCampaignInfo() {
 		logger.info("========getCampaignInfo : {}============");
 		GetCampaignInfoResponse rep = new GetCampaignInfoResponse();
@@ -89,7 +87,13 @@ public class CampaignController {
 
 		return rep;
 	}
-	// TODO 领取
+
+	/**
+	 * 领取
+	 * 
+	 * @param collectRequest
+	 * @return
+	 */
 	@ResponseBody
 	@ApiOperation(value = "领取", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/invite/collect", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
@@ -105,7 +109,7 @@ public class CampaignController {
 			logger.info(MessageConsts.PHONE_IS_REGISTERED);
 			rep.setRetCode(RetCodeConsts.PHONE_IS_REGISTERED);
 			rep.setMessage(MessageConsts.PHONE_IS_REGISTERED);
-		} else if (campaignManager.isCollected(collectRequest.getAreaCode(), collectRequest.getUserPhone())) {
+		} else if (campaignManager.activeCollect(collectRequest.getAreaCode(), collectRequest.getUserPhone()) != null) {
 			logger.info(MessageConsts.PHONE_IS_COLLECTED);
 			rep.setRetCode(RetCodeConsts.PHONE_IS_COLLECTED);
 			rep.setMessage(MessageConsts.PHONE_IS_COLLECTED);

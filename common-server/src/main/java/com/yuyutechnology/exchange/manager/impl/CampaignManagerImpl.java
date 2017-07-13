@@ -16,16 +16,21 @@ import com.yuyutechnology.exchange.dao.CampaignDAO;
 import com.yuyutechnology.exchange.dao.CollectDAO;
 import com.yuyutechnology.exchange.dao.InviterDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
+import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
+import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dto.CampaignInfo;
 import com.yuyutechnology.exchange.dto.InviterInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
+import com.yuyutechnology.exchange.manager.TransDetailsManager;
 import com.yuyutechnology.exchange.pojo.Campaign;
 import com.yuyutechnology.exchange.pojo.Collect;
 import com.yuyutechnology.exchange.pojo.Inviter;
+import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
+import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.util.ShareCodeUtil;
 
 /**
@@ -44,11 +49,20 @@ public class CampaignManagerImpl implements CampaignManager {
 	@Autowired
 	UserDAO userDAO;
 	@Autowired
+	WalletDAO walletDAO;
+	@Autowired
 	InviterDAO inviterDAO;
 	@Autowired
 	CollectDAO collectDAO;
 	@Autowired
+	TransferDAO transferDAO;
+	@Autowired
 	ConfigManager configManager;
+	@Autowired
+	PushManager pushManager;
+	@Autowired
+	TransDetailsManager transDetailsManager;
+
 
 	@Override
 	public InviterInfo getInviterInfo(Integer userId) {
@@ -86,14 +100,14 @@ public class CampaignManagerImpl implements CampaignManager {
 	}
 
 	@Override
-	public boolean isCollected(String areaCode, String userPhone) {
+	public Collect activeCollect(String areaCode, String userPhone) {
 		Calendar earliestTime = Calendar.getInstance();
 		earliestTime.add(Calendar.HOUR_OF_DAY,
 				configManager.getConfigLongValue(ConfigKeyEnum.COLLECT_ACTIVE_TIME, 1L).intValue()); // 现在时间的1小时前
 		/* 在有效时间内的领取的 */
 		String hql = "from Collect  where areaCode=? and userPhone=? and collectTime > ?";
 		Collect collect = collectDAO.findHQL(hql, new Object[] { areaCode, userPhone, earliestTime.getTime() });
-		return collect != null ? true : false;
+		return collect;
 	}
 
 	@Override
@@ -163,19 +177,117 @@ public class CampaignManagerImpl implements CampaignManager {
 			return null;
 		}
 		CampaignInfo campaignInfo = new CampaignInfo();
-		
-		
-		
-		//TODO  需要哪些活动信息 需求还没定
-		
-		
-		
-		
-		
-		
-		
-		
+		campaignInfo.setInviteeBonus(campaign.getInviteeBonus());
+		campaignInfo.setInviterBonus(campaign.getInviterBonus());
+		campaignInfo.setActiveTime(configManager.getConfigLongValue(ConfigKeyEnum.COLLECT_ACTIVE_TIME, 24L));
+		campaignInfo.setQuantityRestriction(
+				configManager.getConfigLongValue(ConfigKeyEnum.INVITE_QUANTITY_RESTRICTION, 1000L));
 		return campaignInfo;
+	}
+
+	@Override
+	public void grantBouns(Integer userId, String areaCode, String userPhone) {
+		/* 领取是否过了有效期 */
+		Collect collect = activeCollect(areaCode, userPhone);
+		if (collect == null) {
+			return;
+		}
+
+		/* 判断是否有钱可以支付 */
+		Campaign campaign = campaignDAO.getCampaign(collect.getCampaignId());
+		if (campaign.getBudgetSurplus().compareTo(collect.getInviteeBonus().add(collect.getInviterBonus())) == -1) {
+			return;
+		}
+
+		/* 判断邀请人的人数限制 */
+		Inviter inviter = inviterDAO.getInviter(collect.getInviterId());
+		if (inviter.getInviteQuantity() >= configManager.getConfigLongValue(ConfigKeyEnum.INVITE_QUANTITY_RESTRICTION,
+				1000L)) {
+			return;
+		}
+
+		// TODO 给邀请人发钱 collect.getInviterId() collect.getInviterBonus()
+		// TODO 给注册用户发钱 userId collect.getInviteeBonus()
+		rewardSettlement(collect.getInviterId(),collect.getInviterBonus(),userId,collect.getInviteeBonus());
+		
+
+		/* 更新预算 */
+		campaign.setBudgetSurplus(
+				campaign.getBudgetSurplus().subtract(collect.getInviteeBonus().add(collect.getInviterBonus())));
+		campaignDAO.updateCampaign(campaign);
+
+		/* 更新邀请人信息 */
+		inviter.setInviteBonus(inviter.getInviteBonus().add(collect.getInviterBonus()));
+		inviter.setInviteQuantity(inviter.getInviteQuantity() + 1);
+		inviterDAO.updateInviter(inviter);
+
+		/*推送邀请人*/
+		User inviterUser = userDAO.getUser(collect.getInviterId());
+		pushManager.push4Invite(inviterUser.getPushId(), inviterUser.getPushTag(), collect.getInviterBonus());
+		/* 推送注册用户*/
+		User inviteeUser = userDAO.getUser(userId);
+		pushManager.push4Invite(inviteeUser.getPushId(), inviteeUser.getPushTag(), collect.getInviteeBonus());
+	}
+	
+	private void rewardSettlement(Integer inviterId,BigDecimal inviterBonus,Integer inviteeId,BigDecimal inviteeBonus){
+		
+		User system = userDAO.getSystemUser();
+		
+		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+
+		//生成订单
+		Transfer transfer = new Transfer();
+		transfer.setTransferId(transferId);
+		transfer.setUserFrom(system.getUserId());
+		transfer.setUserTo(inviterId);
+		transfer.setCreateTime(new Date());
+		transfer.setFinishTime(new Date());
+		transfer.setCurrency(ServerConsts.CURRENCY_OF_GOLDPAY);
+		transfer.setTransferAmount(inviterBonus);
+		transfer.setTransferComment("inviterBonus");
+		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
+		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		
+		transferDAO.addTransfer(transfer);
+		//生成详情
+		transDetailsManager.addTransDetails(transferId, inviterId, system.getUserId(), system.getUserName(),
+				system.getAreaCode(), system.getUserPhone(), ServerConsts.CURRENCY_OF_GOLDPAY, inviterBonus, 
+				null, ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
+		//账户加款
+		walletDAO.updateWalletByUserIdAndCurrency(inviterId, ServerConsts.CURRENCY_OF_GOLDPAY,
+				inviterBonus, "+", ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId);
+		//系统扣款
+		walletDAO.updateWalletByUserIdAndCurrency(system.getUserId(), ServerConsts.CURRENCY_OF_GOLDPAY,
+				inviterBonus, "-", ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId);
+		
+		
+		String transferId2 = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+
+		//生成订单
+		Transfer transfer2 = new Transfer();
+		transfer2.setTransferId(transferId2);
+		transfer2.setUserFrom(system.getUserId());
+		transfer2.setUserTo(inviteeId);
+		transfer2.setCreateTime(new Date());
+		transfer2.setFinishTime(new Date());
+		transfer2.setCurrency(ServerConsts.CURRENCY_OF_GOLDPAY);
+		transfer2.setTransferAmount(inviteeBonus);
+		transfer2.setTransferComment("inviteeBonus");
+		transfer2.setTransferType(ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
+		transfer2.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		
+		transferDAO.addTransfer(transfer2);
+		//生成详情
+		transDetailsManager.addTransDetails(transferId2, inviteeId, system.getUserId(), system.getUserName(),
+				system.getAreaCode(), system.getUserPhone(), ServerConsts.CURRENCY_OF_GOLDPAY, inviteeBonus, 
+				null, ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
+		//账户加款
+		walletDAO.updateWalletByUserIdAndCurrency(inviteeId, ServerConsts.CURRENCY_OF_GOLDPAY,
+				inviteeBonus, "+", ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId2);
+		//系统扣款
+		walletDAO.updateWalletByUserIdAndCurrency(system.getUserId(), ServerConsts.CURRENCY_OF_GOLDPAY,
+				inviteeBonus, "-", ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId2);
+		
 	}
 
 }

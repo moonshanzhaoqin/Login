@@ -35,4 +35,6 @@ public class CollectDAOImpl implements CollectDAO {
 		List<?> list=hibernateTemplate.find(hql,values);
 		return list.isEmpty() ? null : (Collect) list.get(0);
 	}
+	
+	
 }

@@ -79,7 +79,7 @@ public class PushManager {
 	// 退款refund
 	// en_US
 	private StringBuffer refund_title_en = new StringBuffer();
-	// zh_cn
+	// zh_CN
 	private StringBuffer refund_title_cn = new StringBuffer();
 	// zh_hk
 	private StringBuffer refund_title_hk = new StringBuffer();
@@ -132,6 +132,20 @@ public class PushManager {
 	// zh_hk
 	private StringBuffer withdraw_refund_hk = new StringBuffer();
 
+	/* 邀请活动奖励 invite */
+	// en_us
+	private StringBuffer invite_title_en = new StringBuffer();
+	// zh_cn
+	private StringBuffer invite_title_cn = new StringBuffer();
+	// zh_hk
+	private StringBuffer invite_title_hk = new StringBuffer();
+	// en_us
+	private StringBuffer invite_en = new StringBuffer();
+	// zh_cn
+	private StringBuffer invite_cn = new StringBuffer();
+	// zh_hk
+	private StringBuffer invite_hk = new StringBuffer();
+
 	private final String PUSH_REPLACE_FROM = "[FROM]";
 	private final String PUSH_REPLACE_TO = "[TO]";
 	private final String PUSH_REPLACE_CURRENCY = "[CURRENCY]";
@@ -169,6 +183,11 @@ public class PushManager {
 		readTemplate("template/push/en_US/withdraw_refund.template", withdraw_refund_title_en, withdraw_refund_en);
 		readTemplate("template/push/zh_CN/withdraw_refund.template", withdraw_refund_title_cn, withdraw_refund_cn);
 		readTemplate("template/push/zh_HK/withdraw_refund.template", withdraw_refund_title_hk, withdraw_refund_hk);
+
+		readTemplate("template/push/en_US/invite.template", invite_title_en, invite_en);
+		readTemplate("template/push/zh_CN/invite.template", invite_title_cn, invite_cn);
+		readTemplate("template/push/zh_HK/invite.template", invite_title_hk, invite_hk);
+
 		initPush = true;
 	}
 
@@ -311,6 +330,23 @@ public class PushManager {
 	}
 
 	/**
+	 * 邀请奖励金
+	 * 
+	 * @param pushId
+	 * @param pushTag
+	 * @param amount
+	 */
+	@Async
+	public void push4Invite(String pushId, Language pushTag, BigDecimal amount) {
+		String title = titleChoose("invite", pushTag);
+		String offlineBody = templateChoose("invite", pushTag);
+		String body = offlineBody.replace(PUSH_REPLACE_AMOUNT, GDQ.format(amount));
+		Map<String, String> ext = new HashMap<>();
+		ext.put("type", "invite");
+		pushToCustom(pushId, title, body, JsonBinder.getInstance().toJson(ext));
+	}
+
+	/**
 	 * 绑定Tag
 	 * 
 	 * @param user
@@ -431,6 +467,21 @@ public class PushManager {
 				break;
 			}
 			break;
+		case "invite":
+			switch (pushTag) {
+			case en_US:
+				body = invite_en;
+				break;
+			case zh_CN:
+				body = invite_cn;
+				break;
+			case zh_TW:
+				body = invite_hk;
+				break;
+			default:
+				break;
+			}
+			break;
 		default:
 			body = new StringBuffer();
 		}
@@ -532,6 +583,21 @@ public class PushManager {
 				break;
 			case zh_TW:
 				title = withdraw_refund_title_hk;
+				break;
+			default:
+				break;
+			}
+			break;
+		case "invite":
+			switch (pushTag) {
+			case en_US:
+				title = invite_title_en;
+				break;
+			case zh_CN:
+				title = invite_title_cn;
+				break;
+			case zh_TW:
+				title = invite_title_hk;
 				break;
 			default:
 				break;

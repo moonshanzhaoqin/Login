@@ -88,6 +88,11 @@ public class ServerConsts {
 	 * Paypal充值
 	 */
 	public static final int TRANSFER_TYPE_IN_PAYPAL_RECHAEGE = 7;
+	
+	/**
+	 * 邀请活动奖励
+	 */
+	public static final int TRANSFER_TYPE_IN_INVITE_CAMPAIGN = 8;
 
 	// 交易状态
 	/**

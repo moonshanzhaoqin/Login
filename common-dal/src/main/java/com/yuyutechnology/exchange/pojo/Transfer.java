@@ -31,7 +31,6 @@ public class Transfer implements java.io.Serializable {
 	private String currency;
 	private BigDecimal transferAmount;
 	private String transferComment;
-	// private String userComment;
 	private Date createTime;
 	private Date finishTime;
 	private int transferStatus;

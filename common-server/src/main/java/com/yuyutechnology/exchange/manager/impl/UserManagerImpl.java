@@ -36,6 +36,7 @@ import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
 import com.yuyutechnology.exchange.goldpay.GoldpayManager;
 import com.yuyutechnology.exchange.goldpay.GoldpayUser;
 import com.yuyutechnology.exchange.manager.AccountingManager;
+import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.TransDetailsManager;
@@ -98,6 +99,8 @@ public class UserManagerImpl implements UserManager {
 	AccountingManager accountingManager;
 	@Autowired
 	TransDetailsManager transDetailsManager;
+	@Autowired
+	CampaignManager campaignManager;
 
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
@@ -453,6 +456,7 @@ public class UserManagerImpl implements UserManager {
 		/* 根据Unregistered表 更新新用户钱包 将资金从系统帐户划给新用户 */
 		updateWalletsFromUnregistered(userId, areaCode, userPhone);
 		// TODO 发放奖励金
+		campaignManager.grantBouns(userId, areaCode, userPhone);
 
 		return userId;
 	}
