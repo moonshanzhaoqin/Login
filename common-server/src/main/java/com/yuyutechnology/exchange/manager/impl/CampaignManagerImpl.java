@@ -171,8 +171,6 @@ public class CampaignManagerImpl implements CampaignManager {
 		campaignInfo.setActiveTime(configManager.getConfigLongValue(ConfigKeyEnum.COLLECT_ACTIVE_TIME, 24L));
 		campaignInfo.setQuantityRestriction(
 				configManager.getConfigLongValue(ConfigKeyEnum.INVITE_QUANTITY_RESTRICTION, 1000L));
-		// TODO 需要哪些活动信息 需求还没定
-
 		return campaignInfo;
 	}
 
