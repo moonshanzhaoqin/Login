@@ -15,11 +15,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
+import com.yuyutechnology.exchange.dto.CampaignInfo;
 import com.yuyutechnology.exchange.dto.InviterInfo;
 import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.CollectRequest;
 import com.yuyutechnology.exchange.server.controller.response.CollectResponse;
+import com.yuyutechnology.exchange.server.controller.response.GetCampaignInfoResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetInviterInfoResponse;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
@@ -66,7 +68,27 @@ public class CampaignController {
 	}
 
 	// TODO 活动信息
+	@ResponseBody
+	@ApiOperation(value = "活动信息", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/invite/getCampaignInfo", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public GetCampaignInfoResponse getCampaignInfo() {
+		logger.info("========getCampaignInfo : {}============");
+		GetCampaignInfoResponse rep = new GetCampaignInfoResponse();
 
+		CampaignInfo CampaignInfo = campaignManager.getCampaignInfo();
+		if (CampaignInfo == null) {
+			logger.info(MessageConsts.RET_CODE_FAILUE);
+			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+			rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+		} else {
+			rep.setCampaignInfo(CampaignInfo);
+			logger.info("********Operation succeeded********");
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		}
+
+		return rep;
+	}
 	// TODO 领取
 	@ResponseBody
 	@ApiOperation(value = "领取", httpMethod = "POST", notes = "")

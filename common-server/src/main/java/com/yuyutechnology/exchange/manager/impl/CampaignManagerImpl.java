@@ -17,6 +17,7 @@ import com.yuyutechnology.exchange.dao.CollectDAO;
 import com.yuyutechnology.exchange.dao.InviterDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
+import com.yuyutechnology.exchange.dto.CampaignInfo;
 import com.yuyutechnology.exchange.dto.InviterInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CampaignManager;
@@ -148,6 +149,33 @@ public class CampaignManagerImpl implements CampaignManager {
 			return null;
 		}
 		return campaign;
+	}
+
+	@Override
+	public CampaignInfo getCampaignInfo() {
+		Campaign campaign = activeCampaign();
+		if (campaign == null) {
+			/* 现在没有活动 */
+			return null;
+		}
+		if (campaign.getBudgetSurplus().compareTo(campaign.getInviterBonus().add(campaign.getInviteeBonus())) == -1) {
+			/* 钱不够 */
+			return null;
+		}
+		CampaignInfo campaignInfo = new CampaignInfo();
+		
+		
+		
+		//TODO  需要哪些活动信息 需求还没定
+		
+		
+		
+		
+		
+		
+		
+		
+		return campaignInfo;
 	}
 
 }
