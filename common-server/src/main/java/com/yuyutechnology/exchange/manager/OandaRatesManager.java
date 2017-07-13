@@ -3,6 +3,7 @@ package com.yuyutechnology.exchange.manager;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.yuyutechnology.exchange.util.oanda.OandaRespData;
@@ -20,7 +21,7 @@ public interface OandaRatesManager {
 
 	public BigDecimal getTotalBalance(int userId);
 
-	public HashMap<String, Double> getExchangeRate(String base);
+	public LinkedHashMap<String, Double> getExchangeRate(String base);
 
 	public HashMap<String, Double> getExchangeRateDiffLeft4OneRight(String currencyRight);
 

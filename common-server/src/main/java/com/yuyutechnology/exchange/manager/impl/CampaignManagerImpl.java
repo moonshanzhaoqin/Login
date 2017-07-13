@@ -106,16 +106,16 @@ public class CampaignManagerImpl implements CampaignManager {
 			return;
 		}
 
-		if (campaign.getBudgetSurplus().equals(campaign.getInviterBonus().add(campaign.getInviteeBonus()))) {
+		if (campaign.getBudgetSurplus().compareTo(campaign.getInviterBonus().add(campaign.getInviteeBonus())) == -1) {
 
-			
-			
-			
-			
+			/* 钱不够 */
+
+			return;
+
 		}
-
-		new Collect(areaCode, userPhone, inviterId, campaign.getCampaignId(), campaign.getInviterBonus(),
-				campaign.getInviteeBonus(), new Date(), ServerConsts.COLLECT_STATUS_UNREGISTER, sharePath);
+		collectDAO.updateCollect(
+				new Collect(areaCode, userPhone, inviterId, campaign.getCampaignId(), campaign.getInviterBonus(),
+						campaign.getInviteeBonus(), new Date(), ServerConsts.COLLECT_STATUS_UNREGISTER, sharePath));
 
 	}
 

@@ -3,6 +3,7 @@ package com.yuyutechnology.exchange.server.controller;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -122,7 +123,7 @@ public class ExchangeController {
 			rep.setMessage("This currency is not a tradable currency");
 			return rep;
 		}
-		HashMap<String, Double> map = oandaRatesManager.getExchangeRate(reqMsg.getBase());
+		LinkedHashMap<String, Double> map = oandaRatesManager.getExchangeRate(reqMsg.getBase());
 		if (map.isEmpty()) {
 			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 			rep.setMessage("Failed to get exchange rate");
