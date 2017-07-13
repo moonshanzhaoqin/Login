@@ -118,7 +118,7 @@ public class PushManager {
 	// zh_hk
 	private StringBuffer withdraw_complete_hk = new StringBuffer();
 
-	/* 提现退回 invite */
+	/* 提现退回 withdraw_refund */
 	// en_us
 	private StringBuffer withdraw_refund_title_en = new StringBuffer();
 	// zh_cn
@@ -132,7 +132,7 @@ public class PushManager {
 	// zh_hk
 	private StringBuffer withdraw_refund_hk = new StringBuffer();
 
-	/* 邀请活动奖励invite */
+	/* 邀请活动奖励 invite */
 	// en_us
 	private StringBuffer invite_title_en = new StringBuffer();
 	// zh_cn
