@@ -208,10 +208,10 @@ public class CampaignManagerImpl implements CampaignManager {
 		inviter.setInviteQuantity(inviter.getInviteQuantity() + 1);
 		inviterDAO.updateInviter(inviter);
 
-		// TODO 推送邀请人
+		/*推送邀请人*/
 		User inviterUser = userDAO.getUser(collect.getInviterId());
 		pushManager.push4Invite(inviterUser.getPushId(), inviterUser.getPushTag(), collect.getInviterBonus());
-		// TODO 推送注册用户
+		/* 推送注册用户*/
 		User inviteeUser = userDAO.getUser(userId);
 		pushManager.push4Invite(inviteeUser.getPushId(), inviteeUser.getPushTag(), collect.getInviteeBonus());
 	}
