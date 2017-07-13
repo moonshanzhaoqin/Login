@@ -166,7 +166,11 @@ public class CampaignManagerImpl implements CampaignManager {
 			return null;
 		}
 		CampaignInfo campaignInfo = new CampaignInfo();
-
+		campaignInfo.setInviteeBonus(campaign.getInviteeBonus());
+		campaignInfo.setInviterBonus(campaign.getInviterBonus());
+		campaignInfo.setActiveTime(configManager.getConfigLongValue(ConfigKeyEnum.COLLECT_ACTIVE_TIME, 24L));
+		campaignInfo.setQuantityRestriction(
+				configManager.getConfigLongValue(ConfigKeyEnum.INVITE_QUANTITY_RESTRICTION, 1000L));
 		// TODO 需要哪些活动信息 需求还没定
 
 		return campaignInfo;
@@ -189,7 +193,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		/* 判断邀请人的人数限制 */
 		Inviter inviter = inviterDAO.getInviter(collect.getInviterId());
 		if (inviter.getInviteQuantity() >= configManager.getConfigLongValue(ConfigKeyEnum.INVITE_QUANTITY_RESTRICTION,
-				100L)) {
+				1000L)) {
 			return;
 		}
 
@@ -205,12 +209,12 @@ public class CampaignManagerImpl implements CampaignManager {
 		inviter.setInviteBonus(inviter.getInviteBonus().add(collect.getInviterBonus()));
 		inviter.setInviteQuantity(inviter.getInviteQuantity() + 1);
 		inviterDAO.updateInviter(inviter);
-		
-		//TODO 推送邀请人
-		User inviterUser=userDAO.getUser(collect.getInviterId());
+
+		// TODO 推送邀请人
+		User inviterUser = userDAO.getUser(collect.getInviterId());
 		pushManager.push4Invite(inviterUser.getPushId(), inviterUser.getPushTag(), collect.getInviterBonus());
-		//TODO 推送注册用户
-		User inviteeUser=userDAO.getUser(userId);
+		// TODO 推送注册用户
+		User inviteeUser = userDAO.getUser(userId);
 		pushManager.push4Invite(inviteeUser.getPushId(), inviteeUser.getPushTag(), collect.getInviteeBonus());
 	}
 
