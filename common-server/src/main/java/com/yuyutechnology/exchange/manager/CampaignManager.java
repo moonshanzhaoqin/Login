@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import com.yuyutechnology.exchange.dto.CampaignInfo;
 import com.yuyutechnology.exchange.dto.InviterInfo;
 import com.yuyutechnology.exchange.pojo.Campaign;
 
@@ -52,8 +53,14 @@ public interface CampaignManager {
 	 * @param userPhone
 	 * @param inviterCode
 	 * @param sharePath
+	 * @return 
 	 */
-	void collect(String areaCode, String userPhone, String inviterCode, int sharePath);
+	String collect(String areaCode, String userPhone, String inviterCode, int sharePath);
+
+	/**
+	 * @return
+	 */
+	CampaignInfo getCampaignInfo();
 
 
 

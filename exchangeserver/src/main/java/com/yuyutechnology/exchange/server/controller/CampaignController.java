@@ -1,5 +1,7 @@
 package com.yuyutechnology.exchange.server.controller;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +15,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
+import com.yuyutechnology.exchange.dto.CampaignInfo;
 import com.yuyutechnology.exchange.dto.InviterInfo;
 import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.CollectRequest;
 import com.yuyutechnology.exchange.server.controller.response.CollectResponse;
+import com.yuyutechnology.exchange.server.controller.response.GetCampaignInfoResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetInviterInfoResponse;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
@@ -62,11 +66,32 @@ public class CampaignController {
 
 		return rep;
 	}
-	// TODO 活动信息
 
+	// TODO 活动信息
+	@ResponseBody
+	@ApiOperation(value = "活动信息", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/invite/getCampaignInfo", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public GetCampaignInfoResponse getCampaignInfo() {
+		logger.info("========getCampaignInfo : {}============");
+		GetCampaignInfoResponse rep = new GetCampaignInfoResponse();
+
+		CampaignInfo CampaignInfo = campaignManager.getCampaignInfo();
+		if (CampaignInfo == null) {
+			logger.info(MessageConsts.RET_CODE_FAILUE);
+			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+			rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+		} else {
+			rep.setCampaignInfo(CampaignInfo);
+			logger.info("********Operation succeeded********");
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		}
+
+		return rep;
+	}
 	// TODO 领取
 	@ResponseBody
-	@ApiOperation(value = "邀请人信息", httpMethod = "POST", notes = "")
+	@ApiOperation(value = "领取", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/invite/collect", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public CollectResponse collect(@RequestBody CollectRequest collectRequest) {
 		logger.info("========collect : {}============");
@@ -86,12 +111,26 @@ public class CampaignController {
 			rep.setMessage(MessageConsts.PHONE_IS_COLLECTED);
 		} else {
 
-			campaignManager.collect(collectRequest.getAreaCode(), collectRequest.getUserPhone(),
+			String retCode = campaignManager.collect(collectRequest.getAreaCode(), collectRequest.getUserPhone(),
 					collectRequest.getInviterCode(), Integer.parseInt(collectRequest.getSharePath()));
+			switch (retCode) {
+			case RetCodeConsts.NO_CAMPAIGN:
+				logger.info(MessageConsts.NO_CAMPAIGN);
+				rep.setRetCode(RetCodeConsts.NO_CAMPAIGN);
+				rep.setMessage(MessageConsts.NO_CAMPAIGN);
+				break;
+			case RetCodeConsts.EXCESS_BUDGET:
+				logger.info(MessageConsts.EXCESS_BUDGET);
+				rep.setRetCode(RetCodeConsts.EXCESS_BUDGET);
+				rep.setMessage(MessageConsts.EXCESS_BUDGET);
+				break;
+			default:
+				logger.info("********Operation succeeded********");
+				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+				break;
+			}
 
-			logger.info("********Operation succeeded********");
-			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		}
 		return rep;
 	}
