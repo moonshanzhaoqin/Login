@@ -68,7 +68,7 @@ public class CampaignController {
 	// TODO 活动信息
 	@ResponseBody
 	@ApiOperation(value = "活动信息", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/invite/getCampaignInfo", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	@RequestMapping(value = "/invite/getCampaignInfo", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public GetCampaignInfoResponse getCampaignInfo() {
 		logger.info("========getCampaignInfo : {}============");
 		GetCampaignInfoResponse rep = new GetCampaignInfoResponse();
