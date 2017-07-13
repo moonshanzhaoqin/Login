@@ -10,6 +10,7 @@ import java.util.List;
 import com.yuyutechnology.exchange.dto.CampaignInfo;
 import com.yuyutechnology.exchange.dto.InviterInfo;
 import com.yuyutechnology.exchange.pojo.Campaign;
+import com.yuyutechnology.exchange.pojo.Collect;
 
 /**
  * @author suzan.wu
@@ -40,20 +41,13 @@ public interface CampaignManager {
 	 */
 	InviterInfo getInviterInfo(Integer userId);
 
-	/**
-	 * 手机号是否领取过
-	 * @param areaCode
-	 * @param userPhone
-	 * @return
-	 */
-	boolean isCollected(String areaCode, String userPhone);
 
 	/**
 	 * @param areaCode
 	 * @param userPhone
 	 * @param inviterCode
 	 * @param sharePath
-	 * @return 
+	 * @return
 	 */
 	String collect(String areaCode, String userPhone, String inviterCode, int sharePath);
 
@@ -62,7 +56,22 @@ public interface CampaignManager {
 	 */
 	CampaignInfo getCampaignInfo();
 
+	/**
+	 * 发放奖励金
+	 * 
+	 * @param userId
+	 * @param areaCode
+	 * @param userPhone
+	 */
+	void grantBouns(Integer userId, String areaCode, String userPhone);
 
+	/**
+	 * 有效的领取
+	 * @param areaCode
+	 * @param userPhone
+	 * @return
+	 */
+	Collect activeCollect(String areaCode, String userPhone);
 
 	// TODO 开启关闭活动
 	// TODO 修改奖励金

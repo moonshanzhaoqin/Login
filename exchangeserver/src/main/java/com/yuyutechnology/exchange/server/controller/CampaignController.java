@@ -89,7 +89,13 @@ public class CampaignController {
 
 		return rep;
 	}
-	// TODO 领取
+
+	/**
+	 * 领取
+	 * 
+	 * @param collectRequest
+	 * @return
+	 */
 	@ResponseBody
 	@ApiOperation(value = "领取", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/invite/collect", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
@@ -105,7 +111,7 @@ public class CampaignController {
 			logger.info(MessageConsts.PHONE_IS_REGISTERED);
 			rep.setRetCode(RetCodeConsts.PHONE_IS_REGISTERED);
 			rep.setMessage(MessageConsts.PHONE_IS_REGISTERED);
-		} else if (campaignManager.isCollected(collectRequest.getAreaCode(), collectRequest.getUserPhone())) {
+		} else if (campaignManager.activeCollect(collectRequest.getAreaCode(), collectRequest.getUserPhone()) != null) {
 			logger.info(MessageConsts.PHONE_IS_COLLECTED);
 			rep.setRetCode(RetCodeConsts.PHONE_IS_COLLECTED);
 			rep.setMessage(MessageConsts.PHONE_IS_COLLECTED);

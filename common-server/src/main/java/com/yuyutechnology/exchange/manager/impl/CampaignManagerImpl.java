@@ -86,14 +86,14 @@ public class CampaignManagerImpl implements CampaignManager {
 	}
 
 	@Override
-	public boolean isCollected(String areaCode, String userPhone) {
+	public Collect activeCollect(String areaCode, String userPhone) {
 		Calendar earliestTime = Calendar.getInstance();
 		earliestTime.add(Calendar.HOUR_OF_DAY,
 				configManager.getConfigLongValue(ConfigKeyEnum.COLLECT_ACTIVE_TIME, 1L).intValue()); // 现在时间的1小时前
 		/* 在有效时间内的领取的 */
 		String hql = "from Collect  where areaCode=? and userPhone=? and collectTime > ?";
 		Collect collect = collectDAO.findHQL(hql, new Object[] { areaCode, userPhone, earliestTime.getTime() });
-		return collect != null ? true : false;
+		return collect;
 	}
 
 	@Override
@@ -163,19 +163,45 @@ public class CampaignManagerImpl implements CampaignManager {
 			return null;
 		}
 		CampaignInfo campaignInfo = new CampaignInfo();
-		
-		
-		
-		//TODO  需要哪些活动信息 需求还没定
-		
-		
-		
-		
-		
-		
-		
-		
+
+		// TODO 需要哪些活动信息 需求还没定
+
 		return campaignInfo;
+	}
+
+	@Override
+	public void grantBouns(Integer userId, String areaCode, String userPhone) {
+		/* 领取是否过了有效期 */
+		Collect collect = activeCollect(areaCode, userPhone);
+		if (collect == null) {
+			return;
+		}
+
+		/* 判断是否有钱可以支付 */
+		Campaign campaign = campaignDAO.getCampaign(collect.getCampaignId());
+		if (campaign.getBudgetSurplus().compareTo(collect.getInviteeBonus().add(collect.getInviterBonus())) == -1) {
+			return;
+		}
+
+		/* 判断邀请人的人数限制 */
+		Inviter inviter = inviterDAO.getInviter(collect.getInviterId());
+		if (inviter.getInviteQuantity() >= configManager.getConfigLongValue(ConfigKeyEnum.INVITE_QUANTITY_RESTRICTION,
+				100L)) {
+			return;
+		}
+
+		// TODO 给邀请人发钱 collect.getInviterId() collect.getInviterBonus()
+		// TODO 给注册用户发钱 userId collect.getInviteeBonus()
+
+		/* 更新预算 */
+		campaign.setBudgetSurplus(
+				campaign.getBudgetSurplus().subtract(collect.getInviteeBonus().add(collect.getInviterBonus())));
+		campaignDAO.updateCampaign(campaign);
+
+		/* 更新邀请人信息 */
+		inviter.setInviteBonus(inviter.getInviteBonus().add(collect.getInviterBonus()));
+		inviter.setInviteQuantity(inviter.getInviteQuantity() + 1);
+		inviterDAO.updateInviter(inviter);
 	}
 
 }
