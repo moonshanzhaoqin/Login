@@ -31,7 +31,6 @@ import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
-import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.TransDetailsDTO;
 import com.yuyutechnology.exchange.dto.TransferDTO;
@@ -70,8 +69,6 @@ public class TransferManagerImpl implements TransferManager {
 	TransferDAO transferDAO;
 	@Autowired
 	CurrencyDAO currencyDAO;
-	@Autowired
-	WalletSeqDAO walletSeqDAO;
 	@Autowired
 	UnregisteredDAO unregisteredDAO;
 	@Autowired
