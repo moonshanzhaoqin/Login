@@ -17,20 +17,15 @@
 		</div>
 
 		<div class="row ">
-
 			<ul class="formbar pull-right">
 				<li><select class="form-control"></select></li>
 				<li>
 					<button type="button" class="btn btn-primary"
-						onclick="addCurrency()">
-						<!--
-						<span class="glyphicon glyphicon-plus"></span>
-						-->
-						添加新币种
-					</button>
+						onclick="addCurrency()">添加新币种</button>
 				</li>
 			</ul>
 		</div>
+		
 		<div class="row">
 			<table class="table table-bordered table-hover table-striped"
 				id="currency">
@@ -139,9 +134,9 @@
 				form.nameEn.value = currency.nameEn;
 				form.nameHk.value = currency.nameHk;
 				if (currency.currency == 'GDQ') {
-					form.currencyOrder.readOnly=true;
-				}else{
-					form.currencyOrder.readOnly=false;
+					form.currencyOrder.readOnly = true;
+				} else {
+					form.currencyOrder.readOnly = false;
 				}
 			})
 
