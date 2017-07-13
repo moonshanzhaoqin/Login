@@ -58,13 +58,11 @@ public class CampaignManagerImpl implements CampaignManager {
 	TransferDAO transferDAO;
 	@Autowired
 	ConfigManager configManager;
-<<<<<<< .mine
-	@Autowired
-	TransDetailsManager transDetailsManager;
-=======
 	@Autowired
 	PushManager pushManager;
->>>>>>> .theirs
+	@Autowired
+	TransDetailsManager transDetailsManager;
+
 
 	@Override
 	public InviterInfo getInviterInfo(Integer userId) {
