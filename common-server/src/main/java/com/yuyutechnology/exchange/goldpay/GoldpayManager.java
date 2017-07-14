@@ -16,6 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import com.mysql.jdbc.StatementInterceptorV2;
 import com.yuyutechnology.exchange.util.HttpTookit;
 import com.yuyutechnology.exchange.util.JsonBinder;
 import com.yuyutechnology.exchange.util.ResourceUtils;
@@ -56,7 +57,7 @@ public class GoldpayManager {
 		return null;
 	}
 	
-	private String sendPost(String link, String param){
+	private static String sendPost(String link, String param){
 		BufferedWriter out = null;
 		BufferedReader in = null;
 		String body = "";
@@ -98,5 +99,9 @@ public class GoldpayManager {
 			}
 		}
 		return body;
+	}
+	
+	public static void main(String[] args){
+		sendPost("https://cloud888.yuyutechnology.com/uas/oauth/token", "username=+86-13263");
 	}
 }
