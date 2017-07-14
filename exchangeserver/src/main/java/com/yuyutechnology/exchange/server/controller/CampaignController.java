@@ -65,7 +65,10 @@ public class CampaignController {
 		return rep;
 	}
 
-	// TODO 活动信息
+	/**
+	 * 活动信息
+	 * @return
+	 */
 	@ResponseBody
 	@ApiOperation(value = "活动信息", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/invite/getCampaignInfo", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
@@ -127,6 +130,11 @@ public class CampaignController {
 				logger.info(MessageConsts.EXCESS_BUDGET);
 				rep.setRetCode(RetCodeConsts.EXCESS_BUDGET);
 				rep.setMessage(MessageConsts.EXCESS_BUDGET);
+				break;
+			case RetCodeConsts.INVITERCODE_INCORRECT:
+				logger.info(MessageConsts.INVITERCODE_INCORRECT);
+				rep.setRetCode(RetCodeConsts.INVITERCODE_INCORRECT);
+				rep.setMessage(MessageConsts.INVITERCODE_INCORRECT);
 				break;
 			case RetCodeConsts.RET_CODE_SUCCESS:
 				logger.info("********Operation succeeded********");

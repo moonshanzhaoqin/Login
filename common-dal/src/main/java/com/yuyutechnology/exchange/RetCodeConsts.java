@@ -139,7 +139,10 @@ public class RetCodeConsts {
 	 * 奖励已被领光 ,超出预算
 	 */
 	public static final String EXCESS_BUDGET = "01026";
-
+	/**
+	 *邀请码不正确 
+	 */
+	public static final String INVITERCODE_INCORRECT = "01030";
 	// 兑换 02
 	/**
 	 * 查询不到该用户的wallet信息
@@ -261,6 +264,7 @@ public class RetCodeConsts {
 	 * 币种已存在
 	 */
 	public static final String CURRENCY_IS_EXIST = "05001";
+	
 
 	static {
 		successCodeList.add(RET_CODE_SUCCESS);

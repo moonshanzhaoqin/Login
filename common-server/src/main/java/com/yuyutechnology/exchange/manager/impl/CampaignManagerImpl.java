@@ -115,6 +115,11 @@ public class CampaignManagerImpl implements CampaignManager {
 		/* 邀请人 */
 		Integer inviterId = Integer.valueOf(String.valueOf(ShareCodeUtil.codeToId(inviterCode)));
 
+		Inviter inviter=inviterDAO.getInviter(inviterId);
+		if (inviter==null) {
+			return RetCodeConsts.INVITERCODE_INCORRECT;
+		}
+		
 		/* 活动信息 */
 		Campaign campaign = activeCampaign();
 		if (campaign == null) {
