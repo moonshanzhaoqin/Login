@@ -63,7 +63,7 @@ public interface CampaignManager {
 	 * @param areaCode
 	 * @param userPhone
 	 */
-	void grantBouns(Integer userId, String areaCode, String userPhone);
+	void grantBonus(Integer userId, String areaCode, String userPhone);
 
 	/**
 	 * 有效的领取
@@ -78,13 +78,24 @@ public interface CampaignManager {
 	 * @param inviterBonus
 	 * @param inviteeBonus
 	 */
-	void changeBouns(Integer campaignId, BigDecimal inviterBonus, BigDecimal inviteeBonus);
+	void changeBonus(Integer campaignId, BigDecimal inviterBonus, BigDecimal inviteeBonus);
 
 	/**
 	 * @param campaignId
 	 * @param additionalBudget
 	 */
 	void additionalBudget(Integer campaignId, BigDecimal additionalBudget);
+
+	/**
+	 * @param campaignId
+	 * @return 
+	 */
+	Integer openCampaign(Integer campaignId);
+
+	/**
+	 * @param campaignId
+	 */
+	void closeCampaign(Integer campaignId);
 
 	// TODO 开启关闭活动
 	// TODO 修改奖励金

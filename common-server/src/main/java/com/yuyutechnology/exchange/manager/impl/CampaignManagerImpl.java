@@ -63,7 +63,6 @@ public class CampaignManagerImpl implements CampaignManager {
 	@Autowired
 	TransDetailsManager transDetailsManager;
 
-
 	@Override
 	public InviterInfo getInviterInfo(Integer userId) {
 		InviterInfo inviterInfo = new InviterInfo();
@@ -106,7 +105,8 @@ public class CampaignManagerImpl implements CampaignManager {
 				configManager.getConfigLongValue(ConfigKeyEnum.COLLECT_ACTIVE_TIME, 1L).intValue()); // 现在时间的1小时前
 		/* 在有效时间内的领取的 */
 		String hql = "from Collect  where areaCode=? and userPhone=? and collectTime > ?";
-		Collect collect = collectDAO.findHQL(hql, new Object[] { areaCode, userPhone, earliestTime.getTime() });
+		Collect collect = collectDAO.findHQL(hql,
+				new Object[] { areaCode, userPhone, earliestTime.getTime() });
 		return collect;
 	}
 
@@ -155,7 +155,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		Calendar now = Calendar.getInstance();
 		if (now.after(campaign.getEndTime())) {
 			/* 活动已结束 */
-			redisDAO.deleteData(ServerConsts.REDIS_KEY_ACTIVE_CAMPAIGN);
+			// redisDAO.deleteData(ServerConsts.REDIS_KEY_ACTIVE_CAMPAIGN);
 			return null;
 		}
 		if (now.before(campaign.getStartTime())) {
@@ -186,12 +186,14 @@ public class CampaignManagerImpl implements CampaignManager {
 	}
 
 	@Override
-	public void grantBouns(Integer userId, String areaCode, String userPhone) {
+	public void grantBonus(Integer userId, String areaCode, String userPhone) {
 		/* 领取是否过了有效期 */
 		Collect collect = activeCollect(areaCode, userPhone);
 		if (collect == null) {
 			return;
 		}
+		collect.setRegisterStatus(ServerConsts.COLLECT_STATUS_REGISTER);
+		collectDAO.updateCollect(collect);
 
 		/* 判断是否有钱可以支付 */
 		Campaign campaign = campaignDAO.getCampaign(collect.getCampaignId());
@@ -206,10 +208,10 @@ public class CampaignManagerImpl implements CampaignManager {
 			return;
 		}
 
-		// TODO 给邀请人发钱 collect.getInviterId() collect.getInviterBonus()
-		// TODO 给注册用户发钱 userId collect.getInviteeBonus()
-		rewardSettlement(collect.getInviterId(),collect.getInviterBonus(),userId,collect.getInviteeBonus());
-		
+		/* 给邀请人发钱 */
+		settlement(collect.getInviterId(), collect.getInviterBonus());
+		/* 给注册用户发钱 */
+		settlement(userId, collect.getInviteeBonus());
 
 		/* 更新预算 */
 		campaign.setBudgetSurplus(
@@ -228,70 +230,42 @@ public class CampaignManagerImpl implements CampaignManager {
 		User inviteeUser = userDAO.getUser(userId);
 		pushManager.push4Invite(inviteeUser.getPushId(), inviteeUser.getPushTag(), collect.getInviteeBonus());
 	}
-	
-	private void rewardSettlement(Integer inviterId,BigDecimal inviterBonus,Integer inviteeId,BigDecimal inviteeBonus){
-		
-		User system = userDAO.getSystemUser();
-		
-		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 
-		//生成订单
+	private void settlement(Integer userId, BigDecimal bonus) {
+
+		User system = userDAO.getSystemUser();
+
+		/* 生成订单 */
+		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		Transfer transfer = new Transfer();
 		transfer.setTransferId(transferId);
 		transfer.setUserFrom(system.getUserId());
-		transfer.setUserTo(inviterId);
+		transfer.setUserTo(userId);
 		transfer.setCreateTime(new Date());
 		transfer.setFinishTime(new Date());
 		transfer.setCurrency(ServerConsts.CURRENCY_OF_GOLDPAY);
-		transfer.setTransferAmount(inviterBonus);
-		transfer.setTransferComment("inviterBonus");
+		transfer.setTransferAmount(bonus);
+		transfer.setTransferComment("inviteBonus");
 		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-		
 		transferDAO.addTransfer(transfer);
-		//生成详情
-		transDetailsManager.addTransDetails(transferId, inviterId, system.getUserId(), system.getUserName(),
-				system.getAreaCode(), system.getUserPhone(), ServerConsts.CURRENCY_OF_GOLDPAY, inviterBonus, 
-				null, ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
-		//账户加款
-		walletDAO.updateWalletByUserIdAndCurrency(inviterId, ServerConsts.CURRENCY_OF_GOLDPAY,
-				inviterBonus, "+", ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId);
-		//系统扣款
-		walletDAO.updateWalletByUserIdAndCurrency(system.getUserId(), ServerConsts.CURRENCY_OF_GOLDPAY,
-				inviterBonus, "-", ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId);
-		
-		
-		String transferId2 = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 
-		//生成订单
-		Transfer transfer2 = new Transfer();
-		transfer2.setTransferId(transferId2);
-		transfer2.setUserFrom(system.getUserId());
-		transfer2.setUserTo(inviteeId);
-		transfer2.setCreateTime(new Date());
-		transfer2.setFinishTime(new Date());
-		transfer2.setCurrency(ServerConsts.CURRENCY_OF_GOLDPAY);
-		transfer2.setTransferAmount(inviteeBonus);
-		transfer2.setTransferComment("inviteeBonus");
-		transfer2.setTransferType(ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
-		transfer2.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-		
-		transferDAO.addTransfer(transfer2);
-		//生成详情
-		transDetailsManager.addTransDetails(transferId2, inviteeId, system.getUserId(), system.getUserName(),
-				system.getAreaCode(), system.getUserPhone(), ServerConsts.CURRENCY_OF_GOLDPAY, inviteeBonus, 
-				null, ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
-		//账户加款
-		walletDAO.updateWalletByUserIdAndCurrency(inviteeId, ServerConsts.CURRENCY_OF_GOLDPAY,
-				inviteeBonus, "+", ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId2);
-		//系统扣款
-		walletDAO.updateWalletByUserIdAndCurrency(system.getUserId(), ServerConsts.CURRENCY_OF_GOLDPAY,
-				inviteeBonus, "-", ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId2);
-		
+		/* 生成详情 */
+		transDetailsManager.addTransDetails(transferId, userId, system.getUserId(), system.getUserName(),
+				system.getAreaCode(), system.getUserPhone(), ServerConsts.CURRENCY_OF_GOLDPAY, bonus, null,
+				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
+
+		/* 账户加款 */
+		walletDAO.updateWalletByUserIdAndCurrency(userId, ServerConsts.CURRENCY_OF_GOLDPAY, bonus, "+",
+				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId);
+
+		/* 系统扣款 */
+		walletDAO.updateWalletByUserIdAndCurrency(system.getUserId(), ServerConsts.CURRENCY_OF_GOLDPAY, bonus, "-",
+				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId);
 	}
 
 	@Override
-	public void changeBouns(Integer campaignId, BigDecimal inviterBonus, BigDecimal inviteeBonus) {
+	public void changeBonus(Integer campaignId, BigDecimal inviterBonus, BigDecimal inviteeBonus) {
 		Campaign campaign = campaignDAO.getCampaign(campaignId);
 		campaign.setInviterBonus(inviterBonus);
 		campaign.setInviteeBonus(inviteeBonus);
@@ -304,6 +278,29 @@ public class CampaignManagerImpl implements CampaignManager {
 		Campaign campaign = campaignDAO.getCampaign(campaignId);
 		campaign.setBudgetSurplus(campaign.getBudgetSurplus().add(additionalBudget));
 		campaign.setCampaignBudget(campaign.getCampaignBudget().add(additionalBudget));
+		campaignDAO.updateCampaign(campaign);
+	}
+
+	@Override
+	public Integer openCampaign(Integer campaignId) {
+		String str = redisDAO.getValueByKey(ServerConsts.REDIS_KEY_ACTIVE_CAMPAIGN);
+		if (str != null && campaignDAO.getCampaign(Integer.valueOf(str))
+				.getCampaignStatus() == ServerConsts.CAMPAIGN_STATUS_ON) {
+			return Integer.valueOf(str);
+		}
+
+		redisDAO.saveData(ServerConsts.REDIS_KEY_ACTIVE_CAMPAIGN, campaignId);
+		Campaign campaign = campaignDAO.getCampaign(campaignId);
+		campaign.setCampaignStatus(ServerConsts.CAMPAIGN_STATUS_ON);
+		campaignDAO.updateCampaign(campaign);
+		return campaignId;
+	}
+
+	@Override
+	public void closeCampaign(Integer campaignId) {
+		redisDAO.deleteData(ServerConsts.REDIS_KEY_ACTIVE_CAMPAIGN);
+		Campaign campaign = campaignDAO.getCampaign(campaignId);
+		campaign.setCampaignStatus(ServerConsts.CAMPAIGN_STATUS_OFF);
 		campaignDAO.updateCampaign(campaign);
 	}
 

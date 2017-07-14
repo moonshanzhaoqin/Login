@@ -9,7 +9,6 @@ package com.yuyutechnology.exchange.enums;
  * @author suzan.wu
  */
 public enum Operation {
-
 	/**
 	 * 登录
 	 */
@@ -99,18 +98,26 @@ public enum Operation {
 	 */
 	OFF_ALARM("off_alarm"),
 	/**
-	 *新增活动 
+	 * 新增活动
 	 */
 	ADD_CAMPAIGN("add_campaign"),
 	/**
 	 * 修改奖励金
 	 */
-	CHANGE_BOUNS("change_bouns"),
+	CHANGE_BONUS("change_bonus"),
 	/**
-	 * 追加预算 
+	 * 追加预算
 	 */
-	ADDITIONAL_BUDGET("additional_budget")
-	;
+	ADDITIONAL_BUDGET("additional_budget"),
+	/**
+	 * 开启活动
+	 */
+	ON_CAMPAIGN("on_campaign"),
+	/**
+	 * 关闭活动
+	 */
+	OFF_CAMPAIGN("off_campaign");
+	
 	private String operationName;
 
 	private Operation(String operationName) {

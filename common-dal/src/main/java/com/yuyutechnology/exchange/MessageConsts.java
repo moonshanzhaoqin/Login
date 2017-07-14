@@ -1,7 +1,5 @@
 package com.yuyutechnology.exchange;
 
-import org.apache.logging.log4j.message.Message;
-
 public class MessageConsts {
 	// RetCode: 通用 00; 用户 01;兑换 02; 转账 03
 
