@@ -101,8 +101,15 @@ public enum Operation {
 	/**
 	 *新增活动 
 	 */
-	ADD_CAMPAIGN("add_campaign")
-	
+	ADD_CAMPAIGN("add_campaign"),
+	/**
+	 * 修改奖励金
+	 */
+	CHANGE_BOUNS("change_bouns"),
+	/**
+	 * 追加预算 
+	 */
+	ADDITIONAL_BUDGET("additional_budget")
 	;
 	private String operationName;
 

@@ -73,6 +73,19 @@ public interface CampaignManager {
 	 */
 	Collect activeCollect(String areaCode, String userPhone);
 
+	/**
+	 * @param campaignId
+	 * @param inviterBonus
+	 * @param inviteeBonus
+	 */
+	void changeBouns(Integer campaignId, BigDecimal inviterBonus, BigDecimal inviteeBonus);
+
+	/**
+	 * @param campaignId
+	 * @param additionalBudget
+	 */
+	void additionalBudget(Integer campaignId, BigDecimal additionalBudget);
+
 	// TODO 开启关闭活动
 	// TODO 修改奖励金
 	// TODO 追加预算

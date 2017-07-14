@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
+import com.yuyutechnology.exchange.crm.request.AddBudgetRequest;
 import com.yuyutechnology.exchange.crm.request.AddCampaignRequest;
+import com.yuyutechnology.exchange.crm.request.ChangeBounsRequest;
 import com.yuyutechnology.exchange.enums.Operation;
 import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
@@ -44,17 +46,16 @@ public class CampaignController {
 	CommonManager commonManager;
 	@Autowired
 	CrmLogManager crmLogManager;
+
 	// TODO 获取活动
 	@ResponseBody
 	@RequestMapping(value = "/getCampaignList", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public List<Campaign> getCampaignList(HttpServletRequest request,
-			HttpServletResponse response) {
-		
+	public List<Campaign> getCampaignList(HttpServletRequest request, HttpServletResponse response) {
 
-			return campaignManager.getCampaignList();
+		return campaignManager.getCampaignList();
 
 	}
-	
+
 	// TODO 新增活动
 	@ResponseBody
 	@RequestMapping(value = "/addCampaign", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
@@ -82,6 +83,38 @@ public class CampaignController {
 
 	// TODO 开启关闭活动
 	// TODO 修改奖励金
+	@ResponseBody
+	@RequestMapping(value = "/changeBouns", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public BaseResponse changeBouns(@RequestBody ChangeBounsRequest changeBounsRequest, HttpServletRequest request,
+			HttpServletResponse response) {
+		BaseResponse rep = new BaseResponse();
+
+		logger.info("change Bouns : {}", changeBounsRequest.toString());
+
+		campaignManager.changeBouns(changeBounsRequest.getCampaignId(),changeBounsRequest.getInviterBonus(),changeBounsRequest.getInviteeBonus());
+
+		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+				Operation.CHANGE_BOUNS.getOperationName(), changeBounsRequest.toString()));
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+
+		return rep;
+	}
+
 	// TODO 追加预算
+	@ResponseBody
+	@RequestMapping(value = "/addBudget", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public BaseResponse addBudget(@RequestBody AddBudgetRequest addBudgetRequest,
+			HttpServletRequest request, HttpServletResponse response) {
+		BaseResponse rep = new BaseResponse();
+
+		logger.info("add Budget : {}", addBudgetRequest.toString());
+
+		campaignManager.additionalBudget(addBudgetRequest.getCampaignId(),addBudgetRequest.getAdditionalBudget());
+
+		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+				Operation.ADDITIONAL_BUDGET.getOperationName(), addBudgetRequest.toString()));
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		return rep;
+	}
 
 }

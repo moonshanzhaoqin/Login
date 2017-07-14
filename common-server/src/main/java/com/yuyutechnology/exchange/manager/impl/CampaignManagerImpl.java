@@ -221,10 +221,10 @@ public class CampaignManagerImpl implements CampaignManager {
 		inviter.setInviteQuantity(inviter.getInviteQuantity() + 1);
 		inviterDAO.updateInviter(inviter);
 
-		/*推送邀请人*/
+		/* 推送邀请人 */
 		User inviterUser = userDAO.getUser(collect.getInviterId());
 		pushManager.push4Invite(inviterUser.getPushId(), inviterUser.getPushTag(), collect.getInviterBonus());
-		/* 推送注册用户*/
+		/* 推送注册用户 */
 		User inviteeUser = userDAO.getUser(userId);
 		pushManager.push4Invite(inviteeUser.getPushId(), inviteeUser.getPushTag(), collect.getInviteeBonus());
 	}
@@ -288,6 +288,23 @@ public class CampaignManagerImpl implements CampaignManager {
 		walletDAO.updateWalletByUserIdAndCurrency(system.getUserId(), ServerConsts.CURRENCY_OF_GOLDPAY,
 				inviteeBonus, "-", ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId2);
 		
+	}
+
+	@Override
+	public void changeBouns(Integer campaignId, BigDecimal inviterBonus, BigDecimal inviteeBonus) {
+		Campaign campaign = campaignDAO.getCampaign(campaignId);
+		campaign.setInviterBonus(inviterBonus);
+		campaign.setInviteeBonus(inviteeBonus);
+		campaignDAO.updateCampaign(campaign);
+
+	}
+
+	@Override
+	public void additionalBudget(Integer campaignId, BigDecimal additionalBudget) {
+		Campaign campaign = campaignDAO.getCampaign(campaignId);
+		campaign.setBudgetSurplus(campaign.getBudgetSurplus().add(additionalBudget));
+		campaign.setCampaignBudget(campaign.getCampaignBudget().add(additionalBudget));
+		campaignDAO.updateCampaign(campaign);
 	}
 
 }
