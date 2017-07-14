@@ -97,18 +97,18 @@
 	</div>
 
 	<!-- 模态框（Modal） 修改奖励金 -->
-	<div class="modal fade" id="changeBounsModal" tabindex="-1"
-		role="dialog" aria-labelledby="changeBounsModalLabel"
+	<div class="modal fade" id="changeBonusModal" tabindex="-1"
+		role="dialog" aria-labelledby="changeBonusModalLabel"
 		aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"
 						aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="changeBounsModalLabel">修改奖励金</h4>
+					<h4 class="modal-title" id="changeBonusModalLabel">修改奖励金</h4>
 				</div>
 				<div class="modal-body">
-					<form class="form-horizontal" role="form" id="changeBouns">
+					<form class="form-horizontal" role="form" id="changeBonus">
 						<div class="form-group">
 							<label for="campaignId" class="col-sm-4 control-label ">活动ID</label>
 							<div class="col-sm-7">
@@ -135,7 +135,7 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 					<button type="button" class="btn btn-primary"
-						onclick="changeBouns()">确认</button>
+						onclick="changeBonus()">确认</button>
 				</div>
 			</div>
 		</div>

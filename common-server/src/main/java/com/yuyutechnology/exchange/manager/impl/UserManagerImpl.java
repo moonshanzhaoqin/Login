@@ -456,7 +456,7 @@ public class UserManagerImpl implements UserManager {
 		/* 根据Unregistered表 更新新用户钱包 将资金从系统帐户划给新用户 */
 		updateWalletsFromUnregistered(userId, areaCode, userPhone);
 		// TODO 发放奖励金
-		campaignManager.grantBouns(userId, areaCode, userPhone);
+		campaignManager.grantBonus(userId, areaCode, userPhone);
 
 		return userId;
 	}

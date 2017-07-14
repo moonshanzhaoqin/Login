@@ -14,6 +14,10 @@ import javax.persistence.Table;
 @Table(name = "e_inviter")
 public class Inviter implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7603785212002399278L;
 	private Integer userId;
 	private int inviteQuantity;
 	private BigDecimal inviteBonus;

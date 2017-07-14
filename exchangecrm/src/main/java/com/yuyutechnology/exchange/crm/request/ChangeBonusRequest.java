@@ -9,14 +9,14 @@ import java.math.BigDecimal;
  * @author suzan.wu
  *
  */
-public class ChangeBounsRequest {
+public class ChangeBonusRequest {
 	private Integer campaignId;
 	private BigDecimal inviterBonus;
 	private BigDecimal inviteeBonus;
 
 	@Override
 	public String toString() {
-		return "ChangeBounsRequest [campaignId=" + campaignId + ", inviterBonus=" + inviterBonus + ", inviteeBonus="
+		return "ChangeBonusRequest [campaignId=" + campaignId + ", inviterBonus=" + inviterBonus + ", inviteeBonus="
 				+ inviteeBonus + "]";
 	}
 

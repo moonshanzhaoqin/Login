@@ -30,13 +30,13 @@ $(function() {
 
 	initCampaign();
 
-	$('#changeBounsModal').on('show.bs.modal', function(e) {
+	$('#changeBonusModal').on('show.bs.modal', function(e) {
 		// do something...
 		var tr = $(e.relatedTarget) // Button that triggered the modal
 		var campaign = tr.data('whatever') // Extract info from data-*
 		// attributes
 		console.log(campaign);
-		form = document.getElementById("changeBouns");
+		form = document.getElementById("changeBonus");
 		form.campaignId.value = campaign.campaignId;
 		form.inviterBonus.value = campaign.inviterBonus;
 		form.inviteeBonus.value = campaign.inviteeBonus;
@@ -94,10 +94,13 @@ function initCampaign() {
 								+ timeDate(data[i].updateTime)
 								+ '</td>'
 								+ '<td>'
-								+ '<a href="" onclick=" changeCurrencyStatus(this,1)">开启</a>'
+								+ (data[i].campaignStatus == 0 ? ('<a href="" onclick="openCampaign('
+										+ data[i].campaignId + ')">开启</a>')
+										: ('<a href="" onclick="closeCampaign('
+												+ data[i].campaignId + ')">关闭</a>'))
 								+ '</td>'
 								+ '<td>'
-								+ '<a  data-toggle="modal" data-target="#changeBounsModal" data-whatever='
+								+ '<a  data-toggle="modal" data-target="#changeBonusModal" data-whatever='
 								+ "'"
 								+ JSON.stringify(data[i])
 								+ "'"
@@ -106,9 +109,7 @@ function initCampaign() {
 								+ '<td>'
 								+ '<a  data-toggle="modal" data-target="#addBudgetModal" data-whatever='
 								+ "'" + JSON.stringify(data[i]) + "'"
-								+ '>追加</a>' + '</td>'
-
-								+ '</tr>'
+								+ '>追加</a>' + '</td>' + '</tr>'
 					}
 					$('#campaign tbody').html(html);
 
@@ -141,7 +142,7 @@ function addCampaign() {
 		success : function(data) {
 			if (data.retCode == "00000") {
 				console.log("success");
-				$('#addCampaign').modal('hide')
+				$('#addCampaignModal').modal('hide')
 				alert("添加成功！");
 				initCampaign();
 			} else if (data.retCode == "00002") {
@@ -164,8 +165,8 @@ function addCampaign() {
 	});
 }
 /* 修改奖励金 */
-function changeBouns() {
-	form = document.getElementById("changeBouns");
+function changeBonus() {
+	form = document.getElementById("changeBonus");
 	data = {
 		campaignId : form.campaignId.value,
 		inviterBonus : form.inviterBonus.value,
@@ -173,20 +174,20 @@ function changeBouns() {
 	}
 	$.ajax({
 		type : "post",
-		url : "/crm/changeBouns",
+		url : "/crm/changeBonus",
 		contentType : "application/json; charset=utf-8",
 		dataType : 'json',
 		data : JSON.stringify(data),
 		success : function(data) {
 			if (data.retCode == "00000") {
-				console.log("changeBouns success");
-				$('#changeBounsModal').modal('hide')
+				console.log("changeBonus success");
+				$('#changeBonusModal').modal('hide')
 				alert("修改成功！");
 				initCampaign();
 			} else if (data.retCode == "00002") {
 				location.href = loginUrl;
 			} else {
-				console.log("changeBouns" + data.message);
+				console.log("changeBonus" + data.message);
 				alert(data.message);
 			}
 		},
@@ -194,7 +195,7 @@ function changeBouns() {
 			console.log("error");
 			console.log(err);
 			console.log(xhr);
-			alert("something is wrong!");
+			alert("未知错误！");
 		},
 		async : false
 	});
@@ -229,12 +230,72 @@ function addBudget() {
 			console.log("error");
 			console.log(err);
 			console.log(xhr);
-			alert("something is wrong!");
+			alert("未知错误！");
 		},
 		async : false
 	});
 }
-/* 开启或关闭活动,活动开关 */
-function campaignSwitch(campaignId, campaignStatus) {
-
+/* 开启活动 */
+function openCampaign(campaignId) {
+	data = {
+		campaignId : campaignId,
+	}
+	$.ajax({
+		type : "post",
+		url : "/crm/openCampaign",
+		contentType : "application/json; charset=utf-8",
+		dataType : 'json',
+		data : JSON.stringify(data),
+		success : function(data) {
+			if (data.retCode == "00000") {
+				console.log("openCampaign success");
+				alert("开启成功！");
+				initCampaign();
+			} else if (data.retCode == "00002") {
+				location.href = loginUrl;
+			} else {
+				console.log("openCampaign" + data.message);
+				alert(data.message + "在开启状态，请关闭后再试");
+			}
+		},
+		error : function(xhr, err) {
+			console.log("error");
+			console.log(err);
+			console.log(xhr);
+			alert("未知错误！");
+		},
+		async : false
+	});
+}
+/* 关闭活动 */
+function closeCampaign(campaignId) {
+	data = {
+		campaignId : campaignId,
+	}
+	$.ajax({
+		type : "post",
+		url : "/crm/closeCampaign",
+		contentType : "application/json; charset=utf-8",
+		dataType : 'json',
+		data : JSON.stringify(data),
+		success : function(data) {
+			if (data.retCode == "00000") {
+				console.log("closeCampaign success");
+				alert("关闭成功！");
+				initCampaign();
+			} else if (data.retCode == "00002") {
+				location.href = loginUrl;
+			} else {
+				console.log("closeCampaign" + data.message);
+				alert(data.message);
+			}
+		},
+		error : function(xhr, err) {
+			console.log("error");
+			console.log(err);
+			console.log(xhr);
+			alert("未知错误！");
+		},
+		async : false
+	});
 }
