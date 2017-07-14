@@ -76,19 +76,19 @@ public class UserController {
 	@ApiOperation(value = "功能模块的可用性", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/functionalModulesAvailability", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public FunctionalModulesAvailabilityResponse functionalModulesAvailability() {
-		logger.info("========functionalModulesAvailability============" );
+		logger.info("========functionalModulesAvailability============");
 		FunctionalModulesAvailabilityResponse rep = new FunctionalModulesAvailabilityResponse();
 		/* Paypal开启状态 */
 		rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
-		/*提取沛金条开启状态*/
+		/* 提取沛金条开启状态 */
 		rep.setGoldpayWithdraw(configManager.getConfigBooleanValue(ConfigKeyEnum.GOLDPAY_WITHDRAW));
-		
+
 		logger.info(MessageConsts.RET_CODE_SUCCESS);
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
-	
+
 	/**
 	 * forget password 忘记密码
 	 * 
@@ -265,7 +265,7 @@ public class UserController {
 					/* 获取用户信息 */
 					rep.setUser(userInfo);
 					/* Paypal开启状态 */
-//					rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
+					// rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
 
 					logger.info(MessageConsts.RET_CODE_SUCCESS);
 					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
@@ -311,7 +311,7 @@ public class UserController {
 						/* 获取用户信息 */
 						rep.setUser(userManager.getUserInfo(userId));
 						/* Paypal开启状态 */
-//						rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
+						// rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
 
 						logger.info(MessageConsts.RET_CODE_SUCCESS);
 						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
@@ -399,7 +399,7 @@ public class UserController {
 						/* 获取用户信息 */
 						rep.setUser(userManager.getUserInfo(userId));
 						/* Paypal开启状态 */
-//						rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
+						// rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
 
 						logger.info(MessageConsts.RET_CODE_SUCCESS);
 						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
@@ -523,7 +523,7 @@ public class UserController {
 						/* 获取用户信息 */
 						rep.setUser(userManager.getUserInfo(userId));
 						/* Paypal开启状态 */
-//						rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
+						// rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
 
 						logger.info(MessageConsts.RET_CODE_SUCCESS);
 						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);

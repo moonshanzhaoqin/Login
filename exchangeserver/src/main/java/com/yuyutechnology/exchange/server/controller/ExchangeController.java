@@ -92,7 +92,8 @@ public class ExchangeController {
 		}
 
 		HashMap<String, String> result = exchangeManager.exchangeCalculation(sessionData.getUserId(),
-				reqMsg.getCurrencyOut(), reqMsg.getCurrencyIn(), new BigDecimal(Double.toString(reqMsg.getAmountOut())));
+				reqMsg.getCurrencyOut(), reqMsg.getCurrencyIn(),
+				new BigDecimal(Double.toString(reqMsg.getAmountOut())));
 
 		rep.setRetCode(result.get("retCode"));
 		rep.setMessage(result.get("msg"));
@@ -101,12 +102,12 @@ public class ExchangeController {
 			rep.setAmountIn(Double.parseDouble(result.get("in")));
 			rep.setAmountOut(Double.parseDouble(result.get("out")));
 			rep.setRateUpdateTime(oandaRatesManager.getExchangeRateUpdateDate());
-		}else if(result.get("retCode").equals(RetCodeConsts.EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY)){
-			rep.setOpts(new String[]{result.get("msg"),result.get("thawTime")});
-		}else if(result.get("retCode").equals(RetCodeConsts.EXCHANGE_LIMIT_EACH_TIME)){
-			rep.setOpts(new String[]{result.get("msg")+" "+result.get("unit")});
-		}else if(result.get("retCode").equals(RetCodeConsts.EXCHANGE_LIMIT_DAILY_PAY)){
-			rep.setOpts(new String[]{result.get("msg")+" "+result.get("unit"),result.get("thawTime")});
+		} else if (result.get("retCode").equals(RetCodeConsts.EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY)) {
+			rep.setOpts(new String[] { result.get("msg"), result.get("thawTime") });
+		} else if (result.get("retCode").equals(RetCodeConsts.EXCHANGE_LIMIT_EACH_TIME)) {
+			rep.setOpts(new String[] { result.get("msg") + " " + result.get("unit") });
+		} else if (result.get("retCode").equals(RetCodeConsts.EXCHANGE_LIMIT_DAILY_PAY)) {
+			rep.setOpts(new String[] { result.get("msg") + " " + result.get("unit"), result.get("thawTime") });
 		}
 
 		return rep;
@@ -147,7 +148,8 @@ public class ExchangeController {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		ExchangeConfirmResponse rep = new ExchangeConfirmResponse();
 		HashMap<String, String> result = exchangeManager.exchangeConfirm(sessionData.getUserId(),
-				reqMsg.getCurrencyOut(), reqMsg.getCurrencyIn(), new BigDecimal(Double.toString(reqMsg.getAmountOut())));
+				reqMsg.getCurrencyOut(), reqMsg.getCurrencyIn(),
+				new BigDecimal(Double.toString(reqMsg.getAmountOut())));
 
 		rep.setRetCode(result.get("retCode"));
 		rep.setMessage(result.get("msg"));
@@ -162,8 +164,7 @@ public class ExchangeController {
 
 	@ApiOperation(value = "获取兑换历史记录")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/getExchangeHistory")
-	public @ResponseEncryptBody 
-	GetExchangeHistoryResponse getExchangeHistory(@PathVariable String token,
+	public @ResponseEncryptBody GetExchangeHistoryResponse getExchangeHistory(@PathVariable String token,
 			@RequestDecryptBody GetExchangeHistoryRequest reqMsg) {
 		// 从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
@@ -204,36 +205,35 @@ public class ExchangeController {
 		return rep;
 
 	}
-	
+
 	@ApiOperation(value = "获取兑换详细内容")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/getExchangeDetails")
-	public @ResponseEncryptBody  
-	GetExchangeDetailsResponse getExchangeDetails(@PathVariable String token,
-			@RequestDecryptBody GetExchangeDetailsRequest reqMsg){
-		
+	public @ResponseEncryptBody GetExchangeDetailsResponse getExchangeDetails(@PathVariable String token,
+			@RequestDecryptBody GetExchangeDetailsRequest reqMsg) {
+
 		GetExchangeDetailsResponse rep = new GetExchangeDetailsResponse();
 		Exchange exchange = exchangeManager.getExchangeById(reqMsg.getExchangeId());
-		if(exchange == null){
+		if (exchange == null) {
 			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 			rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 			return rep;
 		}
-		
+
 		rep.setCurrencyOut(exchange.getCurrencyOut());
 		rep.setAmountOut(exchange.getAmountOut());
 		rep.setCurrencyOutUnit(commonManager.getCurreny(exchange.getCurrencyOut()).getCurrencyUnit());
 		rep.setCurrencyIn(exchange.getCurrencyIn());
 		rep.setAmountIn(exchange.getAmountIn());
 		rep.setCurrencyInUnit(commonManager.getCurreny(exchange.getCurrencyIn()).getCurrencyUnit());
-		
+
 		rep.setExchangeId(exchange.getExchangeId());
 		rep.setCreateTime(exchange.getCreateTime());
-		
+
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-		
+
 		return rep;
-		
+
 	}
 
 }

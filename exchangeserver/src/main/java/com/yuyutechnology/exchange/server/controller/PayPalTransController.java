@@ -47,15 +47,13 @@ public class PayPalTransController {
 	public @ResponseEncryptBody GetExchangeRate4GDQResponse getExchangeRate4GDQ(@PathVariable String token) {
 
 		GetExchangeRate4GDQResponse rep = new GetExchangeRate4GDQResponse();
-		
-		
+
 		Double max = configManager.getConfigDoubleValue(ConfigKeyEnum.PAYPALMAXLIMITEACHTIME, 100000000d);
 		Double mini = configManager.getConfigDoubleValue(ConfigKeyEnum.PAYPALMINILIMITEACHTIME, 100d);
-		
-		logger.info("Maximum amount of single transaction : {}",max);
-		logger.info("The minimum amount of a single transaction : {}",mini);
-		
-		
+
+		logger.info("Maximum amount of single transaction : {}", max);
+		logger.info("The minimum amount of a single transaction : {}", mini);
+
 		HashMap<String, Double> result = oandaRatesManager
 				.getExchangeRateDiffLeft4OneRight(ServerConsts.CURRENCY_OF_GOLDPAY);
 		Date updateDate = oandaRatesManager.getExchangeRateUpdateDate();
@@ -63,7 +61,7 @@ public class PayPalTransController {
 
 		rep.setRates(result);
 		rep.setUpdateDate(updateDate);
-		rep.setOpts(new String[]{mini.toString(),max.toString()});
+		rep.setOpts(new String[] { mini.toString(), max.toString() });
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 
@@ -77,20 +75,21 @@ public class PayPalTransController {
 		// 从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		PaypalTransInitResponse rep = new PaypalTransInitResponse();
-		
+
 		Double max = configManager.getConfigDoubleValue(ConfigKeyEnum.PAYPALMAXLIMITEACHTIME, 100000000d);
 		Double mini = configManager.getConfigDoubleValue(ConfigKeyEnum.PAYPALMINILIMITEACHTIME, 100d);
-		
-		logger.info("Maximum amount of single transaction : {}",max);
-		logger.info("The minimum amount of a single transaction : {}",mini);
+
+		logger.info("Maximum amount of single transaction : {}", max);
+		logger.info("The minimum amount of a single transaction : {}", mini);
 
 		// 判断条件.币种合法，GDQ数量为整数且大于
-		if (reqMsg.getAmount() == null || ((reqMsg.getAmount().doubleValue() < mini || reqMsg.getAmount().doubleValue()>max)
-				|| reqMsg.getAmount().longValue() % 1 > 0)) {
+		if (reqMsg.getAmount() == null
+				|| ((reqMsg.getAmount().doubleValue() < mini || reqMsg.getAmount().doubleValue() > max)
+						|| reqMsg.getAmount().longValue() % 1 > 0)) {
 			logger.warn("The number of inputs does not meet the requirements");
 			rep.setRetCode(RetCodeConsts.TRANSFER_PAYPALTRANS_ILLEGAL_DATA);
 			rep.setMessage("The number of inputs does not meet the requirements");
-			rep.setOpts(new String[]{mini.toString(),max.toString()});
+			rep.setOpts(new String[] { mini.toString(), max.toString() });
 			return rep;
 		}
 
@@ -101,7 +100,7 @@ public class PayPalTransController {
 			rep.setMessage((String) result.get("msg"));
 			return rep;
 		}
-		
+
 		if (RetCodeConsts.TRANSFER_PAYPALTRANS_TOTAL_AMOUNT_OF_GDQ.equals(result.get("retCode"))) {
 			rep.setRetCode(RetCodeConsts.TRANSFER_PAYPALTRANS_TOTAL_AMOUNT_OF_GDQ);
 			rep.setMessage((String) result.get("msg"));

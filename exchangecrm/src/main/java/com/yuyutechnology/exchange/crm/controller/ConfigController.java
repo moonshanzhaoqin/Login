@@ -33,13 +33,14 @@ public class ConfigController {
 
 	@ResponseBody
 	@RequestMapping(value = "/updateConfig", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse updateConfig(@RequestBody Config config,HttpServletRequest request, HttpServletResponse response) {
+	public BaseResponse updateConfig(@RequestBody Config config, HttpServletRequest request,
+			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
-		logger.info("updateConfig({}, {})",config.getConfigKey(),config.getConfigValue());
-		String retCode=configManager.updateConfig(config.getConfigKey(), config.getConfigValue());
+		logger.info("updateConfig({}, {})", config.getConfigKey(), config.getConfigValue());
+		String retCode = configManager.updateConfig(config.getConfigKey(), config.getConfigValue());
 		configManager.refreshConfig();
 		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
-				Operation.UPDATE_CONFIG.getOperationName(),config.toString()));
+				Operation.UPDATE_CONFIG.getOperationName(), config.toString()));
 		rep.setRetCode(retCode);
 		return rep;
 	}

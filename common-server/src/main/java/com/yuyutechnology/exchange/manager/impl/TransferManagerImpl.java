@@ -1192,8 +1192,8 @@ public class TransferManagerImpl implements TransferManager {
 						dto.setFriend(false);
 					}
 					dto.setRegistered(true);
-				}else if(userId== transfer.getUserFrom() && systemUser.getUserId() == transfer.getUserTo()){
-					//对方之前未注册，注册后还改了手机号
+				} else if (userId == transfer.getUserFrom() && systemUser.getUserId() == transfer.getUserTo()) {
+					// 对方之前未注册，注册后还改了手机号
 					dto.setFriend(false);
 					dto.setRegistered(false);
 
@@ -1205,26 +1205,26 @@ public class TransferManagerImpl implements TransferManager {
 						dto.setFriend(false);
 					}
 					dto.setRegistered(true);
-				}else if(userId == transfer.getUserTo() && systemUser.getUserId() == transfer.getUserFrom()){
-					//系统退款
-					if(transfer.getTransferType() == ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND){
+				} else if (userId == transfer.getUserTo() && systemUser.getUserId() == transfer.getUserFrom()) {
+					// 系统退款
+					if (transfer.getTransferType() == ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND) {
 						dto.setFriend(false);
 						dto.setRegistered(false);
-					}else{//本登陆用户在该交易之前未注册，并且还修改过手机号
+					} else {// 本登陆用户在该交易之前未注册，并且还修改过手机号
 						Transfer transfer2 = transferDAO.getTransferById(transfer.getTransferComment());
-						if(transfer2 == null){
+						if (transfer2 == null) {
 							dto.setFriend(false);
 						} else {
 							Friend friend = friendDAO.getFriendByUserIdAndFrindId(userId, transfer2.getUserFrom());
-							if(friend != null){
+							if (friend != null) {
 								dto.setFriend(true);
-							}else{
+							} else {
 								dto.setFriend(false);
 							}
 						}
 						dto.setRegistered(true);
 					}
-				}else{
+				} else {
 					dto.setFriend(false);
 					dto.setRegistered(false);
 				}

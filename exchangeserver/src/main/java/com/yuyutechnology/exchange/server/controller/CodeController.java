@@ -23,64 +23,64 @@ import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody
 import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 import com.yuyutechnology.exchange.util.AESCipher;
 
-
 //@ApiIgnore
 @Controller
-@RequestMapping(value = "/code", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
+@RequestMapping(value = "/code", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
+		MediaType.APPLICATION_JSON_VALUE })
 public class CodeController {
 
-    @RequestMapping(value = "/key/{key}/deCode", method = { RequestMethod.POST })
-    @ResponseBody
-    public String deCode(@RequestBody DecryptRequest message, @PathVariable String key) {
-    	try {
+	@RequestMapping(value = "/key/{key}/deCode", method = { RequestMethod.POST })
+	@ResponseBody
+	public String deCode(@RequestBody DecryptRequest message, @PathVariable String key) {
+		try {
 			return AESCipher.decryptAES(message.getContent(), key);
 		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException
 				| InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException
 				| UnsupportedEncodingException e) {
 			return e.getMessage();
 		}
-    }
-    
-    @RequestMapping(value = "/key/{key}/enCode", method = { RequestMethod.POST })
-    @ResponseBody
-    public EncryptResponse enCode(@RequestBody String message, @PathVariable String key) {
-    	EncryptResponse encryptResponse = new EncryptResponse();
-    	try {
+	}
+
+	@RequestMapping(value = "/key/{key}/enCode", method = { RequestMethod.POST })
+	@ResponseBody
+	public EncryptResponse enCode(@RequestBody String message, @PathVariable String key) {
+		EncryptResponse encryptResponse = new EncryptResponse();
+		try {
 			encryptResponse.setContent(AESCipher.encryptAES(message, key));
 		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | UnsupportedEncodingException
 				| InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
 			encryptResponse.setContent(e.getMessage());
 		}
-        return encryptResponse;
-    }
+		return encryptResponse;
+	}
 
-    @RequestMapping(value = "/testCode", method = { RequestMethod.POST })
-    @ResponseEncryptBody
-    public Message testCode(@RequestDecryptBody Message message) {
-        return message;
-    }
+	@RequestMapping(value = "/testCode", method = { RequestMethod.POST })
+	@ResponseEncryptBody
+	public Message testCode(@RequestDecryptBody Message message) {
+		return message;
+	}
 
-    public class Message {
-        private String name;
-        private int    age;
-        private double    double1;
-        private Double    double2;
+	public class Message {
+		private String name;
+		private int age;
+		private double double1;
+		private Double double2;
 
-        public String getName() {
-            return name;
-        }
+		public String getName() {
+			return name;
+		}
 
-        public void setName(String name) {
-            this.name = name;
-        }
+		public void setName(String name) {
+			this.name = name;
+		}
 
-        public int getAge() {
-            return age;
-        }
+		public int getAge() {
+			return age;
+		}
 
-        public void setAge(int age) {
-            this.age = age;
-        }
+		public void setAge(int age) {
+			this.age = age;
+		}
 
 		public double getDouble1() {
 			return double1;
@@ -102,5 +102,5 @@ public class CodeController {
 		public String toString() {
 			return "Message [name=" + name + ", age=" + age + "]";
 		}
-    }
+	}
 }

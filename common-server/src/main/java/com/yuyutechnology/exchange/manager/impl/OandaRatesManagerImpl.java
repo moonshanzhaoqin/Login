@@ -230,27 +230,26 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		return out;
 	}
 
-//	@Override
-//	public HashMap<String, Double> getExchangeRate(String base) {
-//		
-//		HashMap<String, Double> map = new HashMap<>();
-//
-//		List<Currency> list = commonManager.getCurrentCurrencies();
-//
-//		for (Currency currency : list) {
-//
-//			if (!currency.getCurrency().equals(base)) {
-//				BigDecimal value = getSingleExchangeRate(base, currency.getCurrency());
-//				if(value != null){
-//					map.put(currency.getCurrency(), value.doubleValue());
-//				}
-//			}
-//		}
-//
-//		return map;
-//	}
-	
-	
+	// @Override
+	// public HashMap<String, Double> getExchangeRate(String base) {
+	//
+	// HashMap<String, Double> map = new HashMap<>();
+	//
+	// List<Currency> list = commonManager.getCurrentCurrencies();
+	//
+	// for (Currency currency : list) {
+	//
+	// if (!currency.getCurrency().equals(base)) {
+	// BigDecimal value = getSingleExchangeRate(base, currency.getCurrency());
+	// if(value != null){
+	// map.put(currency.getCurrency(), value.doubleValue());
+	// }
+	// }
+	// }
+	//
+	// return map;
+	// }
+
 	@Override
 	public LinkedHashMap<String, Double> getExchangeRate(String base) {
 
@@ -271,8 +270,6 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		return map;
 	}
 
-	
-	
 	@Override
 	public BigDecimal getSingleExchangeRate(String currencyLeft, String currencyRight) {
 		return getExchangedAmount(currencyLeft, new BigDecimal("1"), currencyRight);

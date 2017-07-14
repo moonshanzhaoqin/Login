@@ -47,7 +47,8 @@ public class FriendController {
 	@ResponseEncryptBody
 	@ApiOperation(value = "添加好友", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/addFriend", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public AddFriendResponse addFriend(@PathVariable String token, @RequestDecryptBody AddFriendRequest addFriendRequest) {
+	public AddFriendResponse addFriend(@PathVariable String token,
+			@RequestDecryptBody AddFriendRequest addFriendRequest) {
 		logger.info("========addFriend : {}============", token);
 		AddFriendResponse rep = new AddFriendResponse();
 

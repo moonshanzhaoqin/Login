@@ -78,8 +78,8 @@ public class SupervisorController {
 		}
 		String retCode = crmAlarmManager.saveSupervisor(saveSupervisorRequest.getSupervisorName().trim(),
 				saveSupervisorRequest.getSupervisorMobile().trim(), saveSupervisorRequest.getSupervisorEmail().trim());
-		
-		if(retCode=="success"){
+
+		if (retCode == "success") {
 			crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 					Operation.ADD_SUPERVISOR.getOperationName(), saveSupervisorRequest.toString()));
 		}
@@ -92,7 +92,7 @@ public class SupervisorController {
 		mav = new ModelAndView();
 		configManager.updateConfig("reserve_funds", reserveFunds);
 		configManager.refreshConfig();
-		
+
 		mav.setViewName("redirect:/alarm/getAlarmConfigList");
 		return mav;
 	}
