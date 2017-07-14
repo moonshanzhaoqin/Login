@@ -104,8 +104,9 @@ public class CampaignManagerImpl implements CampaignManager {
 		earliestTime.add(Calendar.HOUR_OF_DAY,
 				configManager.getConfigLongValue(ConfigKeyEnum.COLLECT_ACTIVE_TIME, 1L).intValue()); // 现在时间的1小时前
 		/* 在有效时间内的领取的 */
-		String hql = "from Collect  where areaCode=? and userPhone=? and collectTime > ?";
-		Collect collect = collectDAO.findHQL(hql, new Object[] { areaCode, userPhone, earliestTime.getTime() });
+		String hql = "from Collect  where areaCode=? and userPhone=? and collectTime > ? and registerStatus=";
+		Collect collect = collectDAO.findHQL(hql,
+				new Object[] { areaCode, userPhone, earliestTime.getTime(), ServerConsts.COLLECT_STATUS_UNREGISTER });
 		return collect;
 	}
 
@@ -191,6 +192,8 @@ public class CampaignManagerImpl implements CampaignManager {
 		if (collect == null) {
 			return;
 		}
+		collect.setRegisterStatus(ServerConsts.COLLECT_STATUS_REGISTER);
+		collectDAO.updateCollect(collect);
 
 		/* 判断是否有钱可以支付 */
 		Campaign campaign = campaignDAO.getCampaign(collect.getCampaignId());
@@ -206,9 +209,9 @@ public class CampaignManagerImpl implements CampaignManager {
 		}
 
 		/* 给邀请人发钱 */
-		bonusSettlement(collect.getInviterId(), collect.getInviterBonus());
+		settlement(collect.getInviterId(), collect.getInviterBonus());
 		/* 给注册用户发钱 */
-		bonusSettlement(userId, collect.getInviteeBonus());
+		settlement(userId, collect.getInviteeBonus());
 
 		/* 更新预算 */
 		campaign.setBudgetSurplus(
@@ -228,7 +231,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		pushManager.push4Invite(inviteeUser.getPushId(), inviteeUser.getPushTag(), collect.getInviteeBonus());
 	}
 
-	private void bonusSettlement(Integer userId, BigDecimal bonus) {
+	private void settlement(Integer userId, BigDecimal bonus) {
 
 		User system = userDAO.getSystemUser();
 
