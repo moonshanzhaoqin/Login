@@ -130,3 +130,14 @@ CREATE TABLE `e_inviter` (
   `invite_bonus` decimal(20,0) NOT NULL DEFAULT '0' COMMENT '邀请奖励金',
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='邀请人';
+
+
+--add by nicholas.chi at 2017/07/14
+INSERT INTO 
+e_trans_details(transfer_id,user_id,trader_name,trader_area_code,trader_phone,trans_currency,trans_amount,trans_remarks) 
+SELECT 
+t2.transfer_id,t2.user_to,t3.user_name,t3.area_code,t3.user_phone,t2.currency,t2.transfer_amount,t2.transfer_comment 
+FROM e_unregistered t1 
+LEFT JOIN e_transfer t2 ON t1.transfer_id = t2.transfer_comment 
+LEFT JOIN e_user t3 ON t2.user_to = t3.user_id  
+WHERE unregistered_status = 2;

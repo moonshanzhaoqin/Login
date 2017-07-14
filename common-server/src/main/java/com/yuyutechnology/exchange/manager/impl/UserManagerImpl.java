@@ -645,18 +645,10 @@ public class UserManagerImpl implements UserManager {
 			transferDAO.addTransfer(transfer);
 
 			// add by Niklaus.chi at 2017/07/07
-
 			transDetailsManager.addTransDetails(transferId, userId, payer.getUserId(), payer.getUserName(),
 					payer.getAreaCode(), payer.getUserPhone(), unregistered.getCurrency(), unregistered.getAmount(),
 					payerTransfer.getTransferComment(), ServerConsts.TRANSFER_TYPE_TRANSACTION - 1);
-
 			// end
-
-			// 增加seq记录
-			// walletSeqDAO.addWalletSeq4Transaction(systemUserId, userId,
-			// ServerConsts.TRANSFER_TYPE_TRANSACTION,
-			// transferId, unregistered.getCurrency(),
-			// unregistered.getAmount());
 
 			/* 更改unregistered状态 */
 			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
