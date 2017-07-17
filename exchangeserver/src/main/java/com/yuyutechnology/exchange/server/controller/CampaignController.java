@@ -101,7 +101,7 @@ public class CampaignController {
 	@ApiOperation(value = "领取", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/invite/collect", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public CollectResponse collect(@RequestBody CollectRequest collectRequest) {
-		logger.info("========collect : {}============");
+		logger.info("========collect : {}============",collectRequest.toString());
 		CollectResponse rep = new CollectResponse();
 
 		if (collectRequest.Empty()) {

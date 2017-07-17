@@ -19,8 +19,8 @@
 				<thead>
 					<tr>
 						<th>活动ID</th>
-						<th>开始时间</th>
-						<th>结束时间</th>
+						<th>开始时间（GMT+8）</th>
+						<th>结束时间（GMT+8）</th>
 						<th>活动状态</th>
 						<th>预算</th>
 						<th>剩余</th>
@@ -51,14 +51,14 @@
 				<div class="modal-body">
 					<form class="form-horizontal" role="form" id="addCampaign">
 						<div class="form-group">
-							<label for="startTime " class="col-sm-4 control-label">开始时间</label>
+							<label for="startTime " class="col-sm-4 control-label">开始时间（UTC）</label>
 							<div class="col-sm-7">
 								<input id="start" type="datetime" class="form-control"
 									name="startTime" />
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="endTime" class="col-sm-4 control-label ">结束时间</label>
+							<label for="endTime" class="col-sm-4 control-label ">结束时间（UTC）</label>
 							<div class="col-sm-7 ">
 								<input id="end" type="datetime" class="form-control"
 									name="endTime" class="laydate-icon" />

@@ -95,7 +95,13 @@ public class CampaignController {
 		return rep;
 	}
 
-	// TODO 开启活动
+	/**
+	 * 开启活动
+	 * @param campaignRequest
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/openCampaign", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse openCampaign(@RequestBody CampaignRequest campaignRequest, HttpServletRequest request,
