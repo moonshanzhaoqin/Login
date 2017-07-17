@@ -3,8 +3,6 @@
  */
 package com.yuyutechnology.exchange.server.controller.response;
 
-import java.math.BigDecimal;
-
 import com.yuyutechnology.exchange.dto.InviterInfo;
 
 /**
