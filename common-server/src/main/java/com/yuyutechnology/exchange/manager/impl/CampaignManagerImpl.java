@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.sound.midi.MidiDevice.Info;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,6 +117,11 @@ public class CampaignManagerImpl implements CampaignManager {
 		/* 邀请人 */
 		Integer inviterId = Integer.valueOf(String.valueOf(ShareCodeUtil.codeToId(inviterCode)));
 
+		Inviter inviter=inviterDAO.getInviter(inviterId);
+		if (inviter==null) {
+			return RetCodeConsts.INVITERCODE_INCORRECT;
+		}
+		
 		/* 活动信息 */
 		Campaign campaign = activeCampaign();
 		if (campaign == null) {
@@ -186,15 +193,21 @@ public class CampaignManagerImpl implements CampaignManager {
 
 	@Override
 	public void grantBonus(Integer userId, String areaCode, String userPhone) {
+		logger.info("grantBonus : {} ",userId);
+		
 		/* 领取是否过了有效期 */
 		Collect collect = activeCollect(areaCode, userPhone);
 		if (collect == null) {
+			logger.info("no active collect");
 			return;
 		}
+		collect.setRegisterStatus(ServerConsts.COLLECT_STATUS_REGISTER);
+		collectDAO.updateCollect(collect);
 
 		/* 判断是否有钱可以支付 */
 		Campaign campaign = campaignDAO.getCampaign(collect.getCampaignId());
 		if (campaign.getBudgetSurplus().compareTo(collect.getInviteeBonus().add(collect.getInviterBonus())) == -1) {
+			logger.info("no enough budget");
 			return;
 		}
 
@@ -202,13 +215,14 @@ public class CampaignManagerImpl implements CampaignManager {
 		Inviter inviter = inviterDAO.getInviter(collect.getInviterId());
 		if (inviter.getInviteQuantity() >= configManager.getConfigLongValue(ConfigKeyEnum.INVITE_QUANTITY_RESTRICTION,
 				1000L)) {
+			logger.info("Exceed quanlity restriction");
 			return;
 		}
 
 		/* 给邀请人发钱 */
-		bonusSettlement(collect.getInviterId(), collect.getInviterBonus());
+		settlement(collect.getInviterId(), collect.getInviterBonus());
 		/* 给注册用户发钱 */
-		bonusSettlement(userId, collect.getInviteeBonus());
+		settlement(userId, collect.getInviteeBonus());
 
 		/* 更新预算 */
 		campaign.setBudgetSurplus(
@@ -228,7 +242,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		pushManager.push4Invite(inviteeUser.getPushId(), inviteeUser.getPushTag(), collect.getInviteeBonus());
 	}
 
-	private void bonusSettlement(Integer userId, BigDecimal bonus) {
+	private void settlement(Integer userId, BigDecimal bonus) {
 
 		User system = userDAO.getSystemUser();
 

@@ -174,7 +174,7 @@ public class GoldpayTransController {
 				reqMsg.getTransferId());
 		rep.setRetCode(map.get("retCode"));
 		rep.setMessage(map.get("msg"));
-		rep.setOpts(new String[]{map.get("msg")});
+		rep.setOpts(new String[] { map.get("msg") });
 		return rep;
 	}
 
@@ -206,7 +206,7 @@ public class GoldpayTransController {
 				if (transfer.getTransferStatus() == ServerConsts.TRANSFER_STATUS_OF_PROCESSING
 						|| transfer.getTransferStatus() == ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS
 						|| transfer.getTransferStatus() == ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_FAIL
-						||transfer.getTransferStatus()==ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL) {
+						|| transfer.getTransferStatus() == ServerConsts.TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL) {
 					withdrawDTO.setWithdrawStatus(0);
 				} else if (transfer.getTransferStatus() == ServerConsts.TRANSFER_STATUS_OF_REFUND) {
 					withdrawDTO.setWithdrawStatus(1);

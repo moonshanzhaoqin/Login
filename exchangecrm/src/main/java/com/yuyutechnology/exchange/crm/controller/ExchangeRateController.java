@@ -17,26 +17,23 @@ import com.yuyutechnology.exchange.util.oanda.PriceInfo;
 public class ExchangeRateController {
 	@Autowired
 	OandaRatesManager oandaRatesManager;
-	
+
 	ModelAndView mav;
-	
+
 	private static Logger logger = LogManager.getLogger(AdminController.class);
-	
+
 	@RequestMapping(value = "/exchangeRate/getAllExchangeRates", method = { RequestMethod.GET })
-	public ModelAndView getAllExchangeRates(){
+	public ModelAndView getAllExchangeRates() {
 		mav = new ModelAndView();
-		List<PriceInfo> priceInfos = oandaRatesManager.getAllPrices();	
-//		if(priceInfos!= null){
-//			for (PriceInfo priceInfo : priceInfos) {
-//				logger.info("  priceInfo : instrument : {}",priceInfo.getInstrument());
-//			}
-//		}
+		List<PriceInfo> priceInfos = oandaRatesManager.getAllPrices();
+		// if(priceInfos!= null){
+		// for (PriceInfo priceInfo : priceInfos) {
+		// logger.info(" priceInfo : instrument : {}",priceInfo.getInstrument());
+		// }
+		// }
 		mav.addObject("priceInfos", priceInfos);
 		mav.setViewName("exchangeRate/priceInfos");
 		return mav;
 	}
-
-	
-	
 
 }

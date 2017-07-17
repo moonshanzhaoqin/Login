@@ -163,5 +163,6 @@ public class MessageConsts {
 	public static final String TRANSFER_PAYPALTRANS_TIME_OUT = "TRANSFER_NOTIFICATION_NOT_ACQUIRED";
 	public static final String NO_CAMPAIGN = "NO_CAMPAIGN";
 	public static final String EXCESS_BUDGET = "EXCESS_BUDGET";
+	public static final String INVITERCODE_INCORRECT = "INVITERCODE_INCORRECT";
 
 }

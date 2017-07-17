@@ -22,34 +22,32 @@ import com.yuyutechnology.exchange.session.SessionDataHolder;
 
 @Controller
 public class WalletController {
-	
+
 	@Autowired
 	WalletManager walletManager;
-	
+
 	public static Logger logger = LogManager.getLogger(TransferController.class);
 
 	@ApiOperation(value = "获取黄金总量")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/wallet/getTotalAmontGold")
-	public @ResponseEncryptBody
-	GetTotalAmontGoldResponse getTotalAmontGold(@PathVariable String token){
-		
+	public @ResponseEncryptBody GetTotalAmontGoldResponse getTotalAmontGold(@PathVariable String token) {
+
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		GetTotalAmontGoldResponse rep = new GetTotalAmontGoldResponse();
 
 		HashMap<String, BigDecimal> result = walletManager.getTotalAmoutGold(sessionData.getUserId());
-		
-		if(result != null){
+
+		if (result != null) {
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			rep.setAmountOfGold(result.get("goldAmount").doubleValue());
 			rep.setAmountOfGoldOz(result.get("goldAmountOz").doubleValue());
-		}else{
+		} else {
 			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 			rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 		}
-		
+
 		return rep;
 	}
-	
 
 }

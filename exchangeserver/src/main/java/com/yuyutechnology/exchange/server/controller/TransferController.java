@@ -106,9 +106,10 @@ public class TransferController {
 		}
 
 		HashMap<String, String> map = transferManager.transferInitiate(sessionData.getUserId(), reqMsg.getAreaCode(),
-				reqMsg.getUserPhone(),reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())),reqMsg.getTransferComment(),0);
-		
-		if(map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)){
+				reqMsg.getUserPhone(), reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())),
+				reqMsg.getTransferComment(), 0);
+
+		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			rep.setTransferId(map.get("transferId"));
 		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY)) {
 			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit"), map.get("thawTime") });
@@ -144,7 +145,7 @@ public class TransferController {
 		} else {
 			rep.setRetCode(result.get("retCode"));
 			rep.setMessage(result.get("msg"));
-			rep.setOpts(new String[]{result.get("msg")});
+			rep.setOpts(new String[] { result.get("msg") });
 		}
 
 		return rep;
@@ -267,8 +268,8 @@ public class TransferController {
 		}
 
 		HashMap<String, String> map = transferManager.respond2Request(sessionData.getUserId(), reqMsg.getAreaCode(),
-				reqMsg.getUserPhone(), reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())), reqMsg.getTransferComment(),
-				reqMsg.getNoticeId());
+				reqMsg.getUserPhone(), reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())),
+				reqMsg.getTransferComment(), reqMsg.getNoticeId());
 
 		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			rep.setTransferId(map.get("transferId"));
@@ -286,7 +287,7 @@ public class TransferController {
 		return rep;
 
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@ApiOperation(value = "获取交易列表")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransactionRecord")
@@ -309,13 +310,13 @@ public class TransferController {
 			rep.setPageSize((int) map.get("pageSize"));
 			rep.setPageTotal((int) map.get("pageTotal"));
 			rep.setTotal(Integer.parseInt(map.get("total") + ""));
-			rep.setList((List<TransferDTO>) map.get("dtos") );
+			rep.setList((List<TransferDTO>) map.get("dtos"));
 		}
 
 		return rep;
 
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@ApiOperation(value = "获取交易列表")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransactionRecordNew")
@@ -338,7 +339,7 @@ public class TransferController {
 			rep.setPageSize((int) map.get("pageSize"));
 			rep.setPageTotal((int) map.get("pageTotal"));
 			rep.setTotal(Integer.parseInt(map.get("total") + ""));
-			rep.setList((List<TransferDTO>) map.get("dtos") );
+			rep.setList((List<TransferDTO>) map.get("dtos"));
 		}
 
 		return rep;
@@ -394,76 +395,81 @@ public class TransferController {
 		return rep;
 	}
 
-//	@ApiOperation(value = "获取交易详情")
-//	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransDetails")
-//	public @ResponseEncryptBody GetTransDetailsResponse getTransDetails(@PathVariable String token,
-//			@RequestDecryptBody GetTransDetailsRequest reqMsg) {
-//
-//		GetTransDetailsResponse rep = new GetTransDetailsResponse();
-//
-//		SessionData sessionData = SessionDataHolder.getSessionData();
-//		HashMap<String, Object> result = transferManager.getTransDetails(reqMsg.getTransferId(),
-//				sessionData.getUserId());
-//		if (result.isEmpty()) {
-//			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-//			rep.setMessage("something wrong!");
-//		} else {
-//
-//			User user = (User) result.get("user");
-//			Transfer transfer = (Transfer) result.get("transfer");
-//
-//			if (user != null) {
-//				rep.setTrader(user.getUserName());
-//				rep.setRegiste(true);
-//			} else {
-//				rep.setTrader(transfer.getPhone());
-//				rep.setRegiste(false);
-//			}
-//
-//			rep.setAreaCode((String) (result.get("areaCode")));
-//			rep.setPhone((String) (result.get("phone")));
-//			rep.setCurrency(transfer.getCurrency());
-//			rep.setAmount(transfer.getTransferAmount());
-//			rep.setUnit((String) (result.get("unit")));
-//
-//			rep.setPaypalCurrency(transfer.getPaypalCurrency());
-//			rep.setPaypalExchange(transfer.getPaypalExchange());
-//			rep.setTransferType(transfer.getTransferType());
-//
-//			if (!(boolean) result.get("isPlus")) {
-//				rep.setAmount(transfer.getTransferAmount().negate());
-//			} else if (transfer.getTransferType() == 0) {
-//				rep.setTransferType(1);
-//			}
-//			rep.setGoldpayName(MathUtils.hideString(transfer.getGoldpayName()));
-//			rep.setTransferComment(StringUtils.isNotBlank((String) result.get("comments"))?(String) result.get("comments"):transfer.getTransferComment());
-//			rep.setCreateTime(transfer.getCreateTime());
-//			rep.setFinishTime(transfer.getFinishTime());
-//			rep.setTransferId(transfer.getTransferId());
-//			rep.setFriend((boolean) result.get("isFriend"));
-//
-//			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-//			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-//
-//		}
-//
-//		return rep;
-//
-//	}
-	
+	// @ApiOperation(value = "获取交易详情")
+	// @RequestMapping(method = RequestMethod.POST, value =
+	// "/token/{token}/transfer/getTransDetails")
+	// public @ResponseEncryptBody GetTransDetailsResponse
+	// getTransDetails(@PathVariable String token,
+	// @RequestDecryptBody GetTransDetailsRequest reqMsg) {
+	//
+	// GetTransDetailsResponse rep = new GetTransDetailsResponse();
+	//
+	// SessionData sessionData = SessionDataHolder.getSessionData();
+	// HashMap<String, Object> result =
+	// transferManager.getTransDetails(reqMsg.getTransferId(),
+	// sessionData.getUserId());
+	// if (result.isEmpty()) {
+	// rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+	// rep.setMessage("something wrong!");
+	// } else {
+	//
+	// User user = (User) result.get("user");
+	// Transfer transfer = (Transfer) result.get("transfer");
+	//
+	// if (user != null) {
+	// rep.setTrader(user.getUserName());
+	// rep.setRegiste(true);
+	// } else {
+	// rep.setTrader(transfer.getPhone());
+	// rep.setRegiste(false);
+	// }
+	//
+	// rep.setAreaCode((String) (result.get("areaCode")));
+	// rep.setPhone((String) (result.get("phone")));
+	// rep.setCurrency(transfer.getCurrency());
+	// rep.setAmount(transfer.getTransferAmount());
+	// rep.setUnit((String) (result.get("unit")));
+	//
+	// rep.setPaypalCurrency(transfer.getPaypalCurrency());
+	// rep.setPaypalExchange(transfer.getPaypalExchange());
+	// rep.setTransferType(transfer.getTransferType());
+	//
+	// if (!(boolean) result.get("isPlus")) {
+	// rep.setAmount(transfer.getTransferAmount().negate());
+	// } else if (transfer.getTransferType() == 0) {
+	// rep.setTransferType(1);
+	// }
+	// rep.setGoldpayName(MathUtils.hideString(transfer.getGoldpayName()));
+	// rep.setTransferComment(StringUtils.isNotBlank((String)
+	// result.get("comments"))?(String)
+	// result.get("comments"):transfer.getTransferComment());
+	// rep.setCreateTime(transfer.getCreateTime());
+	// rep.setFinishTime(transfer.getFinishTime());
+	// rep.setTransferId(transfer.getTransferId());
+	// rep.setFriend((boolean) result.get("isFriend"));
+	//
+	// rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+	// rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+	//
+	// }
+	//
+	// return rep;
+	//
+	// }
+
 	@ApiOperation(value = "获取交易详情")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransDetails")
 	public @ResponseEncryptBody GetTransDetailsResponse getTransDetails(@PathVariable String token,
 			@RequestDecryptBody GetTransDetailsRequest reqMsg) {
 
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		
-		TransDetailsDTO dto = transferManager.getTransDetails(reqMsg.getTransferId(),sessionData.getUserId());
+
+		TransDetailsDTO dto = transferManager.getTransDetails(reqMsg.getTransferId(), sessionData.getUserId());
 		GetTransDetailsResponse rep = new GetTransDetailsResponse(dto);
-		
+
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-				
+
 		return rep;
 	}
 

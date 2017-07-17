@@ -47,10 +47,9 @@ public class AlarmController {
 	CrmLogManager crmLogManager;
 	@Autowired
 	TransferManager transferManager;
-	
-	private static final String[] VIEWNAMEARR = {"getAlarmConfigList",
-			"getLargeTransAlarmConfigList","getLargeTransAlarmConfigList",
-			"getBadAccountAlarmConfigList","getTotalGDQAlarmConfigList"};
+
+	private static final String[] VIEWNAMEARR = { "getAlarmConfigList", "getLargeTransAlarmConfigList",
+			"getLargeTransAlarmConfigList", "getBadAccountAlarmConfigList", "getTotalGDQAlarmConfigList" };
 
 	ModelAndView mav;
 
@@ -111,41 +110,43 @@ public class AlarmController {
 		mav.setViewName("alarm/badAccountAlarmConfigInfo");
 		return mav;
 	}
-	
+
 	@RequestMapping(value = "/alarm/getTotalGDQAlarmConfigList", method = RequestMethod.GET)
 	public ModelAndView getTotalGDQAlarmConfigList() {
 		mav = new ModelAndView();
-		//显示 总量，已售，剩余，剩余百分比
-		BigDecimal totalAmountOfGDQ = new BigDecimal(configManager.getConfigStringValue(ConfigKeyEnum.TOTALGDQCANBESOLD, "100000000"));
-		BigDecimal soldAmountOfGDQ = transferManager.getAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ);
+		// 显示 总量，已售，剩余，剩余百分比
+		BigDecimal totalAmountOfGDQ = new BigDecimal(
+				configManager.getConfigStringValue(ConfigKeyEnum.TOTALGDQCANBESOLD, "100000000"));
+		BigDecimal soldAmountOfGDQ = transferManager
+				.getAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ);
 		BigDecimal remainingAmountOfGDQ = totalAmountOfGDQ.subtract(soldAmountOfGDQ);
-		BigDecimal percent = (remainingAmountOfGDQ).divide(totalAmountOfGDQ,3,BigDecimal.ROUND_DOWN).multiply(new BigDecimal("100"));
-		
+		BigDecimal percent = (remainingAmountOfGDQ).divide(totalAmountOfGDQ, 3, BigDecimal.ROUND_DOWN)
+				.multiply(new BigDecimal("100"));
+
 		List<CrmAlarm> list = crmAlarmManager.getCrmAlarmConfigList();
 		List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
 
 		mav.addObject("list", list);
 		mav.addObject("supervisorList", supervisorList);
-		
+
 		mav.addObject("totalAmountOfGDQ", totalAmountOfGDQ);
 		mav.addObject("soldAmountOfGDQ", soldAmountOfGDQ);
 		mav.addObject("remainingAmountOfGDQ", remainingAmountOfGDQ);
 		mav.addObject("percent", percent);
-		
+
 		mav.setViewName("alarm/totalGDQAlarmConfigInfo");
 		return mav;
 	}
-	
+
 	@RequestMapping(value = "/alarm/delAlarmConfig", method = RequestMethod.GET)
-	public ModelAndView delAlarmConfig(Integer alarmId,	HttpServletRequest request, HttpServletResponse response) {
+	public ModelAndView delAlarmConfig(Integer alarmId, HttpServletRequest request, HttpServletResponse response) {
 		mav = new ModelAndView();
 		int alarmType = crmAlarmManager.delAlarmConfig(alarmId);
-		mav.setViewName("redirect:/alarm/"+VIEWNAMEARR[alarmType]);
+		mav.setViewName("redirect:/alarm/" + VIEWNAMEARR[alarmType]);
 
 		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.DELETE_ALARM.getOperationName(), alarmId.toString()));
-		
-		
+
 		return mav;
 	}
 
@@ -180,12 +181,12 @@ public class AlarmController {
 				updateAlarmConfigInfoRequest.getCriticalThresholdUpperLimit(),
 				updateAlarmConfigInfoRequest.getAlarmMode(), 0,
 				JsonBinder.getInstance().toJson(updateAlarmConfigInfoRequest.getSupervisorId()));
-		
-		mav.setViewName("redirect:/alarm/"+VIEWNAMEARR[updateAlarmConfigInfoRequest.getAlarmType()]);
-		
+
+		mav.setViewName("redirect:/alarm/" + VIEWNAMEARR[updateAlarmConfigInfoRequest.getAlarmType()]);
+
 		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.EDIT_ALARM.getOperationName(), updateAlarmConfigInfoRequest.toString()));
-		
+
 		return mav;
 	}
 
@@ -197,12 +198,12 @@ public class AlarmController {
 				saveAlarmConfigRequest.getCriticalThresholdLowerLimit(),
 				saveAlarmConfigRequest.getCriticalThresholdUpperLimit(), saveAlarmConfigRequest.getAlarmMode(), 0,
 				JsonBinder.getInstance().toJson(saveAlarmConfigRequest.getSupervisorId()));
-		
-		mav.setViewName("redirect:/alarm/"+VIEWNAMEARR[saveAlarmConfigRequest.getAlarmType()]);
-		
+
+		mav.setViewName("redirect:/alarm/" + VIEWNAMEARR[saveAlarmConfigRequest.getAlarmType()]);
+
 		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.ADD_ALARM.getOperationName(), saveAlarmConfigRequest.toString()));
-		
+
 		return mav;
 	}
 
@@ -219,7 +220,7 @@ public class AlarmController {
 					Operation.ON_ALARM.getOperationName(), alarmId.toString()));
 		}
 
-		mav.setViewName("redirect:/alarm/"+VIEWNAMEARR[alarmType]);
+		mav.setViewName("redirect:/alarm/" + VIEWNAMEARR[alarmType]);
 
 		return mav;
 	}

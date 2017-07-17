@@ -10,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "e_trans_details")
@@ -127,6 +129,7 @@ public class TransDetails {
 		this.transRemarks = transRemarks;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "details_create_time")
 	public Date getDetailsCreateTime() {
 		return detailsCreateTime;
