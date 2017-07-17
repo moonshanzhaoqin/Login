@@ -15,6 +15,12 @@ public class CollectRequest {
 	private String inviterCode;
 	private String sharePath;
 
+	@Override
+	public String toString() {
+		return "CollectRequest [areaCode=" + areaCode + ", userPhone=" + userPhone + ", inviterCode=" + inviterCode
+				+ ", sharePath=" + sharePath + "]";
+	}
+
 	public String getAreaCode() {
 		return areaCode;
 	}

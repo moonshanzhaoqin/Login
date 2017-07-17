@@ -29,12 +29,12 @@ public class CampaignDAOImpl implements CampaignDAO {
 	@Override
 	public List<Campaign> getCampaigns() {
 		List<?> list = hibernateTemplate.find("from Campaign");
-		return list.isEmpty() ? null : (List<Campaign>) list;
+		return (List<Campaign>) list;
 	}
 
 	@Override
 	public void updateCampaign(Campaign campaign) {
 		hibernateTemplate.saveOrUpdate(campaign);
 	}
-	
+
 }
