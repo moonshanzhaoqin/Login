@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -109,6 +110,20 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 			break;
 		}
 
+	}
+
+	@Override
+	public void updateTransDetailsWhenOtherOneRegist(String transferId,Integer payerId,String userName) {
+		List<?> list = transDetailsDAO.getTransDetailsByTransIdAndUserId(payerId, transferId);
+
+		if(list.isEmpty() || list.size() > 1){
+			return ;
+		}
+		
+		TransDetails transDetails = (TransDetails) list.get(0);
+		transDetails.setTraderName(userName);
+		
+		transDetailsDAO.updateTransDetails(transDetails);
 	}
 
 }

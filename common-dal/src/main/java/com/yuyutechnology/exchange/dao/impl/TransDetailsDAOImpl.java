@@ -68,6 +68,12 @@ public class TransDetailsDAOImpl implements TransDetailsDAO {
 		
 		return list;
 	}
+
+	@Override
+	public void updateTransDetails(TransDetails transDetails) {
+		// TODO Auto-generated method stub
+		hibernateTemplate.saveOrUpdate(transDetails);
+	}
 	
 	
 
