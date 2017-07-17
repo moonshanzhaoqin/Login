@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.sound.midi.MidiDevice.Info;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -191,9 +193,12 @@ public class CampaignManagerImpl implements CampaignManager {
 
 	@Override
 	public void grantBonus(Integer userId, String areaCode, String userPhone) {
+		logger.info("grantBonus : {} ",userId);
+		
 		/* 领取是否过了有效期 */
 		Collect collect = activeCollect(areaCode, userPhone);
 		if (collect == null) {
+			logger.info("no active collect");
 			return;
 		}
 		collect.setRegisterStatus(ServerConsts.COLLECT_STATUS_REGISTER);
@@ -202,6 +207,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		/* 判断是否有钱可以支付 */
 		Campaign campaign = campaignDAO.getCampaign(collect.getCampaignId());
 		if (campaign.getBudgetSurplus().compareTo(collect.getInviteeBonus().add(collect.getInviterBonus())) == -1) {
+			logger.info("no enough budget");
 			return;
 		}
 
@@ -209,6 +215,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		Inviter inviter = inviterDAO.getInviter(collect.getInviterId());
 		if (inviter.getInviteQuantity() >= configManager.getConfigLongValue(ConfigKeyEnum.INVITE_QUANTITY_RESTRICTION,
 				1000L)) {
+			logger.info("Exceed quanlity restriction");
 			return;
 		}
 
