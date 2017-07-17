@@ -1374,7 +1374,7 @@ public class TransferManagerImpl implements TransferManager {
 			}
 
 			dto.setFinishAt((Date) obj[5]);
-			dto.setTrader((String) obj[6]);
+			dto.setTrader((String) obj[6] == null ? " ":(String) obj[6]);
 			dto.setPhoneNum((String) obj[7] + " " + (String) obj[8]);
 
 			dtos.add(dto);
