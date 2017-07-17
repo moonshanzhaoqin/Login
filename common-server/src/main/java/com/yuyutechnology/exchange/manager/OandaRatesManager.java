@@ -23,7 +23,7 @@ public interface OandaRatesManager {
 
 	public LinkedHashMap<String, Double> getExchangeRate(String base);
 
-	public HashMap<String, Double> getExchangeRateDiffLeft4OneRight(String currencyRight);
+	public LinkedHashMap<String, Double> getExchangeRateDiffLeft4OneRight(String currencyRight);
 
 	public BigDecimal getSingleExchangeRate(String currencyLeft, String currencyRight);
 

@@ -3,6 +3,7 @@ package com.yuyutechnology.exchange.server.controller;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,7 +55,7 @@ public class PayPalTransController {
 		logger.info("Maximum amount of single transaction : {}", max);
 		logger.info("The minimum amount of a single transaction : {}", mini);
 
-		HashMap<String, Double> result = oandaRatesManager
+		LinkedHashMap<String, Double> result = oandaRatesManager
 				.getExchangeRateDiffLeft4OneRight(ServerConsts.CURRENCY_OF_GOLDPAY);
 		Date updateDate = oandaRatesManager.getExchangeRateUpdateDate();
 		result.remove(ServerConsts.CURRENCY_OF_CNY);
