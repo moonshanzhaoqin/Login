@@ -3,16 +3,8 @@
  */
 package com.yuyutechnology.exchange.cfg;
 
-import java.io.IOException;
-
-import javax.annotation.PostConstruct;
-
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializerProvider;
 
 /**
  * @author silent.sun

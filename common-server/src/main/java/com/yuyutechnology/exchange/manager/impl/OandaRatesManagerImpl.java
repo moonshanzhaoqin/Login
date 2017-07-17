@@ -419,9 +419,9 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 	}
 
 	@Override
-	public HashMap<String, Double> getExchangeRateDiffLeft4OneRight(String currencyRight) {
+	public LinkedHashMap<String, Double> getExchangeRateDiffLeft4OneRight(String currencyRight) {
 
-		HashMap<String, Double> result = new HashMap<>();
+		LinkedHashMap<String, Double> result = new LinkedHashMap<>();
 
 		List<Currency> list = commonManager.getCurrentCurrencies();
 
