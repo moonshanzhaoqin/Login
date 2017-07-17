@@ -75,9 +75,9 @@ function initCampaign() {
 								+ '<td>'
 								+ timeDate(data[i].endTime)
 								+ '</td>'
-								+ '<td>'
-								+ data[i].campaignStatus
-								+ '</td>'
+//								+ '<td>'
+//								+ data[i].campaignStatus
+//								+ '</td>'
 								+ '<td>'
 								+ data[i].campaignBudget
 								+ '</td>'

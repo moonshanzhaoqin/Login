@@ -19,14 +19,14 @@
 				<thead>
 					<tr>
 						<th>活动ID</th>
-						<th>开始时间（GMT+8）</th>
-						<th>结束时间（GMT+8）</th>
-						<th>活动状态</th>
-						<th>预算</th>
-						<th>剩余</th>
-						<th>邀请人奖励金</th>
-						<th>被邀请人奖励金</th>
-						<th>更新时间（GMT+8）</th>
+						<th>开始时间(GMT+8)</th>
+						<th>结束时间(GMT+8)</th>
+<!-- 						<th>活动状态</th> -->
+						<th>预算(Q)</th>
+						<th>剩余(Q)</th>
+						<th>邀请人奖励金(Q)</th>
+						<th>被邀请人奖励金(Q)</th>
+						<th>更新时间(GMT+8)</th>
 						<th>操作</th>
 						<th>修改奖励金</th>
 						<th>追加预算</th>
@@ -72,14 +72,14 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="inviterBonus" class="col-sm-4 control-label ">邀请人奖励金</label>
+							<label for="inviterBonus" class="col-sm-4 control-label ">邀请人奖励金（GDQ）</label>
 							<div class="col-sm-7">
 								<input type="number" min="0" class="form-control"
 									name="inviterBonus" />
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="inviteeBonus" class="col-sm-4 control-label ">被邀请人奖励金</label>
+							<label for="inviteeBonus" class="col-sm-4 control-label ">被邀请人奖励金（GDQ）</label>
 							<div class="col-sm-7">
 								<input type="number" min="0" class="form-control"
 									name="inviteeBonus" />
@@ -117,14 +117,14 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="inviterBonus" class="col-sm-4 control-label ">邀请人奖励金</label>
+							<label for="inviterBonus" class="col-sm-4 control-label ">邀请人奖励金（GDQ）</label>
 							<div class="col-sm-7">
 								<input type="number" min="0" class="form-control"
 									name="inviterBonus" />
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="inviteeBonus" class="col-sm-4 control-label ">被邀请人奖励金</label>
+							<label for="inviteeBonus" class="col-sm-4 control-label ">被邀请人奖励金（GDQ）</label>
 							<div class="col-sm-7">
 								<input type="number" min="0" class="form-control"
 									name="inviteeBonus" />
