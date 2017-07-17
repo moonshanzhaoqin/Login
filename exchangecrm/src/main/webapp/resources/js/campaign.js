@@ -75,9 +75,9 @@ function initCampaign() {
 								+ '<td>'
 								+ timeDate(data[i].endTime)
 								+ '</td>'
-//								+ '<td>'
-//								+ data[i].campaignStatus
-//								+ '</td>'
+								// + '<td>'
+								// + data[i].campaignStatus
+								// + '</td>'
 								+ '<td>'
 								+ data[i].campaignBudget
 								+ '</td>'
@@ -126,114 +126,131 @@ function initCampaign() {
 /* 新增活动 */
 function addCampaign() {
 	form = document.getElementById("addCampaign");
-	var data = {
-		startTime : form.startTime.value,
-		endTime : form.endTime.value,
-		campaignBudget : form.campaignBudget.value,
-		inviterBonus : form.inviterBonus.value,
-		inviteeBonus : form.inviteeBonus.value
-	};
-	$.ajax({
-		type : "post",
-		url : "/crm/addCampaign",
-		contentType : "application/json; charset=utf-8",
-		dataType : 'json',
-		data : JSON.stringify(data),
-		success : function(data) {
-			if (data.retCode == "00000") {
-				console.log("success");
-				$('#addCampaignModal').modal('hide')
-				alert("添加成功！");
-				initCampaign();
-			} else if (data.retCode == "00002") {
-				location.href = loginUrl;
-			} else if (data.retCode == "00003") {
-				console.log("parameter is empty");
-				alert("请填写完整！");
-			} else {
-				console.log("addCampaign" + data.message);
-				alert(data.message);
-			}
-		},
-		error : function(xhr, err) {
-			console.log("error");
-			console.log(err);
-			console.log(xhr);
-			alert("未知错误!");
-		},
-		async : false
-	});
+	if (parseInt(form.campaignBudget.value) == form.campaignBudget.value
+			&& parseInt(form.inviterBonus.value) == form.inviterBonus.value
+			&& parseInt(form.inviteeBonus.value) == form.inviteeBonus.value) {
+
+		var data = {
+			startTime : form.startTime.value,
+			endTime : form.endTime.value,
+			campaignBudget : form.campaignBudget.value,
+			inviterBonus : form.inviterBonus.value,
+			inviteeBonus : form.inviteeBonus.value
+		};
+		$.ajax({
+			type : "post",
+			url : "/crm/addCampaign",
+			contentType : "application/json; charset=utf-8",
+			dataType : 'json',
+			data : JSON.stringify(data),
+			success : function(data) {
+				if (data.retCode == "00000") {
+					console.log("success");
+					$('#addCampaignModal').modal('hide')
+					alert("添加成功！");
+					initCampaign();
+				} else if (data.retCode == "00002") {
+					location.href = loginUrl;
+				} else if (data.retCode == "00003") {
+					console.log("parameter is empty");
+					alert("请填写完整！");
+				} else {
+					console.log("addCampaign" + data.message);
+					alert(data.message);
+				}
+			},
+			error : function(xhr, err) {
+				console.log("error");
+				console.log(err);
+				console.log(xhr);
+				alert("未知错误!");
+			},
+			async : false
+		});
+	} else {
+		alert("GDQ需为整数");
+	}
 }
 /* 修改奖励金 */
 function changeBonus() {
 	form = document.getElementById("changeBonus");
-	data = {
-		campaignId : form.campaignId.value,
-		inviterBonus : form.inviterBonus.value,
-		inviteeBonus : form.inviteeBonus.value,
+	if (parseInt(form.inviterBonus.value) == form.inviterBonus.value
+			&& parseInt(form.inviteeBonus.value) == form.inviteeBonus.value) {
+		data = {
+			campaignId : form.campaignId.value,
+			inviterBonus : form.inviterBonus.value,
+			inviteeBonus : form.inviteeBonus.value,
+		}
+		$.ajax({
+			type : "post",
+			url : "/crm/changeBonus",
+			contentType : "application/json; charset=utf-8",
+			dataType : 'json',
+			data : JSON.stringify(data),
+			success : function(data) {
+				if (data.retCode == "00000") {
+					console.log("changeBonus success");
+					$('#changeBonusModal').modal('hide')
+					alert("修改成功！");
+					initCampaign();
+				} else if (data.retCode == "00002") {
+					location.href = loginUrl;
+				} else {
+					console.log("changeBonus" + data.message);
+					alert(data.message);
+				}
+			},
+			error : function(xhr, err) {
+				console.log("error");
+				console.log(err);
+				console.log(xhr);
+				alert("未知错误！");
+			},
+			async : false
+		});
+	} else {
+		alert("GDQ需为整数");
 	}
-	$.ajax({
-		type : "post",
-		url : "/crm/changeBonus",
-		contentType : "application/json; charset=utf-8",
-		dataType : 'json',
-		data : JSON.stringify(data),
-		success : function(data) {
-			if (data.retCode == "00000") {
-				console.log("changeBonus success");
-				$('#changeBonusModal').modal('hide')
-				alert("修改成功！");
-				initCampaign();
-			} else if (data.retCode == "00002") {
-				location.href = loginUrl;
-			} else {
-				console.log("changeBonus" + data.message);
-				alert(data.message);
-			}
-		},
-		error : function(xhr, err) {
-			console.log("error");
-			console.log(err);
-			console.log(xhr);
-			alert("未知错误！");
-		},
-		async : false
-	});
 }
 /* 追加预算 */
 function addBudget() {
 	form = document.getElementById("addBudget");
-	data = {
-		campaignId : form.campaignId.value,
-		additionalBudget : form.additionalBudget.value,
+	if (parseInt(form.additionalBudget.value) == form.additionalBudget.value) {
+
+		data = {
+			campaignId : form.campaignId.value,
+			additionalBudget : form.additionalBudget.value,
+		}
+		$.ajax({
+			type : "post",
+			url : "/crm/addBudget",
+			contentType : "application/json; charset=utf-8",
+			dataType : 'json',
+			data : JSON.stringify(data),
+			success : function(data) {
+				if (data.retCode == "00000") {
+					console.log("addBudget success");
+					$('#addBudgetModal').modal('hide')
+					alert("修改成功！");
+					initCampaign();
+				} else if (data.retCode == "00002") {
+					location.href = loginUrl;
+				} else {
+					console.log("addBudget" + data.message);
+					alert(data.message);
+				}
+			},
+			error : function(xhr, err) {
+				console.log("error");
+				console.log(err);
+				console.log(xhr);
+				alert("未知错误！");
+			},
+			async : false
+		});
+	} else {
+		alert("GDQ需为整数");
 	}
-	$.ajax({
-		type : "post",
-		url : "/crm/addBudget",
-		contentType : "application/json; charset=utf-8",
-		dataType : 'json',
-		data : JSON.stringify(data),
-		success : function(data) {
-			if (data.retCode == "00000") {
-				console.log("addBudget success");
-				$('#addBudgetModal').modal('hide')
-				alert("修改成功！");
-				initCampaign();
-			} else if (data.retCode == "00002") {
-				location.href = loginUrl;
-			} else {
-				console.log("addBudget" + data.message);
-				alert(data.message);
-			}
-		},
-		error : function(xhr, err) {
-			console.log("error");
-			console.log(err);
-			console.log(xhr);
-			alert("未知错误！");
-		},
-		async : false
-	});
 }
 /* 开启活动 */
 function openCampaign(campaignId) {
