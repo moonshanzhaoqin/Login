@@ -45,7 +45,7 @@ public class AccountInfoController {
 	SessionManager sessionManager;
 	@Autowired
 	CrmLogManager crmLogManager;
-	
+
 	ModelAndView mav;
 
 	private static Logger log = LogManager.getLogger(AccountInfoController.class);
@@ -124,7 +124,8 @@ public class AccountInfoController {
 	}
 
 	@RequestMapping(value = "/account/userFreeze", method = RequestMethod.GET)
-	public ModelAndView userFreeze(UserFreezeRequest userFreezeRequest,HttpServletRequest request, HttpServletResponse response) {
+	public ModelAndView userFreeze(UserFreezeRequest userFreezeRequest, HttpServletRequest request,
+			HttpServletResponse response) {
 		mav = new ModelAndView();
 		userManager.userFreeze(userFreezeRequest.getUserId(), userFreezeRequest.getOperate());
 		if (userFreezeRequest.getOperate() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
@@ -135,10 +136,10 @@ public class AccountInfoController {
 			sessionManager.delLoginToken(userFreezeRequest.getUserId());
 			userManager.logout(userFreezeRequest.getUserId());
 			crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
-					Operation.FREEZE_USER.getOperationName(),userFreezeRequest.getUserId().toString()));
-		}else {
+					Operation.FREEZE_USER.getOperationName(), userFreezeRequest.getUserId().toString()));
+		} else {
 			crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
-					Operation.DEFROST_USER.getOperationName(),userFreezeRequest.getUserId().toString()));
+					Operation.DEFROST_USER.getOperationName(), userFreezeRequest.getUserId().toString()));
 		}
 		mav.setViewName("redirect:/account/accountOverview");
 		return mav;

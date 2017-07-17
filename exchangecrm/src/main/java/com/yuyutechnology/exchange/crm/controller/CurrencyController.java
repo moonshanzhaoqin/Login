@@ -40,6 +40,7 @@ public class CurrencyController {
 
 	/**
 	 * 获取货币列表 getCurrencyList
+	 * 
 	 * @param request
 	 * @param response
 	 * @return
@@ -52,6 +53,7 @@ public class CurrencyController {
 
 	/**
 	 * 保存货币信息 updateCurrency
+	 * 
 	 * @param currency
 	 * @param request
 	 * @param response
@@ -64,13 +66,14 @@ public class CurrencyController {
 		BaseResponse rep = new BaseResponse();
 		currencyManager.updateCurrency(currency);
 		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
-				Operation.EDIT_CURRENCY.getOperationName(),currency.toString()));		
+				Operation.EDIT_CURRENCY.getOperationName(), currency.toString()));
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
 
 	/**
 	 * 获取待添加货币列表
+	 * 
 	 * @param request
 	 * @param response
 	 * @return
@@ -83,6 +86,7 @@ public class CurrencyController {
 
 	/**
 	 * 添加新币种
+	 * 
 	 * @param addCurrencyRequest
 	 * @param request
 	 * @param response
@@ -99,9 +103,9 @@ public class CurrencyController {
 		} else {
 			logger.info("add {}", addCurrencyRequest.getCurrency());
 			String retCode = currencyManager.addCurrency(addCurrencyRequest.getCurrency());
-			if (retCode==RetCodeConsts.RET_CODE_SUCCESS) {
+			if (retCode == RetCodeConsts.RET_CODE_SUCCESS) {
 				crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
-						Operation.ADD_CURRENCY.getOperationName(),addCurrencyRequest.getCurrency()));
+						Operation.ADD_CURRENCY.getOperationName(), addCurrencyRequest.getCurrency()));
 			}
 			rep.setRetCode(retCode);
 		}
@@ -110,6 +114,7 @@ public class CurrencyController {
 
 	/**
 	 * 修改币种状态
+	 * 
 	 * @param changeCurrencyStatusRequest
 	 * @param request
 	 * @param response
@@ -128,12 +133,12 @@ public class CurrencyController {
 					changeCurrencyStatusRequest.getStatus());
 			String retCode = currencyManager.changeCurrencyStatus(changeCurrencyStatusRequest.getCurrency(),
 					changeCurrencyStatusRequest.getStatus());
-			if (changeCurrencyStatusRequest.getStatus()==ServerConsts.CURRENCY_AVAILABLE) {
+			if (changeCurrencyStatusRequest.getStatus() == ServerConsts.CURRENCY_AVAILABLE) {
 				crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
-						Operation.ON_CURRENCY.getOperationName(),changeCurrencyStatusRequest.getCurrency()));		
-			}else{
+						Operation.ON_CURRENCY.getOperationName(), changeCurrencyStatusRequest.getCurrency()));
+			} else {
 				crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
-						Operation.OFF_CURRENCY.getOperationName(),changeCurrencyStatusRequest.getCurrency()));	
+						Operation.OFF_CURRENCY.getOperationName(), changeCurrencyStatusRequest.getCurrency()));
 			}
 			rep.setRetCode(retCode);
 		}

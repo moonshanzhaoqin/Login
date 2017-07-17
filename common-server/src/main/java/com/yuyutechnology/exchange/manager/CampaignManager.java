@@ -30,19 +30,23 @@ public interface CampaignManager {
 			BigDecimal inviteeBonus);
 
 	/**
+	 * 
 	 * @return
 	 * 
 	 */
 	List<Campaign> getCampaignList();
 
 	/**
+	 * 获取邀请人信息
+	 * 
 	 * @param userId
 	 * @return
 	 */
 	InviterInfo getInviterInfo(Integer userId);
 
-
 	/**
+	 * 领取
+	 * 
 	 * @param areaCode
 	 * @param userPhone
 	 * @param inviterCode
@@ -52,6 +56,8 @@ public interface CampaignManager {
 	String collect(String areaCode, String userPhone, String inviterCode, int sharePath);
 
 	/**
+	 * 获取活动信息
+	 * 
 	 * @return
 	 */
 	CampaignInfo getCampaignInfo();
@@ -66,7 +72,8 @@ public interface CampaignManager {
 	void grantBonus(Integer userId, String areaCode, String userPhone);
 
 	/**
-	 * 有效的领取
+	 * 有效的领取记录
+	 * 
 	 * @param areaCode
 	 * @param userPhone
 	 * @return
@@ -74,6 +81,8 @@ public interface CampaignManager {
 	Collect activeCollect(String areaCode, String userPhone);
 
 	/**
+	 * 修改奖励金
+	 * 
 	 * @param campaignId
 	 * @param inviterBonus
 	 * @param inviteeBonus
@@ -81,23 +90,26 @@ public interface CampaignManager {
 	void changeBonus(Integer campaignId, BigDecimal inviterBonus, BigDecimal inviteeBonus);
 
 	/**
+	 * 追加预算
+	 * 
 	 * @param campaignId
 	 * @param additionalBudget
 	 */
 	void additionalBudget(Integer campaignId, BigDecimal additionalBudget);
 
 	/**
+	 * 开启活动
+	 * 
 	 * @param campaignId
-	 * @return 
+	 * @return
 	 */
 	Integer openCampaign(Integer campaignId);
 
 	/**
+	 * 关闭活动
+	 * 
 	 * @param campaignId
 	 */
 	void closeCampaign(Integer campaignId);
 
-	// TODO 开启关闭活动
-	// TODO 修改奖励金
-	// TODO 追加预算
 }

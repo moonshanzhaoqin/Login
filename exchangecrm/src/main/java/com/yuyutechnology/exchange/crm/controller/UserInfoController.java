@@ -37,7 +37,7 @@ public class UserInfoController {
 	CrmUserInfoManager crmUserInfoManager;
 	@Autowired
 	CrmLogManager crmLogManager;
-	
+
 	/**
 	 * 获取用户信息
 	 * 

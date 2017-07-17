@@ -81,6 +81,7 @@ public class BadAccountController {
 			HttpServletResponse response) {
 		return walletManager.getDetailSeq(getDetailSeqRequest.getBadAccountId());
 	}
+
 	/**
 	 * 
 	 * @param getDetailSeqByTransferIdSeqRequest
@@ -88,17 +89,18 @@ public class BadAccountController {
 	 * @param response
 	 * @return
 	 */
-	
+
 	@ResponseBody
 	@RequestMapping(value = "/getDetailSeqByTransferId", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public List<?> getDetailSeqByTransferId(@RequestBody GetDetailSeqByTransferIdRequest getDetailSeqByTransferIdRequest, HttpServletRequest request,
+	public List<?> getDetailSeqByTransferId(
+			@RequestBody GetDetailSeqByTransferIdRequest getDetailSeqByTransferIdRequest, HttpServletRequest request,
 			HttpServletResponse response) {
-		logger.info("getDetailSeqByTransferId==>transferId:{}",getDetailSeqByTransferIdRequest.getTransferId());
+		logger.info("getDetailSeqByTransferId==>transferId:{}", getDetailSeqByTransferIdRequest.getTransferId());
 		return walletManager.getDetailSeqByTransferId(getDetailSeqByTransferIdRequest.getTransferId());
 	}
 
 	/**
-	 *获取交易详情
+	 * 获取交易详情
 	 * 
 	 * @param getTransferRequest
 	 * @param request
@@ -111,8 +113,10 @@ public class BadAccountController {
 			HttpServletResponse response) {
 		return transferManager.getTransfer(getTransferRequest.getTransferId());
 	}
+
 	/**
-	 *  获取兑换详情
+	 * 获取兑换详情
+	 * 
 	 * @param getExchangeRequest
 	 * @param request
 	 * @param response
@@ -144,7 +148,7 @@ public class BadAccountController {
 		if (forbidden.getStatus() == ServerConsts.ACCOUTING_TASK_OPEN) {
 			crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 					Operation.OPEN_ACCOUTING_TASK.getOperationName()));
-		}else {
+		} else {
 			crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 					Operation.CLOSE_ACCOUTING_TASK.getOperationName()));
 		}

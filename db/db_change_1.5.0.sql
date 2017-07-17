@@ -136,7 +136,7 @@ CREATE TABLE `e_inviter` (
 INSERT INTO 
 e_trans_details(transfer_id,user_id,trader_name,trader_area_code,trader_phone,trans_currency,trans_amount,trans_remarks) 
 SELECT 
-t2.transfer_id,t2.user_to,t4.user_name,t4.area_code,t4.user_phone,t2.currency,t2.transfer_amount,t2.transfer_comment 
+t2.transfer_id,t2.user_to,t4.user_name,t4.area_code,t4.user_phone,t2.currency,t2.transfer_amount,t3.transfer_comment 
 FROM e_unregistered t1 
 LEFT JOIN e_transfer t2 ON t1.transfer_id = t2.transfer_comment 
 LEFT JOIN e_transfer t3 ON t1.transfer_id = t3.transfer_id 

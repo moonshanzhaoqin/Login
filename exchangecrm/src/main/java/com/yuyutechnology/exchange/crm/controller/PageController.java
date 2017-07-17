@@ -24,22 +24,27 @@ public class PageController {
 	public String config(HttpServletRequest request, HttpServletResponse response) {
 		return "config";
 	}
+
 	@RequestMapping(value = "/withdraw", method = { RequestMethod.GET })
 	public String withdraw(HttpServletRequest request, HttpServletResponse response) {
 		return "withdraw";
 	}
+
 	@RequestMapping(value = "/badAccount", method = { RequestMethod.GET })
 	public String badAccount(HttpServletRequest request, HttpServletResponse response) {
 		return "badAccount";
 	}
+
 	@RequestMapping(value = "/userInfo", method = { RequestMethod.GET })
 	public String userInfo(HttpServletRequest request, HttpServletResponse response) {
 		return "userInfo";
 	}
+
 	@RequestMapping(value = "/recharge", method = { RequestMethod.GET })
 	public String recharge(HttpServletRequest request, HttpServletResponse response) {
 		return "recharge";
 	}
+
 	@RequestMapping(value = "/campaign", method = { RequestMethod.GET })
 	public String campaign(HttpServletRequest request, HttpServletResponse response) {
 		return "campaign";

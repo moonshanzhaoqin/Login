@@ -47,21 +47,21 @@ public class AdminController {
 			mav.addObject("retCode", RetCodeConsts.PARAMETER_IS_EMPTY);
 			mav.addObject("message", "请输入用户名、密码");
 		} else {
-			Admin admin=adminManager.getAdminByName(loginRquest.getAdminName());
-			if (admin==null) {
+			Admin admin = adminManager.getAdminByName(loginRquest.getAdminName());
+			if (admin == null) {
 				mav.setViewName("login");
 				mav.addObject("retCode", RetCodeConsts.ADMIN_NOT_EXIST);
 				mav.addObject("message", "用戶不存在");
-			}else if(adminManager.checkPassword(admin.getAdminId(), loginRquest.getAdminPassword())){
+			} else if (adminManager.checkPassword(admin.getAdminId(), loginRquest.getAdminPassword())) {
 				// 写入session
-				request.getSession().setAttribute("adminName",admin.getAdminName());
+				request.getSession().setAttribute("adminName", admin.getAdminName());
 				request.getSession().setAttribute("adminPower", admin.getAdminPower());
 				mav.setViewName("redirect:/exchangeRate/getAllExchangeRates");
-				
+
 				crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 						Operation.ADMIN_LOGIN.getOperationName(), HttpTookit.getIp(request)));
-				
-			}else{
+
+			} else {
 				mav.setViewName("login");
 				mav.addObject("retCode", RetCodeConsts.PASSWORD_NOT_MATCH_NAME);
 				mav.addObject("message", "用户名密码不匹配");
@@ -74,7 +74,7 @@ public class AdminController {
 	@RequestMapping(value = "/modifyPassword", method = { RequestMethod.POST })
 	public BaseResponse modifyPassword(@RequestBody ModifyPasswordRquest modifyPasswordRquest,
 			HttpServletRequest request, HttpServletResponse response) {
-		BaseResponse rep=new  BaseResponse();
+		BaseResponse rep = new BaseResponse();
 		if (modifyPasswordRquest.isEmpty()) {
 			logger.info("parameter is empty");
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);

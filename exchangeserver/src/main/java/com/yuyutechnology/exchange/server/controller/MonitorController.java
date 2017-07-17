@@ -30,20 +30,20 @@ import com.yuyutechnology.exchange.util.JsonBinder;
  */
 @Controller
 public class MonitorController {
-	
+
 	@Resource
 	HibernateTemplate hibernateTemplate;
-	
+
 	@Resource
 	DataSource dataSource;
-	
+
 	@Resource
 	RedisTemplate<String, String> commonRedisTemplate;
-	
+
 	public static Logger logger = LogManager.getLogger(PayPalTransController.class);
-	
+
 	@RequestMapping(method = RequestMethod.GET, value = "/getServerInfo")
-	public @ResponseBody String getServerInfo(){
+	public @ResponseBody String getServerInfo() {
 		ServerInfo serverInfo = new ServerInfo();
 		serverInfo.setServerTime(new Date().toString());
 		try {
@@ -65,30 +65,34 @@ public class MonitorController {
 		}
 		return JsonBinder.getInstance().toJson(serverInfo);
 	}
-	
-    public class ServerInfo {
-    	private String serverTime;
-        private String db = "ok";
-        private String redis = "ok";
+
+	public class ServerInfo {
+		private String serverTime;
+		private String db = "ok";
+		private String redis = "ok";
+
 		public String getServerTime() {
 			return serverTime;
 		}
+
 		public void setServerTime(String serverTime) {
 			this.serverTime = serverTime;
 		}
+
 		public String getDb() {
 			return db;
 		}
+
 		public void setDb(String db) {
 			this.db = db;
 		}
+
 		public String getRedis() {
 			return redis;
 		}
+
 		public void setRedis(String redis) {
 			this.redis = redis;
 		}
-    }
+	}
 }
-
-
