@@ -21,7 +21,6 @@
 						<th>活动ID</th>
 						<th>开始时间(GMT+8)</th>
 						<th>结束时间(GMT+8)</th>
-<!-- 						<th>活动状态</th> -->
 						<th>预算(Q)</th>
 						<th>剩余(Q)</th>
 						<th>邀请人奖励金(Q)</th>
@@ -68,21 +67,24 @@
 							<label for="campaignBudget" class="col-sm-4 control-label ">活动预算（GDQ）</label>
 							<div class="col-sm-7">
 								<input type="number" min="0" class="form-control"
-									name="campaignBudget" />
+									name="campaignBudget" onkeydown="onlyNum();"
+									style="ime-mode: Disabled" />
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="inviterBonus" class="col-sm-4 control-label ">邀请人奖励金（GDQ）</label>
 							<div class="col-sm-7">
 								<input type="number" min="0" class="form-control"
-									name="inviterBonus" />
+									name="inviterBonus" onkeydown="onlyNum();"
+									style="ime-mode: Disabled" />
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="inviteeBonus" class="col-sm-4 control-label ">被邀请人奖励金（GDQ）</label>
 							<div class="col-sm-7">
 								<input type="number" min="0" class="form-control"
-									name="inviteeBonus" />
+									name="inviteeBonus" onkeydown="onlyNum();"
+									style="ime-mode: Disabled" />
 							</div>
 						</div>
 					</form>
@@ -120,14 +122,16 @@
 							<label for="inviterBonus" class="col-sm-4 control-label ">邀请人奖励金（GDQ）</label>
 							<div class="col-sm-7">
 								<input type="number" min="0" class="form-control"
-									name="inviterBonus" />
+									name="inviterBonus" onkeydown="onlyNum();"
+									style="ime-mode: Disabled" />
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="inviteeBonus" class="col-sm-4 control-label ">被邀请人奖励金（GDQ）</label>
 							<div class="col-sm-7">
 								<input type="number" min="0" class="form-control"
-									name="inviteeBonus" />
+									name="inviteeBonus" onkeydown="onlyNum();"
+									style="ime-mode: Disabled" />
 							</div>
 						</div>
 					</form>
@@ -142,9 +146,8 @@
 	</div>
 
 	<!-- 模态框（Modal）追加预算 -->
-	<div class="modal fade" id="addBudgetModal" tabindex="-1"
-		role="dialog" aria-labelledby="addBudgetModalLabel"
-		aria-hidden="true">
+	<div class="modal fade" id="addBudgetModal" tabindex="-1" role="dialog"
+		aria-labelledby="addBudgetModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -164,23 +167,23 @@
 						<div class="form-group">
 							<label for="campaignBudget" class="col-sm-4 control-label ">活动预算（GDQ）</label>
 							<div class="col-sm-7">
-								<input type="number" class="form-control"
-									name="campaignBudget" readonly/>
+								<input type="number" class="form-control" name="campaignBudget"
+									readonly />
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="additionalBudget" class="col-sm-4 control-label ">追加预算（GDQ）</label>
 							<div class="col-sm-7">
 								<input type="number" min="0" class="form-control"
-									name="additionalBudget" />
+									name="additionalBudget" onkeydown="onlyNum();"
+									style="ime-mode: Disabled" />
 							</div>
 						</div>
 					</form>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary"
-						onclick="addBudget()">确认</button>
+					<button type="button" class="btn btn-primary" onclick="addBudget()">确认</button>
 				</div>
 			</div>
 		</div>
