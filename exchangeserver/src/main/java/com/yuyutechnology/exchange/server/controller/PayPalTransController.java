@@ -107,6 +107,11 @@ public class PayPalTransController {
 			rep.setMessage((String) result.get("msg"));
 			return rep;
 		}
+		if (RetCodeConsts.PAYPAL_RECHARGE_OFF.equals(result.get("retCode"))) {
+			rep.setRetCode(RetCodeConsts.PAYPAL_RECHARGE_OFF);
+			rep.setMessage((String) result.get("msg"));
+			return rep;
+		}
 
 		rep.setTransId((String) result.get("transId"));
 		rep.setAccessToken((String) result.get("token"));
