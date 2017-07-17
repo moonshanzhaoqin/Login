@@ -51,7 +51,7 @@ CREATE TABLE `e_trans_details` (
 INSERT INTO 
 e_trans_details(transfer_id,user_id,trader_name,trader_area_code,trader_phone,trans_currency,trans_amount,trans_remarks)
 SELECT 
-t2.transfer_id,t2.user_from,t3.user_name,
+t2.transfer_id,t2.user_from,IF(t3.user_id=1,NULL,t3.user_name),
 t3.area_code,t3.user_phone,
 t2.currency,-t2.transfer_amount,
 t2.transfer_comment 
@@ -62,7 +62,7 @@ t2.user_to = t3.user_id and t2.transfer_type = 0 and t2.user_from != 1;
 INSERT INTO 
 e_trans_details(transfer_id,user_id,trader_name,trader_area_code,trader_phone,trans_currency,trans_amount,trans_remarks)
 SELECT 
-t2.transfer_id,t2.user_to,t3.user_name,
+t2.transfer_id,t2.user_to,IF(t3.user_id=1,NULL,t3.user_name),
 t3.area_code,t3.user_phone,
 t2.currency,t2.transfer_amount,
 t2.transfer_comment 
@@ -72,7 +72,7 @@ t2.user_from = t3.user_id and t2.transfer_type = 0 and t2.user_from != 1;
 INSERT INTO 
 e_trans_details(transfer_id,user_id,trader_name,trader_area_code,trader_phone,trans_currency,trans_amount,trans_remarks)
 SELECT 
-t2.transfer_id,t2.user_from,t3.user_name,
+t2.transfer_id,t2.user_from,IF(t3.user_id=1,NULL,t3.user_name),
 t2.area_code,t2.phone,
 t2.currency,-t2.transfer_amount,
 t2.transfer_comment 
