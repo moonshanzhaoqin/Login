@@ -70,7 +70,7 @@ t2.currency,t2.transfer_amount,
 t2.transfer_comment 
 FROM e_transfer t2,e_user t3 WHERE
 IF(t2.user_from=1,(SELECT t4.user_id FROM e_user t4 WHERE t4.area_code = t2.area_code and t4.user_phone = t2.phone),user_from)
-= t3.user_id and t2.transfer_type = 0 and t2.user_to != 1;
+= t3.user_id and t2.transfer_type = 0 and t2.user_from != 1;
 
 INSERT INTO 
 e_trans_details(transfer_id,user_id,trader_name,trader_area_code,trader_phone,trans_currency,trans_amount,trans_remarks)

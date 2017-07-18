@@ -114,16 +114,16 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 
 	@Override
 	public void updateTransDetailsWhenOtherOneRegist(String transferId,Integer payerId,String userName) {
-		List<?> list = transDetailsDAO.getTransDetailsByTransIdAndUserId(payerId, transferId);
-
-		if(list.isEmpty() || list.size() > 1){
-			return ;
+		
+		TransDetails transDetails = transDetailsDAO.getTransDetails(payerId, transferId);
+		
+		if(transDetails != null){
+			
+			transDetails.setTraderName(userName);
+			transDetailsDAO.updateTransDetails(transDetails);
+			
 		}
-		
-		TransDetails transDetails = (TransDetails) list.get(0);
-		transDetails.setTraderName(userName);
-		
-		transDetailsDAO.updateTransDetails(transDetails);
+
 	}
 
 }
