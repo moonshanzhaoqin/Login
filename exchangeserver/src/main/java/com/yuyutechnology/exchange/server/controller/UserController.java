@@ -23,6 +23,7 @@ import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.mail.MailManager;
+import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
@@ -71,6 +72,8 @@ public class UserController {
 	MailManager mailManager;
 	@Autowired
 	ConfigManager configManager;
+	@Autowired
+	CampaignManager campaignManager;
 
 	@ResponseEncryptBody
 	@ApiOperation(value = "功能模块的可用性", httpMethod = "POST", notes = "")
@@ -391,6 +394,8 @@ public class UserController {
 						/* 记录登录信息 */
 						userManager.updateUser(userId, HttpTookit.getIp(request), registerRequest.getPushId(),
 								registerRequest.getLanguage());
+						/* 发放奖励金 */
+						campaignManager.grantBonus(userId, registerRequest.getAreaCode(), registerRequest.getUserPhone());
 						/* 生成session Token */
 						SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 						sessionManager.saveSessionData(sessionData);
