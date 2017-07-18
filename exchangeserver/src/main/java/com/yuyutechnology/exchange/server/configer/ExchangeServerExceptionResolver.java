@@ -17,12 +17,14 @@ import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
 import com.yuyutechnology.exchange.util.JsonBinder;
+
 /**
  * @author silent.sun
  *
  */
-public class ExchangeServerExceptionResolver implements HandlerExceptionResolver{
+public class ExchangeServerExceptionResolver implements HandlerExceptionResolver {
 	private static Logger logger = LogManager.getLogger(ExchangeServerExceptionResolver.class);
+
 	@Override
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
 			Exception ex) {

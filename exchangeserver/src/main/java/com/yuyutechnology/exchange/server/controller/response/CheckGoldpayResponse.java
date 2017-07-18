@@ -1,6 +1,6 @@
 package com.yuyutechnology.exchange.server.controller.response;
 
-public class CheckGoldpayResponse extends BaseResponse{
+public class CheckGoldpayResponse extends BaseResponse {
 	private String checkToken;
 
 	public String getCheckToken() {

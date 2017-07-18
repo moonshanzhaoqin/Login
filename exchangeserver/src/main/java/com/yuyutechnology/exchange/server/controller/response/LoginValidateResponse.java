@@ -5,7 +5,6 @@ import com.yuyutechnology.exchange.dto.UserInfo;
 public class LoginValidateResponse extends BaseResponse {
 	private String sessionToken;
 	private String loginToken;
-//	private boolean paypalRecharge;
 	private UserInfo user;
 
 	public String getSessionToken() {
@@ -32,11 +31,4 @@ public class LoginValidateResponse extends BaseResponse {
 		this.user = user;
 	}
 
-//	public boolean isPaypalRecharge() {
-//		return paypalRecharge;
-//	}
-//
-//	public void setPaypalRecharge(boolean paypalRecharge) {
-//		this.paypalRecharge = paypalRecharge;
-//	}
 }

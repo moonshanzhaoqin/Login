@@ -2,7 +2,7 @@ package com.yuyutechnology.exchange.server.controller.response;
 
 import com.yuyutechnology.exchange.dto.UserInfo;
 
-public class ChangeGoldpayResponse  extends BaseResponse{
+public class ChangeGoldpayResponse extends BaseResponse {
 	private UserInfo user;
 
 	public UserInfo getUser() {

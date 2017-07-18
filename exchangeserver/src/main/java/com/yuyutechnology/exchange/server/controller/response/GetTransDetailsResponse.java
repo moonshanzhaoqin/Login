@@ -63,7 +63,8 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.paypalCurrency = dto.getPaypalCurrency();
 		this.paypalExchange = dto.getPaypalExchange();
 		this.unit = dto.getTransUnit();
-		this.transferType = dto.getTransAmount().compareTo(BigDecimal.ZERO)>=0 && dto.getTransType()==0?1:dto.getTransType();
+		this.transferType = dto.getTransAmount().compareTo(BigDecimal.ZERO) >= 0 && dto.getTransType() == 0 ? 1
+				: dto.getTransType();
 		this.createTime = dto.getCreateTime();
 		this.finishTime = dto.getFinishTime();
 		this.transferId = dto.getTransId();
@@ -72,8 +73,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.isFriend = dto.isFriend();
 		this.isRegiste = dto.isRegistered();
 	}
-	
-	
+
 	public String getTrader() {
 		return trader;
 	}
@@ -177,6 +177,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 	public void setGoldpayName(String goldpayName) {
 		this.goldpayName = goldpayName;
 	}
+
 	public String getTransferComment() {
 		return transferComment;
 	}
