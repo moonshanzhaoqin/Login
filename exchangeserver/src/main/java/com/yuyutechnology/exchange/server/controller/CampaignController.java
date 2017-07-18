@@ -23,7 +23,6 @@ import com.yuyutechnology.exchange.server.controller.response.GetCampaignInfoRes
 import com.yuyutechnology.exchange.server.controller.response.GetInviterInfoResponse;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
-import com.yuyutechnology.exchange.util.ShareCodeUtil;
 
 /**
  * @author suzan.wu
@@ -58,7 +57,6 @@ public class CampaignController {
 			rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 		} else {
 			rep.setInviterInfo(inviterInfo);
-			rep.setInviterCode(ShareCodeUtil.toSerialCode(sessionData.getUserId()));
 			logger.info("********Operation succeeded********");
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);

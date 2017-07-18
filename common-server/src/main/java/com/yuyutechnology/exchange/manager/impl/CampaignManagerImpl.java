@@ -81,7 +81,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		}
 		inviterInfo.setInviteQuantity(inviter.getInviteQuantity());
 		inviterInfo.setInviteBonus(inviter.getInviteBonus());
-
+		inviterInfo.setInviterCode(ShareCodeUtil.toSerialCode(userId));
 		return inviterInfo;
 	}
 
@@ -115,11 +115,11 @@ public class CampaignManagerImpl implements CampaignManager {
 		/* 邀请人 */
 		Integer inviterId = Integer.valueOf(String.valueOf(ShareCodeUtil.codeToId(inviterCode)));
 
-		Inviter inviter=inviterDAO.getInviter(inviterId);
-		if (inviter==null) {
+		Inviter inviter = inviterDAO.getInviter(inviterId);
+		if (inviter == null) {
 			return RetCodeConsts.INVITERCODE_INCORRECT;
 		}
-		
+
 		/* 活动信息 */
 		Campaign campaign = activeCampaign();
 		if (campaign == null) {
@@ -191,8 +191,8 @@ public class CampaignManagerImpl implements CampaignManager {
 
 	@Override
 	public void grantBonus(Integer userId, String areaCode, String userPhone) {
-		logger.info("grantBonus : {} ",userId);
-		
+		logger.info("grantBonus : {} ", userId);
+
 		/* 领取是否过了有效期 */
 		Collect collect = activeCollect(areaCode, userPhone);
 		if (collect == null) {
