@@ -166,8 +166,8 @@ public class CampaignManagerImpl implements CampaignManager {
 			logger.info("The campaign is closed");
 			return null;
 		}
-		Calendar now = Calendar.getInstance();
-		logger.info("now: {}  StartTime : {}  EndTime : {}", now.getTime(), campaign.getStartTime(),
+		Date now = new Date();
+		logger.info("now: {}  StartTime : {}  EndTime : {}", now, campaign.getStartTime(),
 				campaign.getEndTime());
 
 		if (now.after(campaign.getEndTime())) {
@@ -329,5 +329,5 @@ public class CampaignManagerImpl implements CampaignManager {
 		campaign.setCampaignStatus(ServerConsts.CAMPAIGN_STATUS_OFF);
 		campaignDAO.updateCampaign(campaign);
 	}
-
+	
 }
