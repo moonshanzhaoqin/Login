@@ -11,15 +11,6 @@ import com.yuyutechnology.exchange.dto.InviterInfo;
  */
 public class GetInviterInfoResponse extends BaseResponse {
 	private InviterInfo inviterInfo;
-	private String inviterCode;
-
-	public String getInviterCode() {
-		return inviterCode;
-	}
-
-	public void setInviterCode(String inviterCode) {
-		this.inviterCode = inviterCode;
-	}
 
 	public InviterInfo getInviterInfo() {
 		return inviterInfo;

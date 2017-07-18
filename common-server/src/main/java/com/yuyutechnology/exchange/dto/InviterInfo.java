@@ -13,6 +13,15 @@ public class InviterInfo {
 	private String userName;
 	private int inviteQuantity;
 	private BigDecimal inviteBonus;
+	private String inviterCode;
+
+	public String getInviterCode() {
+		return inviterCode;
+	}
+
+	public void setInviterCode(String inviterCode) {
+		this.inviterCode = inviterCode;
+	}
 
 	public String getUserName() {
 		return userName;
