@@ -9,8 +9,17 @@ import com.yuyutechnology.exchange.dto.InviterInfo;
  * @author suzan.wu
  *
  */
-public class GetInviterInfoResponse extends BaseResponse{
+public class GetInviterInfoResponse extends BaseResponse {
 	private InviterInfo inviterInfo;
+	private String inviterCode;
+
+	public String getInviterCode() {
+		return inviterCode;
+	}
+
+	public void setInviterCode(String inviterCode) {
+		this.inviterCode = inviterCode;
+	}
 
 	public InviterInfo getInviterInfo() {
 		return inviterInfo;
@@ -20,5 +29,4 @@ public class GetInviterInfoResponse extends BaseResponse{
 		this.inviterInfo = inviterInfo;
 	}
 
-	
 }
