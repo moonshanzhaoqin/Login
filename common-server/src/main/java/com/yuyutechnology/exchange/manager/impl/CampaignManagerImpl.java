@@ -106,7 +106,7 @@ public class CampaignManagerImpl implements CampaignManager {
 
 		Calendar earliestTime = Calendar.getInstance();
 		earliestTime.add(Calendar.HOUR_OF_DAY,
-				-configManager.getConfigLongValue(ConfigKeyEnum.COLLECT_ACTIVE_TIME, 1L).intValue()); // 现在时间的1小时前
+				-configManager.getConfigLongValue(ConfigKeyEnum.COLLECT_ACTIVE_TIME, 24L).intValue()); // 现在时间的1小时前
 		/* 在有效时间内的领取的 */
 		String hql = "from Collect  where areaCode=? and userPhone=? and collectTime > ?";
 		Collect collect = collectDAO.findHQL(hql, new Object[] { areaCode, userPhone, earliestTime.getTime() });
