@@ -65,6 +65,8 @@ public class CampaignManagerImpl implements CampaignManager {
 
 	@Override
 	public InviterInfo getInviterInfo(Integer userId) {
+		logger.info("get {} InviterInfo ==>", userId);
+
 		InviterInfo inviterInfo = new InviterInfo();
 
 		User user = userDAO.getUser(userId);
@@ -100,20 +102,24 @@ public class CampaignManagerImpl implements CampaignManager {
 
 	@Override
 	public Collect activeCollect(String areaCode, String userPhone) {
+		logger.info("get activeCollect for {} ==>", areaCode + userPhone);
+
 		Calendar earliestTime = Calendar.getInstance();
 		earliestTime.add(Calendar.HOUR_OF_DAY,
 				configManager.getConfigLongValue(ConfigKeyEnum.COLLECT_ACTIVE_TIME, 1L).intValue()); // 现在时间的1小时前
 		/* 在有效时间内的领取的 */
 		String hql = "from Collect  where areaCode=? and userPhone=? and collectTime > ?";
 		Collect collect = collectDAO.findHQL(hql, new Object[] { areaCode, userPhone, earliestTime.getTime() });
+		logger.info(collect == null ? null : collect.toString());
 		return collect;
 	}
 
 	@Override
 	public String collect(String areaCode, String userPhone, String inviterCode, int sharePath) {
-
+		logger.info("collect {} ==>", areaCode + userPhone);
 		/* 邀请人 */
 		Integer inviterId = Integer.valueOf(String.valueOf(ShareCodeUtil.codeToId(inviterCode)));
+		logger.info("--inviterId : {}", inviterId);
 
 		Inviter inviter = inviterDAO.getInviter(inviterId);
 		if (inviter == null) {
@@ -129,6 +135,7 @@ public class CampaignManagerImpl implements CampaignManager {
 
 		if (campaign.getBudgetSurplus().compareTo(campaign.getInviterBonus().add(campaign.getInviteeBonus())) == -1) {
 			/* 钱不够 */
+			logger.info("The budget is not enough");
 			return RetCodeConsts.EXCESS_BUDGET;
 		}
 		collectDAO.updateCollect(
@@ -143,6 +150,8 @@ public class CampaignManagerImpl implements CampaignManager {
 	 * @return
 	 */
 	private Campaign activeCampaign() {
+		logger.info("get activeCampaign ==>");
+
 		String str = redisDAO.getValueByKey(ServerConsts.REDIS_KEY_ACTIVE_CAMPAIGN);
 		if (str == null) {
 			/* 现在没有进行中的活动 */
@@ -154,18 +163,22 @@ public class CampaignManagerImpl implements CampaignManager {
 		if (campaign.getCampaignStatus() == ServerConsts.CAMPAIGN_STATUS_OFF) {
 			/* 活动已关闭 */
 			redisDAO.deleteData(ServerConsts.REDIS_KEY_ACTIVE_CAMPAIGN);
+			logger.info("The campaign is closed");
 			return null;
 		}
 		Calendar now = Calendar.getInstance();
 		if (now.after(campaign.getEndTime())) {
 			/* 活动已结束 */
 			// redisDAO.deleteData(ServerConsts.REDIS_KEY_ACTIVE_CAMPAIGN);
+			logger.info("The campaign is over");
 			return null;
 		}
 		if (now.before(campaign.getStartTime())) {
 			/* 活动还未开始 */
+			logger.info("The campaign has not yet started");
 			return null;
 		}
+		logger.info("campaignId : {}", campaign.getCampaignId());
 		return campaign;
 	}
 
@@ -178,6 +191,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		}
 		if (campaign.getBudgetSurplus().compareTo(campaign.getInviterBonus().add(campaign.getInviteeBonus())) == -1) {
 			/* 钱不够 */
+			logger.info("The budget is not enough");
 			return null;
 		}
 		CampaignInfo campaignInfo = new CampaignInfo();
@@ -196,7 +210,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		/* 领取是否过了有效期 */
 		Collect collect = activeCollect(areaCode, userPhone);
 		if (collect == null) {
-			logger.info("no active collect");
+			logger.info("collect is not active");
 			return;
 		}
 		collect.setRegisterStatus(ServerConsts.COLLECT_STATUS_REGISTER);
@@ -205,7 +219,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		/* 判断是否有钱可以支付 */
 		Campaign campaign = campaignDAO.getCampaign(collect.getCampaignId());
 		if (campaign.getBudgetSurplus().compareTo(collect.getInviteeBonus().add(collect.getInviterBonus())) == -1) {
-			logger.info("no enough budget");
+			logger.info("The budget is not enough");
 			return;
 		}
 
