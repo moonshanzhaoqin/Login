@@ -147,7 +147,6 @@ public class CampaignController {
 				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 				break;
 			}
-
 		}
 		return rep;
 	}
