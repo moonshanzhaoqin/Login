@@ -1187,8 +1187,9 @@ public class TransferManagerImpl implements TransferManager {
 				values.add(ServerConsts.TRANSFER_TYPE_OUT_INVITE + "");
 				break;
 			case "income":// 收入
-				sb.append("and t1.trans_amount > 0 and t2.transfer_type in (0,?) ");
+				sb.append("and t1.trans_amount > 0 and t2.transfer_type in (0,?,?) ");
 				values.add(ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND + "");
+				values.add(ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN + "");
 				break;
 			case "withdraw":// 体现
 				sb.append("and t2.transfer_type = ? ");
