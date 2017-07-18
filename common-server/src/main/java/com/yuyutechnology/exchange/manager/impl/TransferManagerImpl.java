@@ -1058,7 +1058,7 @@ public class TransferManagerImpl implements TransferManager {
 		dto.setTransCurrency((String) obj[2]);
 		dto.setTransAmount((BigDecimal) obj[3]);
 		dto.setTransUnit((String) obj[4]);
-		dto.setTransRemarks((String) obj[5]);
+		dto.setTransRemarks(((String) obj[5] == null? "":(String) obj[5]));
 		dto.setTransType((Integer) obj[6]);
 		dto.setCreateTime((Date) obj[7]);
 		dto.setFinishTime((Date) obj[8]);
