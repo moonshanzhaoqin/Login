@@ -272,7 +272,7 @@ function openCampaign(campaignId) {
 				location.href = loginUrl;
 			} else {
 				console.log("openCampaign" + data.message);
-				alert(data.message + "在开启状态，请关闭后再试");
+				alert("活动 "+data.message + " 在开启状态，请关闭后再试");
 			}
 		},
 		error : function(xhr, err) {

@@ -242,6 +242,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		/* 更新预算 */
 		campaign.setBudgetSurplus(
 				campaign.getBudgetSurplus().subtract(collect.getInviteeBonus().add(collect.getInviterBonus())));
+		campaign.setUpdateTime(new  Date());
 		campaignDAO.updateCampaign(campaign);
 
 		/* 更新邀请人信息 */
@@ -277,8 +278,8 @@ public class CampaignManagerImpl implements CampaignManager {
 		transferDAO.addTransfer(transfer);
 
 		/* 生成详情 */
-		transDetailsManager.addTransDetails(transferId, userId, system.getUserId(), system.getUserName(),
-				system.getAreaCode(), system.getUserPhone(), ServerConsts.CURRENCY_OF_GOLDPAY, bonus, null,
+		transDetailsManager.addTransDetails(transferId, userId, system.getUserId(), "",
+				"", "", ServerConsts.CURRENCY_OF_GOLDPAY, bonus, null,
 				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
 
 		/* 账户加款 */
@@ -295,6 +296,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		Campaign campaign = campaignDAO.getCampaign(campaignId);
 		campaign.setInviterBonus(inviterBonus);
 		campaign.setInviteeBonus(inviteeBonus);
+		campaign.setUpdateTime(new  Date());
 		campaignDAO.updateCampaign(campaign);
 
 	}
@@ -304,6 +306,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		Campaign campaign = campaignDAO.getCampaign(campaignId);
 		campaign.setBudgetSurplus(campaign.getBudgetSurplus().add(additionalBudget));
 		campaign.setCampaignBudget(campaign.getCampaignBudget().add(additionalBudget));
+		campaign.setUpdateTime(new  Date());
 		campaignDAO.updateCampaign(campaign);
 	}
 
@@ -318,6 +321,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		redisDAO.saveData(ServerConsts.REDIS_KEY_ACTIVE_CAMPAIGN, campaignId);
 		Campaign campaign = campaignDAO.getCampaign(campaignId);
 		campaign.setCampaignStatus(ServerConsts.CAMPAIGN_STATUS_ON);
+		campaign.setUpdateTime(new  Date());
 		campaignDAO.updateCampaign(campaign);
 		return campaignId;
 	}
@@ -327,6 +331,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		redisDAO.deleteData(ServerConsts.REDIS_KEY_ACTIVE_CAMPAIGN);
 		Campaign campaign = campaignDAO.getCampaign(campaignId);
 		campaign.setCampaignStatus(ServerConsts.CAMPAIGN_STATUS_OFF);
+		campaign.setUpdateTime(new  Date());
 		campaignDAO.updateCampaign(campaign);
 	}
 	
