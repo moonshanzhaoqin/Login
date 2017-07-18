@@ -160,7 +160,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		}
 		Integer campaignId = Integer.valueOf(str);
 		Campaign campaign = campaignDAO.getCampaign(campaignId);
-		if (campaign.getCampaignStatus() == ServerConsts.CAMPAIGN_STATUS_OFF) {
+		if (campaign == null || campaign.getCampaignStatus() == ServerConsts.CAMPAIGN_STATUS_OFF) {
 			/* 活动已关闭 */
 			redisDAO.deleteData(ServerConsts.REDIS_KEY_ACTIVE_CAMPAIGN);
 			logger.info("The campaign is closed");
@@ -309,9 +309,11 @@ public class CampaignManagerImpl implements CampaignManager {
 	@Override
 	public Integer openCampaign(Integer campaignId) {
 		String str = redisDAO.getValueByKey(ServerConsts.REDIS_KEY_ACTIVE_CAMPAIGN);
-		if (str != null && campaignDAO.getCampaign(Integer.valueOf(str))
-				.getCampaignStatus() == ServerConsts.CAMPAIGN_STATUS_ON) {
-			return Integer.valueOf(str);
+		if (str != null) {
+			Campaign activeCampaign = campaignDAO.getCampaign(Integer.valueOf(str));
+			if (activeCampaign != null && activeCampaign.getCampaignStatus() == ServerConsts.CAMPAIGN_STATUS_ON) {
+				return activeCampaign.getCampaignId();
+			}
 		}
 
 		redisDAO.saveData(ServerConsts.REDIS_KEY_ACTIVE_CAMPAIGN, campaignId);
