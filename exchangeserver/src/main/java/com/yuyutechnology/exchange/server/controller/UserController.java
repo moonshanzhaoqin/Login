@@ -396,6 +396,7 @@ public class UserController {
 								registerRequest.getLanguage());
 						/* 发放奖励金 */
 						campaignManager.grantBonus(userId, registerRequest.getAreaCode(), registerRequest.getUserPhone());
+						
 						/* 生成session Token */
 						SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 						sessionManager.saveSessionData(sessionData);
@@ -403,8 +404,6 @@ public class UserController {
 						rep.setLoginToken(sessionManager.createLoginToken(userId));
 						/* 获取用户信息 */
 						rep.setUser(userManager.getUserInfo(userId));
-						/* Paypal开启状态 */
-						// rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
 
 						logger.info(MessageConsts.RET_CODE_SUCCESS);
 						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);

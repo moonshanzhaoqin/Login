@@ -1,9 +1,9 @@
 package com.yuyutechnology.exchange.server.controller.response;
 
 public class GetTotalAmontGoldResponse extends BaseResponse {
-	
+
 	private Double amountOfGold;
-	
+
 	private Double amountOfGoldOz;
 
 	public Double getAmountOfGold() {

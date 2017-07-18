@@ -332,18 +332,20 @@ public class PushManager {
 	/**
 	 * 邀请奖励金
 	 * 
-	 * @param pushId
-	 * @param pushTag
+	 * @param user
+	 * @param transferId
 	 * @param amount
 	 */
 	@Async
-	public void push4Invite(String pushId, Language pushTag, BigDecimal amount) {
-		String title = titleChoose("invite", pushTag);
-		String offlineBody = templateChoose("invite", pushTag);
+	public void push4Invite(User user, String transferId, BigDecimal amount) {
+		String title = titleChoose("invite", user.getPushTag());
+		String offlineBody = templateChoose("invite", user.getPushTag());
 		String body = offlineBody.replace(PUSH_REPLACE_AMOUNT, GDQ.format(amount));
 		Map<String, String> ext = new HashMap<>();
-		ext.put("type", "invite");
-		pushToCustom(pushId, title, body, JsonBinder.getInstance().toJson(ext));
+		ext.put("type", "transfer");
+		ext.put("transferId", transferId);
+		ext.put("userId", user.getUserId().toString());
+		pushToCustom(user.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 	}
 
 	/**

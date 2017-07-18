@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.yuyutechnology.exchange.dto.WalletInfo;
 
-public class GetCurrentBalanceResponse extends BaseResponse{
+public class GetCurrentBalanceResponse extends BaseResponse {
 	private List<WalletInfo> wallets;
 
 	public List<WalletInfo> getWallets() {

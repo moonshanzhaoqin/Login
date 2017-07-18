@@ -1,5 +1,5 @@
 package com.yuyutechnology.exchange.server.controller.response;
 
-public class ResetPayPwdResponse extends BaseResponse{
-	
+public class ResetPayPwdResponse extends BaseResponse {
+
 }

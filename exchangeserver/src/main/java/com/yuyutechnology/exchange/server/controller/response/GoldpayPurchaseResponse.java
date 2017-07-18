@@ -1,7 +1,7 @@
 package com.yuyutechnology.exchange.server.controller.response;
 
 public class GoldpayPurchaseResponse extends BaseResponse {
-	
+
 	private String transferId;
 
 	public String getTransferId() {

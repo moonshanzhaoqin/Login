@@ -167,8 +167,7 @@ public class CampaignManagerImpl implements CampaignManager {
 			return null;
 		}
 		Date now = new Date();
-		logger.info("now: {}  StartTime : {}  EndTime : {}", now, campaign.getStartTime(),
-				campaign.getEndTime());
+		logger.info("now: {}  StartTime : {}  EndTime : {}", now, campaign.getStartTime(), campaign.getEndTime());
 
 		if (now.after(campaign.getEndTime())) {
 			/* 活动已结束 */
@@ -242,7 +241,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		/* 更新预算 */
 		campaign.setBudgetSurplus(
 				campaign.getBudgetSurplus().subtract(collect.getInviteeBonus().add(collect.getInviterBonus())));
-		campaign.setUpdateTime(new  Date());
+		campaign.setUpdateTime(new Date());
 		campaignDAO.updateCampaign(campaign);
 
 		/* 更新邀请人信息 */
@@ -250,12 +249,6 @@ public class CampaignManagerImpl implements CampaignManager {
 		inviter.setInviteQuantity(inviter.getInviteQuantity() + 1);
 		inviterDAO.updateInviter(inviter);
 
-		/* 推送邀请人 */
-		User inviterUser = userDAO.getUser(collect.getInviterId());
-		pushManager.push4Invite(inviterUser.getPushId(), inviterUser.getPushTag(), collect.getInviterBonus());
-		/* 推送注册用户 */
-		User inviteeUser = userDAO.getUser(userId);
-		pushManager.push4Invite(inviteeUser.getPushId(), inviteeUser.getPushTag(), collect.getInviteeBonus());
 	}
 
 	private void settlement(Integer userId, BigDecimal bonus) {
@@ -278,9 +271,8 @@ public class CampaignManagerImpl implements CampaignManager {
 		transferDAO.addTransfer(transfer);
 
 		/* 生成详情 */
-		transDetailsManager.addTransDetails(transferId, userId, system.getUserId(), "",
-				"", "", ServerConsts.CURRENCY_OF_GOLDPAY, bonus, null,
-				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
+		transDetailsManager.addTransDetails(transferId, userId, system.getUserId(), "", "", "",
+				ServerConsts.CURRENCY_OF_GOLDPAY, bonus, null, ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
 
 		/* 账户加款 */
 		walletDAO.updateWalletByUserIdAndCurrency(userId, ServerConsts.CURRENCY_OF_GOLDPAY, bonus, "+",
@@ -289,6 +281,10 @@ public class CampaignManagerImpl implements CampaignManager {
 		/* 系统扣款 */
 		walletDAO.updateWalletByUserIdAndCurrency(system.getUserId(), ServerConsts.CURRENCY_OF_GOLDPAY, bonus, "-",
 				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId);
+
+		User user = userDAO.getUser(userId);
+		pushManager.push4Invite(user, transferId, bonus);
+
 	}
 
 	@Override
@@ -296,7 +292,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		Campaign campaign = campaignDAO.getCampaign(campaignId);
 		campaign.setInviterBonus(inviterBonus);
 		campaign.setInviteeBonus(inviteeBonus);
-		campaign.setUpdateTime(new  Date());
+		campaign.setUpdateTime(new Date());
 		campaignDAO.updateCampaign(campaign);
 
 	}
@@ -306,7 +302,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		Campaign campaign = campaignDAO.getCampaign(campaignId);
 		campaign.setBudgetSurplus(campaign.getBudgetSurplus().add(additionalBudget));
 		campaign.setCampaignBudget(campaign.getCampaignBudget().add(additionalBudget));
-		campaign.setUpdateTime(new  Date());
+		campaign.setUpdateTime(new Date());
 		campaignDAO.updateCampaign(campaign);
 	}
 
@@ -321,7 +317,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		redisDAO.saveData(ServerConsts.REDIS_KEY_ACTIVE_CAMPAIGN, campaignId);
 		Campaign campaign = campaignDAO.getCampaign(campaignId);
 		campaign.setCampaignStatus(ServerConsts.CAMPAIGN_STATUS_ON);
-		campaign.setUpdateTime(new  Date());
+		campaign.setUpdateTime(new Date());
 		campaignDAO.updateCampaign(campaign);
 		return campaignId;
 	}
@@ -331,8 +327,8 @@ public class CampaignManagerImpl implements CampaignManager {
 		redisDAO.deleteData(ServerConsts.REDIS_KEY_ACTIVE_CAMPAIGN);
 		Campaign campaign = campaignDAO.getCampaign(campaignId);
 		campaign.setCampaignStatus(ServerConsts.CAMPAIGN_STATUS_OFF);
-		campaign.setUpdateTime(new  Date());
+		campaign.setUpdateTime(new Date());
 		campaignDAO.updateCampaign(campaign);
 	}
-	
+
 }
