@@ -277,8 +277,8 @@ public class CampaignManagerImpl implements CampaignManager {
 		transferDAO.addTransfer(transfer);
 
 		/* 生成详情 */
-		transDetailsManager.addTransDetails(transferId, userId, system.getUserId(), system.getUserName(),
-				system.getAreaCode(), system.getUserPhone(), ServerConsts.CURRENCY_OF_GOLDPAY, bonus, null,
+		transDetailsManager.addTransDetails(transferId, userId, system.getUserId(), "",
+				"", "", ServerConsts.CURRENCY_OF_GOLDPAY, bonus, null,
 				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
 
 		/* 账户加款 */
