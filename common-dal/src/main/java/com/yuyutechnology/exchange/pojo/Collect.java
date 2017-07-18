@@ -19,6 +19,14 @@ import javax.persistence.TemporalType;
 @Table(name = "e_collect")
 public class Collect implements java.io.Serializable {
 
+	@Override
+	public String toString() {
+		return "Collect [collectId=" + collectId + ", areaCode=" + areaCode + ", userPhone=" + userPhone
+				+ ", inviterId=" + inviterId + ", campaignId=" + campaignId + ", inviterBonus=" + inviterBonus
+				+ ", inviteeBonus=" + inviteeBonus + ", collectTime=" + collectTime + ", registerStatus="
+				+ registerStatus + ", sharePath=" + sharePath + "]";
+	}
+
 	/**
 	 * 
 	 */
