@@ -167,6 +167,9 @@ public class CampaignManagerImpl implements CampaignManager {
 			return null;
 		}
 		Calendar now = Calendar.getInstance();
+		logger.info("now: {}  StartTime : {}  EndTime : {}", now.getTime(), campaign.getStartTime(),
+				campaign.getEndTime());
+
 		if (now.after(campaign.getEndTime())) {
 			/* 活动已结束 */
 			// redisDAO.deleteData(ServerConsts.REDIS_KEY_ACTIVE_CAMPAIGN);
