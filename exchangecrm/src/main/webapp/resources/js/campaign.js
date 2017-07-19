@@ -109,13 +109,13 @@ function initCampaign(currentPage) {
 								+ '<td>'
 								+ '<a  data-toggle="modal" data-target="#changeBonusModal" data-whatever='
 								+ "'"
-								+ JSON.stringify(data[i])
+								+ JSON.stringify(data.rows[i])
 								+ "'"
 								+ '>修改</a>'
 								+ '</td>'
 								+ '<td>'
 								+ '<a  data-toggle="modal" data-target="#addBudgetModal" data-whatever='
-								+ "'" + JSON.stringify(data[i]) + "'"
+								+ "'" + JSON.stringify(data.rows[i]) + "'"
 								+ '>追加</a>' + '</td>' + '</tr>'
 					}
 					$('#campaign tbody').html(html);
