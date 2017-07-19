@@ -75,8 +75,7 @@ function initCampaign(currentPage) {
 								+ '</td>'
 								+ '<td>'
 								+ timeDate(data.rows[i].startTime)
-								+ '</td>'
-								+ '<td>'
+								+ ' ~ '
 								+ timeDate(data.rows[i].endTime)
 								+ '</td>'
 								// + '<td>'
