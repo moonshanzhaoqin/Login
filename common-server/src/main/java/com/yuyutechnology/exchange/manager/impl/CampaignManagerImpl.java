@@ -98,7 +98,7 @@ public class CampaignManagerImpl implements CampaignManager {
 	@Override
 	public PageBean getCampaignList(int currentPage) {
 
-		String hql = "from Campaign order by campaignStatus desc,updateTime desc";
+		String hql = "from Campaign order by campaignStatus desc,campaignId";
 
 		return campaignDAO.getCampaignsByPage(hql, new ArrayList<Object>(), currentPage, 10);
 	}
@@ -255,6 +255,8 @@ public class CampaignManagerImpl implements CampaignManager {
 	}
 
 	private void settlement(Integer userId, BigDecimal bonus) {
+		
+		User user = userDAO.getUser(userId);
 
 		User system = userDAO.getSystemUser();
 
@@ -271,6 +273,8 @@ public class CampaignManagerImpl implements CampaignManager {
 		transfer.setTransferComment("inviteBonus");
 		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		transfer.setAreaCode(user.getAreaCode());
+		transfer.setPhone(user.getUserPhone());
 		transferDAO.addTransfer(transfer);
 
 		/* 生成详情 */
@@ -285,7 +289,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		walletDAO.updateWalletByUserIdAndCurrency(system.getUserId(), ServerConsts.CURRENCY_OF_GOLDPAY, bonus, "-",
 				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId);
 
-		User user = userDAO.getUser(userId);
+
 		pushManager.push4Invite(user, transferId, bonus);
 
 	}

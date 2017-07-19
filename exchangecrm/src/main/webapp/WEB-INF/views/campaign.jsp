@@ -19,13 +19,13 @@
 				<thead>
 					<tr>
 						<th>活动ID</th>
-						<th>开始时间(GMT+8)</th>
-						<th>结束时间(GMT+8)</th>
+						<th>开始时间    ~ 结束时间(GMT+8)</th>
 						<th>预算(Q)</th>
+						<th>已赠送(Q)</th>
 						<th>剩余(Q)</th>
 						<th>邀请人奖励金(Q)</th>
 						<th>被邀请人奖励金(Q)</th>
-						<th>更新时间(GMT+8)</th>
+<!-- 						<th>更新时间(GMT+8)</th> -->
 						<th>操作</th>
 						<th>修改奖励金</th>
 						<th>追加预算</th>

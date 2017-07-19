@@ -75,8 +75,7 @@ function initCampaign(currentPage) {
 								+ '</td>'
 								+ '<td>'
 								+ timeDate(data.rows[i].startTime)
-								+ '</td>'
-								+ '<td>'
+								+ ' ~ '
 								+ timeDate(data.rows[i].endTime)
 								+ '</td>'
 								// + '<td>'
@@ -84,6 +83,9 @@ function initCampaign(currentPage) {
 								// + '</td>'
 								+ '<td>'
 								+ data.rows[i].campaignBudget
+								+ '</td>'
+								+ '<td>'
+								+ (data.rows[i].campaignBudget-data.rows[i].budgetSurplus)
 								+ '</td>'
 								+ '<td>'
 								+ data.rows[i].budgetSurplus
@@ -94,9 +96,9 @@ function initCampaign(currentPage) {
 								+ '<td>'
 								+ data.rows[i].inviteeBonus
 								+ '</td>'
-								+ '<td>'
-								+ timeDate(data.rows[i].updateTime)
-								+ '</td>'
+//								+ '<td>'
+//								+ timeDate(data.rows[i].updateTime)
+//								+ '</td>'
 								+ '<td>'
 								+ (data.rows[i].campaignStatus == 0 ? ('<a href="" onclick="openCampaign('
 										+ data.rows[i].campaignId + ')">开启</a>')
@@ -106,13 +108,13 @@ function initCampaign(currentPage) {
 								+ '<td>'
 								+ '<a  data-toggle="modal" data-target="#changeBonusModal" data-whatever='
 								+ "'"
-								+ JSON.stringify(data[i])
+								+ JSON.stringify(data.rows[i])
 								+ "'"
 								+ '>修改</a>'
 								+ '</td>'
 								+ '<td>'
 								+ '<a  data-toggle="modal" data-target="#addBudgetModal" data-whatever='
-								+ "'" + JSON.stringify(data[i]) + "'"
+								+ "'" + JSON.stringify(data.rows[i]) + "'"
 								+ '>追加</a>' + '</td>' + '</tr>'
 					}
 					$('#campaign tbody').html(html);

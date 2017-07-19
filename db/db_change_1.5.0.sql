@@ -152,3 +152,11 @@ LEFT JOIN e_transfer t2 ON t1.transfer_id = t2.transfer_comment
 LEFT JOIN e_transfer t3 ON t1.transfer_id = t3.transfer_id 
 LEFT JOIN e_user t4 ON t3.user_from = t4.user_id  
 WHERE unregistered_status = 2;
+
+
+
+UPDATE e_trans_details t1 ,e_user t2 
+SET t1.trader_name = t2.user_name 
+WHERE t1.transfer_id IN 
+(SELECT t3.transfer_id FROM e_unregistered t3 WHERE t3.area_code = t2.area_code AND t3.user_phone = t2.user_phone ) 
+AND t2.area_code = t1.trader_area_code AND t2.user_phone = t1.trader_phone

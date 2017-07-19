@@ -3,6 +3,7 @@ package com.yuyutechnology.exchange.server.test;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.yuyutechnology.exchange.dao.TransDetailsDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
@@ -22,6 +23,8 @@ public class TransDetailsTest extends BaseSpringJunit4 {
 	CommonManager commonManager;
 	@Autowired
 	OandaRatesManager oandaRatesManager;
+	@Autowired
+	TransDetailsDAO transDetailsDAO;
 	
 	@Test
 	public void test() throws InterruptedException {
@@ -42,7 +45,9 @@ public class TransDetailsTest extends BaseSpringJunit4 {
 //			System.out.println(entry.getKey());
 //		}
 		
-		transDetailsManager.updateTransDetailsWhenOtherOneRegist("2017042402440T000013", 2, "TEST");
+//		transDetailsManager.updateTransDetailsWhenOtherOneRegist("2017042402440T000013", 2, "TEST");
+		
+		transDetailsDAO.updateTransDetails("测试用例_test","+86","123456789");
 		
 	}
 	
