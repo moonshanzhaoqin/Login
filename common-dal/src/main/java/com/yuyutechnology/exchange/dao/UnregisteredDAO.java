@@ -15,5 +15,7 @@ public interface UnregisteredDAO {
 	public List<Unregistered> getAllUnfinishedTransaction();
 	
 	public Unregistered getUnregisteredByTransId(String transId);
+
+	List<Unregistered> getUnregisteredByPhoneAllStatus(String areaCode, String userPhone);
 	
 }

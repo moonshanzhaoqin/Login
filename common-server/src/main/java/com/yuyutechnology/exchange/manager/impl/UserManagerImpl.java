@@ -22,6 +22,7 @@ import com.yuyutechnology.exchange.dao.BindDAO;
 import com.yuyutechnology.exchange.dao.CrmUserInfoDAO;
 import com.yuyutechnology.exchange.dao.FriendDAO;
 import com.yuyutechnology.exchange.dao.RedisDAO;
+import com.yuyutechnology.exchange.dao.TransDetailsDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
@@ -84,6 +85,8 @@ public class UserManagerImpl implements UserManager {
 	UserDeviceDAO userDeviceDAO;
 	@Autowired
 	CrmUserInfoDAO crmUserInfoDAO;
+	@Autowired
+	TransDetailsDAO transDetailsDAO;
 	@Autowired
 	SmsManager smsManager;
 	@Autowired
@@ -641,7 +644,7 @@ public class UserManagerImpl implements UserManager {
 			transferDAO.addTransfer(transfer);
 
 			// add by Niklaus.chi at 2017/07/07
-			transDetailsManager.updateTransDetailsWhenOtherOneRegist(unregistered.getTransferId(), payerTransfer.getUserFrom(), userName);
+//			transDetailsManager.updateTransDetailsWhenOtherOneRegist(unregistered.getTransferId(), payerTransfer.getUserFrom(), userName);
 			transDetailsManager.addTransDetails(transferId, userId, payer.getUserId(), payer.getUserName(),
 					payer.getAreaCode(), payer.getUserPhone(), unregistered.getCurrency(), unregistered.getAmount(),
 					payerTransfer.getTransferComment(), ServerConsts.TRANSFER_TYPE_TRANSACTION - 1);
@@ -652,6 +655,12 @@ public class UserManagerImpl implements UserManager {
 			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
 			unregisteredDAO.updateUnregistered(unregistered);
 		}
+		
+		
+		//更新details信息
+		
+		transDetailsDAO.updateTransDetails(userName,areaCode,userPhone);
+		
 	}
 
 	@Override

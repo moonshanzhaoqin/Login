@@ -13,6 +13,8 @@ public interface TransDetailsDAO {
 	List<?> getTransDetailsByTransIdAndUserId(Integer userId, String transId);
 
 	TransDetails getTransDetails(Integer userId, String transId);
+
+	Integer updateTransDetails(String receiverName, String areaCode, String phone);
 	
 
 }
