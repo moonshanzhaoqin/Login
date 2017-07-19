@@ -35,6 +35,8 @@
 				</tbody>
 			</table>
 		</div>
+		<!--分页插件-->
+		<div id="paginator"></div>
 	</div>
 	<!-- 模态框（Modal） 新增活动 -->
 	<div class="modal fade" id="addCampaignModal" tabindex="-1"

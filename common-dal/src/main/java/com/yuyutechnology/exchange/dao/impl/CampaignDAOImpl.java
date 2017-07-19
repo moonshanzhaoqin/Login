@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.dao.CampaignDAO;
 import com.yuyutechnology.exchange.pojo.Campaign;
+import com.yuyutechnology.exchange.util.page.PageBean;
+import com.yuyutechnology.exchange.util.page.PageUtils;
 
 @Repository
 public class CampaignDAOImpl implements CampaignDAO {
@@ -25,11 +27,9 @@ public class CampaignDAOImpl implements CampaignDAO {
 		return hibernateTemplate.get(Campaign.class, campaignId);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public List<Campaign> getCampaigns() {
-		List<?> list = hibernateTemplate.find("from Campaign");
-		return (List<Campaign>) list;
+	public PageBean getCampaignsByPage(String hql, List<Object> values, int currentPage, int pageSize) {
+		return PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
 	}
 
 	@Override

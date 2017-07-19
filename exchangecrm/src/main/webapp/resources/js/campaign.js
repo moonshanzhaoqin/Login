@@ -28,7 +28,7 @@ $(function() {
 	laydate(start);
 	laydate(end);
 
-	initCampaign();
+	initCampaign(1);
 
 	$('#changeBonusModal').on('show.bs.modal', function(e) {
 		// do something...
@@ -55,49 +55,53 @@ $(function() {
 });
 
 /* 页面初始化 */
-function initCampaign() {
+function initCampaign(currentPage) {
+	var data = {
+		currentPage : currentPage
+	}
+
 	$
 			.ajax({
 				type : "post",
 				url : "/crm/getCampaignList",
 				contentType : "application/json; charset=utf-8",
 				dataType : 'json',
-				data : {},
+				data : JSON.stringify(data),
 				success : function(data) {
 					var html = "";
-					for (var i = 0; i < data.length; i++) {
+					for ( var i in data.rows) {
 						html += '<tr>' + '<td>'
-								+ data[i].campaignId
+								+ data.rows[i].campaignId
 								+ '</td>'
 								+ '<td>'
-								+ timeDate(data[i].startTime)
+								+ timeDate(data.rows[i].startTime)
 								+ '</td>'
 								+ '<td>'
-								+ timeDate(data[i].endTime)
+								+ timeDate(data.rows[i].endTime)
 								+ '</td>'
 								// + '<td>'
 								// + data[i].campaignStatus
 								// + '</td>'
 								+ '<td>'
-								+ data[i].campaignBudget
+								+ data.rows[i].campaignBudget
 								+ '</td>'
 								+ '<td>'
-								+ data[i].budgetSurplus
+								+ data.rows[i].budgetSurplus
 								+ '</td>'
 								+ '<td>'
-								+ data[i].inviterBonus
+								+ data.rows[i].inviterBonus
 								+ '</td>'
 								+ '<td>'
-								+ data[i].inviteeBonus
+								+ data.rows[i].inviteeBonus
 								+ '</td>'
 								+ '<td>'
-								+ timeDate(data[i].updateTime)
+								+ timeDate(data.rows[i].updateTime)
 								+ '</td>'
 								+ '<td>'
-								+ (data[i].campaignStatus == 0 ? ('<a href="" onclick="openCampaign('
-										+ data[i].campaignId + ')">开启</a>')
+								+ (data.rows[i].campaignStatus == 0 ? ('<a href="" onclick="openCampaign('
+										+ data.rows[i].campaignId + ')">开启</a>')
 										: ('<a href="" onclick="closeCampaign('
-												+ data[i].campaignId + ')">关闭</a>'))
+												+ data.rows[i].campaignId + ')">关闭</a>'))
 								+ '</td>'
 								+ '<td>'
 								+ '<a  data-toggle="modal" data-target="#changeBonusModal" data-whatever='
@@ -112,7 +116,9 @@ function initCampaign() {
 								+ '>追加</a>' + '</td>' + '</tr>'
 					}
 					$('#campaign tbody').html(html);
-
+					if (data.currentPage == 1) {
+						paginator(data.currentPage, data.pageTotal);
+					}
 				},
 				error : function(xhr, err) {
 					console.log("error");
@@ -148,7 +154,7 @@ function addCampaign() {
 					console.log("success");
 					$('#addCampaignModal').modal('hide')
 					alert("添加成功！");
-					initCampaign();
+					initCampaign(1);
 				} else if (data.retCode == "00002") {
 					location.href = loginUrl;
 				} else if (data.retCode == "00003") {
@@ -192,7 +198,7 @@ function changeBonus() {
 					console.log("changeBonus success");
 					$('#changeBonusModal').modal('hide')
 					alert("修改成功！");
-					initCampaign();
+					initCampaign(1);
 				} else if (data.retCode == "00002") {
 					location.href = loginUrl;
 				} else {
@@ -232,7 +238,7 @@ function addBudget() {
 					console.log("addBudget success");
 					$('#addBudgetModal').modal('hide')
 					alert("修改成功！");
-					initCampaign();
+					initCampaign(1);
 				} else if (data.retCode == "00002") {
 					location.href = loginUrl;
 				} else {
@@ -267,12 +273,12 @@ function openCampaign(campaignId) {
 			if (data.retCode == "00000") {
 				console.log("openCampaign success");
 				alert("开启成功！");
-				initCampaign();
+				initCampaign(1);
 			} else if (data.retCode == "00002") {
 				location.href = loginUrl;
 			} else {
 				console.log("openCampaign" + data.message);
-				alert("活动 "+data.message + " 在开启状态，请关闭后再试");
+				alert("活动 " + data.message + " 在开启状态，请关闭后再试");
 			}
 		},
 		error : function(xhr, err) {
@@ -299,7 +305,7 @@ function closeCampaign(campaignId) {
 			if (data.retCode == "00000") {
 				console.log("closeCampaign success");
 				alert("关闭成功！");
-				initCampaign();
+				initCampaign(1);
 			} else if (data.retCode == "00002") {
 				location.href = loginUrl;
 			} else {
@@ -318,7 +324,39 @@ function closeCampaign(campaignId) {
 }
 
 function onlyNum() {
-    if(!(event.keyCode==46)&&!(event.keyCode==8)&&!(event.keyCode==37)&&!(event.keyCode==39))
-    if(!((event.keyCode>=48&&event.keyCode<=57)||(event.keyCode>=96&&event.keyCode<=105)))
-    event.returnValue=false;
+	if (!(event.keyCode == 46) && !(event.keyCode == 8)
+			&& !(event.keyCode == 37) && !(event.keyCode == 39))
+		if (!((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105)))
+			event.returnValue = false;
+}
+// 分页
+function paginator(currentPage, pageTotal) {
+	console.log("paginator:currentPage=" + currentPage + ",pageTotal="
+			+ pageTotal);
+	var options = {
+		currentPage : currentPage,// 当前页
+		totalPages : pageTotal,// 总页数
+		size : 'normal',
+		alignment : 'right',
+		numberOfPages : 10,// 显示页数
+		itemTexts : function(type, page, current) {
+			switch (type) {
+			case "first":
+				return "<<";
+			case "prev":
+				return "<";
+			case "next":
+				return ">";
+			case "last":
+				return ">>";
+			case "page":
+				return "" + page;
+			}
+		},
+		onPageClicked : function(event, originalEvent, type, page) {
+			initCampaign(page);
+		}
+	}
+	// 分页控件
+	$('#paginator').bootstrapPaginator(options);
 }
