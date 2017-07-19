@@ -25,6 +25,7 @@ import com.yuyutechnology.exchange.crm.request.AddBudgetRequest;
 import com.yuyutechnology.exchange.crm.request.AddCampaignRequest;
 import com.yuyutechnology.exchange.crm.request.CampaignRequest;
 import com.yuyutechnology.exchange.crm.request.ChangeBonusRequest;
+import com.yuyutechnology.exchange.crm.request.GetCampaignListRequest;
 import com.yuyutechnology.exchange.enums.Operation;
 import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
@@ -32,6 +33,7 @@ import com.yuyutechnology.exchange.manager.CrmLogManager;
 import com.yuyutechnology.exchange.pojo.Campaign;
 import com.yuyutechnology.exchange.pojo.CrmLog;
 import com.yuyutechnology.exchange.util.DateFormatUtils;
+import com.yuyutechnology.exchange.util.page.PageBean;
 
 /**
  * @author suzan.wu
@@ -57,9 +59,9 @@ public class CampaignController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getCampaignList", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public List<Campaign> getCampaignList(HttpServletRequest request, HttpServletResponse response) {
+	public PageBean getCampaignList(@RequestBody GetCampaignListRequest getCampaignListRequest, HttpServletRequest request, HttpServletResponse response) {
 
-		return campaignManager.getCampaignList();
+		return campaignManager.getCampaignList(getCampaignListRequest.getCurrentPage());
 
 	}
 

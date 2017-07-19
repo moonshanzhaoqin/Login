@@ -1,10 +1,9 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +31,7 @@ import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.util.ShareCodeUtil;
+import com.yuyutechnology.exchange.util.page.PageBean;
 
 /**
  * @author suzan.wu
@@ -96,8 +96,11 @@ public class CampaignManagerImpl implements CampaignManager {
 	}
 
 	@Override
-	public List<Campaign> getCampaignList() {
-		return campaignDAO.getCampaigns();
+	public PageBean getCampaignList(int currentPage) {
+
+		String hql = "from Campaign order by campaignStatus desc,updateTime desc";
+
+		return campaignDAO.getCampaignsByPage(hql, new ArrayList<Object>(), currentPage, 10);
 	}
 
 	@Override

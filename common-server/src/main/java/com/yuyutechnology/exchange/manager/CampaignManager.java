@@ -5,12 +5,10 @@ package com.yuyutechnology.exchange.manager;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
-
 import com.yuyutechnology.exchange.dto.CampaignInfo;
 import com.yuyutechnology.exchange.dto.InviterInfo;
-import com.yuyutechnology.exchange.pojo.Campaign;
 import com.yuyutechnology.exchange.pojo.Collect;
+import com.yuyutechnology.exchange.util.page.PageBean;
 
 /**
  * @author suzan.wu
@@ -31,10 +29,11 @@ public interface CampaignManager {
 
 	/**
 	 * 
+	 * @param i 
 	 * @return
 	 * 
 	 */
-	List<Campaign> getCampaignList();
+	PageBean getCampaignList(int currentPage);
 
 	/**
 	 * 获取邀请人信息

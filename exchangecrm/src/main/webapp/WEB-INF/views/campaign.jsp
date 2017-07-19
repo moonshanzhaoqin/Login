@@ -22,6 +22,7 @@
 						<th>开始时间(GMT+8)</th>
 						<th>结束时间(GMT+8)</th>
 						<th>预算(Q)</th>
+						<th>已赠送(Q)</th>
 						<th>剩余(Q)</th>
 						<th>邀请人奖励金(Q)</th>
 						<th>被邀请人奖励金(Q)</th>
@@ -35,6 +36,8 @@
 				</tbody>
 			</table>
 		</div>
+		<!--分页插件-->
+		<div id="paginator"></div>
 	</div>
 	<!-- 模态框（Modal） 新增活动 -->
 	<div class="modal fade" id="addCampaignModal" tabindex="-1"
