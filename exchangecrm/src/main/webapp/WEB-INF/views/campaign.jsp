@@ -19,8 +19,7 @@
 				<thead>
 					<tr>
 						<th>活动ID</th>
-						<th>开始时间(GMT+8)</th>
-						<th>结束时间(GMT+8)</th>
+						<th>开始时间    ~ 结束时间(GMT+8)</th>
 						<th>预算(Q)</th>
 						<th>已赠送(Q)</th>
 						<th>剩余(Q)</th>
