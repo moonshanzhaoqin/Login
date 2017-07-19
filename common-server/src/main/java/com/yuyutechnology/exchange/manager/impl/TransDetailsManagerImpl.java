@@ -119,6 +119,8 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 		
 		if(transDetails != null){
 			
+			logger.info("TransId : {}, userId : {},register name : {}",transferId,payerId,userName);
+			
 			transDetails.setTraderName(userName);
 			transDetailsDAO.updateTransDetails(transDetails);
 			

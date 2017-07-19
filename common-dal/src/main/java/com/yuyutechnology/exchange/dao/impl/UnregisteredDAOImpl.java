@@ -53,4 +53,14 @@ public class UnregisteredDAOImpl implements UnregisteredDAO {
 		}
 		return null;
 	}
+	
+	@Override
+	public List<Unregistered> getUnregisteredByPhoneAllStatus(String areaCode, String userPhone){
+		List<?> list = hibernateTemplate.find(
+				"from Unregistered where areaCode = ? and userPhone = ? ", areaCode,
+				userPhone);
+		return (List<Unregistered>) list;
+	}
+	
+	
 }
