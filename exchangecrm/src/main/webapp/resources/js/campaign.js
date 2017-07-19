@@ -97,9 +97,9 @@ function initCampaign(currentPage) {
 								+ '<td>'
 								+ data.rows[i].inviteeBonus
 								+ '</td>'
-								+ '<td>'
-								+ timeDate(data.rows[i].updateTime)
-								+ '</td>'
+//								+ '<td>'
+//								+ timeDate(data.rows[i].updateTime)
+//								+ '</td>'
 								+ '<td>'
 								+ (data.rows[i].campaignStatus == 0 ? ('<a href="" onclick="openCampaign('
 										+ data.rows[i].campaignId + ')">开启</a>')
