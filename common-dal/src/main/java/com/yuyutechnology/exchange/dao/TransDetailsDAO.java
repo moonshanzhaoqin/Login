@@ -11,6 +11,8 @@ public interface TransDetailsDAO {
 	void updateTransDetails(TransDetails transDetails);
 
 	List<?> getTransDetailsByTransIdAndUserId(Integer userId, String transId);
+
+	TransDetails getTransDetails(Integer userId, String transId);
 	
 
 }

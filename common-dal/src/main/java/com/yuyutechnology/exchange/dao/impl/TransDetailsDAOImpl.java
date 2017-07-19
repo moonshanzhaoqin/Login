@@ -30,6 +30,19 @@ public class TransDetailsDAOImpl implements TransDetailsDAO {
 	}
 	
 	@Override
+	public TransDetails getTransDetails(Integer userId,String transId) {
+		
+		List<?> list = hibernateTemplate.find("from TransDetails where transferId = ? and userId = ?", transId,userId);
+		
+		if(list.isEmpty() || list.size() > 1){
+			return null;
+		}
+		
+		return (TransDetails) list.get(0);
+		
+	}
+	
+	@Override
 	public List<?> getTransDetailsByTransIdAndUserId(final Integer userId,final String transId){
 		
 		StringBuffer sb = new StringBuffer("SELECT ");
