@@ -86,6 +86,9 @@ function initCampaign(currentPage) {
 								+ data.rows[i].campaignBudget
 								+ '</td>'
 								+ '<td>'
+								+ (data.rows[i].campaignBudget-data.rows[i].budgetSurplus)
+								+ '</td>'
+								+ '<td>'
 								+ data.rows[i].budgetSurplus
 								+ '</td>'
 								+ '<td>'
