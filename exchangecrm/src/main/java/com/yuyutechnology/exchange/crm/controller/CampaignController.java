@@ -5,8 +5,6 @@ package com.yuyutechnology.exchange.crm.controller;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,7 +28,6 @@ import com.yuyutechnology.exchange.enums.Operation;
 import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.CrmLogManager;
-import com.yuyutechnology.exchange.pojo.Campaign;
 import com.yuyutechnology.exchange.pojo.CrmLog;
 import com.yuyutechnology.exchange.util.DateFormatUtils;
 import com.yuyutechnology.exchange.util.page.PageBean;

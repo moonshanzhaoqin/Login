@@ -50,6 +50,16 @@ $(function() {
 		form = document.getElementById("addBudget");
 		form.campaignId.value = campaign.campaignId;
 		form.campaignBudget.value = campaign.campaignBudget;
+		form.additionalBudget.value = '';
+	})
+	$('#addCampaignModal').on('show.bs.modal', function(e) {
+		form = document.getElementById("addCampaign");
+		form.startTime.value = '';
+		form.endTime.value = '';
+		form.campaignBudget.value = '';
+		form.inviterBonus.value = '';
+		form.inviteeBonus.value = '';
+
 	})
 
 });
@@ -85,7 +95,7 @@ function initCampaign(currentPage) {
 								+ data.rows[i].campaignBudget
 								+ '</td>'
 								+ '<td>'
-								+ (data.rows[i].campaignBudget-data.rows[i].budgetSurplus)
+								+ (data.rows[i].campaignBudget - data.rows[i].budgetSurplus)
 								+ '</td>'
 								+ '<td>'
 								+ data.rows[i].budgetSurplus
@@ -96,9 +106,9 @@ function initCampaign(currentPage) {
 								+ '<td>'
 								+ data.rows[i].inviteeBonus
 								+ '</td>'
-//								+ '<td>'
-//								+ timeDate(data.rows[i].updateTime)
-//								+ '</td>'
+								// + '<td>'
+								// + timeDate(data.rows[i].updateTime)
+								// + '</td>'
 								+ '<td>'
 								+ (data.rows[i].campaignStatus == 0 ? ('<a href="" onclick="openCampaign('
 										+ data.rows[i].campaignId + ')">开启</a>')
