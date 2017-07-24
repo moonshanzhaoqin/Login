@@ -158,7 +158,7 @@ public class UserManagerImpl implements UserManager {
 		userDAO.updateUser(user);
 		redisDAO.saveData("changephonetime" + userId, new Date().getTime());
 		/* 根据Unregistered表 更新新用户钱包 将资金从系统帐户划给新用户 */
-		updateWalletsFromUnregistered(userId, areaCode, userPhone,user.getUserName());
+		updateWalletsFromUnregistered(userId, areaCode, userPhone, user.getUserName());
 	}
 
 	@Override
@@ -456,7 +456,7 @@ public class UserManagerImpl implements UserManager {
 		createWallets4NewUser(userId);
 		accountingManager.snapshotToBefore(userId);
 		/* 根据Unregistered表 更新新用户钱包 将资金从系统帐户划给新用户 */
-		updateWalletsFromUnregistered(userId, areaCode, userPhone,userName);
+		updateWalletsFromUnregistered(userId, areaCode, userPhone, userName);
 		return userId;
 	}
 
@@ -520,19 +520,22 @@ public class UserManagerImpl implements UserManager {
 					new Object[] { user.getPushId(), pushId });
 			pushManager.push4Offline(user.getPushId(), user.getPushTag(), String.valueOf(new Date().getTime()));
 		}
+		if (StringUtils.isNotBlank(pushId)) {
+			user.setPushId(pushId);
+		}
 		if (!user.getPushTag().equals(LanguageUtils.standard(language))) {
 			/* 语言不一致，解绑Tag */
 			logger.info("***Language inconsistency, unbind Tag***");
 			pushManager.unbindPushTag(user.getPushId(), user.getPushTag());
+
+			/* 绑定Tag */
+			logger.info("***bind Tag***");
+			pushManager.bindPushTag(user.getPushId(), LanguageUtils.standard(language));
+
 			user.setPushTag(LanguageUtils.standard(language));
-		}
-		if (StringUtils.isNotBlank(pushId)) {
-			user.setPushId(pushId);
+
 		}
 		userDAO.updateUser(user);
-		/* 绑定Tag */
-		logger.info("***bind Tag***");
-		pushManager.bindPushTag(user.getPushId(), user.getPushTag());
 
 		/* 清除其他账号的此pushId */
 		clearPushId(userId, pushId);
@@ -594,7 +597,7 @@ public class UserManagerImpl implements UserManager {
 	 * @param areaCode
 	 * @param userPhone
 	 */
-	private void updateWalletsFromUnregistered(Integer userId, String areaCode, String userPhone,String userName) {
+	private void updateWalletsFromUnregistered(Integer userId, String areaCode, String userPhone, String userName) {
 		logger.info(
 				"Update wallets according to Unregistered. Assign funds from system accounts to  newly registered user==>");
 		Integer systemUserId = userDAO.getSystemUser().getUserId();
@@ -644,7 +647,8 @@ public class UserManagerImpl implements UserManager {
 			transferDAO.addTransfer(transfer);
 
 			// add by Niklaus.chi at 2017/07/07
-//			transDetailsManager.updateTransDetailsWhenOtherOneRegist(unregistered.getTransferId(), payerTransfer.getUserFrom(), userName);
+			// transDetailsManager.updateTransDetailsWhenOtherOneRegist(unregistered.getTransferId(),
+			// payerTransfer.getUserFrom(), userName);
 			transDetailsManager.addTransDetails(transferId, userId, payer.getUserId(), payer.getUserName(),
 					payer.getAreaCode(), payer.getUserPhone(), unregistered.getCurrency(), unregistered.getAmount(),
 					payerTransfer.getTransferComment(), ServerConsts.TRANSFER_TYPE_TRANSACTION - 1);
@@ -655,12 +659,11 @@ public class UserManagerImpl implements UserManager {
 			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
 			unregisteredDAO.updateUnregistered(unregistered);
 		}
-		
-		
-		//更新details信息
-		
-		transDetailsDAO.updateTransDetails(userName,areaCode,userPhone);
-		
+
+		// 更新details信息
+
+		transDetailsDAO.updateTransDetails(userName, areaCode, userPhone);
+
 	}
 
 	@Override
