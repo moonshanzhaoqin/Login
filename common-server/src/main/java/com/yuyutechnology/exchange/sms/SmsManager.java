@@ -155,7 +155,7 @@ public class SmsManager {
 	@Async
 	public void sendSMS4Transfer(String areaCode, String userPhone, User from, String currency, BigDecimal amount) {
 		String transferContent = templateChoose("transfer", areaCode);
-		String content = transferContent.replace(SMS_REPLACE_FROM, from.getAreaCode() + from.getUserPhone())
+		String content = transferContent.replace(SMS_REPLACE_FROM, from.getAreaCode() +" "+ from.getUserPhone())
 				.replace(SMS_REPLACE_CURRENCY, commonManager.getCurreny(currency).getCurrencyUnit())
 				.replace(SMS_REPLACE_AMOUNT,
 						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? GDQ.format(amount)
