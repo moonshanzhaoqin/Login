@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.sound.midi.MidiDevice.Info;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -465,18 +467,11 @@ public class UserManagerImpl implements UserManager {
 		Language newLanguage = LanguageUtils.standard(language);
 		logger.info("{} switchLanguage to {} ==>", userId, newLanguage.toString());
 		User user = userDAO.getUser(userId);
-		// if (!user.getPushTag().equals(newLanguage)) {
-		/* 语言不一致，解绑Tag */
-		// logger.info("***Language inconsistency***");
-		// pushManager.unbindPushTag(user.getPushId(), user.getPushTag());
-
-		/* 绑定Tag */
-		pushManager.bindPushTag(user.getPushId(), newLanguage);
 		user.setPushTag(newLanguage);
 		userDAO.updateUser(user);
-		// } else {
-		// logger.info("***Language consistency,do nothing!***");
-		// }
+		/* 绑定Tag */
+		pushManager.bindPushTag(user.getPushId(), newLanguage);
+
 	}
 
 	@Override
@@ -521,22 +516,12 @@ public class UserManagerImpl implements UserManager {
 		}
 		user.setPushId(pushId);
 		user.setPushTag(LanguageUtils.standard(language));
-		/* 绑定Tag */
-		logger.info("***bind Tag***");
-		pushManager.bindPushTag(pushId, LanguageUtils.standard(language));
 		userDAO.updateUser(user);
-
+		/* 绑定Tag */
+		logger.info("***bind Tag***{}", language);
+		pushManager.bindPushTag(pushId, LanguageUtils.standard(language));
 		/* 清除其他账号的此pushId */
 		clearPushId(userId, pushId);
-		// List<User> users = userDAO.getUserByPushId(pushId);
-		// if (users != null) {
-		// for (User user2 : users) {
-		// if (user2.getUserId() != userId) {
-		// user2.setPushId(null);
-		// userDAO.updateUser(user2);
-		// }
-		// }
-		// }
 	}
 
 	private void clearPushId(Integer userId, String pushId) {
@@ -741,6 +726,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void addDevice(Integer userId, String deviceId, String deviceName) {
+		logger.info("{} add {} device {}==>", userId, deviceName, deviceId);
 		userDeviceDAO.addUserDevice(new UserDevice(new UserDeviceId(userId, deviceId), deviceName));
 	}
 
