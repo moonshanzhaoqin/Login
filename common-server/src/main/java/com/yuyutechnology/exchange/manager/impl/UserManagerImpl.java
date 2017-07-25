@@ -467,11 +467,15 @@ public class UserManagerImpl implements UserManager {
 		Language newLanguage = LanguageUtils.standard(language);
 		logger.info("{} switchLanguage to {} ==>", userId, newLanguage.toString());
 		User user = userDAO.getUser(userId);
-		user.setPushTag(newLanguage);
-		userDAO.updateUser(user);
-		/* 绑定Tag */
-		pushManager.bindPushTag(user.getPushId(), newLanguage);
-
+		if (!user.getPushTag().equals(newLanguage)) {
+			logger.info("***Language inconsistency***");
+			user.setPushTag(newLanguage);
+			userDAO.updateUser(user);
+			/* 绑定Tag */
+			pushManager.bindPushTag(user.getPushId(), newLanguage);
+		} else {
+			logger.info("***Language consistency,do nothing!***");
+		}
 	}
 
 	@Override
