@@ -359,23 +359,21 @@ public class PushManager {
 		case en_US:
 			tag(Func.unbindTag, pushId, Language.zh_CN);
 			tag(Func.unbindTag, pushId, Language.zh_TW);
-			tag(Func.bindTag, pushId,Language.en_US);
-			break;
+			tag(Func.bindTag, pushId, Language.en_US);
+			return;
 		case zh_CN:
 			tag(Func.unbindTag, pushId, Language.en_US);
 			tag(Func.unbindTag, pushId, Language.zh_TW);
-			tag(Func.bindTag, pushId,Language.zh_CN);
-			break;
+			tag(Func.bindTag, pushId, Language.zh_CN);
+			return;
 		case zh_TW:
 			tag(Func.unbindTag, pushId, Language.zh_CN);
 			tag(Func.unbindTag, pushId, Language.en_US);
-			tag(Func.bindTag, pushId,Language.zh_TW);
-			break;
+			tag(Func.bindTag, pushId, Language.zh_TW);
+			return;
 		default:
-			break;
+			return;
 		}
-		
-		
 	}
 
 	/**
@@ -383,10 +381,10 @@ public class PushManager {
 	 * 
 	 * @param user
 	 */
-//	@Async
-//	public void unbindPushTag(String pushId, Language pushTag) {
-//		tag(Func.unbindTag, pushId, pushTag.toString());
-//	}
+	// @Async
+	// public void unbindPushTag(String pushId, Language pushTag) {
+	// tag(Func.unbindTag, pushId, pushTag.toString());
+	// }
 
 	/**
 	 * 根据功能和语言选择模板
@@ -659,12 +657,12 @@ public class PushManager {
 		switch (func) {
 		case bindTag:
 			HttpTookit.sendPost(ResourceUtils.getBundleValue4String("push.url") + "bindTag.do", param);
-			break;
+			return;
 		case unbindTag:
 			HttpTookit.sendPost(ResourceUtils.getBundleValue4String("push.url") + "unBindTag.do", param);
-			break;
+			return;
 		default:
-			break;
+			return;
 		}
 	}
 
