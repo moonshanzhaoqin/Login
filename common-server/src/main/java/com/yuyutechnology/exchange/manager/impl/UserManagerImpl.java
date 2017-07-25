@@ -432,8 +432,8 @@ public class UserManagerImpl implements UserManager {
 	public void logout(Integer userId) {
 		if (userId != 0) {
 			User user = userDAO.getUser(userId);
-			logger.info("unbind Tag==>");
-			pushManager.unbindPushTag(user.getPushId(), user.getPushTag());
+			// logger.info("unbind Tag==>");
+			// pushManager.unbindPushTag(user.getPushId(), user.getPushTag());
 			user.setPushId(null);
 			userDAO.updateUser(user);
 		}
@@ -465,19 +465,18 @@ public class UserManagerImpl implements UserManager {
 		Language newLanguage = LanguageUtils.standard(language);
 		logger.info("{} switchLanguage to {} ==>", userId, newLanguage.toString());
 		User user = userDAO.getUser(userId);
-		if (!user.getPushTag().equals(newLanguage)) {
-			/* 语言不一致，解绑Tag */
-			logger.info("***Language inconsistency***");
-			pushManager.unbindPushTag(user.getPushId(), user.getPushTag());
+		// if (!user.getPushTag().equals(newLanguage)) {
+		/* 语言不一致，解绑Tag */
+		// logger.info("***Language inconsistency***");
+		// pushManager.unbindPushTag(user.getPushId(), user.getPushTag());
 
-			/* 绑定Tag */
-			pushManager.bindPushTag(user.getPushId(), newLanguage);
-
-			user.setPushTag(newLanguage);
-			userDAO.updateUser(user);
-		} else {
-			logger.info("***Language consistency,do nothing!***");
-		}
+		/* 绑定Tag */
+		pushManager.bindPushTag(user.getPushId(), newLanguage);
+		user.setPushTag(newLanguage);
+		userDAO.updateUser(user);
+		// } else {
+		// logger.info("***Language consistency,do nothing!***");
+		// }
 	}
 
 	@Override
@@ -520,21 +519,11 @@ public class UserManagerImpl implements UserManager {
 					new Object[] { user.getPushId(), pushId });
 			pushManager.push4Offline(user.getPushId(), user.getPushTag(), String.valueOf(new Date().getTime()));
 		}
-		if (StringUtils.isNotBlank(pushId)) {
-			user.setPushId(pushId);
-		}
-		if (!user.getPushTag().equals(LanguageUtils.standard(language))) {
-			/* 语言不一致，解绑Tag */
-			logger.info("***Language inconsistency, unbind Tag***");
-			pushManager.unbindPushTag(user.getPushId(), user.getPushTag());
-
-			/* 绑定Tag */
-			logger.info("***bind Tag***");
-			pushManager.bindPushTag(user.getPushId(), LanguageUtils.standard(language));
-
-			user.setPushTag(LanguageUtils.standard(language));
-
-		}
+		user.setPushId(pushId);
+		user.setPushTag(LanguageUtils.standard(language));
+		/* 绑定Tag */
+		logger.info("***bind Tag***");
+		pushManager.bindPushTag(pushId, LanguageUtils.standard(language));
 		userDAO.updateUser(user);
 
 		/* 清除其他账号的此pushId */

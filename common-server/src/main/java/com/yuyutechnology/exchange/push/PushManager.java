@@ -355,7 +355,27 @@ public class PushManager {
 	 */
 	@Async
 	public void bindPushTag(String pushId, Language pushTag) {
-		tag(Func.bindTag, pushId, pushTag.toString());
+		switch (pushTag) {
+		case en_US:
+			tag(Func.unbindTag, pushId, Language.zh_CN);
+			tag(Func.unbindTag, pushId, Language.zh_TW);
+			tag(Func.bindTag, pushId,Language.en_US);
+			break;
+		case zh_CN:
+			tag(Func.unbindTag, pushId, Language.en_US);
+			tag(Func.unbindTag, pushId, Language.zh_TW);
+			tag(Func.bindTag, pushId,Language.zh_CN);
+			break;
+		case zh_TW:
+			tag(Func.unbindTag, pushId, Language.zh_CN);
+			tag(Func.unbindTag, pushId, Language.en_US);
+			tag(Func.bindTag, pushId,Language.zh_TW);
+			break;
+		default:
+			break;
+		}
+		
+		
 	}
 
 	/**
@@ -363,10 +383,10 @@ public class PushManager {
 	 * 
 	 * @param user
 	 */
-	@Async
-	public void unbindPushTag(String pushId, Language pushTag) {
-		tag(Func.unbindTag, pushId, pushTag.toString());
-	}
+//	@Async
+//	public void unbindPushTag(String pushId, Language pushTag) {
+//		tag(Func.unbindTag, pushId, pushTag.toString());
+//	}
 
 	/**
 	 * 根据功能和语言选择模板
@@ -626,14 +646,14 @@ public class PushManager {
 		HttpTookit.sendPost(ResourceUtils.getBundleValue4String("push.url") + "push_custom.do", param);
 	}
 
-	private void tag(Func func, String deviceID, String pushTag) {
+	private void tag(Func func, String deviceID, Language pushTag) {
 		if (StringUtils.isBlank(deviceID)) {
 			return;
 		}
 		TagRequest tagRequest = new TagRequest();
 		tagRequest.setAppName(ResourceUtils.getBundleValue4String("appName"));
 		tagRequest.setDeviceIds(deviceID);
-		tagRequest.setTagName(pushTag);
+		tagRequest.setTagName(pushTag.toString());
 		String param = JsonBinder.getInstance().toJson(tagRequest);
 		logger.info("{} -> TagRequest : {}", func, param);
 		switch (func) {
