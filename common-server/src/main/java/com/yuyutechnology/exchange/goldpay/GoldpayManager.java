@@ -101,6 +101,7 @@ public class GoldpayManager {
 	}
 	
 	public static void main(String[] args){
-		sendPost("https://cloud888.yuyutechnology.com/uas/oauth/token", "username=+86-13263");
+		String result= sendPost("https://cloud888.yuyutechnology.com/uas/oauth/token", "username=+86-13263");
+		System.out.println("result : "+result);
 	}
 }
