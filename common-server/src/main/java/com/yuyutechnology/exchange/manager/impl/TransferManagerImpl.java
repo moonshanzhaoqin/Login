@@ -34,6 +34,7 @@ import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.TransDetailsDTO;
 import com.yuyutechnology.exchange.dto.TransferDTO;
+import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
@@ -781,6 +782,13 @@ public class TransferManagerImpl implements TransferManager {
 		transfer.setNoticeId(noticeId);
 		// 保存
 		transferDAO.addTransfer(transfer);
+		
+		
+		// add by Niklaus.chi at 2017/07/26
+		User Sponsor = userDAO.getUser(notification.getSponsorId());
+		transDetailsManager.addTransDetails(transferId, userId, notification.getSponsorId(), Sponsor.getUserName(),
+				areaCode, userPhone, currency, amount, transferComment, ServerConsts.TRANSFER_TYPE_TRANSACTION);
+		
 
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");
