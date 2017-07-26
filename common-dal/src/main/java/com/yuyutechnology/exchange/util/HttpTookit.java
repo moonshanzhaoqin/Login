@@ -184,6 +184,8 @@ public final class HttpTookit
 			connection.setRequestMethod("POST"); // 设置请求方式
 			connection.setRequestProperty("Accept", "application/json"); // 设置接收数据的格式
 			connection.setRequestProperty("Content-Type", "application/json"); // 设置发送数据的格式
+			connection.setConnectTimeout(30000); 
+			connection.setReadTimeout(30000);
 			connection.connect();
 			out = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream(), "UTF-8"));
 			out.write(param);
