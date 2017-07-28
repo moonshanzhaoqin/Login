@@ -223,6 +223,10 @@ public class CampaignManagerImpl implements CampaignManager {
 
 		/* 判断是否有钱可以支付 */
 		Campaign campaign = campaignDAO.getCampaign(collect.getCampaignId());
+		if (campaign == null) {
+			logger.warn("The collect is illegal, no campaign.");
+			return;
+		}
 		if (campaign.getBudgetSurplus().compareTo(collect.getInviteeBonus().add(collect.getInviterBonus())) == -1) {
 			logger.info("The budget is not enough");
 			return;
@@ -230,6 +234,10 @@ public class CampaignManagerImpl implements CampaignManager {
 
 		/* 判断邀请人的人数限制 */
 		Inviter inviter = inviterDAO.getInviter(collect.getInviterId());
+		if (inviter == null) {
+			logger.warn("The collect is illegal, no inviter.");
+			return;
+		}
 		if (inviter.getInviteQuantity() >= configManager.getConfigLongValue(ConfigKeyEnum.INVITE_QUANTITY_RESTRICTION,
 				1000L)) {
 			logger.info("Exceed quanlity restriction");
@@ -255,7 +263,7 @@ public class CampaignManagerImpl implements CampaignManager {
 	}
 
 	private void settlement(Integer userId, BigDecimal bonus) {
-		
+
 		User user = userDAO.getUser(userId);
 
 		User system = userDAO.getSystemUser();
@@ -288,7 +296,6 @@ public class CampaignManagerImpl implements CampaignManager {
 		/* 系统扣款 */
 		walletDAO.updateWalletByUserIdAndCurrency(system.getUserId(), ServerConsts.CURRENCY_OF_GOLDPAY, bonus, "-",
 				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId);
-
 
 		pushManager.push4Invite(user, transferId, bonus);
 
