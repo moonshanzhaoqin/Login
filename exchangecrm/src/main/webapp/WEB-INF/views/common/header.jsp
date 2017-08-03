@@ -64,6 +64,7 @@
 								<ul class="dropdown-menu" role="menu">
 									<li><a href="<c:url value='/account/accountOverview' />">用户资产</a></li>
 									<li><a href="<c:url value='/userInfo' />">用户信息</a></li>
+									<li><a href="<c:url value='/registration' />">注册量</a></li>
 								</ul></li>
 						</c:if>
 						<c:if test="${adminPower eq 2}">

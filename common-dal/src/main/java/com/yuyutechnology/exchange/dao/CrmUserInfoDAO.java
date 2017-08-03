@@ -1,5 +1,6 @@
 package com.yuyutechnology.exchange.dao;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,5 +26,12 @@ public interface CrmUserInfoDAO {
 	 * @return
 	 */
 	PageBean getUserInfoByPage(String userPhone, String userName, int currentPage, int pageSize);
+
+	/**
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	Long getRegistration(Date startTime, Date endTime);
 
 }

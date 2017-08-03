@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,17 +21,17 @@ import com.yuyutechnology.exchange.util.page.PageUtils;
 
 @Repository
 public class CrmUserInfoDAOImpl implements CrmUserInfoDAO {
-	
+
 	@Resource
 	HibernateTemplate hibernateTemplate;
-	
+
 	public static Logger logger = LogManager.getLogger(CrmUserInfoDAOImpl.class);
-	
+
 	@Override
-	public void updateUserInfo(CrmUserInfo crmUserInfo){
-		
+	public void updateUserInfo(CrmUserInfo crmUserInfo) {
+
 		hibernateTemplate.replicate(crmUserInfo, ReplicationMode.LATEST_VERSION);
-		
+
 	}
 
 	@Override
@@ -41,52 +42,62 @@ public class CrmUserInfoDAOImpl implements CrmUserInfoDAO {
 	@Override
 	public HashMap<String, Object> getUserAccountInfoListByPage(String sql, List<Object> values, int currentPage,
 			int pageSize) {
-		
-		int firstResult = (currentPage -1)*pageSize;
+
+		int firstResult = (currentPage - 1) * pageSize;
 		int masResult = pageSize;
-		
+
 		List<?> list = PageUtils.getListByPage(hibernateTemplate, sql, values, firstResult, masResult);
-		
-		long total = PageUtils.getTotal(hibernateTemplate,sql, values);
+
+		long total = PageUtils.getTotal(hibernateTemplate, sql, values);
 		int pageTotal = PageUtils.getPageTotal(total, pageSize);
-		
+
 		HashMap<String, Object> map = new HashMap<>();
-		
-		map.put("currentPage",currentPage);
-		map.put("pageSize",pageSize);
-		map.put("total",total);
-		map.put("pageTotal",pageTotal);
-		map.put("list",list);
-		
+
+		map.put("currentPage", currentPage);
+		map.put("pageSize", pageSize);
+		map.put("total", total);
+		map.put("pageTotal", pageTotal);
+		map.put("list", list);
+
 		return map;
 	}
 
 	@Override
 	public void userFreeze(Integer userId, int userAvailable) {
 		CrmUserInfo crmUserInfo = hibernateTemplate.get(CrmUserInfo.class, userId);
-		if (crmUserInfo!= null) {
+		if (crmUserInfo != null) {
 			crmUserInfo.setUserAvailable(userAvailable);
 			hibernateTemplate.update(crmUserInfo);
 		}
 	}
-	
+
 	@Override
 	public PageBean getUserInfoByPage(String userPhone, String userName, int currentPage, int pageSize) {
 		List<Object> values = new ArrayList<Object>();
-		StringBuilder hql = new StringBuilder(
-				"from CrmUserInfo where 1 = 1");
+		StringBuilder hql = new StringBuilder("from CrmUserInfo where 1 = 1");
 		if (StringUtils.isNotBlank(userPhone)) {
 			hql.append("and userPhone = ?");
 			values.add(userPhone);
 		}
 		if (StringUtils.isNotBlank(userName)) {
 			hql.append("and userName like ?");
-			values.add("%"+userName+"%");
+			values.add("%" + userName + "%");
 		}
-		
+
 		hql.append(" order by loginTime desc");
 
-		PageBean pageBean =PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
+		PageBean pageBean = PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
 		return pageBean;
 	}
+	
+	@Override
+	public Long getRegistration(Date startTime, Date endTime) {
+		String hql = "from CrmUserInfo where createTime > ? and createTime < ?";
+		List<Object> values = new ArrayList<Object>();
+		values.add(startTime);
+		values.add(endTime);
+		return PageUtils.getTotal(hibernateTemplate, hql, values);
+
+	}
+
 }

@@ -33,7 +33,7 @@ public class PasswordUtils {
 	 * @return
 	 */
 	public static boolean check(String plaintext, String ciphertext, String passwordSalt) {
-		return StringUtils.equals(ciphertext, encrypt(plaintext, passwordSalt)) ? true : false;
+		return StringUtils.equals(ciphertext, encrypt(plaintext, passwordSalt));
 	}
 
 	public static void main(String[] args) {
