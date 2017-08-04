@@ -20,7 +20,8 @@
 				</div>
 				<button type="button" class="btn btn-primary "
 					onclick="searchUserInfo(1)">搜索</button>
-				<button type="button" class="btn btn-primary" id="updateImmediately" onclick="updateUserInfo()"> 立即更新</button>
+				<button type="button" class="btn btn-primary" id="updateImmediately"
+					onclick="updateUserInfo()">立即更新</button>
 			</form>
 		</div>
 
@@ -32,6 +33,7 @@
 						<th>国家码</th>
 						<th>手机号</th>
 						<th>用户名</th>
+						<th>注册时间（GMT+8）</th>
 						<th>登录时间（GMT+8）</th>
 					</tr>
 				</thead>
@@ -41,6 +43,35 @@
 			<!--分页插件-->
 			<div id="paginator"></div>
 		</div>
+
+		<div class="row">
+			<div class="pull-left" style="width: 50%">
+				<h3>24小时注册量：</h3>
+				<h1 id="24HRegistration" style="text-indent: 20%">12</h1>
+			</div>
+			<div class="pull-right" style="width: 50%">
+				<div class="row">
+					<form class="form-inline pull-right" id="getRegistration">
+						<div class="form-group">
+							<label class="sr-only" for="startTime">startTime</label> <input
+								id="start" type="datetime" class="form-control" name="startTime"
+								placeholder="开始时间" />
+						</div>
+						<div class="form-group">
+							<label class="sr-only" for="endTime">endTime</label> <input
+								id="end" type="datetime" class="form-control" name="endTime"
+								class="laydate-icon" placeholder="结束时间" />
+						</div>
+						<button type="button" class="btn btn-primary "
+							onclick="getRegistration()">搜索</button>
+
+					</form>
+				</div>
+				<div class="row">
+					<h1 id="Registration" style="text-indent: 40%"></h1>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<script type="text/javascript"
@@ -49,9 +80,10 @@
 		src="<c:url value="/resources/bootstrap/js/bootstrap.min.js" />"></script>
 	<script type="text/javascript"
 		src="<c:url value="/resources/bootstrap/js/bootstrap-paginator.min.js" />"></script>
+	<script src="<c:url value="/resources/js/registration.js" />"></script>
 	<script>
 		$(function() {
-			var userPhone,userName;
+			var userPhone, userName;
 			searchUserInfo(1);
 		});
 
@@ -59,7 +91,7 @@
 			console.log("searchUserInfo:page=" + page);
 			form = document.getElementById("searchUserInfo");
 			userPhone = form.userPhone.value;
-			console.log("userPhone="+userPhone);
+			console.log("userPhone=" + userPhone);
 			userName = form.userName.value;
 			getUserInfoByPage(page, userPhone, userName);
 		}
@@ -68,8 +100,8 @@
 			form = document.getElementById("searchUserInfo");
 			form.userPhone.value = userPhone1;
 			form.userName.value = userName1;
-			userPhone=userPhone1;
-			userName=userName1;
+			userPhone = userPhone1;
+			userName = userName1;
 			var data = {
 				currentPage : currentPage,
 				userPhone : userPhone,
@@ -94,8 +126,11 @@
 									+ '<td>' + data.rows[i].areaCode + '</td>'
 									+ '<td>' + data.rows[i].userPhone + '</td>'
 									+ '<td>' + data.rows[i].userName + '</td>'
-									+ '<td>' + timeDate(data.rows[i].loginTime)+ '</td>' 
-									+ '</tr>'
+									+ '<td>'
+									+ timeDate(data.rows[i].createTime)
+									+ '</td>' + '<td>'
+									+ timeDate(data.rows[i].loginTime)
+									+ '</td>' + '</tr>'
 						}
 						$('#userInfo tbody').html(html);
 						if (data.currentPage == 1) {
@@ -109,7 +144,7 @@
 				}
 			});
 		}
-        /* 立即更新 */
+		/* 立即更新 */
 		function updateUserInfo() {
 			$("#updateImmediately").attr("disabled", true);
 			$("#updateImmediately").text("更新中...");
@@ -119,14 +154,14 @@
 				contentType : "application/json; charset=utf-8",
 				success : function(data) {
 					$("#updateImmediately").attr("disabled", false);
-		            $("#updateImmediately").text("立即更新");
-		            getUserInfoByPage(1,"","")
+					$("#updateImmediately").text("立即更新");
+					getUserInfoByPage(1, "", "")
 				},
 				error : function(xhr, err) {
 					alert("未知错误");
 					console.log(err);
 					$("#updateImmediately").attr("disabled", false);
-                    $("#updateImmediately").text("立即更新");
+					$("#updateImmediately").text("立即更新");
 				}
 			});
 

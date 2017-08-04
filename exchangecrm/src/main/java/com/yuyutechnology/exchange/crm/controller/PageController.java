@@ -49,4 +49,8 @@ public class PageController {
 	public String campaign(HttpServletRequest request, HttpServletResponse response) {
 		return "campaign";
 	}
+	@RequestMapping(value = "/registration", method = { RequestMethod.GET })
+	public String registration(HttpServletRequest request, HttpServletResponse response) {
+		return "registration";
+	}
 }
