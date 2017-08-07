@@ -1,14 +1,11 @@
 package com.yuyutechnology.exchange.dao.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.hibernate.ReplicationMode;
-import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.orm.hibernate4.HibernateTemplate;
@@ -73,18 +70,7 @@ public class CrmUserInfoDAOImpl implements CrmUserInfoDAO {
 
 	@Override
 	public PageBean getUserInfoByPage(String hql, List<?> values, int currentPage, int pageSize) {
-
 		return PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
-	}
-
-	@Override
-	public Long getRegistration(Date startTime, Date endTime) {
-		String hql = "from CrmUserInfo where createTime > ? and createTime < ?";
-		List<Object> values = new ArrayList<Object>();
-		values.add(startTime);
-		values.add(endTime);
-		return PageUtils.getTotal(hibernateTemplate, hql, values);
-
 	}
 
 }

@@ -1,7 +1,6 @@
 package com.yuyutechnology.exchange.manager;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.HashMap;
 
 import com.yuyutechnology.exchange.pojo.User;
@@ -22,18 +21,6 @@ public interface CrmUserInfoManager {
 	public void updateImmediately();
 
 	public int getUpdateFlag();
-
-	/**
-	 * @return
-	 */
-	String get24HRegistration();
-
-	/**
-	 * @param startTime
-	 * @param endTime
-	 * @return
-	 */
-	String getRegistration(Date startTime, Date endTime);
 
 	/**
 	 * @param currentPage

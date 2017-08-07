@@ -1,6 +1,5 @@
 package com.yuyutechnology.exchange.dao;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,13 +16,6 @@ public interface CrmUserInfoDAO {
 			int pageSize);
 
 	void userFreeze(Integer userId, int userAvailable);
-
-	/**
-	 * @param startTime
-	 * @param endTime
-	 * @return
-	 */
-	Long getRegistration(Date startTime, Date endTime);
 
 	/**
 	 * @param hql

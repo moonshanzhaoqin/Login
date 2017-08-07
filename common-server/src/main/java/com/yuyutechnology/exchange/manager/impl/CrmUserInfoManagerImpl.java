@@ -3,7 +3,6 @@ package com.yuyutechnology.exchange.manager.impl;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -232,17 +231,5 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 		return crmUserInfoDAO.getUserInfoByPage(hql.toString(), values, currentPage, 10);
 	}
 
-	@Override
-	public String get24HRegistration() {
-		Calendar calendar = Calendar.getInstance();
-		Date now = calendar.getTime();
-		calendar.add(Calendar.DATE, -1);
-		return crmUserInfoDAO.getRegistration(calendar.getTime(), now).toString();
-	}
-
-	@Override
-	public String getRegistration(Date startTime, Date endTime) {
-
-		return crmUserInfoDAO.getRegistration(startTime, endTime).toString();
-	}
+	
 }
