@@ -59,7 +59,7 @@ public class SmsManager {
 	private final String SMS_REPLACE_CURRENCYIN = "[CURRENCYIN]";
 	private final String SMS_REPLACE_AMOUNTIN = "[AMOUNTIN]";
 	private final String SMS_REPLACE_PERCENT = "[PERCENT]";
-
+	private final String SMS_REPLACE_NUMBER = "[NUMBER]";
 	// en
 	private StringBuffer phoneVerify_en = new StringBuffer();
 	// zh_CN
@@ -83,6 +83,8 @@ public class SmsManager {
 	// zh_CN
 	private StringBuffer badAccountAlarm_cn = new StringBuffer();
 	// zh_CN
+	private StringBuffer registrationAlarm_cn = new StringBuffer();
+	// zh_CN
 	private StringBuffer remitFailAlarm_cn = new StringBuffer();
 	// zh_CN
 	private StringBuffer reachTotalGDQLimitAlarm_cn = new StringBuffer();
@@ -99,17 +101,17 @@ public class SmsManager {
 		readTemplate("template/sms/zh_HK/transfer.template", transfer_hk);
 
 		readTemplate("template/sms/zh_CN/criticalAlarm.template", criticalAlarm_cn);
-		
+
 		readTemplate("template/sms/zh_CN/largeTrans.template", largeTrans_cn);
-		
+
 		readTemplate("template/sms/zh_CN/largeExchangeWarn.template", largeExchange_cn);
-		
+
 		readTemplate("template/sms/zh_CN/badAccountAlarm.template", badAccountAlarm_cn);
-		
+		readTemplate("template/sms/zh_CN/registrationAlarm.template", registrationAlarm_cn);
 		readTemplate("template/sms/zh_CN/remitFailAlarm.template", remitFailAlarm_cn);
-		
+
 		readTemplate("template/sms/zh_CN/reachTotalGDQLimitAlarm.template", reachTotalGDQLimitAlarm_cn);
-		
+
 		initSMS = true;
 	}
 
@@ -119,7 +121,9 @@ public class SmsManager {
 			Resource resource = new ClassPathResource(filePath);
 			content.append(IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", ""));
 		} catch (Exception e) {
-			if (!initSMS) logger.warn("SMS template ({}) read error , can't send this msg : {} ", new Object[]{filePath, e.getMessage()});
+			if (!initSMS)
+				logger.warn("SMS template ({}) read error , can't send this msg : {} ",
+						new Object[] { filePath, e.getMessage() });
 		}
 	}
 
@@ -155,7 +159,7 @@ public class SmsManager {
 	@Async
 	public void sendSMS4Transfer(String areaCode, String userPhone, User from, String currency, BigDecimal amount) {
 		String transferContent = templateChoose("transfer", areaCode);
-		String content = transferContent.replace(SMS_REPLACE_FROM, from.getAreaCode() +" "+ from.getUserPhone())
+		String content = transferContent.replace(SMS_REPLACE_FROM, from.getAreaCode() + " " + from.getUserPhone())
 				.replace(SMS_REPLACE_CURRENCY, commonManager.getCurreny(currency).getCurrencyUnit())
 				.replace(SMS_REPLACE_AMOUNT,
 						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? GDQ.format(amount)
@@ -201,20 +205,27 @@ public class SmsManager {
 		content = content.replace(SMS_REPLACE_TIME, dateTime);
 		sendSMS(phone, content, "");
 	}
+
+	@Async
+	public void sendSMS4Registration(String phone, String dateTime, String number) {
+		String content = registrationAlarm_cn.toString();
+		content = content.replace(SMS_REPLACE_TIME, dateTime).replace(SMS_REPLACE_NUMBER, number);
+		sendSMS(phone, content, "");
+	}
+
 	@Async
 	public void sendSMS4RemitFail(String phone, String dateTime) {
 		String content = remitFailAlarm_cn.toString();
 		content = content.replace(SMS_REPLACE_TIME, dateTime);
 		sendSMS(phone, content, "");
 	}
-	
+
 	@Async
-	public void sendSMS4ReachTotalGDQLimit(String phone,String amount,String percent) {
+	public void sendSMS4ReachTotalGDQLimit(String phone, String amount, String percent) {
 		String content = reachTotalGDQLimitAlarm_cn.toString();
 		content = content.replace(SMS_REPLACE_AMOUNT, amount).replace(SMS_REPLACE_PERCENT, percent);
 		sendSMS(phone, content, "");
 	}
-
 
 	/**
 	 * 根据功能和国家码选择模板
@@ -267,5 +278,4 @@ public class SmsManager {
 		return null;
 	}
 
-	
 }

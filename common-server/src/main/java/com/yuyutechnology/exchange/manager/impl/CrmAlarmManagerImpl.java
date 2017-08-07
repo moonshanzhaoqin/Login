@@ -15,6 +15,7 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CrmAlarmDAO;
 import com.yuyutechnology.exchange.dao.CrmSupervisorDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
+import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.mail.MailManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
@@ -34,6 +35,8 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	CrmSupervisorDAO crmSupervisorDAO;
 	@Autowired
 	TransferDAO transferDAO;
+	@Autowired
+	UserDAO userDAO;
 	@Autowired
 	ConfigManager configManager;
 
@@ -208,6 +211,24 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 							}
 						});
 				// 生成警报记录
+			}
+		}
+	}
+
+	@Override
+	public void registrationAlarm() {
+		final long registrationNumber = userDAO.get24HRegistration();
+		if (registrationNumber > configManager.getConfigLongValue(ConfigKeyEnum.REGISTRATION_WARN, 100L)) {
+			HashMap<String, Object> params = new HashMap<String, Object>();
+			params.put("registrationNumber", registrationNumber);
+			List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(5, 1);
+			if (list != null && !list.isEmpty()) {
+				logger.info("registrationAlarm listSize: {}", list.size());
+				for (int i = 0; i < list.size(); i++) {
+					CrmAlarm crmAlarm = list.get(i);
+					logger.info("registrationAlarm crmAlarm: {}", crmAlarm.getSupervisorIdArr());
+					alarmNotice(crmAlarm.getSupervisorIdArr(), "registrationAlarm", crmAlarm.getAlarmMode(), params);
+				}
 			}
 		}
 	}
@@ -475,7 +496,42 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 			}
 
 			break;
+		case "registrationAlarm":
+			// 短信
+			if (earlyWarningMode == 1) {
+				for (String supervisorId : arr) {
+					CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
+					if (crmSupervisor != null) {
+						smsManager.sendSMS4Registration(crmSupervisor.getSupervisorMobile(),
+								DateFormatUtils.formatDateGMT8(new Date()), (String) params.get("registrationNumber"));
+					}
+				}
+			}
+			// 邮件
+			if (earlyWarningMode == 2) {
+				for (String supervisorId : arr) {
+					CrmSupervisor crmSupervisor = crmSupervisorDAO
+							.getCrmSupervisorById(Integer.parseInt(supervisorId.trim()));
+					if (crmSupervisor != null) {
+						mailManager.mail4Registration(crmSupervisor.getSupervisorEmail(),
+								DateFormatUtils.formatDateGMT8(new Date()), (String) params.get("registrationNumber"));
+					}
+				}
+			}
+			// 短信邮件
+			if (earlyWarningMode == 3) {
+				for (String supervisorId : arr) {
+					CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
+					if (crmSupervisor != null) {
+						mailManager.mail4Registration(crmSupervisor.getSupervisorEmail(),
+								DateFormatUtils.formatDateGMT8(new Date()), (String) params.get("registrationNumber"));
+						smsManager.sendSMS4Registration(crmSupervisor.getSupervisorMobile(),
+								DateFormatUtils.formatDateGMT8(new Date()), (String) params.get("registrationNumber"));
+					}
+				}
+			}
 
+			break;
 		case "reachTotalGQDLimtWarning":
 			// 短信
 			if (earlyWarningMode == 1) {

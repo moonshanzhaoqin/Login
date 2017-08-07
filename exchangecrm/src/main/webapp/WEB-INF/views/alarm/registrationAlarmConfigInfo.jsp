@@ -21,7 +21,7 @@
 					<h4 class="text-left">注册人数预警信息详情</h4>	
 				</div>
 				<div class="col-sm-6 text-right" >
-					<button class="btn btn-primary " onclick="addLargeTransConfig(3)">添加预警信息</button>
+					<button class="btn btn-primary " onclick="addLargeTransConfig(5)">添加预警信息</button>
 				</div>	
 			</div>
 			
@@ -39,7 +39,7 @@
 					<tbody>
 						<c:if test="${not empty list }">
 							<c:forEach var="alarmConfig" items="${list}">
-								<c:if test="${alarmConfig.alarmType eq 3 }">
+								<c:if test="${alarmConfig.alarmType eq 5 }">
 								<tr>
 									<td style="display:none">${alarmConfig.alarmId }</td>
 									<td>

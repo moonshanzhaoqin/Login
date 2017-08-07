@@ -49,7 +49,7 @@ public class AlarmController {
 	TransferManager transferManager;
 
 	private static final String[] VIEWNAMEARR = { "getAlarmConfigList", "getLargeTransAlarmConfigList",
-			"getLargeTransAlarmConfigList", "getBadAccountAlarmConfigList", "getTotalGDQAlarmConfigList" };
+			"getLargeTransAlarmConfigList", "getBadAccountAlarmConfigList", "getTotalGDQAlarmConfigList", "getRegistrationAlarmConfigList"};
 
 	ModelAndView mav;
 
@@ -108,6 +108,17 @@ public class AlarmController {
 		List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
 		mav.addObject("supervisorList", supervisorList);
 		mav.setViewName("alarm/badAccountAlarmConfigInfo");
+		return mav;
+	}
+
+	@RequestMapping(value = "/alarm/getRegistrationAlarmConfigList", method = RequestMethod.GET)
+	public ModelAndView getRegistrationAlarmConfigList() {
+		mav = new ModelAndView();
+		List<CrmAlarm> list = crmAlarmManager.getCrmAlarmConfigList();
+		mav.addObject("list", list);
+		List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
+		mav.addObject("supervisorList", supervisorList);
+		mav.setViewName("alarm/registrationAlarmConfigInfo");
 		return mav;
 	}
 

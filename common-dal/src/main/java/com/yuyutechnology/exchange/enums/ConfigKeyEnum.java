@@ -135,13 +135,17 @@ public enum ConfigKeyEnum {
 	 */
 	GOLDPAY_WITHDRAW("goldpay_withdraw"),
 	/**
-	 *邀请数量限制 
+	 * 邀请数量限制
 	 */
 	INVITE_QUANTITY_RESTRICTION("invite_quantity_restriction"),
 	/**
 	 * 领取有效时间（H）
 	 */
-	COLLECT_ACTIVE_TIME("collect_active_time");
+	COLLECT_ACTIVE_TIME("collect_active_time"),
+	/**
+	 * 注册预警人数
+	 */
+	REGISTRATION_WARN("registration_warn");
 	private String key;
 
 	private ConfigKeyEnum(String key) {

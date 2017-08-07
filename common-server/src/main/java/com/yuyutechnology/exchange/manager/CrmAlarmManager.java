@@ -47,4 +47,9 @@ public interface CrmAlarmManager {
 
 	void reachtotalGDQLimitAlarm(BigDecimal totalGDQCanBeSold, BigDecimal percent);
 
+	/**
+	 * 
+	 */
+	void registrationAlarm();
+
 }
