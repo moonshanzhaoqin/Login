@@ -24,17 +24,9 @@ public interface CrmUserInfoManager {
 	public int getUpdateFlag();
 
 	/**
-	 * @param currentPage
-	 * @param userPhone
-	 * @param userName
 	 * @return
 	 */
-	PageBean getUserInfoByPage(int currentPage, String userPhone, String userName);
-
-	/**
-	 * @return
-	 */
-	 String get24HRegistration();
+	String get24HRegistration();
 
 	/**
 	 * @param startTime
@@ -42,5 +34,15 @@ public interface CrmUserInfoManager {
 	 * @return
 	 */
 	String getRegistration(Date startTime, Date endTime);
+
+	/**
+	 * @param currentPage
+	 * @param userPhone
+	 * @param userName
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	PageBean getUserInfoByPage(int currentPage, String userPhone, String userName, String startTime, String endTime);
 
 }

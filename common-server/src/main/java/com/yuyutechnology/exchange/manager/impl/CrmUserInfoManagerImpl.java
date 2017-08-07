@@ -25,6 +25,7 @@ import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.pojo.CrmUserInfo;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.util.DateFormatUtils;
 import com.yuyutechnology.exchange.util.page.PageBean;
 
 @Service
@@ -202,9 +203,33 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 	}
 
 	@Override
-	public PageBean getUserInfoByPage(int currentPage, String userPhone, String userName) {
+	public PageBean getUserInfoByPage(int currentPage, String userPhone, String userName, String startTime, String endTime) {
 		logger.info("currentPage={},userPhone={},userName={},transferStatus={}", currentPage, userPhone, userName);
-		return crmUserInfoDAO.getUserInfoByPage(userPhone, userName, currentPage, 10);
+
+		List<Object> values = new ArrayList<Object>();
+		StringBuilder hql = new StringBuilder("from CrmUserInfo where 1 = 1");
+		if (StringUtils.isNotBlank(userPhone)) {
+			hql.append("and userPhone = ?");
+			values.add(userPhone);
+		}
+		if (StringUtils.isNotBlank(userName)) {
+			hql.append("and userName like ?");
+			values.add("%" + userName + "%");
+		}
+		if (StringUtils.isNotBlank(startTime)) {
+			hql.append("and createTime >   ?");
+			values.add(DateFormatUtils.getStartTime(startTime));
+		}
+
+		if (StringUtils.isNotBlank(endTime)) {
+			hql.append("and  createTime < ?");
+			values.add(DateFormatUtils.getEndTime(endTime));
+		}
+
+
+		hql.append(" order by loginTime desc");
+
+		return crmUserInfoDAO.getUserInfoByPage(hql.toString(), values, currentPage, 10);
 	}
 
 	@Override

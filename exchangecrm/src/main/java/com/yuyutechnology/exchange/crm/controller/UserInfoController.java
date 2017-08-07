@@ -55,7 +55,8 @@ public class UserInfoController {
 			HttpServletRequest request, HttpServletResponse response) {
 		logger.info(getWithdrawListRequest.toString());
 		return crmUserInfoManager.getUserInfoByPage(Integer.parseInt(getWithdrawListRequest.getCurrentPage()),
-				getWithdrawListRequest.getUserPhone(), getWithdrawListRequest.getUserName());
+				getWithdrawListRequest.getUserPhone(), getWithdrawListRequest.getUserName(),
+				getWithdrawListRequest.getStartTime(), getWithdrawListRequest.getEndTime());
 	}
 
 	/**
@@ -70,24 +71,4 @@ public class UserInfoController {
 		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.UPDATE_USER_INFO.getOperationName()));
 	}
-	@ResponseBody
-	@RequestMapping(value="/get24HRegistration")
-	public String get24HRegistration(HttpServletRequest request, HttpServletResponse response) {
-	
-	return	crmUserInfoManager.get24HRegistration();
-	
-		
-	}
-	
-	
-	@ResponseBody
-	@RequestMapping(value="/getRegistration")
-	public String get24HRegistration(@RequestBody GetRegistrationRequest getRegistrationRequest,HttpServletRequest request, HttpServletResponse response) {
-	
-	return	crmUserInfoManager.getRegistration(DateFormatUtils.fromString(getRegistrationRequest.getStartTime()),
-			DateFormatUtils.fromString(getRegistrationRequest.getEndTime()));
-	
-		
-	}
-	
 }

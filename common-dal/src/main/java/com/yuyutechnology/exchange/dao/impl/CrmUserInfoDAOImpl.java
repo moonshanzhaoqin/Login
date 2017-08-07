@@ -72,24 +72,11 @@ public class CrmUserInfoDAOImpl implements CrmUserInfoDAO {
 	}
 
 	@Override
-	public PageBean getUserInfoByPage(String userPhone, String userName, int currentPage, int pageSize) {
-		List<Object> values = new ArrayList<Object>();
-		StringBuilder hql = new StringBuilder("from CrmUserInfo where 1 = 1");
-		if (StringUtils.isNotBlank(userPhone)) {
-			hql.append("and userPhone = ?");
-			values.add(userPhone);
-		}
-		if (StringUtils.isNotBlank(userName)) {
-			hql.append("and userName like ?");
-			values.add("%" + userName + "%");
-		}
+	public PageBean getUserInfoByPage(String hql, List<?> values, int currentPage, int pageSize) {
 
-		hql.append(" order by loginTime desc");
-
-		PageBean pageBean = PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
-		return pageBean;
+		return PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
 	}
-	
+
 	@Override
 	public Long getRegistration(Date startTime, Date endTime) {
 		String hql = "from CrmUserInfo where createTime > ? and createTime < ?";
