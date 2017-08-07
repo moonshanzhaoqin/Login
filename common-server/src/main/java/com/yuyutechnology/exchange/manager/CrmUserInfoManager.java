@@ -1,7 +1,6 @@
 package com.yuyutechnology.exchange.manager;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.HashMap;
 
 import com.yuyutechnology.exchange.pojo.User;
@@ -27,20 +26,10 @@ public interface CrmUserInfoManager {
 	 * @param currentPage
 	 * @param userPhone
 	 * @param userName
-	 * @return
-	 */
-	PageBean getUserInfoByPage(int currentPage, String userPhone, String userName);
-
-	/**
-	 * @return
-	 */
-	 String get24HRegistration();
-
-	/**
 	 * @param startTime
 	 * @param endTime
 	 * @return
 	 */
-	String getRegistration(Date startTime, Date endTime);
+	PageBean getUserInfoByPage(int currentPage, String userPhone, String userName, String startTime, String endTime);
 
 }

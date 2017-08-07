@@ -42,4 +42,9 @@ public interface UserDAO {
 	 */
 	void updateHQL(String hql, Object[] values);
 
+	/**
+	 * @return
+	 */
+	long get24HRegistration();
+
 }

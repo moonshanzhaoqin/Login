@@ -129,14 +129,14 @@
 		function getRechargeList(currentPage, userPhone, lowerAmount,
 				upperAmount, startTime, endTime, transferType) {
 			form = document.getElementById("searchRecharge");
-			
+
 			form.userPhone.value = userPhone;
 			form.lowerAmount.value = lowerAmount;
 			form.upperAmount.value = upperAmount;
 			form.startTime.value = startTime;
 			form.endTime.value = endTime;
 			form.transferType.value = transferType;
-			
+
 			var data = {
 				currentPage : currentPage,
 				userPhone : userPhone,

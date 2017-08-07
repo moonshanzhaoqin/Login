@@ -262,4 +262,6 @@ public interface UserManager {
 	 */
 	boolean isUserPayPwdEqualsOld(Integer userId, String newUserPayPwd);
 
+	
+
 }

@@ -18,6 +18,15 @@
 					<label class="sr-only" for="userName">userName</label> <input
 						type="text" class="form-control" name="userName" placeholder="用户名">
 				</div>
+				<div class="form-group">
+                    <label class="sr-only" for="startTime">startTime</label> <input
+                        type="date" class="form-control" name="startTime"
+                        placeholder="开始时间" />
+                </div>
+                <div class="form-group">
+                    <label class="sr-only" for="endTime">endTime</label> <input
+                        type="date" class="form-control" name="endTime" placeholder="结束时间" />
+                </div>
 				<button type="button" class="btn btn-primary "
 					onclick="searchUserInfo(1)">搜索</button>
 				<button type="button" class="btn btn-primary" id="updateImmediately"
@@ -42,36 +51,9 @@
 			</table>
 			<!--分页插件-->
 			<div id="paginator"></div>
+			<div id="total" class="pull-right"></div>
 		</div>
 
-		<div class="row">
-			<div class="pull-left" style="width: 50%">
-				<h3>24小时注册量：</h3>
-				<h1 id="24HRegistration" style="text-indent: 20%">12</h1>
-			</div>
-			<div class="pull-right" style="width: 50%">
-				<div class="row">
-					<form class="form-inline pull-right" id="getRegistration">
-						<div class="form-group">
-							<label class="sr-only" for="startTime">startTime</label> <input
-								id="start" type="datetime" class="form-control" name="startTime"
-								placeholder="开始时间" />
-						</div>
-						<div class="form-group">
-							<label class="sr-only" for="endTime">endTime</label> <input
-								id="end" type="datetime" class="form-control" name="endTime"
-								class="laydate-icon" placeholder="结束时间" />
-						</div>
-						<button type="button" class="btn btn-primary "
-							onclick="getRegistration()">搜索</button>
-
-					</form>
-				</div>
-				<div class="row">
-					<h1 id="Registration" style="text-indent: 40%"></h1>
-				</div>
-			</div>
-		</div>
 	</div>
 
 	<script type="text/javascript"
@@ -80,125 +62,7 @@
 		src="<c:url value="/resources/bootstrap/js/bootstrap.min.js" />"></script>
 	<script type="text/javascript"
 		src="<c:url value="/resources/bootstrap/js/bootstrap-paginator.min.js" />"></script>
-	<script src="<c:url value="/resources/js/registration.js" />"></script>
-	<script>
-		$(function() {
-			var userPhone, userName;
-			searchUserInfo(1);
-		});
-
-		function searchUserInfo(page) {
-			console.log("searchUserInfo:page=" + page);
-			form = document.getElementById("searchUserInfo");
-			userPhone = form.userPhone.value;
-			console.log("userPhone=" + userPhone);
-			userName = form.userName.value;
-			getUserInfoByPage(page, userPhone, userName);
-		}
-
-		function getUserInfoByPage(currentPage, userPhone1, userName1) {
-			form = document.getElementById("searchUserInfo");
-			form.userPhone.value = userPhone1;
-			form.userName.value = userName1;
-			userPhone = userPhone1;
-			userName = userName1;
-			var data = {
-				currentPage : currentPage,
-				userPhone : userPhone,
-				userName : userName
-			};
-
-			$.ajax({
-				type : "POST",
-				url : "/crm/getUserInfoByPage",
-				dataType : 'json',
-				contentType : "application/json; charset=utf-8",
-				data : JSON.stringify(data),
-				success : function(data) {
-					console.log(data);
-					if (data.retCode == "00002") {
-						location.href = loginUrl;
-					} else {
-						console.log("success");
-						var html = "";
-						for ( var i in data.rows) {
-							html += '<tr id="'+data.rows[i].userId+'">'
-									+ '<td>' + data.rows[i].areaCode + '</td>'
-									+ '<td>' + data.rows[i].userPhone + '</td>'
-									+ '<td>' + data.rows[i].userName + '</td>'
-									+ '<td>'
-									+ timeDate(data.rows[i].createTime)
-									+ '</td>' + '<td>'
-									+ timeDate(data.rows[i].loginTime)
-									+ '</td>' + '</tr>'
-						}
-						$('#userInfo tbody').html(html);
-						if (data.currentPage == 1) {
-							paginator(data.currentPage, data.pageTotal);
-						}
-					}
-				},
-				error : function(xhr, err) {
-					alert("未知错误");
-					console.log(err);
-				}
-			});
-		}
-		/* 立即更新 */
-		function updateUserInfo() {
-			$("#updateImmediately").attr("disabled", true);
-			$("#updateImmediately").text("更新中...");
-			$.ajax({
-				type : "GET",
-				url : "/crm/updateUserInfo",
-				contentType : "application/json; charset=utf-8",
-				success : function(data) {
-					$("#updateImmediately").attr("disabled", false);
-					$("#updateImmediately").text("立即更新");
-					getUserInfoByPage(1, "", "")
-				},
-				error : function(xhr, err) {
-					alert("未知错误");
-					console.log(err);
-					$("#updateImmediately").attr("disabled", false);
-					$("#updateImmediately").text("立即更新");
-				}
-			});
-
-		}
-
-		//分页
-		function paginator(currentPage, pageTotal) {
-			console.log("paginator:currentPage=" + currentPage + ",pageTotal="
-					+ pageTotal);
-			var options = {
-				currentPage : currentPage,//当前页
-				totalPages : pageTotal,//总页数
-				size : 'normal',
-				alignment : 'right',
-				numberOfPages : 10,//显示页数
-				itemTexts : function(type, page, current) {
-					switch (type) {
-					case "first":
-						return "<<";
-					case "prev":
-						return "<";
-                        case "next":
-                            return ">";
-					case "last":
-						return ">>";
-					case "page":
-						return "" + page;
-					}
-				},
-				onPageClicked : function(event, originalEvent, type, page) {
-					getUserInfoByPage(page, userPhone, userName);
-				}
-			}
-			//分页控件
-			$('#paginator').bootstrapPaginator(options);
-		}
-	</script>
+	<script src="<c:url value="/resources/js/userInfo.js" />"></script>
 	<%@ include file="common/footer.jsp"%>
 </body>
 </body>
