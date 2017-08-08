@@ -31,7 +31,7 @@ import com.yuyutechnology.exchange.util.ResourceUtils;
 public class MailManager {
 	public static Logger logger = LogManager.getLogger(MailManager.class);
 	private boolean initMail = false;
-	
+
 	private StringBuffer contactTital = new StringBuffer();
 	private StringBuffer contactContent = new StringBuffer();
 
@@ -46,13 +46,16 @@ public class MailManager {
 
 	private StringBuffer badAccountWarnTital = new StringBuffer();
 	private StringBuffer badAccountWarnContent = new StringBuffer();
-	
+
+	private StringBuffer registrationWarnTital = new StringBuffer();
+	private StringBuffer registrationWarnContent = new StringBuffer();
+
 	private StringBuffer remitFailWarnTital = new StringBuffer();
 	private StringBuffer remitFailWarnContent = new StringBuffer();
-	
+
 	private StringBuffer totalGDQWarnTital = new StringBuffer();
 	private StringBuffer totalGDQWarnContent = new StringBuffer();
-	
+
 	private final String MAIL_REPLACE_EMAIL = "[EMAIL]";
 	private final String MAIL_REPLACE_NAME = "[NAME]";
 	private final String MAIL_REPLACE_CATEGORY = "[CATEGORY]";
@@ -74,8 +77,9 @@ public class MailManager {
 
 	private final String MAIL_REPLACE_AMOUNTIN = "[AMOUNTIN]";
 	private final String MAIL_REPLACE_CURRENCYIN = "[CURRENCYIN]";
-	
+
 	private final String MAIL_REPLACE_PERCENT = "[PERCENT]";
+	private final String MAIL_REPLACE_NUMBER = "[NUMBER]";
 
 	@PostConstruct
 	@Scheduled(cron = "0 1/10 * * * ?")
@@ -87,11 +91,12 @@ public class MailManager {
 		readTemplate("template/mail/zh_CN/largeExchangeWarn.template", largeExchangeWarnTital,
 				largeExchangeWarnContent);
 		readTemplate("template/mail/zh_CN/badAccountAlarm.template", badAccountWarnTital, badAccountWarnContent);
+		readTemplate("template/mail/zh_CN/registrationAlarm.template", registrationWarnTital, registrationWarnContent);
 		readTemplate("template/mail/zh_CN/remitFailAlarm.template", remitFailWarnTital, remitFailWarnContent);
 		readTemplate("template/mail/zh_CN/totalGDQWarn.template", totalGDQWarnTital, totalGDQWarnContent);
 		initMail = true;
 	}
-	
+
 	private void readTemplate(String filePath, StringBuffer tital, StringBuffer content) {
 		try {
 			tital.setLength(0);
@@ -102,7 +107,9 @@ public class MailManager {
 					fileString.substring(0, fileString.indexOf("\n") + 1).replaceAll("\n", "").replaceAll("\r", ""));
 			content.append(fileString.substring(fileString.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", ""));
 		} catch (Exception e) {
-			if (!initMail) logger.warn("Mail template ({}) read error , can't send this email : {} ", new Object[] { filePath, e.getMessage() });
+			if (!initMail)
+				logger.warn("Mail template ({}) read error , can't send this email : {} ",
+						new Object[] { filePath, e.getMessage() });
 		}
 	}
 
@@ -111,8 +118,9 @@ public class MailManager {
 			String deviceName, String deviceId, String system, String phoneModel) {
 		String content = contactContent.toString().replace(MAIL_REPLACE_CATEGORY, category)
 				.replace(MAIL_REPLACE_EMAIL, email).replace(MAIL_REPLACE_ENQUIRY, enquiry)
-				.replace(MAIL_REPLACE_NAME, name).replace(MAIL_REPLACE_VERSIONNUM, versionNum).replace(MAIL_REPLACE_DEVICENAME, deviceName)
-				.replace(MAIL_REPLACE_DEVICEID, deviceId).replace(MAIL_REPLACE_SYSTEM, system).replace(MAIL_REPLACE_PHONEMODEL, phoneModel);
+				.replace(MAIL_REPLACE_NAME, name).replace(MAIL_REPLACE_VERSIONNUM, versionNum)
+				.replace(MAIL_REPLACE_DEVICENAME, deviceName).replace(MAIL_REPLACE_DEVICEID, deviceId)
+				.replace(MAIL_REPLACE_SYSTEM, system).replace(MAIL_REPLACE_PHONEMODEL, phoneModel);
 		logger.info("content : {}", content);
 		List<String> toMails = new ArrayList<>();
 		String mails[] = ResourceUtils.getBundleValue4String("contact.to").split(",");
@@ -167,17 +175,27 @@ public class MailManager {
 	}
 
 	@Async
+	public void mail4Registration(String email, String dateTime, String number) {
+		String content = registrationWarnContent.toString().replace(MAIL_REPLACE_TIME, dateTime).replace(MAIL_REPLACE_NUMBER, number);
+		logger.info("content : {},tital : {}", content, registrationWarnTital.toString());
+		List<String> toMails = new ArrayList<>();
+		toMails.add(email);
+		sendMail(toMails, registrationWarnTital.toString(), content);
+	}
+
+	@Async
 	public void mail4RemitFail(String email, String dateTime) {
-		String content =remitFailWarnContent.toString().replace(MAIL_REPLACE_TIME, dateTime);
+		String content = remitFailWarnContent.toString().replace(MAIL_REPLACE_TIME, dateTime);
 		logger.info("content : {},tital : {}", content, remitFailWarnTital.toString());
 		List<String> toMails = new ArrayList<>();
 		toMails.add(email);
 		sendMail(toMails, remitFailWarnTital.toString(), content);
 	}
-	
+
 	@Async
-	public void mail4ReachTotalGDQLimit(String email,String amount,String percent) {
-		String content = totalGDQWarnContent.toString().replace(MAIL_REPLACE_AMOUNT, amount).replace(MAIL_REPLACE_PERCENT, percent);
+	public void mail4ReachTotalGDQLimit(String email, String amount, String percent) {
+		String content = totalGDQWarnContent.toString().replace(MAIL_REPLACE_AMOUNT, amount)
+				.replace(MAIL_REPLACE_PERCENT, percent);
 		logger.info("content : {},tital : {}", content, totalGDQWarnTital.toString());
 		List<String> toMails = new ArrayList<>();
 		toMails.add(email);
@@ -199,5 +217,4 @@ public class MailManager {
 		}
 	}
 
-	
 }
