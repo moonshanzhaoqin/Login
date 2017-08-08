@@ -242,7 +242,7 @@ public class RetCodeConsts {
 
 	public static final String TRANSFER_PAYPALTRANS_TOTAL_AMOUNT_OF_GDQ = "03028";
 	/**
-	 * 提取沛金条关闭
+	 * 提取黄金宝关闭
 	 */
 	public static final String GOLDPAY_WITHDRAW_OFF = "03029";
 	/**
