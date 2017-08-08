@@ -83,7 +83,7 @@ public class UserController {
 		FunctionalModulesAvailabilityResponse rep = new FunctionalModulesAvailabilityResponse();
 		/* Paypal开启状态 */
 		rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
-		/* 提取沛金条开启状态 */
+		/* 提取黄金宝开启状态 */
 		rep.setGoldpayWithdraw(configManager.getConfigBooleanValue(ConfigKeyEnum.GOLDPAY_WITHDRAW));
 
 		logger.info(MessageConsts.RET_CODE_SUCCESS);

@@ -309,7 +309,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 		HashMap<String, String> map = new HashMap<String, String>();
 
-		/* 提取沛金条是否开启 */
+		/* 提取黄金宝是否开启 */
 		if (!configManager.getConfigBooleanValue(ConfigKeyEnum.GOLDPAY_WITHDRAW)) {
 			map.put("msg", "goldpay_withdraw is closed。");
 			map.put("retCode", RetCodeConsts.GOLDPAY_WITHDRAW_OFF);

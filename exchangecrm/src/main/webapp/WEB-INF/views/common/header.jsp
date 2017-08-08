@@ -82,7 +82,7 @@
 									<li><a href="<c:url value='/alarm/getLargeTransAlarmConfigList' />">大额预警设置</a></li>
 									<li><a href="<c:url value='/alarm/getBadAccountAlarmConfigList' />">坏账预警设置</a></li>
 									<li><a href="<c:url value='/alarm/getRegistratationAlarmConfigList' />">注册人数预警设置</a></li>
-									<li><a href="<c:url value='/alarm/getTotalGDQAlarmConfigList' />">已售沛金条总量预警设置</a></li>
+									<li><a href="<c:url value='/alarm/getTotalGDQAlarmConfigList' />">已售黄金宝总量预警设置</a></li>
 									<li class="divider"></li>
 									<li><a href="<c:url value='/alarm/getSupervisorList' />">预警人设置</a></li>
 								</ul></li>
