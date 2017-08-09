@@ -73,15 +73,15 @@ public class ServerConsts {
 	 */
 	public static final int TRANSFER_TYPE_IN_SYSTEM_REFUND = 3;
 	/**
-	 * 金沛提现
+	 * 黄金宝提现
 	 */
 	public static final int TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW = 4;
 	/**
-	 * 金沛充值
+	 * 黄金宝充值
 	 */
 	public static final int TRANSFER_TYPE_IN_GOLDPAY_RECHARGE = 5;
 	/**
-	 * 金沛提现退款
+	 * 黄金宝提现退款
 	 */
 	public static final int TRANSFER_TYPE_IN_GOLDPAY_REFUND = 6;
 	/**
