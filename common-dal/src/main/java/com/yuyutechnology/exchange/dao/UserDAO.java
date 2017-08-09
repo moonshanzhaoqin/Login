@@ -45,6 +45,6 @@ public interface UserDAO {
 	/**
 	 * @return
 	 */
-	long get24HRegistration();
+	Long get24HRegistration();
 
 }

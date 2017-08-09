@@ -88,7 +88,7 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public long get24HRegistration() {
+	public Long get24HRegistration() {
 		Calendar calendar = Calendar.getInstance();
 		Date now = calendar.getTime();
 		calendar.add(Calendar.DATE, -1);
