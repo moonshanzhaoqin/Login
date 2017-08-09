@@ -160,3 +160,10 @@ SET t1.trader_name = t2.user_name
 WHERE t1.transfer_id IN 
 (SELECT t3.transfer_id FROM e_unregistered t3 WHERE t3.area_code = t2.area_code AND t3.user_phone = t2.user_phone ) 
 AND t2.area_code = t1.trader_area_code AND t2.user_phone = t1.trader_phone
+
+
+
+
+
+--2017/08/09 Suzan
+INSERT INTO `e_config` SET `config_key`='registration_warn',`config_value`='100',`config_name`='注册预警人数',`config_order`=0,`config_canChange`=1;
