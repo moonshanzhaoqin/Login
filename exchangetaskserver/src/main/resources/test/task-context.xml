@@ -27,21 +27,25 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 	<context:component-scan base-package="com.yuyutechnology" />
 	<context:annotation-config />
 
-	<task:annotation-driven executor="taskServerExecutor" scheduler="taskServerScheduler" />
+	<task:annotation-driven executor="taskServerExecutor"
+		scheduler="taskServerScheduler" />
 	<task:executor id="taskServerExecutor" pool-size="10" />
 
 	<task:scheduler id="taskServerScheduler" pool-size="10" />
-	
+
 	<task:scheduled-tasks scheduler="taskServerScheduler">
-	
+
 		<task:scheduled ref="autoAccountingTask" method="autoAccounting"
-			fixed-delay="300000" initial-delay="60000" />
+			fixed-delay="30000" initial-delay="30000" />
+		
+		<task:scheduled ref="AutoRegistrationTask" method="registrationAlarm"
+			fixed-delay="600000" initial-delay="600000" />
 
 		<task:scheduled ref="autoUpdateExchangeRateTask"
-			method="autoUpdateExchangeRateTask" fixed-delay="86400000" initial-delay="60000" />
+			method="autoUpdateExchangeRateTask" fixed-delay="5000" initial-delay="1000" />
 
 		<task:scheduled ref="autoUpdateExchangeRateTask"
-			method="autoSystemRefundBatch" fixed-delay="300000" initial-delay="300000" />
+			method="autoSystemRefundBatch" fixed-delay="1800000" initial-delay="1800000" />
 
 		<task:scheduled ref="autoCalculateUserAssetsTask"
 			method="autoCalculateUserAssetsTask" fixed-delay="900000"
@@ -51,10 +55,10 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 			fixed-delay="600000" initial-delay="600000" />
 
 		<task:scheduled ref="autoWithdrawReviewTask" method="autoWithdrawReviewTask"
-			fixed-delay="300000" initial-delay="100000" />
+			fixed-delay="600000" initial-delay="100000" />
 
 		<task:scheduled ref="autoGoldpayRemitTask" method="autoGoldpayRemitTask"
-			fixed-delay="300000" initial-delay="300000" />
+			fixed-delay="600000" initial-delay="300000" />
 
 	</task:scheduled-tasks>
 
