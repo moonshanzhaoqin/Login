@@ -39,7 +39,7 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 			fixed-delay="300000" initial-delay="60000" />
 		
 		<task:scheduled ref="autoRegistrationTask" method="registrationAlarm"
-			fixed-delay="600000" initial-delay="600000" />
+			fixed-delay="300000" initial-delay="300000" />
 
 		<task:scheduled ref="autoUpdateExchangeRateTask"
 			method="autoUpdateExchangeRateTask" fixed-delay="86400000"
