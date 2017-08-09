@@ -8,23 +8,24 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.yuyutechnology.exchange.manager.AccountingManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 
 /**
- * @author silent.sun
+ * @author suzan.wu
  *
  */
 @Component
 public class AutoRegistrationTask {
-
-@Autowired
-CrmAlarmManager crmAlarmManager;
 	public static Logger logger = LogManager.getLogger(AutoRegistrationTask.class);
-	
-	public void registrationAlarm(){
+
+	@Autowired
+	CrmAlarmManager crmAlarmManager;
+
+	public void registrationAlarm() {
 		logger.info("=============registrationAlarm Start==================");
+
 		crmAlarmManager.registrationAlarm();
+
 		logger.info("=============registrationAlarm End==================");
 	}
 }
