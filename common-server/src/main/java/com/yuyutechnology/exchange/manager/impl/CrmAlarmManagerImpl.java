@@ -217,10 +217,10 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 
 	@Override
 	public void registrationAlarm() {
-		final long registrationNumber = userDAO.get24HRegistration();
+		Long registrationNumber = userDAO.get24HRegistration();
 		if (registrationNumber > configManager.getConfigLongValue(ConfigKeyEnum.REGISTRATION_WARN, 100L)) {
 			HashMap<String, Object> params = new HashMap<String, Object>();
-			params.put("registrationNumber", registrationNumber);
+			params.put("registrationNumber", registrationNumber.toString());
 			List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(5, 1);
 			if (list != null && !list.isEmpty()) {
 				logger.info("registrationAlarm listSize: {}", list.size());
