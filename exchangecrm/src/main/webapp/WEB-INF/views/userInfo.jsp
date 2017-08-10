@@ -19,14 +19,15 @@
 						type="text" class="form-control" name="userName" placeholder="用户名">
 				</div>
 				<div class="form-group">
-                    <label class="sr-only" for="startTime">startTime</label> <input
-                        type="date" class="form-control" name="startTime"
-                        placeholder="开始时间" />
-                </div>
-                <div class="form-group">
-                    <label class="sr-only" for="endTime">endTime</label> <input
-                        type="date" class="form-control" name="endTime" placeholder="结束时间" />
-                </div>
+					<label class="sr-only" for="startTime">startTime</label> <input
+						id="start" class="form-control" name="startTime"
+						placeholder="开始时间(注册)" />
+				</div>
+				<div class="form-group">
+					<label class="sr-only" for="endTime">endTime</label> <input
+						id="end" class="form-control" name="endTime"
+						placeholder="结束时间(注册)" />
+				</div>
 				<button type="button" class="btn btn-primary "
 					onclick="searchUserInfo(1)">搜索</button>
 				<button type="button" class="btn btn-primary" id="updateImmediately"
@@ -56,12 +57,6 @@
 
 	</div>
 
-	<script type="text/javascript"
-		src="<c:url value="/resources/js/jquery.min.js" />"></script>
-	<script type="text/javascript"
-		src="<c:url value="/resources/bootstrap/js/bootstrap.min.js" />"></script>
-	<script type="text/javascript"
-		src="<c:url value="/resources/bootstrap/js/bootstrap-paginator.min.js" />"></script>
 	<script src="<c:url value="/resources/js/userInfo.js" />"></script>
 	<%@ include file="common/footer.jsp"%>
 </body>
