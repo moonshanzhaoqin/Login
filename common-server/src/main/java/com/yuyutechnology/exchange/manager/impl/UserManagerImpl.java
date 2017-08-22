@@ -30,6 +30,7 @@ import com.yuyutechnology.exchange.dao.UserDeviceDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
+import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
@@ -744,5 +745,20 @@ public class UserManagerImpl implements UserManager {
 		return false;
 	}
 
-	
+	@Override
+	public UserDTO getUser(String areaCode, String userPhone) {
+		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
+		if (user != null) {
+			UserDTO userDTO = new UserDTO();
+			userDTO.setUserId(user.getUserId());
+			userDTO.setAreaCode(user.getAreaCode());
+			userDTO.setUserPhone(user.getUserPhone());
+			userDTO.setUserName(user.getUserName());
+			userDTO.setUserPassword(user.getUserPassword());
+			userDTO.setPasswordSalt(user.getPasswordSalt());
+			return userDTO;
+		}
+		return null;
+	}
+
 }

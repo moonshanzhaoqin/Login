@@ -20,6 +20,7 @@ import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
+import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.mail.MailManager;
@@ -30,6 +31,8 @@ import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
 import com.yuyutechnology.exchange.server.controller.request.ForgetPasswordRequest;
+import com.yuyutechnology.exchange.server.controller.request.GetUserConfigRequest;
+import com.yuyutechnology.exchange.server.controller.request.GetUserRequset;
 import com.yuyutechnology.exchange.server.controller.request.GetVerificationCodeRequest;
 import com.yuyutechnology.exchange.server.controller.request.LoginRequest;
 import com.yuyutechnology.exchange.server.controller.request.LoginValidateRequest;
@@ -38,6 +41,8 @@ import com.yuyutechnology.exchange.server.controller.request.TestCodeRequest;
 import com.yuyutechnology.exchange.server.controller.response.ContactUsResponse;
 import com.yuyutechnology.exchange.server.controller.response.ForgetPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.FunctionalModulesAvailabilityResponse;
+import com.yuyutechnology.exchange.server.controller.response.GetUserConfigResponse;
+import com.yuyutechnology.exchange.server.controller.response.GetUserResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetVerificationCodeResponse;
 import com.yuyutechnology.exchange.server.controller.response.LoginResponse;
 import com.yuyutechnology.exchange.server.controller.response.LoginValidateResponse;
@@ -395,8 +400,9 @@ public class UserController {
 						userManager.updateUser(userId, HttpTookit.getIp(request), registerRequest.getPushId(),
 								registerRequest.getLanguage());
 						/* 发放奖励金 */
-						campaignManager.grantBonus(userId, registerRequest.getAreaCode(), registerRequest.getUserPhone());
-						
+						campaignManager.grantBonus(userId, registerRequest.getAreaCode(),
+								registerRequest.getUserPhone());
+
 						/* 生成session Token */
 						SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 						sessionManager.saveSessionData(sessionData);
@@ -586,6 +592,32 @@ public class UserController {
 			logger.info("********Operation succeeded********");
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		}
+		return rep;
+	}
+
+	@ResponseEncryptBody
+	@ApiOperation(value = "获取用户", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/getUser", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public GetUserResponse getUser(@RequestDecryptBody GetUserRequset getUserRequest) {
+		logger.info("========getUser : {}============");
+		GetUserResponse rep = new GetUserResponse();
+		if (getUserRequest.empty()) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+		} else {
+			UserDTO userDTO = userManager.getUser(getUserRequest.getAreaCode(), getUserRequest.getUserPhone());
+			if (userDTO == null) {
+				logger.info(MessageConsts.PHONE_NOT_EXIST);
+				rep.setRetCode(RetCodeConsts.PHONE_NOT_EXIST);
+				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
+			} else {
+				rep.setUserDTO(userDTO);
+				logger.info("********Operation succeeded********");
+				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+			}
 		}
 		return rep;
 	}
