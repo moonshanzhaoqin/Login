@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.List;
 
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
+import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
 import com.yuyutechnology.exchange.pojo.Friend;
@@ -261,6 +262,13 @@ public interface UserManager {
 	 * @return
 	 */
 	boolean isUserPayPwdEqualsOld(Integer userId, String newUserPayPwd);
+
+	/**
+	 * @param areaCode
+	 * @param userPhone
+	 */
+	UserDTO getUser(String areaCode, String userPhone);
+
 
 	
 
