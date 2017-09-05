@@ -13,6 +13,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.SelectBeforeUpdate;
+
 import com.yuyutechnology.exchange.util.LanguageUtils.Language;
 
 /**
@@ -20,6 +23,8 @@ import com.yuyutechnology.exchange.util.LanguageUtils.Language;
  */
 @Entity
 @Table(name = "e_user")
+@DynamicUpdate
+@SelectBeforeUpdate
 public class User implements java.io.Serializable {
 
 	/**
