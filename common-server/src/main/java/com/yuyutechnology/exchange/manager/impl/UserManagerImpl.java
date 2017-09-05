@@ -503,6 +503,7 @@ public class UserManagerImpl implements UserManager {
 		redisDAO.deleteData(ServerConsts.WRONG_PASSWORD + userId);
 	}
 
+	@Override
 	public void updateUser(Integer userId, String loginIp, String pushId, String language) {
 		logger.info("Update user login information==>");
 		User user = userDAO.getUser(userId);
@@ -530,7 +531,8 @@ public class UserManagerImpl implements UserManager {
 	private void clearPushId(Integer userId, String pushId) {
 		// logger.info("clearPushId {}",pushId);
 		String hql = "update User set pushId = ? where pushId = ? and userId <> ?";
-		userDAO.updateHQL(hql, new Object[] { null, pushId, userId });
+		logger.info("clearPushId : pushId={}, userId={}", pushId, userId);
+		userDAO.updateHQL(hql, new Object[] { "", pushId, userId });
 	}
 
 	@Override
