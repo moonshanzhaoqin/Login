@@ -177,20 +177,16 @@
 				<version>9.2.21.v20170120</version>
 				<configuration>
 					<stopKey>stop</stopKey>
-					<stopPort>5598</stopPort>
+					<stopPort>5599</stopPort>
 					<webXml>${basedir}/target/server/WEB-INF/web.xml</webXml>
 					<webAppSourceDirectory>${basedir}/target/server</webAppSourceDirectory>
 					<classesDirectory>${basedir}/target/server/WEB-INF/classes</classesDirectory>
 					<webAppConfig>
 						<contextPath>/server</contextPath>
 					</webAppConfig>
-					<scanIntervalSeconds>0</scanIntervalSeconds>
-					<connectors>
-						<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-							<port>8011</port>
-							<maxIdleTime>60000</maxIdleTime>
-						</connector>
-					</connectors>
+					<httpConnector>
+                         <port>8011</port>
+                    </httpConnector>
 				</configuration>
 			</plugin>
 			<plugin>
