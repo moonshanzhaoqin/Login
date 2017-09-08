@@ -40,11 +40,6 @@ public interface UserDAO {
 	 * @param hql
 	 * @param values
 	 */
-	void updateHQL(String hql, Object[] values);
-
-	/**
-	 * @return
-	 */
-	Long get24HRegistration();
+	void updateSQL(String sql, Object[] values);
 
 }

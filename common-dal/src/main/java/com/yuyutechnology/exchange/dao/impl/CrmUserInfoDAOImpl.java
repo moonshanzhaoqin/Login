@@ -1,5 +1,8 @@
 package com.yuyutechnology.exchange.dao.impl;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -71,6 +74,19 @@ public class CrmUserInfoDAOImpl implements CrmUserInfoDAO {
 	@Override
 	public PageBean getUserInfoByPage(String hql, List<?> values, int currentPage, int pageSize) {
 		return PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
+	}
+
+	@Override
+	public Long get24HRegistration() {
+		Calendar calendar = Calendar.getInstance();
+		Date now = calendar.getTime();
+		calendar.add(Calendar.DATE, -1);
+		
+		String hql = "from CrmUserInfo where createTime > ? and createTime < ?";
+		List<Object> values = new ArrayList<Object>();
+		values.add(calendar.getTime());
+		values.add(now);
+		return PageUtils.getTotal(hibernateTemplate, hql, values);
 	}
 
 }

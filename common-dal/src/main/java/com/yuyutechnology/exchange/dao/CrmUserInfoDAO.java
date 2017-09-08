@@ -25,5 +25,7 @@ public interface CrmUserInfoDAO {
 	 * @return
 	 */
 	PageBean getUserInfoByPage(String hql, List<?> values, int currentPage, int pageSize);
+	
+	Long get24HRegistration();
 
 }

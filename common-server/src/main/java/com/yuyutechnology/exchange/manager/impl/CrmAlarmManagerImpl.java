@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CrmAlarmDAO;
 import com.yuyutechnology.exchange.dao.CrmSupervisorDAO;
+import com.yuyutechnology.exchange.dao.CrmUserInfoDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
-import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.mail.MailManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
@@ -34,9 +34,9 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	@Autowired
 	CrmSupervisorDAO crmSupervisorDAO;
 	@Autowired
-	TransferDAO transferDAO;
+	CrmUserInfoDAO crmUserInfoDAO;
 	@Autowired
-	UserDAO userDAO;
+	TransferDAO transferDAO;
 	@Autowired
 	ConfigManager configManager;
 
@@ -217,7 +217,7 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 
 	@Override
 	public void registrationAlarm() {
-		Long registrationNumber = userDAO.get24HRegistration();
+		Long registrationNumber = crmUserInfoDAO.get24HRegistration();
 		if (registrationNumber > configManager.getConfigLongValue(ConfigKeyEnum.REGISTRATION_WARN, 100L)) {
 			HashMap<String, Object> params = new HashMap<String, Object>();
 			params.put("registrationNumber", registrationNumber.toString());

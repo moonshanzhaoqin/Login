@@ -1,14 +1,15 @@
 package com.yuyutechnology.exchange.dao.impl;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +17,7 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.UserConfig;
-import com.yuyutechnology.exchange.util.page.PageUtils;
+import com.yuyutechnology.exchange.util.DateFormatUtils;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
@@ -83,22 +84,20 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public void updateHQL(String hql, Object[] values) {
-		hibernateTemplate.bulkUpdate(hql, values);
+	public void updateSQL(final String sql, final Object[] values) {
+		hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
+			@Override
+			public Integer doInHibernate(Session session) throws HibernateException {
+				StringBuilder sqlsb = new StringBuilder(sql);
+				Query query = session.createSQLQuery(sqlsb.toString());
+				if (values != null) {
+					for (int i = 0; i < values.length; i++) {
+						query.setParameter(i, values[i]);
+					}
+				}
+				return query.executeUpdate();
+			}
+		});
 	}
-
-	@Override
-	public Long get24HRegistration() {
-		Calendar calendar = Calendar.getInstance();
-		Date now = calendar.getTime();
-		calendar.add(Calendar.DATE, -1);
-		
-		String hql = "from CrmUserInfo where createTime > ? and createTime < ?";
-		List<Object> values = new ArrayList<Object>();
-		values.add(calendar.getTime());
-		values.add(now);
-		return PageUtils.getTotal(hibernateTemplate, hql, values);
-	}
-
 	
 }
