@@ -24,7 +24,7 @@ import com.yuyutechnology.exchange.manager.CrmAdminManager;
 import com.yuyutechnology.exchange.manager.CrmLogManager;
 import com.yuyutechnology.exchange.pojo.Admin;
 import com.yuyutechnology.exchange.pojo.CrmLog;
-import com.yuyutechnology.exchange.util.HttpTookit;
+import com.yuyutechnology.exchange.util.HttpClientUtils;
 
 @Controller
 public class AdminController {
@@ -59,7 +59,7 @@ public class AdminController {
 				mav.setViewName("redirect:/exchangeRate/getAllExchangeRates");
 
 				crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
-						Operation.ADMIN_LOGIN.getOperationName(), HttpTookit.getIp(request)));
+						Operation.ADMIN_LOGIN.getOperationName(), HttpClientUtils.getIP(request)));
 
 			} else {
 				mav.setViewName("login");
@@ -100,7 +100,7 @@ public class AdminController {
 	@RequestMapping(value = "/exit", method = RequestMethod.GET)
 	public String exit(HttpServletRequest request) {
 		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
-				Operation.ADMIN_LOGOUT.getOperationName(), HttpTookit.getIp(request)));
+				Operation.ADMIN_LOGOUT.getOperationName(), HttpClientUtils.getIP(request)));
 		request.getSession().invalidate();
 		return "login";
 	}

@@ -31,7 +31,6 @@ import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
 import com.yuyutechnology.exchange.server.controller.request.ForgetPasswordRequest;
-import com.yuyutechnology.exchange.server.controller.request.GetUserConfigRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetUserRequset;
 import com.yuyutechnology.exchange.server.controller.request.GetVerificationCodeRequest;
 import com.yuyutechnology.exchange.server.controller.request.LoginRequest;
@@ -41,7 +40,6 @@ import com.yuyutechnology.exchange.server.controller.request.TestCodeRequest;
 import com.yuyutechnology.exchange.server.controller.response.ContactUsResponse;
 import com.yuyutechnology.exchange.server.controller.response.ForgetPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.FunctionalModulesAvailabilityResponse;
-import com.yuyutechnology.exchange.server.controller.response.GetUserConfigResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetUserResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetVerificationCodeResponse;
 import com.yuyutechnology.exchange.server.controller.response.LoginResponse;
@@ -53,7 +51,7 @@ import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBod
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionManager;
 import com.yuyutechnology.exchange.sms.SendMessageResponse;
-import com.yuyutechnology.exchange.util.HttpTookit;
+import com.yuyutechnology.exchange.util.HttpClientUtils;
 import com.yuyutechnology.exchange.util.UidUtils;
 
 /**
@@ -266,7 +264,7 @@ public class UserController {
 					rep.setSessionToken(sessionData.getSessionId());
 					rep.setLoginToken(sessionManager.createLoginToken(userId));
 					/* 记录登录信息 */
-					userManager.updateUser(userId, HttpTookit.getIp(request), loginRequest.getPushId(),
+					userManager.updateUser(userId, HttpClientUtils.getIP(request), loginRequest.getPushId(),
 							loginRequest.getLanguage());
 					/* 更新钱包 */
 					userManager.updateWallet(userId);
@@ -307,7 +305,7 @@ public class UserController {
 						rep.setMessage(MessageConsts.NEW_DEVICE);
 					} else {
 						/* 记录登录信息 */
-						userManager.updateUser(userId, HttpTookit.getIp(request), loginRequest.getPushId(),
+						userManager.updateUser(userId, HttpClientUtils.getIP(request), loginRequest.getPushId(),
 								loginRequest.getLanguage());
 						/* 更新钱包 */
 						userManager.updateWallet(userId);
@@ -397,7 +395,7 @@ public class UserController {
 						/* 设备登记 */
 						userManager.addDevice(userId, registerRequest.getDeviceId(), registerRequest.getDeviceName());
 						/* 记录登录信息 */
-						userManager.updateUser(userId, HttpTookit.getIp(request), registerRequest.getPushId(),
+						userManager.updateUser(userId, HttpClientUtils.getIP(request), registerRequest.getPushId(),
 								registerRequest.getLanguage());
 						/* 发放奖励金 */
 						campaignManager.grantBonus(userId, registerRequest.getAreaCode(),
@@ -521,7 +519,7 @@ public class UserController {
 						userManager.addDevice(userId, loginValidateRequest.getDeviceId(),
 								loginValidateRequest.getDeviceName());
 						/* 记录登录信息 */
-						userManager.updateUser(userId, HttpTookit.getIp(request), loginValidateRequest.getPushId(),
+						userManager.updateUser(userId, HttpClientUtils.getIP(request), loginValidateRequest.getPushId(),
 								loginValidateRequest.getLanguage());
 						/* 更新钱包 */
 						userManager.updateWallet(userId);

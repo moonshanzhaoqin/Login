@@ -16,7 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import com.yuyutechnology.exchange.util.HttpTookit;
+import com.yuyutechnology.exchange.util.HttpClientUtils;
 import com.yuyutechnology.exchange.util.JsonBinder;
 import com.yuyutechnology.exchange.util.ResourceUtils;
 
@@ -25,7 +25,7 @@ public class GoldpayManager {
 	public static Logger logger = LogManager.getLogger(GoldpayManager.class);
 
 	public GoldpayUser getGoldpayInfo(String accessToken) {
-		String result = HttpTookit.sendGet(ResourceUtils.getBundleValue4String("goldpayUas.url") + "unity/userInfo.do?access_token=" + accessToken, null);
+		String result = HttpClientUtils.sendGet(ResourceUtils.getBundleValue4String("goldpayUas.url") + "unity/userInfo.do?access_token=" + accessToken, null);
 		logger.info("result==={}", result);
 		if (StringUtils.isNotEmpty(result)) {
 			GoldpayInfo goldpayInfo = JsonBinder.getInstance().fromJson(result, GoldpayInfo.class);

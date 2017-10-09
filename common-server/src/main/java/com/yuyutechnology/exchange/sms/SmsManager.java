@@ -24,7 +24,7 @@ import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.pojo.User;
-import com.yuyutechnology.exchange.util.HttpTookit;
+import com.yuyutechnology.exchange.util.HttpClientUtils;
 import com.yuyutechnology.exchange.util.JsonBinder;
 import com.yuyutechnology.exchange.util.ResourceUtils;
 
@@ -272,7 +272,7 @@ public class SmsManager {
 			sendMessageRequest.setType(type);
 			String param = JsonBinder.getInstance().toJson(sendMessageRequest);
 			logger.info("sendMessageRequest : {}", param);
-			String result = HttpTookit.sendPost(ResourceUtils.getBundleValue4String("sendSMS.serverUrl"), param);
+			String result = HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("sendSMS.serverUrl"), param);
 			return JsonBinder.getInstance().fromJson(result, SendMessageResponse.class);
 		}
 		return null;
