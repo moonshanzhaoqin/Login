@@ -3,6 +3,8 @@ package com.yuyutechnology.exchange.util;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -32,16 +34,46 @@ public class HttpClientUtils {
 				if (client == null)
 				{
 					PoolingHttpClientConnectionManager cm =new PoolingHttpClientConnectionManager();
-			        cm.setMaxTotal(50);
-			        cm.setDefaultMaxPerRoute(20);
+			        cm.setMaxTotal(200);
+			        cm.setDefaultMaxPerRoute(100);
 					RequestConfig config = RequestConfig.custom()
-			                .setConnectTimeout(3000) 
-			                .setSocketTimeout(3000).build();
+			                .setConnectTimeout(5000) 
+			                .setSocketTimeout(5000).build();
 					client = HttpClients.custom().setConnectionManager(cm).setDefaultRequestConfig(config).disableAutomaticRetries().build();
 				}
 			}
 		}
 		return client;
+	}
+	
+	public static String sendGet(String domain,String params){
+		String urlName = domain;
+		if(StringUtils.isNotBlank(params)){
+			urlName = domain + "?" + params;
+		}
+		String result = "";
+		CloseableHttpResponse resp=null;
+        try {
+        	HttpGet httpGet = new HttpGet(urlName);
+            resp = getClient().execute(httpGet);
+            HttpEntity entity = resp.getEntity();
+            if (resp.getStatusLine().getStatusCode() == 200 && entity != null) {
+                result = EntityUtils.toString(entity, "UTF-8");  
+            } else {
+                String responseString = EntityUtils.toString(entity, "UTF-8");
+                logger.warn("sendGet url : {},  result : {}",urlName, responseString);
+            }
+        }catch(Exception e){
+        	logger.warn("sendGet url : {},  result : {}",urlName, e.getMessage());
+        }finally {
+        	 if(resp!=null){
+        		 try {
+        			 resp.close();
+        		 } catch (IOException e) {
+        		 }
+        	 }
+        }
+		return result;
 	}
 	
 	public static String sendGet(String domain,String params,BasicHeader basicHeader){
@@ -84,7 +116,7 @@ public class HttpClientUtils {
 
 		try {
 			//创建一个httpclient对象
-			client4Post = HttpClients.createDefault();
+			client4Post =  getClient();
 			//创建一个post对象
 			HttpPost post = new HttpPost(url);
 			//包装成一个Entity对象
@@ -112,21 +144,36 @@ public class HttpClientUtils {
 	        	logger.warn("sendPost url : {},  statusCode : {}",url, statusCode);
 	        }
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("sendGet url :,"+url, e);
 		}finally {
 			//关闭response和client
 	        try {
 	        	response.close();
-				client4Post.close();
+//				client4Post.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("sendGet url :,"+url, e);
 			}
 		}
 		
 		return result;
 		
+	}
+	
+	public static String getIP(HttpServletRequest request) {
+		String ip = request.getHeader("X-Forwarded-For");
+		if (StringUtils.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
+			int index = ip.indexOf(",");
+			if (index != -1) {
+				return ip.substring(0, index);
+			} else {
+				return ip;
+			}
+		}
+		ip = request.getHeader("X-Real-IP");
+		if (StringUtils.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
+			return ip;
+		}
+		return request.getRemoteAddr();
 	}
 	
 	public static void main(String[] args){

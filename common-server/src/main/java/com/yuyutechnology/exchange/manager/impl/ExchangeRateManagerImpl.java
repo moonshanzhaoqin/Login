@@ -25,7 +25,7 @@ import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.SpareExchangeRateManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Wallet;
-import com.yuyutechnology.exchange.util.HttpTookit;
+import com.yuyutechnology.exchange.util.HttpClientUtils;
 import com.yuyutechnology.exchange.util.JsonBinder;
 import com.yuyutechnology.exchange.util.ResourceUtils;
 import com.yuyutechnology.exchange.util.exchangerate.ExchangeRate;
@@ -56,7 +56,7 @@ public class ExchangeRateManagerImpl implements SpareExchangeRateManager {
 		HashMap<String, String> map = new HashMap<String, String>();
 		for (Currency currency : currencies) {
 			if (!currency.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
-				String result = HttpTookit.sendGet(exchangeRateUrl, "base=" + currency.getCurrency());
+				String result = HttpClientUtils.sendGet(exchangeRateUrl, "base=" + currency.getCurrency());
 				logger.info("result : {}", result);
 				map.put(currency.getCurrency(), result);
 			}

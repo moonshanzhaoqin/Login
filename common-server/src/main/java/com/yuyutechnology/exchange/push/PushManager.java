@@ -24,10 +24,9 @@ import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.util.HttpClientUtils;
-import com.yuyutechnology.exchange.util.HttpTookit;
 import com.yuyutechnology.exchange.util.JsonBinder;
-import com.yuyutechnology.exchange.util.ResourceUtils;
 import com.yuyutechnology.exchange.util.LanguageUtils.Language;
+import com.yuyutechnology.exchange.util.ResourceUtils;
 
 /**
  * 
@@ -642,7 +641,7 @@ public class PushManager {
 		pushToCustom.setExtParameters(extParameters);
 		String param = JsonBinder.getInstance().toJson(pushToCustom);
 		logger.info("pushRequest : {}", param);
-		HttpTookit.sendPost(ResourceUtils.getBundleValue4String("push.url") + "push_custom.do", param);
+		HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("push.url") + "push_custom.do", param);
 	}
 
 	private void tag(Func func, String deviceID, Language pushTag) {

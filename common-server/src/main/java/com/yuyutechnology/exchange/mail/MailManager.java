@@ -19,7 +19,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.yuyutechnology.exchange.util.HttpTookit;
+import com.yuyutechnology.exchange.util.HttpClientUtils;
 import com.yuyutechnology.exchange.util.JsonBinder;
 import com.yuyutechnology.exchange.util.ResourceUtils;
 
@@ -213,7 +213,7 @@ public class MailManager {
 			sendMessageRequest.setToMails(toMails);
 			String param = JsonBinder.getInstance().toJson(sendMessageRequest);
 			logger.info("sendMailRequest : {}", param);
-			HttpTookit.sendPost(ResourceUtils.getBundleValue4String("sendMail.url"), param);
+			HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("sendMail.url"), param);
 		}
 	}
 

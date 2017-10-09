@@ -46,7 +46,7 @@ import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.util.DateFormatUtils;
-import com.yuyutechnology.exchange.util.HttpTookit;
+import com.yuyutechnology.exchange.util.HttpClientUtils;
 import com.yuyutechnology.exchange.util.JsonBinder;
 import com.yuyutechnology.exchange.util.ResourceUtils;
 import com.yuyutechnology.exchange.util.page.PageBean;
@@ -117,7 +117,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 				+ configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTKEY, ""));
 		clientPayOrder.setSign(sign.toUpperCase());
 
-		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue4String("tpps.url") + "clientPay.do",
+		String result = HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("tpps.url") + "clientPay.do",
 				JsonBinder.getInstance().toJson(clientPayOrder));
 
 		PayModel payModel;
@@ -212,7 +212,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 		clientPin.setSign(sign.toUpperCase());
 
-		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue4String("tpps.url") + "clientPin.do",
+		String result = HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("tpps.url") + "clientPin.do",
 				JsonBinder.getInstance().toJson(clientPin));
 
 		PayModel payModel;
@@ -264,7 +264,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 		clientComfirmPay.setSign(sign.toUpperCase());
 
-		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue4String("tpps.url") + "clientComfirmPay.do",
+		String result = HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("tpps.url") + "clientComfirmPay.do",
 				JsonBinder.getInstance().toJson(clientComfirmPay));
 		PayConfirm payConfirm;
 		if (StringUtils.isNotBlank(result)) {
@@ -351,7 +351,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 				+ configManager.getConfigStringValue(ConfigKeyEnum.TPPSCLIENTKEY, ""));
 		calculateCharge.setSign(sign.toUpperCase());
 
-		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue4String("tpps.url") + "calculateCharge.do",
+		String result = HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("tpps.url") + "calculateCharge.do",
 				JsonBinder.getInstance().toJson(calculateCharge));
 		CalculateChargeReturnModel calculateChargeReturnModel;
 		if (StringUtils.isNotBlank(result)) {
@@ -515,7 +515,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 		merchantPayOrder.setSign(sign.toUpperCase());
 
-		String result = HttpTookit.sendPost(ResourceUtils.getBundleValue4String("tpps.url") + "merchantPay.do",
+		String result = HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("tpps.url") + "merchantPay.do",
 				JsonBinder.getInstance().toJson(merchantPayOrder));
 
 		transfer.setGoldpayResult(result);
