@@ -159,6 +159,57 @@ public class HttpClientUtils {
 		
 	}
 	
+	public static String sendPost4form(String url,String params){
+		
+		CloseableHttpClient client4Post = null;
+		CloseableHttpResponse response = null;
+		String result = "";
+
+		try {
+			//创建一个httpclient对象
+			client4Post =  getClient();
+			//创建一个post对象
+			HttpPost post = new HttpPost(url);
+			//包装成一个Entity对象
+//			StringEntity entity = new UrlEncodedFormEntity(params, "utf-8");
+			StringEntity entity = new StringEntity(params,Charset.forName("UTF-8"));
+			//设置请求的内容
+	        post.setEntity(entity);
+	        //设置请求的报文头部的编码
+	        post.setHeader(
+	            new BasicHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8"));
+	        //设置期望服务端返回的编码
+	        post.setHeader(new BasicHeader("Accept", "application/json"));
+	        //执行post请求
+	        response = client4Post.execute(post);
+	        //获取响应码
+	        int statusCode = response.getStatusLine().getStatusCode();
+	        if (statusCode == 200) {
+	            //获取数据
+	        	result = EntityUtils.toString(response.getEntity());
+	            //输出
+	            logger.warn("sendPost url : {},  result : {}",url, result);
+	            
+	        } else {
+	            //输出
+	        	logger.warn("sendPost url : {},  statusCode : {}",url, statusCode);
+	        }
+		} catch (IOException e) {
+			logger.error("sendGet url :,"+url, e);
+		}finally {
+			//关闭response和client
+	        try {
+	        	response.close();
+//				client4Post.close();
+			} catch (IOException e) {
+				logger.error("sendGet url :,"+url, e);
+			}
+		}
+		
+		return result;
+		
+	}
+	
 	public static String getIP(HttpServletRequest request) {
 		String ip = request.getHeader("X-Forwarded-For");
 		if (StringUtils.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
