@@ -82,102 +82,102 @@ public class LoggedInUserController {
 	@Autowired
 	CommonManager commonManager;
 
-	/**
-	 * 绑定goldpay
-	 * 
-	 * @param token
-	 * @param bindGoldpayRequest
-	 * @return
-	 */
-	@ResponseEncryptBody
-	@ApiOperation(value = "绑定goldpay", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/user/bindGoldpay", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BindGoldpayResponse bindGoldpay(@PathVariable String token,
-			@RequestDecryptBody BindGoldpayRequest bindGoldpayRequest) {
-		logger.info("========bindGoldpay : {}============", token);
-		BindGoldpayResponse rep = new BindGoldpayResponse();
-		if (bindGoldpayRequest.isEmpty()) {
-			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
-		} else {
-			SessionData sessionData = SessionDataHolder.getSessionData();
-			String retCode = userManager.bindGoldpay(sessionData.getUserId(), bindGoldpayRequest.getGoldpayToken());
-			switch (retCode) {
-			case RetCodeConsts.RET_CODE_SUCCESS:
-				// 获取用户信息
-				rep.setUser(userManager.getUserInfo(sessionData.getUserId()));
-				logger.info("********Operation succeeded********");
-				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-				break;
-			case RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST:
-				logger.info(MessageConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
-				rep.setRetCode(RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
-				rep.setMessage(MessageConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
-				break;
-			default:
-				logger.info(MessageConsts.RET_CODE_FAILUE);
-				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
-				break;
-			}
-		}
-		return rep;
-	}
+//	/**
+//	 * 绑定goldpay
+//	 * 
+//	 * @param token
+//	 * @param bindGoldpayRequest
+//	 * @return
+//	 */
+//	@ResponseEncryptBody
+//	@ApiOperation(value = "绑定goldpay", httpMethod = "POST", notes = "")
+//	@RequestMapping(value = "/token/{token}/user/bindGoldpay", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+//	public BindGoldpayResponse bindGoldpay(@PathVariable String token,
+//			@RequestDecryptBody BindGoldpayRequest bindGoldpayRequest) {
+//		logger.info("========bindGoldpay : {}============", token);
+//		BindGoldpayResponse rep = new BindGoldpayResponse();
+//		if (bindGoldpayRequest.isEmpty()) {
+//			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+//			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
+//			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+//		} else {
+//			SessionData sessionData = SessionDataHolder.getSessionData();
+//			String retCode = userManager.bindGoldpay(sessionData.getUserId(), bindGoldpayRequest.getGoldpayToken());
+//			switch (retCode) {
+//			case RetCodeConsts.RET_CODE_SUCCESS:
+//				// 获取用户信息
+//				rep.setUser(userManager.getUserInfo(sessionData.getUserId()));
+//				logger.info("********Operation succeeded********");
+//				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+//				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+//				break;
+//			case RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST:
+//				logger.info(MessageConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
+//				rep.setRetCode(RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
+//				rep.setMessage(MessageConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
+//				break;
+//			default:
+//				logger.info(MessageConsts.RET_CODE_FAILUE);
+//				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+//				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+//				break;
+//			}
+//		}
+//		return rep;
+//	}
 
-	/**
-	 * 换绑goldpay
-	 * 
-	 * @param token
-	 * @param bindGoldpayRequest
-	 * @return
-	 */
-	@ResponseEncryptBody
-	@ApiOperation(value = "换绑goldpay", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/user/changeGoldpay", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public ChangeGoldpayResponse changeGoldpay(@PathVariable String token,
-			@RequestDecryptBody ChangeGoldpayRequest changeGoldpayRequest) {
-		logger.info("========changeGoldpay : {}============", token);
-		ChangeGoldpayResponse rep = new ChangeGoldpayResponse();
-		if (changeGoldpayRequest.isEmpty()) {
-			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
-		} else {
-			SessionData sessionData = SessionDataHolder.getSessionData();
-			if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_CHANGEGOLDPAY,
-					changeGoldpayRequest.getCheckToken())) {
-				String retCode = userManager.bindGoldpay(sessionData.getUserId(),
-						changeGoldpayRequest.getGoldpayToken());
-				switch (retCode) {
-				case RetCodeConsts.RET_CODE_SUCCESS:
-					// 获取用户信息
-					rep.setUser(userManager.getUserInfo(sessionData.getUserId()));
-					logger.info("********Operation succeeded********");
-					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-					sessionManager.delCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_CHANGEGOLDPAY);
-					break;
-				case RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST:
-					logger.info(MessageConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
-					rep.setRetCode(RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
-					rep.setMessage(MessageConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
-					break;
-				default:
-					logger.info(MessageConsts.RET_CODE_FAILUE);
-					rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-					rep.setMessage(MessageConsts.RET_CODE_FAILUE);
-					break;
-				}
-			} else {
-				logger.info("***checkToken is wrong!***");
-				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
-			}
-		}
-		return rep;
-	}
+//	/**
+//	 * 换绑goldpay
+//	 * 
+//	 * @param token
+//	 * @param bindGoldpayRequest
+//	 * @return
+//	 */
+//	@ResponseEncryptBody
+//	@ApiOperation(value = "换绑goldpay", httpMethod = "POST", notes = "")
+//	@RequestMapping(value = "/token/{token}/user/changeGoldpay", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+//	public ChangeGoldpayResponse changeGoldpay(@PathVariable String token,
+//			@RequestDecryptBody ChangeGoldpayRequest changeGoldpayRequest) {
+//		logger.info("========changeGoldpay : {}============", token);
+//		ChangeGoldpayResponse rep = new ChangeGoldpayResponse();
+//		if (changeGoldpayRequest.isEmpty()) {
+//			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+//			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
+//			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+//		} else {
+//			SessionData sessionData = SessionDataHolder.getSessionData();
+//			if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_CHANGEGOLDPAY,
+//					changeGoldpayRequest.getCheckToken())) {
+//				String retCode = userManager.bindGoldpay(sessionData.getUserId(),
+//						changeGoldpayRequest.getGoldpayToken());
+//				switch (retCode) {
+//				case RetCodeConsts.RET_CODE_SUCCESS:
+//					// 获取用户信息
+//					rep.setUser(userManager.getUserInfo(sessionData.getUserId()));
+//					logger.info("********Operation succeeded********");
+//					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+//					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+//					sessionManager.delCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_CHANGEGOLDPAY);
+//					break;
+//				case RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST:
+//					logger.info(MessageConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
+//					rep.setRetCode(RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
+//					rep.setMessage(MessageConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
+//					break;
+//				default:
+//					logger.info(MessageConsts.RET_CODE_FAILUE);
+//					rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+//					rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+//					break;
+//				}
+//			} else {
+//				logger.info("***checkToken is wrong!***");
+//				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+//				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+//			}
+//		}
+//		return rep;
+//	}
 
 	/**
 	 * changePhone 换绑手机

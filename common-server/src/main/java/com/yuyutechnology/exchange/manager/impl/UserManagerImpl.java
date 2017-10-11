@@ -121,34 +121,64 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
+//	@Override
+//	public String bindGoldpay(Integer userId, String goldpayToken) {
+//		logger.info("get Goldpay ==>");
+//		GoldpayUser goldpayUser = goldpayManager.getGoldpayInfo(goldpayToken);
+//		if (goldpayUser == null) {
+//			logger.warn("Goldpay account does not exist. 'goldpayToken' is wrong!");
+//			return RetCodeConsts.RET_CODE_FAILUE;
+//		} else {
+//			logger.info("goldpayUser = ", goldpayUser.toString());
+//			if (StringUtils.isBlank(goldpayUser.getAreaCode()) || StringUtils.isBlank(goldpayUser.getMobile())) {
+//				logger.info("Goldpay account does not bind phone number.");
+//				return RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST;
+//			} else {
+//				Bind bind = bindDAO.getBindByUserId(userId);
+//				if (bind == null) {
+//					bind = new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(), goldpayUser.getAccountNum(),
+//							goldpayToken);
+//				} else {
+//					bind.setGoldpayId(goldpayUser.getId());
+//					bind.setGoldpayName(goldpayUser.getUsername());
+//					bind.setGoldpayAcount(goldpayUser.getAccountNum());
+//					bind.setToken(goldpayToken);
+//				}
+//				bindDAO.updateBind(bind);
+//				return RetCodeConsts.RET_CODE_SUCCESS;
+//			}
+//		}
+//	}
+	
+	//TODO 创建新的Goldpay 并绑定
 	@Override
-	public String bindGoldpay(Integer userId, String goldpayToken) {
-		logger.info("get Goldpay ==>");
-		GoldpayUser goldpayUser = goldpayManager.getGoldpayInfo(goldpayToken);
-		if (goldpayUser == null) {
-			logger.warn("Goldpay account does not exist. 'goldpayToken' is wrong!");
-			return RetCodeConsts.RET_CODE_FAILUE;
-		} else {
-			logger.info("goldpayUser = ", goldpayUser.toString());
-			if (StringUtils.isBlank(goldpayUser.getAreaCode()) || StringUtils.isBlank(goldpayUser.getMobile())) {
-				logger.info("Goldpay account does not bind phone number.");
-				return RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST;
-			} else {
-				Bind bind = bindDAO.getBindByUserId(userId);
-				if (bind == null) {
-					bind = new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(), goldpayUser.getAccountNum(),
-							goldpayToken);
-				} else {
-					bind.setGoldpayId(goldpayUser.getId());
-					bind.setGoldpayName(goldpayUser.getUsername());
-					bind.setGoldpayAcount(goldpayUser.getAccountNum());
-					bind.setToken(goldpayToken);
-				}
-				bindDAO.updateBind(bind);
-				return RetCodeConsts.RET_CODE_SUCCESS;
-			}
-		}
+	public Bind bindGoldpay(Integer userId) {
+		Bind bind = null ;
+//		logger.info("get Goldpay ==>");
+//		GoldpayUser goldpayUser = goldpayManager.getGoldpayInfo(goldpayToken);
+//		if (goldpayUser == null) {
+//			logger.warn("Goldpay account does not exist. 'goldpayToken' is wrong!");
+//			return RetCodeConsts.RET_CODE_FAILUE;
+//		} else {
+//			logger.info("goldpayUser = ", goldpayUser.toString());
+//			if (StringUtils.isBlank(goldpayUser.getAreaCode()) || StringUtils.isBlank(goldpayUser.getMobile())) {
+//				logger.info("Goldpay account does not bind phone number.");
+//				return RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST;
+//			} else {
+//				Bind bind = bindDAO.getBindByUserId(userId);
+//				if (bind == null) {
+//					bind = new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(), goldpayUser.getAccountNum(),
+//							goldpayToken);
+//				} else {
+//					bind.setGoldpayId(goldpayUser.getId());
+//					bind.setGoldpayName(goldpayUser.getUsername());
+//					bind.setGoldpayAcount(goldpayUser.getAccountNum());
+//					bind.setToken(goldpayToken);
+//				}
+//				bindDAO.updateBind(bind);
+				return bind;
 	}
+
 
 	@Override
 	public void changePhone(Integer userId, String areaCode, String userPhone) {

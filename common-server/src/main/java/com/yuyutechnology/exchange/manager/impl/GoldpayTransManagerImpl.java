@@ -303,7 +303,6 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 
 	}
 
-	// 对通过审核的提现进行goldpay划账
 	@Override
 	public HashMap<String, String> goldpayWithdraw(int userId, double amount) {
 
@@ -748,4 +747,7 @@ public class GoldpayTransManagerImpl implements GoldpayTransManager {
 			}
 		}
 	}
+
+	
+	
 }
