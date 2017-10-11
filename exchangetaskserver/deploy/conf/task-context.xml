@@ -27,15 +27,19 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 	<context:component-scan base-package="com.yuyutechnology" />
 	<context:annotation-config />
 
-	<task:annotation-driven executor="taskServerExecutor" scheduler="taskServerScheduler" />
+	<task:annotation-driven executor="taskServerExecutor"
+		scheduler="taskServerScheduler" />
 	<task:executor id="taskServerExecutor" pool-size="10" />
 
 	<task:scheduler id="taskServerScheduler" pool-size="10" />
-	
+
 	<task:scheduled-tasks scheduler="taskServerScheduler">
-	
+
 		<task:scheduled ref="autoAccountingTask" method="autoAccounting"
 			fixed-delay="30000" initial-delay="30000" />
+		
+		<task:scheduled ref="autoRegistrationTask" method="registrationAlarm"
+			fixed-delay="600000" initial-delay="600000" />
 
 		<task:scheduled ref="autoUpdateExchangeRateTask"
 			method="autoUpdateExchangeRateTask" fixed-delay="5000" initial-delay="1000" />

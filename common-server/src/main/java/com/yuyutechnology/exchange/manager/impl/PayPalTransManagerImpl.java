@@ -65,7 +65,6 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			logger.info("redis AccumulatedAmount is 0,and mysql sum() is {} :", accumulatedAmount);
 			transferDAO.updateAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ, accumulatedAmount);
 		}
-
 	}
 
 	@Override
