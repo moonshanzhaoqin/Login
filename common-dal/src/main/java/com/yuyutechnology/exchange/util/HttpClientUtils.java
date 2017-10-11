@@ -150,7 +150,7 @@ public class HttpClientUtils {
 	        try {
 	        	response.close();
 //				client4Post.close();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				logger.error("sendGet url :,"+url, e);
 			}
 		}
