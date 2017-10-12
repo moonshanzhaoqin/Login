@@ -262,6 +262,7 @@ public class CampaignManagerImpl implements CampaignManager {
 
 	}
 
+	
 	private void settlement(Integer userId, BigDecimal bonus) {
 
 		User user = userDAO.getUser(userId);
@@ -288,11 +289,11 @@ public class CampaignManagerImpl implements CampaignManager {
 		/* 生成详情 */
 		transDetailsManager.addTransDetails(transferId, userId, system.getUserId(), "", "", "",
 				ServerConsts.CURRENCY_OF_GOLDPAY, bonus, null, ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
-
+		// TODO  涉及Goldpay转账 需修改
 		/* 账户加款 */
 		walletDAO.updateWalletByUserIdAndCurrency(userId, ServerConsts.CURRENCY_OF_GOLDPAY, bonus, "+",
 				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId);
-
+		// TODO  涉及Goldpay转账 需修改
 		/* 系统扣款 */
 		walletDAO.updateWalletByUserIdAndCurrency(system.getUserId(), ServerConsts.CURRENCY_OF_GOLDPAY, bonus, "-",
 				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId);

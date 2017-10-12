@@ -323,55 +323,55 @@ public class LoggedInUserController {
 		return rep;
 	}
 
-	/**
-	 * checkGoldpayPwd 校验Goldpay
-	 * 
-	 * @param token
-	 * @param checkPayPwdRequest
-	 * @return
-	 */
-	@ResponseBody
-	@ApiOperation(value = "校验Goldpay", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/user/checkGoldpay", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public CheckGoldpayResponse checkGoldpay(@PathVariable String token,
-			@RequestBody CheckGoldpayRequest checkPayGoldpayRequest) {
-		logger.info("========checkPassword : {}============", token);
-		CheckGoldpayResponse rep = new CheckGoldpayResponse();
-		if (checkPayGoldpayRequest.isEmpty()) {
-			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
-		} else {
-			SessionData sessionData = SessionDataHolder.getSessionData();
-			String retCode = userManager.checkGoldpay(sessionData.getUserId(), checkPayGoldpayRequest.getGoldpayName(),
-					checkPayGoldpayRequest.getGoldpayPwd());
-			switch (retCode) {
-			case RetCodeConsts.RET_CODE_SUCCESS:
-				String checkToken = sessionManager.createCheckToken(sessionData.getUserId(), ServerConsts.RESETPAYPWD);
-				logger.info("********Operation succeeded********");
-				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-				rep.setMessage(checkToken);
-				rep.setCheckToken(checkToken);
-				break;
-			case RetCodeConsts.GOLDPAY_IS_INCORRECT:
-				logger.info(MessageConsts.GOLDPAY_IS_INCORRECT);
-				rep.setRetCode(RetCodeConsts.GOLDPAY_IS_INCORRECT);
-				rep.setMessage(MessageConsts.GOLDPAY_IS_INCORRECT);
-				break;
-			case RetCodeConsts.GOLDPAY_NOT_BIND:
-				logger.info(MessageConsts.GOLDPAY_NOT_BIND);
-				rep.setRetCode(RetCodeConsts.GOLDPAY_NOT_BIND);
-				rep.setMessage(MessageConsts.GOLDPAY_NOT_BIND);
-				break;
-			case RetCodeConsts.GOLDPAY_NOT_MATCH_BIND:
-				logger.info(MessageConsts.GOLDPAY_NOT_MATCH_BIND);
-				rep.setRetCode(RetCodeConsts.GOLDPAY_NOT_MATCH_BIND);
-				rep.setMessage(MessageConsts.GOLDPAY_NOT_MATCH_BIND);
-				break;
-			}
-		}
-		return rep;
-	}
+//	/**
+//	 * checkGoldpayPwd 校验Goldpay
+//	 * 
+//	 * @param token
+//	 * @param checkPayPwdRequest
+//	 * @return
+//	 */
+//	@ResponseBody
+//	@ApiOperation(value = "校验Goldpay", httpMethod = "POST", notes = "")
+//	@RequestMapping(value = "/token/{token}/user/checkGoldpay", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+//	public CheckGoldpayResponse checkGoldpay(@PathVariable String token,
+//			@RequestBody CheckGoldpayRequest checkPayGoldpayRequest) {
+//		logger.info("========checkPassword : {}============", token);
+//		CheckGoldpayResponse rep = new CheckGoldpayResponse();
+//		if (checkPayGoldpayRequest.isEmpty()) {
+//			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+//			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
+//			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+//		} else {
+//			SessionData sessionData = SessionDataHolder.getSessionData();
+//			String retCode = userManager.checkGoldpay(sessionData.getUserId(), checkPayGoldpayRequest.getGoldpayName(),
+//					checkPayGoldpayRequest.getGoldpayPwd());
+//			switch (retCode) {
+//			case RetCodeConsts.RET_CODE_SUCCESS:
+//				String checkToken = sessionManager.createCheckToken(sessionData.getUserId(), ServerConsts.RESETPAYPWD);
+//				logger.info("********Operation succeeded********");
+//				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+//				rep.setMessage(checkToken);
+//				rep.setCheckToken(checkToken);
+//				break;
+//			case RetCodeConsts.GOLDPAY_IS_INCORRECT:
+//				logger.info(MessageConsts.GOLDPAY_IS_INCORRECT);
+//				rep.setRetCode(RetCodeConsts.GOLDPAY_IS_INCORRECT);
+//				rep.setMessage(MessageConsts.GOLDPAY_IS_INCORRECT);
+//				break;
+//			case RetCodeConsts.GOLDPAY_NOT_BIND:
+//				logger.info(MessageConsts.GOLDPAY_NOT_BIND);
+//				rep.setRetCode(RetCodeConsts.GOLDPAY_NOT_BIND);
+//				rep.setMessage(MessageConsts.GOLDPAY_NOT_BIND);
+//				break;
+//			case RetCodeConsts.GOLDPAY_NOT_MATCH_BIND:
+//				logger.info(MessageConsts.GOLDPAY_NOT_MATCH_BIND);
+//				rep.setRetCode(RetCodeConsts.GOLDPAY_NOT_MATCH_BIND);
+//				rep.setMessage(MessageConsts.GOLDPAY_NOT_MATCH_BIND);
+//				break;
+//			}
+//		}
+//		return rep;
+//	}
 
 	/**
 	 * Modify password 修改用户密码

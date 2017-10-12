@@ -87,14 +87,14 @@ public interface UserManager {
 //	 */
 //	String bindGoldpay(Integer userId, String goldpayToken);
 
-	/**
-	 * 校验Goldpay
-	 * 
-	 * @param userId
-	 * @param goldpayPassword
-	 * @return
-	 */
-	String checkGoldpay(Integer userId, String goldpayName, String goldpayPassword);
+//	/**
+//	 * 校验Goldpay
+//	 * 
+//	 * @param userId
+//	 * @param goldpayPassword
+//	 * @return
+//	 */
+//	String checkGoldpay(Integer userId, String goldpayName, String goldpayPassword);
 
 	/**
 	 * 获取好友列表

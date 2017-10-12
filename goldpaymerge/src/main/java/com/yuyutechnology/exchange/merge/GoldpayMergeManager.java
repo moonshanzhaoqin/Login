@@ -12,7 +12,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jsoup.helper.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -39,13 +38,14 @@ public class GoldpayMergeManager {
 	@Autowired
 	BindDAO bindDAO;
 
-	public void getAllGoldpayUser() {
+	public List<Map<String, Object>> getAllGoldpayUser() {
 		List<Map<String, Object>> users = jdbcTemplate.queryForList(
-				"SELECT account.balance,account.account_id,guser.email,guser.username,guser.`area_code`,guser.`mobile` FROM `goldq_account` account LEFT JOIN `goldq_user` guser ON guser.id = account.user_id  WHERE guser.`area_code` IS NOT NULL AND account.balance > 0;");
+				"SELECT account.user_id, account.account_id,guser.username,guser.`area_code`,guser.`mobile` FROM `goldq_account` account LEFT JOIN `goldq_user` guser ON guser.id = account.user_id  WHERE guser.`area_code` IS NOT NULL AND account.balance > 0;");
 		logger.info("getAllGoldpayUser size : " + users.size());
+		return users;
 	}
 
-	public void mergeGoldpayUserToExServer(Integer goldppayUserId, String username, String accountNumber,
+	public void mergeGoldpayUserToExServer(String goldpayUserId, String username, String accountNumber,
 			String areaCode, String phoneNumber) {
 		/* 查找对应的Ex账号 */
 		Integer userId = userManager.getUserId(areaCode, phoneNumber);
@@ -57,7 +57,7 @@ public class GoldpayMergeManager {
 			Bind bind = bindDAO.getBindByUserId(userId);
 			if (bind == null || StringUtils.equals(bind.getGoldpayAcount(),accountNumber)) {
 				/* 绑定goldpay*/
-				bindDAO.updateBind(new Bind(userId, goldppayUserId.toString(), username, accountNumber));
+				bindDAO.updateBind(new Bind(userId, goldpayUserId, username, accountNumber));
 			} 
 
 			// TODO 将EX的GDQ转到Goldpay中

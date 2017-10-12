@@ -121,64 +121,44 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
-//	@Override
-//	public String bindGoldpay(Integer userId, String goldpayToken) {
-//		logger.info("get Goldpay ==>");
-//		GoldpayUser goldpayUser = goldpayManager.getGoldpayInfo(goldpayToken);
-//		if (goldpayUser == null) {
-//			logger.warn("Goldpay account does not exist. 'goldpayToken' is wrong!");
-//			return RetCodeConsts.RET_CODE_FAILUE;
-//		} else {
-//			logger.info("goldpayUser = ", goldpayUser.toString());
-//			if (StringUtils.isBlank(goldpayUser.getAreaCode()) || StringUtils.isBlank(goldpayUser.getMobile())) {
-//				logger.info("Goldpay account does not bind phone number.");
-//				return RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST;
-//			} else {
-//				Bind bind = bindDAO.getBindByUserId(userId);
-//				if (bind == null) {
-//					bind = new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(), goldpayUser.getAccountNum(),
-//							goldpayToken);
-//				} else {
-//					bind.setGoldpayId(goldpayUser.getId());
-//					bind.setGoldpayName(goldpayUser.getUsername());
-//					bind.setGoldpayAcount(goldpayUser.getAccountNum());
-//					bind.setToken(goldpayToken);
-//				}
-//				bindDAO.updateBind(bind);
-//				return RetCodeConsts.RET_CODE_SUCCESS;
-//			}
-//		}
-//	}
-	
-	//TODO 创建新的Goldpay 并绑定
+	// @Override
+	// public String bindGoldpay(Integer userId, String goldpayToken) {
+	// logger.info("get Goldpay ==>");
+	// GoldpayUser goldpayUser = goldpayManager.getGoldpayInfo(goldpayToken);
+	// if (goldpayUser == null) {
+	// logger.warn("Goldpay account does not exist. 'goldpayToken' is wrong!");
+	// return RetCodeConsts.RET_CODE_FAILUE;
+	// } else {
+	// logger.info("goldpayUser = ", goldpayUser.toString());
+	// if (StringUtils.isBlank(goldpayUser.getAreaCode()) ||
+	// StringUtils.isBlank(goldpayUser.getMobile())) {
+	// logger.info("Goldpay account does not bind phone number.");
+	// return RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST;
+	// } else {
+	// Bind bind = bindDAO.getBindByUserId(userId);
+	// if (bind == null) {
+	// bind = new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(),
+	// goldpayUser.getAccountNum(),
+	// goldpayToken);
+	// } else {
+	// bind.setGoldpayId(goldpayUser.getId());
+	// bind.setGoldpayName(goldpayUser.getUsername());
+	// bind.setGoldpayAcount(goldpayUser.getAccountNum());
+	// bind.setToken(goldpayToken);
+	// }
+	// bindDAO.updateBind(bind);
+	// return RetCodeConsts.RET_CODE_SUCCESS;
+	// }
+	// }
+	// }
+
+	// TODO 创建新的Goldpay 并绑定
 	@Override
 	public Bind bindGoldpay(Integer userId) {
-		Bind bind = null ;
-//		logger.info("get Goldpay ==>");
-//		GoldpayUser goldpayUser = goldpayManager.getGoldpayInfo(goldpayToken);
-//		if (goldpayUser == null) {
-//			logger.warn("Goldpay account does not exist. 'goldpayToken' is wrong!");
-//			return RetCodeConsts.RET_CODE_FAILUE;
-//		} else {
-//			logger.info("goldpayUser = ", goldpayUser.toString());
-//			if (StringUtils.isBlank(goldpayUser.getAreaCode()) || StringUtils.isBlank(goldpayUser.getMobile())) {
-//				logger.info("Goldpay account does not bind phone number.");
-//				return RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST;
-//			} else {
-//				Bind bind = bindDAO.getBindByUserId(userId);
-//				if (bind == null) {
-//					bind = new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(), goldpayUser.getAccountNum(),
-//							goldpayToken);
-//				} else {
-//					bind.setGoldpayId(goldpayUser.getId());
-//					bind.setGoldpayName(goldpayUser.getUsername());
-//					bind.setGoldpayAcount(goldpayUser.getAccountNum());
-//					bind.setToken(goldpayToken);
-//				}
-//				bindDAO.updateBind(bind);
-				return bind;
+		Bind bind = null;
+		// TODO
+		return bind;
 	}
-
 
 	@Override
 	public void changePhone(Integer userId, String areaCode, String userPhone) {
@@ -352,25 +332,25 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
-	@Override
-	public String checkGoldpay(Integer userId, String goldpayName, String goldpayPassword) {
-		logger.info("Check {}  user's Goldpay password {} ==>", userId, goldpayPassword);
-		GoldpayUser goldpayUser = goldpayManager.checkGoldpay(goldpayName, goldpayPassword);
-		if (goldpayUser == null) {
-			logger.info("goldpayName goldpayPassword not match");
-			return RetCodeConsts.GOLDPAY_IS_INCORRECT;
-		}
-		Bind bind = bindDAO.getBindByUserId(userId);
-		if (bind == null) {
-			logger.info("goldpay not bind");
-			return RetCodeConsts.GOLDPAY_NOT_BIND;
-		}
-		if (!goldpayUser.getUsername().equals(bind.getGoldpayName())) {
-			logger.info("goldpay not match bind");
-			return RetCodeConsts.GOLDPAY_NOT_MATCH_BIND;
-		}
-		return RetCodeConsts.RET_CODE_SUCCESS;
-	}
+//	@Override
+//	public String checkGoldpay(Integer userId, String goldpayName, String goldpayPassword) {
+//		logger.info("Check {}  user's Goldpay password {} ==>", userId, goldpayPassword);
+//		GoldpayUser goldpayUser = goldpayManager.checkGoldpay(goldpayName, goldpayPassword);
+//		if (goldpayUser == null) {
+//			logger.info("goldpayName goldpayPassword not match");
+//			return RetCodeConsts.GOLDPAY_IS_INCORRECT;
+//		}
+//		Bind bind = bindDAO.getBindByUserId(userId);
+//		if (bind == null) {
+//			logger.info("goldpay not bind");
+//			return RetCodeConsts.GOLDPAY_NOT_BIND;
+//		}
+//		if (!goldpayUser.getUsername().equals(bind.getGoldpayName())) {
+//			logger.info("goldpay not match bind");
+//			return RetCodeConsts.GOLDPAY_NOT_MATCH_BIND;
+//		}
+//		return RetCodeConsts.RET_CODE_SUCCESS;
+//	}
 
 	@Override
 	public void clearPinCode(String func, String areaCode, String userPhone) {
@@ -629,10 +609,11 @@ public class UserManagerImpl implements UserManager {
 			String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 
 			User payer = userDAO.getUser(payerTransfer.getUserFrom());
-
+			// TODO 涉及Goldpay转账 需修改
 			/* 系统账号扣款 */
 			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, unregistered.getCurrency(),
 					unregistered.getAmount(), "-", ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
+			// TODO 涉及Goldpay转账 需修改
 			/* 用户加款 */
 			walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(), unregistered.getAmount(), "+",
 					ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
