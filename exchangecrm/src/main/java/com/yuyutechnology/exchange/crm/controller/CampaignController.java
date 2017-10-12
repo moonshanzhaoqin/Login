@@ -56,7 +56,8 @@ public class CampaignController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getCampaignList", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public PageBean getCampaignList(@RequestBody GetCampaignListRequest getCampaignListRequest, HttpServletRequest request, HttpServletResponse response) {
+	public PageBean getCampaignList(@RequestBody GetCampaignListRequest getCampaignListRequest,
+			HttpServletRequest request, HttpServletResponse response) {
 
 		return campaignManager.getCampaignList(getCampaignListRequest.getCurrentPage());
 
@@ -96,6 +97,7 @@ public class CampaignController {
 
 	/**
 	 * 开启活动
+	 * 
 	 * @param campaignRequest
 	 * @param request
 	 * @param response
@@ -121,7 +123,14 @@ public class CampaignController {
 		return rep;
 	}
 
-	// TODO 关闭活动
+	/**
+	 * 关闭活动
+	 * 
+	 * @param campaignRequest
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/closeCampaign", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse closeCampaign(@RequestBody CampaignRequest campaignRequest, HttpServletRequest request,

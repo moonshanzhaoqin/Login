@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.yuyutechnology.exchange.dao.UserDAO;
-import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.User;
 
 /**
@@ -38,17 +37,16 @@ public class MergeTask {
 	@PostConstruct
 	public void mergeTask() {
 		logger.info("start merge users======================================================================");
-		/*Ex->Goldpay*/
+		/*Ex -> Goldpay*/
 		List<User> exUsers = userDAO.getUserList();
 		for (User user : exUsers) {
 			exanytimeMergeManager.mergeExUserGoldpayToGoldpayServer(user.getUserId(), user.getAreaCode(),
 					user.getUserPhone());
 		}
 
-		/* Goldpay->Ex */
+		/* Goldpay -> Ex */
 		List<Map<String, Object>> goldpayUsers = goldpayMergeManager.getAllGoldpayUser();
 		for (Map<String, Object> map : goldpayUsers) {
-			// TODO
 			goldpayMergeManager.mergeGoldpayUserToExServer(map.get("user_id").toString(),
 					map.get("username").toString(), map.get("account_id").toString(), map.get("area_code").toString(),
 					map.get("mobile").toString());
