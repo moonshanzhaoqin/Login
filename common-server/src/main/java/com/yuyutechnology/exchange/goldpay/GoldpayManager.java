@@ -54,7 +54,7 @@ public class GoldpayManager {
 	public GoldpayUser createGoldpay(String areaCode, String userPhone,boolean newUser) {
 		CreateGoldpayRequest createGoldpayRequest=new CreateGoldpayRequest(areaCode,userPhone,newUser);
 		String param =JsonBinder.getInstance().toJson(createGoldpayRequest);
-		String result=	HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("Goldpay.url") + "member/createMember", param);
+		String result=	HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("goldpay.url") + "member/createMember", param);
 		logger.info("result==={}", result);
 		if (StringUtils.isNotEmpty(result)) {
 			GoldpayInfo goldpayInfo = JsonBinder.getInstance().fromJson(result, GoldpayInfo.class);
