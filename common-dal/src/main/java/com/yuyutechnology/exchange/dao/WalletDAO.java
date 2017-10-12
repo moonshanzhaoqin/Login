@@ -33,4 +33,7 @@ public interface WalletDAO {
 	 */
 	public HashMap<String, BigDecimal> getUserAccountTotalAssets(int systemUserId);
 
+
+	Integer emptyWallet(int userId, String currency);
+
 }

@@ -3,6 +3,8 @@
  */
 package com.yuyutechnology.exchange.merge;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
@@ -21,6 +24,7 @@ import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.User;
+import com.yuyutechnology.exchange.pojo.Wallet;
 
 /**
  * @author silent.sun
@@ -58,15 +62,25 @@ public class ExanytimeMergeManager {
 			/* 查找绑定信息 */
 			Bind bind = bindDAO.getBindByUserId(userId);
 			if (bind == null || !StringUtils.equals(bind.getGoldpayAcount(), goldpayUser.getAccountNum())) {
+				bind = new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(), goldpayUser.getAccountNum());
 				/* 绑定goldpay */
-				bindDAO.updateBind(
-						new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(), goldpayUser.getAccountNum()));
+				bindDAO.updateBind(bind);
 			}
 
-			// TODO 将EX的GDQ转到Goldpay中
-
+			/* 将EX的GDQ转到Goldpay中 */
+			Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, ServerConsts.CURRENCY_OF_GOLDPAY);
+			if (wallet.getBalance().compareTo(BigDecimal.ZERO) > 0) {
+				if (goldpayManager.transferGDQ2Goldpay(bind.getGoldpayAcount(), wallet.getBalance())) {
+					walletDAO.emptyWallet(userId, ServerConsts.CURRENCY_OF_GOLDPAY);
+				} else {
+					logger.warn("mergeExUserGoldpayToGoldpayServer:{} fail!---Can not transfer GDQ from Ex to Goldpay.",
+							userId);
+					return;
+				}
+			}
 		}
-
+		logger.info("mergeExUserGoldpayToGoldpayServer:{}  success!", userId);
+		return;
 	}
 
 }

@@ -270,7 +270,6 @@ public interface UserManager {
 	 */
 	UserDTO getUser(String areaCode, String userPhone);
 
-	Bind bindGoldpay(Integer userId);
 
 
 	

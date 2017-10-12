@@ -152,11 +152,19 @@ public class UserManagerImpl implements UserManager {
 	// }
 	// }
 
-	// TODO 创建新的Goldpay 并绑定
-	@Override
-	public Bind bindGoldpay(Integer userId) {
+	/**
+	 *  创建新的Goldpay 并绑定 
+	 * @param userId
+	 * @param areaCode
+	 * @param userPhone
+	 * @return
+	 */
+	private Bind bindGoldpay(Integer userId, String areaCode, String userPhone) {
+		/* 用手机号创建Goldpay账号 */
+		GoldpayUser goldpayUser = goldpayManager.createGoldpay(areaCode,userPhone, true);
 		Bind bind = null;
-		// TODO
+		bindDAO.updateBind(
+				new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(), goldpayUser.getAccountNum()));
 		return bind;
 	}
 
@@ -466,6 +474,8 @@ public class UserManagerImpl implements UserManager {
 		/* 添加钱包信息 */
 		createWallets4NewUser(userId);
 		accountingManager.snapshotToBefore(userId);
+		/*创建Goldpay账号*/
+		bindGoldpay(userId,areaCode,userPhone);
 		/* 根据Unregistered表 更新新用户钱包 将资金从系统帐户划给新用户 */
 		updateWalletsFromUnregistered(userId, areaCode, userPhone, userName);
 		return userId;

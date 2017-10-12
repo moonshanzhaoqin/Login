@@ -1,10 +1,15 @@
 package com.yuyutechnology.exchange.goldpay;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import com.mangofactory.swagger.models.dto.jackson.SwaggerApiListingJsonSerializer;
 import com.yuyutechnology.exchange.util.HttpClientUtils;
 import com.yuyutechnology.exchange.util.JsonBinder;
 import com.yuyutechnology.exchange.util.ResourceUtils;
@@ -68,7 +73,25 @@ public class GoldpayManager {
 	
 	
 	
-	
+	@SuppressWarnings("unchecked")
+	public boolean transferGDQ2Goldpay(String accountNum,BigDecimal balance) {
+		StringBuilder param = new StringBuilder();
+		param.append("toAccountNum=").append(accountNum).append("&");
+		param.append("fromAccountNum=").append(ResourceUtils.getBundleValue4String("goldpay.merchant.fromAccountNum")).append("&");
+		param.append("token=").append(ResourceUtils.getBundleValue4String("goldpay.merchant.token")).append("&");
+		param.append("balance=").append(balance).append("&");
+		param.append("orderType=").append(3).append("&");
+		param.append("payOrderId=").append("");
+		String result=	HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("goldpay.url") + "trans/payConfirmTransaction4Merchant", param.toString());
+		logger.info("result==={}", result);
+		if (StringUtils.isNotEmpty(result)) {
+			Map<String, String> resultMap = JsonBinder.getInstance().fromJson(result, HashMap.class);
+			if (resultMap.get("retCode")=="1") {
+				return true;
+			}
+		}		
+		return false;
+	}
 	
 	
 	
