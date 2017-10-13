@@ -1,10 +1,12 @@
 package com.yuyutechnology.exchange.manager;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.HashMap;
 
 import com.yuyutechnology.exchange.dto.TransDetailsDTO;
 import com.yuyutechnology.exchange.pojo.Unregistered;
+import com.yuyutechnology.exchange.util.page.PageBean;
 
 public interface TransferManager {
 
@@ -134,5 +136,8 @@ public interface TransferManager {
 
 	HashMap<String, Object> getTransactionRecordNew(String period, String type, int userId, int currentPage,
 			int pageSize);
+
+	PageBean getRechargeList(int currentPage, String userPhone, String lowerAmount, String upperAmount,
+			String startTime, String endTime, String transferType) throws ParseException;
 
 }

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yuyutechnology.exchange.crm.request.GetRechargeListRequest;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.CrmLogManager;
-import com.yuyutechnology.exchange.manager.GoldpayTransManager;
+import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.util.page.PageBean;
 
 /**
@@ -32,7 +32,7 @@ public class RechargeController {
 	private static Logger logger = LogManager.getLogger(RechargeController.class);
 
 	@Autowired
-	GoldpayTransManager goldpayTransManager;
+	TransferManager transferManager;
 	@Autowired
 	CommonManager commonManager;
 	@Autowired
@@ -52,7 +52,7 @@ public class RechargeController {
 	public PageBean getRechargeList(@RequestBody GetRechargeListRequest getRechargeListRequest,
 			HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, ParseException {
 		logger.info(getRechargeListRequest.toString());
-		return goldpayTransManager.getRechargeList(Integer.parseInt(getRechargeListRequest.getCurrentPage()),
+		return transferManager.getRechargeList(Integer.parseInt(getRechargeListRequest.getCurrentPage()),
 				getRechargeListRequest.getUserPhone(), getRechargeListRequest.getLowerAmount(),
 				getRechargeListRequest.getUpperAmount(), getRechargeListRequest.getStartTime(),
 				getRechargeListRequest.getEndTime(), getRechargeListRequest.getTransferType());

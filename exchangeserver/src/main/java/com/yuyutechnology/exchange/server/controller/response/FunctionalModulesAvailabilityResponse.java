@@ -8,16 +8,7 @@ package com.yuyutechnology.exchange.server.controller.response;
  *
  */
 public class FunctionalModulesAvailabilityResponse extends BaseResponse {
-	private boolean goldpayWithdraw;
 	private boolean paypalRecharge;
-
-	public boolean isGoldpayWithdraw() {
-		return goldpayWithdraw;
-	}
-
-	public void setGoldpayWithdraw(boolean goldpayWithdraw) {
-		this.goldpayWithdraw = goldpayWithdraw;
-	}
 
 	public boolean isPaypalRecharge() {
 		return paypalRecharge;

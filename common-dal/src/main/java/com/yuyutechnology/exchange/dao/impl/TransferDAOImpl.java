@@ -213,21 +213,6 @@ public class TransferDAOImpl implements TransferDAO {
 		return sum;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Transfer> getNeedGoldpayRemitWithdraws() {
-		List<?> list = hibernateTemplate.find("from Transfer where transferStatus = ? and transferType = ? ",
-				ServerConsts.TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS, ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
-		return (List<Transfer>) list;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Transfer> getNeedReviewWithdraws() {
-		List<?> list = hibernateTemplate.find("from Transfer where  transferStatus = ? and transferType = ? ",
-				ServerConsts.TRANSFER_STATUS_OF_PROCESSING, ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
-		return (List<Transfer>) list;
-	}
 
 	@Override
 	public PageBean searchTransfersByPage(String hql, List<Object> values, int currentPage, int pageSize) {

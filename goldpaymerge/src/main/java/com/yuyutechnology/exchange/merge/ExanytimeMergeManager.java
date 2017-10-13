@@ -20,10 +20,8 @@ import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.goldpay.GoldpayManager;
 import com.yuyutechnology.exchange.goldpay.GoldpayUser;
-import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Bind;
-import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 
 /**
@@ -46,8 +44,6 @@ public class ExanytimeMergeManager {
 	WalletDAO walletDAO;
 	@Autowired
 	UserManager userManager;
-	@Autowired
-	GoldpayTransManager goldpayTransManager;
 	@Autowired
 	GoldpayManager goldpayManager;
 

@@ -29,9 +29,9 @@ public interface CrmAlarmManager {
 
 	public String saveSupervisor(String supervisorName, String supervisorMobile, String supervisorEmail);
 
-	public void autoAlarm(BigDecimal userHoldingTotalAssets);
+//	public void autoAlarm(BigDecimal userHoldingTotalAssets);
 
-	public HashMap<String, BigDecimal> getAccountInfo(BigDecimal userHoldingTotalAssets);
+//	public HashMap<String, BigDecimal> getAccountInfo(BigDecimal userHoldingTotalAssets);
 
 	public HashMap<String, BigDecimal> getLargeTransLimit();
 

@@ -29,7 +29,8 @@ public class AutoAlarmTask {
 		
 		if(userTotalAssets != null){
 			logger.info("totalAssets : {}",userTotalAssets.get("totalAssets"));
-			crmAlarmManager.autoAlarm(userTotalAssets.get("totalAssets"));
+			// TODO  crmAlarmManager.autoAlarm
+			//crmAlarmManager.autoAlarm(userTotalAssets.get("totalAssets"));
 		}
 
 		logger.info("=============autoAlarmTask END=================={}",new Date());	

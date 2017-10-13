@@ -72,23 +72,23 @@ public class ServerConsts {
 	 * 系统退款
 	 */
 	public static final int TRANSFER_TYPE_IN_SYSTEM_REFUND = 3;
-	/**
-	 * 黄金宝提现
-	 */
-	public static final int TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW = 4;
-	/**
-	 * 黄金宝充值
-	 */
-	public static final int TRANSFER_TYPE_IN_GOLDPAY_RECHARGE = 5;
-	/**
-	 * 黄金宝提现退款
-	 */
-	public static final int TRANSFER_TYPE_IN_GOLDPAY_REFUND = 6;
+	// /**
+	// * 黄金宝提现
+	// */
+	// public static final int TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW = 4;
+	// /**
+	// * 黄金宝充值
+	// */
+	// public static final int TRANSFER_TYPE_IN_GOLDPAY_RECHARGE = 5;
+	// /**
+	// * 黄金宝提现退款
+	// */
+	// public static final int TRANSFER_TYPE_IN_GOLDPAY_REFUND = 6;
 	/**
 	 * Paypal充值
 	 */
 	public static final int TRANSFER_TYPE_IN_PAYPAL_RECHAEGE = 7;
-	
+
 	/**
 	 * 邀请活动奖励
 	 */
@@ -112,18 +112,18 @@ public class ServerConsts {
 	 */
 	public static final int TRANSFER_STATUS_OF_REFUND = 3;
 
-	/**
-	 * 待支付
-	 */
-	public static final int TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS = 4;
-	/**
-	 * 审核失败
-	 */
-	public static final int TRANSFER_STATUS_OF_AUTOREVIEW_FAIL = 5;
-	/**
-	 * 支付失败
-	 */
-	public static final int TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL = 8;
+	// /**
+	// * 待支付
+	// */
+	// public static final int TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS = 4;
+	// /**
+	// * 审核失败
+	// */
+	// public static final int TRANSFER_STATUS_OF_AUTOREVIEW_FAIL = 5;
+	// /**
+	// * 支付失败
+	// */
+	// public static final int TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL = 8;
 
 	// notification状态
 	public static final int NOTIFICATION_STATUS_OF_PENDING = 0;
@@ -211,10 +211,6 @@ public class ServerConsts {
 	 */
 	public static final String PAYPWD_CHANGEPHONE = "PAYPWD_CHANGEPHONE";
 	/**
-	 * 校验支付密码功能——换绑Goldpay
-	 */
-	public static final String PAYPWD_CHANGEGOLDPAY = "PAYPWD_CHANGEGOLDPAY";
-	/**
 	 * 校验支付密码功能——修改支付密码
 	 */
 	public static final String PAYPWD_MODIFYPAYPWD = "PAYPWD_MODIFYPAYPWD";
@@ -222,16 +218,6 @@ public class ServerConsts {
 	 * 重置支付密码
 	 */
 	public static final String RESETPAYPWD = "RESETPAYPWD";
-
-	/**
-	 * 提现审核开启 GOLDPAY_WITHDRAW_FORBIDDEN=
-	 */
-	public static final String ACCOUTING_TASK_OPEN = "false";
-
-	/**
-	 * 提现审核关闭 GOLDPAY_WITHDRAW_FORBIDDEN=
-	 */
-	public static final String ACCOUTING_TASK_CLOSED = "true";
 
 	public static final String REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ = "totalAmountOfGDQ";
 
@@ -244,7 +230,7 @@ public class ServerConsts {
 	 */
 	public static final int CAMPAIGN_STATUS_OFF = 0;
 	public static final String REDIS_KEY_ACTIVE_CAMPAIGN = "ACTIVE_CAMPAIGN";
-	
+
 	public static final int COLLECT_STATUS_UNREGISTER = 0;
 	public static final int COLLECT_STATUS_REGISTER = 1;
 }

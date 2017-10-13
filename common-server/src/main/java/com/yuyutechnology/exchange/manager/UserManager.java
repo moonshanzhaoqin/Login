@@ -78,24 +78,6 @@ public interface UserManager {
 	 */
 	void updateUserPayPwd(Integer userId, String userPayPwd);
 
-//	/**
-//	 * 绑定goldpay
-//	 * 
-//	 * @param userId
-//	 * @param goldpayToken
-//	 * @return
-//	 */
-//	String bindGoldpay(Integer userId, String goldpayToken);
-
-//	/**
-//	 * 校验Goldpay
-//	 * 
-//	 * @param userId
-//	 * @param goldpayPassword
-//	 * @return
-//	 */
-//	String checkGoldpay(Integer userId, String goldpayName, String goldpayPassword);
-
 	/**
 	 * 获取好友列表
 	 * 
@@ -269,9 +251,5 @@ public interface UserManager {
 	 * @param userPhone
 	 */
 	UserDTO getUser(String areaCode, String userPhone);
-
-
-
-	
 
 }

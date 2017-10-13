@@ -3,6 +3,7 @@ package com.yuyutechnology.exchange.manager.impl;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,6 +55,7 @@ import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.sms.SmsManager;
 import com.yuyutechnology.exchange.util.DateFormatUtils;
+import com.yuyutechnology.exchange.util.page.PageBean;
 
 @Service
 public class TransferManagerImpl implements TransferManager {
@@ -636,15 +638,15 @@ public class TransferManagerImpl implements TransferManager {
 				sb.append("and t1.amount > 0 and t2.transfer_type in (0,?) ");
 				values.add(ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND + "");
 				break;
-			case "withdraw":// 体现
-				sb.append("and t2.transfer_type = ? ");
-				values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW + "");
-				break;
-			case "recharge":// 充值
-				sb.append("and t2.transfer_type in (?,?) ");
-				values.add(ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE + "");
-				values.add(ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE + "");
-				break;
+//			case "withdraw":// 体现
+//				sb.append("and t2.transfer_type = ? ");
+//				values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW + "");
+//				break;
+//			case "recharge":// 充值
+//				sb.append("and t2.transfer_type in (?,?) ");
+//				values.add(ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE + "");
+//				values.add(ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE + "");
+//				break;
 			default:
 				break;
 
@@ -1199,15 +1201,15 @@ public class TransferManagerImpl implements TransferManager {
 				values.add(ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND + "");
 				values.add(ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN + "");
 				break;
-			case "withdraw":// 体现
-				sb.append("and t2.transfer_type = ? ");
-				values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW + "");
-				break;
-			case "recharge":// 充值
-				sb.append("and t2.transfer_type in (?,?) ");
-				values.add(ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE + "");
-				values.add(ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE + "");
-				break;
+//			case "withdraw":// 体现
+//				sb.append("and t2.transfer_type = ? ");
+//				values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW + "");
+//				break;
+//			case "recharge":// 充值
+//				sb.append("and t2.transfer_type in (?,?) ");
+//				values.add(ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE + "");
+//				values.add(ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE + "");
+//				break;
 			default:
 				break;
 
@@ -1297,5 +1299,39 @@ public class TransferManagerImpl implements TransferManager {
 
 		return map;
 	}
+	@Override
+	public PageBean getRechargeList(int currentPage, String userPhone, String lowerAmount, String upperAmount,
+			String startTime, String endTime, String transferType) throws ParseException {
+		logger.info("currentPage={},startTime={},endTime={},transferType={}", currentPage, startTime, endTime,
+				transferType);
 
+		List<Object> values = new ArrayList<Object>();
+		StringBuilder hql = new StringBuilder(
+				"from Transfer t, User u where t.userTo = u.userId and t.transferStatus = ? and t.transferType = ? ");
+		values.add(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		values.add(Integer.parseInt(transferType));
+
+		if (StringUtils.isNotBlank(userPhone)) {
+			hql.append(" and u.userPhone =  ?");
+			values.add(userPhone);
+		}
+		if (StringUtils.isNotBlank(lowerAmount)) {
+			hql.append(" and t.transferAmount >=  ?");
+			values.add(new BigDecimal(lowerAmount));
+		}
+		if (StringUtils.isNotBlank(upperAmount)) {
+			hql.append(" and t.transferAmount <=  ?");
+			values.add(new BigDecimal(upperAmount));
+		}
+		if (StringUtils.isNotBlank(startTime)) {
+			hql.append(" and t.finishTime >=  ?");
+			values.add(DateFormatUtils.getStartTime(startTime));
+		}
+		if (StringUtils.isNotBlank(endTime)) {
+			hql.append(" and t.finishTime <= ?");
+			values.add(DateFormatUtils.getEndTime(endTime));
+		}
+		hql.append(" order by t.finishTime desc");
+		return transferDAO.searchTransfersByPage(hql.toString(), values, currentPage, 10);
+	}
 }

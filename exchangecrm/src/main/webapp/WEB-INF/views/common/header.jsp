@@ -69,9 +69,9 @@
 						<c:if test="${adminPower eq 2}">
 							<li><a href="<c:url value='/badAccount' />">坏账管理</a></li>
 						</c:if>
-						<c:if test="${adminPower eq 3}">
-							<li><a href="<c:url value='/withdraw' />">提现管理</a></li>
-						</c:if>
+<%-- 						<c:if test="${adminPower eq 3}"> --%>
+<%-- 							<li><a href="<c:url value='/withdraw' />">提现管理</a></li> --%>
+<%-- 						</c:if> --%>
 						<c:if test="${adminPower eq 4}">
 							<li class="dropdown"><a href="#" class="dropdown-toggle"
 								data-toggle="dropdown" aria-expanded="true">预警管理 <span

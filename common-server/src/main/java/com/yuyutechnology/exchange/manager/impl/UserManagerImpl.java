@@ -121,39 +121,9 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
-	// @Override
-	// public String bindGoldpay(Integer userId, String goldpayToken) {
-	// logger.info("get Goldpay ==>");
-	// GoldpayUser goldpayUser = goldpayManager.getGoldpayInfo(goldpayToken);
-	// if (goldpayUser == null) {
-	// logger.warn("Goldpay account does not exist. 'goldpayToken' is wrong!");
-	// return RetCodeConsts.RET_CODE_FAILUE;
-	// } else {
-	// logger.info("goldpayUser = ", goldpayUser.toString());
-	// if (StringUtils.isBlank(goldpayUser.getAreaCode()) ||
-	// StringUtils.isBlank(goldpayUser.getMobile())) {
-	// logger.info("Goldpay account does not bind phone number.");
-	// return RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST;
-	// } else {
-	// Bind bind = bindDAO.getBindByUserId(userId);
-	// if (bind == null) {
-	// bind = new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(),
-	// goldpayUser.getAccountNum(),
-	// goldpayToken);
-	// } else {
-	// bind.setGoldpayId(goldpayUser.getId());
-	// bind.setGoldpayName(goldpayUser.getUsername());
-	// bind.setGoldpayAcount(goldpayUser.getAccountNum());
-	// bind.setToken(goldpayToken);
-	// }
-	// bindDAO.updateBind(bind);
-	// return RetCodeConsts.RET_CODE_SUCCESS;
-	// }
-	// }
-	// }
-
 	/**
-	 *  创建新的Goldpay 并绑定 
+	 * 创建新的Goldpay 并绑定
+	 * 
 	 * @param userId
 	 * @param areaCode
 	 * @param userPhone
@@ -161,7 +131,7 @@ public class UserManagerImpl implements UserManager {
 	 */
 	private Bind bindGoldpay(Integer userId, String areaCode, String userPhone) {
 		/* 用手机号创建Goldpay账号 */
-		GoldpayUser goldpayUser = goldpayManager.createGoldpay(areaCode,userPhone, true);
+		GoldpayUser goldpayUser = goldpayManager.createGoldpay(areaCode, userPhone, true);
 		Bind bind = null;
 		bindDAO.updateBind(
 				new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(), goldpayUser.getAccountNum()));
@@ -340,25 +310,7 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
-//	@Override
-//	public String checkGoldpay(Integer userId, String goldpayName, String goldpayPassword) {
-//		logger.info("Check {}  user's Goldpay password {} ==>", userId, goldpayPassword);
-//		GoldpayUser goldpayUser = goldpayManager.checkGoldpay(goldpayName, goldpayPassword);
-//		if (goldpayUser == null) {
-//			logger.info("goldpayName goldpayPassword not match");
-//			return RetCodeConsts.GOLDPAY_IS_INCORRECT;
-//		}
-//		Bind bind = bindDAO.getBindByUserId(userId);
-//		if (bind == null) {
-//			logger.info("goldpay not bind");
-//			return RetCodeConsts.GOLDPAY_NOT_BIND;
-//		}
-//		if (!goldpayUser.getUsername().equals(bind.getGoldpayName())) {
-//			logger.info("goldpay not match bind");
-//			return RetCodeConsts.GOLDPAY_NOT_MATCH_BIND;
-//		}
-//		return RetCodeConsts.RET_CODE_SUCCESS;
-//	}
+
 
 	@Override
 	public void clearPinCode(String func, String areaCode, String userPhone) {
@@ -386,7 +338,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public SendMessageResponse getPinCode(String func, String areaCode, String userPhone) {
-		// 随机生成六位数
+		/* 随机生成六位数 */
 		final String random;
 		if (ResourceUtils.getBundleValue4Boolean("qa.switch")) {
 			random = ResourceUtils.getBundleValue4String("verify.code", "654321");
@@ -427,18 +379,11 @@ public class UserManagerImpl implements UserManager {
 			userInfo.setAreaCode(user.getAreaCode());
 			userInfo.setPhone(user.getUserPhone());
 			userInfo.setName(user.getUserName());
-			// 判断是否设置过支付密码
+			/* 判断是否设置过支付密码 */
 			if (StringUtils.isBlank(user.getUserPayPwd())) {
 				userInfo.setPayPwd(false);
 			} else {
 				userInfo.setPayPwd(true);
-			}
-			// goldpay
-			Bind bind = bindDAO.getBindByUserId(userId);
-			if (bind != null) {
-				userInfo.setGoldpayName(MathUtils.hideString(bind.getGoldpayName()));
-			} else {
-				userInfo.setGoldpayName("");
 			}
 			logger.info("UserInfo={}", userInfo.toString());
 		} else {
@@ -474,8 +419,8 @@ public class UserManagerImpl implements UserManager {
 		/* 添加钱包信息 */
 		createWallets4NewUser(userId);
 		accountingManager.snapshotToBefore(userId);
-		/*创建Goldpay账号*/
-		bindGoldpay(userId,areaCode,userPhone);
+		/* 创建Goldpay账号 */
+		bindGoldpay(userId, areaCode, userPhone);
 		/* 根据Unregistered表 更新新用户钱包 将资金从系统帐户划给新用户 */
 		updateWalletsFromUnregistered(userId, areaCode, userPhone, userName);
 		return userId;

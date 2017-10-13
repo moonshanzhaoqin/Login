@@ -18,7 +18,6 @@ import com.yuyutechnology.exchange.dao.CrmAlarmDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.manager.AccountingManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
-import com.yuyutechnology.exchange.manager.GoldpayTransManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.session.SessionData;
@@ -52,9 +51,6 @@ public class AccountingManagerImpl implements AccountingManager {
 	SessionManager sessionManager;
 
 	@Autowired
-	GoldpayTransManager goldpayTransManager;
-
-	@Autowired
 	UserManager userManager;
 
 	private void freezeUser(int userId) {
@@ -69,9 +65,6 @@ public class AccountingManagerImpl implements AccountingManager {
 	}
 
 	public int accountingAll() {
-//		if (goldpayTransManager.getGoldpayRemitWithdrawsforbidden()) {
-//			return 0;
-//		}
 		Date startDate = accountingDAO.getLastAccountingTime();
 		Date endDate = new Date();
 		int userSize = accounting(startDate, endDate);
@@ -88,7 +81,6 @@ public class AccountingManagerImpl implements AccountingManager {
 			int size = accountingDAO.calculatorWalletSeqByUserId(startSeqId, endSeqId, startDate, endDate, userId,
 					transferId);
 			if (size >= 1) {
-//				goldpayTransManager.forbiddenGoldpayRemitWithdraws("true");
 				badAccountWarn();
 				freezeUser(userId);
 				return false;
@@ -124,7 +116,6 @@ public class AccountingManagerImpl implements AccountingManager {
 	public void freezeUsers() {
 		List<Integer> badAccountUserIds = badAccountDAO.findBadAccountList(ServerConsts.BAD_ACCOUNT_STATUS_DEFAULT);
 		if (badAccountUserIds != null && !badAccountUserIds.isEmpty()) {
-//			goldpayTransManager.forbiddenGoldpayRemitWithdraws("true");
 			badAccountWarn();
 			for (Integer badAccountUserId : badAccountUserIds) {
 				try {
