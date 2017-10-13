@@ -21,15 +21,15 @@ public class AutoGoldpayRemitTask {
 
 	public void autoGoldpayRemitTask() {
 		logger.info("=============autoGoldpayRemitTask Start=================={}", new Date());
-		List<Transfer> transfers = goldpayTransManager.getNeedGoldpayRemitWithdraws();
-		if (transfers!=null && !transfers.isEmpty()  ) {
-			for (Transfer transfer : transfers) {
-				try {
-					goldpayTransManager.goldpayRemit(transfer.getTransferId());
-				} catch (Exception e) {
-				}
-			}
-		}
+//		List<Transfer> transfers = goldpayTransManager.getNeedGoldpayRemitWithdraws();
+//		if (transfers!=null && !transfers.isEmpty()  ) {
+//			for (Transfer transfer : transfers) {
+//				try {
+//					goldpayTransManager.goldpayRemit(transfer.getTransferId());
+//				} catch (Exception e) {
+//				}
+//			}
+//		}
 
 		logger.info("=============autoGoldpayRemitTask End=================={}", new Date());
 	}

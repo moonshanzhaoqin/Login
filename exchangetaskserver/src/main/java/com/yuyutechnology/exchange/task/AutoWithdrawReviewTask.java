@@ -21,15 +21,15 @@ public class AutoWithdrawReviewTask {
 
 	public void autoWithdrawReviewTask() {
 		logger.info("=============AutoWithdrawReviewTask Start=================={}", new Date());
-		List<Transfer> transfers = goldpayTransManager.getNeedReviewWithdraws();
-		if (transfers != null && !transfers.isEmpty()) {
-			for (Transfer transfer : transfers) {
-				try {
-					goldpayTransManager.withdrawReviewAuto(transfer.getTransferId());
-				} catch (Exception e) {
-				}
-			}
-		}
+//		List<Transfer> transfers = goldpayTransManager.getNeedReviewWithdraws();
+//		if (transfers != null && !transfers.isEmpty()) {
+//			for (Transfer transfer : transfers) {
+//				try {
+//					goldpayTransManager.withdrawReviewAuto(transfer.getTransferId());
+//				} catch (Exception e) {
+//				}
+//			}
+//		}
 		logger.info("=============AutoWithdrawReviewTask End=================={}", new Date());
 	}
 
