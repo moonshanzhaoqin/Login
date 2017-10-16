@@ -1,5 +1,7 @@
 package com.yuyutechnology.exchange.manager.impl;
 
+import java.math.BigDecimal;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,9 +67,16 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 	}
 	
 	@Override
-	public void goldpayTransaction(){
+	public Integer goldpayTransaction(BigDecimal balance,String payOrderId,
+			String toAccountNum,String comment,String fromAccountNum){
+		
 		GoldpayTransactionC2S param = new GoldpayTransactionC2S();
-		param.setBalance(null);
+		param.setBalance(balance.intValue());
+		param.setPayOrderId(payOrderId);
+		param.setFromAccountNum(fromAccountNum);
+		param.setToAccountNum(toAccountNum);
+		param.setComment(comment);
+		
 		String result = HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("goldpay.url") 
 				+ "goldpayTransaction",JsonBinder.getInstance().toJson(param));
 		
@@ -75,6 +84,8 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		
 		ConfirmTransactionS2C confirmTransactionS2C = JsonBinder.
 				getInstanceNonNull().fromJson(result, ConfirmTransactionS2C.class);
+		
+		return confirmTransactionS2C.getRetCode();
 		
 	}
 	

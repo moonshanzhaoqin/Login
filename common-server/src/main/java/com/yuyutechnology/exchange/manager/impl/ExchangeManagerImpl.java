@@ -24,6 +24,7 @@ import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
+import com.yuyutechnology.exchange.goldpay.trans4merge.GoldpayTransactionC2S;
 import com.yuyutechnology.exchange.goldpay.trans4merge.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
@@ -277,6 +278,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			
 			String goldpayOrderId = null;
+			Integer retCode;
 			
 			if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyIn) 
 					|| ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut)){
@@ -293,6 +295,20 @@ public class ExchangeManagerImpl implements ExchangeManager {
 				String goldpaySystemAccount = configManager.getConfigStringValue(
 						ConfigKeyEnum.GOLDPAY_SYSTEM_ACCOUNT, null);
 				
+				if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyIn)){
+					retCode = goldpayTrans4MergeManager.goldpayTransaction(amountOut,goldpayOrderId,
+							dto.getAccountNum(),"exanytime exchange",goldpaySystemAccount);
+				}else{
+					retCode = goldpayTrans4MergeManager.goldpayTransaction(amountOut,goldpayOrderId,
+							goldpaySystemAccount,"exanytime exchange",dto.getAccountNum());
+				}
+				
+				if(retCode != 0){
+					result.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
+					result.put("msg", "Insufficient balance");
+					return result;
+				}
+
 			}
 
 			// 用户账户
@@ -318,9 +334,6 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new BigDecimal(result.get("in")), "-",
 					ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
 			
-			
-			
-
 			// 添加Exchange记录
 			Exchange exchange = new Exchange();
 			exchange.setExchangeId(exchangeId);

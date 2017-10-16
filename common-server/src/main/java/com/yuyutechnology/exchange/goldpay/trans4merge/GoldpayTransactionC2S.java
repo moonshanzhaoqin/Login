@@ -2,22 +2,22 @@ package com.yuyutechnology.exchange.goldpay.trans4merge;
 
 public class GoldpayTransactionC2S {
 
-	private String timestamp;
+//	private String timestamp;
 	private Integer balance;
 	private String payOrderId;
-	private String orderType;
-	private String nonce;
+//	private String orderType;
+//	private String nonce;
 	private String toAccountNum;
 	private String comment;
 	private String fromAccountNum;
-	private String signature;
+//	private String signature;
 	
-	public String getTimestamp() {
-		return timestamp;
-	}
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
-	}
+//	public String getTimestamp() {
+//		return timestamp;
+//	}
+//	public void setTimestamp(String timestamp) {
+//		this.timestamp = timestamp;
+//	}
 	public Integer getBalance() {
 		return balance;
 	}
@@ -30,18 +30,18 @@ public class GoldpayTransactionC2S {
 	public void setPayOrderId(String payOrderId) {
 		this.payOrderId = payOrderId;
 	}
-	public String getOrderType() {
-		return orderType;
-	}
-	public void setOrderType(String orderType) {
-		this.orderType = orderType;
-	}
-	public String getNonce() {
-		return nonce;
-	}
-	public void setNonce(String nonce) {
-		this.nonce = nonce;
-	}
+//	public String getOrderType() {
+//		return orderType;
+//	}
+//	public void setOrderType(String orderType) {
+//		this.orderType = orderType;
+//	}
+//	public String getNonce() {
+//		return nonce;
+//	}
+//	public void setNonce(String nonce) {
+//		this.nonce = nonce;
+//	}
 	public String getToAccountNum() {
 		return toAccountNum;
 	}
@@ -60,13 +60,13 @@ public class GoldpayTransactionC2S {
 	public void setFromAccountNum(String fromAccountNum) {
 		this.fromAccountNum = fromAccountNum;
 	}
-	public String getSignature() {
-		return signature;
-	}
-	public void setSignature(String signature) {
-		this.signature = signature;
-	}
-	
+//	public String getSignature() {
+//		return signature;
+//	}
+//	public void setSignature(String signature) {
+//		this.signature = signature;
+//	}
+//	
 	
 	
 }
