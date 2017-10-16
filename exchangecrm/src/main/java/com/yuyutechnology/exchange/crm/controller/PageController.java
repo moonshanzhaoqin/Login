@@ -25,11 +25,6 @@ public class PageController {
 		return "config";
 	}
 
-	@RequestMapping(value = "/withdraw", method = { RequestMethod.GET })
-	public String withdraw(HttpServletRequest request, HttpServletResponse response) {
-		return "withdraw";
-	}
-
 	@RequestMapping(value = "/badAccount", method = { RequestMethod.GET })
 	public String badAccount(HttpServletRequest request, HttpServletResponse response) {
 		return "badAccount";
@@ -49,6 +44,7 @@ public class PageController {
 	public String campaign(HttpServletRequest request, HttpServletResponse response) {
 		return "campaign";
 	}
+
 	@RequestMapping(value = "/registration", method = { RequestMethod.GET })
 	public String registration(HttpServletRequest request, HttpServletResponse response) {
 		return "registration";

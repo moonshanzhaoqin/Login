@@ -137,83 +137,83 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		return crmAlarm.getAlarmType();
 	}
 
-	@Override
-	public HashMap<String, BigDecimal> getAccountInfo(BigDecimal userHoldingTotalAssets) {
-
-		HashMap<String, BigDecimal> map = new HashMap<>();
-
-		// Ex公司持有的总资产 = 用户充值Goldpay总额 - 用户提现Goldpay总额;
-		// 预备金剩余量 = 1 - (Ex用户持有的总资产 - Ex公司持有的总资产) / 预备金;
-		BigDecimal sumRecharge = transferDAO.sumGoldpayTransAmount(ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE);
-		BigDecimal sumWithdraw = transferDAO.sumGoldpayTransAmount(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
-		BigDecimal exHoldingTotalAssets = oandaRatesManager.getDefaultCurrencyAmount(ServerConsts.CURRENCY_OF_GOLDPAY,
-				sumRecharge.subtract(sumWithdraw));
-
-		logger.info("sumRecharge:{},sumWithdraw:{},exHoldingTotalAssets(USD):{}",
-				new Object[] { sumRecharge, sumWithdraw, exHoldingTotalAssets });
-
-		String reserveFundsStr = configManager.getConfigStringValue(ConfigKeyEnum.RESERVEFUNDS, "100000000");
-		BigDecimal reserveFunds = oandaRatesManager.getDefaultCurrencyAmount(ServerConsts.CURRENCY_OF_GOLDPAY,
-				new BigDecimal(reserveFundsStr));
-
-		logger.info("reserveFunds (USD) :{}", reserveFunds);
-
-		BigDecimal reserveAvailability = BigDecimal.ZERO;
-
-		if (reserveFunds.compareTo(BigDecimal.ZERO) != 0) {
-			reserveAvailability = (BigDecimal.ONE
-					.subtract((userHoldingTotalAssets.subtract(exHoldingTotalAssets.setScale(4, RoundingMode.DOWN)))
-							.divide(reserveFunds, 5, RoundingMode.DOWN))).multiply(new BigDecimal("100"));
-		}
-		logger.info("userHoldingTotalAssets:{} ", userHoldingTotalAssets);
-		logger.info("exHoldingTotalAssets:{} ", exHoldingTotalAssets);
-		logger.info("reserveFunds:{}", reserveFunds);
-		logger.info("ReserveAvailability : {}%", reserveAvailability);
-
-		map.put("exHoldingTotalAssets", exHoldingTotalAssets.setScale(4, RoundingMode.DOWN));
-		map.put("userHoldingTotalAssets", userHoldingTotalAssets);
-		map.put("reserveFunds", reserveFunds.setScale(4, RoundingMode.DOWN));
-		map.put("reserveAvailability", reserveAvailability.setScale(2, RoundingMode.DOWN));
-
-		return map;
-	}
-
-	@SuppressWarnings("serial")
-	@Override
-	public void autoAlarm(BigDecimal userHoldingTotalAssets) {
-
-		final HashMap<String, BigDecimal> map = getAccountInfo(userHoldingTotalAssets);
-
-		if (map == null) {
-			return;
-		}
-
-		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(0, 1);
-
-		if (list == null) {
-			logger.warn("No related alarm information is configured ! {}", new Date());
-			return;
-		}
-
-		for (final CrmAlarm crmAlarm : list) {
-			if ((crmAlarm.getLowerLimit().compareTo(map.get("reserveAvailability")) == 0
-					|| crmAlarm.getLowerLimit().compareTo(map.get("reserveAvailability")) == -1)
-					&& (crmAlarm.getUpperLimit().compareTo(map.get("reserveAvailability")) == 1)) {
-
-				logger.info("Initiate an alarm, alarmId : {},alarmMode: {}",
-						new Object[] { crmAlarm.getAlarmId(), crmAlarm.getAlarmMode() });
-
-				alarmNotice(crmAlarm.getSupervisorIdArr(), "reserveEarlyWarning", crmAlarm.getAlarmMode(),
-						new HashMap<String, Object>() {
-							{
-								put("difference", map.get("reserveAvailability"));
-								put("lowerLimit", crmAlarm.getLowerLimit());
-							}
-						});
-				// 生成警报记录
-			}
-		}
-	}
+//	@Override
+//	public HashMap<String, BigDecimal> getAccountInfo(BigDecimal userHoldingTotalAssets) {
+//
+//		HashMap<String, BigDecimal> map = new HashMap<>();
+//
+//		// Ex公司持有的总资产 = 用户充值Goldpay总额 - 用户提现Goldpay总额;
+//		// 预备金剩余量 = 1 - (Ex用户持有的总资产 - Ex公司持有的总资产) / 预备金;
+//		BigDecimal sumRecharge = transferDAO.sumGoldpayTransAmount(ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE);
+//		BigDecimal sumWithdraw = transferDAO.sumGoldpayTransAmount(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW);
+//		BigDecimal exHoldingTotalAssets = oandaRatesManager.getDefaultCurrencyAmount(ServerConsts.CURRENCY_OF_GOLDPAY,
+//				sumRecharge.subtract(sumWithdraw));
+//
+//		logger.info("sumRecharge:{},sumWithdraw:{},exHoldingTotalAssets(USD):{}",
+//				new Object[] { sumRecharge, sumWithdraw, exHoldingTotalAssets });
+//
+//		String reserveFundsStr = configManager.getConfigStringValue(ConfigKeyEnum.RESERVEFUNDS, "100000000");
+//		BigDecimal reserveFunds = oandaRatesManager.getDefaultCurrencyAmount(ServerConsts.CURRENCY_OF_GOLDPAY,
+//				new BigDecimal(reserveFundsStr));
+//
+//		logger.info("reserveFunds (USD) :{}", reserveFunds);
+//
+//		BigDecimal reserveAvailability = BigDecimal.ZERO;
+//
+//		if (reserveFunds.compareTo(BigDecimal.ZERO) != 0) {
+//			reserveAvailability = (BigDecimal.ONE
+//					.subtract((userHoldingTotalAssets.subtract(exHoldingTotalAssets.setScale(4, RoundingMode.DOWN)))
+//							.divide(reserveFunds, 5, RoundingMode.DOWN))).multiply(new BigDecimal("100"));
+//		}
+//		logger.info("userHoldingTotalAssets:{} ", userHoldingTotalAssets);
+//		logger.info("exHoldingTotalAssets:{} ", exHoldingTotalAssets);
+//		logger.info("reserveFunds:{}", reserveFunds);
+//		logger.info("ReserveAvailability : {}%", reserveAvailability);
+//
+//		map.put("exHoldingTotalAssets", exHoldingTotalAssets.setScale(4, RoundingMode.DOWN));
+//		map.put("userHoldingTotalAssets", userHoldingTotalAssets);
+//		map.put("reserveFunds", reserveFunds.setScale(4, RoundingMode.DOWN));
+//		map.put("reserveAvailability", reserveAvailability.setScale(2, RoundingMode.DOWN));
+//
+//		return map;
+//	}
+//
+//	@SuppressWarnings("serial")
+//	@Override
+//	public void autoAlarm(BigDecimal userHoldingTotalAssets) {
+//
+//		final HashMap<String, BigDecimal> map = getAccountInfo(userHoldingTotalAssets);
+//
+//		if (map == null) {
+//			return;
+//		}
+//
+//		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(0, 1);
+//
+//		if (list == null) {
+//			logger.warn("No related alarm information is configured ! {}", new Date());
+//			return;
+//		}
+//
+//		for (final CrmAlarm crmAlarm : list) {
+//			if ((crmAlarm.getLowerLimit().compareTo(map.get("reserveAvailability")) == 0
+//					|| crmAlarm.getLowerLimit().compareTo(map.get("reserveAvailability")) == -1)
+//					&& (crmAlarm.getUpperLimit().compareTo(map.get("reserveAvailability")) == 1)) {
+//
+//				logger.info("Initiate an alarm, alarmId : {},alarmMode: {}",
+//						new Object[] { crmAlarm.getAlarmId(), crmAlarm.getAlarmMode() });
+//
+//				alarmNotice(crmAlarm.getSupervisorIdArr(), "reserveEarlyWarning", crmAlarm.getAlarmMode(),
+//						new HashMap<String, Object>() {
+//							{
+//								put("difference", map.get("reserveAvailability"));
+//								put("lowerLimit", crmAlarm.getLowerLimit());
+//							}
+//						});
+//				// 生成警报记录
+//			}
+//		}
+//	}
 
 	@Override
 	public void registrationAlarm() {

@@ -131,10 +131,6 @@ public enum ConfigKeyEnum {
 	 */
 	PAYPAL_EXPIRATION("paypal_expiration"),
 	/**
-	 * 提取黄金宝开关
-	 */
-	GOLDPAY_WITHDRAW("goldpay_withdraw"),
-	/**
 	 * 邀请数量限制
 	 */
 	INVITE_QUANTITY_RESTRICTION("invite_quantity_restriction"),

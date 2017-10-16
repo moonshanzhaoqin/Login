@@ -34,14 +34,6 @@ public class Bind implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-//	public Bind(int userId, String goldpayId, String goldpayName, String goldpayAcount, String token) {
-//		this.userId = userId;
-//		this.goldpayId = goldpayId;
-//		this.goldpayName = goldpayName;
-//		this.goldpayAcount = goldpayAcount;
-//		this.token = token;
-//	}
-
 	public Bind(int userId, String goldpayId, String goldpayName, String goldpayAcount) {
 		this.userId = userId;
 		this.goldpayId = goldpayId;
