@@ -142,6 +142,9 @@ public enum ConfigKeyEnum {
 	 * 领取有效时间（H）
 	 */
 	COLLECT_ACTIVE_TIME("collect_active_time"),
+	
+	GOLDPAY_SYSTEM_ACCOUNT("goldpay_system_account"),
+	
 	/**
 	 * 注册预警人数
 	 */

@@ -34,7 +34,6 @@ import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.TransDetailsDTO;
 import com.yuyutechnology.exchange.dto.TransferDTO;
-import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
