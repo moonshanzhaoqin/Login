@@ -233,4 +233,11 @@ public class ServerConsts {
 
 	public static final int COLLECT_STATUS_UNREGISTER = 0;
 	public static final int COLLECT_STATUS_REGISTER = 1;
+	
+	/**
+	 * goldpay返回成功
+	 */	
+	public static final int GOLDPAY_RETURN_FAIL = 0;
+	public static final int GOLDPAY_RETURN_SUCCESS = 1;
+	
 }

@@ -38,7 +38,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		param.setMobile(user.getUserPhone());
 		
 		String result = HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("goldpay.url") 
-				+ "getMemberInfo",JsonBinder.getInstance().toJson(param));
+				+ "member/getMemberInfo",JsonBinder.getInstance().toJson(param));
 		
 		logger.info("result : {}",result);
 		
@@ -54,16 +54,13 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		GetGoldpayOrderIdC2S param = new GetGoldpayOrderIdC2S();
 		param.setType("3");
 		String result = HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("goldpay.url") 
-				+ "getOrderId",JsonBinder.getInstance().toJson(param));
+				+ "trans/getOrderId",JsonBinder.getInstance().toJson(param));
 		
 		logger.info("result : {}",result);
 		
 		GetGoldpayOrderIdS2C getGoldpayOrderIdS2C = JsonBinder.
 				getInstanceNonNull().fromJson(result, GetGoldpayOrderIdS2C.class);
-		
-		
 		return getGoldpayOrderIdS2C.getPayOrderId();
-		
 	}
 	
 	@Override
@@ -78,7 +75,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		param.setComment(comment);
 		
 		String result = HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("goldpay.url") 
-				+ "goldpayTransaction",JsonBinder.getInstance().toJson(param));
+				+ "trans/goldpayTransaction",JsonBinder.getInstance().toJson(param));
 		
 		logger.info("result : {}",result);
 		
