@@ -36,9 +36,11 @@ import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.TransDetailsDTO;
 import com.yuyutechnology.exchange.dto.TransferDTO;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
+import com.yuyutechnology.exchange.goldpay.trans4merge.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
+import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.manager.TransDetailsManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
@@ -95,6 +97,9 @@ public class TransferManagerImpl implements TransferManager {
 	CrmAlarmManager crmAlarmManager;
 	@Autowired
 	TransDetailsManager transDetailsManager;
+	
+	@Autowired
+	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
 
 	public static Logger logger = LogManager.getLogger(TransferManagerImpl.class);
 
@@ -132,6 +137,18 @@ public class TransferManagerImpl implements TransferManager {
 			map.put("msg", "Prohibit transfers to yourself");
 			return map;
 		}
+		
+		String goldpayOrderId = null;
+		
+		if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currency)){
+			goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
+			if(!StringUtils.isNotBlank(goldpayOrderId)){
+				map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+				map.put("msg", "Failed to create goldpay order");
+				return map;
+			}
+		}
+		
 
 		// 生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
@@ -146,6 +163,7 @@ public class TransferManagerImpl implements TransferManager {
 		transfer.setUserFrom(userId);
 		transfer.setAreaCode(areaCode);
 		transfer.setPhone(userPhone);
+		transfer.setGoldpayOrderId(goldpayOrderId);
 
 		// 判断接收人是否是已注册账号
 		if (receiver != null) {
@@ -251,6 +269,146 @@ public class TransferManagerImpl implements TransferManager {
 		}
 	}
 
+//	@Override
+//	public String transferConfirm(int userId, String transferId) {
+//
+//		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,
+//				ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
+//		if (transfer == null) {
+//			logger.warn("The transaction order does not exist");
+//			return RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST;
+//		}
+//
+//		User payer = userDAO.getUser(userId);
+//		if (payer == null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
+//			logger.warn("The user does not exist or the account is blocked");
+//			return RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED;
+//		}
+//
+//		if (userId != transfer.getUserFrom()) {
+//			logger.warn("userId is different from UserFromId");
+//			return RetCodeConsts.RET_CODE_FAILUE;
+//		}
+//
+//		// 每次支付金额限制
+//		BigDecimal transferLimitPerPay = BigDecimal
+//				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
+//		logger.warn("transferLimitPerPay : {}", transferLimitPerPay);
+//		if ((oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount()))
+//				.compareTo(transferLimitPerPay) == 1) {
+//			logger.warn("Exceeds the maximum amount of each transaction");
+//			return RetCodeConsts.TRANSFER_LIMIT_EACH_TIME;
+//		}
+//
+//		// 每天累计金额限制
+//		BigDecimal transferLimitDailyPay = BigDecimal
+//				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITDAILYPAY, 100000d));
+//		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount("transfer_" + userId);
+//		logger.warn("transferLimitDailyPay : {},accumulatedAmount : {} ", transferLimitDailyPay, accumulatedAmount);
+//		if ((accumulatedAmount
+//				.add(oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount())))
+//						.compareTo(transferLimitDailyPay) == 1) {
+//			logger.warn("More than the maximum daily transaction limit");
+//			return RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY;
+//		}
+//		// 每天累计给付次数限制
+//		Double transferLimitNumOfPayPerDay = configManager
+//				.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITNUMBEROFPAYPERDAY, 100000d);
+//		// Integer dayTradubgVolume =
+//		// transferDAO.getDayTradubgVolume(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+//		Integer dayTradubgVolume = transferDAO.getCumulativeNumofTimes("transfer_" + userId);
+//		logger.warn("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ", transferLimitNumOfPayPerDay,
+//				dayTradubgVolume);
+//		if (transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)) {
+//			logger.warn("Exceeds the maximum number of transactions per day");
+//			return RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY;
+//		}
+//
+//		// 获取系统账号
+//		User systemUser = userDAO.getSystemUser();
+//
+//		if (transfer.getUserTo() == systemUser.getUserId()) { // 交易对象没有注册账号
+//			// 扣款
+//			Integer updateCount = walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(),
+//					transfer.getCurrency(), transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_OUT_INVITE,
+//					transfer.getTransferId());
+//
+//			if (updateCount == 0) {
+//				return RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT;
+//			}
+//
+//			// 加款
+//			walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(),
+//					transfer.getTransferAmount(), "+", ServerConsts.TRANSFER_TYPE_OUT_INVITE, transfer.getTransferId());
+//
+//			// 添加gift记录
+//			Unregistered unregistered = unregisteredDAO.getUnregisteredByTransId(transfer.getTransferId());
+//
+//			if (unregistered == null) {
+//				unregistered = new Unregistered();
+//				unregistered.setCreateTime(new Date());
+//				unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_PENDING);
+//				unregistered.setTransferId(transfer.getTransferId());
+//				unregistered.setAreaCode(transfer.getAreaCode());
+//				unregistered.setUserPhone(transfer.getPhone());
+//				unregistered.setCurrency(transfer.getCurrency());
+//				unregistered.setAmount(transfer.getTransferAmount());
+//				unregisteredDAO.addUnregistered(unregistered);
+//			}
+//
+//			// 更改Transfer状态
+//			// transferDAO.updateTransferStatus(transferId,
+//			// ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+//
+//			// 向未注册用户发送短信
+//			smsManager.sendSMS4Transfer(transfer.getAreaCode(), transfer.getPhone(), payer, transfer.getCurrency(),
+//					amountFormatByCurrency(transfer.getCurrency(), transfer.getTransferAmount()));
+//
+//		} else { // 交易对象注册账号,交易正常进行，无需经过系统账户
+//
+//			// 扣款
+//			Integer updateCount = walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(),
+//					transfer.getCurrency(), transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_TRANSACTION,
+//					transfer.getTransferId());
+//
+//			if (updateCount == 0) {
+//				return RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT;
+//			}
+//
+//			// 加款
+//			walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserTo(), transfer.getCurrency(),
+//					transfer.getTransferAmount(), "+", ServerConsts.TRANSFER_TYPE_TRANSACTION,
+//					transfer.getTransferId());
+//
+//			// 如果是请求转账还需要更改消息通知中的状态
+//			if (transfer.getNoticeId() != 0) {
+//				TransactionNotification notification = notificationDAO.getNotificationById(transfer.getNoticeId());
+//				notification.setTradingStatus(ServerConsts.NOTIFICATION_STATUS_OF_ALREADY_PAID);
+//				notificationDAO.updateNotification(notification);
+//			}
+//			// 推送到账通知
+//
+//			User payee = userDAO.getUser(transfer.getUserTo());
+//			pushManager.push4Transfer(transfer.getTransferId(), payer, payee, transfer.getCurrency(),
+//					amountFormatByCurrency(transfer.getCurrency(), transfer.getTransferAmount()));
+//		}
+//		// 更改Transfer状态
+//		transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+//
+//		// 转换金额
+//		BigDecimal exchangeResult = oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(),
+//				transfer.getTransferAmount());
+//		transferDAO.updateAccumulatedAmount("transfer_" + transfer.getUserFrom(),
+//				exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
+//		// 更改累计次数
+//		transferDAO.updateCumulativeNumofTimes("transfer_" + transfer.getUserFrom(), new BigDecimal("1"));
+//
+//		// 预警
+//		largeTransWarn(payer, transfer);
+//
+//		return RetCodeConsts.RET_CODE_SUCCESS;
+//	}
+
 	@Override
 	public String transferConfirm(int userId, String transferId) {
 
@@ -305,6 +463,19 @@ public class TransferManagerImpl implements TransferManager {
 			logger.warn("Exceeds the maximum number of transactions per day");
 			return RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY;
 		}
+		
+		//根据Transfer获取交易双方的信息
+		GoldpayUserDTO dto1 = goldpayTrans4MergeManager.getGoldpayUserInfo(userId);
+		GoldpayUserDTO dto2 = goldpayTrans4MergeManager.getGoldpayUserInfo(transfer.getUserTo());
+		Integer retCode = goldpayTrans4MergeManager.goldpayTransaction(transfer.getTransferAmount(),
+				transfer.getGoldpayOrderId(), dto2.getAccountNum(), 
+				transfer.getTransferComment(), dto1.getAccountNum());
+		
+		if(retCode != ServerConsts.GOLDPAY_RETURN_SUCCESS){
+			logger.warn("goldpay transaction failed");
+			return RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY;
+		}
+		
 
 		// 获取系统账号
 		User systemUser = userDAO.getSystemUser();
@@ -391,6 +562,63 @@ public class TransferManagerImpl implements TransferManager {
 		return RetCodeConsts.RET_CODE_SUCCESS;
 	}
 
+	
+	
+//	@Override
+//	public void systemRefund(Unregistered unregistered) {
+//
+//		Transfer transfer = transferDAO.getTransferById(unregistered.getTransferId());
+//		if (transfer == null || transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_COMPLETED) {
+//			logger.warn("Did not find the corresponding transfer information");
+//			return;
+//		}
+//		String transferId2 = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+//		User systemUser = userDAO.getSystemUser();
+//		// 系统扣款
+//		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(),
+//				transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, transferId2);
+//		// 用户加款
+//		walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getCurrency(),
+//				transfer.getTransferAmount(), "+", ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, transferId2);
+//
+//		/////////////////////////// 生成transfer系统退款订单////////////////////////////
+//		Transfer transfer2 = new Transfer();
+//		// 生成TransId
+//		transfer2.setTransferId(transferId2);
+//		transfer2.setUserFrom(systemUser.getUserId());
+//		transfer2.setUserTo(transfer.getUserFrom());
+//		transfer2.setAreaCode(unregistered.getAreaCode());
+//		transfer2.setPhone(unregistered.getUserPhone());
+//		transfer2.setCurrency(transfer.getCurrency());
+//		transfer2.setTransferAmount(transfer.getTransferAmount());
+//		transfer2.setTransferComment(unregistered.getUserPhone() + "对方逾期未注册,系统退款");
+//		transfer2.setTransferType(ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND);
+//		transfer2.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+//		transfer2.setCreateTime(new Date());
+//		transfer2.setFinishTime(new Date());
+//		transfer2.setNoticeId(0);
+//
+//		transferDAO.addTransfer(transfer2);
+//		/////////////////////////// end////////////////////////////
+//
+//		// add by Niklaus.chi at 2017/07/07
+//		transDetailsManager.addTransDetails(transferId2, transfer.getUserFrom(), null, null, unregistered.getAreaCode(),
+//				unregistered.getUserPhone(), transfer.getCurrency(), transfer.getTransferAmount(),
+//				unregistered.getUserPhone() + "对方逾期未注册,系统退款", ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND);
+//
+//		// 修改gift记录
+//		unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_BACK);
+//		unregistered.setRefundTransId(transferId2);
+//		unregisteredDAO.updateUnregistered(unregistered);
+//
+//		// 发送推送
+//		User payee = userDAO.getUser(transfer.getUserFrom());
+//
+//		pushManager.push4Refund(payee, transfer.getAreaCode(), transfer.getPhone(), transfer.getCurrency(),
+//				amountFormatByCurrency(transfer.getCurrency(), transfer.getTransferAmount()));
+//
+//	}
+	
 	@Override
 	public void systemRefund(Unregistered unregistered) {
 
@@ -401,13 +629,37 @@ public class TransferManagerImpl implements TransferManager {
 		}
 		String transferId2 = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		User systemUser = userDAO.getSystemUser();
-		// 系统扣款
-		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(),
-				transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, transferId2);
-		// 用户加款
-		walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getCurrency(),
-				transfer.getTransferAmount(), "+", ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, transferId2);
+		
+		String goldpayOrderId = null;
+		
+		if(transfer.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
+			
+			goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
+			if(!StringUtils.isNotBlank(goldpayOrderId)){
+				logger.warn("Failed to create goldpay order");
+				return ;
+			}
+			
+			GoldpayUserDTO dto1 = goldpayTrans4MergeManager.getGoldpayUserInfo(transfer.getUserFrom());
+			GoldpayUserDTO dto2 = goldpayTrans4MergeManager.getGoldpayUserInfo(transfer.getUserTo());
+			Integer retCode = goldpayTrans4MergeManager.goldpayTransaction(transfer.getTransferAmount(),
+					transfer.getGoldpayOrderId(), dto1.getAccountNum(), 
+					transfer.getTransferComment(), dto2.getAccountNum());
+			if(retCode != ServerConsts.GOLDPAY_RETURN_SUCCESS){
+				logger.warn("goldpay transaction failed");
+				return ;
+			}
+			
+		}else{
+			// 系统扣款
+			walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(),
+					transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, transferId2);
+			// 用户加款
+			walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getCurrency(),
+					transfer.getTransferAmount(), "+", ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, transferId2);
 
+		}
+		
 		/////////////////////////// 生成transfer系统退款订单////////////////////////////
 		Transfer transfer2 = new Transfer();
 		// 生成TransId
@@ -908,13 +1160,30 @@ public class TransferManagerImpl implements TransferManager {
 				userId = (int) insufficientBalanceArgs.get("userId");
 				currency = (String) insufficientBalanceArgs.get("currency");
 				amount = (BigDecimal) insufficientBalanceArgs.get("amount");
-				Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
-				if (wallet == null || wallet.getBalance().compareTo(amount) == -1) {
-					logger.warn("Current balance is insufficient");
-					result.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-					result.put("msg", "Current balance is insufficient");
-					return result;
+				
+				//add by niklaus.chi at 2017-10-16
+				if(currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
+					GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.getGoldpayUserInfo(userId);
+					if(new BigDecimal(goldpayUser.getBalance()+"").compareTo(amount) == -1){
+						logger.warn("Current balance is insufficient");
+						result.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+						result.put("msg", "Current balance is insufficient");
+						return result;
+					}
+					
+					
+				}else{
+					Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
+					if (wallet == null || wallet.getBalance().compareTo(amount) == -1) {
+						logger.warn("Current balance is insufficient");
+						result.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+						result.put("msg", "Current balance is insufficient");
+						return result;
+					}
 				}
+				
+				
+				
 				break;
 
 			default:

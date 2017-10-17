@@ -60,10 +60,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		
 		GetGoldpayOrderIdS2C getGoldpayOrderIdS2C = JsonBinder.
 				getInstanceNonNull().fromJson(result, GetGoldpayOrderIdS2C.class);
-		
-		
 		return getGoldpayOrderIdS2C.getPayOrderId();
-		
 	}
 	
 	@Override

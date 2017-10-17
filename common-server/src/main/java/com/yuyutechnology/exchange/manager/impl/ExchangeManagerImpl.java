@@ -24,7 +24,6 @@ import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
-import com.yuyutechnology.exchange.goldpay.trans4merge.GoldpayTransactionC2S;
 import com.yuyutechnology.exchange.goldpay.trans4merge.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
@@ -285,8 +284,8 @@ public class ExchangeManagerImpl implements ExchangeManager {
 				//获取orderId
 				goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
 				if(!StringUtils.isNotBlank(goldpayOrderId)){
-					result.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
-					result.put("msg", "Insufficient balance");
+					result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+					result.put("msg", "Failed to create goldpay order");
 					return result;
 				}
 				//获取用户goldpay账户信息 
@@ -303,9 +302,9 @@ public class ExchangeManagerImpl implements ExchangeManager {
 							goldpaySystemAccount,"exanytime exchange",dto.getAccountNum());
 				}
 				
-				if(retCode != 0){
-					result.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
-					result.put("msg", "Insufficient balance");
+				if(retCode != ServerConsts.GOLDPAY_RETURN_SUCCESS){
+					result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+					result.put("msg", "goldpay transaction failed");
 					return result;
 				}
 
