@@ -17,7 +17,7 @@ import com.yuyutechnology.exchange.pojo.User;
 @Service
 public class TransDetailsManagerImpl implements TransDetailsManager {
 
-	private static Logger logger = LogManager.getLogger(AccountingManagerImpl.class);
+	private static Logger logger = LogManager.getLogger(TransDetailsManagerImpl.class);
 
 	@Autowired
 	UserDAO userDAO;

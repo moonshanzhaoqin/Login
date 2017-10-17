@@ -2,7 +2,7 @@ package com.yuyutechnology.exchange.goldpay;
 
 public class CreateGoldpayRequest {
 	private String areaCode;
-	private String userPhone;
+	private String mobile;
 	private boolean newUser;
 
 	public String getAreaCode() {
@@ -13,18 +13,26 @@ public class CreateGoldpayRequest {
 		this.areaCode = areaCode;
 	}
 
-	public String getUserPhone() {
-		return userPhone;
+	public String getMobile() {
+		return mobile;
 	}
 
-	public void setUserPhone(String userPhone) {
-		this.userPhone = userPhone;
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
 	}
 
-	public CreateGoldpayRequest(String areaCode, String userPhone, boolean newUser) {
+	public boolean isNewUser() {
+		return newUser;
+	}
+
+	public void setNewUser(boolean newUser) {
+		this.newUser = newUser;
+	}
+
+	public CreateGoldpayRequest(String areaCode, String mobile, boolean newUser) {
 		super();
 		this.areaCode = areaCode;
-		this.userPhone = userPhone;
+		this.mobile = mobile;
 		this.newUser = newUser;
 	}
 

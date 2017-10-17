@@ -60,13 +60,13 @@ public class GoldpayManager {
 
 	public GoldpayUser createGoldpay(String areaCode, String userPhone, boolean newUser) {
 		CreateGoldpayRequest createGoldpayRequest = new CreateGoldpayRequest(areaCode, userPhone, newUser);
-		String param = JsonBinder.getInstance().toJson(createGoldpayRequest);
+		String param = JsonBinder.getInstanceNonNull().toJson(createGoldpayRequest);
 		String result = HttpClientUtils
 				.sendPost(ResourceUtils.getBundleValue4String("goldpay.url") + "member/createMember", param);
 		logger.info("result==={}", result);
 		if (StringUtils.isNotEmpty(result)) {
 			GoldpayInfo goldpayInfo = JsonBinder.getInstance().fromJson(result, GoldpayInfo.class);
-			if (goldpayInfo != null && (goldpayInfo.getRetCode() == 1 || goldpayInfo.getRetCode() == 10004)) {// 成功
+			if (goldpayInfo != null && (goldpayInfo.getRetCode() == 1 || goldpayInfo.getRetCode() == 100004)) {// 成功
 				return goldpayInfo.getGoldpayUserDTO();
 			}
 		}
@@ -88,10 +88,10 @@ public class GoldpayManager {
 		String param = JsonBinder.getInstance().toJson(transfer2GoldpayRequset);
 		String result = HttpClientUtils.sendPost(
 				ResourceUtils.getBundleValue4String("goldpay.url") + "trans/payConfirmTransaction4Merchant", param);
-		logger.info("result==={}", result);
+//		logger.info("result==={}", result);
 		if (StringUtils.isNotEmpty(result)) {
-			Map<String, String> resultMap = JsonBinder.getInstance().fromJson(result, HashMap.class);
-			if (resultMap.get("retCode") == "1") {
+			Map resultMap = JsonBinder.getInstance().fromJson(result, HashMap.class);
+			if ((Integer)resultMap.get("retCode") == 1) {
 				return true;
 			}
 		}

@@ -49,6 +49,7 @@ public class WalletDAOImpl implements WalletDAO {
 					Query query = session.createQuery(
 								"update Wallet set updateTime = :updateTime  , balance =:balance where userId = :userId and currency.currency = :currency");
 					query.setTimestamp("updateTime", new Date());
+					query.setBigDecimal("balance", BigDecimal.ZERO);
 					query.setInteger("userId", userId);
 					query.setString("currency", currency);
 					return query.executeUpdate();

@@ -48,7 +48,7 @@ public class GoldpayMergeManager {
 
 	public List<Map<String, Object>> getAllGoldpayUser() {
 		List<Map<String, Object>> users = jdbcTemplate.queryForList(
-				"SELECT account.user_id, account.account_id,guser.username,guser.`area_code`,guser.`mobile` FROM `goldq_account` account LEFT JOIN `goldq_user` guser ON guser.id = account.user_id  WHERE guser.`area_code` IS NOT NULL AND account.balance > 0;");
+				"SELECT account.user_id, account.account_id,guser.username,guser.`area_code`,guser.`mobile` FROM `goldq_account` account LEFT JOIN `goldq_user` guser ON guser.id = account.user_id  WHERE guser.`area_code` IS NOT NULL AND guser.`area_code` != '+00' AND account.balance > 0;");
 		logger.info("getAllGoldpayUser size : " + users.size());
 		return users;
 	}
@@ -65,19 +65,13 @@ public class GoldpayMergeManager {
 			Bind bind = bindDAO.getBindByUserId(userId);
 			if (bind == null || StringUtils.equals(bind.getGoldpayAcount(), accountNumber)) {
 				/* 绑定goldpay */
-				bindDAO.updateBind(new Bind(userId, goldpayUserId, username, accountNumber));
-			}
-
-			/* 将EX的GDQ转到Goldpay中 */
-			Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, ServerConsts.CURRENCY_OF_GOLDPAY);
-			if (wallet.getBalance().compareTo(BigDecimal.ZERO) > 0) {
-				if (goldpayManager.transferGDQ2Goldpay(bind.getGoldpayAcount(), wallet.getBalance())) {
-					walletDAO.emptyWallet(userId, ServerConsts.CURRENCY_OF_GOLDPAY);
-				} else {
-					logger.warn("mergeGoldpayUserToExServer:{} fail!---Can not transfer GDQ from Ex to Goldpay.",
-							accountNumber);
-					return;
-				}
+				if (bind == null) bind = new Bind();
+				bind.setUserId(userId);
+				bind.setGoldpayId(goldpayUserId);
+				bind.setGoldpayName(username);
+				bind.setGoldpayAcount(accountNumber);
+				bindDAO.updateBind(bind);
+//				bindDAO.updateBind(new Bind(userId, goldpayUserId, username, accountNumber));
 			}
 		}
 		if (userId==null) {

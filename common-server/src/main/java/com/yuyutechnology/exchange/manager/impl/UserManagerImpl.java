@@ -36,7 +36,6 @@ import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
 import com.yuyutechnology.exchange.goldpay.GoldpayManager;
 import com.yuyutechnology.exchange.goldpay.GoldpayUser;
-import com.yuyutechnology.exchange.manager.AccountingManager;
 import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
@@ -98,8 +97,8 @@ public class UserManagerImpl implements UserManager {
 	CommonManager commonManager;
 	@Autowired
 	ConfigManager configManager;
-	@Autowired
-	AccountingManager accountingManager;
+//	@Autowired
+//	AccountingManager accountingManager;
 	@Autowired
 	TransDetailsManager transDetailsManager;
 	@Autowired
@@ -418,7 +417,7 @@ public class UserManagerImpl implements UserManager {
 		redisDAO.saveData("changephonetime" + userId, new Date().getTime());
 		/* 添加钱包信息 */
 		createWallets4NewUser(userId);
-		accountingManager.snapshotToBefore(userId);
+//		accountingManager.snapshotToBefore(userId);
 		/* 创建Goldpay账号 */
 		bindGoldpay(userId, areaCode, userPhone);
 		/* 根据Unregistered表 更新新用户钱包 将资金从系统帐户划给新用户 */
