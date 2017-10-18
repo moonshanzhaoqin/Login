@@ -103,7 +103,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		try {
 			
 			if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut) 
-					|| ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut)){
+					|| ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyIn)){
 				
 				if(!StringUtils.isNotBlank(goldpayOrderId)){
 					goldpayOrderId = getGoldpayOrderId();

@@ -4,6 +4,7 @@
 package com.yuyutechnology.exchange.merge;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -19,14 +20,20 @@ import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
+import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.goldpay.GoldpayManager;
+import com.yuyutechnology.exchange.goldpay.GoldpayUser;
+import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Bind;
+import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
+import com.yuyutechnology.exchange.util.LanguageUtils;
 import com.yuyutechnology.exchange.util.MathUtils;
+import com.yuyutechnology.exchange.util.PasswordUtils;
 
 /**
  * @author silent.sun
@@ -40,8 +47,6 @@ public class GoldpayMergeManager {
 	@Resource
 	JdbcTemplate jdbcTemplate;
 	@Autowired
-	UserManager userManager;
-	@Autowired
 	BindDAO bindDAO;
 	@Autowired
 	WalletDAO walletDAO;
@@ -49,6 +54,10 @@ public class GoldpayMergeManager {
 	UserDAO userDAO;
 	@Autowired
 	GoldpayManager goldpayManager;
+	@Autowired
+	RedisDAO redisDAO;
+	@Autowired
+	CommonManager commonManager;
 
 	public List<Map<String, Object>> getAllGoldpayUser() {
 		List<Map<String, Object>> users = jdbcTemplate.queryForList(
@@ -64,7 +73,7 @@ public class GoldpayMergeManager {
 		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
 		if (user == null) {
 			/* 创建新的EX账号 */
-			userId = userManager.register(areaCode, userPhone, username,
+			userId =register(areaCode, userPhone, username,
 					DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(8)), "en_US");
 		} else {
 			userId = user.getUserId();
@@ -87,4 +96,27 @@ public class GoldpayMergeManager {
 		logger.info("Goldpay -> Ex:{}  SUCCESS!", accountNumber);
 		return;
 	}
+	
+	private Integer register(String areaCode, String userPhone, String userName, String userPassword, String language) {
+		/* 随机生成盐值 */
+		String passwordSalt = DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(6));
+		logger.info("Randomly generated salt values : salt={}", passwordSalt);
+		/* 添加用户 */
+		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName,
+				PasswordUtils.encrypt(userPassword, passwordSalt), new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER,
+				ServerConsts.USER_AVAILABLE_OF_AVAILABLE, ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE,
+				ServerConsts.PAY_AVAILABLE_OF_AVAILABLE, passwordSalt, LanguageUtils.standard(language)));
+		logger.info("Add user complete!");
+		/* 记录换绑手机时间 */
+		redisDAO.saveData("changephonetime" + userId, new Date().getTime());
+		/* 添加钱包信息 */
+		logger.info("New wallets for newly registered user {}==>", userId);
+		List<Currency> currencies = commonManager.getCurrentCurrencies();
+		for (Currency currency : currencies) {
+			walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date(), 0));
+		}
+		return userId;
+	}
+	
+	
 }

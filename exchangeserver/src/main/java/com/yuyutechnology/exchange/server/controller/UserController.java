@@ -393,8 +393,7 @@ GoldpayManager goldpayManager;
 						rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 						rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 					} else {
-						/* 创建Goldpay账号 */
-						userManager.bindGoldpay(userId, registerRequest.getAreaCode(), registerRequest.getUserPhone());
+						
 						/* 设备登记 */
 						userManager.addDevice(userId, registerRequest.getDeviceId(), registerRequest.getDeviceName());
 						/* 记录登录信息 */
