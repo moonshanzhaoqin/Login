@@ -23,6 +23,7 @@ import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
+import com.yuyutechnology.exchange.goldpay.GoldpayManager;
 import com.yuyutechnology.exchange.mail.MailManager;
 import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
@@ -77,7 +78,9 @@ public class UserController {
 	ConfigManager configManager;
 	@Autowired
 	CampaignManager campaignManager;
-
+	@Autowired
+GoldpayManager goldpayManager;
+	
 	@ResponseEncryptBody
 	@ApiOperation(value = "功能模块的可用性", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/functionalModulesAvailability", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
@@ -390,6 +393,8 @@ public class UserController {
 						rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 						rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 					} else {
+						/* 创建Goldpay账号 */
+						userManager.bindGoldpay(userId, registerRequest.getAreaCode(), registerRequest.getUserPhone());
 						/* 设备登记 */
 						userManager.addDevice(userId, registerRequest.getDeviceId(), registerRequest.getDeviceName());
 						/* 记录登录信息 */

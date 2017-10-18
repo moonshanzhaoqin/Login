@@ -3,6 +3,7 @@
  */
 package com.yuyutechnology.exchange.merge;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ public class MergeTask {
 
 	@Autowired
 	UserDAO userDAO;
-	
+
 	@Autowired
 	WalletDAO walletDAO;
 
@@ -42,39 +43,48 @@ public class MergeTask {
 
 	@PostConstruct
 	public void mergeTask() {
-		logger.info("start merge users======================================================================");
-		/*Ex -> Goldpay*/
-		Long totalTransGoldpay = 0L;
+		logger.info("START merge users======================================================================");
+		
+		BigDecimal totalTransGoldpay = BigDecimal.ZERO;
+		
+		/* Ex -> Goldpay */
 		List<User> exUsers = userDAO.getUserList();
 		for (User user : exUsers) {
-			if (user.getUserType() == 0) {
+			if (user.getUserType() != ServerConsts.USER_TYPE_OF_SYSTEM) {
 				try {
-					totalTransGoldpay = totalTransGoldpay + exanytimeMergeManager.mergeExUserGoldpayToGoldpayServer(user.getUserId(), user.getAreaCode(),
-							user.getUserPhone());
+					totalTransGoldpay = totalTransGoldpay.add(exanytimeMergeManager.mergeExUserGoldpayToGoldpayServer(
+							user.getUserId(), user.getAreaCode(), user.getUserPhone()));
 				} catch (Exception e) {
-					logger.error("mergeExUserGoldpayToGoldpayServer error , "+user.getAreaCode()+user.getUserPhone(), e);
+					logger.error("Ex -> Goldpay : error!  " + user.getAreaCode() + user.getUserPhone(), e);
+					// System.exit(0);
 				}
 			}
 		}
+		
 		/* Goldpay -> Ex */
 		List<Map<String, Object>> goldpayUsers = goldpayMergeManager.getAllGoldpayUser();
 		for (Map<String, Object> map : goldpayUsers) {
 			try {
 				goldpayMergeManager.mergeGoldpayUserToExServer(map.get("user_id").toString(),
-						map.get("username").toString(), map.get("account_id").toString(), map.get("area_code").toString(),
-						map.get("mobile").toString());
+						map.get("username").toString(), map.get("account_id").toString(),
+						map.get("area_code").toString(), map.get("mobile").toString());
 			} catch (Exception e) {
-				logger.error("mergeGoldpayUserToExServer error , "+map.get("user_id").toString()+ " " +
-						map.get("username").toString()+ " " + map.get("account_id").toString()+ " " +map.get("area_code").toString()+ " " +
-						map.get("mobile").toString(), e);
+				logger.error("Goldpay -> Ex : error!  " + map.get("user_id").toString() + " "
+						+ map.get("username").toString() + " " + map.get("account_id").toString() + " "
+						+ map.get("area_code").toString() + " " + map.get("mobile").toString(), e);
 			}
 		}
-		Wallet systemWallet = walletDAO.getWalletByUserIdAndCurrency(1, ServerConsts.CURRENCY_OF_GOLDPAY);
-		logger.info("end merge users==================================================total transGoldpay : {} , systemGoldpay : {} ", totalTransGoldpay, systemWallet.getBalance().longValue());
-		if (totalTransGoldpay+systemWallet.getBalance().longValue() == 0) {
-			walletDAO.emptyWallet(1, ServerConsts.CURRENCY_OF_GOLDPAY);
-		}else{
-			logger.error("mergeTask error ! please run again !");
+
+		User systemUser = userDAO.getSystemUser();
+		Wallet systemWallet = walletDAO.getWalletByUserIdAndCurrency(systemUser.getUserId(),
+				ServerConsts.CURRENCY_OF_GOLDPAY);
+		logger.info("END merge users ========================== total transGoldpay : {} , systemGoldpay : {} ",
+				totalTransGoldpay.longValue(), systemWallet.getBalance().longValue());
+		if (BigDecimal.ZERO.compareTo(totalTransGoldpay.add(systemWallet.getBalance())) == 0) {
+			walletDAO.emptyWallet(systemUser.getUserId(), ServerConsts.CURRENCY_OF_GOLDPAY);
+			logger.info("***mergeTask success!***");
+		} else {
+			logger.error("mergeTask error!  please run again!");
 		}
 		System.exit(0);
 	}
