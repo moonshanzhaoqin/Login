@@ -454,8 +454,7 @@ public class TransferManagerImpl implements TransferManager {
 		// 每天累计给付次数限制
 		Double transferLimitNumOfPayPerDay = configManager
 				.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITNUMBEROFPAYPERDAY, 100000d);
-		// Integer dayTradubgVolume =
-		// transferDAO.getDayTradubgVolume(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+		
 		Integer dayTradubgVolume = transferDAO.getCumulativeNumofTimes("transfer_" + userId);
 		logger.warn("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ", transferLimitNumOfPayPerDay,
 				dayTradubgVolume);
@@ -464,35 +463,21 @@ public class TransferManagerImpl implements TransferManager {
 			return RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY;
 		}
 		
-		//根据Transfer获取交易双方的信息
-		GoldpayUserDTO dto1 = goldpayTrans4MergeManager.getGoldpayUserInfo(userId);
-		GoldpayUserDTO dto2 = goldpayTrans4MergeManager.getGoldpayUserInfo(transfer.getUserTo());
-		Integer retCode = goldpayTrans4MergeManager.goldpayTransaction(transfer.getTransferAmount(),
-				transfer.getGoldpayOrderId(), dto2.getAccountNum(), 
-				transfer.getTransferComment(), dto1.getAccountNum());
-		
-		if(retCode != ServerConsts.GOLDPAY_RETURN_SUCCESS){
-			logger.warn("goldpay transaction failed");
-			return RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY;
-		}
-		
-
 		// 获取系统账号
 		User systemUser = userDAO.getSystemUser();
 
 		if (transfer.getUserTo() == systemUser.getUserId()) { // 交易对象没有注册账号
-			// 扣款
-			Integer updateCount = walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(),
-					transfer.getCurrency(), transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_OUT_INVITE,
-					transfer.getTransferId());
-
-			if (updateCount == 0) {
-				return RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT;
+			
+			
+			HashMap<String, String> result = goldpayTrans4MergeManager.
+					updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getCurrency(), 
+							systemUser.getUserId(), transfer.getCurrency(), 
+							transfer.getTransferAmount(), ServerConsts.TRANSFER_TYPE_OUT_INVITE, 
+							transfer.getTransferId(), true, transfer.getGoldpayOrderId());
+			
+			if(!RetCodeConsts.RET_CODE_SUCCESS.equals(result.get("retCode"))){
+				return RetCodeConsts.RET_CODE_FAILUE;
 			}
-
-			// 加款
-			walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(),
-					transfer.getTransferAmount(), "+", ServerConsts.TRANSFER_TYPE_OUT_INVITE, transfer.getTransferId());
 
 			// 添加gift记录
 			Unregistered unregistered = unregisteredDAO.getUnregisteredByTransId(transfer.getTransferId());
@@ -509,29 +494,22 @@ public class TransferManagerImpl implements TransferManager {
 				unregisteredDAO.addUnregistered(unregistered);
 			}
 
-			// 更改Transfer状态
-			// transferDAO.updateTransferStatus(transferId,
-			// ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-
 			// 向未注册用户发送短信
 			smsManager.sendSMS4Transfer(transfer.getAreaCode(), transfer.getPhone(), payer, transfer.getCurrency(),
 					amountFormatByCurrency(transfer.getCurrency(), transfer.getTransferAmount()));
 
 		} else { // 交易对象注册账号,交易正常进行，无需经过系统账户
-
-			// 扣款
-			Integer updateCount = walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(),
-					transfer.getCurrency(), transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_TRANSACTION,
-					transfer.getTransferId());
-
-			if (updateCount == 0) {
-				return RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT;
+			
+			
+			HashMap<String, String> result = goldpayTrans4MergeManager.
+					updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getCurrency(), 
+							transfer.getUserTo(), transfer.getCurrency(), 
+							transfer.getTransferAmount(), ServerConsts.TRANSFER_TYPE_TRANSACTION, 
+							transfer.getTransferId(), true, transfer.getGoldpayOrderId());
+			
+			if(!RetCodeConsts.RET_CODE_SUCCESS.equals(result.get("retCode"))){
+				return RetCodeConsts.RET_CODE_FAILUE;
 			}
-
-			// 加款
-			walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserTo(), transfer.getCurrency(),
-					transfer.getTransferAmount(), "+", ServerConsts.TRANSFER_TYPE_TRANSACTION,
-					transfer.getTransferId());
 
 			// 如果是请求转账还需要更改消息通知中的状态
 			if (transfer.getNoticeId() != 0) {
@@ -627,38 +605,25 @@ public class TransferManagerImpl implements TransferManager {
 			logger.warn("Did not find the corresponding transfer information");
 			return;
 		}
+		
 		String transferId2 = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		User systemUser = userDAO.getSystemUser();
 		
-		String goldpayOrderId = null;
+		//add by niklaus.chi at 2017-10-17
+		HashMap<String, String> result = goldpayTrans4MergeManager.
+				updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(), 
+						transfer.getUserFrom(), transfer.getCurrency(), 
+						transfer.getTransferAmount(), ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, 
+						transfer.getTransferId(), true, transferId2);
 		
-		if(transfer.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
-			
-			goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
-			if(!StringUtils.isNotBlank(goldpayOrderId)){
-				logger.warn("Failed to create goldpay order");
-				return ;
-			}
-			
-			GoldpayUserDTO dto1 = goldpayTrans4MergeManager.getGoldpayUserInfo(transfer.getUserFrom());
-			GoldpayUserDTO dto2 = goldpayTrans4MergeManager.getGoldpayUserInfo(transfer.getUserTo());
-			Integer retCode = goldpayTrans4MergeManager.goldpayTransaction(transfer.getTransferAmount(),
-					transfer.getGoldpayOrderId(), dto1.getAccountNum(), 
-					transfer.getTransferComment(), dto2.getAccountNum());
-			if(retCode != ServerConsts.GOLDPAY_RETURN_SUCCESS){
-				logger.warn("goldpay transaction failed");
-				return ;
-			}
-			
-		}else{
-			// 系统扣款
-			walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(),
-					transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, transferId2);
-			// 用户加款
-			walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getCurrency(),
-					transfer.getTransferAmount(), "+", ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, transferId2);
-
+		if(!RetCodeConsts.RET_CODE_SUCCESS.equals(result.get("retCode"))){
+			return ;
 		}
+	
+//		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(),
+//				transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, transferId2);
+//		walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getCurrency(),
+//				transfer.getTransferAmount(), "+", ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, transferId2);
 		
 		/////////////////////////// 生成transfer系统退款订单////////////////////////////
 		Transfer transfer2 = new Transfer();
@@ -676,6 +641,7 @@ public class TransferManagerImpl implements TransferManager {
 		transfer2.setCreateTime(new Date());
 		transfer2.setFinishTime(new Date());
 		transfer2.setNoticeId(0);
+		transfer2.setGoldpayOrderId(result.get("goldpayOrderId"));
 
 		transferDAO.addTransfer(transfer2);
 		/////////////////////////// end////////////////////////////

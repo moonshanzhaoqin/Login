@@ -83,18 +83,11 @@ public class WalletDAOImpl implements WalletDAO {
 			public Integer doInHibernate(Session session) throws HibernateException {
 				Query query = null;
 				if (capitalFlows.equals("+")) {
-					// query = session.createSQLQuery("update e_wallet set update_time = ? ,balance
-					// = balance+" + amount.abs()
-					// + " where user_id = ? and currency = ?");
 					query = session.createQuery(
 							"update Wallet set updateTime = :updateTime ,updateSeqId = :updateSeqId , balance = balance+"
 									+ amount + " where userId = :userId and currency.currency = :currency");
 				} else {
 					if (userId != systemUserId) {
-						// query = session.createSQLQuery("update e_wallet set update_time = ? ,balance
-						// = balance-"
-						// + amount.abs() + " where user_id = ? and currency = ? and balance-"
-						// + amount.abs() + ">=0");
 						query = session.createQuery(
 								"update Wallet set updateTime = :updateTime , updateSeqId = :updateSeqId , balance = balance-"
 										+ amount
@@ -102,9 +95,6 @@ public class WalletDAOImpl implements WalletDAO {
 										+ amount + ">=0");
 
 					} else {
-						// query = session.createSQLQuery("update e_wallet set update_time = ? ,balance
-						// = balance-"
-						// + amount.abs() + " where user_id = ? and currency = ?");
 						query = session.createQuery(
 								"update Wallet set updateTime = :updateTime , updateSeqId = :updateSeqId , balance = balance-"
 										+ amount + " where userId = :userId and currency.currency = :currency");

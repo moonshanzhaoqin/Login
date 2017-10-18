@@ -278,58 +278,12 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			BigDecimal amountOut) {
 		HashMap<String, String> result = exchangeCalculation(userId, currencyOut, currencyIn, amountOut);
 		if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
-			
-			String goldpayOrderId = null;
-			Integer retCode;
-			
-			if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyIn) 
-					|| ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut)){
-				//获取orderId
-				goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
-				if(!StringUtils.isNotBlank(goldpayOrderId)){
-					result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
-					result.put("msg", "Failed to create goldpay order");
-					return result;
-				}
-				//获取用户goldpay账户信息 
-				GoldpayUserDTO dto = goldpayTrans4MergeManager.getGoldpayUserInfo(userId);
-				if(dto == null){
-					logger.warn("Did not find the corresponding goldpay account");
-					result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
-					result.put("msg", "Did not find the corresponding goldpay account");
-					return result;
-				}
-				//获取系统账户信息
-				String goldpaySystemAccount = configManager.getConfigStringValue(
-						ConfigKeyEnum.GOLDPAY_SYSTEM_ACCOUNT, null);
-				
-				if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyIn)){
-					retCode = goldpayTrans4MergeManager.goldpayTransaction(amountOut,goldpayOrderId,
-							dto.getAccountNum(),"exanytime exchange",goldpaySystemAccount);
-				}else{
-					retCode = goldpayTrans4MergeManager.goldpayTransaction(amountOut,goldpayOrderId,
-							goldpaySystemAccount,"exanytime exchange",dto.getAccountNum());
-				}
-				
-				if(retCode != ServerConsts.GOLDPAY_RETURN_SUCCESS){
-					result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
-					result.put("msg", "goldpay transaction failed");
-					return result;
-				}
-
-			}
-
 			// 用户账户
 			// 扣款
 			String exchangeId = exchangeDAO.createExchangeId(ServerConsts.TRANSFER_TYPE_EXCHANGE);
 
 			int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut,
 					new BigDecimal(result.get("out")), "-", ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
-			if (updateCount == 0) {// 余额不足
-				result.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
-				result.put("msg", "Insufficient balance");
-				return result;
-			}
 			// 加款
 			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, new BigDecimal(result.get("in")), "+",
 					ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
@@ -345,7 +299,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			// 添加Exchange记录
 			Exchange exchange = new Exchange();
 			exchange.setExchangeId(exchangeId);
-			exchange.setGoldpayOrderId(goldpayOrderId);
+			exchange.setGoldpayOrderId(null);
 			exchange.setUserId(userId);
 			exchange.setCurrencyOut(currencyOut);
 			exchange.setAmountOut(new BigDecimal(result.get("out")));

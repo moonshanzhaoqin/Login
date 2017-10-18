@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import com.yuyutechnology.exchange.dto.InviterInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
+import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.TransDetailsManager;
 import com.yuyutechnology.exchange.pojo.Campaign;
 import com.yuyutechnology.exchange.pojo.Collect;
@@ -62,6 +65,8 @@ public class CampaignManagerImpl implements CampaignManager {
 	PushManager pushManager;
 	@Autowired
 	TransDetailsManager transDetailsManager;
+	@Autowired
+	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
 
 	@Override
 	public InviterInfo getInviterInfo(Integer userId) {
@@ -266,7 +271,6 @@ public class CampaignManagerImpl implements CampaignManager {
 	private void settlement(Integer userId, BigDecimal bonus) {
 
 		User user = userDAO.getUser(userId);
-
 		User system = userDAO.getSystemUser();
 
 		/* 生成订单 */
@@ -284,20 +288,26 @@ public class CampaignManagerImpl implements CampaignManager {
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		transfer.setAreaCode(user.getAreaCode());
 		transfer.setPhone(user.getUserPhone());
+		
+		HashMap<String, String> result = goldpayTrans4MergeManager.updateWalletByUserIdAndCurrency(
+				system.getUserId(),ServerConsts.CURRENCY_OF_GOLDPAY,
+				userId,ServerConsts.CURRENCY_OF_GOLDPAY,bonus, 
+				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId, 
+				true, null);
+		
+		transfer.setGoldpayOrderId(result.get("goldpayOrderId"));
+		
 		transferDAO.addTransfer(transfer);
 
 		/* 生成详情 */
 		transDetailsManager.addTransDetails(transferId, userId, system.getUserId(), "", "", "",
 				ServerConsts.CURRENCY_OF_GOLDPAY, bonus, null, ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
-		// TODO  涉及Goldpay转账 需修改
-		/* 账户加款 */
-		walletDAO.updateWalletByUserIdAndCurrency(userId, ServerConsts.CURRENCY_OF_GOLDPAY, bonus, "+",
-				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId);
-		// TODO  涉及Goldpay转账 需修改
-		/* 系统扣款 */
-		walletDAO.updateWalletByUserIdAndCurrency(system.getUserId(), ServerConsts.CURRENCY_OF_GOLDPAY, bonus, "-",
-				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId);
-
+		
+//		walletDAO.updateWalletByUserIdAndCurrency(userId, ServerConsts.CURRENCY_OF_GOLDPAY, bonus, "+",
+//				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId);
+//		walletDAO.updateWalletByUserIdAndCurrency(system.getUserId(), ServerConsts.CURRENCY_OF_GOLDPAY, bonus, "-",
+//				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId);
+		
 		pushManager.push4Invite(user, transferId, bonus);
 
 	}

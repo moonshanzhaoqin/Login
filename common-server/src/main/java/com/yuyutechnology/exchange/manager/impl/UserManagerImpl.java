@@ -39,6 +39,7 @@ import com.yuyutechnology.exchange.goldpay.GoldpayUser;
 import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
+import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.TransDetailsManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Bind;
@@ -97,12 +98,13 @@ public class UserManagerImpl implements UserManager {
 	CommonManager commonManager;
 	@Autowired
 	ConfigManager configManager;
-//	@Autowired
-//	AccountingManager accountingManager;
 	@Autowired
 	TransDetailsManager transDetailsManager;
 	@Autowired
 	CampaignManager campaignManager;
+	
+	@Autowired
+	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
 
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
@@ -563,14 +565,22 @@ public class UserManagerImpl implements UserManager {
 			String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 
 			User payer = userDAO.getUser(payerTransfer.getUserFrom());
-			// TODO 涉及Goldpay转账 需修改
-			/* 系统账号扣款 */
-			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, unregistered.getCurrency(),
-					unregistered.getAmount(), "-", ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
-			// TODO 涉及Goldpay转账 需修改
-			/* 用户加款 */
-			walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(), unregistered.getAmount(), "+",
-					ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
+
+			
+			HashMap<String, String> result = goldpayTrans4MergeManager.updateWalletByUserIdAndCurrency(
+					systemUserId,unregistered.getCurrency(),
+					userId,unregistered.getCurrency(),unregistered.getAmount(), 
+					ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId, 
+					true, null);	
+			
+			if(!RetCodeConsts.RET_CODE_SUCCESS.equals(result.get("retCode"))){
+				return ;
+			}
+			
+//			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, unregistered.getCurrency(),
+//					unregistered.getAmount(), "-", ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
+//			walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(), unregistered.getAmount(), "+",
+//					ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
 
 			/* 生成TransId */
 			Transfer transfer = new Transfer();
@@ -590,14 +600,9 @@ public class UserManagerImpl implements UserManager {
 
 			transferDAO.addTransfer(transfer);
 
-			// add by Niklaus.chi at 2017/07/07
-			// transDetailsManager.updateTransDetailsWhenOtherOneRegist(unregistered.getTransferId(),
-			// payerTransfer.getUserFrom(), userName);
 			transDetailsManager.addTransDetails(transferId, userId, payer.getUserId(), payer.getUserName(),
 					payer.getAreaCode(), payer.getUserPhone(), unregistered.getCurrency(), unregistered.getAmount(),
 					payerTransfer.getTransferComment(), ServerConsts.TRANSFER_TYPE_TRANSACTION - 1);
-
-			// end
 
 			/* 更改unregistered状态 */
 			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
