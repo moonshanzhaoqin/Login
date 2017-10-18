@@ -26,6 +26,7 @@ import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
+import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.manager.PayPalTransManager;
 import com.yuyutechnology.exchange.manager.TransDetailsManager;
@@ -54,6 +55,8 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 	OandaRatesManager oandaRatesManager;
 	@Autowired
 	TransDetailsManager transDetailsManager;
+	@Autowired
+	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
 
 	@PostConstruct
 	public void init() {
@@ -202,13 +205,23 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 
 		// user+GDQ,system-GDQ
 		User systemUser = userDAO.getSystemUser();
-		// 系统扣款
-		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(),
-				transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE,
-				transfer.getTransferId());
-		// 用户加款
-		walletDAO.updateWalletByUserIdAndCurrency(userId, transfer.getCurrency(), transfer.getTransferAmount(), "+",
-				ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE, transfer.getTransferId());
+
+		HashMap<String, String> result = goldpayTrans4MergeManager.
+				updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(), 
+						transfer.getUserFrom(), transfer.getCurrency(), 
+						transfer.getTransferAmount(), ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE, 
+						transfer.getTransferId(), true, transfer.getTransferId());
+		
+		if(!RetCodeConsts.RET_CODE_SUCCESS.equals(result.get("retCode"))){
+			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+			map.put("msg", "fail");
+		}
+		
+//		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(),
+//				transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE,
+//				transfer.getTransferId());
+//		walletDAO.updateWalletByUserIdAndCurrency(userId, transfer.getCurrency(), transfer.getTransferAmount(), "+",
+//				ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE, transfer.getTransferId());
 
 		// 更改transfer状态
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);

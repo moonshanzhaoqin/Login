@@ -8,10 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.aspectj.weaver.reflect.ReflectionBasedResolvedMemberImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -278,13 +276,15 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			BigDecimal amountOut) {
 		HashMap<String, String> result = exchangeCalculation(userId, currencyOut, currencyIn, amountOut);
 		if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
-			// 用户账户
-			// 扣款
-			String exchangeId = exchangeDAO.createExchangeId(ServerConsts.TRANSFER_TYPE_EXCHANGE);
 
+			String exchangeId = exchangeDAO.createExchangeId(ServerConsts.TRANSFER_TYPE_EXCHANGE);
 			int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut,
 					new BigDecimal(result.get("out")), "-", ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
-			// 加款
+			if (updateCount == 0) {// 余额不足
+				result.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
+				result.put("msg", "Insufficient balance");
+				return result;
+			}
 			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, new BigDecimal(result.get("in")), "+",
 					ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
 			// 系统账户
@@ -296,10 +296,29 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new BigDecimal(result.get("in")), "-",
 					ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
 			
+			//add by niklaus.chi at 2017-10-18
+			HashMap<String, String> map = new HashMap<>();
+			if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyIn) || 
+					ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut) ){
+				if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyIn)){
+					map = goldpayTrans4MergeManager.updateWalletByUserIdAndCurrency(
+							systemUserId, currencyOut, 
+							userId, ServerConsts.CURRENCY_OF_GOLDPAY, 
+							new BigDecimal(result.get("in")), ServerConsts.TRANSFER_TYPE_EXCHANGE, 
+							exchangeId, false, null);
+				}else{
+					map = goldpayTrans4MergeManager.updateWalletByUserIdAndCurrency(
+							userId, ServerConsts.CURRENCY_OF_GOLDPAY, 
+							systemUserId, currencyOut, 
+							new BigDecimal(result.get("out")), ServerConsts.TRANSFER_TYPE_EXCHANGE, 
+							exchangeId, false, null);
+				}
+			}
+			//end
+
 			// 添加Exchange记录
 			Exchange exchange = new Exchange();
 			exchange.setExchangeId(exchangeId);
-			exchange.setGoldpayOrderId(null);
 			exchange.setUserId(userId);
 			exchange.setCurrencyOut(currencyOut);
 			exchange.setAmountOut(new BigDecimal(result.get("out")));
@@ -310,6 +329,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			exchange.setExchangeRate(new BigDecimal(result.get("rate")));
 			exchange.setExchangeFeePerThousand(new BigDecimal(result.get("perThousand")));
 			exchange.setExchangeFeeAmount(new BigDecimal(result.get("fee")));
+			exchange.setGoldpayOrderId(map.get("goldpayOrderId"));
 
 			exchangeDAO.addExchange(exchange);
 
@@ -328,6 +348,8 @@ public class ExchangeManagerImpl implements ExchangeManager {
 
 		return result;
 	}
+	
+	
 
 	@Override
 	public HashMap<String, Object> getExchangeRecordsByPage(int userId, String period, int currentPage, int pageSize) {

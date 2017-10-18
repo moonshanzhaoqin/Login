@@ -17,7 +17,7 @@ public interface GoldpayTrans4MergeManager {
 	HashMap<String, String> updateWalletByUserIdAndCurrency(
 			Integer payerId,String currencyOut,
 			Integer payeeId,String currencyIn, BigDecimal amount,
-			int transferType, String transactionId,boolean isGoldpTrans,String goldpayOrderId);
+			int transferType, String transactionId,boolean isUpdateWallet,String goldpayOrderId);
 
 
 
