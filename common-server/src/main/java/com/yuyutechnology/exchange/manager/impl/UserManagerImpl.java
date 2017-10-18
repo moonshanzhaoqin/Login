@@ -122,21 +122,13 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
-	/**
-	 * 创建新的Goldpay 并绑定
-	 * 
-	 * @param userId
-	 * @param areaCode
-	 * @param userPhone
-	 * @return
-	 */
-	private Bind bindGoldpay(Integer userId, String areaCode, String userPhone) {
+	
+	@Override
+	public void bindGoldpay(Integer userId, String areaCode, String userPhone) {
 		/* 用手机号创建Goldpay账号 */
 		GoldpayUser goldpayUser = goldpayManager.createGoldpay(areaCode, userPhone, true);
-		Bind bind = null;
 		bindDAO.updateBind(
 				new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(), goldpayUser.getAccountNum()));
-		return bind;
 	}
 
 	@Override
@@ -408,7 +400,7 @@ public class UserManagerImpl implements UserManager {
 	public Integer register(String areaCode, String userPhone, String userName, String userPassword, String language) {
 		/* 随机生成盐值 */
 		String passwordSalt = DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(6));
-		logger.info("Randomly generated salt values===salt={}", passwordSalt);
+		logger.info("Randomly generated salt values : salt={}", passwordSalt);
 		/* 添加用户 */
 		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName,
 				PasswordUtils.encrypt(userPassword, passwordSalt), new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER,
@@ -420,8 +412,6 @@ public class UserManagerImpl implements UserManager {
 		/* 添加钱包信息 */
 		createWallets4NewUser(userId);
 //		accountingManager.snapshotToBefore(userId);
-		/* 创建Goldpay账号 */
-		bindGoldpay(userId, areaCode, userPhone);
 		/* 根据Unregistered表 更新新用户钱包 将资金从系统帐户划给新用户 */
 		updateWalletsFromUnregistered(userId, areaCode, userPhone, userName);
 		return userId;

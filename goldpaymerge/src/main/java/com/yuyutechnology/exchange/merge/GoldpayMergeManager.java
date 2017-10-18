@@ -59,31 +59,30 @@ public class GoldpayMergeManager {
 
 	public void mergeGoldpayUserToExServer(String goldpayUserId, String username, String accountNumber, String areaCode,
 			String userPhone) {
+		Integer userId = null;
 		/* 查找对应的Ex账号 */
 		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
-		Integer userId = null;
 		if (user == null) {
 			/* 创建新的EX账号 */
 			userId = userManager.register(areaCode, userPhone, username,
 					DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(8)), "en_US");
 		} else {
 			userId = user.getUserId();
-			Bind bind = bindDAO.getBindByUserId(userId);
-			if (bind == null || StringUtils.equals(bind.getGoldpayAcount(), accountNumber)) {
-				/* 绑定goldpay */
-				if (bind == null)
-					bind = new Bind();
-				bind.setUserId(userId);
-				bind.setGoldpayId(goldpayUserId);
-				bind.setGoldpayName(username);
-				bind.setGoldpayAcount(accountNumber);
-				bindDAO.updateBind(bind);
-				// bindDAO.updateBind(new Bind(userId, goldpayUserId, username, accountNumber));
-			}
 		}
 		if (userId == null) {
 			logger.warn("Goldpay -> Ex:{} fail!---Can not register Ex.", accountNumber);
 			return;
+		}
+		
+		/* 绑定goldpay */
+		Bind bind = bindDAO.getBindByUserId(userId);
+		if (bind == null) {
+			bindDAO.updateBind(new Bind(userId, goldpayUserId, username, accountNumber));
+		} else if (!StringUtils.equals(bind.getGoldpayAcount(), accountNumber)) {
+			bind.setGoldpayId(goldpayUserId);
+			bind.setGoldpayName(username);
+			bind.setGoldpayAcount(accountNumber);
+			bindDAO.updateBind(bind);
 		}
 		logger.info("Goldpay -> Ex:{}  SUCCESS!", accountNumber);
 		return;

@@ -252,4 +252,14 @@ public interface UserManager {
 	 */
 	UserDTO getUser(String areaCode, String userPhone);
 
+	/**
+	 * 创建新的Goldpay 并绑定
+	 * 
+	 * @param userId
+	 * @param areaCode
+	 * @param userPhone
+	 * @return
+	 */
+	void bindGoldpay(Integer userId, String areaCode, String userPhone);
+
 }
