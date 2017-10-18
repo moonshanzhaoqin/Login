@@ -15,9 +15,9 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
-	<context:component-scan base-package="com.yuyutechnology" >   
-		<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>   
-	</context:component-scan>   
+	
+	
+	
 	<bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
@@ -26,6 +26,11 @@
 			</list>
 		</property>
 	</bean>
+	
+	<context:component-scan base-package="com.yuyutechnology" >   
+		<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>   
+	</context:component-scan>   
+	
 	
 	<!-- 导入redis和db配置的上下文 -->
 	<import resource="db-redis-context.xml" />

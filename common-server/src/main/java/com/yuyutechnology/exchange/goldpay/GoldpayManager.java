@@ -61,6 +61,7 @@ public class GoldpayManager {
 	public GoldpayUser createGoldpay(String areaCode, String userPhone, boolean newUser) {
 		CreateGoldpayRequest createGoldpayRequest = new CreateGoldpayRequest(areaCode, userPhone, newUser);
 		String param = JsonBinder.getInstanceNonNull().toJson(createGoldpayRequest);
+		logger.info("param==={}", param);
 		String result = HttpClientUtils
 				.sendPost(ResourceUtils.getBundleValue4String("goldpay.url") + "member/createMember", param);
 		logger.info("result==={}", result);
@@ -86,13 +87,16 @@ public class GoldpayManager {
 		transfer2GoldpayRequset.setToken(ResourceUtils.getBundleValue4String("goldpay.merchant.token"));
 
 		String param = JsonBinder.getInstance().toJson(transfer2GoldpayRequset);
+		logger.info("param==={}", param);
 		String result = HttpClientUtils.sendPost(
 				ResourceUtils.getBundleValue4String("goldpay.url") + "trans/payConfirmTransaction4Merchant", param);
-//		logger.info("result==={}", result);
+		logger.info("result==={}", result);
 		if (StringUtils.isNotEmpty(result)) {
 			Map resultMap = JsonBinder.getInstance().fromJson(result, HashMap.class);
 			if ((Integer)resultMap.get("retCode") == 1) {
 				return true;
+			}else {
+				
 			}
 		}
 		return false;

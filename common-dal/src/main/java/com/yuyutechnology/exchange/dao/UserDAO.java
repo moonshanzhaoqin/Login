@@ -14,25 +14,21 @@ import com.yuyutechnology.exchange.pojo.UserConfig;
  */
 public interface UserDAO {
 
+	Integer addUser(User user);
+
 	User getSystemUser();
 
 	User getUser(Integer userId);
 
+	List<User> getUserByPushId(String pushId);
+
 	User getUserByUserPhone(String areaCode, String userPhone);
-
-	Integer addUser(User user);
-
-	void updateUser(User user);
-
-	List<User> getUserList();
 
 	UserConfig getUserConfig(Integer userId);
 
+	List<User> getUserList();
+
 	void saveUserConfig(UserConfig userConfig);
-
-	User getUserByPhone(String userPhone);
-
-	List<User> getUserByPushId(String pushId);
 
 	/**
 	 * 批量更新
@@ -41,5 +37,7 @@ public interface UserDAO {
 	 * @param values
 	 */
 	void updateSQL(String sql, Object[] values);
+
+	void updateUser(User user);
 
 }

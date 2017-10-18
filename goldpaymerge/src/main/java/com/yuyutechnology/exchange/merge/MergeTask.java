@@ -53,6 +53,7 @@ public class MergeTask {
 							user.getUserPhone());
 				} catch (Exception e) {
 					logger.error("mergeExUserGoldpayToGoldpayServer error , "+user.getAreaCode()+user.getUserPhone(), e);
+					System.exit(0);
 				}
 			}
 		}

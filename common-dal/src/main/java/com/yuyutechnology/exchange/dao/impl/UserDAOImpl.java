@@ -26,6 +26,12 @@ public class UserDAOImpl implements UserDAO {
 	HibernateTemplate hibernateTemplate;
 
 	@Override
+	public Integer addUser(User user) {
+		Integer userId = (Integer) hibernateTemplate.save(user);
+		return userId;
+	}
+
+	@Override
 	public User getSystemUser() {
 		List<?> list = hibernateTemplate.find("from User where userType = ?", ServerConsts.USER_TYPE_OF_SYSTEM);
 		return list.isEmpty() ? null : (User) list.get(0);
@@ -36,6 +42,13 @@ public class UserDAOImpl implements UserDAO {
 		return hibernateTemplate.get(User.class, userId);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> getUserByPushId(String pushId) {
+		List<?> list = hibernateTemplate.find("from User where pushId = ? ", pushId);
+		return list.isEmpty() ? null : (List<User>) list;
+	}
+
 	@Override
 	public User getUserByUserPhone(String areaCode, String userPhone) {
 		List<?> list = hibernateTemplate.find("from User where areaCode = ? and userPhone = ?", areaCode, userPhone);
@@ -43,20 +56,8 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public User getUserByPhone(String userPhone) {
-		List<?> list = hibernateTemplate.find("from User where and userPhone = ?", userPhone);
-		return list.isEmpty() ? null : (User) list.get(0);
-	}
-
-	@Override
-	public Integer addUser(User user) {
-		Integer userId = (Integer) hibernateTemplate.save(user);
-		return userId;
-	}
-
-	@Override
-	public void updateUser(User user) {
-		hibernateTemplate.saveOrUpdate(user);
+	public UserConfig getUserConfig(Integer userId) {
+		return hibernateTemplate.get(UserConfig.class, userId);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -67,20 +68,8 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public UserConfig getUserConfig(Integer userId) {
-		return hibernateTemplate.get(UserConfig.class, userId);
-	}
-
-	@Override
 	public void saveUserConfig(UserConfig userConfig) {
 		hibernateTemplate.saveOrUpdate(userConfig);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<User> getUserByPushId(String pushId) {
-		List<?> list = hibernateTemplate.find("from User where pushId = ? ", pushId);
-		return list.isEmpty() ? null : (List<User>) list;
 	}
 
 	@Override
@@ -99,5 +88,10 @@ public class UserDAOImpl implements UserDAO {
 			}
 		});
 	}
-	
+
+	@Override
+	public void updateUser(User user) {
+		hibernateTemplate.saveOrUpdate(user);
+	}
+
 }

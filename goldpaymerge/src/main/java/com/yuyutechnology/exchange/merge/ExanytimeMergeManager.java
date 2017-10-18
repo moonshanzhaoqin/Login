@@ -52,35 +52,37 @@ public class ExanytimeMergeManager {
 		/* 用手机号创建Goldpay账号 */
 		GoldpayUser goldpayUser = goldpayManager.createGoldpay(areaCode, userPhone, false);
 		if (goldpayUser == null) {
-			logger.warn("mergeExUserGoldpayToGoldpayServer:{},{},{}  fail!---Can not creat Glodpay.", userId, areaCode, userPhone);
+			logger.warn("Ex -> Goldpay:{},{},{}  FAIL!---Can not creat Glodpay.", userId, areaCode, userPhone);
 			return 0L;
 		} else {
 			/* 查找绑定信息 */
 			Bind bind = bindDAO.getBindByUserId(userId);
 			if (bind == null || !StringUtils.equals(bind.getGoldpayAcount(), goldpayUser.getAccountNum())) {
-				if (bind == null) bind = new Bind();
+				if (bind == null)
+					bind = new Bind();
 				bind.setUserId(userId);
 				bind.setGoldpayId(goldpayUser.getId());
 				bind.setGoldpayName(goldpayUser.getUsername());
 				bind.setGoldpayAcount(goldpayUser.getAccountNum());
-//				bind = new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(), goldpayUser.getAccountNum());
+				
 				/* 绑定goldpay */
 				bindDAO.updateBind(bind);
-				logger.info("mergeExUserGoldpayToGoldpayServer: create new Goldpay {},{},{},{}",
-						userId, areaCode, userPhone, goldpayUser.getAccountNum(), bind.getGoldpayAcount());
+				logger.info("Ex -> Goldpay: create new Goldpay {},{},{},{}  SUCCESS!", userId, areaCode, userPhone,
+						goldpayUser.getAccountNum(), bind.getGoldpayAcount());
 			}
 			/* 将EX的GDQ转到Goldpay中 */
 			Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, ServerConsts.CURRENCY_OF_GOLDPAY);
 			if (wallet.getBalance().compareTo(BigDecimal.ZERO) > 0) {
-				logger.info("mergeExUserGoldpayToGoldpayServer: tran Goldpay {},{},{},{}",
-						userId, areaCode, userPhone, goldpayUser.getAccountNum(), wallet.getBalance());
+				logger.info("Ex -> Goldpay: tran Goldpay {},{},{},{} ===>", userId, areaCode, userPhone,
+						goldpayUser.getAccountNum(), wallet.getBalance());
 				if (goldpayManager.transferGDQ2Goldpay(bind.getGoldpayAcount(), wallet.getBalance())) {
 					walletDAO.emptyWallet(userId, ServerConsts.CURRENCY_OF_GOLDPAY);
-					logger.info("mergeExUserGoldpayToGoldpayServer:{},{},{},{}  success!", userId, areaCode, userPhone, goldpayUser.getAccountNum());
+					logger.info("Ex -> Goldpay:{},{},{},{}  SUCCESS!", userId, areaCode, userPhone,
+							goldpayUser.getAccountNum());
 					return wallet.getBalance().longValue();
 				} else {
-					logger.warn("mergeExUserGoldpayToGoldpayServer:{},{},{} fail!---Can not transfer GDQ from Ex to Goldpay.",
-							userId, areaCode, userPhone);
+					logger.warn("Ex -> Goldpay:{},{},{} FAIL!---Can not transfer GDQ from Ex to Goldpay.", userId,
+							areaCode, userPhone);
 				}
 			}
 		}

@@ -19,10 +19,12 @@ import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
+import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.goldpay.GoldpayManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Bind;
+import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.util.MathUtils;
 
@@ -44,6 +46,8 @@ public class GoldpayMergeManager {
 	@Autowired
 	WalletDAO walletDAO;
 	@Autowired
+	UserDAO userDAO;
+	@Autowired
 	GoldpayManager goldpayManager;
 
 	public List<Map<String, Object>> getAllGoldpayUser() {
@@ -54,32 +58,34 @@ public class GoldpayMergeManager {
 	}
 
 	public void mergeGoldpayUserToExServer(String goldpayUserId, String username, String accountNumber, String areaCode,
-			String phoneNumber) {
+			String userPhone) {
 		/* 查找对应的Ex账号 */
-		Integer userId = userManager.getUserId(areaCode, phoneNumber);
-		if (userId == null) {
+		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
+		Integer userId = null;
+		if (user == null) {
 			/* 创建新的EX账号 */
-			userId = userManager.register(areaCode, phoneNumber, username,
+			userId = userManager.register(areaCode, userPhone, username,
 					DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(8)), "en_US");
 		} else {
+			userId = user.getUserId();
 			Bind bind = bindDAO.getBindByUserId(userId);
 			if (bind == null || StringUtils.equals(bind.getGoldpayAcount(), accountNumber)) {
 				/* 绑定goldpay */
-				if (bind == null) bind = new Bind();
+				if (bind == null)
+					bind = new Bind();
 				bind.setUserId(userId);
 				bind.setGoldpayId(goldpayUserId);
 				bind.setGoldpayName(username);
 				bind.setGoldpayAcount(accountNumber);
 				bindDAO.updateBind(bind);
-//				bindDAO.updateBind(new Bind(userId, goldpayUserId, username, accountNumber));
+				// bindDAO.updateBind(new Bind(userId, goldpayUserId, username, accountNumber));
 			}
 		}
-		if (userId==null) {
-			logger.warn("mergeGoldpayUserToExServer:{} fail!---Can not register Ex.",
-					accountNumber);
+		if (userId == null) {
+			logger.warn("Goldpay -> Ex:{} fail!---Can not register Ex.", accountNumber);
 			return;
 		}
-		logger.info("mergeGoldpayUserToExServer:{}  success!",accountNumber);
+		logger.info("Goldpay -> Ex:{}  SUCCESS!", accountNumber);
 		return;
 	}
 }
