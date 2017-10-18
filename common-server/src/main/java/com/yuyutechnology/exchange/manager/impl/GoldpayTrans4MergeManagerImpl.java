@@ -70,8 +70,72 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		return getGoldpayOrderIdS2C.getPayOrderId();
 	}
 	
+
 	@Override
-	public Integer goldpayTransaction(String fromAccountNum,String toAccountNum,
+	public HashMap<String, String> updateWalletByUserIdAndCurrency(Integer payerId,
+			Integer payeeId,String currency, BigDecimal amount,
+			int transferType, String transactionId,boolean isUpdateWallet,String goldpayOrderId) {
+		
+		HashMap<String, String> result = new HashMap<>();
+		
+		try {
+			
+			if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currency)){
+				
+				if(!StringUtils.isNotBlank(goldpayOrderId)){
+					goldpayOrderId = getGoldpayOrderId();
+				}
+				//获取交易双方goldpayaccount
+				GoldpayUserDTO payerAccount = getGoldpayUserInfo(payerId);
+				GoldpayUserDTO payeeIdAccount = getGoldpayUserInfo(payeeId);
+				
+				if(payerAccount == null || payeeIdAccount == null){
+					logger.error("error :  Account information does not exist");
+					result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+					result.put("msg", "Account information does not exist");
+					return result;
+				}
+				
+				Integer retCode = goldpayTransaction(payerAccount.getAccountNum(),
+						payeeIdAccount.getAccountNum(),
+						amount,goldpayOrderId,null);
+				
+				if(retCode != ServerConsts.GOLDPAY_RETURN_SUCCESS){
+					logger.warn("goldpay transaction failed");
+					result.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
+					result.put("msg", "Insufficient balance");
+					return result;
+				}
+				
+				result.put("goldpayOrderId", goldpayOrderId);
+			}
+			
+			//exchange时为false
+			if(isUpdateWallet){
+				//扣款
+				walletDAO.updateWalletByUserIdAndCurrency(payerId,currency, amount, 
+						"-", transferType,transactionId);
+				//加款
+				walletDAO.updateWalletByUserIdAndCurrency(payeeId,currency, amount, 
+						"+", transferType,transactionId);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("error : {}",e.toString());
+			result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+			result.put("msg", e.toString());
+			return result;
+		}
+		
+		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
+		result.put("msg", "sucess");
+		
+		return result;
+	}
+	
+
+	private Integer goldpayTransaction(String fromAccountNum,String toAccountNum,
 			BigDecimal balance,String payOrderId,String comment){
 		
 		GoldpayTransactionC2S param = new GoldpayTransactionC2S();
@@ -93,69 +157,6 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		
 	}
 
-	@Override
-	public HashMap<String, String> updateWalletByUserIdAndCurrency(Integer payerId,String currencyOut,
-			Integer payeeId,String currencyIn, BigDecimal amount,
-			int transferType, String transactionId,boolean isUpdateWallet,String goldpayOrderId) {
-		
-		HashMap<String, String> result = new HashMap<>();
-		
-		try {
-			
-			if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut) 
-					|| ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut)){
-				
-				if(!StringUtils.isNotBlank(goldpayOrderId)){
-					goldpayOrderId = getGoldpayOrderId();
-				}
-				//获取交易双方goldpayaccount
-				GoldpayUserDTO payerAccount = getGoldpayUserInfo(payerId);
-				GoldpayUserDTO payeeIdAccount = getGoldpayUserInfo(payeeId);
-				
-				Integer retCode = null;
-				
-				if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut)){
-					retCode = goldpayTransaction(payerAccount.getAccountNum(),
-							payeeIdAccount.getAccountNum(),
-							amount,goldpayOrderId,null);
-				}else{
-					retCode = goldpayTransaction(payeeIdAccount.getAccountNum(),
-							payerAccount.getAccountNum(),amount,goldpayOrderId,null);
-				}
-				
-				if(retCode != ServerConsts.GOLDPAY_RETURN_SUCCESS){
-					logger.warn("goldpay transaction failed");
-					result.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
-					result.put("msg", "Insufficient balance");
-					return result;
-				}
-				
-				result.put("goldpayOrderId", goldpayOrderId);
-			}
-			
-			//exchange时为false
-			if(isUpdateWallet){
-				//扣款
-				walletDAO.updateWalletByUserIdAndCurrency(payerId,currencyOut, amount, 
-						"-", transferType,transactionId);
-				//加款
-				walletDAO.updateWalletByUserIdAndCurrency(payeeId,currencyIn, amount, 
-						"+", transferType,transactionId);
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("error : {}",e.toString());
-			result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
-			result.put("msg", e.toString());
-			return result;
-		}
-		
-		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
-		result.put("msg", "sucess");
-		
-		return result;
-	}
 	
 
 }

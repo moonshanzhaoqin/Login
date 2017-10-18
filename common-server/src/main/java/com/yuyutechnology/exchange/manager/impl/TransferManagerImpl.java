@@ -470,9 +470,9 @@ public class TransferManagerImpl implements TransferManager {
 			
 			
 			HashMap<String, String> result = goldpayTrans4MergeManager.
-					updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getCurrency(), 
-							systemUser.getUserId(), transfer.getCurrency(), 
-							transfer.getTransferAmount(), ServerConsts.TRANSFER_TYPE_OUT_INVITE, 
+					updateWalletByUserIdAndCurrency(transfer.getUserFrom(), systemUser.getUserId(), 
+							transfer.getCurrency(), transfer.getTransferAmount(), 
+							ServerConsts.TRANSFER_TYPE_OUT_INVITE, 
 							transfer.getTransferId(), true, transfer.getGoldpayOrderId());
 			
 			if(!RetCodeConsts.RET_CODE_SUCCESS.equals(result.get("retCode"))){
@@ -502,8 +502,8 @@ public class TransferManagerImpl implements TransferManager {
 			
 			
 			HashMap<String, String> result = goldpayTrans4MergeManager.
-					updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getCurrency(), 
-							transfer.getUserTo(), transfer.getCurrency(), 
+					updateWalletByUserIdAndCurrency(
+							transfer.getUserFrom(), transfer.getUserTo(), transfer.getCurrency(), 
 							transfer.getTransferAmount(), ServerConsts.TRANSFER_TYPE_TRANSACTION, 
 							transfer.getTransferId(), true, transfer.getGoldpayOrderId());
 			
@@ -611,8 +611,8 @@ public class TransferManagerImpl implements TransferManager {
 		
 		//add by niklaus.chi at 2017-10-17
 		HashMap<String, String> result = goldpayTrans4MergeManager.
-				updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(), 
-						transfer.getUserFrom(), transfer.getCurrency(), 
+				updateWalletByUserIdAndCurrency(
+						systemUser.getUserId(), transfer.getUserFrom(), transfer.getCurrency(), 
 						transfer.getTransferAmount(), ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, 
 						transfer.getTransferId(), true, transferId2);
 		

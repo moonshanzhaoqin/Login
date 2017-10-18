@@ -568,8 +568,7 @@ public class UserManagerImpl implements UserManager {
 
 			
 			HashMap<String, String> result = goldpayTrans4MergeManager.updateWalletByUserIdAndCurrency(
-					systemUserId,unregistered.getCurrency(),
-					userId,unregistered.getCurrency(),unregistered.getAmount(), 
+					systemUserId, userId,unregistered.getCurrency(),unregistered.getAmount(), 
 					ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId, 
 					true, null);	
 			

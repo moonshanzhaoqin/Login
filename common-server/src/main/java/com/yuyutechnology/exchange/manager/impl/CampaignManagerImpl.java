@@ -289,9 +289,14 @@ public class CampaignManagerImpl implements CampaignManager {
 		transfer.setAreaCode(user.getAreaCode());
 		transfer.setPhone(user.getUserPhone());
 		
+//		HashMap<String, String> result = goldpayTrans4MergeManager.updateWalletByUserIdAndCurrency(
+//				system.getUserId(),ServerConsts.CURRENCY_OF_GOLDPAY,
+//				userId,ServerConsts.CURRENCY_OF_GOLDPAY,bonus, 
+//				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId, 
+//				true, null);
 		HashMap<String, String> result = goldpayTrans4MergeManager.updateWalletByUserIdAndCurrency(
-				system.getUserId(),ServerConsts.CURRENCY_OF_GOLDPAY,
-				userId,ServerConsts.CURRENCY_OF_GOLDPAY,bonus, 
+				system.getUserId(), userId, 
+				ServerConsts.CURRENCY_OF_GOLDPAY, bonus, 
 				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId, 
 				true, null);
 		
