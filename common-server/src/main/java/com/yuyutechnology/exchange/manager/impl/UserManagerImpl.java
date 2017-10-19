@@ -103,6 +103,7 @@ public class UserManagerImpl implements UserManager {
 	@Autowired
 	CampaignManager campaignManager;
 	
+
 	@Autowired
 	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
 
@@ -122,11 +123,14 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
-	
-	@Override
-	public void bindGoldpay(Integer userId, String areaCode, String userPhone) {
-		/* 用手机号创建Goldpay账号 */
-		GoldpayUser goldpayUser = goldpayManager.createGoldpay(areaCode, userPhone, true);
+	/**
+	 * 创建新的Goldpay 并绑定
+	 * 
+	 * @param userId
+	 */
+	private void bindGoldpay(Integer userId) {
+		/* 创建Goldpay账号 */
+		GoldpayUser goldpayUser = goldpayManager.createGoldpay("", "", true);
 		bindDAO.updateBind(
 				new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(), goldpayUser.getAccountNum()));
 	}
@@ -303,8 +307,6 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
-
-
 	@Override
 	public void clearPinCode(String func, String areaCode, String userPhone) {
 		redisDAO.deleteData(func + areaCode + userPhone);
@@ -411,7 +413,10 @@ public class UserManagerImpl implements UserManager {
 		redisDAO.saveData("changephonetime" + userId, new Date().getTime());
 		/* 添加钱包信息 */
 		createWallets4NewUser(userId);
-//		accountingManager.snapshotToBefore(userId);
+		/* 创建Goldpay账号 */
+		bindGoldpay(userId);
+
+		// accountingManager.snapshotToBefore(userId);
 		/* 根据Unregistered表 更新新用户钱包 将资金从系统帐户划给新用户 */
 		updateWalletsFromUnregistered(userId, areaCode, userPhone, userName);
 		return userId;
@@ -558,6 +563,14 @@ public class UserManagerImpl implements UserManager {
 			if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(unregistered.getCurrency())){
 				goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
 			}
+
+			// walletDAO.updateWalletByUserIdAndCurrency(systemUserId,
+			// unregistered.getCurrency(),
+			// unregistered.getAmount(), "-", ServerConsts.TRANSFER_TYPE_TRANSACTION,
+			// transferId);
+			// walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(),
+			// unregistered.getAmount(), "+",
+			// ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
 
 			/* 生成TransId */
 			Transfer transfer = new Transfer();
