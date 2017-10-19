@@ -110,7 +110,7 @@ public enum ConfigKeyEnum {
 	 */
 	PAYPAL_RECHARGE("paypal_recharge"),
 	/**
-	 * 可售黄金宝总量
+	 * 可售金本总量
 	 */
 	TOTALGDQCANBESOLD("total_gdq_can_be_sold"),
 	/**
@@ -131,7 +131,7 @@ public enum ConfigKeyEnum {
 	 */
 	PAYPAL_EXPIRATION("paypal_expiration"),
 	/**
-	 * 提取黄金宝开关
+	 * 提取金本开关
 	 */
 	GOLDPAY_WITHDRAW("goldpay_withdraw"),
 	/**

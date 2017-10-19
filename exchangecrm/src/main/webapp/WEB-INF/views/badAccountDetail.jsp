@@ -278,11 +278,11 @@
 			case 3:
 				return "系统退款";
 			case 4:
-				return "黄金宝提现";
+				return "金本提现";
 			case 5:
-				return "黄金宝充值";
+				return "金本充值";
 			case 6:
-				return "黄金宝提现退款";
+				return "金本提现退款";
 			}
 		}
 		function transferStatusName(transferStatus) {
