@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dao.ExchangeDAO;
+import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.goldpay.trans4merge.ConfirmTransactionS2C;
@@ -21,6 +23,8 @@ import com.yuyutechnology.exchange.goldpay.trans4merge.GetGoldpayUserS2C;
 import com.yuyutechnology.exchange.goldpay.trans4merge.GoldpayTransactionC2S;
 import com.yuyutechnology.exchange.goldpay.trans4merge.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
+import com.yuyutechnology.exchange.pojo.Exchange;
+import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.util.HttpClientUtils;
 import com.yuyutechnology.exchange.util.JsonBinder;
@@ -33,6 +37,10 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 	UserDAO userDAO;
 	@Autowired
 	WalletDAO walletDAO;
+	@Autowired
+	ExchangeDAO exchangeDAO;
+	@Autowired
+	TransferDAO transferDAO;
 	
 	public static Logger logger = LogManager.getLogger(GoldpayTrans4MergeManagerImpl.class);
 	
@@ -70,9 +78,57 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		return getGoldpayOrderIdS2C.getPayOrderId();
 	}
 	
+	@Override
+	public void updateWallet4GoldpayTrans(String transferId) {
+		Transfer transfer = transferDAO.getTransferById(transferId);
+		HashMap<String, String> result = updateWalletByUserIdAndCurrency(
+				transfer.getUserFrom(),transfer.getUserTo(),
+				transfer.getCurrency(),transfer.getTransferAmount(),
+				transfer.getTransferType(),transferId,true,transfer.getGoldpayOrderId());
+		
+		if(!RetCodeConsts.RET_CODE_SUCCESS.equals(result.get("retCode"))){			
+			logger.warn(result.get("msg"));
+			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_PROCESSING);
+			transferDAO.updateTransfer(transfer);
+		}
+	}
+	
 
 	@Override
-	public HashMap<String, String> updateWalletByUserIdAndCurrency(Integer payerId,
+	public void updateWallet4GoldpayExchange(String exchangeId,Integer systemUserId) {
+		Exchange exchange = exchangeDAO.getExchangeById(exchangeId);
+		
+		HashMap<String, String> result = null;
+		
+		if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(exchange.getCurrencyIn())){
+			result = updateWalletByUserIdAndCurrency(
+					systemUserId,exchange.getUserId(),exchange.getCurrencyIn(),
+					exchange.getAmountIn(),ServerConsts.TRANSFER_TYPE_EXCHANGE,
+					exchange.getExchangeId(),false,exchange.getGoldpayOrderId());
+		}
+		
+		if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(exchange.getCurrencyOut())){
+			result = updateWalletByUserIdAndCurrency(
+					exchange.getUserId(),systemUserId,exchange.getCurrencyOut(),
+					exchange.getAmountOut(),ServerConsts.TRANSFER_TYPE_EXCHANGE,
+					exchange.getExchangeId(),false,exchange.getGoldpayOrderId());
+		}
+		
+		if(result!= null && !RetCodeConsts.RET_CODE_SUCCESS.equals(result.get("retCode"))){			
+			logger.warn(result.get("msg"));
+			exchange.setExchangeStatus(ServerConsts.EXCHANGE_STATUS_OF_INTERRUPTED);
+			exchangeDAO.updateExchage(exchange);
+			return;
+		}
+		
+		exchange.setExchangeStatus(ServerConsts.EXCHANGE_STATUS_OF_COMPLETED);
+		exchangeDAO.updateExchage(exchange);
+		
+	}
+	
+
+
+	private HashMap<String, String> updateWalletByUserIdAndCurrency(Integer payerId,
 			Integer payeeId,String currency, BigDecimal amount,
 			int transferType, String transactionId,boolean isUpdateWallet,String goldpayOrderId) {
 		
@@ -83,7 +139,10 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 			if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currency)){
 				
 				if(!StringUtils.isNotBlank(goldpayOrderId)){
-					goldpayOrderId = getGoldpayOrderId();
+					logger.error("error : Not generated goldpayId");
+					result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+					result.put("msg", "Not generated goldpayId");
+					return result;
 				}
 				//获取交易双方goldpayaccount
 				GoldpayUserDTO payerAccount = getGoldpayUserInfo(payerId);
@@ -156,7 +215,5 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		return confirmTransactionS2C.getRetCode();
 		
 	}
-
-	
 
 }

@@ -102,6 +102,7 @@ public class UserManagerImpl implements UserManager {
 	TransDetailsManager transDetailsManager;
 	@Autowired
 	CampaignManager campaignManager;
+	
 
 	@Autowired
 	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
@@ -557,17 +558,10 @@ public class UserManagerImpl implements UserManager {
 			}
 
 			String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
-
 			User payer = userDAO.getUser(payerTransfer.getUserFrom());
-
-			
-			HashMap<String, String> result = goldpayTrans4MergeManager.updateWalletByUserIdAndCurrency(
-					systemUserId, userId,unregistered.getCurrency(),unregistered.getAmount(), 
-					ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId, 
-					true, null);	
-			
-			if(!RetCodeConsts.RET_CODE_SUCCESS.equals(result.get("retCode"))){
-				return ;
+			String goldpayOrderId = null;
+			if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(unregistered.getCurrency())){
+				goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
 			}
 
 			// walletDAO.updateWalletByUserIdAndCurrency(systemUserId,
@@ -593,8 +587,15 @@ public class UserManagerImpl implements UserManager {
 			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 			transfer.setTransferComment(unregistered.getTransferId());
 			transfer.setNoticeId(0);
-
+			transfer.setGoldpayOrderId(goldpayOrderId);
 			transferDAO.addTransfer(transfer);
+
+			goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId);
+			
+//			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, unregistered.getCurrency(),
+//					unregistered.getAmount(), "-", ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
+//			walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(), unregistered.getAmount(), "+",
+//					ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
 
 			transDetailsManager.addTransDetails(transferId, userId, payer.getUserId(), payer.getUserName(),
 					payer.getAreaCode(), payer.getUserPhone(), unregistered.getCurrency(), unregistered.getAmount(),

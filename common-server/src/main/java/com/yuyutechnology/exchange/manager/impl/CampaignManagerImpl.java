@@ -272,6 +272,8 @@ public class CampaignManagerImpl implements CampaignManager {
 
 		User user = userDAO.getUser(userId);
 		User system = userDAO.getSystemUser();
+		
+		String goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
 
 		/* 生成订单 */
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
@@ -288,22 +290,11 @@ public class CampaignManagerImpl implements CampaignManager {
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		transfer.setAreaCode(user.getAreaCode());
 		transfer.setPhone(user.getUserPhone());
-		
-//		HashMap<String, String> result = goldpayTrans4MergeManager.updateWalletByUserIdAndCurrency(
-//				system.getUserId(),ServerConsts.CURRENCY_OF_GOLDPAY,
-//				userId,ServerConsts.CURRENCY_OF_GOLDPAY,bonus, 
-//				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId, 
-//				true, null);
-		HashMap<String, String> result = goldpayTrans4MergeManager.updateWalletByUserIdAndCurrency(
-				system.getUserId(), userId, 
-				ServerConsts.CURRENCY_OF_GOLDPAY, bonus, 
-				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId, 
-				true, null);
-		
-		transfer.setGoldpayOrderId(result.get("goldpayOrderId"));
-		
+		transfer.setGoldpayOrderId(goldpayOrderId);
 		transferDAO.addTransfer(transfer);
-
+		
+		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId);
+		
 		/* 生成详情 */
 		transDetailsManager.addTransDetails(transferId, userId, system.getUserId(), "", "", "",
 				ServerConsts.CURRENCY_OF_GOLDPAY, bonus, null, ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);

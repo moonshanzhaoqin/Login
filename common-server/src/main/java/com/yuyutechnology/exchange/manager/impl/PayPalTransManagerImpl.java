@@ -102,6 +102,8 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			result.put("msg", "Reach or exceed 100%,The transaction is forbidden");
 			return result;
 		}
+		
+		String goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
 
 		// 生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
@@ -118,10 +120,10 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		transfer.setPaypalCurrency(currencyLeft);
 		transfer.setPaypalExchange(baseAmout);
 		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE);
+		transfer.setGoldpayOrderId(goldpayOrderId);
 		// 保存
 		transferDAO.addTransfer(transfer);
 
-		// add by Niklaus.chi at 2017/07/07
 		transDetailsManager.addTransDetails(transferId, userId, null, null, null, null,
 				ServerConsts.CURRENCY_OF_GOLDPAY, amount, null, ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE);
 
@@ -203,30 +205,13 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			return map;
 		}
 
-		// user+GDQ,system-GDQ
-		User systemUser = userDAO.getSystemUser();
+		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transfer.getTransferId());
 
-		HashMap<String, String> result = goldpayTrans4MergeManager.
-				updateWalletByUserIdAndCurrency(
-						systemUser.getUserId(),transfer.getUserFrom(), transfer.getCurrency(), 
-						transfer.getTransferAmount(), ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE, 
-						transfer.getTransferId(), true, transfer.getTransferId());
-		
-		if(!RetCodeConsts.RET_CODE_SUCCESS.equals(result.get("retCode"))){
-			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
-			map.put("msg", "fail");
-		}
-		
 //		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(),
 //				transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE,
 //				transfer.getTransferId());
 //		walletDAO.updateWalletByUserIdAndCurrency(userId, transfer.getCurrency(), transfer.getTransferAmount(), "+",
 //				ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE, transfer.getTransferId());
-
-		// 更改transfer状态
-		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-		transfer.setFinishTime(new Date());
-		transferDAO.updateTransfer(transfer);
 
 		// 预警
 		alarmWhileReachLimitOfTotalAmountOfGDQ(transfer.getTransferAmount());

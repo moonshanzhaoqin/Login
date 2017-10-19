@@ -296,24 +296,12 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new BigDecimal(result.get("in")), "-",
 					ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
 			
-			//add by niklaus.chi at 2017-10-18
-			HashMap<String, String> map = new HashMap<>();
-			if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyIn) || 
-					ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut) ){
-				if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyIn)){
-					map = goldpayTrans4MergeManager.updateWalletByUserIdAndCurrency(
-							systemUserId, userId, ServerConsts.CURRENCY_OF_GOLDPAY, 
-							new BigDecimal(result.get("in")), ServerConsts.TRANSFER_TYPE_EXCHANGE, 
-							exchangeId, false, null);
-				}else{
-					map = goldpayTrans4MergeManager.updateWalletByUserIdAndCurrency(
-							userId,systemUserId, ServerConsts.CURRENCY_OF_GOLDPAY, 
-							new BigDecimal(result.get("out")), ServerConsts.TRANSFER_TYPE_EXCHANGE, 
-							exchangeId, false, null);
-				}
+			String goldpayOrderId = null;
+			if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut) || 
+					ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyIn)){
+				goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
 			}
-			//end
-
+			
 			// 添加Exchange记录
 			Exchange exchange = new Exchange();
 			exchange.setExchangeId(exchangeId);
@@ -327,10 +315,13 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			exchange.setExchangeRate(new BigDecimal(result.get("rate")));
 			exchange.setExchangeFeePerThousand(new BigDecimal(result.get("perThousand")));
 			exchange.setExchangeFeeAmount(new BigDecimal(result.get("fee")));
-			exchange.setGoldpayOrderId(map.get("goldpayOrderId"));
-
+			exchange.setGoldpayOrderId(goldpayOrderId);
+			exchange.setExchangeStatus(ServerConsts.EXCHANGE_STATUS_OF_PROCESS);
 			exchangeDAO.addExchange(exchange);
 
+			//s
+			goldpayTrans4MergeManager.updateWallet4GoldpayExchange(exchangeId, systemUserId);
+			
 			// 添加累计金额
 			BigDecimal exchangeResult = oandaRatesManager.getDefaultCurrencyAmount(exchange.getCurrencyOut(),
 					exchange.getAmountOut());
