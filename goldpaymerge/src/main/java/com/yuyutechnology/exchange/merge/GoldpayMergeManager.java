@@ -73,8 +73,8 @@ public class GoldpayMergeManager {
 		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
 		if (user == null) {
 			/* 创建新的EX账号 */
-			userId =register(areaCode, userPhone, username,
-					DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(8)), "en_US");
+			userId = register(areaCode, userPhone, username, DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(8)),
+					"en_US");
 		} else {
 			userId = user.getUserId();
 		}
@@ -82,7 +82,7 @@ public class GoldpayMergeManager {
 			logger.warn("Goldpay -> Ex:{} fail!---Can not register Ex.", accountNumber);
 			return;
 		}
-		
+
 		/* 绑定goldpay */
 		Bind bind = bindDAO.getBindByUserId(userId);
 		if (bind == null) {
@@ -96,27 +96,25 @@ public class GoldpayMergeManager {
 		logger.info("Goldpay -> Ex:{}  SUCCESS!", accountNumber);
 		return;
 	}
-	
+
 	private Integer register(String areaCode, String userPhone, String userName, String userPassword, String language) {
 		/* 随机生成盐值 */
 		String passwordSalt = DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(6));
-		logger.info("Randomly generated salt values : salt={}", passwordSalt);
 		/* 添加用户 */
 		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName,
 				PasswordUtils.encrypt(userPassword, passwordSalt), new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER,
 				ServerConsts.USER_AVAILABLE_OF_AVAILABLE, ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE,
 				ServerConsts.PAY_AVAILABLE_OF_AVAILABLE, passwordSalt, LanguageUtils.standard(language)));
-		logger.info("Add user complete!");
+		logger.info("Add user complete! userId = {} ", userId);
 		/* 记录换绑手机时间 */
 		redisDAO.saveData("changephonetime" + userId, new Date().getTime());
 		/* 添加钱包信息 */
-		logger.info("New wallets for newly registered user {}==>", userId);
+		logger.info("New wallets for newly registered user {} ->", userId);
 		List<Currency> currencies = commonManager.getCurrentCurrencies();
 		for (Currency currency : currencies) {
 			walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date(), 0));
 		}
 		return userId;
 	}
-	
-	
+
 }
