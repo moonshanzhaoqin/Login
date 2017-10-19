@@ -21,9 +21,9 @@
 				<table class = "table"> 
 					<thead>
 						<tr>
-							<th>paypal可售黄金宝总量(GDQ)</th>
-							<th>paypal已售黄金宝总量(GDQ)</th>
-							<th>paypal剩余黄金宝总量(GDQ)</th>
+							<th>paypal可售金本总量(GDQ)</th>
+							<th>paypal已售金本总量(GDQ)</th>
+							<th>paypal剩余金本总量(GDQ)</th>
 							<th>剩余百分比</th>
 						</tr>
 					</thead>
