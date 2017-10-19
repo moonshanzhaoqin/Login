@@ -10,6 +10,8 @@ public interface ExchangeDAO {
 	String createExchangeId(int transferType);
 
 	void addExchange(Exchange exchange);
+	
+	void updateExchage(Exchange exchange);
 
 	Exchange getExchangeById(String exchangeId);
 
