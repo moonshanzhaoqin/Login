@@ -302,14 +302,12 @@ public class ExchangeManagerImpl implements ExchangeManager {
 					ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut) ){
 				if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyIn)){
 					map = goldpayTrans4MergeManager.updateWalletByUserIdAndCurrency(
-							systemUserId, currencyOut, 
-							userId, ServerConsts.CURRENCY_OF_GOLDPAY, 
+							systemUserId, userId, ServerConsts.CURRENCY_OF_GOLDPAY, 
 							new BigDecimal(result.get("in")), ServerConsts.TRANSFER_TYPE_EXCHANGE, 
 							exchangeId, false, null);
 				}else{
 					map = goldpayTrans4MergeManager.updateWalletByUserIdAndCurrency(
-							userId, ServerConsts.CURRENCY_OF_GOLDPAY, 
-							systemUserId, currencyOut, 
+							userId,systemUserId, ServerConsts.CURRENCY_OF_GOLDPAY, 
 							new BigDecimal(result.get("out")), ServerConsts.TRANSFER_TYPE_EXCHANGE, 
 							exchangeId, false, null);
 				}

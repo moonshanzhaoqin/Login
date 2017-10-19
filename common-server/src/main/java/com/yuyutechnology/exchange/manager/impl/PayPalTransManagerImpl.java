@@ -207,8 +207,8 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		User systemUser = userDAO.getSystemUser();
 
 		HashMap<String, String> result = goldpayTrans4MergeManager.
-				updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(), 
-						transfer.getUserFrom(), transfer.getCurrency(), 
+				updateWalletByUserIdAndCurrency(
+						systemUser.getUserId(),transfer.getUserFrom(), transfer.getCurrency(), 
 						transfer.getTransferAmount(), ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE, 
 						transfer.getTransferId(), true, transfer.getTransferId());
 		

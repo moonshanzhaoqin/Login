@@ -560,12 +560,14 @@ public class UserManagerImpl implements UserManager {
 
 			User payer = userDAO.getUser(payerTransfer.getUserFrom());
 
-			HashMap<String, String> result = goldpayTrans4MergeManager.updateWalletByUserIdAndCurrency(systemUserId,
-					unregistered.getCurrency(), userId, unregistered.getCurrency(), unregistered.getAmount(),
-					ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId, true, null);
-
-			if (!RetCodeConsts.RET_CODE_SUCCESS.equals(result.get("retCode"))) {
-				return;
+			
+			HashMap<String, String> result = goldpayTrans4MergeManager.updateWalletByUserIdAndCurrency(
+					systemUserId, userId,unregistered.getCurrency(),unregistered.getAmount(), 
+					ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId, 
+					true, null);	
+			
+			if(!RetCodeConsts.RET_CODE_SUCCESS.equals(result.get("retCode"))){
+				return ;
 			}
 
 			// walletDAO.updateWalletByUserIdAndCurrency(systemUserId,
