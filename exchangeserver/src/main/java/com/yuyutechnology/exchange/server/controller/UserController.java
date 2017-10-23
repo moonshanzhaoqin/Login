@@ -79,8 +79,8 @@ public class UserController {
 	@Autowired
 	CampaignManager campaignManager;
 	@Autowired
-GoldpayManager goldpayManager;
-	
+	GoldpayManager goldpayManager;
+
 	@ResponseEncryptBody
 	@ApiOperation(value = "功能模块的可用性", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/functionalModulesAvailability", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
@@ -89,6 +89,8 @@ GoldpayManager goldpayManager;
 		FunctionalModulesAvailabilityResponse rep = new FunctionalModulesAvailabilityResponse();
 		/* Paypal开启状态 */
 		rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
+		/* 银行汇款开启状态 */
+		rep.setBankRechage(configManager.getConfigBooleanValue(ConfigKeyEnum.BANK_RECHARGE));
 		logger.info(MessageConsts.RET_CODE_SUCCESS);
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
@@ -392,7 +394,7 @@ GoldpayManager goldpayManager;
 						rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 						rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 					} else {
-						
+
 						/* 设备登记 */
 						userManager.addDevice(userId, registerRequest.getDeviceId(), registerRequest.getDeviceName());
 						/* 记录登录信息 */

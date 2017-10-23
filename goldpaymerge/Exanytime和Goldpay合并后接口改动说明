@@ -7,7 +7,7 @@ Exanytime和Goldpay合并后接口改动说明
 Goldpay转账相关:/token/{token}/goldpayTrans/*
 
 返回信息修改：
-功能模块的可用性：/functionalModulesAvailability   返回信息中去掉了goldpayWithdraw
+功能模块的可用性：/functionalModulesAvailability   返回信息中去掉了goldpayWithdraw,添加了bankRechage
 注册：/register     返回信息UserInfo中去掉了goldpayName
 登录：/login   返回信息UserInfo中去掉了goldpayName
 新设备登录验证：/loginValidate   返回信息UserInfo中去掉了goldpayName

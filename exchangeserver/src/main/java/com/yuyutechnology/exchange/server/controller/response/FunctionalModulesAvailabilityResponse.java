@@ -9,6 +9,7 @@ package com.yuyutechnology.exchange.server.controller.response;
  */
 public class FunctionalModulesAvailabilityResponse extends BaseResponse {
 	private boolean paypalRecharge;
+	private boolean bankRechage;
 
 	public boolean isPaypalRecharge() {
 		return paypalRecharge;
@@ -17,4 +18,13 @@ public class FunctionalModulesAvailabilityResponse extends BaseResponse {
 	public void setPaypalRecharge(boolean paypalRecharge) {
 		this.paypalRecharge = paypalRecharge;
 	}
+
+	public boolean isBankRechage() {
+		return bankRechage;
+	}
+
+	public void setBankRechage(boolean bankRechage) {
+		this.bankRechage = bankRechage;
+	}
+
 }
