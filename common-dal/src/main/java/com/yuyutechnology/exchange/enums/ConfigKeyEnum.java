@@ -30,18 +30,6 @@ public enum ConfigKeyEnum {
 	 */
 	ENTERMAXIMUMAMOUNT("enter_maximum_amount"),
 	/**
-	 * 第三方支付商户ID
-	 */
-	TPPSCLIENTID("tpps_client_id"),
-	/**
-	 * 第三方支付商户Key
-	 */
-	TPPSCLIENTKEY("tpps_client_key"),
-	/**
-	 * 第三方支付商户Token
-	 */
-	TPPSTRANSTOKEN("tpps_trans_token"),
-	/**
 	 * refund_time
 	 */
 	REFUNTIME("refund_time"),
