@@ -6,9 +6,9 @@
 		<groupId>com.yuyutechnology.exchange</groupId>
 		<version>1.0.0</version>
 	</parent>
-    <artifactId>goldpaymerge</artifactId>
+    <artifactId>goldpaytest</artifactId>
     <packaging>jar</packaging>
-    <name>goldpaymerge</name>
+    <name>goldpaytest</name>
     <url>http://maven.apache.org</url>
 
 	<profiles>
@@ -50,7 +50,7 @@
 	</dependencies>
 
     <build>
-        <finalName>goldpaymerge</finalName>
+        <finalName>goldpaytest</finalName>
         <plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -134,7 +134,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
-					<finalName>goldpaymerge</finalName>
+					<finalName>goldpaytest</finalName>
 					<descriptors>
 						<descriptor>assembly.xml</descriptor>
 					</descriptors>
