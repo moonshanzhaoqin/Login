@@ -68,6 +68,7 @@ public class BadAccountController {
 	@RequestMapping(value = "/getDetailSeq", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public List<?> getDetailSeq(@RequestBody GetDetailSeqRequest getDetailSeqRequest, HttpServletRequest request,
 			HttpServletResponse response) {
+
 		return walletManager.getDetailSeq(getDetailSeqRequest.getBadAccountId());
 	}
 
@@ -100,6 +101,8 @@ public class BadAccountController {
 	@RequestMapping(value = "/getTransfer", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public Object getTransfer(@RequestBody GetTransferRequest getTransferRequest, HttpServletRequest request,
 			HttpServletResponse response) {
+		logger.info("request:{}", getTransferRequest.getTransferId());
+
 		return transferManager.getTransfer(getTransferRequest.getTransferId());
 	}
 
