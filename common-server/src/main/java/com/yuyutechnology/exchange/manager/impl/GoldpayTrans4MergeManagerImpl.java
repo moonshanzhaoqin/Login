@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dao.BindDAO;
 import com.yuyutechnology.exchange.dao.ExchangeDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
@@ -23,6 +24,7 @@ import com.yuyutechnology.exchange.goldpay.trans4merge.GetGoldpayUserS2C;
 import com.yuyutechnology.exchange.goldpay.trans4merge.GoldpayTransactionC2S;
 import com.yuyutechnology.exchange.goldpay.trans4merge.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
+import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Exchange;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
@@ -36,6 +38,8 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 	@Autowired
 	UserDAO userDAO;
 	@Autowired
+	BindDAO bindDAO;
+	@Autowired
 	WalletDAO walletDAO;
 	@Autowired
 	ExchangeDAO exchangeDAO;
@@ -46,22 +50,14 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 	
 	@Override
 	public GoldpayUserDTO getGoldpayUserInfo(Integer exUserId){
-		
-		User user = userDAO.getUser(exUserId);
+		Bind bind = bindDAO.getBindByUserId(exUserId);
 		GetGoldpayUserC2S param = new GetGoldpayUserC2S();
-		param.setAreaCode(user.getAreaCode());
-		param.setMobile(user.getUserPhone());
-		
+		param.setKey(bind.getGoldpayAcount());
 		String result = HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("goldpay.url") 
 				+ "member/getMemberInfo",JsonBinder.getInstance().toJson(param));
-		
-		logger.info("result : {}",result);
-		
 		GetGoldpayUserS2C getGoldpayUserS2C = JsonBinder.
 				getInstanceNonNull().fromJson(result, GetGoldpayUserS2C.class);
-		
 		return getGoldpayUserS2C.getGoldpayUserDTO();
-		
 	}
 	
 	@Override

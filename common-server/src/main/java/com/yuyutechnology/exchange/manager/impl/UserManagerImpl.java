@@ -725,6 +725,8 @@ public class UserManagerImpl implements UserManager {
 			userDTO.setUserName(user.getUserName());
 			userDTO.setUserPassword(user.getUserPassword());
 			userDTO.setPasswordSalt(user.getPasswordSalt());
+			Bind bind = bindDAO.getBindByUserId(user.getUserId());
+			userDTO.setAccountNum(bind == null ? "" : bind.getGoldpayAcount());
 			return userDTO;
 		}
 		return null;

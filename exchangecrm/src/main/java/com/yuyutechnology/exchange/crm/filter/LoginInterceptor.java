@@ -10,14 +10,12 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.yuyutechnology.exchange.RetCodeConsts;
-import com.yuyutechnology.exchange.session.SessionData;
-import com.yuyutechnology.exchange.session.SessionDataHolder;
 import com.yuyutechnology.exchange.util.JsonBinder;
 
 /**
