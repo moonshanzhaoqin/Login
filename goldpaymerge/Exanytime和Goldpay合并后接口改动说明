@@ -1,14 +1,10 @@
 Exanytime和Goldpay合并后接口改动说明
 
-
-
-
 取消的接口：
 绑定goldpay：/token/{token}/user/bindGoldpay
 换绑goldpay：/token/{token}/user/changeGoldpay
 校验Goldpay：/token/{token}/user/checkGoldpay
 Goldpay转账相关:/token/{token}/goldpayTrans/*
-
 
 返回信息修改：
 功能模块的可用性：/functionalModulesAvailability   返回信息中去掉了goldpayWithdraw
