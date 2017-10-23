@@ -14,6 +14,7 @@ public class UserDTO {
 	private String userName;
 	private String userPassword;
 	private String passwordSalt;
+	private String accountNum;
 
 	public Integer getUserId() {
 		return userId;
@@ -61,5 +62,13 @@ public class UserDTO {
 
 	public void setPasswordSalt(String passwordSalt) {
 		this.passwordSalt = passwordSalt;
+	}
+
+	public String getAccountNum() {
+		return accountNum;
+	}
+
+	public void setAccountNum(String accountNum) {
+		this.accountNum = accountNum;
 	}
 }
