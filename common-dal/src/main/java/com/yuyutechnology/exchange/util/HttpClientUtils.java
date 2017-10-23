@@ -61,10 +61,10 @@ public class HttpClientUtils {
                 result = EntityUtils.toString(entity, "UTF-8");  
             } else {
                 String responseString = EntityUtils.toString(entity, "UTF-8");
-                logger.warn("sendGet url : {},  result : {}",urlName, responseString);
+                logger.info("sendGet url : {},  result : {}",urlName, responseString);
             }
         }catch(Exception e){
-        	logger.warn("sendGet url : {},  result : {}",urlName, e.getMessage());
+        	logger.error("sendGet url : "+urlName, e);
         }finally {
         	 if(resp!=null){
         		 try {
@@ -92,10 +92,10 @@ public class HttpClientUtils {
                 result = EntityUtils.toString(entity, "UTF-8");  
             } else {
                 String responseString = EntityUtils.toString(entity, "UTF-8");
-                logger.warn("sendGet url : {},  result : {}",urlName, responseString);
+                logger.info("sendGet url : {},  result : {}",urlName, responseString);
             }
         }catch(Exception e){
-        	logger.warn("sendGet url : {},  result : {}",urlName, e.getMessage());
+        	logger.error("sendGet url : "+urlName, e);
         }finally {
         	 if(resp!=null){
         		 try {
@@ -137,11 +137,11 @@ public class HttpClientUtils {
 	            //获取数据
 	        	result = EntityUtils.toString(response.getEntity());
 	            //输出
-	            logger.warn("sendPost url : {},  result : {}",url, result);
+	            logger.info("sendPost url : {},  result : {}",url, result);
 	            
 	        } else {
 	            //输出
-	        	logger.warn("sendPost url : {},  statusCode : {}",url, statusCode);
+	        	logger.info("sendPost url : {},  statusCode : {}",url, statusCode);
 	        }
 		} catch (IOException e) {
 			logger.error("sendGet url :,"+url, e);
@@ -151,7 +151,7 @@ public class HttpClientUtils {
 	        	response.close();
 //				client4Post.close();
 			} catch (Exception e) {
-				logger.error("sendGet url :,"+url, e);
+				logger.warn("sendGet url :,"+url, e);
 			}
 		}
 		
@@ -188,11 +188,11 @@ public class HttpClientUtils {
 	            //获取数据
 	        	result = EntityUtils.toString(response.getEntity());
 	            //输出
-	            logger.warn("sendPost url : {},  result : {}",url, result);
+	            logger.info("sendPost url : {},  result : {}",url, result);
 	            
 	        } else {
 	            //输出
-	        	logger.warn("sendPost url : {},  statusCode : {}",url, statusCode);
+	        	logger.info("sendPost url : {},  statusCode : {}",url, statusCode);
 	        }
 		} catch (IOException e) {
 			logger.error("sendGet url :,"+url, e);

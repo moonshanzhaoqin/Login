@@ -85,7 +85,7 @@ public class SmsManager {
 	// zh_CN
 	private StringBuffer registrationAlarm_cn = new StringBuffer();
 	// zh_CN
-	private StringBuffer remitFailAlarm_cn = new StringBuffer();
+//	private StringBuffer remitFailAlarm_cn = new StringBuffer();
 	// zh_CN
 	private StringBuffer reachTotalGDQLimitAlarm_cn = new StringBuffer();
 
@@ -108,7 +108,7 @@ public class SmsManager {
 
 		readTemplate("template/sms/zh_CN/badAccountAlarm.template", badAccountAlarm_cn);
 		readTemplate("template/sms/zh_CN/registrationAlarm.template", registrationAlarm_cn);
-		readTemplate("template/sms/zh_CN/remitFailAlarm.template", remitFailAlarm_cn);
+//		readTemplate("template/sms/zh_CN/remitFailAlarm.template", remitFailAlarm_cn);
 
 		readTemplate("template/sms/zh_CN/reachTotalGDQLimitAlarm.template", reachTotalGDQLimitAlarm_cn);
 
@@ -213,12 +213,12 @@ public class SmsManager {
 		sendSMS(phone, content, "");
 	}
 
-	@Async
-	public void sendSMS4RemitFail(String phone, String dateTime) {
-		String content = remitFailAlarm_cn.toString();
-		content = content.replace(SMS_REPLACE_TIME, dateTime);
-		sendSMS(phone, content, "");
-	}
+//	@Async
+//	public void sendSMS4RemitFail(String phone, String dateTime) {
+//		String content = remitFailAlarm_cn.toString();
+//		content = content.replace(SMS_REPLACE_TIME, dateTime);
+//		sendSMS(phone, content, "");
+//	}
 
 	@Async
 	public void sendSMS4ReachTotalGDQLimit(String phone, String amount, String percent) {

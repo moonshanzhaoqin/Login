@@ -26,6 +26,7 @@ import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
+import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.manager.PayPalTransManager;
 import com.yuyutechnology.exchange.manager.TransDetailsManager;
@@ -54,6 +55,8 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 	OandaRatesManager oandaRatesManager;
 	@Autowired
 	TransDetailsManager transDetailsManager;
+	@Autowired
+	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
 
 	@PostConstruct
 	public void init() {
@@ -65,7 +68,6 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			logger.info("redis AccumulatedAmount is 0,and mysql sum() is {} :", accumulatedAmount);
 			transferDAO.updateAccumulatedAmount(ServerConsts.REDISS_KEY_OF_TOTAL_ANMOUT_OF_GDQ, accumulatedAmount);
 		}
-
 	}
 
 	@Override
@@ -100,6 +102,8 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			result.put("msg", "Reach or exceed 100%,The transaction is forbidden");
 			return result;
 		}
+		
+		String goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
 
 		// 生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
@@ -116,10 +120,10 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		transfer.setPaypalCurrency(currencyLeft);
 		transfer.setPaypalExchange(baseAmout);
 		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE);
+		transfer.setGoldpayOrderId(goldpayOrderId);
 		// 保存
 		transferDAO.addTransfer(transfer);
 
-		// add by Niklaus.chi at 2017/07/07
 		transDetailsManager.addTransDetails(transferId, userId, null, null, null, null,
 				ServerConsts.CURRENCY_OF_GOLDPAY, amount, null, ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE);
 
@@ -201,20 +205,13 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			return map;
 		}
 
-		// user+GDQ,system-GDQ
-		User systemUser = userDAO.getSystemUser();
-		// 系统扣款
-		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(),
-				transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE,
-				transfer.getTransferId());
-		// 用户加款
-		walletDAO.updateWalletByUserIdAndCurrency(userId, transfer.getCurrency(), transfer.getTransferAmount(), "+",
-				ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE, transfer.getTransferId());
+		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transfer.getTransferId());
 
-		// 更改transfer状态
-		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-		transfer.setFinishTime(new Date());
-		transferDAO.updateTransfer(transfer);
+//		walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(), transfer.getCurrency(),
+//				transfer.getTransferAmount(), "-", ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE,
+//				transfer.getTransferId());
+//		walletDAO.updateWalletByUserIdAndCurrency(userId, transfer.getCurrency(), transfer.getTransferAmount(), "+",
+//				ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE, transfer.getTransferId());
 
 		// 预警
 		alarmWhileReachLimitOfTotalAmountOfGDQ(transfer.getTransferAmount());

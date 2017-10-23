@@ -8,7 +8,7 @@
 <body>
 	<div class="container" style="height: 100%;">
 		
-		<div class="row" id="task" style="margin-bottom: 20px;"></div>
+<!-- 		<div class="row" id="task" style="margin-bottom: 20px;"></div> -->
 		
 		<div class="row">
 			<table class="table table-bordered table-hover"
@@ -62,72 +62,72 @@
 		src="<c:url value="/resources/bootstrap/js/bootstrap-paginator.min.js" />"></script>
 	<script type="text/javascript">
 		$(function() {
-			getGoldpayRemitTaskStatus()
+// 			getGoldpayRemitTaskStatus()
 			getBadAccountByPage(1);
 // 			$("tr").removeClass("active")
 		})
 
-		function getGoldpayRemitTaskStatus() {
-			$
-					.ajax({
-						type : "post",
-						url : "/crm/getGoldpayRemitTaskStatus",
-						dataType : 'json',
-						contentType : "application/json; charset=utf-8",
-						data : {},
-						success : function(data) {
-							if (data.retCode == "00002") {
-								location.href = loginUrl;
-							} else {
-								console.log("success");
-								console.log(data);
-								if (data == true) {
-									$("#task")
-											.html(
-													'<button type="button" class="btn btn-primary pull-right" onclick="setGoldpayRemitTaskStatus(false)">开启核帐功能</button>');
-								} else {
-									$("#task")
-											.html(
-													'<button type="button" class="btn btn-danger pull-right" onclick="setGoldpayRemitTaskStatus(true)">关闭核帐功能</button>');
-								}
-							}
+// 		function getGoldpayRemitTaskStatus() {
+// 			$
+// 					.ajax({
+// 						type : "post",
+// 						url : "/crm/getGoldpayRemitTaskStatus",
+// 						dataType : 'json',
+// 						contentType : "application/json; charset=utf-8",
+// 						data : {},
+// 						success : function(data) {
+// 							if (data.retCode == "00002") {
+// 								location.href = loginUrl;
+// 							} else {
+// 								console.log("success");
+// 								console.log(data);
+// 								if (data == true) {
+// 									$("#task")
+// 											.html(
+// 													'<button type="button" class="btn btn-primary pull-right" onclick="setGoldpayRemitTaskStatus(false)">开启核帐功能</button>');
+// 								} else {
+// 									$("#task")
+// 											.html(
+// 													'<button type="button" class="btn btn-danger pull-right" onclick="setGoldpayRemitTaskStatus(true)">关闭核帐功能</button>');
+// 								}
+// 							}
 
-						},
-						error : function(xhr, err) {
-							alert("未知错误");
-							console.log(err);
-						}
+// 						},
+// 						error : function(xhr, err) {
+// 							alert("未知错误");
+// 							console.log(err);
+// 						}
 
-					})
-		}
-		function setGoldpayRemitTaskStatus(status) {
-			if (confirm("确认吗？")) {
-				var data = {
-					status : status
-				};
-				$.ajax({
-					type : "post",
-					url : "/crm/setGoldpayRemitTaskStatus",
-					dataType : 'json',
-					contentType : "application/json; charset=utf-8",
-					data : JSON.stringify(data),
-					success : function(data) {
-						if (data.retCode == "00002") {
-							location.href = loginUrl;
-						} else {
-							getGoldpayRemitTaskStatus();
-						}
+// 					})
+// 		}
+// 		function setGoldpayRemitTaskStatus(status) {
+// 			if (confirm("确认吗？")) {
+// 				var data = {
+// 					status : status
+// 				};
+// 				$.ajax({
+// 					type : "post",
+// 					url : "/crm/setGoldpayRemitTaskStatus",
+// 					dataType : 'json',
+// 					contentType : "application/json; charset=utf-8",
+// 					data : JSON.stringify(data),
+// 					success : function(data) {
+// 						if (data.retCode == "00002") {
+// 							location.href = loginUrl;
+// 						} else {
+// 							getGoldpayRemitTaskStatus();
+// 						}
 
-					},
-					error : function(xhr, err) {
-						alert("未知错误");
-						console.log(err);
-					},
-					async : false
+// 					},
+// 					error : function(xhr, err) {
+// 						alert("未知错误");
+// 						console.log(err);
+// 					},
+// 					async : false
 
-				})
-			}
-		}
+// 				})
+// 			}
+// 		}
 		function getBadAccountByPage(currentPage) {
 			var data = {
 				currentPage : currentPage

@@ -108,4 +108,9 @@ public class ExchangeDAOImpl implements ExchangeDAO {
 		return list.isEmpty() ?null:list.get(0);
 	}
 
+	@Override
+	public void updateExchage(Exchange exchange) {
+		hibernateTemplate.saveOrUpdate(exchange);
+	}
+
 }

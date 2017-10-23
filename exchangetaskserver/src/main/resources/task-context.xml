@@ -35,8 +35,10 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 
 	<task:scheduled-tasks scheduler="taskServerScheduler">
 
+<!-- 
 		<task:scheduled ref="autoAccountingTask" method="autoAccounting"
 			fixed-delay="30000" initial-delay="30000" />
+ -->
 		
 		<task:scheduled ref="autoRegistrationTask" method="registrationAlarm"
 			fixed-delay="600000" initial-delay="600000" />
@@ -54,11 +56,11 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 		<task:scheduled ref="autoAlarmTask" method="autoAlarmTask"
 			fixed-delay="600000" initial-delay="600000" />
 
-		<task:scheduled ref="autoWithdrawReviewTask" method="autoWithdrawReviewTask"
-			fixed-delay="600000" initial-delay="100000" />
+<!-- 		<task:scheduled ref="autoWithdrawReviewTask" method="autoWithdrawReviewTask" -->
+<!-- 			fixed-delay="600000" initial-delay="100000" /> -->
 
-		<task:scheduled ref="autoGoldpayRemitTask" method="autoGoldpayRemitTask"
-			fixed-delay="600000" initial-delay="300000" />
+<!-- 		<task:scheduled ref="autoGoldpayRemitTask" method="autoGoldpayRemitTask" -->
+<!-- 			fixed-delay="600000" initial-delay="300000" /> -->
 
 	</task:scheduled-tasks>
 

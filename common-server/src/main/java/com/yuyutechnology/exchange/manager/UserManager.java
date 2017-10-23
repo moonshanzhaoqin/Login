@@ -7,6 +7,7 @@ import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
+import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Friend;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.sms.SendMessageResponse;
@@ -76,24 +77,6 @@ public interface UserManager {
 	 * @return
 	 */
 	void updateUserPayPwd(Integer userId, String userPayPwd);
-
-	/**
-	 * 绑定goldpay
-	 * 
-	 * @param userId
-	 * @param goldpayToken
-	 * @return
-	 */
-	String bindGoldpay(Integer userId, String goldpayToken);
-
-	/**
-	 * 校验Goldpay
-	 * 
-	 * @param userId
-	 * @param goldpayPassword
-	 * @return
-	 */
-	String checkGoldpay(Integer userId, String goldpayName, String goldpayPassword);
 
 	/**
 	 * 获取好友列表
@@ -269,7 +252,5 @@ public interface UserManager {
 	 */
 	UserDTO getUser(String areaCode, String userPhone);
 
-
 	
-
 }

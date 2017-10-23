@@ -9,8 +9,7 @@ public class CheckPayPwdRequest {
 	private String purpose;
 	private String userPayPwd;
 
-	@ApiModelProperty(allowableValues = ServerConsts.PAYPWD_CHANGEPHONE + "," + ServerConsts.PAYPWD_CHANGEGOLDPAY + ","
-			+ ServerConsts.PAYPWD_MODIFYPAYPWD)
+	@ApiModelProperty(allowableValues = ServerConsts.PAYPWD_CHANGEPHONE + "," + ServerConsts.PAYPWD_MODIFYPAYPWD)
 	public String getPurpose() {
 		return purpose;
 	}

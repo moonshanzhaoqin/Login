@@ -48,10 +48,6 @@ public class RetCodeConsts {
 	 */
 	public static final String PHONE_AND_CODE_NOT_MATCH = "01003";
 	/**
-	 * goldpay没有绑定手机
-	 */
-	public static final String GOLDPAY_PHONE_IS_NOT_EXIST = "01004";
-	/**
 	 * 登录密码错误
 	 */
 	public static final String PASSWORD_NOT_MATCH = "01005";
@@ -99,14 +95,7 @@ public class RetCodeConsts {
 	 * 该手机号不是好友
 	 */
 	public static final String PHONE_IS_NOT_FRIEND = "01016";
-	/**
-	 * Goldpay校验错误
-	 */
-	public static final String GOLDPAY_IS_INCORRECT = "01017";
-	/**
-	 * Goldpay未绑定
-	 */
-	public static final String GOLDPAY_NOT_BIND = "01018";
+	
 	/**
 	 * 新设备登录
 	 */
@@ -119,10 +108,7 @@ public class RetCodeConsts {
 	 * 支付冻结
 	 */
 	public static final String PAY_FREEZE = "01021";
-	/**
-	 * Goldpay与已绑定账号不符
-	 */
-	public static final String GOLDPAY_NOT_MATCH_BIND = "01022";
+
 	/**
 	 * 没有获取验证码
 	 */
@@ -195,9 +181,9 @@ public class RetCodeConsts {
 
 	// public static final String TRANSFER_NOTIFICATION_NOT_ACQUIRED = "03008";
 
-	public static final String TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST = "03009";
-
-	public static final String TRANSFER_GOLDPAYTRANS_CHECK_PIN_CODE_FAIL = "03010";
+//	public static final String TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST = "03009";
+//
+//	public static final String TRANSFER_GOLDPAYTRANS_CHECK_PIN_CODE_FAIL = "03010";
 
 	public static final String TRANSFER_LESS_THAN_MINIMUM_AMOUNT = "03011";
 
@@ -205,9 +191,9 @@ public class RetCodeConsts {
 
 	public static final String TRANSFER_TRANS_ORDERID_NOT_EXIST = "03013";
 
-	public static final String TRANSFER_GOLDPAYTRANS_HAS_COMPLETED = "03014";
-
-	public static final String TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH = "03015";
+//	public static final String TRANSFER_GOLDPAYTRANS_HAS_COMPLETED = "03014";
+//
+//	public static final String TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH = "03015";
 
 	public static final String TRANSFER_PHONE_NUMBER_IS_EMPTY = "03016";
 
@@ -241,10 +227,6 @@ public class RetCodeConsts {
 	public static final String TRANSFER_PAYPALTRANS_ILLEGAL_DATA = "03027";
 
 	public static final String TRANSFER_PAYPALTRANS_TOTAL_AMOUNT_OF_GDQ = "03028";
-	/**
-	 * 提取金本关闭
-	 */
-	public static final String GOLDPAY_WITHDRAW_OFF = "03029";
 	/**
 	 * PayPal关闭
 	 */

@@ -40,15 +40,15 @@ public enum Operation {
 	/**
 	 * 提现退回
 	 */
-	WITHDRAW_REFUND("withdraw_refund"),
+//	WITHDRAW_REFUND("withdraw_refund"),
 	/**
 	 * 提现重新审核
 	 */
-	WITHDRAW_RE_REVIEW("withdraw_re_review"),
+//	WITHDRAW_RE_REVIEW("withdraw_re_review"),
 	/**
 	 * 提现重新划账
 	 */
-	WITHDRAW_RE_REMIT("withdraw_re_remit"),
+//	WITHDRAW_RE_REMIT("withdraw_re_remit"),
 	/**
 	 * 添加币种
 	 */

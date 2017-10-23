@@ -131,10 +131,6 @@ public enum ConfigKeyEnum {
 	 */
 	PAYPAL_EXPIRATION("paypal_expiration"),
 	/**
-	 * 提取金本开关
-	 */
-	GOLDPAY_WITHDRAW("goldpay_withdraw"),
-	/**
 	 * 邀请数量限制
 	 */
 	INVITE_QUANTITY_RESTRICTION("invite_quantity_restriction"),
@@ -142,6 +138,9 @@ public enum ConfigKeyEnum {
 	 * 领取有效时间（H）
 	 */
 	COLLECT_ACTIVE_TIME("collect_active_time"),
+	
+	GOLDPAY_SYSTEM_ACCOUNT("goldpay_system_account"),
+	
 	/**
 	 * 注册预警人数
 	 */

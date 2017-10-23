@@ -55,11 +55,11 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 		<task:scheduled ref="autoAlarmTask" method="autoAlarmTask"
 			fixed-delay="600000" initial-delay="600000" />
 
-		<task:scheduled ref="autoWithdrawReviewTask" method="autoWithdrawReviewTask"
-			fixed-delay="300000" initial-delay="100000" />
+<!-- 		<task:scheduled ref="autoWithdrawReviewTask" method="autoWithdrawReviewTask" -->
+<!-- 			fixed-delay="300000" initial-delay="100000" /> -->
 
-		<task:scheduled ref="autoGoldpayRemitTask" method="autoGoldpayRemitTask"
-			fixed-delay="300000" initial-delay="300000" />
+<!-- 		<task:scheduled ref="autoGoldpayRemitTask" method="autoGoldpayRemitTask" -->
+<!-- 			fixed-delay="300000" initial-delay="300000" /> -->
 
 	</task:scheduled-tasks>
 
