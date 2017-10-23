@@ -84,7 +84,6 @@ public class TransDetailsDAOImpl implements TransDetailsDAO {
 
 	@Override
 	public void updateTransDetails(TransDetails transDetails) {
-		// TODO Auto-generated method stub
 		hibernateTemplate.saveOrUpdate(transDetails);
 	}
 	

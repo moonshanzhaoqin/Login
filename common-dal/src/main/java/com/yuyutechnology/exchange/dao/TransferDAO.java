@@ -41,10 +41,6 @@ public interface TransferDAO {
 
 	Integer getDayTradubgVolume(final int transferType);
 
-	List<Transfer> getNeedGoldpayRemitWithdraws();
-
-	List<Transfer> getNeedReviewWithdraws();
-
 	Object getTransferByIdJoinUser(String transferId);
 
 	BigDecimal getTotalPaypalExchange(Date finishTime, int transferType, int transferStatus);

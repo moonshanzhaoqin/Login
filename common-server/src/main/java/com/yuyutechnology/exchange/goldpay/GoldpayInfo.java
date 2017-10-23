@@ -3,7 +3,7 @@ package com.yuyutechnology.exchange.goldpay;
 public class GoldpayInfo {
 
 	private int retCode;
-	private GoldpayUser oauthGoldqUser;
+	private GoldpayUser goldpayUserDTO;
 
 	public int getRetCode() {
 		return retCode;
@@ -13,11 +13,12 @@ public class GoldpayInfo {
 		this.retCode = retCode;
 	}
 
-	public GoldpayUser getOauthGoldqUser() {
-		return oauthGoldqUser;
+	public GoldpayUser getGoldpayUserDTO() {
+		return goldpayUserDTO;
 	}
 
-	public void setOauthGoldqUser(GoldpayUser oauthGoldqUser) {
-		this.oauthGoldqUser = oauthGoldqUser;
+	public void setGoldpayUserDTO(GoldpayUser goldpayUserDTO) {
+		this.goldpayUserDTO = goldpayUserDTO;
 	}
+
 }

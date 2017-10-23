@@ -1,7 +1,6 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,7 +17,7 @@ import com.yuyutechnology.exchange.pojo.User;
 @Service
 public class TransDetailsManagerImpl implements TransDetailsManager {
 
-	private static Logger logger = LogManager.getLogger(AccountingManagerImpl.class);
+	private static Logger logger = LogManager.getLogger(TransDetailsManagerImpl.class);
 
 	@Autowired
 	UserDAO userDAO;
@@ -48,18 +47,18 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 			break;
 
 		case ServerConsts.TRANSFER_TYPE_OUT_INVITE:
-		case ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW:
-			logger.info("the transType is {} ServerConsts.TRANSFER_TYPE_OUT_INVITE", transType);
-
-			TransDetails payerTransDetails4Invite = new TransDetails(transferId, payerId, traderName, traderAreaCode,
-					traderPhone, transCurrency, transAmount.negate(), transRemarks);
-
-			transDetailsDAO.addTransDetails(payerTransDetails4Invite);
-			break;
+//		case ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW:
+//			logger.info("the transType is {} ServerConsts.TRANSFER_TYPE_OUT_INVITE", transType);
+//
+//			TransDetails payerTransDetails4Invite = new TransDetails(transferId, payerId, traderName, traderAreaCode,
+//					traderPhone, transCurrency, transAmount.negate(), transRemarks);
+//
+//			transDetailsDAO.addTransDetails(payerTransDetails4Invite);
+//			break;
 
 		case ServerConsts.TRANSFER_TYPE_TRANSACTION - 1:
 		case ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND:
-		case ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE:
+//		case ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE:
 		case ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE:
 		case ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN:
 			logger.info("the transType is {} ", transType);

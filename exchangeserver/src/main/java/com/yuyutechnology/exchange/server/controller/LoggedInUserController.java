@@ -12,10 +12,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
@@ -28,10 +26,7 @@ import com.yuyutechnology.exchange.mail.MailManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
-import com.yuyutechnology.exchange.server.controller.request.BindGoldpayRequest;
-import com.yuyutechnology.exchange.server.controller.request.ChangeGoldpayRequest;
 import com.yuyutechnology.exchange.server.controller.request.ChangePhoneRequest;
-import com.yuyutechnology.exchange.server.controller.request.CheckGoldpayRequest;
 import com.yuyutechnology.exchange.server.controller.request.CheckPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetUserConfigRequest;
@@ -42,11 +37,8 @@ import com.yuyutechnology.exchange.server.controller.request.ModifyUserNameReque
 import com.yuyutechnology.exchange.server.controller.request.ResetPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.SetUserPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.SwitchLanguageRequest;
-import com.yuyutechnology.exchange.server.controller.response.BindGoldpayResponse;
-import com.yuyutechnology.exchange.server.controller.response.ChangeGoldpayResponse;
 import com.yuyutechnology.exchange.server.controller.response.ChangePhoneResponse;
 import com.yuyutechnology.exchange.server.controller.response.CheckChangePhoneResponse;
-import com.yuyutechnology.exchange.server.controller.response.CheckGoldpayResponse;
 import com.yuyutechnology.exchange.server.controller.response.CheckPayPwdResponse;
 import com.yuyutechnology.exchange.server.controller.response.ContactUsResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetMsgFlagResponse;
@@ -81,103 +73,6 @@ public class LoggedInUserController {
 	MailManager mailManager;
 	@Autowired
 	CommonManager commonManager;
-
-	/**
-	 * 绑定goldpay
-	 * 
-	 * @param token
-	 * @param bindGoldpayRequest
-	 * @return
-	 */
-	@ResponseEncryptBody
-	@ApiOperation(value = "绑定goldpay", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/user/bindGoldpay", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BindGoldpayResponse bindGoldpay(@PathVariable String token,
-			@RequestDecryptBody BindGoldpayRequest bindGoldpayRequest) {
-		logger.info("========bindGoldpay : {}============", token);
-		BindGoldpayResponse rep = new BindGoldpayResponse();
-		if (bindGoldpayRequest.isEmpty()) {
-			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
-		} else {
-			SessionData sessionData = SessionDataHolder.getSessionData();
-			String retCode = userManager.bindGoldpay(sessionData.getUserId(), bindGoldpayRequest.getGoldpayToken());
-			switch (retCode) {
-			case RetCodeConsts.RET_CODE_SUCCESS:
-				// 获取用户信息
-				rep.setUser(userManager.getUserInfo(sessionData.getUserId()));
-				logger.info("********Operation succeeded********");
-				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-				break;
-			case RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST:
-				logger.info(MessageConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
-				rep.setRetCode(RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
-				rep.setMessage(MessageConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
-				break;
-			default:
-				logger.info(MessageConsts.RET_CODE_FAILUE);
-				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
-				break;
-			}
-		}
-		return rep;
-	}
-
-	/**
-	 * 换绑goldpay
-	 * 
-	 * @param token
-	 * @param bindGoldpayRequest
-	 * @return
-	 */
-	@ResponseEncryptBody
-	@ApiOperation(value = "换绑goldpay", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/user/changeGoldpay", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public ChangeGoldpayResponse changeGoldpay(@PathVariable String token,
-			@RequestDecryptBody ChangeGoldpayRequest changeGoldpayRequest) {
-		logger.info("========changeGoldpay : {}============", token);
-		ChangeGoldpayResponse rep = new ChangeGoldpayResponse();
-		if (changeGoldpayRequest.isEmpty()) {
-			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
-		} else {
-			SessionData sessionData = SessionDataHolder.getSessionData();
-			if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_CHANGEGOLDPAY,
-					changeGoldpayRequest.getCheckToken())) {
-				String retCode = userManager.bindGoldpay(sessionData.getUserId(),
-						changeGoldpayRequest.getGoldpayToken());
-				switch (retCode) {
-				case RetCodeConsts.RET_CODE_SUCCESS:
-					// 获取用户信息
-					rep.setUser(userManager.getUserInfo(sessionData.getUserId()));
-					logger.info("********Operation succeeded********");
-					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-					sessionManager.delCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_CHANGEGOLDPAY);
-					break;
-				case RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST:
-					logger.info(MessageConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
-					rep.setRetCode(RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
-					rep.setMessage(MessageConsts.GOLDPAY_PHONE_IS_NOT_EXIST);
-					break;
-				default:
-					logger.info(MessageConsts.RET_CODE_FAILUE);
-					rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-					rep.setMessage(MessageConsts.RET_CODE_FAILUE);
-					break;
-				}
-			} else {
-				logger.info("***checkToken is wrong!***");
-				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
-			}
-		}
-		return rep;
-	}
 
 	/**
 	 * changePhone 换绑手机
@@ -317,56 +212,6 @@ public class LoggedInUserController {
 				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(checkToken);
 				rep.setCheckToken(checkToken);
-				break;
-			}
-		}
-		return rep;
-	}
-
-	/**
-	 * checkGoldpayPwd 校验Goldpay
-	 * 
-	 * @param token
-	 * @param checkPayPwdRequest
-	 * @return
-	 */
-	@ResponseBody
-	@ApiOperation(value = "校验Goldpay", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/user/checkGoldpay", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public CheckGoldpayResponse checkGoldpay(@PathVariable String token,
-			@RequestBody CheckGoldpayRequest checkPayGoldpayRequest) {
-		logger.info("========checkPassword : {}============", token);
-		CheckGoldpayResponse rep = new CheckGoldpayResponse();
-		if (checkPayGoldpayRequest.isEmpty()) {
-			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
-		} else {
-			SessionData sessionData = SessionDataHolder.getSessionData();
-			String retCode = userManager.checkGoldpay(sessionData.getUserId(), checkPayGoldpayRequest.getGoldpayName(),
-					checkPayGoldpayRequest.getGoldpayPwd());
-			switch (retCode) {
-			case RetCodeConsts.RET_CODE_SUCCESS:
-				String checkToken = sessionManager.createCheckToken(sessionData.getUserId(), ServerConsts.RESETPAYPWD);
-				logger.info("********Operation succeeded********");
-				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-				rep.setMessage(checkToken);
-				rep.setCheckToken(checkToken);
-				break;
-			case RetCodeConsts.GOLDPAY_IS_INCORRECT:
-				logger.info(MessageConsts.GOLDPAY_IS_INCORRECT);
-				rep.setRetCode(RetCodeConsts.GOLDPAY_IS_INCORRECT);
-				rep.setMessage(MessageConsts.GOLDPAY_IS_INCORRECT);
-				break;
-			case RetCodeConsts.GOLDPAY_NOT_BIND:
-				logger.info(MessageConsts.GOLDPAY_NOT_BIND);
-				rep.setRetCode(RetCodeConsts.GOLDPAY_NOT_BIND);
-				rep.setMessage(MessageConsts.GOLDPAY_NOT_BIND);
-				break;
-			case RetCodeConsts.GOLDPAY_NOT_MATCH_BIND:
-				logger.info(MessageConsts.GOLDPAY_NOT_MATCH_BIND);
-				rep.setRetCode(RetCodeConsts.GOLDPAY_NOT_MATCH_BIND);
-				rep.setMessage(MessageConsts.GOLDPAY_NOT_MATCH_BIND);
 				break;
 			}
 		}

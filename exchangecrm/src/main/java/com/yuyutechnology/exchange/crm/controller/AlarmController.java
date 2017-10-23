@@ -62,21 +62,22 @@ public class AlarmController {
 		HashMap<String, BigDecimal> userTotalAssets = crmUserInfoManager.getUserAccountTotalAssets();
 
 		if (userTotalAssets != null) {
-			List<CrmAlarm> list = crmAlarmManager.getCrmAlarmConfigList();
-			HashMap<String, BigDecimal> map = crmAlarmManager.getAccountInfo(userTotalAssets.get("totalAssets"));
+//			List<CrmAlarm> list = crmAlarmManager.getCrmAlarmConfigList();
+			//TODO   crmAlarmManager.getAccountInfo
+//			HashMap<String, BigDecimal> map = crmAlarmManager.getAccountInfo(userTotalAssets.get("totalAssets"));
 
-			BigDecimal difference = (map.get("userHoldingTotalAssets")).subtract(map.get("exHoldingTotalAssets"));
-			BigDecimal remaining = (map.get("reserveFunds")).subtract(difference);
+//			BigDecimal difference = (map.get("userHoldingTotalAssets")).subtract(map.get("exHoldingTotalAssets"));
+//			BigDecimal remaining = (map.get("reserveFunds")).subtract(difference);
 
-			logger.info("reserveFunds : {},difference: {},remaining : {}",
-					new Object[] { map.get("reserveFunds"), difference, remaining });
-
-			mav.addObject("exHoldingTotalAssets", map.get("exHoldingTotalAssets"));
-			mav.addObject("userHoldingTotalAssets", map.get("userHoldingTotalAssets"));
-			mav.addObject("reserveFunds", map.get("reserveFunds"));
-			mav.addObject("remaining", remaining);
-			mav.addObject("reserveAvailability", map.get("reserveAvailability"));
-			mav.addObject("list", list);
+//			logger.info("reserveFunds : {},difference: {},remaining : {}",
+//					new Object[] { map.get("reserveFunds"), difference, remaining });
+//
+//			mav.addObject("exHoldingTotalAssets", map.get("exHoldingTotalAssets"));
+//			mav.addObject("userHoldingTotalAssets", map.get("userHoldingTotalAssets"));
+//			mav.addObject("reserveFunds", map.get("reserveFunds"));
+//			mav.addObject("remaining", remaining);
+//			mav.addObject("reserveAvailability", map.get("reserveAvailability"));
+//			mav.addObject("list", list);
 		}
 		List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
 		mav.addObject("supervisorList", supervisorList);

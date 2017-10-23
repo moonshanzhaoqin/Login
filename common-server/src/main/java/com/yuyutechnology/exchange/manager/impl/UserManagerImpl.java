@@ -36,10 +36,10 @@ import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
 import com.yuyutechnology.exchange.goldpay.GoldpayManager;
 import com.yuyutechnology.exchange.goldpay.GoldpayUser;
-import com.yuyutechnology.exchange.manager.AccountingManager;
 import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
+import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.TransDetailsManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Bind;
@@ -99,11 +99,13 @@ public class UserManagerImpl implements UserManager {
 	@Autowired
 	ConfigManager configManager;
 	@Autowired
-	AccountingManager accountingManager;
-	@Autowired
 	TransDetailsManager transDetailsManager;
 	@Autowired
 	CampaignManager campaignManager;
+	
+
+	@Autowired
+	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
 
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
@@ -121,33 +123,16 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
-	@Override
-	public String bindGoldpay(Integer userId, String goldpayToken) {
-		logger.info("get Goldpay ==>");
-		GoldpayUser goldpayUser = goldpayManager.getGoldpayInfo(goldpayToken);
-		if (goldpayUser == null) {
-			logger.warn("Goldpay account does not exist. 'goldpayToken' is wrong!");
-			return RetCodeConsts.RET_CODE_FAILUE;
-		} else {
-			logger.info("goldpayUser = ", goldpayUser.toString());
-			if (StringUtils.isBlank(goldpayUser.getAreaCode()) || StringUtils.isBlank(goldpayUser.getMobile())) {
-				logger.info("Goldpay account does not bind phone number.");
-				return RetCodeConsts.GOLDPAY_PHONE_IS_NOT_EXIST;
-			} else {
-				Bind bind = bindDAO.getBindByUserId(userId);
-				if (bind == null) {
-					bind = new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(), goldpayUser.getAccountNum(),
-							goldpayToken);
-				} else {
-					bind.setGoldpayId(goldpayUser.getId());
-					bind.setGoldpayName(goldpayUser.getUsername());
-					bind.setGoldpayAcount(goldpayUser.getAccountNum());
-					bind.setToken(goldpayToken);
-				}
-				bindDAO.updateBind(bind);
-				return RetCodeConsts.RET_CODE_SUCCESS;
-			}
-		}
+	/**
+	 * 创建新的Goldpay 并绑定
+	 * 
+	 * @param userId
+	 */
+	private void bindGoldpay(Integer userId) {
+		/* 创建Goldpay账号 */
+		GoldpayUser goldpayUser = goldpayManager.createGoldpay("", "", true);
+		bindDAO.updateBind(
+				new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(), goldpayUser.getAccountNum()));
 	}
 
 	@Override
@@ -323,26 +308,6 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public String checkGoldpay(Integer userId, String goldpayName, String goldpayPassword) {
-		logger.info("Check {}  user's Goldpay password {} ==>", userId, goldpayPassword);
-		GoldpayUser goldpayUser = goldpayManager.checkGoldpay(goldpayName, goldpayPassword);
-		if (goldpayUser == null) {
-			logger.info("goldpayName goldpayPassword not match");
-			return RetCodeConsts.GOLDPAY_IS_INCORRECT;
-		}
-		Bind bind = bindDAO.getBindByUserId(userId);
-		if (bind == null) {
-			logger.info("goldpay not bind");
-			return RetCodeConsts.GOLDPAY_NOT_BIND;
-		}
-		if (!goldpayUser.getUsername().equals(bind.getGoldpayName())) {
-			logger.info("goldpay not match bind");
-			return RetCodeConsts.GOLDPAY_NOT_MATCH_BIND;
-		}
-		return RetCodeConsts.RET_CODE_SUCCESS;
-	}
-
-	@Override
 	public void clearPinCode(String func, String areaCode, String userPhone) {
 		redisDAO.deleteData(func + areaCode + userPhone);
 	}
@@ -368,7 +333,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public SendMessageResponse getPinCode(String func, String areaCode, String userPhone) {
-		// 随机生成六位数
+		/* 随机生成六位数 */
 		final String random;
 		if (ResourceUtils.getBundleValue4Boolean("qa.switch")) {
 			random = ResourceUtils.getBundleValue4String("verify.code", "654321");
@@ -385,7 +350,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public Integer getUserId(String areaCode, String userPhone) {
-		logger.info("getUserId==>phone:{}", areaCode + userPhone);
+		logger.info("getUserId - phone:{} ==> ", areaCode + userPhone);
 		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
 		if (user != null) {
 			if (user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_AVAILABLE) {
@@ -409,18 +374,11 @@ public class UserManagerImpl implements UserManager {
 			userInfo.setAreaCode(user.getAreaCode());
 			userInfo.setPhone(user.getUserPhone());
 			userInfo.setName(user.getUserName());
-			// 判断是否设置过支付密码
+			/* 判断是否设置过支付密码 */
 			if (StringUtils.isBlank(user.getUserPayPwd())) {
 				userInfo.setPayPwd(false);
 			} else {
 				userInfo.setPayPwd(true);
-			}
-			// goldpay
-			Bind bind = bindDAO.getBindByUserId(userId);
-			if (bind != null) {
-				userInfo.setGoldpayName(MathUtils.hideString(bind.getGoldpayName()));
-			} else {
-				userInfo.setGoldpayName("");
 			}
 			logger.info("UserInfo={}", userInfo.toString());
 		} else {
@@ -444,7 +402,7 @@ public class UserManagerImpl implements UserManager {
 	public Integer register(String areaCode, String userPhone, String userName, String userPassword, String language) {
 		/* 随机生成盐值 */
 		String passwordSalt = DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(6));
-		logger.info("Randomly generated salt values===salt={}", passwordSalt);
+		logger.info("Randomly generated salt values : salt={}", passwordSalt);
 		/* 添加用户 */
 		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName,
 				PasswordUtils.encrypt(userPassword, passwordSalt), new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER,
@@ -455,7 +413,10 @@ public class UserManagerImpl implements UserManager {
 		redisDAO.saveData("changephonetime" + userId, new Date().getTime());
 		/* 添加钱包信息 */
 		createWallets4NewUser(userId);
-		accountingManager.snapshotToBefore(userId);
+		/* 创建Goldpay账号 */
+		bindGoldpay(userId);
+
+		// accountingManager.snapshotToBefore(userId);
 		/* 根据Unregistered表 更新新用户钱包 将资金从系统帐户划给新用户 */
 		updateWalletsFromUnregistered(userId, areaCode, userPhone, userName);
 		return userId;
@@ -597,15 +558,19 @@ public class UserManagerImpl implements UserManager {
 			}
 
 			String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
-
 			User payer = userDAO.getUser(payerTransfer.getUserFrom());
+			String goldpayOrderId = null;
+			if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(unregistered.getCurrency())){
+				goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
+			}
 
-			/* 系统账号扣款 */
-			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, unregistered.getCurrency(),
-					unregistered.getAmount(), "-", ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
-			/* 用户加款 */
-			walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(), unregistered.getAmount(), "+",
-					ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
+			// walletDAO.updateWalletByUserIdAndCurrency(systemUserId,
+			// unregistered.getCurrency(),
+			// unregistered.getAmount(), "-", ServerConsts.TRANSFER_TYPE_TRANSACTION,
+			// transferId);
+			// walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(),
+			// unregistered.getAmount(), "+",
+			// ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
 
 			/* 生成TransId */
 			Transfer transfer = new Transfer();
@@ -622,17 +587,19 @@ public class UserManagerImpl implements UserManager {
 			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 			transfer.setTransferComment(unregistered.getTransferId());
 			transfer.setNoticeId(0);
-
+			transfer.setGoldpayOrderId(goldpayOrderId);
 			transferDAO.addTransfer(transfer);
 
-			// add by Niklaus.chi at 2017/07/07
-			// transDetailsManager.updateTransDetailsWhenOtherOneRegist(unregistered.getTransferId(),
-			// payerTransfer.getUserFrom(), userName);
+			goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId);
+			
+//			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, unregistered.getCurrency(),
+//					unregistered.getAmount(), "-", ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
+//			walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(), unregistered.getAmount(), "+",
+//					ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
+
 			transDetailsManager.addTransDetails(transferId, userId, payer.getUserId(), payer.getUserName(),
 					payer.getAreaCode(), payer.getUserPhone(), unregistered.getCurrency(), unregistered.getAmount(),
 					payerTransfer.getTransferComment(), ServerConsts.TRANSFER_TYPE_TRANSACTION - 1);
-
-			// end
 
 			/* 更改unregistered状态 */
 			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);

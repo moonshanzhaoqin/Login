@@ -188,6 +188,7 @@
 		<module>exchangeserver</module>
 		<module>exchangecrm</module>
 		<module>exchangetaskserver</module>
+		<module>goldpaymerge</module>
 	</modules>
 	<build>
 		<plugins>

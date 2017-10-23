@@ -50,8 +50,8 @@ public class MailManager {
 	private StringBuffer registrationWarnTital = new StringBuffer();
 	private StringBuffer registrationWarnContent = new StringBuffer();
 
-	private StringBuffer remitFailWarnTital = new StringBuffer();
-	private StringBuffer remitFailWarnContent = new StringBuffer();
+//	private StringBuffer remitFailWarnTital = new StringBuffer();
+//	private StringBuffer remitFailWarnContent = new StringBuffer();
 
 	private StringBuffer totalGDQWarnTital = new StringBuffer();
 	private StringBuffer totalGDQWarnContent = new StringBuffer();
@@ -92,7 +92,7 @@ public class MailManager {
 				largeExchangeWarnContent);
 		readTemplate("template/mail/zh_CN/badAccountAlarm.template", badAccountWarnTital, badAccountWarnContent);
 		readTemplate("template/mail/zh_CN/registrationAlarm.template", registrationWarnTital, registrationWarnContent);
-		readTemplate("template/mail/zh_CN/remitFailAlarm.template", remitFailWarnTital, remitFailWarnContent);
+//		readTemplate("template/mail/zh_CN/remitFailAlarm.template", remitFailWarnTital, remitFailWarnContent);
 		readTemplate("template/mail/zh_CN/totalGDQWarn.template", totalGDQWarnTital, totalGDQWarnContent);
 		initMail = true;
 	}
@@ -183,14 +183,14 @@ public class MailManager {
 		sendMail(toMails, registrationWarnTital.toString(), content);
 	}
 
-	@Async
-	public void mail4RemitFail(String email, String dateTime) {
-		String content = remitFailWarnContent.toString().replace(MAIL_REPLACE_TIME, dateTime);
-		logger.info("content : {},tital : {}", content, remitFailWarnTital.toString());
-		List<String> toMails = new ArrayList<>();
-		toMails.add(email);
-		sendMail(toMails, remitFailWarnTital.toString(), content);
-	}
+//	@Async
+//	public void mail4RemitFail(String email, String dateTime) {
+//		String content = remitFailWarnContent.toString().replace(MAIL_REPLACE_TIME, dateTime);
+//		logger.info("content : {},tital : {}", content, remitFailWarnTital.toString());
+//		List<String> toMails = new ArrayList<>();
+//		toMails.add(email);
+//		sendMail(toMails, remitFailWarnTital.toString(), content);
+//	}
 
 	@Async
 	public void mail4ReachTotalGDQLimit(String email, String amount, String percent) {

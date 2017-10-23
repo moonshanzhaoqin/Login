@@ -24,6 +24,7 @@ public class Exchange implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 4529395500009766110L;
 	private String exchangeId;
+	private String goldpayOrderId;
 	private int userId;
 	private String currencyOut;
 	private String currencyIn;
@@ -76,6 +77,15 @@ public class Exchange implements java.io.Serializable {
 
 	public void setExchangeId(String exchangeId) {
 		this.exchangeId = exchangeId;
+	}
+
+	@Column(name = "goldpay_order_id")
+	public String getGoldpayOrderId() {
+		return goldpayOrderId;
+	}
+
+	public void setGoldpayOrderId(String goldpayOrderId) {
+		this.goldpayOrderId = goldpayOrderId;
 	}
 
 	@Column(name = "user_id", nullable = false)

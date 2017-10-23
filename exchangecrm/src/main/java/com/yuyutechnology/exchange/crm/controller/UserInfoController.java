@@ -42,19 +42,19 @@ public class UserInfoController {
 	/**
 	 * 获取用户信息
 	 * 
-	 * @param getWithdrawListRequest
+	 * @param getUserInfoByPageRequest
 	 * @param request
 	 * @param response
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getUserInfoByPage", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public PageBean getUserInfoByPage(@RequestBody GetUserInfoByPageRequest getWithdrawListRequest,
+	public PageBean getUserInfoByPage(@RequestBody GetUserInfoByPageRequest getUserInfoByPageRequest,
 			HttpServletRequest request, HttpServletResponse response) {
-		logger.info(getWithdrawListRequest.toString());
-		return crmUserInfoManager.getUserInfoByPage(Integer.parseInt(getWithdrawListRequest.getCurrentPage()),
-				getWithdrawListRequest.getUserPhone(), getWithdrawListRequest.getUserName(),
-				getWithdrawListRequest.getStartTime(), getWithdrawListRequest.getEndTime());
+		logger.info(getUserInfoByPageRequest.toString());
+		return crmUserInfoManager.getUserInfoByPage(Integer.parseInt(getUserInfoByPageRequest.getCurrentPage()),
+				getUserInfoByPageRequest.getUserPhone(), getUserInfoByPageRequest.getUserName(),
+				getUserInfoByPageRequest.getStartTime(), getUserInfoByPageRequest.getEndTime());
 	}
 
 	/**

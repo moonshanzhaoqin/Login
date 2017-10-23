@@ -40,10 +40,6 @@ public class MessageConsts {
 	 */
 	public static final String PHONE_AND_CODE_NOT_MATCH = "PHONE_AND_CODE_NOT_MATCH";
 	/**
-	 * goldpay没有绑定手机
-	 */
-	public static final String GOLDPAY_PHONE_IS_NOT_EXIST = "GOLDPAY_PHONE_IS_NOT_EXIST";
-	/**
 	 * 登录失败密码错误或TOKEN失效
 	 */
 	public static final String PASSWORD_NOT_MATCH = "PASSWORD_NOT_MATCH";
@@ -92,14 +88,6 @@ public class MessageConsts {
 	 */
 	public static final String PHONE_IS_NOT_FRIEND = "PHONE_IS_NOT_FRIEND";
 	/**
-	 * Goldpay校验错误
-	 */
-	public static final String GOLDPAY_IS_INCORRECT = "GOLDPAY_IS_INCORRECT";
-	/**
-	 * Goldpay未绑定
-	 */
-	public static final String GOLDPAY_NOT_BIND = "GOLDPAY_NOT_BIND";
-	/**
 	 * 新设备登录
 	 */
 	public static final String NEW_DEVICE = "NEW_DEVICE";
@@ -111,10 +99,6 @@ public class MessageConsts {
 	 * 支付冻结
 	 */
 	public static final String PAY_FREEZE = "PAY_FREEZE";
-	/**
-	 * Goldpay与已绑定账号不符
-	 */
-	public static final String GOLDPAY_NOT_MATCH_BIND = "GOLDPAY_NOT_MATCH_BIND";
 	/**
 	 * 没有获取验证码
 	 */
