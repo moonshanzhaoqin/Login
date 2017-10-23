@@ -72,18 +72,18 @@ public class ServerConsts {
 	 * 系统退款
 	 */
 	public static final int TRANSFER_TYPE_IN_SYSTEM_REFUND = 3;
-	// /**
-	// * 黄金宝提现
-	// */
-	// public static final int TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW = 4;
-	// /**
-	// * 黄金宝充值
-	// */
-	// public static final int TRANSFER_TYPE_IN_GOLDPAY_RECHARGE = 5;
-	// /**
-	// * 黄金宝提现退款
-	// */
-	// public static final int TRANSFER_TYPE_IN_GOLDPAY_REFUND = 6;
+	 /**
+	 * 黄金宝提现
+	 */
+	 public static final int TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW = 4;
+	 /**
+	 * 黄金宝充值
+	 */
+	 public static final int TRANSFER_TYPE_IN_GOLDPAY_RECHARGE = 5;
+	 /**
+	 * 黄金宝提现退款
+	 */
+	 public static final int TRANSFER_TYPE_IN_GOLDPAY_REFUND = 6;
 	/**
 	 * Paypal充值
 	 */
