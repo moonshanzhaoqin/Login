@@ -20,7 +20,6 @@ import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
-import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.goldpay.GoldpayManager;
@@ -32,7 +31,6 @@ import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
 import com.yuyutechnology.exchange.server.controller.request.ForgetPasswordRequest;
-import com.yuyutechnology.exchange.server.controller.request.GetUserRequset;
 import com.yuyutechnology.exchange.server.controller.request.GetVerificationCodeRequest;
 import com.yuyutechnology.exchange.server.controller.request.LoginRequest;
 import com.yuyutechnology.exchange.server.controller.request.LoginValidateRequest;
@@ -41,7 +39,6 @@ import com.yuyutechnology.exchange.server.controller.request.TestCodeRequest;
 import com.yuyutechnology.exchange.server.controller.response.ContactUsResponse;
 import com.yuyutechnology.exchange.server.controller.response.ForgetPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.FunctionalModulesAvailabilityResponse;
-import com.yuyutechnology.exchange.server.controller.response.GetUserResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetVerificationCodeResponse;
 import com.yuyutechnology.exchange.server.controller.response.LoginResponse;
 import com.yuyutechnology.exchange.server.controller.response.LoginValidateResponse;
@@ -60,7 +57,6 @@ import com.yuyutechnology.exchange.util.UidUtils;
  *
  */
 @Controller
-@RequestMapping
 public class UserController {
 	public static Logger logger = LogManager.getLogger(UserController.class);
 
@@ -597,29 +593,4 @@ public class UserController {
 		return rep;
 	}
 
-	@ResponseBody
-	@ApiOperation(value = "获取用户", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/getUser", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public GetUserResponse getUser(@RequestBody GetUserRequset getUserRequest) {
-		logger.info("========getUser : {}============");
-		GetUserResponse rep = new GetUserResponse();
-		if (getUserRequest.empty()) {
-			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
-		} else {
-			UserDTO userDTO = userManager.getUser(getUserRequest.getAreaCode(), getUserRequest.getUserPhone());
-			if (userDTO == null) {
-				logger.info(MessageConsts.PHONE_NOT_EXIST);
-				rep.setRetCode(RetCodeConsts.PHONE_NOT_EXIST);
-				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
-			} else {
-				rep.setUserDTO(userDTO);
-				logger.info("********Operation succeeded********");
-				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-			}
-		}
-		return rep;
-	}
 }

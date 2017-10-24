@@ -9,7 +9,7 @@ import org.apache.commons.lang.StringUtils;
  * @author suzan.wu
  *
  */
-public class GetUserRequset {
+public class GetUserRequest {
 	private String areaCode;
 	private String userPhone;
 
