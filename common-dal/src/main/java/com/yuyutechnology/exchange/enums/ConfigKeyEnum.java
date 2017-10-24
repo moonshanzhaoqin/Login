@@ -98,6 +98,10 @@ public enum ConfigKeyEnum {
 	 */
 	PAYPAL_RECHARGE("paypal_recharge"),
 	/**
+	 * 开启银行汇款充值Goldpay
+	 */
+	BANK_RECHARGE("bank_recharge"),
+	/**
 	 * 可售金本总量
 	 */
 	TOTALGDQCANBESOLD("total_gdq_can_be_sold"),
