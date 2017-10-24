@@ -60,7 +60,6 @@ import com.yuyutechnology.exchange.util.UidUtils;
  *
  */
 @Controller
-@RequestMapping
 public class UserController {
 	public static Logger logger = LogManager.getLogger(UserController.class);
 
@@ -597,29 +596,4 @@ public class UserController {
 		return rep;
 	}
 
-	@ResponseBody
-	@ApiOperation(value = "获取用户", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/getUser", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public GetUserResponse getUser(@RequestBody GetUserRequset getUserRequest) {
-		logger.info("========getUser : {}============");
-		GetUserResponse rep = new GetUserResponse();
-		if (getUserRequest.empty()) {
-			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
-		} else {
-			UserDTO userDTO = userManager.getUser(getUserRequest.getAreaCode(), getUserRequest.getUserPhone());
-			if (userDTO == null) {
-				logger.info(MessageConsts.PHONE_NOT_EXIST);
-				rep.setRetCode(RetCodeConsts.PHONE_NOT_EXIST);
-				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
-			} else {
-				rep.setUserDTO(userDTO);
-				logger.info("********Operation succeeded********");
-				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-			}
-		}
-		return rep;
-	}
 }
