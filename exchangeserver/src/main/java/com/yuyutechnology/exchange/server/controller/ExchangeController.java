@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
@@ -135,9 +136,25 @@ public class ExchangeController {
 		rep.setBase(reqMsg.getBase());
 		rep.setRateUpdateTime(oandaRatesManager.getExchangeRateUpdateDate());
 		rep.setExchangeRates(map);
-
 		return rep;
-
+	}
+	
+	@ApiOperation(value = "获取Goldpay汇率")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/getGoldRate")
+	public @ResponseBody GetExchangeRateResponse getExchangeRate(@PathVariable String token) {
+		GetExchangeRateResponse rep = new GetExchangeRateResponse();
+		LinkedHashMap<String, Double> map = oandaRatesManager.getExchangeRate(ServerConsts.CURRENCY_OF_GOLDPAY);
+		if (map.isEmpty()) {
+			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+			rep.setMessage("Failed to get exchange rate");
+			return rep;
+		}
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		rep.setBase(ServerConsts.CURRENCY_OF_GOLDPAY);
+		rep.setRateUpdateTime(oandaRatesManager.getExchangeRateUpdateDate());
+		rep.setExchangeRates(map);
+		return rep;
 	}
 
 	@ApiOperation(value = "兑换确认")
