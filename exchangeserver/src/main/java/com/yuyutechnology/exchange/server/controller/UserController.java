@@ -597,10 +597,10 @@ public class UserController {
 		return rep;
 	}
 
-	@ResponseEncryptBody
+	@ResponseBody
 	@ApiOperation(value = "获取用户", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/getUser", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public GetUserResponse getUser(@RequestDecryptBody GetUserRequset getUserRequest) {
+	public GetUserResponse getUser(@RequestBody GetUserRequset getUserRequest) {
 		logger.info("========getUser : {}============");
 		GetUserResponse rep = new GetUserResponse();
 		if (getUserRequest.empty()) {
