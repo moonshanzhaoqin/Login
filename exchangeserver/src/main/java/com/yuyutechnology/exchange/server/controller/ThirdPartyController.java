@@ -16,7 +16,7 @@ import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.manager.UserManager;
-import com.yuyutechnology.exchange.server.controller.request.GetUserRequset;
+import com.yuyutechnology.exchange.server.controller.request.GetUserRequest;
 import com.yuyutechnology.exchange.server.controller.response.GetUserResponse;
 
 /**
@@ -33,7 +33,7 @@ public class ThirdPartyController {
 	@ResponseBody
 	@ApiOperation(value = "获取用户", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/getUser", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public GetUserResponse getUser(@RequestBody GetUserRequset getUserRequest) {
+	public GetUserResponse getUser(@RequestBody GetUserRequest getUserRequest) {
 		logger.info("========getUser : {}============");
 		GetUserResponse rep = new GetUserResponse();
 		if (getUserRequest.empty()) {
