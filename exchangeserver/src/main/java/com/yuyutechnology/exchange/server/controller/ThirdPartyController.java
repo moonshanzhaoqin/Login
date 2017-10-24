@@ -6,6 +6,7 @@ package com.yuyutechnology.exchange.server.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +24,7 @@ import com.yuyutechnology.exchange.server.controller.response.GetUserResponse;
  * @author silent.sun
  *
  */
+@Controller
 public class ThirdPartyController {
 
 	public static Logger logger = LogManager.getLogger(ThirdPartyController.class);
