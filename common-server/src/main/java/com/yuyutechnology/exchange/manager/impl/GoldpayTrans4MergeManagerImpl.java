@@ -27,7 +27,6 @@ import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Exchange;
 import com.yuyutechnology.exchange.pojo.Transfer;
-import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.util.HttpClientUtils;
 import com.yuyutechnology.exchange.util.JsonBinder;
 import com.yuyutechnology.exchange.util.ResourceUtils;
