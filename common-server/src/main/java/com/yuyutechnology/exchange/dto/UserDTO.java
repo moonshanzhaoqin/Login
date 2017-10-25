@@ -14,7 +14,9 @@ public class UserDTO {
 	private String userName;
 	private String userPassword;
 	private String passwordSalt;
-	private String accountNum;
+	private Long goldpayId;
+	private String goldpayUserName;
+	private String goldpayAccount;
 
 	public Integer getUserId() {
 		return userId;
@@ -64,11 +66,28 @@ public class UserDTO {
 		this.passwordSalt = passwordSalt;
 	}
 
-	public String getAccountNum() {
-		return accountNum;
+	public Long getGoldpayId() {
+		return goldpayId;
 	}
 
-	public void setAccountNum(String accountNum) {
-		this.accountNum = accountNum;
+	public void setGoldpayId(Long goldpayId) {
+		this.goldpayId = goldpayId;
 	}
+
+	public String getGoldpayUserName() {
+		return goldpayUserName;
+	}
+
+	public void setGoldpayUserName(String goldpayUserName) {
+		this.goldpayUserName = goldpayUserName;
+	}
+
+	public String getGoldpayAccount() {
+		return goldpayAccount;
+	}
+
+	public void setGoldpayAccount(String goldpayAccount) {
+		this.goldpayAccount = goldpayAccount;
+	}
+
 }
