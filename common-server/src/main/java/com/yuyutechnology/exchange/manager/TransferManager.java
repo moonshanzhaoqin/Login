@@ -140,4 +140,6 @@ public interface TransferManager {
 	PageBean getRechargeList(int currentPage, String userPhone, String lowerAmount, String upperAmount,
 			String startTime, String endTime, String transferType) throws ParseException;
 
+	HashMap<String, String> transConfirm4TPPS(int userId, String transferId, String userPayPwd);
+
 }
