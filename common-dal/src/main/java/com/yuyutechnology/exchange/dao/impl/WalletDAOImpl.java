@@ -149,8 +149,14 @@ public class WalletDAOImpl implements WalletDAO {
 		}
 		WalletSeq walletSeq = new WalletSeq(userId, transferType, currency, amount, transactionId, new Date());
 		hibernateTemplate.save(walletSeq);
-		int update = updateWalletByUserIdAndCurrency(userId, currency, amount.abs(), capitalFlows,
-				walletSeq.getSeqId());
+		
+		int update = 0;
+		
+		if(!ServerConsts.CURRENCY_OF_GOLDPAY.equals(currency)){
+			update = updateWalletByUserIdAndCurrency(userId, currency, amount.abs(), capitalFlows,
+					walletSeq.getSeqId());
+		}
+		
 		if (update == 0) {
 			hibernateTemplate.delete(walletSeq);
 		}
