@@ -72,8 +72,6 @@ public class UserManagerImpl implements UserManager {
 	@Autowired
 	TransferDAO transferDAO;
 	@Autowired
-	WalletSeqDAO walletSeqDAO;
-	@Autowired
 	BindDAO bindDAO;
 	@Autowired
 	RedisDAO redisDAO;
@@ -99,8 +97,6 @@ public class UserManagerImpl implements UserManager {
 	ConfigManager configManager;
 	@Autowired
 	TransDetailsManager transDetailsManager;
-	@Autowired
-	CampaignManager campaignManager;
 	
 
 	@Autowired
