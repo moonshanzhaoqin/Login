@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -16,6 +17,7 @@ import com.yuyutechnology.exchange.dao.ExchangeDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
+import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.goldpay.msg.ConfirmTransactionS2C;
 import com.yuyutechnology.exchange.goldpay.msg.CreateGoldpayC2S;
 import com.yuyutechnology.exchange.goldpay.msg.CreateGoldpayS2C;
@@ -29,6 +31,7 @@ import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Exchange;
 import com.yuyutechnology.exchange.pojo.Transfer;
+import com.yuyutechnology.exchange.pojo.WalletSeq;
 import com.yuyutechnology.exchange.util.HttpClientUtils;
 import com.yuyutechnology.exchange.util.JsonBinder;
 import com.yuyutechnology.exchange.util.ResourceUtils;
@@ -42,6 +45,8 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 	BindDAO bindDAO;
 	@Autowired
 	WalletDAO walletDAO;
+	@Autowired
+	WalletSeqDAO walletSeqDAO;
 	@Autowired
 	ExchangeDAO exchangeDAO;
 	@Autowired
@@ -113,18 +118,27 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 
 		HashMap<String, String> result = null;
 
-		if (ServerConsts.CURRENCY_OF_GOLDPAY.equals(exchange.getCurrencyIn())) {
-			result = updateWalletByUserIdAndCurrency(systemUserId, exchange.getUserId(), exchange.getCurrencyIn(),
-					exchange.getAmountIn(), ServerConsts.TRANSFER_TYPE_EXCHANGE, exchange.getExchangeId(), false,
-					exchange.getGoldpayOrderId());
+		if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(exchange.getCurrencyIn())){
+			result = updateWalletByUserIdAndCurrency(
+					systemUserId,exchange.getUserId(),exchange.getCurrencyIn(),
+					exchange.getAmountIn(),ServerConsts.TRANSFER_TYPE_EXCHANGE,
+					exchange.getExchangeId(),false,exchange.getGoldpayOrderId());
+			
+			WalletSeq walletSeq = new WalletSeq(systemUserId, ServerConsts.TRANSFER_TYPE_EXCHANGE, 
+					exchange.getCurrencyIn(), exchange.getAmountIn(), exchange.getExchangeId(), new Date());
+			walletSeqDAO.addWalletSeq(walletSeq);
+			
 		}
-
-		if (ServerConsts.CURRENCY_OF_GOLDPAY.equals(exchange.getCurrencyOut())) {
-			result = updateWalletByUserIdAndCurrency(exchange.getUserId(), systemUserId, exchange.getCurrencyOut(),
-					exchange.getAmountOut(), ServerConsts.TRANSFER_TYPE_EXCHANGE, exchange.getExchangeId(), false,
-					exchange.getGoldpayOrderId());
+		
+		if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(exchange.getCurrencyOut())){
+			result = updateWalletByUserIdAndCurrency(
+					exchange.getUserId(),systemUserId,exchange.getCurrencyOut(),
+					exchange.getAmountOut(),ServerConsts.TRANSFER_TYPE_EXCHANGE,
+					exchange.getExchangeId(),false,exchange.getGoldpayOrderId());
+			WalletSeq walletSeq = new WalletSeq(exchange.getUserId(), ServerConsts.TRANSFER_TYPE_EXCHANGE, 
+					exchange.getCurrencyOut(), exchange.getAmountOut(), exchange.getExchangeId(), new Date());
+			walletSeqDAO.addWalletSeq(walletSeq);
 		}
-
 		if (result != null && !RetCodeConsts.RET_CODE_SUCCESS.equals(result.get("retCode"))) {
 			logger.warn(result.get("msg"));
 			exchange.setExchangeStatus(ServerConsts.EXCHANGE_STATUS_OF_INTERRUPTED);
