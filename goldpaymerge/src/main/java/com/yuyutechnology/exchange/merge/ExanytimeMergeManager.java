@@ -19,7 +19,7 @@ import com.yuyutechnology.exchange.dao.BindDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.goldpay.GoldpayManager;
-import com.yuyutechnology.exchange.goldpay.GoldpayUser;
+import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Wallet;
@@ -50,7 +50,7 @@ public class ExanytimeMergeManager {
 	public BigDecimal mergeExUserGoldpayToGoldpayServer(Integer userId, String areaCode, String userPhone) {
 
 		/* 用手机号创建Goldpay账号 */
-		GoldpayUser goldpayUser = goldpayManager.createGoldpay(areaCode, userPhone, false);
+		GoldpayUserDTO goldpayUser = goldpayManager.createGoldpay(areaCode, userPhone, false);
 		if (goldpayUser == null) {
 			logger.warn("Ex -> Goldpay: Ex : {},{} FAIL!---Can not create Goldpay.", userId, areaCode + userPhone);
 		} else {
@@ -58,10 +58,10 @@ public class ExanytimeMergeManager {
 			Bind bind = bindDAO.getBindByUserId(userId);
 			/* 绑定goldpay */
 			if (bind == null) {
-				bind=new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(), goldpayUser.getAccountNum());
+				bind=new Bind(userId, goldpayUser.getId()+"", goldpayUser.getUsername(), goldpayUser.getAccountNum());
 				bindDAO.updateBind(bind);
 			} else if (!StringUtils.equals(bind.getGoldpayAcount(), goldpayUser.getAccountNum())) {
-				bind.setGoldpayId(goldpayUser.getId());
+				bind.setGoldpayId(goldpayUser.getId()+"");
 				bind.setGoldpayName(goldpayUser.getUsername());
 				bind.setGoldpayAcount(goldpayUser.getAccountNum());
 				bindDAO.updateBind(bind);

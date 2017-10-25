@@ -9,7 +9,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import com.mangofactory.swagger.models.dto.jackson.SwaggerApiListingJsonSerializer;
+import com.yuyutechnology.exchange.goldpay.msg.CreateGoldpayC2S;
+import com.yuyutechnology.exchange.goldpay.msg.CreateGoldpayS2C;
+import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
+import com.yuyutechnology.exchange.goldpay.msg.Transfer2GoldpayC2S;
 import com.yuyutechnology.exchange.util.HttpClientUtils;
 import com.yuyutechnology.exchange.util.JsonBinder;
 import com.yuyutechnology.exchange.util.ResourceUtils;
@@ -58,15 +61,15 @@ public class GoldpayManager {
 	// return null;
 	// }
 
-	public GoldpayUser createGoldpay(String areaCode, String userPhone, boolean newUser) {
-		CreateGoldpayRequest createGoldpayRequest = new CreateGoldpayRequest(areaCode, userPhone, newUser);
+	public GoldpayUserDTO createGoldpay(String areaCode, String userPhone, boolean newUser) {
+		CreateGoldpayC2S createGoldpayRequest = new CreateGoldpayC2S(areaCode, userPhone, newUser);
 		String param = JsonBinder.getInstanceNonNull().toJson(createGoldpayRequest);
 		logger.info("param==={}", param);
 		String result = HttpClientUtils
 				.sendPost(ResourceUtils.getBundleValue4String("goldpay.url") + "member/createMember", param);
 		logger.info("result==={}", result);
 		if (StringUtils.isNotEmpty(result)) {
-			GoldpayInfo goldpayInfo = JsonBinder.getInstance().fromJson(result, GoldpayInfo.class);
+			CreateGoldpayS2C goldpayInfo = JsonBinder.getInstance().fromJson(result, CreateGoldpayS2C.class);
 			if (goldpayInfo != null && (goldpayInfo.getRetCode() == 1 || goldpayInfo.getRetCode() == 100004)) {// 成功
 				return goldpayInfo.getGoldpayUserDTO();
 			}
@@ -76,7 +79,7 @@ public class GoldpayManager {
 
 	@SuppressWarnings("unchecked")
 	public boolean transferGDQ2Goldpay(String accountNum, BigDecimal balance) {
-		Transfer2GoldpayRequset transfer2GoldpayRequset = new Transfer2GoldpayRequset();
+		Transfer2GoldpayC2S transfer2GoldpayRequset = new Transfer2GoldpayC2S();
 		transfer2GoldpayRequset.setBalance(balance.longValue());
 		transfer2GoldpayRequset.setComment("");
 		transfer2GoldpayRequset

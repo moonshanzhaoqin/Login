@@ -35,7 +35,7 @@ import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
 import com.yuyutechnology.exchange.goldpay.GoldpayManager;
-import com.yuyutechnology.exchange.goldpay.GoldpayUser;
+import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
@@ -130,9 +130,9 @@ public class UserManagerImpl implements UserManager {
 	 */
 	private void bindGoldpay(Integer userId) {
 		/* 创建Goldpay账号 */
-		GoldpayUser goldpayUser = goldpayManager.createGoldpay("", "", true);
+		GoldpayUserDTO goldpayUser = goldpayManager.createGoldpay("", "", true);
 		bindDAO.updateBind(
-				new Bind(userId, goldpayUser.getId(), goldpayUser.getUsername(), goldpayUser.getAccountNum()));
+				new Bind(userId, goldpayUser.getId()+"", goldpayUser.getUsername(), goldpayUser.getAccountNum()));
 	}
 
 	@Override

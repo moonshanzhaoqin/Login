@@ -1,19 +1,22 @@
-package com.yuyutechnology.exchange.goldpay.trans4merge;
+package com.yuyutechnology.exchange.goldpay.msg;
 
-public class GetGoldpayUserS2C {
-	
-	private Integer retCode;
+public class CreateGoldpayS2C {
+
+	private int retCode;
 	private GoldpayUserDTO goldpayUserDTO;
-	
-	public Integer getRetCode() {
+
+	public int getRetCode() {
 		return retCode;
 	}
-	public void setRetCode(Integer retCode) {
+
+	public void setRetCode(int retCode) {
 		this.retCode = retCode;
 	}
+
 	public GoldpayUserDTO getGoldpayUserDTO() {
 		return goldpayUserDTO;
 	}
+
 	public void setGoldpayUserDTO(GoldpayUserDTO goldpayUserDTO) {
 		this.goldpayUserDTO = goldpayUserDTO;
 	}

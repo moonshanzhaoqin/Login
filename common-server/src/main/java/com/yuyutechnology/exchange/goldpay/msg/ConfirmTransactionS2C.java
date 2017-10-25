@@ -1,4 +1,4 @@
-package com.yuyutechnology.exchange.goldpay.trans4merge;
+package com.yuyutechnology.exchange.goldpay.msg;
 
 public class ConfirmTransactionS2C {
 

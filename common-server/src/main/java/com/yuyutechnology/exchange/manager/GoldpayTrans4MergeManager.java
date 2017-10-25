@@ -2,7 +2,7 @@ package com.yuyutechnology.exchange.manager;
 
 import org.springframework.scheduling.annotation.Async;
 
-import com.yuyutechnology.exchange.goldpay.trans4merge.GoldpayUserDTO;
+import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
 
 public interface GoldpayTrans4MergeManager {
 
