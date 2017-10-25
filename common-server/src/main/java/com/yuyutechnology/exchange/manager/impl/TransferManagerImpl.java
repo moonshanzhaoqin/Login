@@ -1252,7 +1252,6 @@ public class TransferManagerImpl implements TransferManager {
 	}
 
 	@Override
-	@SuppressWarnings("unused")
 	public TransDetailsDTO getTransDetails(String transferId, int userId) {
 
 		Transfer transfer = transferDAO.getTransferById(transferId);

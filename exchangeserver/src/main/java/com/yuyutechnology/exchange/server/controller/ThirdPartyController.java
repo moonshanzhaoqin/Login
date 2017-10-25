@@ -57,4 +57,11 @@ public class ThirdPartyController {
 		}
 		return rep;
 	}
+	
+	public void transInit(){
+		
+	}
+	
+	
+	
 }

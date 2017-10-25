@@ -278,23 +278,28 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 
 			String exchangeId = exchangeDAO.createExchangeId(ServerConsts.TRANSFER_TYPE_EXCHANGE);
-			int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut,
-					new BigDecimal(result.get("out")), "-", ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
-			if (updateCount == 0) {// 余额不足
-				result.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
-				result.put("msg", "Insufficient balance");
-				return result;
-			}
-			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, new BigDecimal(result.get("in")), "+",
-					ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
 			// 系统账户
 			int systemUserId = userDAO.getSystemUser().getUserId();
-			// 加款
-			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyOut, new BigDecimal(result.get("out")), "+",
-					ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
-			// 扣款
-			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new BigDecimal(result.get("in")), "-",
-					ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+			
+			if(!ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut) 
+					&& !ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyIn)){
+				int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut,
+						new BigDecimal(result.get("out")), "-", ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+				if (updateCount == 0) {// 余额不足
+					result.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
+					result.put("msg", "Insufficient balance");
+					return result;
+				}
+				walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, new BigDecimal(result.get("in")), "+",
+						ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+
+				// 加款
+				walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyOut, new BigDecimal(result.get("out")), "+",
+						ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+				// 扣款
+				walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new BigDecimal(result.get("in")), "-",
+						ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+			}
 			
 			String goldpayOrderId = null;
 			if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut) || 
@@ -319,7 +324,6 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			exchange.setExchangeStatus(ServerConsts.EXCHANGE_STATUS_OF_PROCESS);
 			exchangeDAO.addExchange(exchange);
 
-			//s
 			goldpayTrans4MergeManager.updateWallet4GoldpayExchange(exchangeId, systemUserId);
 			
 			// 添加累计金额

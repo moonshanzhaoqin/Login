@@ -17,6 +17,7 @@ import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.goldpay.trans4merge.ConfirmTransactionS2C;
+import com.yuyutechnology.exchange.goldpay.trans4merge.CreateTransactionC2S;
 import com.yuyutechnology.exchange.goldpay.trans4merge.GetGoldpayOrderIdC2S;
 import com.yuyutechnology.exchange.goldpay.trans4merge.GetGoldpayOrderIdS2C;
 import com.yuyutechnology.exchange.goldpay.trans4merge.GetGoldpayUserC2S;
@@ -121,6 +122,36 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		
 	}
 	
+	public void transInit(){
+		String goldpayOrderId = getGoldpayOrderId();
+		CreateTransactionC2S createTransactionC2S = new CreateTransactionC2S();
+		
+		String result = HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("goldpay.url") 
+				+ "trans/getOrderId",JsonBinder.getInstance().toJson(createTransactionC2S));
+		logger.info("result : {}",result);
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 
 	private HashMap<String, String> updateWalletByUserIdAndCurrency(Integer payerId,
@@ -162,18 +193,19 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 				}
 				
 				result.put("goldpayOrderId", goldpayOrderId);
+			}else {
+				//exchange时为false
+				if(isUpdateWallet){
+					//扣款
+					walletDAO.updateWalletByUserIdAndCurrency(payerId,currency, amount, 
+							"-", transferType,transactionId);
+					//加款
+					walletDAO.updateWalletByUserIdAndCurrency(payeeId,currency, amount, 
+							"+", transferType,transactionId);
+				}
+
 			}
 			
-			//exchange时为false
-			if(isUpdateWallet){
-				//扣款
-				walletDAO.updateWalletByUserIdAndCurrency(payerId,currency, amount, 
-						"-", transferType,transactionId);
-				//加款
-				walletDAO.updateWalletByUserIdAndCurrency(payeeId,currency, amount, 
-						"+", transferType,transactionId);
-			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("error : {}",e.toString());
@@ -210,5 +242,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		return confirmTransactionS2C.getRetCode();
 		
 	}
+	
+	
 
 }
