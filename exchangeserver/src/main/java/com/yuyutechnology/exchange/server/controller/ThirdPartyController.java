@@ -19,6 +19,8 @@ import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.GetUserRequest;
 import com.yuyutechnology.exchange.server.controller.response.GetUserResponse;
+import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
+import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 
 /**
  * @author silent.sun
@@ -32,10 +34,10 @@ public class ThirdPartyController {
 	@Autowired
 	UserManager userManager;
 	
-	@ResponseBody
+	@ResponseEncryptBody
 	@ApiOperation(value = "获取用户", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/getUser", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public GetUserResponse getUser(@RequestBody GetUserRequest getUserRequest) {
+	public GetUserResponse getUser(@RequestDecryptBody GetUserRequest getUserRequest) {
 		logger.info("========getUser : {}============");
 		GetUserResponse rep = new GetUserResponse();
 		if (getUserRequest.empty()) {
