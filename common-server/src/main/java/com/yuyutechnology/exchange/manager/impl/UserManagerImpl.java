@@ -34,7 +34,6 @@ import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
-import com.yuyutechnology.exchange.goldpay.GoldpayManager;
 import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
@@ -73,8 +72,6 @@ public class UserManagerImpl implements UserManager {
 	@Autowired
 	TransferDAO transferDAO;
 	@Autowired
-	WalletSeqDAO walletSeqDAO;
-	@Autowired
 	BindDAO bindDAO;
 	@Autowired
 	RedisDAO redisDAO;
@@ -91,7 +88,7 @@ public class UserManagerImpl implements UserManager {
 	@Autowired
 	SmsManager smsManager;
 	@Autowired
-	GoldpayManager goldpayManager;
+	GoldpayTrans4MergeManager goTrans4MergeManager;
 	@Autowired
 	PushManager pushManager;
 	@Autowired
@@ -100,8 +97,6 @@ public class UserManagerImpl implements UserManager {
 	ConfigManager configManager;
 	@Autowired
 	TransDetailsManager transDetailsManager;
-	@Autowired
-	CampaignManager campaignManager;
 	
 
 	@Autowired
@@ -130,7 +125,7 @@ public class UserManagerImpl implements UserManager {
 	 */
 	private void bindGoldpay(Integer userId) {
 		/* 创建Goldpay账号 */
-		GoldpayUserDTO goldpayUser = goldpayManager.createGoldpay("", "", true);
+		GoldpayUserDTO goldpayUser = goTrans4MergeManager.createGoldpay("", "", true);
 		bindDAO.updateBind(
 				new Bind(userId, goldpayUser.getId()+"", goldpayUser.getUsername(), goldpayUser.getAccountNum()));
 	}

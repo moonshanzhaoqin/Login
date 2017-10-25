@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
-import com.yuyutechnology.exchange.goldpay.GoldpayManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.UserManager;
@@ -23,9 +22,6 @@ public class CommonManagerTest extends BaseSpringJunit4 {
 	
 	@Autowired
 	ConfigManager configManager;
-	
-	@Autowired
-	GoldpayManager goldpayManager;
 	
 	@Autowired
 	UserManager userManager;
