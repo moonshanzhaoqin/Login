@@ -51,7 +51,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 	public GoldpayUserDTO getGoldpayUserInfo(Integer exUserId){
 		Bind bind = bindDAO.getBindByUserId(exUserId);
 		GetGoldpayUserC2S param = new GetGoldpayUserC2S();
-		param.setKey(bind.getGoldpayAcount());
+		param.setAccountNum(bind.getGoldpayAcount());
 		String result = HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("goldpay.url") 
 				+ "member/getMemberInfo",JsonBinder.getInstance().toJson(param));
 		GetGoldpayUserS2C getGoldpayUserS2C = JsonBinder.
