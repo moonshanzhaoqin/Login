@@ -22,7 +22,6 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
-import com.yuyutechnology.exchange.goldpay.GoldpayManager;
 import com.yuyutechnology.exchange.mail.MailManager;
 import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
@@ -74,8 +73,6 @@ public class UserController {
 	ConfigManager configManager;
 	@Autowired
 	CampaignManager campaignManager;
-	@Autowired
-	GoldpayManager goldpayManager;
 
 	@ResponseEncryptBody
 	@ApiOperation(value = "功能模块的可用性", httpMethod = "POST", notes = "")

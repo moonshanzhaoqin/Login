@@ -7,7 +7,6 @@ import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
-import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Friend;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.sms.SendMessageResponse;

@@ -15,4 +15,6 @@ public interface GoldpayTrans4MergeManager {
 	
 	@Async
 	void updateWallet4GoldpayExchange(String exchangeId,Integer systemUserId);
+
+	GoldpayUserDTO createGoldpay(String areaCode, String userPhone, boolean newUser);
 }

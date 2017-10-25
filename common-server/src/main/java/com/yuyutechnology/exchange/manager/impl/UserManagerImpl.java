@@ -34,7 +34,6 @@ import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
-import com.yuyutechnology.exchange.goldpay.GoldpayManager;
 import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
@@ -91,7 +90,7 @@ public class UserManagerImpl implements UserManager {
 	@Autowired
 	SmsManager smsManager;
 	@Autowired
-	GoldpayManager goldpayManager;
+	GoldpayTrans4MergeManager goTrans4MergeManager;
 	@Autowired
 	PushManager pushManager;
 	@Autowired
@@ -130,7 +129,7 @@ public class UserManagerImpl implements UserManager {
 	 */
 	private void bindGoldpay(Integer userId) {
 		/* 创建Goldpay账号 */
-		GoldpayUserDTO goldpayUser = goldpayManager.createGoldpay("", "", true);
+		GoldpayUserDTO goldpayUser = goTrans4MergeManager.createGoldpay("", "", true);
 		bindDAO.updateBind(
 				new Bind(userId, goldpayUser.getId()+"", goldpayUser.getUsername(), goldpayUser.getAccountNum()));
 	}
@@ -726,7 +725,9 @@ public class UserManagerImpl implements UserManager {
 			userDTO.setUserPassword(user.getUserPassword());
 			userDTO.setPasswordSalt(user.getPasswordSalt());
 			Bind bind = bindDAO.getBindByUserId(user.getUserId());
-			userDTO.setAccountNum(bind == null ? "" : bind.getGoldpayAcount());
+			userDTO.setGoldpayAccount(bind == null ? "" : bind.getGoldpayAcount());
+			userDTO.setGoldpayId(bind == null ? 0L : Long.valueOf(bind.getGoldpayId()));
+			userDTO.setGoldpayUserName(bind == null? "" : bind.getGoldpayName());
 			return userDTO;
 		}
 		return null;
