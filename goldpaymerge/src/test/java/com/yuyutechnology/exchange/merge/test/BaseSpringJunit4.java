@@ -1,4 +1,4 @@
-package com.yuyutechnology.exchange.merge;
+package com.yuyutechnology.exchange.merge.test;
 /**
  * @(#)BaseSpringJunit4Test.java ,Created on Nov 19, 2012
  * 
