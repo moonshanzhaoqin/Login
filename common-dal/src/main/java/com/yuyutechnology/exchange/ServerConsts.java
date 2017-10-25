@@ -112,9 +112,9 @@ public class ServerConsts {
 	 */
 	public static final int TRANSFER_STATUS_OF_REFUND = 3;
 	
-	public static final int EXCHANGE_STATUS_OF_INITIALIZATION = 0;
-	public static final int EXCHANGE_STATUS_OF_PROCESS = 1;
-	public static final int EXCHANGE_STATUS_OF_COMPLETED = 2;
+	public static final int EXCHANGE_STATUS_OF_INITIALIZATION = 1;
+	public static final int EXCHANGE_STATUS_OF_PROCESS = 2;
+	public static final int EXCHANGE_STATUS_OF_COMPLETED = 0;
 	public static final int EXCHANGE_STATUS_OF_INTERRUPTED = 3;
 
 	// /**

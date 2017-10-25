@@ -376,7 +376,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 
 		List<Object> values = new ArrayList<Object>();
 		values.add(userId);
-		values.add(0);
+		values.add(ServerConsts.EXCHANGE_STATUS_OF_COMPLETED);
 
 		if (!period.equals("all")) {
 			switch (period) {
