@@ -131,6 +131,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		logger.info("result : {}",result);
 		
 		
+		
 	}
 	
 	
@@ -193,17 +194,16 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 				}
 				
 				result.put("goldpayOrderId", goldpayOrderId);
-			}else {
-				//exchange时为false
-				if(isUpdateWallet){
-					//扣款
-					walletDAO.updateWalletByUserIdAndCurrency(payerId,currency, amount, 
-							"-", transferType,transactionId);
-					//加款
-					walletDAO.updateWalletByUserIdAndCurrency(payeeId,currency, amount, 
-							"+", transferType,transactionId);
-				}
-
+			}
+			
+			//exchange时为false
+			if(isUpdateWallet){
+				//扣款
+				walletDAO.updateWalletByUserIdAndCurrency(payerId,currency, amount, 
+						"-", transferType,transactionId);
+				//加款
+				walletDAO.updateWalletByUserIdAndCurrency(payeeId,currency, amount, 
+						"+", transferType,transactionId);
 			}
 			
 		} catch (Exception e) {
