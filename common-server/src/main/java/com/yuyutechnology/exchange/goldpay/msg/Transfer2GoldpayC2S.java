@@ -1,6 +1,6 @@
-package com.yuyutechnology.exchange.goldpay;
+package com.yuyutechnology.exchange.goldpay.msg;
 
-public class Transfer2GoldpayRequset {
+public class Transfer2GoldpayC2S {
 	private String toAccountNum;
 	private String fromAccountNum;
 	private String token;

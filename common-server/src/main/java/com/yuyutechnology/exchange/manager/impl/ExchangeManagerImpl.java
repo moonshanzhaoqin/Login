@@ -23,7 +23,7 @@ import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
-import com.yuyutechnology.exchange.goldpay.trans4merge.GoldpayUserDTO;
+import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
@@ -278,23 +278,29 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 
 			String exchangeId = exchangeDAO.createExchangeId(ServerConsts.TRANSFER_TYPE_EXCHANGE);
-			int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut,
-					new BigDecimal(result.get("out")), "-", ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
-			if (updateCount == 0) {// 余额不足
-				result.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
-				result.put("msg", "Insufficient balance");
-				return result;
-			}
-			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, new BigDecimal(result.get("in")), "+",
-					ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
 			// 系统账户
 			int systemUserId = userDAO.getSystemUser().getUserId();
-			// 加款
-			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyOut, new BigDecimal(result.get("out")), "+",
-					ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
-			// 扣款
-			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new BigDecimal(result.get("in")), "-",
-					ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+			
+			if(!ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyIn) 
+					&& !ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut)){
+				
+				int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut,
+						new BigDecimal(result.get("out")), "-", ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+				if (updateCount == 0) {// 余额不足
+					result.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
+					result.put("msg", "Insufficient balance");
+					return result;
+				}
+				walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, new BigDecimal(result.get("in")), "+",
+						ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+
+				// 加款
+				walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyOut, new BigDecimal(result.get("out")), "+",
+						ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+				// 扣款
+				walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new BigDecimal(result.get("in")), "-",
+						ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+			}
 			
 			String goldpayOrderId = null;
 			if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut) || 

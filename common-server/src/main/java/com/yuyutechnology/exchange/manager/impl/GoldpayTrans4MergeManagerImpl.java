@@ -16,13 +16,13 @@ import com.yuyutechnology.exchange.dao.ExchangeDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
-import com.yuyutechnology.exchange.goldpay.trans4merge.ConfirmTransactionS2C;
-import com.yuyutechnology.exchange.goldpay.trans4merge.GetGoldpayOrderIdC2S;
-import com.yuyutechnology.exchange.goldpay.trans4merge.GetGoldpayOrderIdS2C;
-import com.yuyutechnology.exchange.goldpay.trans4merge.GetGoldpayUserC2S;
-import com.yuyutechnology.exchange.goldpay.trans4merge.GetGoldpayUserS2C;
-import com.yuyutechnology.exchange.goldpay.trans4merge.GoldpayTransactionC2S;
-import com.yuyutechnology.exchange.goldpay.trans4merge.GoldpayUserDTO;
+import com.yuyutechnology.exchange.goldpay.msg.ConfirmTransactionS2C;
+import com.yuyutechnology.exchange.goldpay.msg.GetGoldpayOrderIdC2S;
+import com.yuyutechnology.exchange.goldpay.msg.GetGoldpayOrderIdS2C;
+import com.yuyutechnology.exchange.goldpay.msg.GetGoldpayUserC2S;
+import com.yuyutechnology.exchange.goldpay.msg.GetGoldpayUserS2C;
+import com.yuyutechnology.exchange.goldpay.msg.GoldpayTransactionC2S;
+import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Exchange;
@@ -51,7 +51,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 	public GoldpayUserDTO getGoldpayUserInfo(Integer exUserId){
 		Bind bind = bindDAO.getBindByUserId(exUserId);
 		GetGoldpayUserC2S param = new GetGoldpayUserC2S();
-		param.setKey(bind.getGoldpayAcount());
+		param.setAccountNum(bind.getGoldpayAcount());
 		String result = HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("goldpay.url") 
 				+ "member/getMemberInfo",JsonBinder.getInstance().toJson(param));
 		GetGoldpayUserS2C getGoldpayUserS2C = JsonBinder.

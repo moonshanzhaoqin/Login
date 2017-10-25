@@ -1,6 +1,6 @@
-package com.yuyutechnology.exchange.goldpay;
+package com.yuyutechnology.exchange.goldpay.msg;
 
-public class CreateGoldpayRequest {
+public class CreateGoldpayC2S {
 	private String areaCode;
 	private String mobile;
 	private boolean newUser;
@@ -29,7 +29,7 @@ public class CreateGoldpayRequest {
 		this.newUser = newUser;
 	}
 
-	public CreateGoldpayRequest(String areaCode, String mobile, boolean newUser) {
+	public CreateGoldpayC2S(String areaCode, String mobile, boolean newUser) {
 		super();
 		this.areaCode = areaCode;
 		this.mobile = mobile;

@@ -1,18 +1,26 @@
-package com.yuyutechnology.exchange.goldpay;
+/**
+ * 
+ */
+package com.yuyutechnology.exchange.goldpay.msg;
 
-public class GoldpayUser {
-	private String id;
+/**
+ * @author silent.sun
+ *
+ */
+public class GoldpayUserDTO {
+
+	private Long id;
 	private String username;
-	private String email;
+	private Long balance;
 	private String accountNum;
 	private String areaCode;
 	private String mobile;
-
-	public String getId() {
+	
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -24,12 +32,12 @@ public class GoldpayUser {
 		this.username = username;
 	}
 
-	public String getEmail() {
-		return email;
+	public Long getBalance() {
+		return balance;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setBalance(Long balance) {
+		this.balance = balance;
 	}
 
 	public String getAccountNum() {
