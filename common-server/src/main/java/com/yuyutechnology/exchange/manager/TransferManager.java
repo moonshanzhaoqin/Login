@@ -22,7 +22,7 @@ public interface TransferManager {
 	 * @param transferComment
 	 * @return
 	 */
-	HashMap<String, String> transferInitiate(int payerId, int payeeId, String currency,
+	HashMap<String, String> transferInitiate(int userId, String areaCode, String userPhone, String currency,
 			BigDecimal amount, String transferComment, int noticeId);
 
 	/**
@@ -141,5 +141,8 @@ public interface TransferManager {
 			String startTime, String endTime, String transferType) throws ParseException;
 
 	HashMap<String, String> transConfirm4TPPS(int userId, String transferId, String userPayPwd);
+	
+	HashMap<String, String> transferInitiate(int payerId, int payeeId, String currency,
+			BigDecimal amount, String transferComment, int noticeId);
 
 }
