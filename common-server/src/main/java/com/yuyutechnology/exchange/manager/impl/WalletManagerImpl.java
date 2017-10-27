@@ -14,6 +14,8 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BadAccountDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
+import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
+import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.manager.WalletManager;
 import com.yuyutechnology.exchange.pojo.BadAccount;
@@ -33,6 +35,8 @@ public class WalletManagerImpl implements WalletManager {
 
 	@Autowired
 	OandaRatesManager oandaRatesManager;
+	@Autowired
+	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
 
 	public static Logger logger = LogManager.getLogger(WalletManagerImpl.class);
 
@@ -59,7 +63,16 @@ public class WalletManagerImpl implements WalletManager {
 
 				totalUSDAmoumt = totalUSDAmoumt.add(num);
 
-			} else {
+			}else if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(wallet.getCurrency().getCurrency())){
+				GoldpayUserDTO dto = goldpayTrans4MergeManager.getGoldpayUserInfo(userId);
+				BigDecimal num = oandaRatesManager
+						.getDefaultCurrencyAmount(ServerConsts.CURRENCY_OF_GOLDPAY, new BigDecimal(dto.getBalance()+""))
+						.setScale(4, BigDecimal.ROUND_DOWN);
+
+				logger.info("{} {} to {} USD", wallet.getBalance(), ServerConsts.CURRENCY_OF_GOLDPAY, num);
+
+				totalUSDAmoumt = totalUSDAmoumt.add(num);
+			}else {
 				totalUSDAmoumt = totalUSDAmoumt.add(wallet.getBalance());
 			}
 		}
