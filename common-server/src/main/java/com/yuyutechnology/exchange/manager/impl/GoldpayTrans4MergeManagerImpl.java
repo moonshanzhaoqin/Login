@@ -109,6 +109,9 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 			logger.warn(result.get("msg"));
 			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_PROCESSING);
 			transferDAO.updateTransfer(transfer);
+		}else{
+			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+			transferDAO.updateTransfer(transfer);
 		}
 	}
 
