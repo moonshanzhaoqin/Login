@@ -6,7 +6,6 @@ package com.yuyutechnology.exchange.server.controller;
 import java.math.BigDecimal;
 import java.util.HashMap;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,12 +79,6 @@ public class ThirdPartyController {
 
 		TransInitResponse rep = new TransInitResponse();
 
-		if (StringUtils.isEmpty(reqMsg.getAreaCode()) || StringUtils.isEmpty(reqMsg.getUserPhone())) {
-			logger.warn("Phone number is empty");
-			rep.setRetCode(RetCodeConsts.TRANSFER_PHONE_NUMBER_IS_EMPTY);
-			rep.setMessage("Phone number is empty");
-			return rep;
-		}
 		// 装张金额上限
 		if (!reqMsg.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY) && reqMsg.getAmount() < 0.0001) {
 			logger.warn("The input amount is less than the minimum amount");
@@ -106,8 +99,8 @@ public class ThirdPartyController {
 			return rep;
 		}
 
-		HashMap<String, String> map = transferManager.transferInitiate(reqMsg.getUserId(), reqMsg.getAreaCode(),
-				reqMsg.getUserPhone(), reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())),
+		HashMap<String, String> map = transferManager.transferInitiate(reqMsg.getPayerId(), reqMsg.getPayeeId(),
+				 reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())),
 				reqMsg.getTransferComment(), 0);
 
 		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {

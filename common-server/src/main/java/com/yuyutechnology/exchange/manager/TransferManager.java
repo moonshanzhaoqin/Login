@@ -22,7 +22,7 @@ public interface TransferManager {
 	 * @param transferComment
 	 * @return
 	 */
-	HashMap<String, String> transferInitiate(int userId, String areaCode, String userPhone, String currency,
+	HashMap<String, String> transferInitiate(int payerId, int payeeId, String currency,
 			BigDecimal amount, String transferComment, int noticeId);
 
 	/**

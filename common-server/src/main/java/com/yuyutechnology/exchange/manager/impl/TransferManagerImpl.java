@@ -105,16 +105,16 @@ public class TransferManagerImpl implements TransferManager {
 
 	@SuppressWarnings("serial")
 	@Override
-	public HashMap<String, String> transferInitiate(final int userId, String areaCode, String userPhone,
+	public HashMap<String, String> transferInitiate(final int payerId, int payeeId,
 			final String currency, final BigDecimal amount, String transferComment, int noticeId) {
 
 		// 干扰条件过滤
 		LinkedHashMap<String, Object> args = new LinkedHashMap<>();
 		args.put("isTradableCurrency", currency);
-		args.put("isAccountFrozened", userId);
+		args.put("isAccountFrozened", payerId);
 		args.put("isInsufficientBalance", new HashMap<String, Object>() {
 			{
-				put("userId", userId);
+				put("userId", payerId);
 				put("currency", currency);
 				put("amount", amount);
 			}
@@ -124,14 +124,14 @@ public class TransferManagerImpl implements TransferManager {
 			return map;
 		}
 
-		map = checkTransferLimit(currency, amount, userId);
+		map = checkTransferLimit(currency, amount, payerId);
 		if (!map.isEmpty()) {
 			return map;
 		}
 
-		User receiver = userDAO.getUserByUserPhone(areaCode, userPhone);
+		User receiver = userDAO.getUser(payeeId);
 		// 不用给自己转账
-		if (receiver != null && userId == receiver.getUserId()) {
+		if (receiver != null && payerId == receiver.getUserId()) {
 			logger.warn("Prohibit transfers to yourself");
 			map.put("retCode", RetCodeConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
 			map.put("msg", "Prohibit transfers to yourself");
@@ -160,32 +160,20 @@ public class TransferManagerImpl implements TransferManager {
 		transfer.setTransferAmount(amount);
 		transfer.setTransferComment(transferComment);
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
-		transfer.setUserFrom(userId);
-		transfer.setAreaCode(areaCode);
-		transfer.setPhone(userPhone);
+		transfer.setUserFrom(payerId);
+		transfer.setAreaCode(receiver.getAreaCode());
+		transfer.setPhone(receiver.getUserPhone());
 		transfer.setGoldpayOrderId(goldpayOrderId);
 
-		// 判断接收人是否是已注册账号
-		if (receiver != null) {
-			transfer.setUserTo(receiver.getUserId());
-			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_TRANSACTION);
-			// 判断对方是否有该种货币
-			commonManager.checkAndUpdateWallet(receiver.getUserId(), currency);
+		transfer.setUserTo(receiver.getUserId());
+		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+		// 判断对方是否有该种货币
+		commonManager.checkAndUpdateWallet(receiver.getUserId(), currency);
 
-			// add by Niklaus.chi at 2017/07/07
-			transDetailsManager.addTransDetails(transferId, userId, receiver.getUserId(), receiver.getUserName(),
-					areaCode, userPhone, currency, amount, transferComment, ServerConsts.TRANSFER_TYPE_TRANSACTION);
+		// add by Niklaus.chi at 2017/07/07
+		transDetailsManager.addTransDetails(transferId, payerId, receiver.getUserId(), receiver.getUserName(),
+				receiver.getAreaCode(), receiver.getUserPhone(), currency, amount, transferComment, ServerConsts.TRANSFER_TYPE_TRANSACTION);
 
-		} else {
-			User systemUser = userDAO.getSystemUser();
-			transfer.setUserTo(systemUser.getUserId());
-			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_OUT_INVITE);
-
-			// add by Niklaus.chi at 2017/07/07
-			transDetailsManager.addTransDetails(transferId, userId, null, null, areaCode, userPhone, currency, amount,
-					transferComment, ServerConsts.TRANSFER_TYPE_OUT_INVITE);
-
-		}
 		transfer.setNoticeId(noticeId);
 		// 保存
 		transferDAO.addTransfer(transfer);
