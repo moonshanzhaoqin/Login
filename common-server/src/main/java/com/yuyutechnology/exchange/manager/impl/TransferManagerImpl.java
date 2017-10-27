@@ -1004,6 +1004,12 @@ public class TransferManagerImpl implements TransferManager {
 		transfer.setPhone(userPhone);
 		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		transfer.setNoticeId(noticeId);
+		
+		if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currency)){
+			String goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
+			transfer.setGoldpayOrderId(goldpayOrderId);
+		}
+		
 		// 保存
 		transferDAO.addTransfer(transfer);
 
