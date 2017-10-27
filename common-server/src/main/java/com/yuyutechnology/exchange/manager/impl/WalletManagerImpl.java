@@ -53,23 +53,21 @@ public class WalletManagerImpl implements WalletManager {
 
 		for (Wallet wallet : list) {
 
-			if (!wallet.getCurrency().getCurrency().equals(ServerConsts.CURRENCY_OF_USD)) {
-
-				BigDecimal num = oandaRatesManager
-						.getDefaultCurrencyAmount(wallet.getCurrency().getCurrency(), wallet.getBalance())
-						.setScale(4, BigDecimal.ROUND_DOWN);
-
-				logger.info("{} {} to {} USD", wallet.getBalance(), wallet.getCurrency().getCurrency(), num);
-
-				totalUSDAmoumt = totalUSDAmoumt.add(num);
-
-			}else if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(wallet.getCurrency().getCurrency())){
+			if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(wallet.getCurrency().getCurrency())){
 				GoldpayUserDTO dto = goldpayTrans4MergeManager.getGoldpayUserInfo(userId);
 				BigDecimal num = oandaRatesManager
 						.getDefaultCurrencyAmount(ServerConsts.CURRENCY_OF_GOLDPAY, new BigDecimal(dto.getBalance()+""))
 						.setScale(4, BigDecimal.ROUND_DOWN);
 
-				logger.info("{} {} to {} USD", wallet.getBalance(), ServerConsts.CURRENCY_OF_GOLDPAY, num);
+				logger.info("{} {} to {} USD", dto.getBalance(), ServerConsts.CURRENCY_OF_GOLDPAY, num);
+
+				totalUSDAmoumt = totalUSDAmoumt.add(num);
+			}else if(!wallet.getCurrency().getCurrency().equals(ServerConsts.CURRENCY_OF_USD)){
+				BigDecimal num = oandaRatesManager
+						.getDefaultCurrencyAmount(wallet.getCurrency().getCurrency(), wallet.getBalance())
+						.setScale(4, BigDecimal.ROUND_DOWN);
+
+				logger.info("{} {} to {} USD", wallet.getBalance(), wallet.getCurrency().getCurrency(), num);
 
 				totalUSDAmoumt = totalUSDAmoumt.add(num);
 			}else {
