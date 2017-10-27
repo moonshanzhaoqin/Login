@@ -641,7 +641,7 @@ public class TransferManagerImpl implements TransferManager {
 		transfer2.setGoldpayOrderId(goldpayOrderId);
 		transferDAO.addTransfer(transfer2);
 		/////////////////////////// end////////////////////////////
-
+		
 		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId2);
 		// walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(),
 		// transfer.getCurrency(),

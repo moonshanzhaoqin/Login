@@ -101,6 +101,10 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 	@Override
 	public void updateWallet4GoldpayTrans(String transferId) {
 		Transfer transfer = transferDAO.getTransferById(transferId);
+		while (transfer == null) {
+			updateWallet4GoldpayTrans(transferId);
+			
+		}
 		HashMap<String, String> result = updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getUserTo(),
 				transfer.getCurrency(), transfer.getTransferAmount(), transfer.getTransferType(), transferId, true,
 				transfer.getGoldpayOrderId());
