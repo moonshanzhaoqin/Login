@@ -49,7 +49,7 @@ public class ThirdPartyController {
 	
 	@ResponseEncryptBody
 	@ApiOperation(value = "获取用户", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/getUser", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	@RequestMapping(value = "/3rd/getUser", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public GetUserResponse getUser(@RequestDecryptBody GetUserRequest getUserRequest) {
 		logger.info("========getUser : {}============");
 		GetUserResponse rep = new GetUserResponse();
@@ -73,8 +73,9 @@ public class ThirdPartyController {
 		return rep;
 	}
 	
+	@ResponseEncryptBody
 	@ApiOperation(value = "交易初始化")
-	@RequestMapping(method = RequestMethod.POST, value = "/transfer/transferInitiate")
+	@RequestMapping(method = RequestMethod.POST, value = "/3rd/transferInitiate")
 	public TransInitResponse transInit(TransInitRequest reqMsg) {
 
 		TransInitResponse rep = new TransInitResponse();
@@ -120,8 +121,9 @@ public class ThirdPartyController {
 
 	}
 
+	@ResponseEncryptBody
 	@ApiOperation(value = "交易确认")
-	@RequestMapping(method = RequestMethod.POST, value = "/transfer/transferConfirm")
+	@RequestMapping(method = RequestMethod.POST, value = "/3rd/transferConfirm")
 	public TransConfirmResponse transConfirm(TransConfirmRequest reqMsg) {
 		
 		TransConfirmResponse rep = new TransConfirmResponse();
