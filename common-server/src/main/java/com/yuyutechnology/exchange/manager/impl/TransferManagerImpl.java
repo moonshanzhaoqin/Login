@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -642,7 +643,14 @@ public class TransferManagerImpl implements TransferManager {
 		transferDAO.addTransfer(transfer2);
 		/////////////////////////// end////////////////////////////
 		
-		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId2);
+		try {
+			TimeUnit.SECONDS.sleep(5);
+			goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId2);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		// walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(),
 		// transfer.getCurrency(),
 		// transfer.getTransferAmount(), "-",
