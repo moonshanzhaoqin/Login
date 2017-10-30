@@ -206,7 +206,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 				// 加款
 				walletDAO.updateWalletByUserIdAndCurrency(payeeId, currency, amount, "+", transferType, transactionId);
 			}
-
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("error : {}", e.toString());
@@ -243,5 +243,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		return confirmTransactionS2C.getRetCode();
 
 	}
+	
+	
 
 }
