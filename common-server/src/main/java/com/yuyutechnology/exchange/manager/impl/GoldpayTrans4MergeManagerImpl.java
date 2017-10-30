@@ -102,9 +102,10 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 	public void updateWallet4GoldpayTrans(String transferId) {
 		Transfer transfer = transferDAO.getTransferById(transferId);
 		int i= 0;
-		while (transfer == null && i<5) {
+		while (transfer == null && i<10) {
 			transfer = transferDAO.getTransferById(transferId);
 			i++;
+			logger.info("**************Request data for the {} time**********************",i+1);
 		}
 		HashMap<String, String> result = updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getUserTo(),
 				transfer.getCurrency(), transfer.getTransferAmount(), transfer.getTransferType(), transferId, true,

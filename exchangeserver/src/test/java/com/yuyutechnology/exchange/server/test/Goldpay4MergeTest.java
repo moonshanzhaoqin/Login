@@ -8,9 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
+import com.yuyutechnology.exchange.manager.TransferManager;
 
 public class Goldpay4MergeTest  extends BaseSpringJunit4 {
 
+	@Autowired
+	TransferManager transferManager;
 	@Autowired
 	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
 	
@@ -24,6 +27,15 @@ public class Goldpay4MergeTest  extends BaseSpringJunit4 {
 //				BigDecimal.TEN, ServerConsts.TRANSFER_TYPE_EXCHANGE, 
 //				"2017042109410T002143", true, null);
 //		System.out.println("goldpayOrderId : "+ result.get("goldpayOrderId"));
+		
+		
+//		HashMap<String, String> request = transferManager.transferInitiate(16, "+090", "12345678963", ServerConsts.CURRENCY_OF_GOLDPAY, BigDecimal.TEN, null, 0);
+//		String result = transferManager.transferConfirm(16,request.get("transferId") );
+//		System.out.println("result is : "+result);
+		
+		transferManager.systemRefundBatch();
+		
+
 
 	}
 	
