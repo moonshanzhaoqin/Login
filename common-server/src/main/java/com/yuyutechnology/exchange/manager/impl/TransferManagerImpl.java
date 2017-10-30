@@ -643,13 +643,7 @@ public class TransferManagerImpl implements TransferManager {
 		transferDAO.addTransfer(transfer2);
 		/////////////////////////// end////////////////////////////
 		
-		try {
-			TimeUnit.SECONDS.sleep(5);
-			goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId2);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId2);
 		
 		// walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(),
 		// transfer.getCurrency(),
