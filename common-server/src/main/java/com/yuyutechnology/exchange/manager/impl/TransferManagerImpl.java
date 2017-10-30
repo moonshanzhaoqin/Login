@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -605,69 +606,73 @@ public class TransferManagerImpl implements TransferManager {
 	//
 	// }
 
-	@Override
-	public void systemRefund(Unregistered unregistered) {
+//	@Override
+//	public void systemRefund(Unregistered unregistered) {
+//
+//		Transfer transfer = transferDAO.getTransferById(unregistered.getTransferId());
+//		if (transfer == null || transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_COMPLETED) {
+//			logger.warn("Did not find the corresponding transfer information");
+//			return;
+//		}
+//
+//		String transferId2 = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+//		User systemUser = userDAO.getSystemUser();
+//
+//		String goldpayOrderId = null;
+//		if (ServerConsts.CURRENCY_OF_GOLDPAY.equals(transfer.getCurrency())) {
+//			goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
+//		}
+//
+//		// 生成transfer系统退款订单
+//		Transfer transfer2 = new Transfer();
+//		// 生成TransId
+//		transfer2.setTransferId(transferId2);
+//		transfer2.setUserFrom(systemUser.getUserId());
+//		transfer2.setUserTo(transfer.getUserFrom());
+//		transfer2.setAreaCode(unregistered.getAreaCode());
+//		transfer2.setPhone(unregistered.getUserPhone());
+//		transfer2.setCurrency(transfer.getCurrency());
+//		transfer2.setTransferAmount(transfer.getTransferAmount());
+//		transfer2.setTransferComment(unregistered.getUserPhone() + "对方逾期未注册,系统退款");
+//		transfer2.setTransferType(ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND);
+//		transfer2.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+//		transfer2.setCreateTime(new Date());
+//		transfer2.setFinishTime(new Date());
+//		transfer2.setNoticeId(0);
+//		transfer2.setGoldpayOrderId(goldpayOrderId);
+//		transferDAO.addTransfer(transfer2);
+//		/////////////////////////// end////////////////////////////
+//		
+//		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId2);
+//		
+//		// walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(),
+//		// transfer.getCurrency(),
+//		// transfer.getTransferAmount(), "-",
+//		// ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, transferId2);
+//		// walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(),
+//		// transfer.getCurrency(),
+//		// transfer.getTransferAmount(), "+",
+//		// ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, transferId2);
+//
+//		transDetailsManager.addTransDetails(transferId2, transfer.getUserFrom(), null, null, unregistered.getAreaCode(),
+//				unregistered.getUserPhone(), transfer.getCurrency(), transfer.getTransferAmount(),
+//				unregistered.getUserPhone() + "对方逾期未注册,系统退款", ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND);
+//
+//		// 修改gift记录
+//		unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_BACK);
+//		unregistered.setRefundTransId(transferId2);
+//		unregisteredDAO.updateUnregistered(unregistered);
+//
+//		// 发送推送
+//		User payee = userDAO.getUser(transfer.getUserFrom());
+//
+//		pushManager.push4Refund(payee, transfer.getAreaCode(), transfer.getPhone(), transfer.getCurrency(),
+//				amountFormatByCurrency(transfer.getCurrency(), transfer.getTransferAmount()));
+//
+//	}
+	
 
-		Transfer transfer = transferDAO.getTransferById(unregistered.getTransferId());
-		if (transfer == null || transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_COMPLETED) {
-			logger.warn("Did not find the corresponding transfer information");
-			return;
-		}
-
-		String transferId2 = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
-		User systemUser = userDAO.getSystemUser();
-
-		String goldpayOrderId = null;
-		if (ServerConsts.CURRENCY_OF_GOLDPAY.equals(transfer.getCurrency())) {
-			goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
-		}
-
-		// 生成transfer系统退款订单
-		Transfer transfer2 = new Transfer();
-		// 生成TransId
-		transfer2.setTransferId(transferId2);
-		transfer2.setUserFrom(systemUser.getUserId());
-		transfer2.setUserTo(transfer.getUserFrom());
-		transfer2.setAreaCode(unregistered.getAreaCode());
-		transfer2.setPhone(unregistered.getUserPhone());
-		transfer2.setCurrency(transfer.getCurrency());
-		transfer2.setTransferAmount(transfer.getTransferAmount());
-		transfer2.setTransferComment(unregistered.getUserPhone() + "对方逾期未注册,系统退款");
-		transfer2.setTransferType(ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND);
-		transfer2.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-		transfer2.setCreateTime(new Date());
-		transfer2.setFinishTime(new Date());
-		transfer2.setNoticeId(0);
-		transfer2.setGoldpayOrderId(goldpayOrderId);
-		transferDAO.addTransfer(transfer2);
-		/////////////////////////// end////////////////////////////
-		
-		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId2);
-		// walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(),
-		// transfer.getCurrency(),
-		// transfer.getTransferAmount(), "-",
-		// ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, transferId2);
-		// walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(),
-		// transfer.getCurrency(),
-		// transfer.getTransferAmount(), "+",
-		// ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, transferId2);
-
-		transDetailsManager.addTransDetails(transferId2, transfer.getUserFrom(), null, null, unregistered.getAreaCode(),
-				unregistered.getUserPhone(), transfer.getCurrency(), transfer.getTransferAmount(),
-				unregistered.getUserPhone() + "对方逾期未注册,系统退款", ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND);
-
-		// 修改gift记录
-		unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_BACK);
-		unregistered.setRefundTransId(transferId2);
-		unregisteredDAO.updateUnregistered(unregistered);
-
-		// 发送推送
-		User payee = userDAO.getUser(transfer.getUserFrom());
-
-		pushManager.push4Refund(payee, transfer.getAreaCode(), transfer.getPhone(), transfer.getCurrency(),
-				amountFormatByCurrency(transfer.getCurrency(), transfer.getTransferAmount()));
-
-	}
+	
 
 	@Override
 	public void systemRefundBatch() {
@@ -690,7 +695,11 @@ public class TransferManagerImpl implements TransferManager {
 								+ "date and the system is being refunded ,{}",
 						unregistered.getUnregisteredId(), new SimpleDateFormat("HH:mm:ss").format(new Date()));
 
-				systemRefund(unregistered);
+				String transferId = systemRefundStep1(unregistered);
+				if(StringUtils.isNotBlank(transferId)){
+					systemRefundStep2(transferId,unregistered);
+				}
+				
 			}
 		}
 	}
@@ -1776,6 +1785,77 @@ public class TransferManagerImpl implements TransferManager {
 				map.put("transferId", transferId);
 				
 				return map;
+
+	}
+	
+	private String systemRefundStep1(Unregistered unregistered) {
+
+		Transfer transfer = transferDAO.getTransferById(unregistered.getTransferId());
+		if (transfer == null || transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_COMPLETED) {
+			logger.warn("Did not find the corresponding transfer information");
+			return null;
+		}
+
+		String transferId2 = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+		User systemUser = userDAO.getSystemUser();
+
+		String goldpayOrderId = null;
+		if (ServerConsts.CURRENCY_OF_GOLDPAY.equals(transfer.getCurrency())) {
+			goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
+		}
+
+		// 生成transfer系统退款订单
+		Transfer transfer2 = new Transfer();
+		// 生成TransId
+		transfer2.setTransferId(transferId2);
+		transfer2.setUserFrom(systemUser.getUserId());
+		transfer2.setUserTo(transfer.getUserFrom());
+		transfer2.setAreaCode(unregistered.getAreaCode());
+		transfer2.setPhone(unregistered.getUserPhone());
+		transfer2.setCurrency(transfer.getCurrency());
+		transfer2.setTransferAmount(transfer.getTransferAmount());
+		transfer2.setTransferComment(unregistered.getUserPhone() + "对方逾期未注册,系统退款");
+		transfer2.setTransferType(ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND);
+		transfer2.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		transfer2.setCreateTime(new Date());
+		transfer2.setFinishTime(new Date());
+		transfer2.setNoticeId(0);
+		transfer2.setGoldpayOrderId(goldpayOrderId);
+		transferDAO.addTransfer(transfer2);
+		
+		return transferId2;
+	}
+	
+
+	private void systemRefundStep2(String transferId,Unregistered unregistered) {
+		
+		Transfer transfer = transferDAO.getTransferById(unregistered.getTransferId());
+		
+		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId);
+		
+		// walletDAO.updateWalletByUserIdAndCurrency(systemUser.getUserId(),
+		// transfer.getCurrency(),
+		// transfer.getTransferAmount(), "-",
+		// ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, transferId2);
+		// walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(),
+		// transfer.getCurrency(),
+		// transfer.getTransferAmount(), "+",
+		// ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, transferId2);
+
+		transDetailsManager.addTransDetails(transferId, transfer.getUserFrom(), null, null, unregistered.getAreaCode(),
+				unregistered.getUserPhone(), transfer.getCurrency(), transfer.getTransferAmount(),
+				unregistered.getUserPhone() + "对方逾期未注册,系统退款", ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND);
+
+		// 修改gift记录
+		unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_BACK);
+		unregistered.setRefundTransId(transferId);
+		unregisteredDAO.updateUnregistered(unregistered);
+
+		// 发送推送
+		User payee = userDAO.getUser(transfer.getUserFrom());
+
+		pushManager.push4Refund(payee, transfer.getAreaCode(), transfer.getPhone(), transfer.getCurrency(),
+				amountFormatByCurrency(transfer.getCurrency(), transfer.getTransferAmount()));
 
 	}
 }
