@@ -208,6 +208,8 @@ public class RetCodeConsts {
 	public static final String TRANSFER_LIMIT_DAILY_PAY = "03021";
 
 	public static final String TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY = "03022";
+	
+	public static final String TRANSFER_ORDERS_HAVE_BEEN_PAID = "03023";
 
 	/**
 	 * 订单状态异常

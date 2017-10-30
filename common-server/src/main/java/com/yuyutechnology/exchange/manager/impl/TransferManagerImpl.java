@@ -1624,15 +1624,21 @@ public class TransferManagerImpl implements TransferManager {
 			break;
 		}
 
-		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,
-				ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
+//		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,
+//				ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
+		Transfer transfer = transferDAO.getTransferById(transferId);
 		if (transfer == null) {
 			logger.warn("The transaction order does not exist");
 			result.put("msg", "The transaction order does not exist");
 			result.put("retCode", RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST);
 			return result;
 		}
-		
+		if(transfer.getTransferStatus()!= ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION){
+			logger.warn("Orders have been paid");
+			result.put("msg", "Orders have been paid");
+			result.put("retCode", RetCodeConsts.TRANSFER_ORDERS_HAVE_BEEN_PAID);
+			return result;
+		}
 		if (userId != transfer.getUserFrom()) {
 			logger.warn("userId is different from UserFromId");
 			result.put("msg", "userId is different from UserFromId");
