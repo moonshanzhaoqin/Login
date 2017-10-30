@@ -76,7 +76,7 @@ public class ThirdPartyController {
 	@ResponseEncryptBody
 	@ApiOperation(value = "交易初始化")
 	@RequestMapping(method = RequestMethod.POST, value = "/3rd/transferInitiate")
-	public TransInitResponse transInit(TransInitRequest reqMsg) {
+	public TransInitResponse transInit(@ RequestDecryptBody TransInitRequest reqMsg) {
 
 		TransInitResponse rep = new TransInitResponse();
 
@@ -124,7 +124,7 @@ public class ThirdPartyController {
 	@ResponseEncryptBody
 	@ApiOperation(value = "交易确认")
 	@RequestMapping(method = RequestMethod.POST, value = "/3rd/transferConfirm")
-	public TransConfirmResponse transConfirm(TransConfirmRequest reqMsg) {
+	public TransConfirmResponse transConfirm(@RequestDecryptBody TransConfirmRequest reqMsg) {
 		
 		TransConfirmResponse rep = new TransConfirmResponse();
 		HashMap<String, String> map = transferManager.transConfirm4TPPS(reqMsg.getUserId(), 

@@ -56,6 +56,6 @@ public interface TransferDAO {
 	 */
 	PageBean searchTransfersByPage(String hql, List<Object> values, int currentPage, int pageSize);
 
-	int saveTransfer(Transfer transfer);
+//	int saveTransfer(Transfer transfer);
 
 }

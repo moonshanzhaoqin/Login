@@ -62,50 +62,50 @@ public class TransferDAOImpl implements TransferDAO {
 		hibernateTemplate.save(transfer);
 	}
 	
-	@Override
-	public int saveTransfer(final Transfer transfer){
-		
-		return hibernateTemplate.execute(new HibernateCallback<Integer>() {
-			@Override
-			public Integer doInHibernate(Session session) throws HibernateException {
-				StringBuffer sb = new StringBuffer("insert into e_transfer(");
-				sb.append("transfer_id ,user_from ,user_to ,area_code ,phone ,currency ,transfer_amount ,");
-				sb.append("transfer_comment ,create_time ,finish_time ,transfer_status ,transfer_type ,");
-				sb.append("notice_id ,version ,goldpay_result ,goldpay_name ,goldpay_acount ,");
-				sb.append("paypal_currency ,paypal_exchange ,goldpay_order_id)");
-				sb.append(" values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-				
-				logger.info("hql : {}",sb.toString());
-		
-				Query query = session.createSQLQuery(sb.toString());
-				query.setString(0, transfer.getTransferId());
-				query.setInteger(1, transfer.getUserFrom());
-				query.setInteger(2, transfer.getUserTo());
-				query.setString(3, transfer.getAreaCode());
-				query.setString(4, transfer.getPhone());
-				query.setString(5, transfer.getCurrency());
-				query.setBigDecimal(6, transfer.getTransferAmount());
-				query.setString(7, transfer.getTransferComment());
-				query.setDate(8, transfer.getCreateTime());
-				query.setDate(9, transfer.getFinishTime());
-				query.setInteger(10, transfer.getTransferStatus());
-				query.setInteger(11, transfer.getTransferType());
-				query.setInteger(12, transfer.getNoticeId());
-				query.setInteger(13, 0);
-				query.setString(14, transfer.getGoldpayResult());
-				query.setString(15, transfer.getGoldpayName());
-				query.setString(16, transfer.getGoldpayAcount());
-				query.setString(17, transfer.getPaypalCurrency());
-				query.setBigDecimal(18, transfer.getPaypalExchange());
-				query.setString(19, transfer.getGoldpayOrderId());
-				
-				session.close();
-				
-				return query.executeUpdate();
-			}
-
-		});
-	}
+//	@Override
+//	public int saveTransfer(final Transfer transfer){
+//		
+//		return hibernateTemplate.execute(new HibernateCallback<Integer>() {
+//			@Override
+//			public Integer doInHibernate(Session session) throws HibernateException {
+//				StringBuffer sb = new StringBuffer("insert into e_transfer(");
+//				sb.append("transfer_id ,user_from ,user_to ,area_code ,phone ,currency ,transfer_amount ,");
+//				sb.append("transfer_comment ,create_time ,finish_time ,transfer_status ,transfer_type ,");
+//				sb.append("notice_id ,version ,goldpay_result ,goldpay_name ,goldpay_acount ,");
+//				sb.append("paypal_currency ,paypal_exchange ,goldpay_order_id)");
+//				sb.append(" values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+//				
+//				logger.info("hql : {}",sb.toString());
+//		
+//				Query query = session.createSQLQuery(sb.toString());
+//				query.setString(0, transfer.getTransferId());
+//				query.setInteger(1, transfer.getUserFrom());
+//				query.setInteger(2, transfer.getUserTo());
+//				query.setString(3, transfer.getAreaCode());
+//				query.setString(4, transfer.getPhone());
+//				query.setString(5, transfer.getCurrency());
+//				query.setBigDecimal(6, transfer.getTransferAmount());
+//				query.setString(7, transfer.getTransferComment());
+//				query.setDate(8, transfer.getCreateTime());
+//				query.setDate(9, transfer.getFinishTime());
+//				query.setInteger(10, transfer.getTransferStatus());
+//				query.setInteger(11, transfer.getTransferType());
+//				query.setInteger(12, transfer.getNoticeId());
+//				query.setInteger(13, 0);
+//				query.setString(14, transfer.getGoldpayResult());
+//				query.setString(15, transfer.getGoldpayName());
+//				query.setString(16, transfer.getGoldpayAcount());
+//				query.setString(17, transfer.getPaypalCurrency());
+//				query.setBigDecimal(18, transfer.getPaypalExchange());
+//				query.setString(19, transfer.getGoldpayOrderId());
+//				
+//				session.close();
+//				
+//				return query.executeUpdate();
+//			}
+//
+//		});
+//	}
 
 	@Override
 	public void updateTransfer(Transfer transfer) {

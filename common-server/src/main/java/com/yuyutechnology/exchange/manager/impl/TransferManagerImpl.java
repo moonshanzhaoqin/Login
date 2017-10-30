@@ -669,39 +669,36 @@ public class TransferManagerImpl implements TransferManager {
 //				amountFormatByCurrency(transfer.getCurrency(), transfer.getTransferAmount()));
 //
 //	}
-	
 
-	
-
-	@Override
-	public void systemRefundBatch() {
-
-		// 获取所有未完成的订单
-		List<Unregistered> list = unregisteredDAO.getAllUnfinishedTransaction();
-		if (list.isEmpty()) {
-			return;
-		}
-		for (Unregistered unregistered : list) {
-			// 判断是否超过期限
-			long deadline = configManager.getConfigLongValue(ConfigKeyEnum.REFUNTIME, 3l) * 24 * 60 * 60 * 1000;
-			if (new Date().getTime() - unregistered.getCreateTime().getTime() >= deadline) {
-
-				logger.info("deadline : {},Difference : {}", deadline,
-						new Date().getTime() - unregistered.getCreateTime().getTime());
-
-				logger.info(
-						"Invitation ID: {}, The invitee has not registered for the due "
-								+ "date and the system is being refunded ,{}",
-						unregistered.getUnregisteredId(), new SimpleDateFormat("HH:mm:ss").format(new Date()));
-
-				String transferId = systemRefundStep1(unregistered);
-				if(StringUtils.isNotBlank(transferId)){
-					systemRefundStep2(transferId,unregistered);
-				}
-				
-			}
-		}
-	}
+//	@Override
+//	public void systemRefundBatch() {
+//
+//		// 获取所有未完成的订单
+//		List<Unregistered> list = unregisteredDAO.getAllUnfinishedTransaction();
+//		if (list.isEmpty()) {
+//			return;
+//		}
+//		for (Unregistered unregistered : list) {
+//			// 判断是否超过期限
+//			long deadline = configManager.getConfigLongValue(ConfigKeyEnum.REFUNTIME, 3l) * 24 * 60 * 60 * 1000;
+//			if (new Date().getTime() - unregistered.getCreateTime().getTime() >= deadline) {
+//
+//				logger.info("deadline : {},Difference : {}", deadline,
+//						new Date().getTime() - unregistered.getCreateTime().getTime());
+//
+//				logger.info(
+//						"Invitation ID: {}, The invitee has not registered for the due "
+//								+ "date and the system is being refunded ,{}",
+//						unregistered.getUnregisteredId(), new SimpleDateFormat("HH:mm:ss").format(new Date()));
+//
+//				String transferId = systemRefundStep1(unregistered);
+//				if(StringUtils.isNotBlank(transferId)){
+//					systemRefundStep2(transferId,unregistered);
+//				}
+//				
+//			}
+//		}
+//	}
 
 	@Override
 	public HashMap<String, Object> makeRequest(int userId, String payerAreaCode, String payerPhone, String currency,
@@ -1624,15 +1621,21 @@ public class TransferManagerImpl implements TransferManager {
 			break;
 		}
 
-		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,
-				ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
+//		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,
+//				ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
+		Transfer transfer = transferDAO.getTransferById(transferId);
 		if (transfer == null) {
 			logger.warn("The transaction order does not exist");
 			result.put("msg", "The transaction order does not exist");
 			result.put("retCode", RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST);
 			return result;
 		}
-		
+		if(transfer.getTransferStatus()!= ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION){
+			logger.warn("Orders have been paid");
+			result.put("msg", "Orders have been paid");
+			result.put("retCode", RetCodeConsts.TRANSFER_ORDERS_HAVE_BEEN_PAID);
+			return result;
+		}
 		if (userId != transfer.getUserFrom()) {
 			logger.warn("userId is different from UserFromId");
 			result.put("msg", "userId is different from UserFromId");
@@ -1716,6 +1719,8 @@ public class TransferManagerImpl implements TransferManager {
 				args.put("isTradableCurrency", currency);
 				args.put("isAccountFrozened", payerId);
 				args.put("isInsufficientBalance", new HashMap<String, Object>() {
+					private static final long serialVersionUID = 1L;
+
 					{
 						put("userId", payerId);
 						put("currency", currency);
@@ -1787,7 +1792,8 @@ public class TransferManagerImpl implements TransferManager {
 
 	}
 	
-	private String systemRefundStep1(Unregistered unregistered) {
+	@Override
+	public String systemRefundStep1(Unregistered unregistered) {
 
 		Transfer transfer = transferDAO.getTransferById(unregistered.getTransferId());
 		if (transfer == null || transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_COMPLETED) {
@@ -1820,16 +1826,13 @@ public class TransferManagerImpl implements TransferManager {
 		transfer2.setFinishTime(new Date());
 		transfer2.setNoticeId(0);
 		transfer2.setGoldpayOrderId(goldpayOrderId);
-		Integer result = transferDAO.saveTransfer(transfer2);
-		if(result.equals(0)){
-			return null;
-		}
-		
+		transferDAO.addTransfer(transfer2);
+
 		return transferId2;
 	}
 	
-
-	private void systemRefundStep2(String transferId,Unregistered unregistered) {
+	@Override
+	public void systemRefundStep2(String transferId,Unregistered unregistered) {
 		
 		Transfer transfer = transferDAO.getTransferById(unregistered.getTransferId());
 		

@@ -50,7 +50,7 @@ public interface TransferManager {
 	 * @author : nicholas.chi
 	 * @time : 2016年12月8日 下午5:25:58
 	 */
-	void systemRefundBatch();
+//	void systemRefundBatch();
 
 	/**
 	 * @Descrition :
@@ -137,5 +137,9 @@ public interface TransferManager {
 	
 	HashMap<String, String> transferInitiate(int payerId, int payeeId, String currency,
 			BigDecimal amount, String transferComment, int noticeId);
+
+	String systemRefundStep1(Unregistered unregistered);
+
+	void systemRefundStep2(String transferId, Unregistered unregistered);
 
 }
