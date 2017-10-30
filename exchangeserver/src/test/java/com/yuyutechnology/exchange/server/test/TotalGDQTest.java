@@ -1,14 +1,8 @@
 package com.yuyutechnology.exchange.server.test;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.yuyutechnology.exchange.ServerConsts;
-import com.yuyutechnology.exchange.dto.WalletInfo;
-import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
