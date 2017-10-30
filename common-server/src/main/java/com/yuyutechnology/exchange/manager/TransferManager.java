@@ -44,13 +44,6 @@ public interface TransferManager {
 	 */
 	String transferConfirm(int userId, String transferId);
 
-	/**
-	 * @Descrition : 系统退款
-	 * @author : nicholas.chi
-	 * @time : 2016年12月8日 下午6:03:32
-	 * @param unregistered
-	 */
-	void systemRefund(Unregistered unregistered);
 
 	/**
 	 * @Descrition : 批量系统退款
