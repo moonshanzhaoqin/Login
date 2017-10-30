@@ -36,7 +36,7 @@ public class Goldpay4MergeTest  extends BaseSpringJunit4 {
 //		String result = transferManager.transferConfirm(16,request.get("transferId") );
 //		System.out.println("result is : "+result);
 		
-		transferManager.systemRefundBatch();
+//		transferManager.systemRefundBatch();
 		
 //		HashMap<String, String> result = exchangeManager.exchangeConfirm(16,ServerConsts.CURRENCY_OF_GOLDPAY, ServerConsts.CURRENCY_OF_USD,BigDecimal.ONE);
 //		HashMap<String, String> result1 = exchangeManager.exchangeConfirm(16,ServerConsts.CURRENCY_OF_USD, ServerConsts.CURRENCY_OF_CNY,BigDecimal.TEN);
