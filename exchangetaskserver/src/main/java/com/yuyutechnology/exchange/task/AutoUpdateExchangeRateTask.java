@@ -29,12 +29,7 @@ public class AutoUpdateExchangeRateTask {
 	
 	public void autoSystemRefundBatch(){
 		logger.info("=============autoSystemRefundBatch Start=============={}",new SimpleDateFormat("HH:mm:ss").format(new Date()) );
-		try {
-			transferManager.systemRefundBatch();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.error("error : {}",e.toString());
-		}
+		transferManager.systemRefundBatch();
 		logger.info("=============End at {}==================",new SimpleDateFormat("HH:mm:ss").format(new Date()));
 	}
 	
