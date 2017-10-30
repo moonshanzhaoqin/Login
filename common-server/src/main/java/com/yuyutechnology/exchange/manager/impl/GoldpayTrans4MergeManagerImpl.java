@@ -134,7 +134,10 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 					exchange.getAmountIn(),ServerConsts.TRANSFER_TYPE_EXCHANGE,
 					exchange.getExchangeId(),false,exchange.getGoldpayOrderId());
 			
-			WalletSeq walletSeq = new WalletSeq(systemUserId, ServerConsts.TRANSFER_TYPE_EXCHANGE, 
+			WalletSeq walletSeq1 = new WalletSeq(systemUserId, ServerConsts.TRANSFER_TYPE_EXCHANGE, 
+					exchange.getCurrencyIn(), exchange.getAmountIn().negate(), exchange.getExchangeId(), new Date());
+			walletSeqDAO.addWalletSeq(walletSeq1);
+			WalletSeq walletSeq = new WalletSeq(exchange.getUserId(), ServerConsts.TRANSFER_TYPE_EXCHANGE, 
 					exchange.getCurrencyIn(), exchange.getAmountIn(), exchange.getExchangeId(), new Date());
 			walletSeqDAO.addWalletSeq(walletSeq);
 			
@@ -145,8 +148,13 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 					exchange.getUserId(),systemUserId,exchange.getCurrencyOut(),
 					exchange.getAmountOut(),ServerConsts.TRANSFER_TYPE_EXCHANGE,
 					exchange.getExchangeId(),false,exchange.getGoldpayOrderId());
-			WalletSeq walletSeq = new WalletSeq(exchange.getUserId(), ServerConsts.TRANSFER_TYPE_EXCHANGE, 
+			
+			WalletSeq walletSeq1 = new WalletSeq(systemUserId, ServerConsts.TRANSFER_TYPE_EXCHANGE, 
 					exchange.getCurrencyOut(), exchange.getAmountOut(), exchange.getExchangeId(), new Date());
+			walletSeqDAO.addWalletSeq(walletSeq1);
+			
+			WalletSeq walletSeq = new WalletSeq(exchange.getUserId(), ServerConsts.TRANSFER_TYPE_EXCHANGE, 
+					exchange.getCurrencyOut(), exchange.getAmountOut().negate(), exchange.getExchangeId(), new Date());
 			walletSeqDAO.addWalletSeq(walletSeq);
 		}
 		if (result != null && !RetCodeConsts.RET_CODE_SUCCESS.equals(result.get("retCode"))) {
