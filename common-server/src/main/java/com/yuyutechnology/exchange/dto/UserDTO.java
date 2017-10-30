@@ -14,6 +14,7 @@ public class UserDTO {
 	private String userName;
 	private String userPassword;
 	private String passwordSalt;
+	private int userAvailable;
 	private Long goldpayId;
 	private String goldpayUserName;
 	private String goldpayAccount;
@@ -90,4 +91,11 @@ public class UserDTO {
 		this.goldpayAccount = goldpayAccount;
 	}
 
+	public int getUserAvailable() {
+		return userAvailable;
+	}
+
+	public void setUserAvailable(int userAvailable) {
+		this.userAvailable = userAvailable;
+	}
 }

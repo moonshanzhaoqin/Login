@@ -720,6 +720,7 @@ public class UserManagerImpl implements UserManager {
 			userDTO.setUserName(user.getUserName());
 			userDTO.setUserPassword(user.getUserPassword());
 			userDTO.setPasswordSalt(user.getPasswordSalt());
+			userDTO.setUserAvailable(user.getUserAvailable());
 			Bind bind = bindDAO.getBindByUserId(user.getUserId());
 			userDTO.setGoldpayAccount(bind == null ? "" : bind.getGoldpayAcount());
 			userDTO.setGoldpayId(bind == null ? 0L : Long.valueOf(bind.getGoldpayId()));

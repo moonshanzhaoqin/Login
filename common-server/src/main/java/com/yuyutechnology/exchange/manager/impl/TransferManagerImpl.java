@@ -1599,7 +1599,7 @@ public class TransferManagerImpl implements TransferManager {
 
 		// 验证支付密码
 		CheckPwdResult checkPwdResult = userManager.checkPayPassword(userId, userPayPwd);
-		
+	
 		switch (checkPwdResult.getStatus()) {
 		case ServerConsts.CHECKPWD_STATUS_FREEZE:
 			result.put("msg", String.valueOf(checkPwdResult.getInfo()));
