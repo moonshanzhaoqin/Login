@@ -12,7 +12,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -1821,7 +1820,10 @@ public class TransferManagerImpl implements TransferManager {
 		transfer2.setFinishTime(new Date());
 		transfer2.setNoticeId(0);
 		transfer2.setGoldpayOrderId(goldpayOrderId);
-		transferDAO.addTransfer(transfer2);
+		Integer result = transferDAO.saveTransfer(transfer2);
+		if(result.equals(0)){
+			return null;
+		}
 		
 		return transferId2;
 	}

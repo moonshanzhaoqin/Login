@@ -9,6 +9,8 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -37,6 +39,8 @@ public class TransferDAOImpl implements TransferDAO {
 	private final String ACCUMULATED_AMOUNT_KEY = "accumulated_amount_[key]";
 
 	private final String ACCUMULATED_TIMES_KEY = "accumulated_times_[key]";
+	
+	public static Logger logger = LogManager.getLogger(TransferDAOImpl.class);
 
 	@Override
 	public String createTransId(int transferType) {
@@ -56,6 +60,51 @@ public class TransferDAOImpl implements TransferDAO {
 	@Override
 	public void addTransfer(Transfer transfer) {
 		hibernateTemplate.save(transfer);
+	}
+	
+	@Override
+	public int saveTransfer(final Transfer transfer){
+		
+		return hibernateTemplate.execute(new HibernateCallback<Integer>() {
+			@Override
+			public Integer doInHibernate(Session session) throws HibernateException {
+				StringBuffer sb = new StringBuffer("insert into e_transfer(");
+				sb.append("transfer_id ,user_from ,user_to ,area_code ,phone ,currency ,transfer_amount ,");
+				sb.append("transfer_comment ,create_time ,finish_time ,transfer_status ,transfer_type ,");
+				sb.append("notice_id ,version ,goldpay_result ,goldpay_name ,goldpay_acount ,");
+				sb.append("paypal_currency ,paypal_exchange ,goldpay_order_id)");
+				sb.append(" values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				
+				logger.info("hql : {}",sb.toString());
+		
+				Query query = session.createSQLQuery(sb.toString());
+				query.setString(0, transfer.getTransferId());
+				query.setInteger(1, transfer.getUserFrom());
+				query.setInteger(2, transfer.getUserTo());
+				query.setString(3, transfer.getAreaCode());
+				query.setString(4, transfer.getPhone());
+				query.setString(5, transfer.getCurrency());
+				query.setBigDecimal(6, transfer.getTransferAmount());
+				query.setString(7, transfer.getTransferComment());
+				query.setDate(8, transfer.getCreateTime());
+				query.setDate(9, transfer.getFinishTime());
+				query.setInteger(10, transfer.getTransferStatus());
+				query.setInteger(11, transfer.getTransferType());
+				query.setInteger(12, transfer.getNoticeId());
+				query.setInteger(13, 0);
+				query.setString(14, transfer.getGoldpayResult());
+				query.setString(15, transfer.getGoldpayName());
+				query.setString(16, transfer.getGoldpayAcount());
+				query.setString(17, transfer.getPaypalCurrency());
+				query.setBigDecimal(18, transfer.getPaypalExchange());
+				query.setString(19, transfer.getGoldpayOrderId());
+				
+				session.close();
+				
+				return query.executeUpdate();
+			}
+
+		});
 	}
 
 	@Override
