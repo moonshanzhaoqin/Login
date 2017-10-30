@@ -346,7 +346,6 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			exchange.setExchangeStatus(ServerConsts.EXCHANGE_STATUS_OF_PROCESS);
 			exchangeDAO.addExchange(exchange);
 
-			//s
 			goldpayTrans4MergeManager.updateWallet4GoldpayExchange(exchangeId, systemUserId);
 			
 			// 添加累计金额
