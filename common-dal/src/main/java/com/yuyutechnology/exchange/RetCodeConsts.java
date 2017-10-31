@@ -95,7 +95,7 @@ public class RetCodeConsts {
 	 * 该手机号不是好友
 	 */
 	public static final String PHONE_IS_NOT_FRIEND = "01016";
-	
+
 	/**
 	 * 新设备登录
 	 */
@@ -126,7 +126,7 @@ public class RetCodeConsts {
 	 */
 	public static final String EXCESS_BUDGET = "01026";
 	/**
-	 *邀请码不正确 
+	 * 邀请码不正确
 	 */
 	public static final String INVITERCODE_INCORRECT = "01030";
 	// 兑换 02
@@ -143,16 +143,27 @@ public class RetCodeConsts {
 	 */
 	public static final String EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT = "02003";
 
+	/**
+	 * 同货币兑换
+	 */
 	public static final String EXCHANGE_THE_SAME_CURRENCY_CAN_NOT_BE_EXCHANGED = "02004";
 
 	public static final String EXCHANGE_ENTER_THE_AMOUNT_OF_VIOLATION = "02005";
-
+	/**
+	 * 货币不可用
+	 */
 	public static final String EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY = "02006";
-
+	/**
+	 * 超过每次兑换金额限制
+	 */
 	public static final String EXCHANGE_LIMIT_EACH_TIME = "02007";
-
+	/**
+	 * 超过每日兑换次数限制
+	 */
 	public static final String EXCHANGE_LIMIT_DAILY_PAY = "02008";
-
+	/**
+	 * 超过每日兑换金额限制
+	 */
 	public static final String EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY = "02009";
 
 	// 交易03
@@ -174,16 +185,19 @@ public class RetCodeConsts {
 	 * 支付手机验证码错误
 	 */
 	public static final String PIN_CODE_INCORRECT = "03005";
-
+	/**
+	 * 转账人为自己
+	 */
 	public static final String TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF = "03006";
 
 	public static final String TRANSFER_HISTORY_NOT_ACQUIRED = "03007";
 
 	// public static final String TRANSFER_NOTIFICATION_NOT_ACQUIRED = "03008";
 
-//	public static final String TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST = "03009";
-//
-//	public static final String TRANSFER_GOLDPAYTRANS_CHECK_PIN_CODE_FAIL = "03010";
+	// public static final String TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST = "03009";
+	//
+	// public static final String TRANSFER_GOLDPAYTRANS_CHECK_PIN_CODE_FAIL =
+	// "03010";
 
 	public static final String TRANSFER_LESS_THAN_MINIMUM_AMOUNT = "03011";
 
@@ -191,9 +205,10 @@ public class RetCodeConsts {
 
 	public static final String TRANSFER_TRANS_ORDERID_NOT_EXIST = "03013";
 
-//	public static final String TRANSFER_GOLDPAYTRANS_HAS_COMPLETED = "03014";
-//
-//	public static final String TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH = "03015";
+	// public static final String TRANSFER_GOLDPAYTRANS_HAS_COMPLETED = "03014";
+	//
+	// public static final String TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH =
+	// "03015";
 
 	public static final String TRANSFER_PHONE_NUMBER_IS_EMPTY = "03016";
 
@@ -208,7 +223,7 @@ public class RetCodeConsts {
 	public static final String TRANSFER_LIMIT_DAILY_PAY = "03021";
 
 	public static final String TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY = "03022";
-	
+
 	public static final String TRANSFER_ORDERS_HAVE_BEEN_PAID = "03023";
 
 	/**
@@ -233,6 +248,7 @@ public class RetCodeConsts {
 	 * PayPal关闭
 	 */
 	public static final String PAYPAL_RECHARGE_OFF = "03030";
+
 	// crm 管理员04
 	/**
 	 * 管理员不存在
@@ -248,7 +264,6 @@ public class RetCodeConsts {
 	 * 币种已存在
 	 */
 	public static final String CURRENCY_IS_EXIST = "05001";
-	
 
 	static {
 		successCodeList.add(RET_CODE_SUCCESS);
