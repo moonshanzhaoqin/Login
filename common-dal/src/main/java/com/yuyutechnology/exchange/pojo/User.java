@@ -13,9 +13,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.SelectBeforeUpdate;
-
 import com.yuyutechnology.exchange.util.LanguageUtils.Language;
 
 /**
@@ -23,8 +20,8 @@ import com.yuyutechnology.exchange.util.LanguageUtils.Language;
  */
 @Entity
 @Table(name = "e_user")
-@DynamicUpdate
-@SelectBeforeUpdate
+//@DynamicUpdate
+//@SelectBeforeUpdate
 public class User implements java.io.Serializable {
 
 	/**
@@ -37,6 +34,7 @@ public class User implements java.io.Serializable {
 	private String userName;
 	private String userPassword;
 	private String userPayPwd;
+	private String userPayToken;
 	private Date createTime;
 	private Date loginTime;
 	private String loginIp;
@@ -232,5 +230,14 @@ public class User implements java.io.Serializable {
 
 	public void setPushTag(Language pushTag) {
 		this.pushTag = pushTag;
+	}
+
+	@Column(name = "user_pay_token")
+	public String getUserPayToken() {
+		return userPayToken;
+	}
+
+	public void setUserPayToken(String userPayToken) {
+		this.userPayToken = userPayToken;
 	}
 }
