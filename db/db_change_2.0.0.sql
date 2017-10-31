@@ -15,3 +15,6 @@ INSERT INTO `e_bind` (`user_id`, `goldpay_id`, `goldpay_name`, `goldpay_acount`,
 --2017/10/23 suzan
 INSERT INTO `e_config` SET `config_key`='bank_recharge',`config_value`='true',`config_name`='开启银行汇款充值Goldpay',`config_order`=0,`config_canChange`=0;
 DELETE FROM `e_config` WHERE `config_key`='goldpay_withdraw';
+
+--2017/10/31 silent
+ALTER TABLE `e_user` ADD COLUMN `user_pay_token` VARCHAR(128) CHARSET utf8 COLLATE utf8_general_ci DEFAULT '' NULL COMMENT '支付自动转账token' AFTER `user_pay_pwd`; 

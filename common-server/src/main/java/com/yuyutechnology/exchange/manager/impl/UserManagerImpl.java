@@ -255,9 +255,9 @@ public class UserManagerImpl implements UserManager {
 			userDAO.updateUser(user);
 		}
 
-		if (PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())) {
+		if (PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt()) 
+				|| (StringUtils.isNotBlank(user.getUserPayToken()) && userPayPwd.equals(user.getUserPayToken()))) {
 			logger.info("***match***");
-
 			redisDAO.deleteData(ServerConsts.WRONG_PAYPWD + userId);
 			result.setStatus(ServerConsts.CHECKPWD_STATUS_CORRECT);
 			return result;
