@@ -3,10 +3,17 @@
  */
 package com.yuyutechnology.exchange.dao.impl;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 import javax.annotation.Resource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -29,9 +36,23 @@ public class InviterDAOImpl implements InviterDAO {
 	}
 
 	@Override
-	public void updateInviter(Inviter inviter) {
-	hibernateTemplate.saveOrUpdate(inviter);
+	public Integer updateInviter(final Integer userId, final int inviteQuantityIncrement,
+			final BigDecimal inviteBonusIncrement ) {
+		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
+			@Override
+			public Integer doInHibernate(Session session) throws HibernateException {
+				Query query = session.createQuery(
+							"update Inviter set inviteQuantity = inviteQuantity+"+inviteQuantityIncrement +"  , inviteBonus =inviteBonus+"+inviteBonusIncrement+" where userId = :userId ");
+				query.setInteger("userId", userId);
+				return query.executeUpdate();
+			}
+		});
 		
+	}
+
+	@Override
+	public void updateInviter(Inviter inviter) {
+		hibernateTemplate.saveOrUpdate(inviter);
 	}
 
 }

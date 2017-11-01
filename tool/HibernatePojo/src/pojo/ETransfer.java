@@ -1,5 +1,5 @@
 package pojo;
-// Generated Jul 10, 2017 4:40:52 PM by Hibernate Tools 5.2.3.Final
+// Generated Nov 1, 2017 11:26:58 AM by Hibernate Tools 5.2.3.Final
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -37,6 +37,7 @@ public class ETransfer implements java.io.Serializable {
 	private String goldpayAcount;
 	private String paypalCurrency;
 	private BigDecimal paypalExchange;
+	private String goldpayOrderId;
 
 	public ETransfer() {
 	}
@@ -55,7 +56,7 @@ public class ETransfer implements java.io.Serializable {
 	public ETransfer(String transferId, int userFrom, int userTo, String areaCode, String phone, String currency,
 			BigDecimal transferAmount, String transferComment, Date createTime, Date finishTime, int transferStatus,
 			int transferType, Integer noticeId, String goldpayResult, String goldpayName, String goldpayAcount,
-			String paypalCurrency, BigDecimal paypalExchange) {
+			String paypalCurrency, BigDecimal paypalExchange, String goldpayOrderId) {
 		this.transferId = transferId;
 		this.userFrom = userFrom;
 		this.userTo = userTo;
@@ -74,6 +75,7 @@ public class ETransfer implements java.io.Serializable {
 		this.goldpayAcount = goldpayAcount;
 		this.paypalCurrency = paypalCurrency;
 		this.paypalExchange = paypalExchange;
+		this.goldpayOrderId = goldpayOrderId;
 	}
 
 	@Id
@@ -250,6 +252,15 @@ public class ETransfer implements java.io.Serializable {
 
 	public void setPaypalExchange(BigDecimal paypalExchange) {
 		this.paypalExchange = paypalExchange;
+	}
+
+	@Column(name = "goldpay_order_id")
+	public String getGoldpayOrderId() {
+		return this.goldpayOrderId;
+	}
+
+	public void setGoldpayOrderId(String goldpayOrderId) {
+		this.goldpayOrderId = goldpayOrderId;
 	}
 
 }

@@ -1,5 +1,5 @@
 package pojo;
-// Generated Jul 10, 2017 4:40:52 PM by Hibernate Tools 5.2.3.Final
+// Generated Nov 1, 2017 11:26:58 AM by Hibernate Tools 5.2.3.Final
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -20,6 +20,7 @@ public class EExchange implements java.io.Serializable {
 
 	private String exchangeId;
 	private int version;
+	private String goldpayOrderId;
 	private int userId;
 	private String currencyOut;
 	private String currencyIn;
@@ -48,10 +49,11 @@ public class EExchange implements java.io.Serializable {
 		this.exchangeStatus = exchangeStatus;
 	}
 
-	public EExchange(String exchangeId, int userId, String currencyOut, String currencyIn, BigDecimal amountOut,
-			BigDecimal amountIn, BigDecimal exchangeRate, BigDecimal exchangeFeePerThousand,
+	public EExchange(String exchangeId, String goldpayOrderId, int userId, String currencyOut, String currencyIn,
+			BigDecimal amountOut, BigDecimal amountIn, BigDecimal exchangeRate, BigDecimal exchangeFeePerThousand,
 			BigDecimal exchangeFeeAmount, Date createTime, Date finishTime, int exchangeStatus) {
 		this.exchangeId = exchangeId;
+		this.goldpayOrderId = goldpayOrderId;
 		this.userId = userId;
 		this.currencyOut = currencyOut;
 		this.currencyIn = currencyIn;
@@ -84,6 +86,15 @@ public class EExchange implements java.io.Serializable {
 
 	public void setVersion(int version) {
 		this.version = version;
+	}
+
+	@Column(name = "goldpay_order_id")
+	public String getGoldpayOrderId() {
+		return this.goldpayOrderId;
+	}
+
+	public void setGoldpayOrderId(String goldpayOrderId) {
+		this.goldpayOrderId = goldpayOrderId;
 	}
 
 	@Column(name = "user_id", nullable = false)
