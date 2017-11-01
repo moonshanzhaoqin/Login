@@ -3,6 +3,8 @@
  */
 package com.yuyutechnology.exchange.dao;
 
+import java.math.BigDecimal;
+
 import com.yuyutechnology.exchange.pojo.Inviter;
 
 /**
@@ -13,4 +15,6 @@ public interface InviterDAO {
 	Inviter getInviter(Integer userId);
 
 	void updateInviter(Inviter inviter);
+
+	Integer updateInviter(Integer userId, int inviteQuantityIncrement, BigDecimal inviteBonusIncrement);
 }

@@ -1,5 +1,5 @@
 package pojo;
-// Generated Jul 10, 2017 4:40:52 PM by Hibernate Tools 5.2.3.Final
+// Generated Nov 1, 2017 11:26:58 AM by Hibernate Tools 5.2.3.Final
 
 import java.util.Date;
 import javax.persistence.Column;
@@ -26,6 +26,7 @@ public class EUser implements java.io.Serializable {
 	private String userName;
 	private String userPassword;
 	private String userPayPwd;
+	private String userPayToken;
 	private Date createTime;
 	private Date loginTime;
 	private String loginIp;
@@ -56,13 +57,14 @@ public class EUser implements java.io.Serializable {
 	}
 
 	public EUser(String areaCode, String userPhone, String userName, String userPassword, String userPayPwd,
-			Date createTime, Date loginTime, String loginIp, int userType, int userAvailable, int loginAvailable,
-			int payAvailable, String passwordSalt, String pushId, String pushTag) {
+			String userPayToken, Date createTime, Date loginTime, String loginIp, int userType, int userAvailable,
+			int loginAvailable, int payAvailable, String passwordSalt, String pushId, String pushTag) {
 		this.areaCode = areaCode;
 		this.userPhone = userPhone;
 		this.userName = userName;
 		this.userPassword = userPassword;
 		this.userPayPwd = userPayPwd;
+		this.userPayToken = userPayToken;
 		this.createTime = createTime;
 		this.loginTime = loginTime;
 		this.loginIp = loginIp;
@@ -130,6 +132,15 @@ public class EUser implements java.io.Serializable {
 
 	public void setUserPayPwd(String userPayPwd) {
 		this.userPayPwd = userPayPwd;
+	}
+
+	@Column(name = "user_pay_token", length = 128)
+	public String getUserPayToken() {
+		return this.userPayToken;
+	}
+
+	public void setUserPayToken(String userPayToken) {
+		this.userPayToken = userPayToken;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)

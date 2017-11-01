@@ -262,7 +262,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		/* 更新邀请人信息 */
 		inviter.setInviteBonus(inviter.getInviteBonus().add(collect.getInviterBonus()));
 		inviter.setInviteQuantity(inviter.getInviteQuantity() + 1);
-		inviterDAO.updateInviter(inviter);
+		inviterDAO.updateInviter(inviter.getUserId(),1,collect.getInviterBonus());
 
 	}
 
