@@ -74,8 +74,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			throws Exception {
 		// logger.info("interceptor excute order:1.preHandle================");
 		// 允许跨域访问
-		response.setHeader("Access-Control-Allow-Origin", "*");
-		response.setHeader("Access-Control-Allow-Headers", "accept, content-type");
+//		response.setHeader("Access-Control-Allow-Origin", "*");
+//		response.setHeader("Access-Control-Allow-Headers", "accept, content-type");
 		String requestURI = request.getRequestURI();
 
 		String sessionId = getTokenFromURI(request.getRequestURI());
