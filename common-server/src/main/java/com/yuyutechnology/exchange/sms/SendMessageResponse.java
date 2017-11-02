@@ -6,6 +6,13 @@ public class SendMessageResponse {
 	private Long limitTime;
 	private boolean ok;
 
+	public SendMessageResponse(Long limitCount, Long limitTime, boolean ok) {
+		super();
+		this.limitCount = limitCount;
+		this.limitTime = limitTime;
+		this.ok = ok;
+	}
+
 	public Long getLimitCount() {
 		return limitCount;
 	}

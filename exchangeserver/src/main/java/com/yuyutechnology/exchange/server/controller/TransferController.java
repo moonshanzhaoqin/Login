@@ -164,7 +164,6 @@ public class TransferController {
 			UserInfo user = userManager.getUserInfo(sessionData.getUserId());
 			userManager.getPinCode(reqMsg.getTransferId(), user.getAreaCode(), user.getPhone());
 		} catch (Exception e) {
-			e.printStackTrace();
 			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 			rep.setMessage("Re-sending the phone pin failed");
 		}

@@ -100,7 +100,6 @@ public class JsonBinder
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
 			logger.warn("parse json string error:" + jsonString, e);
 			return null;
 		}

@@ -71,7 +71,6 @@ public class ExchangeRateManagerImpl implements SpareExchangeRateManager {
 					ResourceUtils.getBundleValue4String("gold.price.url", "http://www.kitco.com/charts/livegold.html"))
 					.get();
 		} catch (IOException e) {
-			e.printStackTrace();
 		}
 
 		if (doc == null) {

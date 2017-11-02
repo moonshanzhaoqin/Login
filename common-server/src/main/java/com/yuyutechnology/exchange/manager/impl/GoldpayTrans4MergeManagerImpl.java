@@ -217,7 +217,6 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 			}
 			
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error("error : {}", e.toString());
 			result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 			result.put("msg", e.toString());
