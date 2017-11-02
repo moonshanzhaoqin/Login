@@ -485,9 +485,8 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	private void clearPushId(Integer userId, String pushId) {
-		// logger.info("clearPushId {}",pushId);
-		String hql = "update e_user set push_id = ? where push_id = ? and user_id != ?";
 		logger.info("clearPushId : pushId={}, userId={}", pushId, userId);
+		String hql = "update e_user set push_id = ? where push_id = ? and user_id != ?";
 		userDAO.updateSQL(hql, new Object[] { "", pushId, userId });
 	}
 
@@ -629,17 +628,11 @@ public class UserManagerImpl implements UserManager {
 		}
 	}
 
-
-	@Override
-	public List<User> getUserList() {
-		return userDAO.getUserList();
-	}
-
 	@Override
 	public void userFreeze(Integer userId, int userAvailable) {
 		User user = userDAO.getUser(userId);
 		if (user == null || user.getUserType() == ServerConsts.USER_TYPE_OF_SYSTEM) {
-			logger.warn("{} is not exist!!!", userId);
+			logger.warn("{} is not exist !", userId);
 		} else {
 			user.setUserAvailable(userAvailable);
 			userDAO.updateUser(user);

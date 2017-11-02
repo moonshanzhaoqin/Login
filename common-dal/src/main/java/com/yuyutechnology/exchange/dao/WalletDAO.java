@@ -9,7 +9,7 @@ import com.yuyutechnology.exchange.pojo.Wallet;
 public interface WalletDAO {
 
 	/**
-	 * @Descrition : 
+	 * @Descrition :
 	 * @author : nicholas.chi
 	 * @time : 2016年12月2日 下午5:15:20
 	 * @param userId
@@ -19,7 +19,8 @@ public interface WalletDAO {
 
 	public Wallet getWalletByUserIdAndCurrency(int userId, String currency);
 
-	public Integer updateWalletByUserIdAndCurrency(int userId, String currency, BigDecimal amount, String capitalFlows, int transferType, String transactionId);
+	public Integer updateWalletByUserIdAndCurrency(int userId, String currency, BigDecimal amount, String capitalFlows,
+			int transferType, String transactionId);
 
 	public void addwallet(Wallet wallet);
 
@@ -30,7 +31,6 @@ public interface WalletDAO {
 	 * @return
 	 */
 	public HashMap<String, BigDecimal> getUserAccountTotalAssets(int systemUserId);
-
 
 	Integer emptyWallet(int userId, String currency);
 

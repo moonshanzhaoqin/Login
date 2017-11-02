@@ -174,12 +174,6 @@ public interface UserManager {
 	 */
 	String deleteFriend(Integer userId, String areaCode, String phone);
 
-
-	/**
-	 * @return
-	 */
-	List<User> getUserList();
-
 	/**
 	 * @param userId
 	 * @param userAvailable
@@ -245,5 +239,4 @@ public interface UserManager {
 	 */
 	UserDTO getUser(String areaCode, String userPhone);
 
-	
 }
