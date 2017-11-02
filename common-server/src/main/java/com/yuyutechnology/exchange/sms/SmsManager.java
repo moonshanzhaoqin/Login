@@ -275,7 +275,7 @@ public class SmsManager {
 			String result = HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("sendSMS.serverUrl"), param);
 			return JsonBinder.getInstance().fromJson(result, SendMessageResponse.class);
 		}
-		return null;
+		return new SendMessageResponse(0L, 0L, true);
 	}
 
 }

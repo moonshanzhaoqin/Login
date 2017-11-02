@@ -45,7 +45,6 @@ public class DateFormatUtils {
 		try {
 			startTime = new SimpleDateFormat(pattern).parse(dateString);
 		} catch (ParseException e) {
-//			e.printStackTrace();
 		}
 		return startTime;
 	}
@@ -91,7 +90,6 @@ public class DateFormatUtils {
 		try {
 			startTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startStr);
 		} catch (ParseException e) {
-			e.printStackTrace();
 		}
 		return startTime;
 	}
@@ -102,7 +100,6 @@ public class DateFormatUtils {
 		try {
 			endTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(endStr);
 		} catch (ParseException e) {
-			e.printStackTrace();
 		}
 		return endTime;
 	}
@@ -115,7 +112,6 @@ public class DateFormatUtils {
 		try {
 			time = sdf.parse(date);
 		} catch (ParseException e) {
-			e.printStackTrace();
 		}
 		cal.setTime(time);
 		int dayWeek = cal.get(Calendar.DAY_OF_WEEK);
@@ -141,7 +137,6 @@ public class DateFormatUtils {
 		try {
 			time = sdf.parse(date);
 		} catch (ParseException e) {
-			e.printStackTrace();
 		}
 		cal.setTime(time);
 		int dayWeek = cal.get(Calendar.DAY_OF_WEEK);
