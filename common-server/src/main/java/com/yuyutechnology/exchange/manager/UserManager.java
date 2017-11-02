@@ -174,12 +174,6 @@ public interface UserManager {
 	 */
 	String deleteFriend(Integer userId, String areaCode, String phone);
 
-	/**
-	 * 获取系统用户
-	 * 
-	 * @return
-	 */
-	User getSystemUser();
 
 	/**
 	 * @return

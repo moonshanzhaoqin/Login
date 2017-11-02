@@ -1,8 +1,25 @@
 package com.yuyutechnology.exchange.dto;
 
 public class UserInfo {
+	public UserInfo() {
+	}
+
+	public UserInfo(int userId, String areaCode, String phone, String name, boolean payPwd) {
+		super();
+		this.userId = userId;
+		this.areaCode = areaCode;
+		this.phone = phone;
+		this.name = name;
+		PayPwd = payPwd;
+	}
 
 	private int userId;
+	@Override
+	public String toString() {
+		return "UserInfo [userId=" + userId + ", areaCode=" + areaCode + ", phone=" + phone + ", name=" + name
+				+ ", PayPwd=" + PayPwd + "]";
+	}
+
 	private String areaCode;
 	private String phone;
 	private String name;
