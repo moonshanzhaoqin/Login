@@ -43,18 +43,18 @@ public class WalletDAOImpl implements WalletDAO {
 
 	@Override
 	public Integer emptyWallet(final int userId, final String currency) {
-			return hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
-				@Override
-				public Integer doInHibernate(Session session) throws HibernateException {
-					Query query = session.createQuery(
-								"update Wallet set updateTime = :updateTime  , balance =:balance where userId = :userId and currency.currency = :currency");
-					query.setTimestamp("updateTime", new Date());
-					query.setBigDecimal("balance", BigDecimal.ZERO);
-					query.setInteger("userId", userId);
-					query.setString("currency", currency);
-					return query.executeUpdate();
-				}
-			});
+		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
+			@Override
+			public Integer doInHibernate(Session session) throws HibernateException {
+				Query query = session.createQuery(
+						"update Wallet set updateTime = :updateTime  , balance =:balance where userId = :userId and currency.currency = :currency");
+				query.setTimestamp("updateTime", new Date());
+				query.setBigDecimal("balance", BigDecimal.ZERO);
+				query.setInteger("userId", userId);
+				query.setString("currency", currency);
+				return query.executeUpdate();
+			}
+		});
 	}
 
 	@SuppressWarnings("unchecked")
@@ -117,7 +117,6 @@ public class WalletDAOImpl implements WalletDAO {
 
 	@Override
 	public HashMap<String, BigDecimal> getUserAccountTotalAssets(final int systemUserId) {
-
 		HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>();
 
 		List<?> list = hibernateTemplate.executeWithNativeSession(new HibernateCallback<List<?>>() {
@@ -149,17 +148,17 @@ public class WalletDAOImpl implements WalletDAO {
 		}
 		WalletSeq walletSeq = new WalletSeq(userId, transferType, currency, amount, transactionId, new Date());
 		hibernateTemplate.save(walletSeq);
-		
+
 		int update = 0;
-		
-		if(!ServerConsts.CURRENCY_OF_GOLDPAY.equals(currency)){
+
+		if (!ServerConsts.CURRENCY_OF_GOLDPAY.equals(currency)) {
 			update = updateWalletByUserIdAndCurrency(userId, currency, amount.abs(), capitalFlows,
 					walletSeq.getSeqId());
+			if (update == 0) {
+				hibernateTemplate.delete(walletSeq);
+			}
 		}
-		
-		if (update == 0) {
-			hibernateTemplate.delete(walletSeq);
-		}
+
 		return update;
 	}
 }
