@@ -53,7 +53,7 @@ public class MergeTask {
 			if (user.getUserType() != ServerConsts.USER_TYPE_OF_SYSTEM) {
 				try {
 					totalTransGoldpay = totalTransGoldpay.add(exanytimeMergeManager.mergeExUserGoldpayToGoldpayServer(
-							user.getUserId(), user.getAreaCode(), user.getUserPhone()));
+							user.getUserId(), user.getAreaCode(), user.getUserPhone(), user.getUserName()));
 				} catch (Exception e) {
 					logger.error("Ex -> Goldpay : error!  " + user.getAreaCode() + user.getUserPhone(), e);
 					// System.exit(0);

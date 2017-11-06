@@ -28,14 +28,12 @@ import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.UserDeviceDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
-import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
 import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
-import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
@@ -121,9 +119,9 @@ public class UserManagerImpl implements UserManager {
 	 * 
 	 * @param userId
 	 */
-	private void bindGoldpay(Integer userId) {
+	private void bindGoldpay(String areaCode, String userPhone, String userName, Integer userId) {
 		/* 创建Goldpay账号 */
-		GoldpayUserDTO goldpayUser = goTrans4MergeManager.createGoldpay("", "", true);
+		GoldpayUserDTO goldpayUser = goTrans4MergeManager.createGoldpay(areaCode, userPhone, userName, true);
 		bindDAO.updateBind(
 				new Bind(userId, goldpayUser.getId() + "", goldpayUser.getUsername(), goldpayUser.getAccountNum()));
 	}
@@ -407,7 +405,7 @@ public class UserManagerImpl implements UserManager {
 		/* 添加钱包信息 */
 		createWallets4NewUser(userId);
 		/* 创建Goldpay账号 */
-		bindGoldpay(userId);
+		bindGoldpay(areaCode, userPhone, userName, userId);
 
 		// accountingManager.snapshotToBefore(userId);
 		/* 根据Unregistered表 更新新用户钱包 将资金从系统帐户划给新用户 */
