@@ -44,9 +44,9 @@ public class MergeTask {
 	@PostConstruct
 	public void mergeTask() {
 		logger.info("START merge users======================================================================");
-		
+
 		BigDecimal totalTransGoldpay = BigDecimal.ZERO;
-		
+
 		/* Ex -> Goldpay */
 		List<User> exUsers = userDAO.listAllUser();
 		for (User user : exUsers) {
@@ -60,7 +60,7 @@ public class MergeTask {
 				}
 			}
 		}
-		
+
 		/* Goldpay -> Ex */
 		List<Map<String, Object>> goldpayUsers = goldpayMergeManager.getAllGoldpayUser();
 		for (Map<String, Object> map : goldpayUsers) {
