@@ -8,15 +8,15 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
-import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.User;
 
 @Component
 public class AutoCalculateUserAssetsTask {
 	
 	@Autowired
-	UserManager userManager;
+	UserDAO userDAO;
 	@Autowired
 	CrmUserInfoManager crmUserInfoManager;
 	
@@ -24,7 +24,7 @@ public class AutoCalculateUserAssetsTask {
 	
 	public void autoCalculateUserAssetsTask(){
 		logger.info("=============autoCalculateUserAssetsTask Start==================");
-		List<User> list = userManager.getUserList();
+		List<User> list = userDAO.listAllUser();
 		if(list.isEmpty()){
 			return ;
 		}

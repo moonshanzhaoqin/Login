@@ -86,8 +86,6 @@ public class UserManagerImpl implements UserManager {
 	@Autowired
 	SmsManager smsManager;
 	@Autowired
-	GoldpayTrans4MergeManager goTrans4MergeManager;
-	@Autowired
 	PushManager pushManager;
 	@Autowired
 	CommonManager commonManager;
@@ -100,7 +98,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public String addfriend(Integer userId, String areaCode, String userPhone) {
-		logger.info("{} add friend {} ==>", userId, areaCode + userPhone);
+		logger.info("{} add friend {} -->", userId, areaCode + userPhone);
 		User friend = userDAO.getUserByUserPhone(areaCode, userPhone);
 		if (friend == null) {
 			return RetCodeConsts.PHONE_NOT_EXIST;
@@ -253,7 +251,7 @@ public class UserManagerImpl implements UserManager {
 			userDAO.updateUser(user);
 		}
 
-		if (PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt()) 
+		if (PasswordUtils.check(userPayPwd, user.getUserPayPwd(), user.getPasswordSalt())
 				|| (StringUtils.isNotBlank(user.getUserPayToken()) && userPayPwd.equals(user.getUserPayToken()))) {
 			logger.info("***match***");
 			redisDAO.deleteData(ServerConsts.WRONG_PAYPWD + userId);
@@ -312,7 +310,7 @@ public class UserManagerImpl implements UserManager {
 		logger.info("New wallets for newly registered user {}==>", userId);
 		List<Currency> currencies = commonManager.getCurrentCurrencies();
 		for (Currency currency : currencies) {
-			walletDAO.addwallet(new Wallet(currency, userId, new BigDecimal(0), new Date(), 0));
+			walletDAO.addwallet(new Wallet(currency, userId, BigDecimal.ZERO, new Date(), 0));
 		}
 	}
 
@@ -341,14 +339,15 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public Integer getUserId(String areaCode, String userPhone) {
-		logger.info("getUserId - phone:{} ==> ", areaCode + userPhone);
+		logger.info("getUserId - phone:{} --> ", areaCode + userPhone);
 		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
 		if (user != null) {
 			if (user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_AVAILABLE) {
+				logger.info(" -- UserId = {}", user.getUserId());
 				return user.getUserId();
-			} else {
-				return 0;
 			}
+			logger.info("User is frozen!");
+			return 0;
 		}
 		logger.info("No User!");
 		return null;
@@ -356,22 +355,13 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public UserInfo getUserInfo(Integer userId) {
-		logger.info("getUserInfo ==>userId:{}", userId);
+		logger.info("getUserInfo userId:{} -->", userId);
 		User user = userDAO.getUser(userId);
 		UserInfo userInfo = null;
 		if (user != null) {
-			userInfo = new UserInfo();
-			userInfo.setUserId(user.getUserId());
-			userInfo.setAreaCode(user.getAreaCode());
-			userInfo.setPhone(user.getUserPhone());
-			userInfo.setName(user.getUserName());
-			/* 判断是否设置过支付密码 */
-			if (StringUtils.isBlank(user.getUserPayPwd())) {
-				userInfo.setPayPwd(false);
-			} else {
-				userInfo.setPayPwd(true);
-			}
-			logger.info("UserInfo={}", userInfo.toString());
+			userInfo = new UserInfo(user.getUserId(), user.getAreaCode(), user.getUserPhone(), user.getUserName(),
+					StringUtils.isNotBlank(user.getUserPayPwd()));
+			logger.info(" -- {}", userInfo.toString());
 		} else {
 			logger.warn("Can not find the user!!!");
 		}
@@ -416,7 +406,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public void switchLanguage(Integer userId, String language) {
 		Language newLanguage = LanguageUtils.standard(language);
-		logger.info("{} switchLanguage to {} ==>", userId, newLanguage.toString());
+		logger.info("{} switchLanguage to {} -->", userId, newLanguage.toString());
 		User user = userDAO.getUser(userId);
 		if (!user.getPushTag().equals(newLanguage)) {
 			logger.info("***Language inconsistency***");
@@ -431,7 +421,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public Boolean testPinCode(String func, String areaCode, String userPhone, String verificationCode) {
-		logger.info("Check phone number {} and verify code {} ==>", areaCode + userPhone, verificationCode);
+		logger.info("Check phone number {} and verify code {} -->", areaCode + userPhone, verificationCode);
 
 		String pinCode = redisDAO.getValueByKey(func + areaCode + userPhone);
 		if (pinCode == null) {
@@ -448,7 +438,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void updatePassword(Integer userId, String newPassword) {
-		logger.info("Update user {} password {} ==>", userId, newPassword);
+		logger.info("Update user {} password {} -->", userId, newPassword);
 		User user = userDAO.getUser(userId);
 		user.setUserPassword(PasswordUtils.encrypt(newPassword, user.getPasswordSalt()));
 		userDAO.updateUser(user);
@@ -457,33 +447,44 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void updateUser(Integer userId, String loginIp, String pushId, String language) {
-		logger.info("Update user login information==>");
+		logger.info("Update user login information -->");
 		User user = userDAO.getUser(userId);
 		if (user == null) {
 			return;
 		}
 		user.setLoginIp(loginIp);
 		user.setLoginTime(new Date());
+
+		/* 换设备 */
 		if (StringUtils.isNotBlank(pushId) && !pushId.equals(user.getPushId())) {
-			/* 换设备 推送消息：设备已下线 */
-			logger.info("Push message: device offline==> oldPushId : {} , newPushId : {} ",
+			/* 推送消息：设备已下线 */
+			logger.info("Push message: device offline -- oldPushId : {} , newPushId : {} ",
 					new Object[] { user.getPushId(), pushId });
 			pushManager.push4Offline(user.getPushId(), user.getPushTag(), String.valueOf(new Date().getTime()));
+			user.setPushId(pushId);
 		}
-		user.setPushId(pushId);
-		user.setPushTag(LanguageUtils.standard(language));
+
+		/* 切换语言 */
+		Language newLanguage = LanguageUtils.standard(language);
+		logger.info("{} switchLanguage to {} -->", userId, newLanguage.toString());
+		if (!user.getPushTag().equals(newLanguage)) {
+			logger.info("***Language inconsistency***");
+			user.setPushTag(newLanguage);
+			/* 绑定Tag */
+			pushManager.bindPushTag(user.getPushId(), newLanguage);
+		} else {
+			logger.info("***Language consistency,do nothing!***");
+		}
+
 		userDAO.updateUser(user);
-		/* 绑定Tag */
-		logger.info("***bind Tag***{}", language);
-		pushManager.bindPushTag(pushId, LanguageUtils.standard(language));
+
 		/* 清除其他账号的此pushId */
 		clearPushId(userId, pushId);
 	}
 
 	private void clearPushId(Integer userId, String pushId) {
-		// logger.info("clearPushId {}",pushId);
-		String hql = "update e_user set push_id = ? where push_id = ? and user_id != ?";
 		logger.info("clearPushId : pushId={}, userId={}", pushId, userId);
+		String hql = "update e_user set push_id = ? where push_id = ? and user_id != ?";
 		userDAO.updateSQL(hql, new Object[] { "", pushId, userId });
 	}
 
@@ -496,7 +497,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void updateUserPayPwd(Integer userId, String userPayPwd) {
-		logger.info("Update user {} pay password {} ==>", userId, userPayPwd);
+		logger.info("Update user {} pay password {} -->", userId, userPayPwd);
 		User user = userDAO.getUser(userId);
 		user.setUserPayPwd(PasswordUtils.encrypt(userPayPwd, user.getPasswordSalt()));
 		userDAO.updateUser(user);
@@ -504,7 +505,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void updateWallet(Integer userId) {
-		logger.info("Update Wallet==>");
+		logger.info("Update Wallet -->");
 		List<Wallet> wallets = walletDAO.getWalletsByUserId(userId);
 		HashMap<String, Wallet> mapwallet = new HashMap<String, Wallet>();
 		for (Wallet wallet : wallets) {
@@ -516,7 +517,7 @@ public class UserManagerImpl implements UserManager {
 			if (mapwallet.get(currency.getCurrency()) == null) {
 				/* 没有该货币的钱包，需要新增 */
 				walletDAO.addwallet(new Wallet(currency, userId, BigDecimal.ZERO, new Date(), 0));
-				logger.info("Added {}wallet to user {}", currency.getCurrency(), userId);
+				logger.info("Added {} wallet to user {}", currency.getCurrency(), userId);
 			}
 		}
 	}
@@ -530,7 +531,7 @@ public class UserManagerImpl implements UserManager {
 	 */
 	private void updateWalletsFromUnregistered(Integer userId, String areaCode, String userPhone, String userName) {
 		logger.info(
-				"Update wallets according to Unregistered. Assign funds from system accounts to  newly registered user==>");
+				"Update wallets according to Unregistered. Assign funds from system accounts to newly registered user -->");
 		Integer systemUserId = userDAO.getSystemUser().getUserId();
 		List<Unregistered> unregistereds = unregisteredDAO.getUnregisteredByUserPhone(areaCode, userPhone);
 		for (Unregistered unregistered : unregistereds) {
@@ -608,7 +609,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public String deleteFriend(Integer userId, String areaCode, String phone) {
-		logger.info("Find friend==>");
+		logger.info("Find friend -->");
 		User friend = userDAO.getUserByUserPhone(areaCode, phone);
 		if (friend == null) {
 			return RetCodeConsts.PHONE_NOT_EXIST;
@@ -626,20 +627,10 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public User getSystemUser() {
-		return userDAO.getSystemUser();
-	}
-
-	@Override
-	public List<User> getUserList() {
-		return userDAO.getUserList();
-	}
-
-	@Override
 	public void userFreeze(Integer userId, int userAvailable) {
 		User user = userDAO.getUser(userId);
 		if (user == null || user.getUserType() == ServerConsts.USER_TYPE_OF_SYSTEM) {
-			logger.warn("{} is not exist!!!", userId);
+			logger.warn("{} is not exist !", userId);
 		} else {
 			user.setUserAvailable(userAvailable);
 			userDAO.updateUser(user);

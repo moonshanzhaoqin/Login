@@ -178,7 +178,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 
 		redisDAO.saveData("updateImmediately", 1);
 
-		List<User> list = userDAO.getUserList();
+		List<User> list = userDAO.listAllUser();
 		if (list.isEmpty()) {
 			return;
 		}
@@ -197,13 +197,14 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 		if (StringUtils.isNotBlank(updateFlag)) {
 			return Integer.parseInt(updateFlag);
 		}
-
 		return 0;
 	}
 
 	@Override
-	public PageBean getUserInfoByPage(int currentPage, String userPhone, String userName, String startTime, String endTime) {
-		logger.info("currentPage={},userPhone={},userName={},transferStatus={}", currentPage, userPhone, userName);
+	public PageBean getUserInfoByPage(int currentPage, String userPhone, String userName, String startTime,
+			String endTime) {
+		logger.info("currentPage={},userPhone={},userName={}  {}->{}", currentPage, userPhone, userName, startTime,
+				endTime);
 
 		List<Object> values = new ArrayList<Object>();
 		StringBuilder hql = new StringBuilder("from CrmUserInfo where 1 = 1");
@@ -219,17 +220,12 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 			hql.append("and createTime >   ?");
 			values.add(DateFormatUtils.getStartTime(startTime));
 		}
-
 		if (StringUtils.isNotBlank(endTime)) {
 			hql.append("and  createTime < ?");
 			values.add(DateFormatUtils.getEndTime(endTime));
 		}
-
-
 		hql.append(" order by loginTime desc");
-
 		return crmUserInfoDAO.getUserInfoByPage(hql.toString(), values, currentPage, 10);
 	}
 
-	
 }

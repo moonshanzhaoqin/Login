@@ -26,7 +26,7 @@ public interface UserDAO {
 
 	UserConfig getUserConfig(Integer userId);
 
-	List<User> getUserList();
+	List<User> listAllUser();
 
 	void saveUserConfig(UserConfig userConfig);
 

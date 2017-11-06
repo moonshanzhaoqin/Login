@@ -175,18 +175,6 @@ public interface UserManager {
 	String deleteFriend(Integer userId, String areaCode, String phone);
 
 	/**
-	 * 获取系统用户
-	 * 
-	 * @return
-	 */
-	User getSystemUser();
-
-	/**
-	 * @return
-	 */
-	List<User> getUserList();
-
-	/**
 	 * @param userId
 	 * @param userAvailable
 	 */
@@ -251,5 +239,4 @@ public interface UserManager {
 	 */
 	UserDTO getUser(String areaCode, String userPhone);
 
-	
 }

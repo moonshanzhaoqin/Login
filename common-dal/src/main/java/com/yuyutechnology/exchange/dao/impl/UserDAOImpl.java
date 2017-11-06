@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.hql.internal.ast.HqlASTFactory;
 import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
@@ -62,7 +63,7 @@ public class UserDAOImpl implements UserDAO {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<User> getUserList() {
+	public List<User> listAllUser() {
 		List<?> list = hibernateTemplate.find("from User");
 		return list.isEmpty() ? null : (List<User>) list;
 	}
@@ -74,6 +75,8 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public void updateSQL(final String sql, final Object[] values) {
+		logger.info(sql);
+		logger.info(values);
 		hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
 			@Override
 			public Integer doInHibernate(Session session) throws HibernateException {
@@ -91,7 +94,7 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public void updateUser(User user) {
-		hibernateTemplate.saveOrUpdate(user);
+		hibernateTemplate.update(user);
 	}
 
 }
