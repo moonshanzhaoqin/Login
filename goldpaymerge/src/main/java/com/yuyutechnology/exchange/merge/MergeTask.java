@@ -48,7 +48,7 @@ public class MergeTask {
 		BigDecimal totalTransGoldpay = BigDecimal.ZERO;
 		
 		/* Ex -> Goldpay */
-		List<User> exUsers = userDAO.getUserList();
+		List<User> exUsers = userDAO.listAllUser();
 		for (User user : exUsers) {
 			if (user.getUserType() != ServerConsts.USER_TYPE_OF_SYSTEM) {
 				try {
