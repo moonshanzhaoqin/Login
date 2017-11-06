@@ -83,7 +83,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		Inviter inviter = inviterDAO.getInviter(userId);
 		if (inviter == null) {
 			inviter = new Inviter(userId, 0, BigDecimal.ZERO);
-			inviterDAO.updateInviter(inviter);
+			inviterDAO.saveInviter(inviter);
 		}
 		inviterInfo.setInviteQuantity(inviter.getInviteQuantity());
 		inviterInfo.setInviteBonus(inviter.getInviteBonus());

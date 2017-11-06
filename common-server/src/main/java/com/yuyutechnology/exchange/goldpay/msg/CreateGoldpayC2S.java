@@ -3,7 +3,20 @@ package com.yuyutechnology.exchange.goldpay.msg;
 public class CreateGoldpayC2S {
 	private String areaCode;
 	private String mobile;
+	private String userName;
 	private boolean newUser;
+
+	public CreateGoldpayC2S() {
+		super();
+	}
+
+	public CreateGoldpayC2S(String areaCode, String mobile, String userName, boolean newUser) {
+		super();
+		this.areaCode = areaCode;
+		this.mobile = mobile;
+		this.userName = userName;
+		this.newUser = newUser;
+	}
 
 	public String getAreaCode() {
 		return areaCode;
@@ -29,11 +42,11 @@ public class CreateGoldpayC2S {
 		this.newUser = newUser;
 	}
 
-	public CreateGoldpayC2S(String areaCode, String mobile, boolean newUser) {
-		super();
-		this.areaCode = areaCode;
-		this.mobile = mobile;
-		this.newUser = newUser;
+	public String getUserName() {
+		return userName;
 	}
 
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 }

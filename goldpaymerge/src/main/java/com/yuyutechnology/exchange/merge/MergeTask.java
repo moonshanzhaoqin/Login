@@ -44,23 +44,23 @@ public class MergeTask {
 	@PostConstruct
 	public void mergeTask() {
 		logger.info("START merge users======================================================================");
-		
+
 		BigDecimal totalTransGoldpay = BigDecimal.ZERO;
-		
+
 		/* Ex -> Goldpay */
-		List<User> exUsers = userDAO.getUserList();
+		List<User> exUsers = userDAO.listAllUser();
 		for (User user : exUsers) {
 			if (user.getUserType() != ServerConsts.USER_TYPE_OF_SYSTEM) {
 				try {
 					totalTransGoldpay = totalTransGoldpay.add(exanytimeMergeManager.mergeExUserGoldpayToGoldpayServer(
-							user.getUserId(), user.getAreaCode(), user.getUserPhone()));
+							user.getUserId(), user.getAreaCode(), user.getUserPhone(), user.getUserName()));
 				} catch (Exception e) {
 					logger.error("Ex -> Goldpay : error!  " + user.getAreaCode() + user.getUserPhone(), e);
 					// System.exit(0);
 				}
 			}
 		}
-		
+
 		/* Goldpay -> Ex */
 		List<Map<String, Object>> goldpayUsers = goldpayMergeManager.getAllGoldpayUser();
 		for (Map<String, Object> map : goldpayUsers) {
