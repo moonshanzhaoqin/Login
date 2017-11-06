@@ -4,8 +4,6 @@
 package com.yuyutechnology.exchange.dao.impl;
 
 import java.math.BigDecimal;
-import java.util.Date;
-
 import javax.annotation.Resource;
 
 import org.apache.logging.log4j.LogManager;
@@ -37,21 +35,23 @@ public class InviterDAOImpl implements InviterDAO {
 
 	@Override
 	public Integer updateInviter(final Integer userId, final int inviteQuantityIncrement,
-			final BigDecimal inviteBonusIncrement ) {
+			final BigDecimal inviteBonusIncrement) {
 		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
 			@Override
 			public Integer doInHibernate(Session session) throws HibernateException {
 				Query query = session.createQuery(
-							"update Inviter set inviteQuantity = inviteQuantity+"+inviteQuantityIncrement +"  , inviteBonus =inviteBonus+"+inviteBonusIncrement+" where userId = :userId ");
+						"update Inviter set inviteQuantity = inviteQuantity + :inviteQuantityIncrement, inviteBonus = inviteBonus + :inviteBonusIncrement where userId = :userId ");
+				query.setInteger("inviteQuantityIncrement", inviteQuantityIncrement);
+				query.setBigDecimal("inviteBonusIncrement", inviteBonusIncrement);
 				query.setInteger("userId", userId);
 				return query.executeUpdate();
 			}
 		});
-		
+
 	}
 
 	@Override
-	public void updateInviter(Inviter inviter) {
+	public void saveInviter(Inviter inviter) {
 		hibernateTemplate.saveOrUpdate(inviter);
 	}
 
