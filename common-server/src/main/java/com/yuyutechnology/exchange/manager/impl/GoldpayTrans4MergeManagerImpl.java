@@ -55,8 +55,8 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 	public static Logger logger = LogManager.getLogger(GoldpayTrans4MergeManagerImpl.class);
 
 	@Override
-	public GoldpayUserDTO createGoldpay(String areaCode, String userPhone, boolean newUser) {
-		CreateGoldpayC2S createGoldpayRequest = new CreateGoldpayC2S(areaCode, userPhone, newUser);
+	public GoldpayUserDTO createGoldpay(String areaCode, String userPhone, String userName, boolean newUser) {
+		CreateGoldpayC2S createGoldpayRequest = new CreateGoldpayC2S(areaCode, userPhone, userName, newUser);
 		String param = JsonBinder.getInstanceNonNull().toJson(createGoldpayRequest);
 		logger.info("param==={}", param);
 		String result = HttpClientUtils

@@ -53,10 +53,10 @@ public class ExanytimeMergeManager {
 	@Autowired
 	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
 
-	public BigDecimal mergeExUserGoldpayToGoldpayServer(Integer userId, String areaCode, String userPhone) {
+	public BigDecimal mergeExUserGoldpayToGoldpayServer(Integer userId, String areaCode, String userPhone, String userName) {
 
 		/* 用手机号创建Goldpay账号 */
-		GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.createGoldpay(areaCode, userPhone, false);
+		GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.createGoldpay(areaCode, userPhone, userName, false);
 		if (goldpayUser == null) {
 			logger.warn("Ex -> Goldpay: Ex : {},{} FAIL!---Can not create Goldpay.", userId, areaCode + userPhone);
 		} else {
