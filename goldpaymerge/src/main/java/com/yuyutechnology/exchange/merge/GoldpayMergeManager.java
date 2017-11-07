@@ -24,7 +24,6 @@ import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.manager.CommonManager;
-import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.User;
@@ -57,7 +56,7 @@ public class GoldpayMergeManager {
 
 	public List<Map<String, Object>> getAllGoldpayUser() {
 		List<Map<String, Object>> users = jdbcTemplate.queryForList(
-				"SELECT account.user_id, account.account_id,guser.username,guser.`area_code`,guser.`mobile` FROM `goldq_account` account LEFT JOIN `goldq_user` guser ON guser.id = account.user_id  WHERE guser.`area_code` IS NOT NULL AND guser.`area_code` != '+00';");
+				"SELECT account.user_id, account.account_id,guser.username,guser.`area_code`,guser.`mobile`,guser.`password` FROM `goldq_account` account LEFT JOIN `goldq_user` guser ON guser.id = account.user_id  WHERE guser.`password` NOT LIKE 'NoLogin_%';");
 		logger.info("getAllGoldpayUser size : " + users.size());
 		return users;
 	}
