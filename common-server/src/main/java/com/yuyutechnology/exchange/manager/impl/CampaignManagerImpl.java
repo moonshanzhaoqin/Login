@@ -260,8 +260,8 @@ public class CampaignManagerImpl implements CampaignManager {
 		campaignDAO.updateCampaign(campaign);
 
 		/* 更新邀请人信息 */
-		inviter.setInviteBonus(inviter.getInviteBonus().add(collect.getInviterBonus()));
-		inviter.setInviteQuantity(inviter.getInviteQuantity() + 1);
+//		inviter.setInviteBonus(inviter.getInviteBonus().add(collect.getInviterBonus()));
+//		inviter.setInviteQuantity(inviter.getInviteQuantity() + 1);
 		inviterDAO.updateInviter(inviter.getUserId(),1,collect.getInviterBonus());
 
 	}
