@@ -2,6 +2,7 @@ package com.yuyutechnology.exchange.server.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,6 +21,7 @@ import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.WalletInfo;
+import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
@@ -35,6 +37,7 @@ import com.yuyutechnology.exchange.server.controller.response.ExchangeConfirmRes
 import com.yuyutechnology.exchange.server.controller.response.GetCurrentBalanceResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetExchangeDetailsResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetExchangeHistoryResponse;
+import com.yuyutechnology.exchange.server.controller.response.GetExchangeRate4GDQResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetExchangeRateResponse;
 import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
 import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
@@ -142,19 +145,22 @@ public class ExchangeController {
 	@ApiOperation(value = "获取Goldpay汇率")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/getGoldRate")
 	public @ResponseBody GetExchangeRateResponse getExchangeRate(@PathVariable String token) {
+
 		GetExchangeRateResponse rep = new GetExchangeRateResponse();
-		LinkedHashMap<String, Double> map = oandaRatesManager.getExchangeRate(ServerConsts.CURRENCY_OF_GOLDPAY);
-		if (map.isEmpty()) {
-			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-			rep.setMessage("Failed to get exchange rate");
-			return rep;
-		}
+
+		LinkedHashMap<String, Double> result = oandaRatesManager
+				.getExchangeRateDiffLeft4OneRight(ServerConsts.CURRENCY_OF_GOLDPAY);
+		
+		result.remove(ServerConsts.CURRENCY_OF_CNY);
+
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		rep.setBase(ServerConsts.CURRENCY_OF_GOLDPAY);
 		rep.setRateUpdateTime(oandaRatesManager.getExchangeRateUpdateDate());
-		rep.setExchangeRates(map);
+		rep.setExchangeRates(result);
+		
 		return rep;
+		
 	}
 
 	@ApiOperation(value = "兑换确认")
