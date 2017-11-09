@@ -56,7 +56,7 @@ public class GoldpayMergeManager {
 
 	public List<Map<String, Object>> getAllGoldpayUser() {
 		List<Map<String, Object>> users = jdbcTemplate.queryForList(
-				"SELECT account.user_id, account.account_id,guser.username,guser.`area_code`,guser.`mobile`,guser.`password` FROM `goldq_account` account LEFT JOIN `goldq_user` guser ON guser.id = account.user_id  WHERE guser.`password` NOT LIKE 'NoLogin_%';");
+				"SELECT account.user_id, account.account_id,guser.username,guser.`area_code`,guser.`mobile`,guser.`password` FROM `goldq_account` account LEFT JOIN `goldq_user` guser ON guser.id = account.user_id  WHERE guser.`password` NOT LIKE 'NoLogin_%' AND guser.`phone_verification` = 1;");
 		logger.info("getAllGoldpayUser size : " + users.size());
 		return users;
 	}

@@ -23,5 +23,4 @@ ALTER TABLE `e_user` ADD COLUMN `user_pay_token` VARCHAR(128) CHARSET utf8 COLLA
 ALTER TABLE `e_collect`
   CHANGE COLUMN `user_phone` `user_phone` varchar(11) NOT NULL DEFAULT '' COMMENT '用户手机号';
 ALTER TABLE `e_collect`
-  ADD UNIQUE INDEX `area_phone_time` (`area_code`(5),`user_phone`(11),`collect_time`),
-  DROP INDEX `area_phone_time`;
+  ADD UNIQUE INDEX `area_phone_time` (`area_code`(5),`user_phone`(11),`collect_time`);
