@@ -174,7 +174,7 @@ public class RetCodeConsts {
 	/**
 	 * 超过当日最大限额
 	 */
-	public static final String TRANSFER_EXCEEDED_TRANSACTION_LIMIT = "03002";
+//	public static final String TRANSFER_EXCEEDED_TRANSACTION_LIMIT = "03002";
 	/**
 	 * 支付密码不正确
 	 */
