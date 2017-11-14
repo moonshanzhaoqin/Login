@@ -8,3 +8,4 @@ CREATE TABLE `e_fee_template` (
   `max_fee` decimal(20,0) unsigned NOT NULL DEFAULT '999999999' COMMENT '最大手续费',
   PRIMARY KEY (`fee_purpose`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='手续费模板'; 
+UPDATE `e_crm_admin` SET `admin_power`='0,1,2,3,4,5,6,7,8,9' WHERE `admin_id`=1;

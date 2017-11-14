@@ -5,7 +5,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Exanytime</title>
+<title>Goldpay</title>
 <link rel='icon' href='<c:url value="/resources/img/ex_28x28.ico" />'
 	type='image/x-ico' />
 <link rel="stylesheet"
@@ -94,6 +94,9 @@
 						</c:if>
 						<c:if test="${adminPower eq 8}">
                             <li><a href="<c:url value='/campaign' />">活动管理</a></li>
+                        </c:if>
+                        <c:if test="${adminPower eq 9}">
+                            <li><a href="<c:url value='/feeTemplate' />">手续费管理</a></li>
                         </c:if>
                         
 					</c:forTokens>

@@ -25,7 +25,7 @@
 				</li>
 			</ul>
 		</div>
-		
+
 		<div class="row">
 			<table class="table table-bordered table-hover table-striped"
 				id="currency">

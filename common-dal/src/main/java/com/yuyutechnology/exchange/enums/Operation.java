@@ -116,7 +116,11 @@ public enum Operation {
 	/**
 	 * 关闭活动
 	 */
-	OFF_CAMPAIGN("off_campaign");
+	OFF_CAMPAIGN("off_campaign"), 
+	/**
+	 *更新手续费模板 
+	 */
+	UPDATE_FEETEMPLATE("update_feetemplate");
 	
 	private String operationName;
 

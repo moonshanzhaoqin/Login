@@ -65,6 +65,7 @@ public class CurrencyController {
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
 		currencyManager.updateCurrency(currency);
+		commonManager.refreshConfig();
 		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.EDIT_CURRENCY.getOperationName(), currency.toString()));
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);

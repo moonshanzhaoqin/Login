@@ -10,6 +10,10 @@ public class ServerConsts {
 	 * 系统用户
 	 */
 	public static final int USER_TYPE_OF_SYSTEM = 1;
+	/**
+	 * VIP用户
+	 */
+	public static final int USER_TYPE_OF_VIP = 2;
 
 	// 冻结状态
 	/**
@@ -72,18 +76,18 @@ public class ServerConsts {
 	 * 系统退款
 	 */
 	public static final int TRANSFER_TYPE_IN_SYSTEM_REFUND = 3;
-	 /**
+	/**
 	 * 黄金宝提现
 	 */
-	 public static final int TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW = 4;
-	 /**
+	public static final int TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW = 4;
+	/**
 	 * 黄金宝充值
 	 */
-	 public static final int TRANSFER_TYPE_IN_GOLDPAY_RECHARGE = 5;
-	 /**
+	public static final int TRANSFER_TYPE_IN_GOLDPAY_RECHARGE = 5;
+	/**
 	 * 黄金宝提现退款
 	 */
-	 public static final int TRANSFER_TYPE_IN_GOLDPAY_REFUND = 6;
+	public static final int TRANSFER_TYPE_IN_GOLDPAY_REFUND = 6;
 	/**
 	 * Paypal充值
 	 */
@@ -111,7 +115,7 @@ public class ServerConsts {
 	 * 交易退回
 	 */
 	public static final int TRANSFER_STATUS_OF_REFUND = 3;
-	
+
 	public static final int EXCHANGE_STATUS_OF_INITIALIZATION = 1;
 	public static final int EXCHANGE_STATUS_OF_PROCESS = 2;
 	public static final int EXCHANGE_STATUS_OF_COMPLETED = 0;
@@ -238,11 +242,11 @@ public class ServerConsts {
 
 	public static final int COLLECT_STATUS_UNREGISTER = 0;
 	public static final int COLLECT_STATUS_REGISTER = 1;
-	
+
 	/**
 	 * goldpay返回成功
-	 */	
+	 */
 	public static final int GOLDPAY_RETURN_FAIL = 0;
 	public static final int GOLDPAY_RETURN_SUCCESS = 1;
-	
+
 }

@@ -2,6 +2,7 @@ package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,10 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.yuyutechnology.exchange.FeePurpose;
 import com.yuyutechnology.exchange.dao.FeeTemplateDAO;
+import com.yuyutechnology.exchange.enums.FeePurpose;
 import com.yuyutechnology.exchange.manager.FeeManager;
 import com.yuyutechnology.exchange.pojo.FeeTemplate;
+import com.yuyutechnology.exchange.util.ResourceUtils;
 
 @Service
 public class FeeManagerImpl implements FeeManager {
@@ -26,19 +28,30 @@ public class FeeManagerImpl implements FeeManager {
 	FeeTemplateDAO feeTemplateDAO;
 
 	Map<String, FeeTemplate> feeTmeplateMap = new HashMap<String, FeeTemplate>();
+	List<FeeTemplate> feeTemplateList = new ArrayList<FeeTemplate>();
 
 	@Override
 	@PostConstruct
 	@Scheduled(cron = "0 1/10 * * * ?")
 	public void refresh() {
+		ResourceUtils.clearCache();
 		init();
 	}
 
 	private void init() {
-		List<FeeTemplate> feeTemplates = feeTemplateDAO.listAllFeeTemplate();
-		for (FeeTemplate feeTemplate : feeTemplates) {
+		feeTemplateList = feeTemplateDAO.listAllFeeTemplate();
+		for (FeeTemplate feeTemplate : feeTemplateList) {
 			feeTmeplateMap.put(feeTemplate.getFeePurpose().trim(), feeTemplate);
 		}
+	}
+
+	@Override
+	public List<FeeTemplate> listAllFeeTemplate() {
+		return feeTemplateList;
+	}
+	@Override
+	public void updateFeeTemplate(FeeTemplate feeTemplate) {
+		feeTemplateDAO.updateFeeTemplate(feeTemplate);
 	}
 
 	@Override
@@ -61,5 +74,7 @@ public class FeeManagerImpl implements FeeManager {
 		logger.info("fee is {}", fee);
 		return fee;
 	}
+
+	
 
 }
