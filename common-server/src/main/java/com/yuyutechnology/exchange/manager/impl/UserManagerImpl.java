@@ -711,7 +711,7 @@ public class UserManagerImpl implements UserManager {
 			userDTO.setUserPassword(user.getUserPassword());
 			userDTO.setPasswordSalt(user.getPasswordSalt());
 			userDTO.setUserAvailable(user.getUserAvailable());
-			Bind bind = bindDAO.getBindByUserId(user.getUserId());
+			Bind bind = bindDAO.getBind(user.getUserId());
 			userDTO.setGoldpayAccount(bind == null ? "" : bind.getGoldpayAcount());
 			userDTO.setGoldpayId(bind == null ? 0L : Long.valueOf(bind.getGoldpayId()));
 			userDTO.setGoldpayUserName(bind == null ? "" : bind.getGoldpayName());
@@ -720,4 +720,22 @@ public class UserManagerImpl implements UserManager {
 		return null;
 	}
 
+	@Override
+	public void updateHappyLivesVIP(String happyLivesId, Integer userId) {
+		Bind bind = bindDAO.getBind(userId);
+		if (bind != null){
+			bindDAO.clearHappyLivesId(happyLivesId);
+			bind.setHappyLivesId(happyLivesId);
+			bindDAO.updateBind(bind);
+		}
+	}
+
+	@Override
+	public boolean isHappyLivesVIP(Integer userId) {
+		Bind bind = bindDAO.getBind(userId);
+		if (bind == null) {
+			return false;
+		}
+		return StringUtils.isNotBlank(bind.getHappyLivesId());
+	}
 }

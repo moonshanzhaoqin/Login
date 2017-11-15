@@ -238,5 +238,13 @@ public interface UserManager {
 	 * @param userPhone
 	 */
 	UserDTO getUser(String areaCode, String userPhone);
+	
+	/**
+	 * @param happyLivesId
+	 * @param userId
+	 */
+	void updateHappyLivesVIP(String happyLivesId, Integer userId);
+	
+	boolean isHappyLivesVIP(Integer userId);
 
 }

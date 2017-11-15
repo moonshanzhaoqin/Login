@@ -73,7 +73,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 
 	@Override
 	public GoldpayUserDTO getGoldpayUserInfo(Integer exUserId) {
-		Bind bind = bindDAO.getBindByUserId(exUserId);
+		Bind bind = bindDAO.getBind(exUserId);
 		GetGoldpayUserC2S param = new GetGoldpayUserC2S();
 		param.setAccountNum(bind.getGoldpayAcount());
 		String result = HttpClientUtils.sendPost(

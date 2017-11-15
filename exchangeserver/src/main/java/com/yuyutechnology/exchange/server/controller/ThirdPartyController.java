@@ -23,13 +23,15 @@ import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.GetUserRequest;
+import com.yuyutechnology.exchange.server.controller.request.HappyLivesVIPRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransInitRequest;
 import com.yuyutechnology.exchange.server.controller.response.GetUserResponse;
-import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
-import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
+import com.yuyutechnology.exchange.server.controller.response.HappyLivesVIPResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransConfirmResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransInitResponse;
+import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
+import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 
 /**
  * @author silent.sun
@@ -136,6 +138,14 @@ public class ThirdPartyController {
 		return rep;
 	}
 	
-	
-	
+	@ResponseEncryptBody
+	@ApiOperation(value = "愉愉俱乐部会员")
+	@RequestMapping(method = RequestMethod.POST, value = "/3rd/happyLivesVIP")
+	public HappyLivesVIPResponse happyLivesVIP(@RequestDecryptBody HappyLivesVIPRequest reqMsg) {
+		HappyLivesVIPResponse rep = new HappyLivesVIPResponse();
+		userManager.updateHappyLivesVIP(reqMsg.getHappyLivesId(), reqMsg.getUserId());
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		return rep;
+	}
 }

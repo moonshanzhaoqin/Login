@@ -1,11 +1,8 @@
 package com.yuyutechnology.exchange.pojo;
 // Generated Dec 17, 2016 2:05:54 PM by Hibernate Tools 5.1.0.Alpha1
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -20,8 +17,8 @@ public class Bind implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -613686505426931292L;
-	private Integer bindId;
-	private int userId;
+	private Integer userId;
+	private String happyLivesId;
 	private String goldpayId;
 	private String goldpayName;
 	private String goldpayAcount;
@@ -43,24 +40,22 @@ public class Bind implements java.io.Serializable {
 	}
 
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
-
-	@Column(name = "bind_id", unique = true, nullable = false)
-	public Integer getBindId() {
-		return this.bindId;
-	}
-
-	public void setBindId(Integer bindId) {
-		this.bindId = bindId;
-	}
-
-	@Column(name = "user_id", nullable = false)
-	public int getUserId() {
+	@Column(name = "user_id", unique = true, nullable = false)
+	public Integer getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(Integer userId) {
 		this.userId = userId;
+	}
+
+	@Column(name = "happy_lives_id")
+	public String getHappyLivesId() {
+		return happyLivesId;
+	}
+
+	public void setHappyLivesId(String happyLivesId) {
+		this.happyLivesId = happyLivesId;
 	}
 
 	@Column(name = "goldpay_id")
