@@ -10,10 +10,8 @@ CREATE TABLE `e_fee_template` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='手续费模板'; 
 UPDATE `e_crm_admin` SET `admin_power`='0,1,2,3,4,5,6,7,8,9' WHERE `admin_id`=1;
 
-
-
-
+--2017/11/15 Silent
 ALTER TABLE `e_bind` DROP `bind_id`;
 ALTER TABLE `e_bind` CHANGE `user_id` `user_id` INT(11) UNSIGNED DEFAULT 0 NOT NULL COMMENT '用户ID', ADD COLUMN `happy_lives_id` VARCHAR(20) DEFAULT '' NULL AFTER `user_id`, ADD PRIMARY KEY (`user_id`);
 ALTER TABLE `e_bind` DROP INDEX `index_user_id`;
- ALTER TABLE `e_bind` ADD KEY `index_happyLives` (`happy_lives_id`);
+ALTER TABLE `e_bind` ADD KEY `index_happyLives` (`happy_lives_id`);
