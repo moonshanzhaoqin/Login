@@ -31,6 +31,7 @@ import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
+import com.yuyutechnology.exchange.enums.CheckPWDStatus;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
 import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
@@ -168,7 +169,7 @@ public class UserManagerImpl implements UserManager {
 
 				if (new Date().before(time.getTime())) {
 					logger.info("***Login is frozen!***");
-					result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
+					result.setStatus(CheckPWDStatus.FREEZE);
 					result.setInfo(time.getTime().getTime());
 					return result;
 				}
@@ -184,7 +185,7 @@ public class UserManagerImpl implements UserManager {
 			logger.info("***match***");
 			redisDAO.deleteData(ServerConsts.WRONG_PASSWORD + userId);
 			redisDAO.deleteData(ServerConsts.LOGIN_FREEZE + userId);
-			result.setStatus(ServerConsts.CHECKPWD_STATUS_CORRECT);
+			result.setStatus(CheckPWDStatus.CORRECT);
 			return result;
 		} else {
 			long t = 1;
@@ -205,7 +206,7 @@ public class UserManagerImpl implements UserManager {
 				time.add(Calendar.HOUR_OF_DAY,
 						configManager.getConfigLongValue(ConfigKeyEnum.LOGIN_UNAVAILIABLE_TIME, 24l).intValue());
 
-				result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
+				result.setStatus(CheckPWDStatus.FREEZE);
 				result.setInfo(time.getTime().getTime());
 				return result;
 			}
@@ -218,7 +219,7 @@ public class UserManagerImpl implements UserManager {
 			/* 记录错误次数 */
 			redisDAO.saveData(ServerConsts.WRONG_PASSWORD + userId, t, cal.getTime());
 			logger.info("***Does not match,{}***", t);
-			result.setStatus(ServerConsts.CHECKPWD_STATUS_INCORRECT);
+			result.setStatus(CheckPWDStatus.INCORRECT);
 			result.setInfo(
 					configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PASSWORD_FREQUENCY, 3l).longValue() - t);
 			return result;
@@ -241,7 +242,7 @@ public class UserManagerImpl implements UserManager {
 
 				if (new Date().before(time.getTime())) {
 					logger.info("***Pay is frozen!***");
-					result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
+					result.setStatus(CheckPWDStatus.FREEZE);
 					result.setInfo(time.getTime().getTime());
 					return result;
 				}
@@ -255,7 +256,7 @@ public class UserManagerImpl implements UserManager {
 				|| (StringUtils.isNotBlank(user.getUserPayToken()) && userPayPwd.equals(user.getUserPayToken()))) {
 			logger.info("***match***");
 			redisDAO.deleteData(ServerConsts.WRONG_PAYPWD + userId);
-			result.setStatus(ServerConsts.CHECKPWD_STATUS_CORRECT);
+			result.setStatus(CheckPWDStatus.CORRECT);
 			return result;
 		} else {
 
@@ -277,7 +278,7 @@ public class UserManagerImpl implements UserManager {
 				time.add(Calendar.HOUR_OF_DAY,
 						configManager.getConfigLongValue(ConfigKeyEnum.PAY_UNAVAILIABLE_TIME, 24l).intValue());
 
-				result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
+				result.setStatus(CheckPWDStatus.FREEZE);
 				result.setInfo(time.getTime().getTime());
 				return result;
 			}
@@ -290,7 +291,7 @@ public class UserManagerImpl implements UserManager {
 			// 记录错误次数
 			redisDAO.saveData(ServerConsts.WRONG_PAYPWD + userId, t, cal.getTime());
 			logger.info("***Does not match,{}***", t);
-			result.setStatus(ServerConsts.CHECKPWD_STATUS_INCORRECT);
+			result.setStatus(CheckPWDStatus.INCORRECT);
 			result.setInfo(configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PAYPWD_FREQUENCY, 3l).longValue() - t);
 			return result;
 		}

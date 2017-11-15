@@ -205,12 +205,12 @@ public class TransferManagerImpl implements TransferManager {
 		// 验证支付密码
 		CheckPwdResult checkPwdResult = userManager.checkPayPassword(userId, userPayPwd);
 		switch (checkPwdResult.getStatus()) {
-		case ServerConsts.CHECKPWD_STATUS_FREEZE:
+		case FREEZE:
 			result.put("msg", String.valueOf(checkPwdResult.getInfo()));
 			result.put("retCode", RetCodeConsts.PAY_FREEZE);
 			return result;
 
-		case ServerConsts.CHECKPWD_STATUS_INCORRECT:
+		case INCORRECT:
 			logger.warn("payPwd is wrong !");
 			result.put("msg", String.valueOf(checkPwdResult.getInfo()));
 			result.put("retCode", RetCodeConsts.PAY_PWD_NOT_MATCH);
@@ -1453,9 +1453,9 @@ public class TransferManagerImpl implements TransferManager {
 				values.add(ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND + "");
 				values.add(ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN + "");
 				break;
-			case "withdraw":// 体现
+			case "withdraw":// 提现
 				sb.append("and t2.transfer_type = ? ");
-				values.add(ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW + "");
+				values.add(ServerConsts.TRANSFER_TYPE_IN_WITHDRAW + "");//原来的提现核现在的提取金条合并。suzan-2017/11/15
 				break;
 			case "recharge":// 充值
 				sb.append("and t2.transfer_type in (?,?) ");
@@ -1606,12 +1606,12 @@ public class TransferManagerImpl implements TransferManager {
 		CheckPwdResult checkPwdResult = userManager.checkPayPassword(userId, userPayPwd);
 	
 		switch (checkPwdResult.getStatus()) {
-		case ServerConsts.CHECKPWD_STATUS_FREEZE:
+		case FREEZE:
 			result.put("msg", String.valueOf(checkPwdResult.getInfo()));
 			result.put("retCode", RetCodeConsts.PAY_FREEZE);
 			return result;
 
-		case ServerConsts.CHECKPWD_STATUS_INCORRECT:
+		case INCORRECT:
 			logger.warn("payPwd is wrong !");
 			result.put("msg", String.valueOf(checkPwdResult.getInfo()));
 			result.put("retCode", RetCodeConsts.PAY_PWD_NOT_MATCH);
