@@ -10,50 +10,87 @@ http://www.springframework.org/schema/context/spring-context-3.2.xsd
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd 
 http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
-	<bean id="redisClientService" class="com.yuyutechnology.exchange.redis.RedisClientService">
-		<property name="host" value="${jedis.pool.host}" />
-		<property name="port" value="${jedis.pool.port}" />
-		<property name="minIdle" value="${jedis.pool.minidle}" />
-		<property name="maxIdle" value="${jedis.pool.maxidle}" />
-		<property name="maxWait" value="${jedis.pool.maxwait}" />
+	<!-- 基础组件配置 -->
+	<bean id="commonJedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxTotal" value="${redis.pool.maxactive}" />
+		<property name="maxIdle" value="${redis.pool.maxidle}" />
+		<property name="minIdle" value="${redis.pool.minidle}" />
+		<property name="testOnBorrow" value="false" />
 	</bean>
-	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+	<bean id="commonJedisFactory"
+		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+		<property name="hostName" value="${redis.pool.host}" />
+		<property name="port" value="${redis.pool.port}" />
+		<property name="poolConfig" ref="commonJedisPoolConfig" />
+	</bean>
+	<bean id="commonRedisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+		<property name="connectionFactory" ref="commonJedisFactory" />
+		<property name="defaultSerializer" ref="stringRedisSerializer" />
+	</bean>
+
+	<bean id="stringRedisSerializer" class="com.yuyutechnology.exchange.redis.StringRedisSerializer">
+	</bean>
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
 		destroy-method="close">
-		<property name="driverClass" value="com.mysql.jdbc.Driver" />
-		<property name="jdbcUrl">
-			<value>${jdbc.url}</value>
-		</property>
-		<property name="user">
-			<value>${jdbc.username}</value>
-		</property>
-		<property name="password">
-			<value>${jdbc.password}</value>
-		</property>
-		<property name="minPoolSize">
-			<value>${jdbc.pool.min}</value>
-		</property>
-		<property name="maxPoolSize">
-			<value>${jdbc.pool.max}</value>
-		</property>
-		<property name="initialPoolSize">
-			<value>${jdbc.pool.init}</value>
-		</property>
-		<property name="maxStatements">
-			<value>${jdbc.pool.maxStatements}</value>
-		</property>
-		<property name="idleConnectionTestPeriod">
-			<value>${jdbc.pool.idleConnectionTestPeriod}</value>
-		</property>
-		<property name="acquireRetryAttempts">
-			<value>${jdbc.pool.acquireRetryAttempts}</value>
-		</property>
-		<property name="breakAfterAcquireFailure">
-			<value>${jdbc.pool.breakAfterAcquireFailure}</value>
-		</property>
-		<property name="testConnectionOnCheckout">
-			<value>${jdbc.pool.testConnectionOnCheckout}</value>
-		</property>
+		
+		<!-- 基本属性 url、user、password -->
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="${jdbc.pool.init}" />
+		<property name="minIdle" value="${jdbc.pool.min}" /> 
+		<property name="maxActive" value="${jdbc.pool.max}" />
+		
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="${jdbc.pool.maxwait}" />
+		
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="${jdbc.pool.idleConnectionTestPeriod}" />
+		
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		
+		<property name="validationQuery" value="SELECT 'x'" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+		<property name="poolPreparedStatements" value="true" />
+		<property name="maxPoolPreparedStatementPerConnectionSize" value="${jdbc.pool.maxStatements}" />
+		
+		<!-- 配置监控统计拦截的filters
+		<property name="filters" value="stat,wall" /> -->
+	    <property name="proxyFilters">
+	        <list>
+	            <ref bean="stat-filter" />
+	            <ref bean="wall-filter" />
+	        </list>
+	    </property>
 	</bean>
+	
+	<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+        <!--慢SQL统计，如果SQL执行时间超过一定时间则记录为慢SQL  -->
+        <property name="slowSqlMillis" value="10000" />
+        <!--慢SQL统计日志输出  -->
+        <property name="logSlowSql" value="true" />
+        <!--合并SQL统计 例如select * from table t where t.id =1，会被变为select * from table t where t.id =？来统计  -->
+        <property name="mergeSql" value="false" />
+    </bean>
+
+    <bean id="wall-filter-config" class="com.alibaba.druid.wall.WallConfig" init-method="init">
+        <!-- 指定配置装载的目录  -->
+        <property name="dir" value="META-INF/druid/wall/mysql" />
+        <property name="strictSyntaxCheck" value="false" />
+    </bean>
+
+    <bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter">
+        <property name="dbType" value="mysql" />
+        <property name="config" ref="wall-filter-config" />
+    </bean>
+
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"></property>
@@ -87,5 +124,34 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-
+	
+	<!-- redis listerner
+	<bean id="messageListener"
+        class="org.springframework.data.redis.listener.adapter.MessageListenerAdapter">
+        <constructor-arg>
+            <bean class="com.yuyutechnology.exchange.redis.RedisMessageListener" />
+        </constructor-arg>
+    </bean>
+ 
+    <bean id="redisContainer"
+        class="org.springframework.data.redis.listener.RedisMessageListenerContainer">
+        <property name="connectionFactory" ref="commonJedisFactory" />
+        <property name="messageListeners">
+            <map>
+                <entry key-ref="messageListener">
+                    <list>
+                    	
+                        <bean class="org.springframework.data.redis.listener.ChannelTopic">
+                            <constructor-arg value="springtv" />
+                        </bean>
+                     	
+                     	监听key过期  , redis 2.8 以上配置开启 notify-keyspace-events Ex
+                        <bean class="org.springframework.data.redis.listener.PatternTopic">
+                            <constructor-arg value="__keyevent@*__:expired" />
+                        </bean>
+                    </list>
+                </entry>
+            </map>
+        </property>
+    </bean> -->
 </beans>

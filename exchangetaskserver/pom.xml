@@ -29,6 +29,12 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>stag</id>
+			<properties>
+				<env>stag</env>
+			</properties>
+		</profile>
+		<profile>
 			<id>test65</id>
 			<properties>
 				<env>test65</env>
@@ -40,12 +46,24 @@
 				<env>test</env>
 			</properties>
 		</profile>
+		<profile>
+			<id>auto</id>
+			<properties>
+				<env>auto</env>
+			</properties>
+		</profile>		
 	</profiles>
 	<dependencies>
 		<dependency>
 			<groupId>com.yuyutechnology.exchange</groupId>
 			<artifactId>common-server</artifactId>
 			<version>1.0.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/junit/junit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
 		</dependency>
 	</dependencies>
 
@@ -55,6 +73,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.6.1</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
@@ -81,9 +100,13 @@
 								<copy todir="${basedir}/deploy/conf">
 									<fileset dir="src/main/resources/">
 										<include name="**/*.xml" />
+										<include name="**/*.template" />
 										<include name="**/*.properties" />
 									</fileset>
+								</copy>
+								<copy todir="${basedir}/deploy/conf" overwrite="true">
 									<fileset dir="src/main/resources/${env}">
+										<include name="**/*.xml" />
 										<include name="*.properties" />
 									</fileset>
 								</copy>
@@ -93,6 +116,7 @@
 										<include name="*.properties" />
 									</fileset>
 									<fileset dir="src/main/resources/${env}">
+										<include name="**/*.xml" />
 										<include name="*.properties" />
 									</fileset>
 								</copy>
@@ -102,6 +126,7 @@
 										<include name="*.properties" />
 									</fileset>
 									<fileset dir="src/main/resources/${env}">
+										<include name="**/*.xml" />
 										<include name="*.properties" />
 									</fileset>
 								</copy>
@@ -111,6 +136,7 @@
 										<include name="*.properties" />
 									</fileset>
 									<fileset dir="src/main/resources/${env}">
+										<include name="**/*.xml" />
 										<include name="*.properties" />
 									</fileset>
 								</copy>

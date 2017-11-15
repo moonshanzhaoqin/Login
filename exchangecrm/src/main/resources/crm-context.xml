@@ -14,18 +14,17 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 	
 	<import resource="db-redis-context.xml" />
 	<import resource="aop-context.xml" />
-	<bean id="serverConfig" class="com.yuyutechnology.exchange.cfg.ServerConfig">
 
-	</bean>
 	<bean id="springMVCExceptionResolver" class="com.yuyutechnology.exchange.cfg.SpringMVCExceptionResolver"/>
 	<bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
-				<value>classpath:crm-conf.properties</value>
+				<value>classpath:server-conf.properties</value>
 			</list>
 		</property>
 	</bean>
+
 	<context:component-scan base-package="com.yuyutechnology" >   
 		<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>   
 	</context:component-scan>   

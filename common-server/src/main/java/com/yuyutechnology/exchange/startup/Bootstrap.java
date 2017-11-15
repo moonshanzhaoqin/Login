@@ -10,7 +10,6 @@
 package com.yuyutechnology.exchange.startup;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
-import org.springframework.util.Log4jConfigurer;
 /**
  * 系统启动入口类
  * 
@@ -60,7 +59,8 @@ public class Bootstrap
 		try
 		{
 			// initialize log
-			Log4jConfigurer.initLogging("file:" + logCfgPath);
+//			Log4jConfigurer.initLogging("file:" + logCfgPath);
+			
 			System.out.println("init log ok......");
 			// initialize spring
 			ApplicationContext applicationContext = new FileSystemXmlApplicationContext(
@@ -71,7 +71,6 @@ public class Bootstrap
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 	}

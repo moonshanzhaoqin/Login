@@ -8,7 +8,6 @@
 	</parent>
 	<artifactId>exchangeserver</artifactId>
 	<packaging>war</packaging>
-	<version>0.0.1-SNAPSHOT</version>
 	<name>exchangeserver</name>
 	<url>http://maven.apache.org</url>
 
@@ -30,6 +29,13 @@
 				<env>prod</env>
 			</properties>
 		</profile>
+		<!-- 准生产 -->
+		<profile>
+			<id>stag</id>
+			<properties>
+				<env>stag</env>
+			</properties>
+		</profile>
 		<!-- 测试环境 -->
 		<profile>
 			<id>test</id>
@@ -44,6 +50,12 @@
 				<env>test65</env>
 			</properties>
 		</profile>
+		<profile>
+			<id>auto</id>
+			<properties>
+				<env>auto</env>
+			</properties>
+		</profile>
 	</profiles>
 	<dependencies>
 		<dependency>
@@ -51,7 +63,6 @@
 			<artifactId>common-server</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		
 	</dependencies>
 
 	<build>
@@ -68,6 +79,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.6.1</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
@@ -160,25 +172,21 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-				<version>7.1.6.v20100715</version>
+			    <groupId>org.eclipse.jetty</groupId>
+			    <artifactId>jetty-maven-plugin</artifactId>
+				<version>9.2.21.v20170120</version>
 				<configuration>
 					<stopKey>stop</stopKey>
-					<stopPort>5598</stopPort>
+					<stopPort>5599</stopPort>
 					<webXml>${basedir}/target/server/WEB-INF/web.xml</webXml>
 					<webAppSourceDirectory>${basedir}/target/server</webAppSourceDirectory>
 					<classesDirectory>${basedir}/target/server/WEB-INF/classes</classesDirectory>
 					<webAppConfig>
 						<contextPath>/server</contextPath>
 					</webAppConfig>
-					<scanIntervalSeconds>0</scanIntervalSeconds>
-					<connectors>
-						<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-							<port>8011</port>
-							<maxIdleTime>60000</maxIdleTime>
-						</connector>
-					</connectors>
+					<httpConnector>
+                         <port>8011</port>
+                    </httpConnector>
 				</configuration>
 			</plugin>
 			<plugin>

@@ -2,19 +2,19 @@ package com.yuyutechnology.exchange.task;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.yuyutechnology.exchange.startup.Bootstrap;
 /**
  * Hello world!
  * 
  */
-public class StartTask
-{
-	public static Logger logger = LoggerFactory.getLogger(StartTask.class);
-	public static void main(String[] args)
-	{
+public class StartTask{
+	
+	public static Logger logger = LogManager.getLogger(StartTask.class);
+	
+	public static void main(String[] args){
 		String home = System.getProperty("task.home");
 		if (StringUtils.isEmpty(home))
 		{
@@ -28,7 +28,7 @@ public class StartTask
 		}
 		else
 		{
-			String logCfgPath = home + "/conf/log4j.properties";
+			String logCfgPath = home + "/conf/log4j2.xml";
 			String contextCfgPath = home + "/conf/task-context.xml";
 			System.out.println("home=" + home);
 			System.out.println("contextCfgPath=" + contextCfgPath);

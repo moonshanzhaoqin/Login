@@ -12,7 +12,7 @@
 	</context-param>
 	<context-param>
 		<param-name>log4jConfigLocation</param-name>
-		<param-value>/WEB-INF/classes/log4j.properties</param-value>
+		<param-value>/WEB-INF/classes/log4j2.xml</param-value>
 	</context-param>
 	<filter>
 		<filter-name>encodingFilter</filter-name>
@@ -35,67 +35,6 @@
 	<listener>
 		<listener-class>com.yuyutechnology.exchange.init.listener.ServerInit</listener-class>
 	</listener>
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>*.jpg</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>*.png</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>*.gif</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>*.ico</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>*.json</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>*.js</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>*.css</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>*.html</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>*.xls</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>*.doc</url-pattern>
-	</servlet-mapping>
-	<!-- 字体相关 开始 -->
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>*.eot</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>*.svg</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>*.ttf</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>*.woff</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>*.woff2</url-pattern>
-	</servlet-mapping>
 	<servlet>
 		<servlet-name>springmvc</servlet-name>
 		<servlet-class>
@@ -119,6 +58,31 @@
 		<servlet-name>springmvc</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+	    <servlet-name>DruidStatView</servlet-name>
+	    <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+	    <init-param>  
+	    <!-- 允许清空统计数据 -->  
+	    <param-name>resetEnable</param-name>  
+	    <param-value>false</param-value>  
+	    </init-param>
+	    <init-param>  
+	    <!-- 用户名 -->  
+	    <param-name>loginUsername</param-name>  
+	    <param-value>admin</param-value>  
+	    </init-param>  
+	    <init-param>  
+	    <!-- 密码 -->  
+	    <param-name>loginPassword</param-name>  
+	    <param-value>admin</param-value>  
+	    </init-param>
+	</servlet>
+	<servlet-mapping>
+	    <servlet-name>DruidStatView</servlet-name>
+	    <url-pattern>/druid/*</url-pattern>
+	</servlet-mapping>
+	
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file> 
 	</welcome-file-list> 
