@@ -25,7 +25,7 @@ public enum FeePurpose {
 		return purpose;
 	}
 
-	FeePurpose(String purpose) {
+	private FeePurpose(String purpose) {
 		this.purpose = purpose;
 	}
 	
