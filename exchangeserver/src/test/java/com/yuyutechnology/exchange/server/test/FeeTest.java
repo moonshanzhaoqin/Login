@@ -12,14 +12,23 @@ public class FeeTest extends BaseSpringJunit4 {
 	@Autowired
 	FeeManager feeManager;
 
-	@Test
-	public void figureOutFeeTest() {
-		feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_Ordinary, new BigDecimal("50"));
-		feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_Ordinary, new BigDecimal("100"));
-		feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_Ordinary, new BigDecimal("200"));
-		feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_Ordinary, new BigDecimal("1000"));
-		feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_Ordinary, new BigDecimal("2000"));
-		feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_Ordinary, new BigDecimal("100000"));
-		feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_Ordinary, new BigDecimal("200000"));
-	}
+	 @Test
+	 public void figureOutFeeTest() {
+	 feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_Ordinary, new
+	 BigDecimal("50"));
+	 feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_Ordinary, new
+	 BigDecimal("100"));
+	 feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_Ordinary, new
+	 BigDecimal("200"));
+	 feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_Ordinary, new
+	 BigDecimal("1000"));
+	 feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_Ordinary, new
+	 BigDecimal("2000"));
+	 feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_Ordinary, new
+	 BigDecimal("100000"));
+	 feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_Ordinary, new
+	 BigDecimal("200000"));
+	 }
+
+
 }

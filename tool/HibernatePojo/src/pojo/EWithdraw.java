@@ -1,6 +1,7 @@
 package pojo;
-// Generated Nov 15, 2017 2:30:26 PM by Hibernate Tools 5.2.6.Final
+// Generated Nov 17, 2017 11:15:16 AM by Hibernate Tools 5.2.6.Final
 
+import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,28 +22,44 @@ public class EWithdraw implements java.io.Serializable {
 	private Integer withdrawId;
 	private int userId;
 	private int quantity;
+	private BigDecimal goldpay;
+	private BigDecimal fee;
 	private Date applyTime;
 	private byte handleResult;
 	private String handler;
 	private Date handleTime;
+	private String goldTransferA;
+	private String feeTransferA;
+	private String goldTransferB;
+	private String feeTransferB;
 
 	public EWithdraw() {
 	}
 
-	public EWithdraw(int userId, int quantity, Date applyTime, byte handleResult) {
+	public EWithdraw(int userId, int quantity, BigDecimal goldpay, BigDecimal fee, Date applyTime, byte handleResult) {
 		this.userId = userId;
 		this.quantity = quantity;
+		this.goldpay = goldpay;
+		this.fee = fee;
 		this.applyTime = applyTime;
 		this.handleResult = handleResult;
 	}
 
-	public EWithdraw(int userId, int quantity, Date applyTime, byte handleResult, String handler, Date handleTime) {
+	public EWithdraw(int userId, int quantity, BigDecimal goldpay, BigDecimal fee, Date applyTime, byte handleResult,
+			String handler, Date handleTime, String goldTransferA, String feeTransferA, String goldTransferB,
+			String feeTransferB) {
 		this.userId = userId;
 		this.quantity = quantity;
+		this.goldpay = goldpay;
+		this.fee = fee;
 		this.applyTime = applyTime;
 		this.handleResult = handleResult;
 		this.handler = handler;
 		this.handleTime = handleTime;
+		this.goldTransferA = goldTransferA;
+		this.feeTransferA = feeTransferA;
+		this.goldTransferB = goldTransferB;
+		this.feeTransferB = feeTransferB;
 	}
 
 	@Id
@@ -73,6 +90,24 @@ public class EWithdraw implements java.io.Serializable {
 
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
+	}
+
+	@Column(name = "goldpay", nullable = false, precision = 20, scale = 0)
+	public BigDecimal getGoldpay() {
+		return this.goldpay;
+	}
+
+	public void setGoldpay(BigDecimal goldpay) {
+		this.goldpay = goldpay;
+	}
+
+	@Column(name = "fee", nullable = false, precision = 20, scale = 0)
+	public BigDecimal getFee() {
+		return this.fee;
+	}
+
+	public void setFee(BigDecimal fee) {
+		this.fee = fee;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -111,6 +146,42 @@ public class EWithdraw implements java.io.Serializable {
 
 	public void setHandleTime(Date handleTime) {
 		this.handleTime = handleTime;
+	}
+
+	@Column(name = "gold_transfer_a")
+	public String getGoldTransferA() {
+		return this.goldTransferA;
+	}
+
+	public void setGoldTransferA(String goldTransferA) {
+		this.goldTransferA = goldTransferA;
+	}
+
+	@Column(name = "fee_transfer_a")
+	public String getFeeTransferA() {
+		return this.feeTransferA;
+	}
+
+	public void setFeeTransferA(String feeTransferA) {
+		this.feeTransferA = feeTransferA;
+	}
+
+	@Column(name = "gold_transfer_b")
+	public String getGoldTransferB() {
+		return this.goldTransferB;
+	}
+
+	public void setGoldTransferB(String goldTransferB) {
+		this.goldTransferB = goldTransferB;
+	}
+
+	@Column(name = "fee_transfer_b")
+	public String getFeeTransferB() {
+		return this.feeTransferB;
+	}
+
+	public void setFeeTransferB(String feeTransferB) {
+		this.feeTransferB = feeTransferB;
 	}
 
 }

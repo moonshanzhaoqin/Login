@@ -1,5 +1,7 @@
 package com.yuyutechnology.exchange;
 
+import com.yuyutechnology.exchange.pojo.Withdraw;
+
 public class ServerConsts {
 	// 用户类型
 	/**
@@ -7,7 +9,7 @@ public class ServerConsts {
 	 */
 	public static final int USER_TYPE_OF_CUSTOMER = 0;
 	/**
-	 * 系统用户/冻结账户
+	 * 系统用户
 	 */
 	public static final int USER_TYPE_OF_SYSTEM = 1;
 	/**
@@ -18,6 +20,10 @@ public class ServerConsts {
 	 * 回收账户
 	 */
 	public static final int USER_TYPE_OF_RECOVERY = 3;
+	/**
+	 * 冻结账户
+	 */
+	public static final int USER_TYPE_OF_FROZEN = 4;
 
 	// 冻结状态
 	/**
@@ -46,9 +52,9 @@ public class ServerConsts {
 	public static final int PAY_AVAILABLE_OF_UNAVAILABLE = 0;
 
 	// 检查密码，返回状态
-//	public static final int CHECKPWD_STATUS_CORRECT = 0;
-//	public static final int CHECKPWD_STATUS_INCORRECT = 1;
-//	public static final int CHECKPWD_STATUS_FREEZE = 2;
+	// public static final int CHECKPWD_STATUS_CORRECT = 0;
+	// public static final int CHECKPWD_STATUS_INCORRECT = 1;
+	// public static final int CHECKPWD_STATUS_FREEZE = 2;
 
 	// 币种
 	public static final String CURRENCY_OF_GOLDPAY = "GDQ";
@@ -87,7 +93,7 @@ public class ServerConsts {
 	/**
 	 * 黄金宝充值
 	 */
-	 public static final int TRANSFER_TYPE_IN_GOLDPAY_RECHARGE = 5;
+	public static final int TRANSFER_TYPE_IN_GOLDPAY_RECHARGE = 5;
 	/**
 	 * 提现退款
 	 */
@@ -152,6 +158,10 @@ public class ServerConsts {
 	 * 非法记录
 	 */
 	public static final int UNREGISTERED_STATUS_OF_ERROR = 3;
+
+	public static final byte WITHDRAW_HANDLE_RESULT_DEFAULT = 0;
+	public static final byte WITHDRAW_HANDLE_RESULT_FINISHT = 1;
+	public static final byte WITHDRAW_HANDLE_RESULT_CANCEL = 2;
 
 	// configKey
 	/**

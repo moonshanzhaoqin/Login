@@ -37,6 +37,24 @@ public class UserDAOImpl implements UserDAO {
 		List<?> list = hibernateTemplate.find("from User where userType = ?", ServerConsts.USER_TYPE_OF_SYSTEM);
 		return list.isEmpty() ? null : (User) list.get(0);
 	}
+	
+	@Override
+	public User getFeeUser() {
+		List<?> list = hibernateTemplate.find("from User where userType = ?", ServerConsts.USER_TYPE_OF_SYSTEM);
+		return list.isEmpty() ? null : (User) list.get(0);
+	}
+	
+	@Override
+	public User getFrozenUser() {
+		List<?> list = hibernateTemplate.find("from User where userType = ?", ServerConsts.USER_TYPE_OF_SYSTEM);
+		return list.isEmpty() ? null : (User) list.get(0);
+	}
+	
+	@Override
+	public User getRecoveryUser() {
+		List<?> list = hibernateTemplate.find("from User where userType = ?", ServerConsts.USER_TYPE_OF_SYSTEM);
+		return list.isEmpty() ? null : (User) list.get(0);
+	}
 
 	@Override
 	public User getUser(Integer userId) {

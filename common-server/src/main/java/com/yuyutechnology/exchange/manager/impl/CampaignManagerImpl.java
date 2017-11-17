@@ -101,9 +101,7 @@ public class CampaignManagerImpl implements CampaignManager {
 
 	@Override
 	public PageBean getCampaignList(int currentPage) {
-
 		String hql = "from Campaign order by campaignStatus desc,campaignId";
-
 		return campaignDAO.getCampaignsByPage(hql, new ArrayList<Object>(), currentPage, 10);
 	}
 

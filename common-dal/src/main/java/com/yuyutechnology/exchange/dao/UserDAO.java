@@ -40,4 +40,10 @@ public interface UserDAO {
 
 	void updateUser(User user);
 
+	User getFeeUser();
+
+	User getFrozenUser();
+
+	User getRecoveryUser();
+
 }
