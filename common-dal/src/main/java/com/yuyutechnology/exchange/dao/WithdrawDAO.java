@@ -3,6 +3,7 @@ package com.yuyutechnology.exchange.dao;
 import java.util.List;
 
 import com.yuyutechnology.exchange.pojo.Withdraw;
+import com.yuyutechnology.exchange.util.page.PageBean;
 
 public interface WithdrawDAO {
 
@@ -13,5 +14,7 @@ public interface WithdrawDAO {
 	List<Withdraw> listWithdraw();
 
 	void saveWithdraw(Withdraw withdraw);
+
+	PageBean getWithdrawByPage(String hql, List<Object> values, int currentPage, int pageSize);
 
 }

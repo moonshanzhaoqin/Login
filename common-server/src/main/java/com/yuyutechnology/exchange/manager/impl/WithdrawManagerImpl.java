@@ -1,11 +1,13 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,9 @@ import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Withdraw;
+import com.yuyutechnology.exchange.util.DateFormatUtils;
 import com.yuyutechnology.exchange.util.ResourceUtils;
+import com.yuyutechnology.exchange.util.page.PageBean;
 
 @Service
 public class WithdrawManagerImpl implements WithdrawManager {
@@ -68,7 +72,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 
 		BigDecimal goldpayAmount = goldbullion2gold.multiply(gold2goldpay).multiply(new BigDecimal(goldBullion));
 
-		BigDecimal fee=BigDecimal.ZERO;
+		BigDecimal fee = BigDecimal.ZERO;
 		if (userManager.isHappyLivesVIP(userId)) {
 			fee = feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_VIP, goldpayAmount);
 		} else {
@@ -86,10 +90,10 @@ public class WithdrawManagerImpl implements WithdrawManager {
 
 		Withdraw withdraw = new Withdraw(userId, goldBullion, resultMap.get("goldpay"), resultMap.get("fee"),
 				new Date());
-		/*把Goldpay转到冻结账户*/
+		/* 把Goldpay转到冻结账户 */
 		withdraw.setGoldTransferA(transfer4Withdraw(userId, frozenUser.getUserId(), resultMap.get("goldpay"),
 				ServerConsts.TRANSFER_TYPE_IN_WITHDRAW));
-		/*把手续费转到冻结账户*/
+		/* 把手续费转到冻结账户 */
 		withdraw.setFeeTransferA(transfer4Withdraw(userId, frozenUser.getUserId(), resultMap.get("fee"),
 				ServerConsts.TRANSFER_TYPE_IN_FEE));
 
@@ -99,41 +103,50 @@ public class WithdrawManagerImpl implements WithdrawManager {
 
 	}
 
-	public void cancelWithdraw(Integer withdrawId,Admin admin) {
+	public void cancelWithdraw(Integer withdrawId, Admin admin) {
 		User frozenUser = userDAO.getFrozenUser();
 
 		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
-		/*把Goldpay退回给用户*/
-		withdraw.setGoldTransferB(transfer4Withdraw(frozenUser.getUserId(), withdraw.getUserId(), withdraw.getGoldpay(),
-				ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND));
-		/*把手续费退回给用户*/
-		withdraw.setFeeTransferB(transfer4Withdraw(frozenUser.getUserId(), withdraw.getUserId(), withdraw.getFee(),
-				ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND));
-		/*操作记录*/
-		withdraw.setHandleResult(ServerConsts.WITHDRAW_HANDLE_RESULT_CANCEL);
-		withdraw.setHandler(admin.getAdminName());
-		withdraw.setHandleTime(new Date());
-		withdrawDAO.updateWithdraw(withdraw);
+		if (withdraw.getHandleResult() == ServerConsts.WITHDRAW_HANDLE_RESULT_DEFAULT) {
+			/* 把Goldpay退回给用户 */
+			withdraw.setGoldTransferB(transfer4Withdraw(frozenUser.getUserId(), withdraw.getUserId(),
+					withdraw.getGoldpay(), ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND));
+			/* 把手续费退回给用户 */
+			withdraw.setFeeTransferB(transfer4Withdraw(frozenUser.getUserId(), withdraw.getUserId(), withdraw.getFee(),
+					ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND));
+			/* 操作记录 */
+			withdraw.setHandleResult(ServerConsts.WITHDRAW_HANDLE_RESULT_CANCEL);
+			withdraw.setHandler(admin.getAdminName());
+			withdraw.setHandleTime(new Date());
+			withdrawDAO.updateWithdraw(withdraw);
+
+		} else {
+			logger.error("withdraw {} is handled");
+		}
 
 	}
 
-	public void finishWithdraw(Integer withdrawId,Admin admin) {
+	public void finishWithdraw(Integer withdrawId, Admin admin) {
 		User frozenUser = userDAO.getFrozenUser();
 		User feeUser = userDAO.getFeeUser();
 		User recovery = userDAO.getRecoveryUser();
 
 		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
-		/*把Goldpay转到回收账户*/
-		withdraw.setGoldTransferB(transfer4Withdraw(frozenUser.getUserId(), recovery.getUserId(), withdraw.getGoldpay(),
-				ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND));
-		/*把手续费转到手续费账户*/
-		withdraw.setFeeTransferB(transfer4Withdraw(frozenUser.getUserId(), feeUser.getUserId(), withdraw.getFee(),
-				ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND));
-		/*操作记录*/
-		withdraw.setHandleResult(ServerConsts.WITHDRAW_HANDLE_RESULT_FINISHT);
-		withdraw.setHandler(admin.getAdminName());
-		withdraw.setHandleTime(new Date());
-		withdrawDAO.updateWithdraw(withdraw);
+		if (withdraw.getHandleResult() == ServerConsts.WITHDRAW_HANDLE_RESULT_DEFAULT) {
+			/* 把Goldpay转到回收账户 */
+			withdraw.setGoldTransferB(transfer4Withdraw(frozenUser.getUserId(), recovery.getUserId(),
+					withdraw.getGoldpay(), ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND));
+			/* 把手续费转到手续费账户 */
+			withdraw.setFeeTransferB(transfer4Withdraw(frozenUser.getUserId(), feeUser.getUserId(), withdraw.getFee(),
+					ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND));
+			/* 操作记录 */
+			withdraw.setHandleResult(ServerConsts.WITHDRAW_HANDLE_RESULT_FINISHT);
+			withdraw.setHandler(admin.getAdminName());
+			withdraw.setHandleTime(new Date());
+			withdrawDAO.updateWithdraw(withdraw);
+		} else {
+			logger.error("withdraw {} is handled");
+		}
 	}
 
 	private String transfer4Withdraw(Integer from, Integer to, BigDecimal amount, int type) {
@@ -170,6 +183,35 @@ public class WithdrawManagerImpl implements WithdrawManager {
 						params);
 			}
 		}
+	}
+
+	@Override
+	public PageBean getWithdrawByPage(int currentPage, String userPhone, String userName, String startTime,
+			String endTime) {
+		logger.info("currentPage={},userPhone={},userName={}  {}->{}", currentPage, userPhone, userName, startTime,
+				endTime);
+
+		List<Object> values = new ArrayList<Object>();
+		StringBuilder hql = new StringBuilder("from Withdraw w,User u where w.userId = u.userId");
+		if (StringUtils.isNotBlank(userPhone)) {
+			hql.append("and u.userPhone = ?");
+			values.add(userPhone);
+		}
+		if (StringUtils.isNotBlank(userName)) {
+			hql.append("and u.userName like ?");
+			values.add("%" + userName + "%");
+		}
+		if (StringUtils.isNotBlank(startTime)) {
+			hql.append("and w.applyTime >   ?");
+			values.add(DateFormatUtils.getStartTime(startTime));
+		}
+		if (StringUtils.isNotBlank(endTime)) {
+			hql.append("and  w.applyTime < ?");
+			values.add(DateFormatUtils.getEndTime(endTime));
+		}
+		hql.append(" order by w.applyTime desc");
+		return withdrawDAO.getWithdrawByPage(hql.toString(), values, currentPage, 10);
+	
 	}
 
 }

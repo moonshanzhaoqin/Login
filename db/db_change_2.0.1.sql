@@ -34,3 +34,4 @@ CREATE TABLE `e_withdraw` (
   `fee_transfer_b` varchar(255) DEFAULT NULL COMMENT '手续费交易ID(失败/成功)',
   PRIMARY KEY (`withdraw_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='提取金条';
+UPDATE `e_crm_admin` SET `admin_power`='0,1,2,3,4,5,6,7,8,9,10' WHERE `admin_id`=1;

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.dao.WithdrawDAO;
 import com.yuyutechnology.exchange.pojo.Withdraw;
+import com.yuyutechnology.exchange.util.page.PageBean;
+import com.yuyutechnology.exchange.util.page.PageUtils;
 
 @Repository
 public class WithdrawDAOImpl implements WithdrawDAO {
@@ -38,5 +40,10 @@ public class WithdrawDAOImpl implements WithdrawDAO {
 	@Override
 	public void saveWithdraw(Withdraw withdraw) {
 		hibernateTemplate.save(withdraw);
+	}
+
+	@Override
+	public PageBean getWithdrawByPage(String hql, List<Object> values, int currentPage, int pageSize) {
+		return PageUtils.getPageContent(hibernateTemplate, hql.toString(), values, currentPage, pageSize);
 	}
 }

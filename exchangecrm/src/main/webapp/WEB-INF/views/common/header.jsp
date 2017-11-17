@@ -98,6 +98,9 @@
                         <c:if test="${adminPower eq 9}">
                             <li><a href="<c:url value='/feeTemplate' />">手续费管理</a></li>
                         </c:if>
+                          <c:if test="${adminPower eq 10}">
+                            <li><a href="<c:url value='/withdraw' />">提现管理</a></li>
+                        </c:if>
                         
 					</c:forTokens>
 				</ul>
