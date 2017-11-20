@@ -25,15 +25,18 @@ public class TransDetails {
 	private String traderPhone;
 	private String transCurrency;
 	private BigDecimal transAmount;
+	private BigDecimal transFee;
 	private String transRemarks;
 	private Date detailsCreateTime;
-
+	private String transSnapshot;
+	
 	public TransDetails() {
 		super();
 	}
 
-	public TransDetails(String transferId, Integer userId, String traderName, String traderAreaCode, String traderPhone,
-			String transCurrency, BigDecimal transAmount, String transRemarks) {
+	public TransDetails(String transferId, Integer userId, String traderName, 
+			String traderAreaCode, String traderPhone,String transCurrency, 
+			BigDecimal transAmount, BigDecimal transFee, String transRemarks, String transSnapshot) {
 		super();
 		this.transferId = transferId;
 		this.userId = userId;
@@ -42,8 +45,10 @@ public class TransDetails {
 		this.traderPhone = traderPhone;
 		this.transCurrency = transCurrency;
 		this.transAmount = transAmount;
+		this.transFee = transFee;
 		this.transRemarks = transRemarks;
 		this.detailsCreateTime = new Date();
+		this.transSnapshot = transSnapshot;
 	}
 
 	@Id
@@ -120,6 +125,15 @@ public class TransDetails {
 		this.transAmount = transAmount;
 	}
 
+	@Column(name = "trans_fee")
+	public BigDecimal getTransFee() {
+		return transFee;
+	}
+
+	public void setTransFee(BigDecimal transFee) {
+		this.transFee = transFee;
+	}
+
 	@Column(name = "trans_remarks")
 	public String getTransRemarks() {
 		return transRemarks;
@@ -137,6 +151,15 @@ public class TransDetails {
 
 	public void setDetailsCreateTime(Date detailsCreateTime) {
 		this.detailsCreateTime = detailsCreateTime;
+	}
+
+	@Column(name = "trans_snapshot")
+	public String getTransSnapshot() {
+		return transSnapshot;
+	}
+
+	public void setTransSnapshot(String transSnapshot) {
+		this.transSnapshot = transSnapshot;
 	}
 
 }

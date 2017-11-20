@@ -117,6 +117,7 @@ public class PayPalTransController {
 		rep.setAccessToken((String) result.get("token"));
 		rep.setCurrency(reqMsg.getCurrency());
 		rep.setAmount(((BigDecimal) result.get("amount")).doubleValue());
+		rep.setFee(((BigDecimal) result.get("fee")).doubleValue());
 		rep.setUnit((String) result.get("unit"));
 
 		rep.setCreateAt(oandaRatesManager.getExchangeRateUpdateDate());

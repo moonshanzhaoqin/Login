@@ -164,7 +164,8 @@ public class WithdrawManagerImpl implements WithdrawManager {
 		transfer.setUserTo(to);
 		transfer.setGoldpayOrderId(goldpayOrderId);
 		transferDAO.addTransfer(transfer);
-		transDetailsManager.addTransDetails(transferId, from, to, "", "", "", ServerConsts.CURRENCY_OF_GOLDPAY, amount,
+		transDetailsManager.addTransDetails(transferId, from, to, "", "", "",
+				ServerConsts.CURRENCY_OF_GOLDPAY, amount,BigDecimal.ZERO,null,
 				"", type);
 		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId);
 		return transferId;
