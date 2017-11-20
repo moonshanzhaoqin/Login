@@ -20,9 +20,9 @@
 				<form class="form-horizontal" id="addAlarmConfig" method="POST"
 					action="<c:url value="/alarm/saveAlarmConfig" />">
 					<div class="modal-body">
-					
+
 						<input type="hidden" value="0" name="alarmType" id="alarmType" />
-					
+
 						<div class="form-group" id="limitConfig">
 							<label class="col-sm-3 control-label">预警范围</label>
 							<div class="col-sm-3 ">
@@ -38,21 +38,21 @@
 								<Strong>~</Strong>
 							</div>
 							<div class="col-sm-3 ">
-							<div class="input-group">
-								<input class="form-control" name="criticalThresholdUpperLimit"
-									id="criticalThresholdUpperLimit" /> <span
-									class="input-group-addon">%</span>
-							</div></div>
+								<div class="input-group">
+									<input class="form-control" name="criticalThresholdUpperLimit"
+										id="criticalThresholdUpperLimit" /> <span
+										class="input-group-addon">%</span>
+								</div>
+							</div>
 						</div>
-						
-						<div class="form-group" id="limitPercent" style="display: none;" >
+
+						<div class="form-group" id="limitPercent" style="display: none;">
 							<label class="col-sm-3 control-label">预警百分比</label>
 							<div class="col-sm-5 ">
 								<div class="input-group">
 									<input type="text" class="form-control"
-										name="criticalThresholdLowerLimit"
-										id="percentageWarning" /> <span
-										class="input-group-addon">%</span>
+										name="criticalThresholdLowerLimit" id="percentageWarning" />
+									<span class="input-group-addon">%</span>
 								</div>
 							</div>
 						</div>

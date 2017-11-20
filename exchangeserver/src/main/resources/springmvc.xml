@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<beans 
-    xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:mvc="http://www.springframework.org/schema/mvc"
-    xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:util="http://www.springframework.org/schema/util"
-    xmlns:c="http://www.springframework.org/schema/c"
-	xmlns:aop="http://www.springframework.org/schema/aop" 
-	xmlns:tx="http://www.springframework.org/schema/tx"
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
@@ -17,25 +12,25 @@
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-	<bean id="springMVCExceptionResolver" class="com.yuyutechnology.exchange.server.configer.ExchangeServerExceptionResolver"/>
+	<bean id="springMVCExceptionResolver"
+		class="com.yuyutechnology.exchange.server.configer.ExchangeServerExceptionResolver" />
 	<bean class="com.yuyutechnology.exchange.server.configer.SwaggerConfig" />
-        
-    <bean
-        id="decryptEncryptBodyMethodProcessor"
-        class="com.yuyutechnology.exchange.server.security.DecryptEncryptBodyMethodProcessor" >
-        <constructor-arg >
-        <list>
-            <ref bean="decryptEncryptHttpMessageConverter"/>
-        </list>
-        </constructor-arg>
-    </bean>
+
+	<bean id="decryptEncryptBodyMethodProcessor"
+		class="com.yuyutechnology.exchange.server.security.DecryptEncryptBodyMethodProcessor">
+		<constructor-arg>
+			<list>
+				<ref bean="decryptEncryptHttpMessageConverter" />
+			</list>
+		</constructor-arg>
+	</bean>
 
 	<context:component-scan base-package="com.yuyutechnology"
 		use-default-filters="false">
 		<context:include-filter expression="org.springframework.stereotype.Controller"
 			type="annotation" />
 	</context:component-scan>
-	
+
 	<!-- Default ViewResolver -->
 	<!-- scan spring bean for IOC -->
 	<bean id="viewResolver"
@@ -50,30 +45,31 @@
 			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
 				<constructor-arg value="UTF-8" />
 			</bean>
-	        <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">  
-	            <property name="objectMapper">  
-	                <bean class="com.yuyutechnology.exchange.cfg.JsonObjectMapper"></bean>  
-	            </property>  
-	        </bean> 
+			<bean
+				class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+				<property name="objectMapper">
+					<bean class="com.yuyutechnology.exchange.cfg.JsonObjectMapper"></bean>
+				</property>
+			</bean>
 		</mvc:message-converters>
-        <mvc:argument-resolvers>
-            <ref bean="decryptEncryptBodyMethodProcessor" />
-        </mvc:argument-resolvers>
-        <mvc:return-value-handlers>
-            <ref bean="decryptEncryptBodyMethodProcessor" />
-        </mvc:return-value-handlers>
+		<mvc:argument-resolvers>
+			<ref bean="decryptEncryptBodyMethodProcessor" />
+		</mvc:argument-resolvers>
+		<mvc:return-value-handlers>
+			<ref bean="decryptEncryptBodyMethodProcessor" />
+		</mvc:return-value-handlers>
 	</mvc:annotation-driven>
-	
-	<mvc:resources location="/" mapping="/**"/>
-	
+
+	<mvc:resources location="/" mapping="/**" />
+
 	<mvc:interceptors>
 		<mvc:interceptor>
-			<mvc:mapping path="/token/**" />  
+			<mvc:mapping path="/token/**" />
 			<bean class="com.yuyutechnology.exchange.server.filter.LoginInterceptor"></bean>
 		</mvc:interceptor>
 	</mvc:interceptors>
 	<mvc:cors>
-		<mvc:mapping path="/**"
-			allowed-origins="*" allowed-headers="accept, content-type" allowed-methods="POST, GET, OPTIONS"/>
+		<mvc:mapping path="/**" allowed-origins="*"
+			allowed-headers="accept, content-type" allowed-methods="POST, GET, OPTIONS" />
 	</mvc:cors>
 </beans>

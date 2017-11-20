@@ -1,32 +1,32 @@
 $(function() {
 	var start = {
-			elem : '#start',
-			format : 'YYYY-MM-DD',
-			min : '1970-01-01', // 设定最小日期
-			max :  laydate.now(), // 最大日期为当前日期
-//			istime : true,
-			istoday : false,
-			choose : function(datas) {
-				end.min = datas; // 开始日选好后，重置结束日的最小日期
-//				end.start = datas // 将结束日的初始值设定为开始日
-			}
-		};
-		var end = {
-			elem : '#end',
-			format : 'YYYY-MM-DD',
-			min : '1970-01-01', // 设定最小日期
-			max :  laydate.now(), // 最大日期为当前日期
-//			istime : true,
-			istoday : false,
-			choose : function(datas) {
-				start.max = datas; // 结束日选好后，重置开始日的最大日期
-			}
-		};
-		laydate(start);
-		laydate(end);
+		elem : '#start',
+		format : 'YYYY-MM-DD',
+		min : '1970-01-01', // 设定最小日期
+		max : laydate.now(), // 最大日期为当前日期
+		// istime : true,
+		istoday : false,
+		choose : function(datas) {
+			end.min = datas; // 开始日选好后，重置结束日的最小日期
+			// end.start = datas // 将结束日的初始值设定为开始日
+		}
+	};
+	var end = {
+		elem : '#end',
+		format : 'YYYY-MM-DD',
+		min : '1970-01-01', // 设定最小日期
+		max : laydate.now(), // 最大日期为当前日期
+		// istime : true,
+		istoday : false,
+		choose : function(datas) {
+			start.max = datas; // 结束日选好后，重置开始日的最大日期
+		}
+	};
+	laydate(start);
+	laydate(end);
 
-		var userPhone, userName, startTime = '', endTime = '';
-		searchWithdraw(1);
+	var userPhone, userName, startTime = '', endTime = '';
+	searchWithdraw(1);
 });
 
 function searchWithdraw(page) {
@@ -68,13 +68,50 @@ function getWithdrawByPage(currentPage, userPhone, userName) {
 				console.log("success");
 				var html = "";
 				for ( var i in data.rows) {
-					html += '<tr id="' + data.rows[i].userId + '">' + '<td>'
-							+ data.rows[i].areaCode + '</td>' + '<td>'
-							+ data.rows[i].userPhone + '</td>' + '<td>'
-							+ data.rows[i].userName + '</td>' + '<td>'
-							+ timeDate(data.rows[i].createTime) + '</td>'
-							+ '<td>' + timeDate(data.rows[i].loginTime)
-							+ '</td>' + '</tr>'
+					html += '<tr>'
+					// +'<td>'+data.rows[i][0].withdrawId +'</td>'
+					+ '<td>'
+							+ data.rows[i][0].userId
+							+ '</td>'
+							+ '<td>'
+							+ data.rows[i][0].quantity
+							+ '</td>'
+							+ '<td>'
+							+ data.rows[i][0].goldpay
+							+ '</td>'
+							+ '<td>'
+							+ data.rows[i][0].fee
+							+ '</td>'
+							+ '<td>'
+							+ timeDate(data.rows[i][0].applyTime)
+							+ '</td>'
+							+ '<td>'
+							+ data.rows[i][0].handleResult
+							+ '</td>'
+							+ '<td>'
+							+ (data.rows[i][0].handler == null ? ""
+									: data.rows[i][0].handler)
+							+ '</td>'
+							+ '<td>'
+							+ (data.rows[i][0].handleTime == null ? ""
+									: timeDate(data.rows[i][0].handleTime))
+							+ '</td>'
+							+ '<td>'
+							+ (data.rows[i][0].goldTransferA == null ? ""
+									: data.rows[i][0].goldTransferA)
+							+ '</td>'
+							+ '<td>'
+							+ (data.rows[i][0].feeTransferA == null ? ""
+									: data.rows[i][0].feeTransferA)
+							+ '</td>'
+							+ '<td>'
+							+ (data.rows[i][0].goldTransferB == null ? ""
+									: data.rows[i][0].goldTransferB)
+							+ '</td>'
+							+ '<td>'
+							+ (data.rows[i][0].feeTransferB == null ? ""
+									: data.rows[i][0].feeTransferB) + '</td>'
+							+ '</tr>'
 				}
 				$('#withdraw tbody').html(html);
 				if (data.currentPage == 1) {

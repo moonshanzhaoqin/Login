@@ -37,10 +37,11 @@
 				id="withdraw">
 				<thead>
 					<tr>
-						<th>提现ID</th>
+<!-- 						<th>提现ID</th> -->
 						<th>用户ID</th>
 						<th>金条数量</th>
 						<th>对应的goldpay</th>
+						<th>手续费</th>
 						<th>申请时间</th>
 						<th>处理结果</th>
 						<th>处理者</th>
@@ -49,7 +50,7 @@
 						<th>手续费交易ID(申请)</th>
 						<th>金条交易ID(失败/成功)</th>
 						<th>手续费交易ID(失败/成功)</th>
-						<th>操作</th>
+<!-- 						<th>操作</th> -->
 					</tr>
 				</thead>
 				<tbody>

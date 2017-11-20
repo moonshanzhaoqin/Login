@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mapping.model.CamelCaseSplittingFieldNamingStrategy;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
@@ -47,7 +48,6 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 			break;
 
 		case ServerConsts.TRANSFER_TYPE_OUT_INVITE:
-//		case ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW:
 			logger.info("the transType is {} ServerConsts.TRANSFER_TYPE_OUT_INVITE", transType);
 
 			TransDetails payerTransDetails4Invite = new TransDetails(transferId, payerId, traderName, traderAreaCode,
@@ -58,9 +58,11 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 
 		case ServerConsts.TRANSFER_TYPE_TRANSACTION - 1:
 		case ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND:
-//		case ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE:
+			// case ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE:
 		case ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE:
 		case ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN:
+		case ServerConsts.TRANSFER_TYPE_IN_WITHDRAW:
+		case ServerConsts.TRANSFER_TYPE_IN_FEE:
 			logger.info("the transType is {} ", transType);
 
 			TransDetails payerTransDetails4Refund = new TransDetails(transferId, payerId, traderName, traderAreaCode,
@@ -112,17 +114,17 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 	}
 
 	@Override
-	public void updateTransDetailsWhenOtherOneRegist(String transferId,Integer payerId,String userName) {
-		
+	public void updateTransDetailsWhenOtherOneRegist(String transferId, Integer payerId, String userName) {
+
 		TransDetails transDetails = transDetailsDAO.getTransDetails(payerId, transferId);
-		
-		if(transDetails != null){
-			
-			logger.info("TransId : {}, userId : {},register name : {}",transferId,payerId,userName);
-			
+
+		if (transDetails != null) {
+
+			logger.info("TransId : {}, userId : {},register name : {}", transferId, payerId, userName);
+
 			transDetails.setTraderName(userName);
 			transDetailsDAO.updateTransDetails(transDetails);
-			
+
 		}
 
 	}

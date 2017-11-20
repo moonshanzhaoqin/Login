@@ -62,7 +62,7 @@ public class FeeManagerImpl implements FeeManager {
 		if (amount.compareTo(feeTemplate.getExemptAmount()) <= 0) {
 			logger.info("the amout({}) is not more than exempt_amount({})", amount, feeTemplate.getExemptAmount());
 		} else {
-			fee = amount.multiply(feeTemplate.getFeePercent()).setScale(0, RoundingMode.CEILING);
+			fee = (amount.subtract(feeTemplate.getExemptAmount())).multiply(feeTemplate.getFeePercent()).setScale(0, RoundingMode.CEILING);
 			if (fee.compareTo(feeTemplate.getMinFee()) < 0) {
 				logger.info("the fee({}) is less than min_fee({})", fee, feeTemplate.getMinFee());
 				fee = feeTemplate.getMinFee();

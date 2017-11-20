@@ -1,7 +1,5 @@
 package com.yuyutechnology.exchange;
 
-import com.yuyutechnology.exchange.pojo.Withdraw;
-
 public class ServerConsts {
 	// 用户类型
 	/**
@@ -255,5 +253,7 @@ public class ServerConsts {
 	 */
 	public static final int GOLDPAY_RETURN_FAIL = 0;
 	public static final int GOLDPAY_RETURN_SUCCESS = 1;
+
+	public static final int ALARM_TYPE_WITHDRAW = 6;
 
 }

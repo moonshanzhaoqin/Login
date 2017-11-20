@@ -7,10 +7,11 @@ import com.yuyutechnology.exchange.util.page.PageBean;
 
 public interface WithdrawManager {
 
-//	BigDecimal goldBullion2Goldpay(int goldBullion);
 
 	Map<String, BigDecimal> goldBullion2Goldpay(Integer userId, int goldBullion);
 
 	PageBean getWithdrawByPage(int currentPage, String userPhone, String userName, String startTime, String endTime);
+
+	void applyConfirm(Integer userId, int goldBullion);
 
 }

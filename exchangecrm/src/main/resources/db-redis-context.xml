@@ -130,13 +130,13 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 			</list>
 		</property>
 	</bean>
-	
+
 	<bean
 		class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration">
 		<!-- 过期时间10分钟 -->
 		<property name="maxInactiveIntervalInSeconds" value="600"></property>
 	</bean>
-	
+
 	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate4.HibernateTemplate">
 		<property name="sessionFactory">
 			<ref bean="sessionFactory" />

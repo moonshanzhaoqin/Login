@@ -84,6 +84,8 @@ public class WithdrawManagerImpl implements WithdrawManager {
 		return resultMap;
 	}
 
+	
+	@Override
 	public void applyConfirm(Integer userId, int goldBullion) {
 		Map<String, BigDecimal> resultMap = goldBullion2Goldpay(userId, goldBullion);
 		User frozenUser = userDAO.getFrozenUser();
@@ -96,9 +98,8 @@ public class WithdrawManagerImpl implements WithdrawManager {
 		/* 把手续费转到冻结账户 */
 		withdraw.setFeeTransferA(transfer4Withdraw(userId, frozenUser.getUserId(), resultMap.get("fee"),
 				ServerConsts.TRANSFER_TYPE_IN_FEE));
-
 		withdrawDAO.saveWithdraw(withdraw);
-
+		/* 通知管理员 */
 		notifyWithdraw(userId, goldBullion);
 
 	}
@@ -173,12 +174,12 @@ public class WithdrawManagerImpl implements WithdrawManager {
 	// TODO
 	public void notifyWithdraw(Integer userId, int goldBullion) {
 		HashMap<String, Object> params = new HashMap<String, Object>();
-		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(5, 1);
+		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(ServerConsts.ALARM_TYPE_WITHDRAW, 1);
 		if (list != null && !list.isEmpty()) {
-			logger.info("registrationAlarm listSize: {}", list.size());
+			logger.info("notifyWithdraw listSize: {}", list.size());
 			for (int i = 0; i < list.size(); i++) {
 				CrmAlarm crmAlarm = list.get(i);
-				logger.info("registrationAlarm crmAlarm: {}", crmAlarm.getSupervisorIdArr());
+				logger.info("notifyWithdraw : {}", crmAlarm.getSupervisorIdArr());
 				crmAlarmManager.alarmNotice(crmAlarm.getSupervisorIdArr(), "registrationAlarm", crmAlarm.getAlarmMode(),
 						params);
 			}

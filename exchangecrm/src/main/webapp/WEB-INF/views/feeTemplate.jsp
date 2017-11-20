@@ -26,8 +26,9 @@
 
 	</div>
 	<!-- 模态框（Modal） -->
-	<div class="modal fade" id="feeTemplateModal" tabindex="-1" role="dialog"
-		aria-labelledby="feeTemplateModalLabel" aria-hidden="true">
+	<div class="modal fade" id="feeTemplateModal" tabindex="-1"
+		role="dialog" aria-labelledby="feeTemplateModalLabel"
+		aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
