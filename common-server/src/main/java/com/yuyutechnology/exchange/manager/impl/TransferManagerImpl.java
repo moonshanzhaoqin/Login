@@ -1325,6 +1325,8 @@ public class TransferManagerImpl implements TransferManager {
 		dto.setGoldpayName((String) obj[12]);
 		dto.setPaypalCurrency((String) obj[13]);
 		dto.setPaypalExchange((BigDecimal) obj[14]);
+		dto.setTransFee((BigDecimal) obj[15]);
+		
 
 		if (user.getAreaCode().equals(dto.getTraderAreaCode()) && user.getUserPhone().equals(dto.getTraderPhone())) {
 			dto.setFriend(true);
@@ -1432,7 +1434,7 @@ public class TransferManagerImpl implements TransferManager {
 
 		StringBuffer sql = new StringBuffer("select t1.transfer_id,t1.trans_currency,t1.trans_amount, ");
 		sql.append("t3.currency_unit,t2.transfer_type,t2.finish_time, ");
-		sql.append("t1.trader_name,t1.trader_area_code,t1.trader_phone ");
+		sql.append("t1.trader_name,t1.trader_area_code,t1.trader_phone,t1.trans_fee ");
 
 		StringBuffer sb = new StringBuffer("FROM e_trans_details t1 ");
 		sb.append("LEFT JOIN e_transfer t2 ON t1.transfer_id = t2.transfer_id ");
@@ -1546,6 +1548,7 @@ public class TransferManagerImpl implements TransferManager {
 			dto.setFinishAt((Date) obj[5]);
 			dto.setTrader((String) obj[6] == null ? " " : (String) obj[6]);
 			dto.setPhoneNum((String) obj[7] + " " + (String) obj[8]);
+			dto.setFee(((BigDecimal) obj[9]).doubleValue());
 
 			dtos.add(dto);
 		}
