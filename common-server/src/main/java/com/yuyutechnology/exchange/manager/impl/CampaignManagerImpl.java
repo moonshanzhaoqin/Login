@@ -294,7 +294,8 @@ public class CampaignManagerImpl implements CampaignManager {
 		
 		/* 生成详情 */
 		transDetailsManager.addTransDetails(transferId, userId, system.getUserId(), "", "", "",
-				ServerConsts.CURRENCY_OF_GOLDPAY, bonus, null, ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
+				ServerConsts.CURRENCY_OF_GOLDPAY, bonus,BigDecimal.ZERO,null
+				, null, ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
 		
 //		walletDAO.updateWalletByUserIdAndCurrency(userId, ServerConsts.CURRENCY_OF_GOLDPAY, bonus, "+",
 //				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId);

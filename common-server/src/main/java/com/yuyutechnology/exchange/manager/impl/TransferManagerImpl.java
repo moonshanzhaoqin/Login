@@ -166,8 +166,9 @@ public class TransferManagerImpl implements TransferManager {
 			commonManager.checkAndUpdateWallet(receiver.getUserId(), currency);
 
 			// add by Niklaus.chi at 2017/07/07
-			transDetailsManager.addTransDetails(transferId, userId, receiver.getUserId(), receiver.getUserName(),
-					areaCode, userPhone, currency, amount, transferComment, ServerConsts.TRANSFER_TYPE_TRANSACTION);
+			transDetailsManager.addTransDetails(transferId, userId, receiver.getUserId(),
+					receiver.getUserName(),areaCode, userPhone, currency, 
+					amount,BigDecimal.ZERO,null,transferComment, ServerConsts.TRANSFER_TYPE_TRANSACTION);
 
 		} else {
 			User systemUser = userDAO.getSystemUser();
@@ -175,7 +176,8 @@ public class TransferManagerImpl implements TransferManager {
 			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_OUT_INVITE);
 
 			// add by Niklaus.chi at 2017/07/07
-			transDetailsManager.addTransDetails(transferId, userId, null, null, areaCode, userPhone, currency, amount,
+			transDetailsManager.addTransDetails(transferId, userId, null, null, 
+					areaCode, userPhone, currency, amount,BigDecimal.ZERO,null,
 					transferComment, ServerConsts.TRANSFER_TYPE_OUT_INVITE);
 
 		}
@@ -1020,8 +1022,9 @@ public class TransferManagerImpl implements TransferManager {
 
 		// add by Niklaus.chi at 2017/07/26
 		User Sponsor = userDAO.getUser(notification.getSponsorId());
-		transDetailsManager.addTransDetails(transferId, userId, notification.getSponsorId(), Sponsor.getUserName(),
-				areaCode, userPhone, currency, amount, transferComment, ServerConsts.TRANSFER_TYPE_TRANSACTION);
+		transDetailsManager.addTransDetails(transferId, userId, notification.getSponsorId(),
+				Sponsor.getUserName(),areaCode, userPhone, currency, 
+				amount,BigDecimal.ZERO,null, transferComment, ServerConsts.TRANSFER_TYPE_TRANSACTION);
 
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");
@@ -1778,8 +1781,10 @@ public class TransferManagerImpl implements TransferManager {
 				commonManager.checkAndUpdateWallet(receiver.getUserId(), currency);
 
 				// add by Niklaus.chi at 2017/07/07
-				transDetailsManager.addTransDetails(transferId, payerId, receiver.getUserId(), receiver.getUserName(),
-						receiver.getAreaCode(), receiver.getUserPhone(), currency, amount, transferComment, ServerConsts.TRANSFER_TYPE_TRANSACTION);
+				transDetailsManager.addTransDetails(transferId, payerId, receiver.getUserId(),
+						receiver.getUserName(),receiver.getAreaCode(), receiver.getUserPhone(),
+						currency, amount,BigDecimal.ZERO,null, transferComment,
+						ServerConsts.TRANSFER_TYPE_TRANSACTION);
 				transfer.setNoticeId(noticeId);
 				// 保存
 				transferDAO.addTransfer(transfer);
@@ -1847,8 +1852,9 @@ public class TransferManagerImpl implements TransferManager {
 		// transfer.getTransferAmount(), "+",
 		// ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND, transferId2);
 
-		transDetailsManager.addTransDetails(transferId, transfer.getUserFrom(), null, null, unregistered.getAreaCode(),
-				unregistered.getUserPhone(), transfer.getCurrency(), transfer.getTransferAmount(),
+		transDetailsManager.addTransDetails(transferId, transfer.getUserFrom(),
+				null, null, unregistered.getAreaCode(),unregistered.getUserPhone(), 
+				transfer.getCurrency(), transfer.getTransferAmount(),BigDecimal.ZERO,null,
 				unregistered.getUserPhone() + "对方逾期未注册,系统退款", ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND);
 
 		// 修改gift记录

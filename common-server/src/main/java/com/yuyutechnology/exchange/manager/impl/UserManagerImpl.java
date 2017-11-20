@@ -593,8 +593,9 @@ public class UserManagerImpl implements UserManager {
 			// unregistered.getAmount(), "+",
 			// ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
 
-			transDetailsManager.addTransDetails(transferId, userId, payer.getUserId(), payer.getUserName(),
-					payer.getAreaCode(), payer.getUserPhone(), unregistered.getCurrency(), unregistered.getAmount(),
+			transDetailsManager.addTransDetails(transferId, userId, payer.getUserId(), 
+					payer.getUserName(),payer.getAreaCode(), payer.getUserPhone(), 
+					unregistered.getCurrency(), unregistered.getAmount(),BigDecimal.ZERO,null,
 					payerTransfer.getTransferComment(), ServerConsts.TRANSFER_TYPE_TRANSACTION - 1);
 
 			/* 更改unregistered状态 */

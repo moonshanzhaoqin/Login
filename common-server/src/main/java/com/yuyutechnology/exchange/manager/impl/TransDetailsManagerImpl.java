@@ -27,20 +27,21 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 	@Override
 	public void addTransDetails(String transferId, Integer payerId, Integer traderId, String traderName,
 			String traderAreaCode, String traderPhone, String transCurrency, BigDecimal transAmount,
-			String transRemarks, Integer transType) {
+			BigDecimal transFee,String transSnapshot,String transRemarks, Integer transType) {
 
 		switch (transType) {
 		case ServerConsts.TRANSFER_TYPE_TRANSACTION:
 			logger.info("the transType is {} ServerConsts.TRANSFER_TYPE_TRANSACTION", transType);
 
 			TransDetails payerTransDetails = new TransDetails(transferId, payerId, traderName, traderAreaCode,
-					traderPhone, transCurrency, transAmount.negate(), transRemarks);
+					traderPhone, transCurrency, transAmount.negate(), transFee.negate(),transRemarks,transSnapshot);
 			transDetailsDAO.addTransDetails(payerTransDetails);
 
 			User payer = userDAO.getUser(payerId);
 			if (payer != null) {
 				TransDetails payeeTransDetails = new TransDetails(transferId, traderId, payer.getUserName(),
-						payer.getAreaCode(), payer.getUserPhone(), transCurrency, transAmount, transRemarks);
+						payer.getAreaCode(), payer.getUserPhone(), transCurrency, transAmount,transFee,
+						transRemarks,transSnapshot);
 				transDetailsDAO.addTransDetails(payeeTransDetails);
 			}
 
@@ -51,7 +52,7 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 			logger.info("the transType is {} ServerConsts.TRANSFER_TYPE_OUT_INVITE", transType);
 
 			TransDetails payerTransDetails4Invite = new TransDetails(transferId, payerId, traderName, traderAreaCode,
-					traderPhone, transCurrency, transAmount.negate(), transRemarks);
+					traderPhone, transCurrency, transAmount.negate(), transAmount.negate(), transRemarks,transSnapshot);
 
 			transDetailsDAO.addTransDetails(payerTransDetails4Invite);
 			break;
@@ -64,7 +65,7 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 			logger.info("the transType is {} ", transType);
 
 			TransDetails payerTransDetails4Refund = new TransDetails(transferId, payerId, traderName, traderAreaCode,
-					traderPhone, transCurrency, transAmount, transRemarks);
+					traderPhone, transCurrency, transAmount,transAmount, transRemarks,transSnapshot);
 
 			transDetailsDAO.addTransDetails(payerTransDetails4Refund);
 			break;
