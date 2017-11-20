@@ -35,3 +35,8 @@ CREATE TABLE `e_withdraw` (
   PRIMARY KEY (`withdraw_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='提取金条';
 UPDATE `e_crm_admin` SET `admin_power`='0,1,2,3,4,5,6,7,8,9,10' WHERE `admin_id`=1;
+
+ALTER TABLE `anytime_exchange`.`e_transfer`
+  ADD COLUMN `transfer_fee` decimal(20,4) NULL DEFAULT NULL COMMENT '书续费';
+
+

@@ -23,13 +23,16 @@ import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
+import com.yuyutechnology.exchange.enums.FeePurpose;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
+import com.yuyutechnology.exchange.manager.FeeManager;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.manager.PayPalTransManager;
 import com.yuyutechnology.exchange.manager.TransDetailsManager;
+import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
 
@@ -48,6 +51,8 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 	TransferDAO transferDAO;
 
 	@Autowired
+	UserManager userManager;
+	@Autowired
 	CrmAlarmManager crmAlarmManager;
 	@Autowired
 	CommonManager commonManager;
@@ -57,6 +62,8 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 	TransDetailsManager transDetailsManager;
 	@Autowired
 	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
+	@Autowired
+	FeeManager feeManager;
 
 	@PostConstruct
 	public void init() {
@@ -103,6 +110,20 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			return result;
 		}
 		
+		//计算手续费
+		//判断是否是会员
+		BigDecimal fee;
+		if(userManager.isHappyLivesVIP(userId)){
+			fee = feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_VIP, amount);
+		}else{
+			fee = feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_Ordinary, amount);
+		}
+		BigDecimal baseFee = fee.divide(rate, currencyLeft.equals(ServerConsts.CURRENCY_OF_JPY) ? 0 : 2,
+				BigDecimal.ROUND_UP);
+		
+		logger.info("fee{} / rate {} = baseFee {}", fee, rate, baseFee);
+		
+		
 		String goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
 
 		// 生成TransId
@@ -114,11 +135,12 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		transfer.setCreateTime(new Date());
 		transfer.setCurrency(ServerConsts.CURRENCY_OF_GOLDPAY);
 		transfer.setTransferAmount(amount);
+		transfer.setTransferFee(fee);
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		transfer.setUserFrom(systemUser.getUserId());
 		transfer.setUserTo(userId);
 		transfer.setPaypalCurrency(currencyLeft);
-		transfer.setPaypalExchange(baseAmout);
+		transfer.setPaypalExchange(baseAmout.add(baseFee));
 		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE);
 		transfer.setGoldpayOrderId(goldpayOrderId);
 		// 保存
@@ -139,6 +161,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		result.put("token", clientToken);
 		result.put("createTime", transfer.getCreateTime());
 		result.put("expiration", configManager.getConfigLongValue(ConfigKeyEnum.PAYPAL_EXPIRATION, 600l));
+		result.put("fee", baseFee);
 
 		return result;
 	}
