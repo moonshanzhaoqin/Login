@@ -109,6 +109,7 @@ public class ThirdPartyController {
 
 		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			rep.setTransferId(map.get("transferId"));
+			rep.setTransferId4Fee(map.get("transferId4Fee"));
 		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY)) {
 			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit"), map.get("thawTime") });
 		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)) {

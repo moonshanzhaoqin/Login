@@ -263,10 +263,11 @@ public class TransferManagerImpl implements TransferManager {
 		}
 
 		//判断 每次支付金额限制、 每天累计金额限制、每天累计给付次数限制
-//		map = checkManager.checkTransferLimit(currency, amount, userId);
-//		if (!map.isEmpty()) {
-//			return map;
-//		}
+		HashMap<String, String> map = checkManager.checkTransferLimit(transfer.getCurrency(), 
+				transfer.getTransferAmount(), userId);
+		if (!map.isEmpty()) {
+			return map.get("retCode");
+		}
 		
 //		// 每次支付金额限制
 //		BigDecimal transferLimitPerPay = BigDecimal
@@ -483,12 +484,12 @@ public class TransferManagerImpl implements TransferManager {
 		
 		
 		map = checkManager.checkNotificationStatus(notification, userId, currency, amount);
-		if (!map.isEmpty()) {
+		if (!map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			return map;
 		}
 
 		map = checkManager.checkRecevierStatus(notification.getSponsorId(), userId, areaCode, userPhone);
-		if (!map.isEmpty()) {
+		if (!map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			return map;
 		}
 		//判断 每次支付金额限制、 每天累计金额限制、每天累计给付次数限制
@@ -678,10 +679,11 @@ public class TransferManagerImpl implements TransferManager {
 		}
 		
 		//判断 每次支付金额限制、 每天累计金额限制、每天累计给付次数限制
-		
-		map = checkManager.checkTransferLimit(currency, amount, payerId);
-		if (!map.isEmpty()) {
-			return map;
+		if(isRestricted){
+			map = checkManager.checkTransferLimit(currency, amount, payerId);
+			if (!map.isEmpty()) {
+				return map;
+			}
 		}
 
 		// 不用给自己转账
@@ -732,7 +734,7 @@ public class TransferManagerImpl implements TransferManager {
 		if(isFeeDeduction){
 			
 			//获取手续费账户
-			User feeUser = new User();
+			User feeUser = userDAO.getFeeUser();
 			
 			String goldpayFeeOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
 			if(!StringUtils.isNotBlank(goldpayOrderId)){
@@ -791,11 +793,14 @@ public class TransferManagerImpl implements TransferManager {
 			return result;
 		}
 		
-		//判断 每次支付金额限制、 每天累计金额限制、每天累计给付次数限制
-		result = checkManager.checkTransferLimit(transfer.getCurrency(), transfer.getTransferAmount(), userId);
-		if (!result.isEmpty()) {
-			return result;
+		if(isRestricted){
+			//判断 每次支付金额限制、 每天累计金额限制、每天累计给付次数限制
+			result = checkManager.checkTransferLimit(transfer.getCurrency(), transfer.getTransferAmount(), userId);
+			if (!result.isEmpty()) {
+				return result;
+			}
 		}
+		
 		//根据transferId更新账户		
 		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId);
 
@@ -819,8 +824,11 @@ public class TransferManagerImpl implements TransferManager {
 		largeTransWarn(payer, transfer);
 		
 		//扣除手续费
-		
-		
+		Transfer transfer4fee = transferDAO.getFeeTransfer(transferId);
+		if(transfer4fee != null){
+			transferDAO.updateTransferStatus(transfer4fee.getTransferId(), ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		}
+
 		result.put("msg", "success");
 		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		
