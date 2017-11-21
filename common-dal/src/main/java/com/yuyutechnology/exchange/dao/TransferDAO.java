@@ -45,17 +45,8 @@ public interface TransferDAO {
 
 	BigDecimal getTotalPaypalExchange(Date finishTime, int transferType, int transferStatus);
 
-	/**
-	 * 分页搜索Transfer
-	 * 
-	 * @param hql
-	 * @param values
-	 * @param currentPage
-	 * @param pageSize
-	 * @return
-	 */
 	PageBean searchTransfersByPage(String hql, List<Object> values, int currentPage, int pageSize);
 
-//	int saveTransfer(Transfer transfer);
+	Transfer getFeeTransfer(String transferId);
 
 }

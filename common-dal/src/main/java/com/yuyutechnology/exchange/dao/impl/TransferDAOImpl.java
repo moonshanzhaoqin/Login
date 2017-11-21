@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.ServletRequestBindingException;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.RedisDAO;
@@ -256,8 +255,11 @@ public class TransferDAOImpl implements TransferDAO {
 		});
 	}
 	
+	@Override
 	public Transfer getFeeTransfer(String transferId){
-		List<?> list = hibernateTemplate.find("from Transfer where transferComment = ?", transferId);
+		List<?> list = hibernateTemplate.find("from Transfer where transferComment = ? "
+				+ "and transferStatus = ? and transferType = ?", transferId,
+				ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION,ServerConsts.TRANSFER_TYPE_IN_FEE);
 		return (Transfer) (list.isEmpty() ? null : list.get(0));
 	}
 
