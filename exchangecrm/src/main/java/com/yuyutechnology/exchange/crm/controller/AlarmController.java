@@ -53,7 +53,7 @@ public class AlarmController {
 
 	ModelAndView mav;
 
-	private static Logger logger = LogManager.getLogger(AlarmController.class);
+//	private static Logger logger = LogManager.getLogger(AlarmController.class);
 
 	@RequestMapping(value = "/alarm/getAlarmConfigList", method = RequestMethod.GET)
 	public ModelAndView getAlarmConfigList() {

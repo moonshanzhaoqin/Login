@@ -116,6 +116,14 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.amount = amount;
 	}
 
+	public BigDecimal getFee() {
+		return fee;
+	}
+
+	public void setFee(BigDecimal fee) {
+		this.fee = fee;
+	}
+
 	public String getPaypalCurrency() {
 		return paypalCurrency;
 	}

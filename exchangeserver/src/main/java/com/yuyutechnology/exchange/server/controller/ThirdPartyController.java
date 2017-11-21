@@ -17,6 +17,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.ConfigManager;
@@ -102,9 +103,9 @@ public class ThirdPartyController {
 			return rep;
 		}
 
-		HashMap<String, String> map = transferManager.transferInitiate(reqMsg.getPayerId(), reqMsg.getPayeeId(),
-				 reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())),
-				reqMsg.getTransferComment(), 0);
+		HashMap<String, String> map = transferManager.transInit4ThirdParty(reqMsg.getPayerId(), 
+				reqMsg.getPayeeId(), reqMsg.getCurrency(),new BigDecimal(reqMsg.getAmount()+""), 
+				reqMsg.getTransferComment(), reqMsg.getIsFeeDeduction(), reqMsg.getFee(), reqMsg.getFeepayerId());
 
 		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			rep.setTransferId(map.get("transferId"));
@@ -129,12 +130,33 @@ public class ThirdPartyController {
 	public TransConfirmResponse transConfirm(@RequestDecryptBody TransConfirmRequest reqMsg) {
 		
 		TransConfirmResponse rep = new TransConfirmResponse();
-		HashMap<String, String> map = transferManager.transConfirm4TPPS(reqMsg.getUserId(), 
+		HashMap<String, String> map = new HashMap<>();
+		
+		// 验证支付密码
+		CheckPwdResult checkPwdResult = userManager.checkPayPassword(reqMsg.getUserId(), 
+				reqMsg.getUserPayPwd());
+	
+		switch (checkPwdResult.getStatus()) {
+		case FREEZE:
+			rep.setRetCode(RetCodeConsts.PAY_FREEZE);
+			rep.setMessage(String.valueOf(checkPwdResult.getInfo()));
+			return rep;
+
+		case INCORRECT:
+			logger.warn("payPwd is wrong !");
+			rep.setRetCode(RetCodeConsts.PAY_PWD_NOT_MATCH);
+			rep.setMessage(String.valueOf(checkPwdResult.getInfo()));
+			return rep;
+
+		default:
+			break;
+		}
+		
+		map = transferManager.transConfirm4ThirdParty(reqMsg.getUserId(), 
 				reqMsg.getTransferId(), reqMsg.getUserPayPwd());
 		
 		rep.setRetCode(map.get("retCode"));
 		rep.setMessage(map.get("msg"));
-		
 		return rep;
 	}
 	

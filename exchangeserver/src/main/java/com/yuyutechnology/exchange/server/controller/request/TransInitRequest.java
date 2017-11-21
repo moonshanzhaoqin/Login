@@ -1,5 +1,7 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
+import java.math.BigDecimal;
+
 public class TransInitRequest {
 	
 	private Integer payerId;
@@ -7,6 +9,12 @@ public class TransInitRequest {
 	private String currency;
 	private double amount;
 	private String transferComment;
+	
+	private Boolean isFeeDeduction;
+	private BigDecimal fee;
+	private int feepayerId;
+	
+	private Boolean isRestricted;
 	
 	public Integer getPayerId() {
 		return payerId;
@@ -37,6 +45,30 @@ public class TransInitRequest {
 	}
 	public void setTransferComment(String transferComment) {
 		this.transferComment = transferComment;
+	}
+	public Boolean getIsFeeDeduction() {
+		return isFeeDeduction;
+	}
+	public void setIsFeeDeduction(Boolean isFeeDeduction) {
+		this.isFeeDeduction = isFeeDeduction;
+	}
+	public BigDecimal getFee() {
+		return fee;
+	}
+	public void setFee(BigDecimal fee) {
+		this.fee = fee;
+	}
+	public int getFeepayerId() {
+		return feepayerId;
+	}
+	public void setFeepayerId(int feepayerId) {
+		this.feepayerId = feepayerId;
+	}
+	public Boolean getIsRestricted() {
+		return isRestricted;
+	}
+	public void setIsRestricted(Boolean isRestricted) {
+		this.isRestricted = isRestricted;
 	}
 
 	
