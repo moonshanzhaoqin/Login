@@ -103,9 +103,9 @@ public class ThirdPartyController {
 			return rep;
 		}
 
-		HashMap<String, String> map = transferManager.transInit4ThirdParty(reqMsg.getPayerId(), 
+		HashMap<String, String> map = transferManager.transInit4ThirdParty(reqMsg.getRestricted(),reqMsg.getPayerId(), 
 				reqMsg.getPayeeId(), reqMsg.getCurrency(),new BigDecimal(reqMsg.getAmount()+""), 
-				reqMsg.getTransferComment(), reqMsg.getIsFeeDeduction(), reqMsg.getFee(), reqMsg.getFeepayerId());
+				reqMsg.getTransferComment(), reqMsg.getFeeDeduction(), reqMsg.getFee(), reqMsg.getFeepayerId());
 
 		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			rep.setTransferId(map.get("transferId"));
@@ -152,7 +152,7 @@ public class ThirdPartyController {
 			break;
 		}
 		
-		map = transferManager.transConfirm4ThirdParty(reqMsg.getUserId(), 
+		map = transferManager.transConfirm4ThirdParty(reqMsg.getRestricted(),reqMsg.getUserId(), 
 				reqMsg.getTransferId(), reqMsg.getUserPayPwd());
 		
 		rep.setRetCode(map.get("retCode"));
