@@ -22,6 +22,7 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
+import com.yuyutechnology.exchange.dto.FeeResult;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.enums.FeePurpose;
 import com.yuyutechnology.exchange.manager.CommonManager;
@@ -112,16 +113,16 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		
 		//计算手续费
 		//判断是否是会员
-		BigDecimal fee;
+		FeeResult feeResult;
 		if(userManager.isHappyLivesVIP(userId)){
-			fee = feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_VIP, amount);
+			feeResult = feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_VIP, amount);
 		}else{
-			fee = feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_Ordinary, amount);
+			feeResult = feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_Ordinary, amount);
 		}
-		BigDecimal baseFee = fee.divide(rate, currencyLeft.equals(ServerConsts.CURRENCY_OF_JPY) ? 0 : 2,
+		BigDecimal baseFee = feeResult.getFee().divide(rate, currencyLeft.equals(ServerConsts.CURRENCY_OF_JPY) ? 0 : 2,
 				BigDecimal.ROUND_UP);
 		
-		logger.info("fee{} / rate {} = baseFee {}", fee, rate, baseFee);
+		logger.info("fee{} / rate {} = baseFee {}", feeResult.getFee(), rate, baseFee);
 		
 		
 		String goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
@@ -135,7 +136,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		transfer.setCreateTime(new Date());
 		transfer.setCurrency(ServerConsts.CURRENCY_OF_GOLDPAY);
 		transfer.setTransferAmount(amount);
-		transfer.setTransferFee(fee);
+		transfer.setTransferFee(feeResult.getFee());
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		transfer.setUserFrom(systemUser.getUserId());
 		transfer.setUserTo(userId);
@@ -147,7 +148,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		transferDAO.addTransfer(transfer);
 
 		transDetailsManager.addTransDetails(transferId, userId, null, null, null, null,
-				ServerConsts.CURRENCY_OF_GOLDPAY, amount,fee, null,null, ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE);
+				ServerConsts.CURRENCY_OF_GOLDPAY, amount,feeResult.getFee(), null,null, ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE);
 
 		BraintreeGateway gateway = new BraintreeGateway(
 				configManager.getConfigStringValue(ConfigKeyEnum.PAYPAL_ACCESSTOKEN, ""));
