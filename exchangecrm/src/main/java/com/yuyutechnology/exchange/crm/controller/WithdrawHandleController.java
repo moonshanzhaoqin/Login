@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
 import com.yuyutechnology.exchange.crm.request.GetWithdrawByPageRequest;
 import com.yuyutechnology.exchange.crm.request.WithdrawRequest;
+import com.yuyutechnology.exchange.dao.AdminDAO;
 import com.yuyutechnology.exchange.manager.WithdrawManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.CrmLogManager;
@@ -37,6 +38,8 @@ public class WithdrawHandleController {
 	CommonManager commonManager;
 	@Autowired
 	CrmLogManager crmLogManager;
+	@Autowired
+	AdminDAO adminDAO;
 
 	/**
 	 * 获取提现列表
@@ -55,14 +58,16 @@ public class WithdrawHandleController {
 				getWithdrawByPageRequest.getStartTime(), getWithdrawByPageRequest.getEndTime());
 
 	}
+
 	@ResponseBody
 	@RequestMapping(value = "/finishWithdraw", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse finishWithdraw(@RequestBody WithdrawRequest withdrawRequest,
-			HttpServletRequest request, HttpServletResponse response) {
-		logger.info("finishWithdraw:{}",withdrawRequest.getWithdrawId());
-		return withdrawManager.
-
+	public BaseResponse finishWithdraw(@RequestBody WithdrawRequest withdrawRequest, HttpServletRequest request,
+			HttpServletResponse response) {
+		BaseResponse rep = new BaseResponse();
+		logger.info("finishWithdraw:{}", withdrawRequest.getWithdrawId());
+		withdrawManager.cancelWithdraw(withdrawRequest.getWithdrawId(),
+				(String) request.getSession().getAttribute("adminName"));
+		return rep;
 	}
-
 
 }

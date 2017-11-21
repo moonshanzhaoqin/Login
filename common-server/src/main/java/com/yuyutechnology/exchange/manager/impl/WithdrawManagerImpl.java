@@ -105,7 +105,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 	}
 
 	@Override
-	public void cancelWithdraw(Integer withdrawId, Admin admin) {
+	public void cancelWithdraw(Integer withdrawId, String adminName) {
 		User frozenUser = userDAO.getFrozenUser();
 
 		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
@@ -118,7 +118,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 					ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND));
 			/* 操作记录 */
 			withdraw.setHandleResult(ServerConsts.WITHDRAW_HANDLE_RESULT_CANCEL);
-			withdraw.setHandler(admin.getAdminName());
+			withdraw.setHandler(adminName);
 			withdraw.setHandleTime(new Date());
 			withdrawDAO.updateWithdraw(withdraw);
 
@@ -129,7 +129,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 	}
 
 	@Override
-	public void finishWithdraw(Integer withdrawId, Admin admin) {
+	public void finishWithdraw(Integer withdrawId,  String adminName) {
 		User frozenUser = userDAO.getFrozenUser();
 		User feeUser = userDAO.getFeeUser();
 		User recovery = userDAO.getRecoveryUser();
@@ -144,7 +144,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 					ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND));
 			/* 操作记录 */
 			withdraw.setHandleResult(ServerConsts.WITHDRAW_HANDLE_RESULT_FINISHT);
-			withdraw.setHandler(admin.getAdminName());
+			withdraw.setHandler(adminName);
 			withdraw.setHandleTime(new Date());
 			withdrawDAO.updateWithdraw(withdraw);
 		} else {

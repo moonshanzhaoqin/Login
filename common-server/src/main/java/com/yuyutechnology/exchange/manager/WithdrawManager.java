@@ -15,8 +15,8 @@ public interface WithdrawManager {
 
 	void applyConfirm(Integer userId, int goldBullion);
 
-	void cancelWithdraw(Integer withdrawId, Admin admin);
+	void cancelWithdraw(Integer withdrawId,  String adminName);
 
-	void finishWithdraw(Integer withdrawId, Admin admin);
+	void finishWithdraw(Integer withdrawId, String adminName);
 
 }
