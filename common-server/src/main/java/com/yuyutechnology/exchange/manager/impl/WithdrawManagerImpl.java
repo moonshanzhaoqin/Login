@@ -18,6 +18,7 @@ import com.yuyutechnology.exchange.dao.CrmAlarmDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WithdrawDAO;
+import com.yuyutechnology.exchange.dto.FeeResult;
 import com.yuyutechnology.exchange.enums.FeePurpose;
 import com.yuyutechnology.exchange.mail.MailManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
@@ -72,19 +73,18 @@ public class WithdrawManagerImpl implements WithdrawManager {
 
 		BigDecimal goldpayAmount = goldbullion2gold.multiply(gold2goldpay).multiply(new BigDecimal(goldBullion));
 
-		BigDecimal fee = BigDecimal.ZERO;
+		FeeResult feeResult;
 		if (userManager.isHappyLivesVIP(userId)) {
-			fee = feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_VIP, goldpayAmount);
+			feeResult = feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_VIP, goldpayAmount);
 		} else {
-			fee = feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_Ordinary, goldpayAmount);
+			feeResult = feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_Ordinary, goldpayAmount);
 		}
 
 		resultMap.put("goldpay", goldpayAmount);
-		resultMap.put("fee", fee);
+		resultMap.put("fee", feeResult.getFee());
 		return resultMap;
 	}
 
-	
 	@Override
 	public void applyConfirm(Integer userId, int goldBullion) {
 		Map<String, BigDecimal> resultMap = goldBullion2Goldpay(userId, goldBullion);
@@ -103,8 +103,9 @@ public class WithdrawManagerImpl implements WithdrawManager {
 		notifyWithdraw(userId, goldBullion);
 
 	}
-@Override
-	public void cancelWithdraw(Integer withdrawId, Admin admin) {
+
+	@Override
+	public void cancelWithdraw(Integer withdrawId, String adminName) {
 		User frozenUser = userDAO.getFrozenUser();
 
 		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
@@ -117,7 +118,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 					ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND));
 			/* 操作记录 */
 			withdraw.setHandleResult(ServerConsts.WITHDRAW_HANDLE_RESULT_CANCEL);
-			withdraw.setHandler(admin.getAdminName());
+			withdraw.setHandler(adminName);
 			withdraw.setHandleTime(new Date());
 			withdrawDAO.updateWithdraw(withdraw);
 
@@ -128,7 +129,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 	}
 
 	@Override
-	public void finishWithdraw(Integer withdrawId, Admin admin) {
+	public void finishWithdraw(Integer withdrawId,  String adminName) {
 		User frozenUser = userDAO.getFrozenUser();
 		User feeUser = userDAO.getFeeUser();
 		User recovery = userDAO.getRecoveryUser();
@@ -143,7 +144,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 					ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND));
 			/* 操作记录 */
 			withdraw.setHandleResult(ServerConsts.WITHDRAW_HANDLE_RESULT_FINISHT);
-			withdraw.setHandler(admin.getAdminName());
+			withdraw.setHandler(adminName);
 			withdraw.setHandleTime(new Date());
 			withdrawDAO.updateWithdraw(withdraw);
 		} else {
@@ -165,9 +166,8 @@ public class WithdrawManagerImpl implements WithdrawManager {
 		transfer.setUserTo(to);
 		transfer.setGoldpayOrderId(goldpayOrderId);
 		transferDAO.addTransfer(transfer);
-		transDetailsManager.addTransDetails(transferId, from, to, "", "", "",
-				ServerConsts.CURRENCY_OF_GOLDPAY, amount,BigDecimal.ZERO,null,
-				"", type);
+		transDetailsManager.addTransDetails(transferId, from, to, "", "", "", ServerConsts.CURRENCY_OF_GOLDPAY, amount,
+				BigDecimal.ZERO, null, "", type);
 		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId);
 		return transferId;
 
@@ -214,7 +214,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 		}
 		hql.append(" order by w.applyTime desc");
 		return withdrawDAO.getWithdrawByPage(hql.toString(), values, currentPage, 10);
-	
+
 	}
 
 }
