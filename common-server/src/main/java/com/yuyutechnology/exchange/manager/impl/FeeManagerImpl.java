@@ -58,6 +58,12 @@ public class FeeManagerImpl implements FeeManager {
 	public BigDecimal figureOutFee(FeePurpose feePurpose, BigDecimal amount) {
 		FeeTemplate feeTemplate = feeTmeplateMap.get(feePurpose.getPurpose());
 		logger.info("{} aoumout={} -->", feeTemplate.toString(), amount);
+		String formule="exempt_amount:" + feeTemplate.getExemptAmount() + ";min_fee:" + feeTemplate.getMinFee()
+		+ ";max_fee:" + feeTemplate.getMaxFee() + ";formule:ceiling((" + amount.toString() + "-"
+		+ feeTemplate.getExemptAmount() + ")*" + feeTemplate.getFeePercent() + ")";
+		
+		logger.info(formule);
+		
 		BigDecimal fee = BigDecimal.ZERO;
 		if (amount.compareTo(feeTemplate.getExemptAmount()) <= 0) {
 			logger.info("the amout({}) is not more than exempt_amount({})", amount, feeTemplate.getExemptAmount());

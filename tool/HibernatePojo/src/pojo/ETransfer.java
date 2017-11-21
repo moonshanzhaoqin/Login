@@ -1,5 +1,5 @@
 package pojo;
-// Generated Nov 17, 2017 11:15:16 AM by Hibernate Tools 5.2.6.Final
+// Generated Nov 20, 2017 6:14:04 PM by Hibernate Tools 5.2.6.Final
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -26,6 +26,7 @@ public class ETransfer implements java.io.Serializable {
 	private String phone;
 	private String currency;
 	private BigDecimal transferAmount;
+	private BigDecimal transferFee;
 	private String transferComment;
 	private Date createTime;
 	private Date finishTime;
@@ -54,9 +55,9 @@ public class ETransfer implements java.io.Serializable {
 	}
 
 	public ETransfer(String transferId, int userFrom, int userTo, String areaCode, String phone, String currency,
-			BigDecimal transferAmount, String transferComment, Date createTime, Date finishTime, int transferStatus,
-			int transferType, Integer noticeId, String goldpayResult, String goldpayName, String goldpayAcount,
-			String paypalCurrency, BigDecimal paypalExchange, String goldpayOrderId) {
+			BigDecimal transferAmount, BigDecimal transferFee, String transferComment, Date createTime, Date finishTime,
+			int transferStatus, int transferType, Integer noticeId, String goldpayResult, String goldpayName,
+			String goldpayAcount, String paypalCurrency, BigDecimal paypalExchange, String goldpayOrderId) {
 		this.transferId = transferId;
 		this.userFrom = userFrom;
 		this.userTo = userTo;
@@ -64,6 +65,7 @@ public class ETransfer implements java.io.Serializable {
 		this.phone = phone;
 		this.currency = currency;
 		this.transferAmount = transferAmount;
+		this.transferFee = transferFee;
 		this.transferComment = transferComment;
 		this.createTime = createTime;
 		this.finishTime = finishTime;
@@ -151,6 +153,15 @@ public class ETransfer implements java.io.Serializable {
 
 	public void setTransferAmount(BigDecimal transferAmount) {
 		this.transferAmount = transferAmount;
+	}
+
+	@Column(name = "transfer_fee", precision = 20, scale = 4)
+	public BigDecimal getTransferFee() {
+		return this.transferFee;
+	}
+
+	public void setTransferFee(BigDecimal transferFee) {
+		this.transferFee = transferFee;
 	}
 
 	@Column(name = "transfer_comment")

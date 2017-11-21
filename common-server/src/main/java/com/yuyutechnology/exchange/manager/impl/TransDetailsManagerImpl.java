@@ -32,7 +32,7 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 
 		switch (transType) {
 		case ServerConsts.TRANSFER_TYPE_TRANSACTION:
-		case ServerConsts.TRANSFER_TYPE_IN_FEE:
+		
 			logger.info("the transType is {} ServerConsts.TRANSFER_TYPE_TRANSACTION", transType);
 
 			TransDetails payerTransDetails = new TransDetails(transferId, payerId, traderName, traderAreaCode,
@@ -50,6 +50,8 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 			break;
 
 		case ServerConsts.TRANSFER_TYPE_OUT_INVITE:
+		case ServerConsts.TRANSFER_TYPE_IN_FEE:
+		case ServerConsts.TRANSFER_TYPE_IN_WITHDRAW:
 			logger.info("the transType is {} ServerConsts.TRANSFER_TYPE_OUT_INVITE", transType);
 
 			TransDetails payerTransDetails4Invite = new TransDetails(transferId, payerId, traderName, traderAreaCode,
@@ -63,8 +65,7 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 			// case ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE:
 		case ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE:
 		case ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN:
-		case ServerConsts.TRANSFER_TYPE_IN_WITHDRAW:
-		case ServerConsts.TRANSFER_TYPE_IN_FEE:
+		case ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND:
 			logger.info("the transType is {} ", transType);
 
 			TransDetails payerTransDetails4Refund = new TransDetails(transferId, payerId, traderName, traderAreaCode,

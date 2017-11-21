@@ -120,7 +120,11 @@ public enum Operation {
 	/**
 	 *更新手续费模板 
 	 */
-	UPDATE_FEETEMPLATE("update_feetemplate");
+	UPDATE_FEETEMPLATE("update_feetemplate"), 
+	/**
+	 * 添加商户
+	 */
+	ADD_PAY_CLIENT("ADD_PAY_CLIENT");
 	
 	private String operationName;
 
