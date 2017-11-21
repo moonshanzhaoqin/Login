@@ -650,7 +650,7 @@ public class TransferManagerImpl implements TransferManager {
 	}
 	
 	@Override
-	public HashMap<String, String> transInit4ThirdParty(int payerId, int payeeId,String currency,
+	public HashMap<String, String> transInit4ThirdParty(Boolean isRestricted,int payerId, int payeeId,String currency,
 			BigDecimal amount,String transferComment,Boolean isFeeDeduction,
 			BigDecimal fee,int feepayerId) {
 		
@@ -678,6 +678,7 @@ public class TransferManagerImpl implements TransferManager {
 		}
 		
 		//判断 每次支付金额限制、 每天累计金额限制、每天累计给付次数限制
+		
 		map = checkManager.checkTransferLimit(currency, amount, payerId);
 		if (!map.isEmpty()) {
 			return map;
@@ -763,6 +764,9 @@ public class TransferManagerImpl implements TransferManager {
 					feeUser.getUserName(),feeUser.getAreaCode(), feeUser.getUserPhone(),
 					ServerConsts.CURRENCY_OF_GOLDPAY, fee,BigDecimal.ZERO,null, transferId+"订单产生的手续费",
 					ServerConsts.TRANSFER_TYPE_IN_FEE);
+			
+			map.put("transferId4Fee", transferId4Fee);
+			
 		}
 		
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
@@ -774,7 +778,7 @@ public class TransferManagerImpl implements TransferManager {
 	}
 	
 	@Override
-	public HashMap<String, String> transConfirm4ThirdParty(int userId, String transferId, String userPayPwd){
+	public HashMap<String, String> transConfirm4ThirdParty(Boolean isRestricted,int userId, String transferId, String userPayPwd){
 		
 		HashMap<String, String> result = new HashMap<>();
 		
@@ -813,6 +817,9 @@ public class TransferManagerImpl implements TransferManager {
 	
 		// 预警
 		largeTransWarn(payer, transfer);
+		
+		//扣除手续费
+		
 		
 		result.put("msg", "success");
 		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);

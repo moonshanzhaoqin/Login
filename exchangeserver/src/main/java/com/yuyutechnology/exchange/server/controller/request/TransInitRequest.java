@@ -10,11 +10,11 @@ public class TransInitRequest {
 	private double amount;
 	private String transferComment;
 	
-	private Boolean isFeeDeduction;
+	private Boolean feeDeduction;
 	private BigDecimal fee;
 	private int feepayerId;
 	
-	private Boolean isRestricted;
+	private Boolean restricted;
 	
 	public Integer getPayerId() {
 		return payerId;
@@ -46,11 +46,12 @@ public class TransInitRequest {
 	public void setTransferComment(String transferComment) {
 		this.transferComment = transferComment;
 	}
-	public Boolean getIsFeeDeduction() {
-		return isFeeDeduction;
+
+	public Boolean getFeeDeduction() {
+		return feeDeduction;
 	}
-	public void setIsFeeDeduction(Boolean isFeeDeduction) {
-		this.isFeeDeduction = isFeeDeduction;
+	public void setFeeDeduction(Boolean feeDeduction) {
+		this.feeDeduction = feeDeduction;
 	}
 	public BigDecimal getFee() {
 		return fee;
@@ -64,11 +65,11 @@ public class TransInitRequest {
 	public void setFeepayerId(int feepayerId) {
 		this.feepayerId = feepayerId;
 	}
-	public Boolean getIsRestricted() {
-		return isRestricted;
+	public Boolean getRestricted() {
+		return restricted;
 	}
-	public void setIsRestricted(Boolean isRestricted) {
-		this.isRestricted = isRestricted;
+	public void setRestricted(Boolean restricted) {
+		this.restricted = restricted;
 	}
 
 	
