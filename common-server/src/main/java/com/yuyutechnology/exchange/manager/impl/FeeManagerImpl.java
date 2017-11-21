@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.dao.FeeTemplateDAO;
+import com.yuyutechnology.exchange.dto.FeeResult;
 import com.yuyutechnology.exchange.enums.FeePurpose;
 import com.yuyutechnology.exchange.manager.FeeManager;
 import com.yuyutechnology.exchange.pojo.FeeTemplate;
@@ -55,13 +56,14 @@ public class FeeManagerImpl implements FeeManager {
 	}
 
 	@Override
-	public BigDecimal figureOutFee(FeePurpose feePurpose, BigDecimal amount) {
+	public FeeResult figureOutFee(FeePurpose feePurpose, BigDecimal amount) {
+		FeeResult feeResult=new FeeResult();
 		FeeTemplate feeTemplate = feeTmeplateMap.get(feePurpose.getPurpose());
 		logger.info("{} aoumout={} -->", feeTemplate.toString(), amount);
+		
 		String formule="exempt_amount:" + feeTemplate.getExemptAmount() + ";min_fee:" + feeTemplate.getMinFee()
 		+ ";max_fee:" + feeTemplate.getMaxFee() + ";formule:ceiling((" + amount.toString() + "-"
 		+ feeTemplate.getExemptAmount() + ")*" + feeTemplate.getFeePercent() + ")";
-		
 		logger.info(formule);
 		
 		BigDecimal fee = BigDecimal.ZERO;
@@ -78,7 +80,9 @@ public class FeeManagerImpl implements FeeManager {
 			}
 		}
 		logger.info("fee is {}", fee);
-		return fee;
+		feeResult.setFee(fee);
+		feeResult.setFormule(formule);
+		return feeResult;
 	}
 
 	

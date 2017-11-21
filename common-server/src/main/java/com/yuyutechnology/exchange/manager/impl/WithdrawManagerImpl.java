@@ -103,7 +103,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 		notifyWithdraw(userId, goldBullion);
 
 	}
-
+@Override
 	public void cancelWithdraw(Integer withdrawId, Admin admin) {
 		User frozenUser = userDAO.getFrozenUser();
 
@@ -127,6 +127,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 
 	}
 
+	@Override
 	public void finishWithdraw(Integer withdrawId, Admin admin) {
 		User frozenUser = userDAO.getFrozenUser();
 		User feeUser = userDAO.getFeeUser();

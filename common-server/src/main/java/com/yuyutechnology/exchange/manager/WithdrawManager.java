@@ -3,6 +3,7 @@ package com.yuyutechnology.exchange.manager;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import com.yuyutechnology.exchange.pojo.Admin;
 import com.yuyutechnology.exchange.util.page.PageBean;
 
 public interface WithdrawManager {
@@ -13,5 +14,9 @@ public interface WithdrawManager {
 	PageBean getWithdrawByPage(int currentPage, String userPhone, String userName, String startTime, String endTime);
 
 	void applyConfirm(Integer userId, int goldBullion);
+
+	void cancelWithdraw(Integer withdrawId, Admin admin);
+
+	void finishWithdraw(Integer withdrawId, Admin admin);
 
 }

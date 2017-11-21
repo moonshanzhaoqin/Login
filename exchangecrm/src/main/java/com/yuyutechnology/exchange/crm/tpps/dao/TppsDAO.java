@@ -21,7 +21,7 @@ public class TppsDAO {
 		hibernateTemplateTPPS.update(goldqPayFee);
 	}
 
-	public Long name(GoldqPayClient goldqPayClient) {
+	public Long saveGoldqPayClient(GoldqPayClient goldqPayClient) {
 		return (Long) hibernateTemplateTPPS.save(goldqPayClient);
 	}
 
