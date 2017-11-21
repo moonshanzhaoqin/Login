@@ -19,6 +19,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.TransDetailsDTO;
 import com.yuyutechnology.exchange.dto.TransferDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
@@ -133,8 +134,27 @@ public class TransferController {
 		// 从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		TransPwdConfirmResponse rep = new TransPwdConfirmResponse();
-		HashMap<String, String> result = transferManager.payPwdConfirm(sessionData.getUserId(), reqMsg.getTransferId(),
-				reqMsg.getUserPayPwd());
+		
+		// 验证支付密码
+		CheckPwdResult checkPwdResult = userManager.checkPayPassword(
+				sessionData.getUserId(), reqMsg.getUserPayPwd());
+		
+		switch (checkPwdResult.getStatus()) {
+			case FREEZE:
+				rep.setRetCode(RetCodeConsts.PAY_FREEZE);
+				rep.setMessage(String.valueOf(checkPwdResult.getInfo()));
+				return rep;
+			case INCORRECT:
+				logger.warn("payPwd is wrong !");
+				rep.setRetCode(RetCodeConsts.PAY_PWD_NOT_MATCH);
+				rep.setMessage(String.valueOf(checkPwdResult.getInfo()));
+				return rep;
+			default:
+				break;
+		}
+		
+		HashMap<String, String> result = transferManager.whenPayPwdConfirmed(
+				sessionData.getUserId(), reqMsg.getTransferId(),reqMsg.getUserPayPwd());
 
 		if (result.get("retCode").equals(RetCodeConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION)) {
 			// 发PIN码
@@ -187,9 +207,7 @@ public class TransferController {
 			rep.setRetCode(RetCodeConsts.NOT_GET_CODE);
 			rep.setMessage(MessageConsts.NOT_GET_CODE);
 		} else if (resultBool.booleanValue()) {
-
 			String result = transferManager.transferConfirm(sessionData.getUserId(), reqMsg.getTransferId());
-
 			if (result.equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
@@ -287,35 +305,6 @@ public class TransferController {
 
 	}
 
-//	@SuppressWarnings("unchecked")
-//	@ApiOperation(value = "获取交易列表")
-//	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransactionRecord")
-//	public @ResponseEncryptBody GetTransactionRecordResponse getTransactionRecord(@PathVariable String token,
-//			@RequestDecryptBody GetTransactionRecordRequest reqMsq) {
-//
-//		// 从Session中获取Id
-//		SessionData sessionData = SessionDataHolder.getSessionData();
-//		GetTransactionRecordResponse rep = new GetTransactionRecordResponse();
-//		HashMap<String, Object> map = transferManager.getTransactionRecord(reqMsq.getPeriod(), reqMsq.getType(),
-//				sessionData.getUserId(), reqMsq.getCurrentPage(), reqMsq.getPageSize());
-//
-//		if (((ArrayList<?>) map.get("dtos")).isEmpty()) {
-//			rep.setRetCode(RetCodeConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
-//			rep.setMessage("Transaction history not acquired");
-//		} else {
-//			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-//			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-//			rep.setCurrentPage((int) map.get("currentPage"));
-//			rep.setPageSize((int) map.get("pageSize"));
-//			rep.setPageTotal((int) map.get("pageTotal"));
-//			rep.setTotal(Integer.parseInt(map.get("total") + ""));
-//			rep.setList((List<TransferDTO>) map.get("dtos"));
-//		}
-//
-//		return rep;
-//
-//	}
-
 	@SuppressWarnings("unchecked")
 	@ApiOperation(value = "获取交易列表")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransactionRecordNew")
@@ -325,7 +314,7 @@ public class TransferController {
 		// 从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
 		GetTransactionRecordResponse rep = new GetTransactionRecordResponse();
-		HashMap<String, Object> map = transferManager.getTransactionRecordNew(reqMsq.getPeriod(), reqMsq.getType(),
+		HashMap<String, Object> map = transferManager.getTransRecordbyPage(reqMsq.getPeriod(), reqMsq.getType(),
 				sessionData.getUserId(), reqMsq.getCurrentPage(), reqMsq.getPageSize());
 
 		if (((ArrayList<?>) map.get("dtos")).isEmpty()) {
@@ -398,15 +387,11 @@ public class TransferController {
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/getTransDetails")
 	public @ResponseEncryptBody GetTransDetailsResponse getTransDetails(@PathVariable String token,
 			@RequestDecryptBody GetTransDetailsRequest reqMsg) {
-
 		SessionData sessionData = SessionDataHolder.getSessionData();
-
 		TransDetailsDTO dto = transferManager.getTransDetails(reqMsg.getTransferId(), sessionData.getUserId());
 		GetTransDetailsResponse rep = new GetTransDetailsResponse(dto);
-
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-
 		return rep;
 	}
 
