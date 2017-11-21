@@ -31,6 +31,7 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 
 		switch (transType) {
 		case ServerConsts.TRANSFER_TYPE_TRANSACTION:
+		case ServerConsts.TRANSFER_TYPE_IN_FEE:
 			logger.info("the transType is {} ServerConsts.TRANSFER_TYPE_TRANSACTION", transType);
 
 			TransDetails payerTransDetails = new TransDetails(transferId, payerId, traderName, traderAreaCode,
@@ -69,42 +70,6 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 
 			transDetailsDAO.addTransDetails(payerTransDetails4Refund);
 			break;
-
-		// case ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW:
-		// logger.info("the transType is {}
-		// ServerConsts.TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW",transType);
-		//
-		// TransDetails payerTransDetails4Withdraw = new
-		// TransDetails(transferId,payerId,
-		// traderName,traderAreaCode,traderPhone,transCurrency,
-		// transAmount.negate(),transRemarks);
-		//
-		// transDetailsDAO.addTransDetails(payerTransDetails4Withdraw);
-		// break;
-
-		// case ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE:
-		// logger.info("the transType is {}
-		// ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE",transType);
-		//
-		// TransDetails payerTransDetails4Recharge = new
-		// TransDetails(transferId,payerId,
-		// traderName,traderAreaCode,traderPhone,transCurrency,
-		// transAmount,transRemarks);
-		//
-		// transDetailsDAO.addTransDetails(payerTransDetails4Recharge);
-		// break;
-
-		// case ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE:
-		// logger.info("the transType is {}
-		// ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE",transType);
-		//
-		// TransDetails payerTransDetails4PaypalRecharge = new
-		// TransDetails(transferId,payerId,
-		// traderName,traderAreaCode,traderPhone,transCurrency,
-		// transAmount,transRemarks);
-		//
-		// transDetailsDAO.addTransDetails(payerTransDetails4PaypalRecharge);
-		// break;
 
 		default:
 			break;

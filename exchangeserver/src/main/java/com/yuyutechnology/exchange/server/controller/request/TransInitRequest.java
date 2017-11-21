@@ -14,6 +14,8 @@ public class TransInitRequest {
 	private BigDecimal fee;
 	private int feepayerId;
 	
+	private Boolean isRestricted;
+	
 	public Integer getPayerId() {
 		return payerId;
 	}
@@ -61,6 +63,12 @@ public class TransInitRequest {
 	}
 	public void setFeepayerId(int feepayerId) {
 		this.feepayerId = feepayerId;
+	}
+	public Boolean getIsRestricted() {
+		return isRestricted;
+	}
+	public void setIsRestricted(Boolean isRestricted) {
+		this.isRestricted = isRestricted;
 	}
 
 	

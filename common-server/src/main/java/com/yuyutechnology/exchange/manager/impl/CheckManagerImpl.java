@@ -24,6 +24,7 @@ import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.TransactionNotification;
+import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.util.DateFormatUtils;
@@ -161,7 +162,6 @@ public class CheckManagerImpl implements CheckManager {
 			String areaCode,String userPhone){
 		
 		HashMap<String, String> result = new HashMap<>();
-		
 		User receiver = userDAO.getUser(sponsorId);
 		// 不用给自己转账
 		if (receiver != null && userId == receiver.getUserId()) {
@@ -180,6 +180,42 @@ public class CheckManagerImpl implements CheckManager {
 		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		return result;
 		
+	}
+	
+	@Override
+	public HashMap<String, String> checkPayerAndTrasStatus(User payer,Transfer transfer,int userId){
+		HashMap<String, String> result = new HashMap<>();
+		
+		if (payer == null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
+			logger.warn("The user does not exist or the account is blocked");
+			result.put("msg", "The user does not exist or the account is blocked");
+			result.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
+			return result;
+		}
+
+		if (transfer == null) {
+			logger.warn("The transaction order does not exist");
+			result.put("msg", "The transaction order does not exist");
+			result.put("retCode", RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST);
+			return result;
+		}
+
+		if(transfer.getTransferStatus()!= ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION){
+			logger.warn("Orders have been paid");
+			result.put("msg", "Orders have been paid");
+			result.put("retCode", RetCodeConsts.TRANSFER_ORDERS_HAVE_BEEN_PAID);
+			return result;
+		}
+		
+		if (userId != transfer.getUserFrom()) {
+			logger.warn("userId is different from UserFromId");
+			result.put("msg", "userId is different from UserFromId");
+			result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+			return result;
+		}
+		
+		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
+		return result;
 	}
 	
 }

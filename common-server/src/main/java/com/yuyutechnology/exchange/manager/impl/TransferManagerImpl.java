@@ -262,48 +262,52 @@ public class TransferManagerImpl implements TransferManager {
 			return RetCodeConsts.RET_CODE_FAILUE;
 		}
 
-		// 每次支付金额限制
-		BigDecimal transferLimitPerPay = BigDecimal
-				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
-		logger.warn("transferLimitPerPay : {}", transferLimitPerPay);
-		if ((oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount()))
-				.compareTo(transferLimitPerPay) == 1) {
-			logger.warn("Exceeds the maximum amount of each transaction");
-			return RetCodeConsts.TRANSFER_LIMIT_EACH_TIME;
-		}
-
-		// 每天累计金额限制
-		BigDecimal transferLimitDailyPay = BigDecimal
-				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITDAILYPAY, 100000d));
-		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount("transfer_" + userId);
-		logger.warn("transferLimitDailyPay : {},accumulatedAmount : {} ", transferLimitDailyPay, accumulatedAmount);
-		if ((accumulatedAmount
-				.add(oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount())))
-						.compareTo(transferLimitDailyPay) == 1) {
-			logger.warn("More than the maximum daily transaction limit");
-			return RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY;
-		}
-		// 每天累计给付次数限制
-		Double transferLimitNumOfPayPerDay = configManager
-				.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITNUMBEROFPAYPERDAY, 100000d);
-
-		Integer dayTradubgVolume = transferDAO.getCumulativeNumofTimes("transfer_" + userId);
-		logger.warn("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ", transferLimitNumOfPayPerDay,
-				dayTradubgVolume);
-		if (transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)) {
-			logger.warn("Exceeds the maximum number of transactions per day");
-			return RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY;
-		}
+		//判断 每次支付金额限制、 每天累计金额限制、每天累计给付次数限制
+//		map = checkManager.checkTransferLimit(currency, amount, userId);
+//		if (!map.isEmpty()) {
+//			return map;
+//		}
+		
+//		// 每次支付金额限制
+//		BigDecimal transferLimitPerPay = BigDecimal
+//				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
+//		logger.warn("transferLimitPerPay : {}", transferLimitPerPay);
+//		if ((oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount()))
+//				.compareTo(transferLimitPerPay) == 1) {
+//			logger.warn("Exceeds the maximum amount of each transaction");
+//			return RetCodeConsts.TRANSFER_LIMIT_EACH_TIME;
+//		}
+//
+//		// 每天累计金额限制
+//		BigDecimal transferLimitDailyPay = BigDecimal
+//				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITDAILYPAY, 100000d));
+//		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount("transfer_" + userId);
+//		logger.warn("transferLimitDailyPay : {},accumulatedAmount : {} ", transferLimitDailyPay, accumulatedAmount);
+//		if ((accumulatedAmount
+//				.add(oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount())))
+//						.compareTo(transferLimitDailyPay) == 1) {
+//			logger.warn("More than the maximum daily transaction limit");
+//			return RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY;
+//		}
+//		// 每天累计给付次数限制
+//		Double transferLimitNumOfPayPerDay = configManager
+//				.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITNUMBEROFPAYPERDAY, 100000d);
+//
+//		Integer dayTradubgVolume = transferDAO.getCumulativeNumofTimes("transfer_" + userId);
+//		logger.warn("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ", transferLimitNumOfPayPerDay,
+//				dayTradubgVolume);
+//		if (transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)) {
+//			logger.warn("Exceeds the maximum number of transactions per day");
+//			return RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY;
+//		}
 
 		// 获取系统账号
 		User systemUser = userDAO.getSystemUser();
 
 		if (transfer.getUserTo() == systemUser.getUserId()) { // 交易对象没有注册账号
-
 			goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId);
 			// 添加gift记录
 			Unregistered unregistered = unregisteredDAO.getUnregisteredByTransId(transfer.getTransferId());
-
 			if (unregistered == null) {
 				unregistered = new Unregistered();
 				unregistered.setCreateTime(new Date());
@@ -315,21 +319,18 @@ public class TransferManagerImpl implements TransferManager {
 				unregistered.setAmount(transfer.getTransferAmount());
 				unregisteredDAO.addUnregistered(unregistered);
 			}
-
 			// 向未注册用户发送短信
 			smsManager.sendSMS4Transfer(transfer.getAreaCode(), transfer.getPhone(), payer, transfer.getCurrency(),
 					amountFormatByCurrency(transfer.getCurrency(), transfer.getTransferAmount()));
 
 		} else { // 交易对象注册账号,交易正常进行，无需经过系统账户
 			goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId);
-
 			// 如果是请求转账还需要更改消息通知中的状态
 			if (transfer.getNoticeId() != 0) {
 				TransactionNotification notification = notificationDAO.getNotificationById(transfer.getNoticeId());
 				notification.setTradingStatus(ServerConsts.NOTIFICATION_STATUS_OF_ALREADY_PAID);
 				notificationDAO.updateNotification(notification);
 			}
-
 			// 推送到账通知
 			User payee = userDAO.getUser(transfer.getUserTo());
 			pushManager.push4Transfer(transfer.getTransferId(), payer, payee, transfer.getCurrency(),
@@ -490,7 +491,7 @@ public class TransferManagerImpl implements TransferManager {
 		if (!map.isEmpty()) {
 			return map;
 		}
-
+		//判断 每次支付金额限制、 每天累计金额限制、每天累计给付次数限制
 		map = checkManager.checkTransferLimit(currency, amount, userId);
 		if (!map.isEmpty()) {
 			return map;
@@ -702,7 +703,6 @@ public class TransferManagerImpl implements TransferManager {
 			}
 		}
 		
-
 		// 生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		Transfer transfer = new Transfer();
@@ -729,8 +729,11 @@ public class TransferManagerImpl implements TransferManager {
 		
 		//手续费订单生成
 		if(isFeeDeduction){
-			String goldpayFeeOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
 			
+			//获取手续费账户
+			User feeUser = new User();
+			
+			String goldpayFeeOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
 			if(!StringUtils.isNotBlank(goldpayOrderId)){
 				map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 				map.put("msg", "Failed to create goldpay fee order");
@@ -748,19 +751,17 @@ public class TransferManagerImpl implements TransferManager {
 			transfer4Fee.setTransferComment(transferId);
 			transfer4Fee.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 			
-			transfer4Fee.setUserFrom(payerId);
-			transfer4Fee.setAreaCode(receiver.getAreaCode());
-			transfer4Fee.setPhone(receiver.getUserPhone());
+			transfer4Fee.setUserFrom(feepayerId);
+			transfer4Fee.setAreaCode(feeUser.getAreaCode());
+			transfer4Fee.setPhone(feeUser.getUserPhone());
 			transfer4Fee.setGoldpayOrderId(goldpayFeeOrderId);
-			transfer4Fee.setUserTo(receiver.getUserId());
+			transfer4Fee.setUserTo(feeUser.getUserId());
 			transfer4Fee.setTransferType(ServerConsts.TRANSFER_TYPE_IN_FEE);
 			transferDAO.addTransfer(transfer4Fee);
-			// 判断对方是否有该种货币
-			commonManager.checkAndUpdateWallet(receiver.getUserId(), currency);
 
-			transDetailsManager.addTransDetails(transferId, payerId, receiver.getUserId(),
-					receiver.getUserName(),receiver.getAreaCode(), receiver.getUserPhone(),
-					currency, amount,BigDecimal.ZERO,null, transferComment,
+			transDetailsManager.addTransDetails(transferId4Fee, feepayerId, feeUser.getUserId(),
+					feeUser.getUserName(),feeUser.getAreaCode(), feeUser.getUserPhone(),
+					ServerConsts.CURRENCY_OF_GOLDPAY, fee,BigDecimal.ZERO,null, transferId+"订单产生的手续费",
 					ServerConsts.TRANSFER_TYPE_IN_FEE);
 		}
 		
@@ -778,73 +779,20 @@ public class TransferManagerImpl implements TransferManager {
 		HashMap<String, String> result = new HashMap<>();
 		
 		User payer = userDAO.getUser(userId);
-		
-		if (payer == null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
-			logger.warn("The user does not exist or the account is blocked");
-			result.put("msg", "The user does not exist or the account is blocked");
-			result.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
-			return result;
-		}
-
 		Transfer transfer = transferDAO.getTransferById(transferId);
-		if (transfer == null) {
-			logger.warn("The transaction order does not exist");
-			result.put("msg", "The transaction order does not exist");
-			result.put("retCode", RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST);
-			return result;
-		}
-		if(transfer.getTransferStatus()!= ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION){
-			logger.warn("Orders have been paid");
-			result.put("msg", "Orders have been paid");
-			result.put("retCode", RetCodeConsts.TRANSFER_ORDERS_HAVE_BEEN_PAID);
-			return result;
-		}
-		if (userId != transfer.getUserFrom()) {
-			logger.warn("userId is different from UserFromId");
-			result.put("msg", "userId is different from UserFromId");
-			result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+		
+		//判断Payer和Transfer的状态
+		result = checkManager.checkPayerAndTrasStatus(payer,transfer,userId);
+		if(!result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)){
 			return result;
 		}
 		
-		// 每次支付金额限制
-		BigDecimal transferLimitPerPay = BigDecimal
-				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
-		logger.warn("transferLimitPerPay : {}", transferLimitPerPay);
-		if ((oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount()))
-				.compareTo(transferLimitPerPay) == 1) {
-			logger.warn("Exceeds the maximum amount of each transaction");
-			result.put("msg", "Exceeds the maximum amount of each transaction");
-			result.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
+		//判断 每次支付金额限制、 每天累计金额限制、每天累计给付次数限制
+		result = checkManager.checkTransferLimit(transfer.getCurrency(), transfer.getTransferAmount(), userId);
+		if (!result.isEmpty()) {
 			return result;
 		}
-
-		// 每天累计金额限制
-		BigDecimal transferLimitDailyPay = BigDecimal
-				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITDAILYPAY, 100000d));
-		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount("transfer_" + userId);
-		logger.warn("transferLimitDailyPay : {},accumulatedAmount : {} ", transferLimitDailyPay, accumulatedAmount);
-		if ((accumulatedAmount
-				.add(oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount())))
-						.compareTo(transferLimitDailyPay) == 1) {
-			logger.warn("More than the maximum daily transaction limit");
-			result.put("msg", "More than the maximum daily transaction limit");
-			result.put("retCode", RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY);
-			return result;
-		}
-		// 每天累计给付次数限制
-		Double transferLimitNumOfPayPerDay = configManager
-				.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITNUMBEROFPAYPERDAY, 100000d);
-		
-		Integer dayTradubgVolume = transferDAO.getCumulativeNumofTimes("transfer_" + userId);
-		logger.warn("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ", transferLimitNumOfPayPerDay,
-				dayTradubgVolume);
-		if (transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)) {
-			logger.warn("Exceeds the maximum number of transactions per day");
-			result.put("msg", "Exceeds the maximum number of transactions per day");
-			result.put("retCode", RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY);
-			return result;
-		}
-		
+		//根据transferId更新账户		
 		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId);
 
 		// 推送到账通知
