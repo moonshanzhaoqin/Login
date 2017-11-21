@@ -61,10 +61,10 @@ public class FeeManagerImpl implements FeeManager {
 		FeeTemplate feeTemplate = feeTmeplateMap.get(feePurpose.getPurpose());
 		logger.info("{} aoumout={} -->", feeTemplate.toString(), amount);
 		
-		String formule="exempt_amount:" + feeTemplate.getExemptAmount() + ";min_fee:" + feeTemplate.getMinFee()
-		+ ";max_fee:" + feeTemplate.getMaxFee() + ";formule:ceiling((" + amount.toString() + "-"
+		String formula="exempt_amount:" + feeTemplate.getExemptAmount() + ";min_fee:" + feeTemplate.getMinFee()
+		+ ";max_fee:" + feeTemplate.getMaxFee() + ";formula:ceiling((" + amount.toString() + "-"
 		+ feeTemplate.getExemptAmount() + ")*" + feeTemplate.getFeePercent() + ")";
-		logger.info(formule);
+		logger.info(formula);
 		
 		BigDecimal fee = BigDecimal.ZERO;
 		if (amount.compareTo(feeTemplate.getExemptAmount()) <= 0) {
@@ -81,7 +81,7 @@ public class FeeManagerImpl implements FeeManager {
 		}
 		logger.info("fee is {}", fee);
 		feeResult.setFee(fee);
-		feeResult.setFormule(formule);
+		feeResult.setFormula(formula);
 		return feeResult;
 	}
 

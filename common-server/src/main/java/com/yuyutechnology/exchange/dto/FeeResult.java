@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class FeeResult {
 	private BigDecimal fee;
-	private String formule;
+	private String formula;
 
 	public BigDecimal getFee() {
 		return fee;
@@ -14,12 +14,12 @@ public class FeeResult {
 		this.fee = fee;
 	}
 
-	public String getFormule() {
-		return formule;
+	public String getFormula() {
+		return formula;
 	}
 
-	public void setFormule(String formule) {
-		this.formule = formule;
+	public void setFormula(String formula) {
+		this.formula = formula;
 	}
 
 }
