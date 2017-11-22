@@ -1,0 +1,153 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>anytime_exchange_sys</artifactId>
+		<groupId>com.yuyutechnology.exchange</groupId>
+		<version>1.0.0</version>
+	</parent>
+    <artifactId>upgradetool</artifactId>
+    <packaging>jar</packaging>
+    <name>upgradetool</name>
+    <url>http://maven.apache.org</url>
+
+	<profiles>
+		<!-- 开发环境，默认激活 -->
+		<profile>
+			<id>dev</id>
+			<properties>
+				<env>dev</env>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault><!--默认启用的是dev环境配置 -->
+			</activation>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<env>prod</env>
+			</properties>
+		</profile>
+		<profile>
+			<id>test</id>
+			<properties>
+				<env>test</env>
+			</properties>
+		</profile>	
+	</profiles>
+	<dependencies>
+		<dependency>
+			<groupId>com.yuyutechnology.exchange</groupId>
+			<artifactId>common-server</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/junit/junit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+		</dependency>
+	</dependencies>
+
+    <build>
+        <finalName>upgradetool</finalName>
+        <plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.6.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<id>clean</id>
+						<configuration>
+							<tasks>
+								<delete dir="${basedir}/target/classes/dev" />
+								<delete dir="${basedir}/target/classes/prod" />
+								<delete dir="${basedir}/target/classes/test" />
+								<delete>
+									<fileset dir="${basedir}/deploy/conf">
+										<exclude name="pm-web-${profile.id}.xml" />
+									</fileset>
+								</delete>
+								<copy todir="${basedir}/deploy/conf">
+									<fileset dir="src/main/resources/">
+										<include name="**/*.xml" />
+										<include name="**/*.template" />
+										<include name="**/*.properties" />
+									</fileset>
+								</copy>
+								<copy todir="${basedir}/deploy/conf" overwrite="true">
+									<fileset dir="src/main/resources/${env}">
+										<include name="**/*.xml" />
+										<include name="*.properties" />
+									</fileset>
+								</copy>
+								<copy todir="${basedir}/target/classes/conf">
+									<fileset dir="src/main/resources/">
+										<include name="*.xml" />
+										<include name="*.properties" />
+									</fileset>
+									<fileset dir="src/main/resources/${env}">
+										<include name="**/*.xml" />
+										<include name="*.properties" />
+									</fileset>
+								</copy>
+								<copy todir="${basedir}/target/classes/">
+									<fileset dir="src/main/resources/">
+										<include name="*.xml" />
+										<include name="*.properties" />
+									</fileset>
+									<fileset dir="src/main/resources/${env}">
+										<include name="**/*.xml" />
+										<include name="*.properties" />
+									</fileset>
+								</copy>
+								<copy todir="${basedir}/target/test-classes/">
+									<fileset dir="src/main/resources/">
+										<include name="*.xml" />
+										<include name="*.properties" />
+									</fileset>
+									<fileset dir="src/main/resources/${env}">
+										<include name="**/*.xml" />
+										<include name="*.properties" />
+									</fileset>
+								</copy>
+							</tasks>
+						</configuration>
+						<phase>clean</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<finalName>upgradetool</finalName>
+					<descriptors>
+						<descriptor>assembly.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+        </plugins>
+    </build>
+</project>

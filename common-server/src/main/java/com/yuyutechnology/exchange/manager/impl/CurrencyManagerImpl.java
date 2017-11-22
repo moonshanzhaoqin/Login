@@ -57,6 +57,15 @@ public class CurrencyManagerImpl implements CurrencyManager {
 			/* 为系统用户添加新钱包 */
 			walletDAO.addwallet(
 					new Wallet(currency, userDAO.getSystemUser().getUserId(), BigDecimal.ZERO, new Date(), 0));
+			
+			walletDAO.addwallet(
+					new Wallet(currency, userDAO.getFrozenUser().getUserId(), BigDecimal.ZERO, new Date(), 0));
+			
+			walletDAO.addwallet(
+					new Wallet(currency, userDAO.getFeeUser().getUserId(), BigDecimal.ZERO, new Date(), 0));
+			
+			walletDAO.addwallet(
+					new Wallet(currency, userDAO.getRecoveryUser().getUserId(), BigDecimal.ZERO, new Date(), 0));
 			// 强制刷新汇率缓存
 			// oandaRatesManager.updateExchangeRates();
 			return RetCodeConsts.RET_CODE_SUCCESS;
