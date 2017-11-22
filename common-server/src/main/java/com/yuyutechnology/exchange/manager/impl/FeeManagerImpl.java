@@ -75,7 +75,7 @@ public class FeeManagerImpl implements FeeManager {
 				logger.info("the fee({}) is less than min_fee({})", fee, feeTemplate.getMinFee());
 				fee = feeTemplate.getMinFee();
 			} else if (fee.compareTo(feeTemplate.getMaxFee()) > 0) {
-				logger.info("the fee({}) is more than min_fee({})", fee, feeTemplate.getMaxFee());
+				logger.info("the fee({}) is more than max_fee({})", fee, feeTemplate.getMaxFee());
 				fee = feeTemplate.getMaxFee();
 			}
 		}

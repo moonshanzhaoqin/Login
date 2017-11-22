@@ -3,20 +3,20 @@ package com.yuyutechnology.exchange.manager;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import com.yuyutechnology.exchange.dto.WithdrawCalResult;
 import com.yuyutechnology.exchange.pojo.Admin;
 import com.yuyutechnology.exchange.util.page.PageBean;
 
 public interface WithdrawManager {
 
-
-	Map<String, BigDecimal> goldBullion2Goldpay(Integer userId, int goldBullion);
-
 	PageBean getWithdrawByPage(int currentPage, String userPhone, String userName, String startTime, String endTime);
 
-	void applyConfirm(Integer userId, int goldBullion);
+	String applyConfirm(Integer userId, int goldBullion);
 
-	void cancelWithdraw(Integer withdrawId,  String adminName);
+	String cancelWithdraw(Integer withdrawId, String adminName);
 
-	void finishWithdraw(Integer withdrawId, String adminName);
+	String finishWithdraw(Integer withdrawId, String adminName);
+
+	WithdrawCalResult withdrawCalculate(Integer userId, int goldBullion);
 
 }

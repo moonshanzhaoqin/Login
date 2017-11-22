@@ -4,10 +4,14 @@ import java.util.HashMap;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 
+import com.yuyutechnology.exchange.dao.BindDAO;
+import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
+import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.server.controller.request.TransConfirmRequest;
 
 public class Goldpay4MergeTest  extends BaseSpringJunit4 {
@@ -18,8 +22,11 @@ public class Goldpay4MergeTest  extends BaseSpringJunit4 {
 	TransferManager transferManager;
 	@Autowired
 	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
+	@Autowired
+	BindDAO bindDAO;
 	
 	@Test
+	@Rollback(false)
 	public void test(){
 //		
 //		HashMap<String , String> result = goldpayTrans4MergeManager.
@@ -59,19 +66,19 @@ public class Goldpay4MergeTest  extends BaseSpringJunit4 {
 //		
 //		System.out.println(map.toString());
 		
-		TransConfirmRequest rqMsg = new TransConfirmRequest();
-		rqMsg.setRestricted(true);
-		rqMsg.setUserId(2);
-		rqMsg.setTransferId("2017112210500T000042");
-		rqMsg.setUserPayPwd("");
-		
-		HashMap<String, String> map = transferManager.transConfirm4ThirdParty(rqMsg.getRestricted(),rqMsg.getUserId(), 
-				rqMsg.getTransferId());
-		
-		System.out.println(map.toString());
-		
-		
-		
+//		TransConfirmRequest rqMsg = new TransConfirmRequest();
+//		rqMsg.setRestricted(true);
+//		rqMsg.setUserId(2);
+//		rqMsg.setTransferId("2017112210500T000042");
+//		rqMsg.setUserPayPwd("");
+//		
+//		HashMap<String, String> map = transferManager.transConfirm4ThirdParty(rqMsg.getRestricted(),rqMsg.getUserId(), 
+//				rqMsg.getTransferId());
+//		
+//		System.out.println(map.toString());
+		GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.createGoldpay("+86", "18818218259", "suzan", false);
+		bindDAO.updateBind(
+				new Bind(100, goldpayUser.getId() + "", goldpayUser.getUsername(), goldpayUser.getAccountNum()));
 	}
 	
 }

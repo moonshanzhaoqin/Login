@@ -1,18 +1,18 @@
 package com.yuyutechnology.exchange.server.controller.response;
 
 public class WithdrawCalculateResponse extends BaseResponse {
-	private Double goldpay;
-	private Double fee;
-	public Double getGoldpay() {
+	private long goldpay;
+	private long fee;
+	public long getGoldpay() {
 		return goldpay;
 	}
-	public void setGoldpay(Double goldpay) {
+	public void setGoldpay(long goldpay) {
 		this.goldpay = goldpay;
 	}
-	public Double getFee() {
+	public long getFee() {
 		return fee;
 	}
-	public void setFee(Double fee) {
+	public void setFee(long fee) {
 		this.fee = fee;
 	}
 

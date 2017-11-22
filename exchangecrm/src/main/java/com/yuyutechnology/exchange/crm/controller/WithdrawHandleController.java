@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
 import com.yuyutechnology.exchange.crm.request.GetWithdrawByPageRequest;
 import com.yuyutechnology.exchange.crm.request.WithdrawRequest;
@@ -65,8 +66,29 @@ public class WithdrawHandleController {
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
 		logger.info("finishWithdraw:{}", withdrawRequest.getWithdrawId());
-		withdrawManager.cancelWithdraw(withdrawRequest.getWithdrawId(),
-				(String) request.getSession().getAttribute("adminName"));
+		try {
+			withdrawManager.finishWithdraw(withdrawRequest.getWithdrawId(),
+					(String) request.getSession().getAttribute("adminName"));
+		} catch (Exception e) {
+			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+		}
+		return rep;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/cancelWithdraw", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public BaseResponse cancelWithdraw(@RequestBody WithdrawRequest withdrawRequest, HttpServletRequest request,
+			HttpServletResponse response) {
+		BaseResponse rep = new BaseResponse();
+		logger.info("cancelWithdraw:{}", withdrawRequest.getWithdrawId());
+		try {
+			withdrawManager.cancelWithdraw(withdrawRequest.getWithdrawId(),
+					(String) request.getSession().getAttribute("adminName"));
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		} catch (Exception e) {
+			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+		}
+
 		return rep;
 	}
 
