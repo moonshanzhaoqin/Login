@@ -54,17 +54,29 @@ public class CodeController {
 		return encryptResponse;
 	}
 
-	@RequestMapping(value = "/testCode", method = { RequestMethod.POST })
-	@ResponseEncryptBody
-	public Message testCode(@RequestDecryptBody Message message) {
-		return message;
-	}
+//	@RequestMapping(value = "/testCode", method = { RequestMethod.POST })
+//	@ResponseBody
+//	public Message testCode(@RequestBody Message message) {
+//		return message;
+//	}
 
-	public class Message {
+	public static class Message {
 		private String name;
 		private int age;
 		private double double1;
 		private Double double2;
+
+		public Message() {
+			super();
+		}
+
+		public Message(String name, int age, double double1, Double double2) {
+			super();
+			this.name = name;
+			this.age = age;
+			this.double1 = double1;
+			this.double2 = double2;
+		}
 
 		public String getName() {
 			return name;
