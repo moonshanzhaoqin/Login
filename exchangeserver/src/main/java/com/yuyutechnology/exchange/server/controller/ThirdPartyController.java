@@ -154,7 +154,7 @@ public class ThirdPartyController {
 		}
 		
 		map = transferManager.transConfirm4ThirdParty(reqMsg.getRestricted(),reqMsg.getUserId(), 
-				reqMsg.getTransferId(), reqMsg.getUserPayPwd());
+				reqMsg.getTransferId());
 		
 		rep.setRetCode(map.get("retCode"));
 		rep.setMessage(map.get("msg"));

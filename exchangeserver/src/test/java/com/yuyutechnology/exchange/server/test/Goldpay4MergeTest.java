@@ -1,15 +1,14 @@
 package com.yuyutechnology.exchange.server.test;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
+import com.yuyutechnology.exchange.server.controller.request.TransConfirmRequest;
 
 public class Goldpay4MergeTest  extends BaseSpringJunit4 {
 
@@ -41,8 +40,38 @@ public class Goldpay4MergeTest  extends BaseSpringJunit4 {
 //		HashMap<String, String> result = exchangeManager.exchangeConfirm(16,ServerConsts.CURRENCY_OF_GOLDPAY, ServerConsts.CURRENCY_OF_USD,BigDecimal.ONE);
 //		HashMap<String, String> result1 = exchangeManager.exchangeConfirm(16,ServerConsts.CURRENCY_OF_USD, ServerConsts.CURRENCY_OF_CNY,BigDecimal.TEN);
 //		
-
-
+//		TransInitRequest reqMsg = new TransInitRequest();
+//		reqMsg.setPayerId(2);
+//		reqMsg.setPayeeId(12);
+//		reqMsg.setCurrency(ServerConsts.CURRENCY_OF_GOLDPAY);
+//		reqMsg.setAmount(872d);
+//		reqMsg.setTransferComment("test");
+//		
+//		reqMsg.setFeeDeduction(true);
+//		reqMsg.setFee(new BigDecimal("72"));
+//		reqMsg.setFeepayerId(12);
+//		reqMsg.setRestricted(true);
+//		
+//
+//		HashMap<String, String> map = transferManager.transInit4ThirdParty(reqMsg.getRestricted(),reqMsg.getPayerId(), 
+//				reqMsg.getPayeeId(), reqMsg.getCurrency(),new BigDecimal(reqMsg.getAmount()+""), 
+//				reqMsg.getTransferComment(), reqMsg.getFeeDeduction(), reqMsg.getFee(), reqMsg.getFeepayerId());
+//		
+//		System.out.println(map.toString());
+		
+		TransConfirmRequest rqMsg = new TransConfirmRequest();
+		rqMsg.setRestricted(true);
+		rqMsg.setUserId(2);
+		rqMsg.setTransferId("2017112210500T000042");
+		rqMsg.setUserPayPwd("");
+		
+		HashMap<String, String> map = transferManager.transConfirm4ThirdParty(rqMsg.getRestricted(),rqMsg.getUserId(), 
+				rqMsg.getTransferId());
+		
+		System.out.println(map.toString());
+		
+		
+		
 	}
 	
 }
