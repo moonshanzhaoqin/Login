@@ -34,7 +34,7 @@ public interface TransferManager {
 	HashMap<String, String> transInit4ThirdParty(Boolean isRestricted,int payerId, int payeeId, String currency, BigDecimal amount,
 			String transferComment, Boolean isFeeDeduction, BigDecimal fee, int feepayerId);
 
-	HashMap<String, String> transConfirm4ThirdParty(Boolean isRestricted,int userId, String transferId, String userPayPwd);
+	HashMap<String, String> transConfirm4ThirdParty(Boolean isRestricted,int userId, String transferId);
 
 	BigDecimal getAccumulatedAmount(String key);
 

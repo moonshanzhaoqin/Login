@@ -56,20 +56,20 @@ public class CheckManagerImpl implements CheckManager {
 		
 		if (currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
 			GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.getGoldpayUserInfo(userId);
-			if (new BigDecimal(goldpayUser.getBalance() + "").compareTo(amount) == -1) {
+			if ((null == goldpayUser || null == goldpayUser.getBalance() )|| new BigDecimal(goldpayUser.getBalance() + "").compareTo(amount) == -1) {
 				logger.warn("Current balance is insufficient");
-				return false;
+				return true;
 			}
 
 		} else {
 			Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
 			if (wallet == null || wallet.getBalance().compareTo(amount) == -1) {
 				logger.warn("Current balance is insufficient");
-				return false;
+				return true;
 			}
 		}
 		
-		return true;
+		return false;
 	}
 
 	@Override

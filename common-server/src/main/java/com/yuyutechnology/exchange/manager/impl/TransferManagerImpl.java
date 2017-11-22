@@ -672,12 +672,21 @@ public class TransferManagerImpl implements TransferManager {
 			return map;
 		}
 		
-		if(checkManager.isInsufficientBalance(payerId, currency, amount)){
-			map.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-			map.put("msg", "Current balance is insufficient");
-			return map;
+		//判断 支出+手续费是否超额
+		if(isFeeDeduction && payerId == feepayerId){
+			if(checkManager.isInsufficientBalance(payerId, currency, amount.add(fee))){
+				map.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+				map.put("msg", "Current balance is insufficient");
+				return map;
+			}
+		}else{
+			if(checkManager.isInsufficientBalance(payerId, currency, amount)){
+				map.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+				map.put("msg", "Current balance is insufficient");
+				return map;
+			}
 		}
-		
+	
 		//判断 每次支付金额限制、 每天累计金额限制、每天累计给付次数限制
 		if(isRestricted){
 			map = checkManager.checkTransferLimit(currency, amount, payerId);
@@ -733,6 +742,16 @@ public class TransferManagerImpl implements TransferManager {
 		//手续费订单生成
 		if(isFeeDeduction){
 			
+			//判断手续费是否
+			if(feepayerId == payeeId){
+				if(checkManager.isInsufficientBalance(feepayerId, ServerConsts.CURRENCY_OF_GOLDPAY, fee) 
+						|| amount.compareTo(fee) < 0){
+					map.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+					map.put("msg", "Current balance is insufficient");
+					return map;
+				}
+			}
+			
 			//获取手续费账户
 			User feeUser = userDAO.getFeeUser();
 			
@@ -780,7 +799,7 @@ public class TransferManagerImpl implements TransferManager {
 	}
 	
 	@Override
-	public HashMap<String, String> transConfirm4ThirdParty(Boolean isRestricted,int userId, String transferId, String userPayPwd){
+	public HashMap<String, String> transConfirm4ThirdParty(Boolean isRestricted,int userId, String transferId){
 		
 		HashMap<String, String> result = new HashMap<>();
 		
