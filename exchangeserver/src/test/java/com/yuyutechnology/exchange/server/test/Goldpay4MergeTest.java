@@ -26,7 +26,6 @@ public class Goldpay4MergeTest  extends BaseSpringJunit4 {
 	BindDAO bindDAO;
 	
 	@Test
-	@Rollback(false)
 	public void test(){
 //		
 //		HashMap<String , String> result = goldpayTrans4MergeManager.
@@ -76,9 +75,6 @@ public class Goldpay4MergeTest  extends BaseSpringJunit4 {
 //				rqMsg.getTransferId());
 //		
 //		System.out.println(map.toString());
-		GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.createGoldpay("+86", "18818218259", "suzan", false);
-		bindDAO.updateBind(
-				new Bind(100, goldpayUser.getId() + "", goldpayUser.getUsername(), goldpayUser.getAccountNum()));
 	}
 	
 }
