@@ -61,7 +61,7 @@ function getWithdrawByPage(currentPage, userPhone, userName) {
 		contentType : "application/json; charset=utf-8",
 		data : JSON.stringify(data),
 		success : function(data) {
-			console.log(data);
+//			console.log(data);
 			if (data.retCode == "00002") {
 				location.href = loginUrl;
 			} else {
@@ -86,7 +86,8 @@ function getWithdrawByPage(currentPage, userPhone, userName) {
 							+ timeDate(data.rows[i][0].applyTime)
 							+ '</td>'
 							+ '<td>'
-							+ data.rows[i][0].handleResult
+							+ showHandleResult(data.rows[i][0].handleResult,
+									data.rows[i][0].withdrawId)
 							+ '</td>'
 							+ '<td>'
 							+ (data.rows[i][0].handler == null ? ""
@@ -118,6 +119,7 @@ function getWithdrawByPage(currentPage, userPhone, userName) {
 					paginator(data.currentPage, data.pageTotal);
 				}
 				$('#total').html(data.total);
+				page=data.currentPage;
 			}
 		},
 		error : function(xhr, err) {
@@ -125,6 +127,77 @@ function getWithdrawByPage(currentPage, userPhone, userName) {
 			console.log(err);
 		}
 	});
+}
+
+function showHandleResult(handleResult, withdrawId) {
+	switch (handleResult) {
+	case WITHDRAW_HANDLE_RESULT_DEFAULT:
+		return '<button type="button" class="btn btn-primary" onclick="finishWithdraw('
+				+ withdrawId
+				+ ')">完成</button>'
+				+ '<button type="button" class="btn btn-primary" onclick="cancelWithdraw('
+				+ withdrawId + ')">取消</button>';
+	case WITHDRAW_HANDLE_RESULT_FINISHT:
+		return "交易完成";
+	case WITHDRAW_HANDLE_RESULT_CANCEL:
+		return "交易取消";
+	}
+}
+
+function finishWithdraw(withdrawId) {
+	var data = {
+		withdrawId : withdrawId
+	};
+	$.ajax({
+		type : "POST",
+		url : "/crm/finishWithdraw",
+		dataType : 'json',
+		contentType : "application/json; charset=utf-8",
+		data : JSON.stringify(data),
+		success : function(data) {
+			console.log(data);
+			if (data.retCode == "00002") {
+				location.href = loginUrl;
+			} else if(data.retCode=="00000"){
+				console.log("success");
+				searchWithdraw(page);
+			}else{
+				alert("操作失败");
+			}
+		},
+		error : function(xhr, err) {
+			alert("未知错误");
+			console.log(err);
+		}
+	});
+}
+
+function cancelWithdraw(withdrawId) {
+	var data = {
+			withdrawId : withdrawId
+		};
+		$.ajax({
+			type : "POST",
+			url : "/crm/cancelWithdraw",
+			dataType : 'json',
+			contentType : "application/json; charset=utf-8",
+			data : JSON.stringify(data),
+			success : function(data) {
+				console.log(data);
+				if (data.retCode == "00002") {
+					location.href = loginUrl;
+				} else if(data.retCode=="00000"){
+					console.log("success");
+					searchWithdraw(page);
+				}else{
+					alert("操作失败");
+				}
+			},
+			error : function(xhr, err) {
+				alert("未知错误");
+				console.log(err);
+			}
+		});
 }
 
 // 分页
@@ -158,3 +231,7 @@ function paginator(currentPage, pageTotal) {
 	// 分页控件
 	$('#paginator').bootstrapPaginator(options);
 }
+
+var WITHDRAW_HANDLE_RESULT_DEFAULT = 0;
+var WITHDRAW_HANDLE_RESULT_FINISHT = 1;
+var WITHDRAW_HANDLE_RESULT_CANCEL = 2;

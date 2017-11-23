@@ -4,10 +4,14 @@ import java.util.HashMap;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 
+import com.yuyutechnology.exchange.dao.BindDAO;
+import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
+import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.server.controller.request.TransConfirmRequest;
 
 public class Goldpay4MergeTest  extends BaseSpringJunit4 {
@@ -18,6 +22,8 @@ public class Goldpay4MergeTest  extends BaseSpringJunit4 {
 	TransferManager transferManager;
 	@Autowired
 	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
+	@Autowired
+	BindDAO bindDAO;
 	
 	@Test
 	public void test(){
@@ -59,19 +65,16 @@ public class Goldpay4MergeTest  extends BaseSpringJunit4 {
 //		
 //		System.out.println(map.toString());
 		
-		TransConfirmRequest rqMsg = new TransConfirmRequest();
-		rqMsg.setRestricted(true);
-		rqMsg.setUserId(2);
-		rqMsg.setTransferId("2017112210500T000042");
-		rqMsg.setUserPayPwd("");
-		
-		HashMap<String, String> map = transferManager.transConfirm4ThirdParty(rqMsg.getRestricted(),rqMsg.getUserId(), 
-				rqMsg.getTransferId());
-		
-		System.out.println(map.toString());
-		
-		
-		
+//		TransConfirmRequest rqMsg = new TransConfirmRequest();
+//		rqMsg.setRestricted(true);
+//		rqMsg.setUserId(2);
+//		rqMsg.setTransferId("2017112210500T000042");
+//		rqMsg.setUserPayPwd("");
+//		
+//		HashMap<String, String> map = transferManager.transConfirm4ThirdParty(rqMsg.getRestricted(),rqMsg.getUserId(), 
+//				rqMsg.getTransferId());
+//		
+//		System.out.println(map.toString());
 	}
 	
 }

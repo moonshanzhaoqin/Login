@@ -188,6 +188,7 @@
 		<module>exchangeserver</module>
 		<module>exchangecrm</module>
 		<module>exchangetaskserver</module>
+		<module>upgradetool</module>
 	</modules>
 	<build>
 		<plugins>

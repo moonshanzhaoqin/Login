@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "goldq_pay_fee", uniqueConstraints = @UniqueConstraint(columnNames = { "client_id",
-		"payRole" }))
+		"pay_role" }))
 public class GoldqPayFee implements java.io.Serializable {
 
 	private Integer feeId;
