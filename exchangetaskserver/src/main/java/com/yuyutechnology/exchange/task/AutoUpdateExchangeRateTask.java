@@ -2,6 +2,7 @@ package com.yuyutechnology.exchange.task;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -15,12 +16,10 @@ import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.ConfigManager;
-import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
-import com.yuyutechnology.exchange.manager.TransDetailsManager;
+import com.yuyutechnology.exchange.manager.TaskManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
-import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
 
@@ -29,9 +28,8 @@ public class AutoUpdateExchangeRateTask {
 
 	@Autowired
 	UnregisteredDAO unregisteredDAO;
-	
-	
-	
+	@Autowired
+	TaskManager taskManager;
 	@Autowired
 	UserManager userManager;
 	@Autowired
@@ -40,10 +38,7 @@ public class AutoUpdateExchangeRateTask {
 	TransferManager transferManager;
 	@Autowired
 	OandaRatesManager oandaRatesManager;
-	@Autowired
-	TransDetailsManager transDetailsManager;
-	@Autowired
-	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
+
 
 	
 	public static Logger logger = LogManager.getLogger(AutoUpdateExchangeRateTask.class);
@@ -56,13 +51,24 @@ public class AutoUpdateExchangeRateTask {
 	
 	public void autoSystemRefundBatch(){
 		logger.info("=============autoSystemRefundBatch Start=============={}",new SimpleDateFormat("HH:mm:ss").format(new Date()) );
-//		transferManager.systemRefundBatch();
 		// 获取所有未完成的订单
 		List<Unregistered> list = unregisteredDAO.getAllUnfinishedTransaction();
 		if (list.isEmpty()) {
 			return;
 		}
+		
 		for (Unregistered unregistered : list) {
+			
+			UserDTO user = userManager.getUser(unregistered.getAreaCode(), unregistered.getUserPhone());
+			
+			if(user != null ){
+				logger.info("user phone: {} has been registed");
+				HashMap<String, Object> reuslt = taskManager.crtTransByUnregistered(user,unregistered);
+				if(ServerConsts.GOLDPAY_RETURN_SUCCESS == ((int)reuslt.get("retCode"))){
+					taskManager.transAndConfirm(((String)reuslt.get("transferId")), user.getUserId(),
+							unregistered, ((User)reuslt.get("payer")), ((String)reuslt.get("comment")));
+				}
+			}
 			
 			// 判断是否超过期限
 			long deadline = configManager.getConfigLongValue(ConfigKeyEnum.REFUNTIME, 3l) * 24 * 60 * 60 * 1000;
