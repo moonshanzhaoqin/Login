@@ -1873,4 +1873,9 @@ public class TransferManagerImpl implements TransferManager {
 	public void addTransfer(Transfer transfer){
 		transferDAO.addTransfer(transfer);
 	}
+	
+	@Override
+	public Transfer getTransferById(String transferId) {
+		return transferDAO.getTransferById(transferId);
+	}
 }

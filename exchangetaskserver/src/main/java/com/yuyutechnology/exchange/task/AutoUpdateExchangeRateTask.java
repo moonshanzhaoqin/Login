@@ -63,6 +63,53 @@ public class AutoUpdateExchangeRateTask {
 			return;
 		}
 		for (Unregistered unregistered : list) {
+			
+			UserDTO user = userManager.getUser(unregistered.getAreaCode(), unregistered.getUserPhone());
+			
+			if(user != null){
+				logger.info("user phone: {} has been registed");
+				
+				Transfer inviteTransfer = transferManager.getTransferById(unregistered.getTransferId());
+				User payer = userManager.getUserById(inviteTransfer.getUserFrom());
+				Integer systemUserId = userManager.getSystemUserId();
+				
+				String goldpayOrderId = null;
+				if (ServerConsts.CURRENCY_OF_GOLDPAY.equals(unregistered.getCurrency())) {
+					goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
+				}
+				
+				/* 生成TransId */
+				String transferId = transferManager.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+				Transfer transfer = new Transfer();
+				transfer.setTransferId(transferId);
+				transfer.setUserFrom(systemUserId);
+				transfer.setUserTo(user.getUserId());
+				transfer.setAreaCode(payer.getAreaCode());
+				transfer.setPhone(payer.getUserPhone());
+				transfer.setCurrency(unregistered.getCurrency());
+				transfer.setTransferAmount(unregistered.getAmount());
+				transfer.setCreateTime(new Date());
+				transfer.setFinishTime(new Date());
+				transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+				transfer.setTransferType(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+				transfer.setTransferComment(unregistered.getTransferId());
+				transfer.setNoticeId(0);
+				transfer.setGoldpayOrderId(goldpayOrderId);
+				transferManager.addTransfer(transfer);
+
+				goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId);
+
+				transDetailsManager.addTransDetails(transferId, user.getUserId(), payer.getUserId(), payer.getUserName(),
+						payer.getAreaCode(), payer.getUserPhone(), unregistered.getCurrency(), unregistered.getAmount(),
+						inviteTransfer.getTransferComment(), ServerConsts.TRANSFER_TYPE_TRANSACTION - 1);
+
+				/* 更改unregistered状态 */
+				unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
+				unregisteredDAO.updateUnregistered(unregistered);
+
+			}
+			
+
 			// 判断是否超过期限
 			long deadline = configManager.getConfigLongValue(ConfigKeyEnum.REFUNTIME, 3l) * 24 * 60 * 60 * 1000;
 			if (new Date().getTime() - unregistered.getCreateTime().getTime() >= deadline) {
@@ -75,54 +122,9 @@ public class AutoUpdateExchangeRateTask {
 								+ "date and the system is being refunded ,{}",
 						unregistered.getUnregisteredId(), new SimpleDateFormat("HH:mm:ss").format(new Date()));
 
-				UserDTO user = userManager.getUser(unregistered.getAreaCode(), unregistered.getUserPhone());
-				
-				if(user != null){
-					logger.info("user phone: {} has been registed");
-					
-					Transfer inviteTransfer = (Transfer) transferManager.getTransfer(unregistered.getTransferId());
-					User payer = userManager.getUserById(inviteTransfer.getUserFrom());
-					Integer systemUserId = userManager.getSystemUserId();
-					
-					String goldpayOrderId = null;
-					if (ServerConsts.CURRENCY_OF_GOLDPAY.equals(unregistered.getCurrency())) {
-						goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
-					}
-					
-					/* 生成TransId */
-					String transferId = transferManager.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
-					Transfer transfer = new Transfer();
-					transfer.setTransferId(transferId);
-					transfer.setUserFrom(systemUserId);
-					transfer.setUserTo(user.getUserId());
-					transfer.setAreaCode(payer.getAreaCode());
-					transfer.setPhone(payer.getUserPhone());
-					transfer.setCurrency(unregistered.getCurrency());
-					transfer.setTransferAmount(unregistered.getAmount());
-					transfer.setCreateTime(new Date());
-					transfer.setFinishTime(new Date());
-					transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-					transfer.setTransferType(ServerConsts.TRANSFER_TYPE_TRANSACTION);
-					transfer.setTransferComment(unregistered.getTransferId());
-					transfer.setNoticeId(0);
-					transfer.setGoldpayOrderId(goldpayOrderId);
-					transferManager.addTransfer(transfer);
-
-					goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId);
-
-					transDetailsManager.addTransDetails(transferId, user.getUserId(), payer.getUserId(), payer.getUserName(),
-							payer.getAreaCode(), payer.getUserPhone(), unregistered.getCurrency(), unregistered.getAmount(),
-							inviteTransfer.getTransferComment(), ServerConsts.TRANSFER_TYPE_TRANSACTION - 1);
-
-					/* 更改unregistered状态 */
-					unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
-					unregisteredDAO.updateUnregistered(unregistered);
-
-				}else{
-					String transferId = transferManager.systemRefundStep1(unregistered);
-					if(StringUtils.isNotBlank(transferId)){
-						transferManager.systemRefundStep2(transferId,unregistered);
-					}
+				String transferId = transferManager.systemRefundStep1(unregistered);
+				if(StringUtils.isNotBlank(transferId)){
+					transferManager.systemRefundStep2(transferId,unregistered);
 				}
 			}
 		}
