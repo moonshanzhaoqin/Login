@@ -147,4 +147,6 @@ public interface TransferManager {
 
 	void addTransfer(Transfer transfer);
 
+	Transfer getTransferById(String transferId);
+
 }
