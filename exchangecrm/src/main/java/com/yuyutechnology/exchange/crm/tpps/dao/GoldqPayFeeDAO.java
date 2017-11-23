@@ -1,5 +1,7 @@
 package com.yuyutechnology.exchange.crm.tpps.dao;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.orm.hibernate4.HibernateTemplate;
@@ -7,22 +9,25 @@ import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.crm.tpps.pojo.GoldqPayClient;
 import com.yuyutechnology.exchange.crm.tpps.pojo.GoldqPayFee;
+import com.yuyutechnology.exchange.util.page.PageBean;
+import com.yuyutechnology.exchange.util.page.PageUtils;
 
 @Repository
-public class TppsDAO {
+public class GoldqPayFeeDAO {
 	@Resource
 	HibernateTemplate hibernateTemplateTPPS;
 
-	public Integer saveFeeTemplate(GoldqPayFee goldqPayFee) {
+	public Integer saveGoldqPayFee(GoldqPayFee goldqPayFee) {
 		return (Integer) hibernateTemplateTPPS.save(goldqPayFee);
 	}
 
-	public void updateFeeTemplate(GoldqPayFee goldqPayFee) {
+	public void updateGoldqPayFee(GoldqPayFee goldqPayFee) {
 		hibernateTemplateTPPS.update(goldqPayFee);
 	}
 
-	public Long saveGoldqPayClient(GoldqPayClient goldqPayClient) {
-		return (Long) hibernateTemplateTPPS.save(goldqPayClient);
+	@SuppressWarnings("unchecked")
+	public List<GoldqPayFee> getGoldqPayFeeByClientId(String clientId) {
+		return (List<GoldqPayFee>) hibernateTemplateTPPS.find("from GoldqPayFee where clientId = ?", clientId);
 	}
 
 }

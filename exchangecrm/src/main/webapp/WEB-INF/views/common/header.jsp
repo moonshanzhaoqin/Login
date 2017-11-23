@@ -105,7 +105,9 @@
 						<c:if test="${adminPower eq 10}">
 							<li><a href="<c:url value='/withdraw' />">提现管理</a></li>
 						</c:if>
-
+						<c:if test="${adminPower eq 11}">
+							<li><a href="<c:url value='/tpps' />">TPPS</a></li>
+						</c:if>
 					</c:forTokens>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
