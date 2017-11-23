@@ -74,7 +74,7 @@ public class GoldpayMergeManager {
 			userId = user.getUserId();
 		}
 		if (userId == null) {
-			logger.warn("Goldpay -> Ex:{} fail!---Can not register Ex.", accountNumber);
+			logger.info("Goldpay -> Ex:{} fail!---Can not register Ex.", accountNumber);
 			return;
 		}
 

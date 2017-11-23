@@ -100,7 +100,7 @@ public class JsonBinder
 		}
 		catch (IOException e)
 		{
-			logger.warn("parse json string error:" + jsonString, e);
+			logger.info("parse json string error:" + jsonString, e);
 			return null;
 		}
 	}
@@ -119,7 +119,7 @@ public class JsonBinder
 		}
 		catch (IOException e)
 		{
-			logger.warn("parse json string error:" + jsonString, e);
+			logger.info("parse json string error:" + jsonString, e);
 			return null;
 		}
 	}
@@ -135,7 +135,7 @@ public class JsonBinder
 		}
 		catch (JsonProcessingException e)
 		{
-			logger.warn("write to json string error:" + object, e);
+			logger.info("write to json string error:" + object, e);
 			return null;
 		}
 	}

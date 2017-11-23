@@ -202,7 +202,7 @@ public class PushManager {
 			content.append(fileString.substring(fileString.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", ""));
 		} catch (Exception e) {
 			if (!initPush)
-				logger.warn("push template ({}) read error , can't push this msg : {} ",
+				logger.info("push template ({}) read error , can't push this msg : {} ",
 						new Object[] { filePath, e.getMessage() });
 		}
 	}

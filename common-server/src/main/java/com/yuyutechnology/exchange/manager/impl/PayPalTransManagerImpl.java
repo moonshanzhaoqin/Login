@@ -84,7 +84,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 
 		// 判断条件.币种合法，GDQ数量为整数且大于100
 		if (!commonManager.verifyCurrency(currencyLeft)) {
-			logger.warn("This currency is not a tradable currency");
+			logger.info("This currency is not a tradable currency");
 			result.put("retCode", RetCodeConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
 			result.put("msg", "This currency is not a tradable currency");
 			return result;
@@ -97,7 +97,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		logger.info("amount{} / rate {} = baseAmount {}", amount, rate, baseAmout);
 
 		if (!isOverlimit(amount)) {
-			logger.warn("Reach or exceed 100%,The transaction is forbidden");
+			logger.info("Reach or exceed 100%,The transaction is forbidden");
 			result.put("retCode", RetCodeConsts.TRANSFER_PAYPALTRANS_TOTAL_AMOUNT_OF_GDQ);
 			result.put("msg", "Reach or exceed 100%,The transaction is forbidden");
 			return result;
@@ -150,7 +150,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		// 条件 验证1.transId，amount
 		Transfer transfer = transferDAO.getTranByIdAndStatus(transId, ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		if (transfer == null || userId != transfer.getUserTo()) {
-			logger.warn("Order status exception");
+			logger.info("Order status exception");
 			map.put("retCode", RetCodeConsts.TRANSFER_PAYPALTRANS_ORDER_STATUS_EXCEPTION);
 			map.put("msg", "Order status exception");
 			return map;
@@ -159,7 +159,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		// 验证时间过期
 		long expirationTime = configManager.getConfigLongValue(ConfigKeyEnum.PAYPAL_EXPIRATION, 600l);
 		if ((new Date().getTime() - transfer.getCreateTime().getTime()) > 1000 * expirationTime) {
-			logger.warn("time out");
+			logger.info("time out");
 			map.put("retCode", RetCodeConsts.TRANSFER_PAYPALTRANS_TIME_OUT);
 			map.put("msg", "time out");
 			return map;
@@ -179,7 +179,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			saleResult = gateway.transaction().sale(request);
 
 		} catch (Exception e) {
-			logger.warn("paypal error !", e);
+			logger.info("paypal error !", e);
 			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 			map.put("msg", "fail");
 			return map;
@@ -198,7 +198,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 			transfer.setTransferComment(transaction.getId());
 
 		} else {
-			logger.warn("Message: {}", saleResult.getMessage());
+			logger.info("Message: {}", saleResult.getMessage());
 			map.put("retCode", RetCodeConsts.TRANSFER_PAYPALTRANS_PAYMENT_FAILED);
 			map.put("msg", saleResult.getMessage() + " Status : " + saleResult.getTransaction().getStatus().name());
 
@@ -236,7 +236,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		logger.info("(accumulatedAmount.add(amount)).divide(totalGDQCanBeSold,3,BigDecimal.ROUND_DOWN) : {}", percent);
 
 		if (percent.doubleValue() >= 1) {
-			logger.warn("Reach or exceed 100%,The transaction is forbidden !");
+			logger.info("Reach or exceed 100%,The transaction is forbidden !");
 			return false;
 		}
 

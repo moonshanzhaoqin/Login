@@ -528,7 +528,7 @@ public class LoggedInUserController {
 			} catch (Exception e) {
 			}
 			if (key == null) {
-				logger.warn("No enum constant com.yuyutechnology.exchange.enums.UserConfigKeyEnum."
+				logger.info("No enum constant com.yuyutechnology.exchange.enums.UserConfigKeyEnum."
 						+ getUserConfigRequest.getKey());
 				rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 				rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);

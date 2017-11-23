@@ -120,7 +120,7 @@ public class ExchangeController {
 			@RequestDecryptBody GetExchangeRateRequest reqMsg) {
 		GetExchangeRateResponse rep = new GetExchangeRateResponse();
 		if (!commonManager.verifyCurrency(reqMsg.getBase())) {
-			logger.warn("This currency is not a tradable currency");
+			logger.info("This currency is not a tradable currency");
 			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 			rep.setMessage("This currency is not a tradable currency");
 			return rep;

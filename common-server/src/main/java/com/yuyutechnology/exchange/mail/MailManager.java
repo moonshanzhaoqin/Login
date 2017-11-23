@@ -108,7 +108,7 @@ public class MailManager {
 			content.append(fileString.substring(fileString.indexOf("\n")).replaceAll("\n", "").replaceAll("\r", ""));
 		} catch (Exception e) {
 			if (!initMail)
-				logger.warn("Mail template ({}) read error , can't send this email : {} ",
+				logger.info("Mail template ({}) read error , can't send this email : {} ",
 						new Object[] { filePath, e.getMessage() });
 		}
 	}

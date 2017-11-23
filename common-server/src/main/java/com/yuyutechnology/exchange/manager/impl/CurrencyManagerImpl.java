@@ -70,7 +70,7 @@ public class CurrencyManagerImpl implements CurrencyManager {
 	public String changeCurrencyStatus(String currencyId, int status) {
 		Currency currency = currencyDAO.getCurrency(currencyId);
 		if (currency == null) {
-			logger.warn("Currency {} is not exist", currencyId);
+			logger.info("Currency {} is not exist", currencyId);
 			return RetCodeConsts.RET_CODE_FAILUE;
 		} else {
 			currency.setCurrencyStatus(status);

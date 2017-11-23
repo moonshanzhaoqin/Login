@@ -109,7 +109,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 		// 计算用户账户总金额
 		BigDecimal totalAssets = BigDecimal.ZERO;
 		if (map.isEmpty()) {
-			logger.warn("get all users' total assets by currency FAILURE!!!");
+			logger.info("get all users' total assets by currency FAILURE!!!");
 		} else {
 			for (Entry<String, BigDecimal> entry : map.entrySet()) {
 				if (entry.getKey().equals(ServerConsts.STANDARD_CURRENCY)) {

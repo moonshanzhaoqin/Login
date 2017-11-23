@@ -101,18 +101,12 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 	@Override
 	public void updateWallet4GoldpayTrans(String transferId) {
 		Transfer transfer = transferDAO.getTransferById(transferId);
-		int i= 0;
-		while (transfer == null && i<10) {
-			transfer = transferDAO.getTransferById(transferId);
-			i++;
-			logger.info("**************Request data for the {} time**********************",i+1);
-		}
 		HashMap<String, String> result = updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getUserTo(),
 				transfer.getCurrency(), transfer.getTransferAmount(), transfer.getTransferType(), transferId, true,
 				transfer.getGoldpayOrderId());
 
 		if (!RetCodeConsts.RET_CODE_SUCCESS.equals(result.get("retCode"))) {
-			logger.warn(result.get("msg"));
+			logger.info(result.get("msg"));
 			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_PROCESSING);
 			transferDAO.updateTransfer(transfer);
 		}else{
@@ -158,7 +152,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 			walletSeqDAO.addWalletSeq(walletSeq);
 		}
 		if (result != null && !RetCodeConsts.RET_CODE_SUCCESS.equals(result.get("retCode"))) {
-			logger.warn(result.get("msg"));
+			logger.info(result.get("msg"));
 			exchange.setExchangeStatus(ServerConsts.EXCHANGE_STATUS_OF_INTERRUPTED);
 			exchangeDAO.updateExchage(exchange);
 			return;
@@ -199,7 +193,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 						amount, goldpayOrderId, null);
 
 				if (retCode != ServerConsts.GOLDPAY_RETURN_SUCCESS) {
-					logger.warn("goldpay transaction failed");
+					logger.info("goldpay transaction failed");
 					result.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
 					result.put("msg", "Insufficient balance");
 					return result;

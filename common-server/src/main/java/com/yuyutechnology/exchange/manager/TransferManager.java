@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.util.HashMap;
 
 import com.yuyutechnology.exchange.dto.TransDetailsDTO;
+import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.util.page.PageBean;
 
@@ -141,5 +142,9 @@ public interface TransferManager {
 	String systemRefundStep1(Unregistered unregistered);
 
 	void systemRefundStep2(String transferId, Unregistered unregistered);
+
+	String createTransId(int createTransId);
+
+	void addTransfer(Transfer transfer);
 
 }

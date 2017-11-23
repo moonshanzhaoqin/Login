@@ -363,7 +363,7 @@ public class UserManagerImpl implements UserManager {
 					StringUtils.isNotBlank(user.getUserPayPwd()));
 			logger.info(" -- {}", userInfo.toString());
 		} else {
-			logger.warn("Can not find the user!!!");
+			logger.info("Can not find the user!!!");
 		}
 		return userInfo;
 	}
@@ -543,7 +543,7 @@ public class UserManagerImpl implements UserManager {
 					|| !unregistered.getAreaCode().equals(payerTransfer.getAreaCode())
 					|| unregistered.getAmount().compareTo(payerTransfer.getTransferAmount()) != 0
 					|| !unregistered.getCurrency().equals(payerTransfer.getCurrency())) {
-				logger.warn("Did not find the corresponding transfer information");
+				logger.info("Did not find the corresponding transfer information");
 				unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_ERROR);
 				unregisteredDAO.updateUnregistered(unregistered);
 				return;
@@ -630,7 +630,7 @@ public class UserManagerImpl implements UserManager {
 	public void userFreeze(Integer userId, int userAvailable) {
 		User user = userDAO.getUser(userId);
 		if (user == null || user.getUserType() == ServerConsts.USER_TYPE_OF_SYSTEM) {
-			logger.warn("{} is not exist !", userId);
+			logger.info("{} is not exist !", userId);
 		} else {
 			user.setUserAvailable(userAvailable);
 			userDAO.updateUser(user);
@@ -718,6 +718,17 @@ public class UserManagerImpl implements UserManager {
 			return userDTO;
 		}
 		return null;
+	}
+	
+	@Override
+	public User getUserById(Integer userId){
+		User user = userDAO.getUser(userId);
+		return user;
+	}
+	
+	@Override
+	public Integer getSystemUserId(){
+		return userDAO.getSystemUser().getUserId();
 	}
 
 }
