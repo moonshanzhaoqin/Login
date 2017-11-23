@@ -124,7 +124,11 @@ public enum Operation {
 	/**
 	 * 添加商户
 	 */
-	ADD_PAY_CLIENT("ADD_PAY_CLIENT");
+	ADD_PAY_CLIENT("add_pay_client"), 
+	/**
+	 * 更新tpps手续费模板 
+	 */
+	UPDATE_GOLDQPAYFEE("update_goldqpayfee");
 	
 	private String operationName;
 

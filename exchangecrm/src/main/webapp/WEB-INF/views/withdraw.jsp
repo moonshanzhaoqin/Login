@@ -56,10 +56,11 @@
 				<tbody>
 				</tbody>
 			</table>
-		</div>
-		<!--分页插件-->
+			<!--分页插件-->
 		<div id="paginator"></div>
 		<div id="total" class="pull-right"></div>
+		</div>
+		
 	</div>
 
 

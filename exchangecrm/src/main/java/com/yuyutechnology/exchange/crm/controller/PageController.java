@@ -59,4 +59,8 @@ public class PageController {
 	public String withdraw(HttpServletRequest request, HttpServletResponse response) {
 		return "withdraw";
 	}
+	@RequestMapping(value = "/tpps", method = { RequestMethod.GET })
+	public String tpps(HttpServletRequest request, HttpServletResponse response) {
+		return "tpps";
+	}
 }

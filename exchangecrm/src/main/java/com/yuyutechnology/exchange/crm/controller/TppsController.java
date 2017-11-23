@@ -1,6 +1,7 @@
 package com.yuyutechnology.exchange.crm.controller;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -18,12 +19,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
 import com.yuyutechnology.exchange.crm.request.AddPayClientRequset;
+import com.yuyutechnology.exchange.crm.request.GetGoldqPayClientByPageRequest;
+import com.yuyutechnology.exchange.crm.request.GetGoldqPayFeeRequest;
 import com.yuyutechnology.exchange.crm.tpps.manager.TppsMananger;
+import com.yuyutechnology.exchange.crm.tpps.pojo.GoldqPayFee;
 import com.yuyutechnology.exchange.enums.Operation;
 import com.yuyutechnology.exchange.manager.CrmLogManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.CrmLog;
 import com.yuyutechnology.exchange.pojo.FeeTemplate;
+import com.yuyutechnology.exchange.util.page.PageBean;
 
 @Controller
 public class TppsController {
@@ -47,9 +52,6 @@ public class TppsController {
 			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 		} else {
 			tppsMananger.addPayClient(exId);
-			
-			
-
 			crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 					Operation.ADD_PAY_CLIENT.getOperationName(), addPayClientRequset.toString()));
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
@@ -58,9 +60,35 @@ public class TppsController {
 	}
 
 	// TODO edit pay client
-	// TODO add new feeTemplate
 	// TODO edit feeTemplate
+	@ResponseBody
+	@RequestMapping(value = "/updateGoldqPayFee", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public BaseResponse updateGoldqPayFee(@RequestBody GoldqPayFee goldqPayFee,HttpServletRequest request,
+			HttpServletResponse response) {
+		BaseResponse rep = new BaseResponse();
+		
+		logger.info("updateFeeTemplate({})", goldqPayFee.toString());
+		tppsMananger.updateGoldqPayFee(goldqPayFee);
+		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+				Operation.UPDATE_GOLDQPAYFEE.getOperationName(), goldqPayFee.toString()));
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		return rep;
+	}
+	
 	// TODO list pay client ,search by page
-	// TODO search feeTemplate by client
+	@ResponseBody
+	@RequestMapping(value = "/getGoldqPayClientByPage", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public PageBean getGoldqPayClientByPage(@RequestBody GetGoldqPayClientByPageRequest getGoldqPayClientByPageRequest,
+			HttpServletRequest request, HttpServletResponse response) {
+		logger.info(getGoldqPayClientByPageRequest.toString());
+		return tppsMananger.getGoldqPayClientByPage(Integer.parseInt(getGoldqPayClientByPageRequest.getCurrentPage()));
 
+	}
+	// TODO search feeTemplate by client
+	@ResponseBody
+	@RequestMapping(value = "/getGoldqPayFee", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public List<GoldqPayFee> getGoldqPayFee(@RequestBody GetGoldqPayFeeRequest getGoldqPayFeeRequest ) {
+		logger.info("getGoldqPayFee({})", getGoldqPayFeeRequest.getClientId());
+		return tppsMananger.getGoldqPayFeeByClientId(getGoldqPayFeeRequest.getClientId());
+	}
 }

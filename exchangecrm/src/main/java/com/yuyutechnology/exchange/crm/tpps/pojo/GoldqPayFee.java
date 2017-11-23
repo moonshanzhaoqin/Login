@@ -8,9 +8,9 @@ import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
 @Entity
-@Table(name = "goldq_pay_fee", uniqueConstraints = @UniqueConstraint(columnNames = { "client_id",
-		"pay_role" }))
+@Table(name = "goldq_pay_fee", uniqueConstraints = @UniqueConstraint(columnNames = { "client_id", "pay_role" }))
 public class GoldqPayFee implements java.io.Serializable {
 
 	private Integer feeId;
@@ -23,6 +23,11 @@ public class GoldqPayFee implements java.io.Serializable {
 	private byte feePayer;
 
 	public GoldqPayFee() {
+	}
+
+	public GoldqPayFee(String clientId, byte payRole) {
+		this.clientId = clientId;
+		this.payRole = payRole;
 	}
 
 	public GoldqPayFee(String clientId, byte payRole, BigDecimal exemptAmount, BigDecimal feePercent, BigDecimal minFee,
