@@ -909,10 +909,15 @@ public class TransferManagerImpl implements TransferManager {
 	public String systemRefundStep1(Unregistered unregistered) {
 
 		Transfer transfer = transferDAO.getTransferById(unregistered.getTransferId());
+		
 		if (transfer == null || transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_COMPLETED) {
 			logger.warn("Did not find the corresponding transfer information");
 			return null;
 		}
+		
+		//判断被邀请用户是否已经注册
+		User  invitePeople = userDAO.getUserByUserPhone(unregistered.getAreaCode(), unregistered.getUserPhone());
+		
 
 		String transferId2 = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		User systemUser = userDAO.getSystemUser();
