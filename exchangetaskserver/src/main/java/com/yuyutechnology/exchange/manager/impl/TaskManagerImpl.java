@@ -6,12 +6,12 @@ import java.util.HashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
-import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.TaskManager;
 import com.yuyutechnology.exchange.manager.TransDetailsManager;
@@ -19,6 +19,7 @@ import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.pojo.User;
 
+@Service
 public class TaskManagerImpl implements TaskManager {
 	
 	@Autowired
@@ -36,7 +37,7 @@ public class TaskManagerImpl implements TaskManager {
 	public static Logger logger = LogManager.getLogger(TaskManagerImpl.class);
 	
 	@Override
-	public HashMap<String, Object> crtTransByUnregistered(UserDTO user,Unregistered unregistered){
+	public HashMap<String, Object> crtTransByUnregistered(User user,Unregistered unregistered){
 		
 		HashMap<String, Object> result = new HashMap<>();
 		

@@ -730,5 +730,10 @@ public class UserManagerImpl implements UserManager {
 	public Integer getSystemUserId(){
 		return userDAO.getSystemUser().getUserId();
 	}
+	
+	@Override
+	public User getUserByPhone(String areaCode,String phone){
+		return userDAO.getUserByUserPhone(areaCode, phone);
+	}
 
 }

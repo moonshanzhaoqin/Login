@@ -243,4 +243,6 @@ public interface UserManager {
 
 	Integer getSystemUserId();
 
+	User getUserByPhone(String areaCode, String phone);
+
 }
