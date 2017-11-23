@@ -82,19 +82,19 @@ public class ThirdPartyController {
 
 		// 装张金额上限
 		if (!reqMsg.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY) && reqMsg.getAmount() < 0.0001) {
-			logger.warn("The input amount is less than the minimum amount");
+			logger.info("The input amount is less than the minimum amount");
 			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The input amount is less than the minimum amount");
 			return rep;
 		} else if ((reqMsg.getCurrency()).equals(ServerConsts.CURRENCY_OF_GOLDPAY)
 				&& (reqMsg.getAmount() % 1 > 0 || reqMsg.getAmount() == 0)) {
-			logger.warn("The GDQ must be an integer value");
+			logger.info("The GDQ must be an integer value");
 			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The GDQ must be an integer value");
 			return rep;
 		} else if (reqMsg.getAmount() > configManager.getConfigLongValue(ConfigKeyEnum.ENTERMAXIMUMAMOUNT,
 				1000000000L)) {
-			logger.warn("Fill out the allowable amount");
+			logger.info("Fill out the allowable amount");
 			rep.setRetCode(RetCodeConsts.TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT);
 			rep.setMessage("Fill out the allowable amount");
 			return rep;

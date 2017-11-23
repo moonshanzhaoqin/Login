@@ -87,7 +87,7 @@ public class PayPalTransController {
 		if (reqMsg.getAmount() == null
 				|| ((reqMsg.getAmount().doubleValue() < mini || reqMsg.getAmount().doubleValue() > max)
 						|| reqMsg.getAmount().longValue() % 1 > 0)) {
-			logger.warn("The number of inputs does not meet the requirements");
+			logger.info("The number of inputs does not meet the requirements");
 			rep.setRetCode(RetCodeConsts.TRANSFER_PAYPALTRANS_ILLEGAL_DATA);
 			rep.setMessage("The number of inputs does not meet the requirements");
 			rep.setOpts(new String[] { mini.toString(), max.toString() });

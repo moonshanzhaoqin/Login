@@ -151,7 +151,7 @@ public class HttpClientUtils {
 	        	response.close();
 //				client4Post.close();
 			} catch (Exception e) {
-				logger.warn("sendGet url :,"+url, e);
+				logger.info("sendGet url :,"+url, e);
 			}
 		}
 		

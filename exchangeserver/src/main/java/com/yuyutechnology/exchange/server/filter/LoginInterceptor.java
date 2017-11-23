@@ -96,7 +96,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			re.setMessage(MessageConsts.SESSION_TIMEOUT);
 			String json = JsonBinder.getInstance().toJson(re);
 			String key = ResourceUtils.getBundleValue4String("aes.key");
-			if (StringUtils.isNotBlank(key)
+			if (StringUtils.isNotBlank(key) && handler instanceof HandlerMethod
 					&& ((HandlerMethod) handler).getMethodAnnotation(ResponseEncryptBody.class) != null) {
 				json = AESCipher.encryptAES(json, key);
 				EncryptResponse encryptResponse = new EncryptResponse();

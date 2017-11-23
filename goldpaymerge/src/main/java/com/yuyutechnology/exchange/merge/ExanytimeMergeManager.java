@@ -58,7 +58,7 @@ public class ExanytimeMergeManager {
 		/* 用手机号创建Goldpay账号 */
 		GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.createGoldpay(areaCode, userPhone, userName, false);
 		if (goldpayUser == null) {
-			logger.warn("Ex -> Goldpay: Ex : {},{} FAIL!---Can not create Goldpay.", userId, areaCode + userPhone);
+			logger.info("Ex -> Goldpay: Ex : {},{} FAIL!---Can not create Goldpay.", userId, areaCode + userPhone);
 		} else {
 			/* 查找绑定信息 */
 			Bind bind = bindDAO.getBindByUserId(userId);
@@ -87,7 +87,7 @@ public class ExanytimeMergeManager {
 							goldpayUser.getAccountNum());
 					return wallet.getBalance();
 				} else {
-					logger.warn("Ex -> Goldpay: Ex : {},{} FAIL!---Can not transfer GDQ from Ex to Goldpay.", userId,
+					logger.info("Ex -> Goldpay: Ex : {},{} FAIL!---Can not transfer GDQ from Ex to Goldpay.", userId,
 							areaCode + userPhone);
 				}
 			}

@@ -122,7 +122,7 @@ public class SmsManager {
 			content.append(IOUtils.toString(resource.getInputStream(), "UTF-8").replaceAll("\r", ""));
 		} catch (Exception e) {
 			if (!initSMS)
-				logger.warn("SMS template ({}) read error , can't send this msg : {} ",
+				logger.info("SMS template ({}) read error , can't send this msg : {} ",
 						new Object[] { filePath, e.getMessage() });
 		}
 	}

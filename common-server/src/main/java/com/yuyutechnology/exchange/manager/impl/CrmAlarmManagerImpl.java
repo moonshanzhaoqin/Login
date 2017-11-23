@@ -200,7 +200,7 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	// List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(0, 1);
 	//
 	// if (list == null) {
-	// logger.warn("No related alarm information is configured ! {}", new Date());
+	// logger.info("No related alarm information is configured ! {}", new Date());
 	// return;
 	// }
 	//
@@ -248,7 +248,7 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	public void reachtotalGDQLimitAlarm(final BigDecimal accumulatedAmount, final BigDecimal percent) {
 		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(4, 1);
 		if (list == null) {
-			logger.warn("No related alarm information is configured ! {}", new Date());
+			logger.info("No related alarm information is configured ! {}", new Date());
 			return;
 		}
 		for (final CrmAlarm crmAlarm : list) {

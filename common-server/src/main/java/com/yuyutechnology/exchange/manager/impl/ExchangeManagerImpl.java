@@ -103,7 +103,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 
 		HashMap<String, String> map = new HashMap<String, String>();
 		if (!commonManager.verifyCurrency(currencyOut) || !commonManager.verifyCurrency(currencyIn)) {
-			logger.warn("This currency is not a tradable currency");
+			logger.info("This currency is not a tradable currency");
 			map.put("retCode", RetCodeConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
 			map.put("msg", "This currency is not a tradable currency");
 			return map;
@@ -116,7 +116,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.EXCHANGELIMITPERPAY, 100000d));
 		logger.info("exchangeLimitPerPay : {}", exchangeLimitPerPay.toString());
 		if ((oandaRatesManager.getDefaultCurrencyAmount(currencyOut, amountOut)).compareTo(exchangeLimitPerPay) == 1) {
-			logger.warn("Exceeds the maximum amount of each exchange");
+			logger.info("Exceeds the maximum amount of each exchange");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_EACH_TIME);
 			map.put("msg", exchangeLimitPerPay.setScale(2).toString());
 			map.put("thawTime", DateFormatUtils.getIntervalDay(new Date(), 1).getTime() + "");
@@ -130,7 +130,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount("exchange_" + userId);
 		if ((accumulatedAmount.add(oandaRatesManager.getDefaultCurrencyAmount(currencyOut, amountOut)))
 				.compareTo(exchangeLimitDailyPay) == 1) {
-			logger.warn("More than the maximum daily exchange limit");
+			logger.info("More than the maximum daily exchange limit");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_DAILY_PAY);
 			map.put("msg", exchangeLimitDailyPay.setScale(2).toString());
 			map.put("thawTime", DateFormatUtils.getIntervalDay(new Date(), 1).getTime() + "");
@@ -143,7 +143,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		logger.info("exchangeLimitNumOfPayPerDay : {}", exchangeLimitNumOfPayPerDay.toString());
 		Integer totalNumOfDailyExchange = transferDAO.getCumulativeNumofTimes("exchange_" + userId);
 		if (exchangeLimitNumOfPayPerDay <= new Double(totalNumOfDailyExchange)) {
-			logger.warn("Exceeds the maximum number of exchange per day");
+			logger.info("Exceeds the maximum number of exchange per day");
 			map.put("retCode", RetCodeConsts.EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY);
 			map.put("msg", exchangeLimitNumOfPayPerDay.intValue() + "");
 			map.put("thawTime", DateFormatUtils.getIntervalDay(new Date(), 1).getTime() + "");

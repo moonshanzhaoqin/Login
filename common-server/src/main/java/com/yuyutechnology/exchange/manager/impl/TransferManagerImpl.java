@@ -126,7 +126,7 @@ public class TransferManagerImpl implements TransferManager {
 		User receiver = userDAO.getUserByUserPhone(areaCode, userPhone);
 		// 不用给自己转账
 		if (receiver != null && userId == receiver.getUserId()) {
-			logger.warn("Prohibit transfers to yourself");
+			logger.info("Prohibit transfers to yourself");
 			map.put("retCode", RetCodeConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
 			map.put("msg", "Prohibit transfers to yourself");
 			return map;
@@ -196,7 +196,7 @@ public class TransferManagerImpl implements TransferManager {
 		HashMap<String, String> result = new HashMap<>();
 		User user = userDAO.getUser(userId);
 		if (user == null || user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
-			logger.warn("The user does not exist or the account is blocked");
+			logger.info("The user does not exist or the account is blocked");
 			result.put("msg", "The user does not exist or the account is blocked");
 			result.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
 			return result;
@@ -211,7 +211,7 @@ public class TransferManagerImpl implements TransferManager {
 			return result;
 
 		case ServerConsts.CHECKPWD_STATUS_INCORRECT:
-			logger.warn("payPwd is wrong !");
+			logger.info("payPwd is wrong !");
 			result.put("msg", String.valueOf(checkPwdResult.getInfo()));
 			result.put("retCode", RetCodeConsts.PAY_PWD_NOT_MATCH);
 			return result;
@@ -223,7 +223,7 @@ public class TransferManagerImpl implements TransferManager {
 		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,
 				ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		if (transfer == null) {
-			logger.warn("The transaction order does not exist");
+			logger.info("The transaction order does not exist");
 			result.put("msg", "The transaction order does not exist");
 			result.put("retCode", RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST);
 			return result;
@@ -250,7 +250,7 @@ public class TransferManagerImpl implements TransferManager {
 
 		if (totalBalance.compareTo(totalBalanceMax) == 1 || (accumulatedAmount.compareTo(accumulatedAmountMax) == 1
 				|| singleTransferAmount.compareTo(singleTransferAmountMax) == 1)) {
-			logger.warn("The transaction amount exceeds the limit");
+			logger.info("The transaction amount exceeds the limit");
 			result.put("msg", "The transaction amount exceeds the limit");
 			result.put("retCode", RetCodeConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION);
 			return result;
@@ -268,19 +268,19 @@ public class TransferManagerImpl implements TransferManager {
 	// Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,
 	// ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 	// if (transfer == null) {
-	// logger.warn("The transaction order does not exist");
+	// logger.info("The transaction order does not exist");
 	// return RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST;
 	// }
 	//
 	// User payer = userDAO.getUser(userId);
 	// if (payer == null || payer.getUserAvailable() ==
 	// ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
-	// logger.warn("The user does not exist or the account is blocked");
+	// logger.info("The user does not exist or the account is blocked");
 	// return RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED;
 	// }
 	//
 	// if (userId != transfer.getUserFrom()) {
-	// logger.warn("userId is different from UserFromId");
+	// logger.info("userId is different from UserFromId");
 	// return RetCodeConsts.RET_CODE_FAILUE;
 	// }
 	//
@@ -288,11 +288,11 @@ public class TransferManagerImpl implements TransferManager {
 	// BigDecimal transferLimitPerPay = BigDecimal
 	// .valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY,
 	// 100000d));
-	// logger.warn("transferLimitPerPay : {}", transferLimitPerPay);
+	// logger.info("transferLimitPerPay : {}", transferLimitPerPay);
 	// if ((oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(),
 	// transfer.getTransferAmount()))
 	// .compareTo(transferLimitPerPay) == 1) {
-	// logger.warn("Exceeds the maximum amount of each transaction");
+	// logger.info("Exceeds the maximum amount of each transaction");
 	// return RetCodeConsts.TRANSFER_LIMIT_EACH_TIME;
 	// }
 	//
@@ -302,13 +302,13 @@ public class TransferManagerImpl implements TransferManager {
 	// 100000d));
 	// BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount("transfer_" +
 	// userId);
-	// logger.warn("transferLimitDailyPay : {},accumulatedAmount : {} ",
+	// logger.info("transferLimitDailyPay : {},accumulatedAmount : {} ",
 	// transferLimitDailyPay, accumulatedAmount);
 	// if ((accumulatedAmount
 	// .add(oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(),
 	// transfer.getTransferAmount())))
 	// .compareTo(transferLimitDailyPay) == 1) {
-	// logger.warn("More than the maximum daily transaction limit");
+	// logger.info("More than the maximum daily transaction limit");
 	// return RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY;
 	// }
 	// // 每天累计给付次数限制
@@ -318,11 +318,11 @@ public class TransferManagerImpl implements TransferManager {
 	// // transferDAO.getDayTradubgVolume(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 	// Integer dayTradubgVolume = transferDAO.getCumulativeNumofTimes("transfer_" +
 	// userId);
-	// logger.warn("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ",
+	// logger.info("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ",
 	// transferLimitNumOfPayPerDay,
 	// dayTradubgVolume);
 	// if (transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)) {
-	// logger.warn("Exceeds the maximum number of transactions per day");
+	// logger.info("Exceeds the maximum number of transactions per day");
 	// return RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY;
 	// }
 	//
@@ -433,28 +433,28 @@ public class TransferManagerImpl implements TransferManager {
 		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,
 				ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		if (transfer == null) {
-			logger.warn("The transaction order does not exist");
+			logger.info("The transaction order does not exist");
 			return RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST;
 		}
 
 		User payer = userDAO.getUser(userId);
 		if (payer == null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
-			logger.warn("The user does not exist or the account is blocked");
+			logger.info("The user does not exist or the account is blocked");
 			return RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED;
 		}
 
 		if (userId != transfer.getUserFrom()) {
-			logger.warn("userId is different from UserFromId");
+			logger.info("userId is different from UserFromId");
 			return RetCodeConsts.RET_CODE_FAILUE;
 		}
 
 		// 每次支付金额限制
 		BigDecimal transferLimitPerPay = BigDecimal
 				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
-		logger.warn("transferLimitPerPay : {}", transferLimitPerPay);
+		logger.info("transferLimitPerPay : {}", transferLimitPerPay);
 		if ((oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount()))
 				.compareTo(transferLimitPerPay) == 1) {
-			logger.warn("Exceeds the maximum amount of each transaction");
+			logger.info("Exceeds the maximum amount of each transaction");
 			return RetCodeConsts.TRANSFER_LIMIT_EACH_TIME;
 		}
 
@@ -462,11 +462,11 @@ public class TransferManagerImpl implements TransferManager {
 		BigDecimal transferLimitDailyPay = BigDecimal
 				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITDAILYPAY, 100000d));
 		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount("transfer_" + userId);
-		logger.warn("transferLimitDailyPay : {},accumulatedAmount : {} ", transferLimitDailyPay, accumulatedAmount);
+		logger.info("transferLimitDailyPay : {},accumulatedAmount : {} ", transferLimitDailyPay, accumulatedAmount);
 		if ((accumulatedAmount
 				.add(oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount())))
 						.compareTo(transferLimitDailyPay) == 1) {
-			logger.warn("More than the maximum daily transaction limit");
+			logger.info("More than the maximum daily transaction limit");
 			return RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY;
 		}
 		// 每天累计给付次数限制
@@ -474,10 +474,10 @@ public class TransferManagerImpl implements TransferManager {
 				.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITNUMBEROFPAYPERDAY, 100000d);
 
 		Integer dayTradubgVolume = transferDAO.getCumulativeNumofTimes("transfer_" + userId);
-		logger.warn("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ", transferLimitNumOfPayPerDay,
+		logger.info("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ", transferLimitNumOfPayPerDay,
 				dayTradubgVolume);
 		if (transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)) {
-			logger.warn("Exceeds the maximum number of transactions per day");
+			logger.info("Exceeds the maximum number of transactions per day");
 			return RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY;
 		}
 
@@ -545,7 +545,7 @@ public class TransferManagerImpl implements TransferManager {
 	// transferDAO.getTransferById(unregistered.getTransferId());
 	// if (transfer == null || transfer.getTransferStatus() !=
 	// ServerConsts.TRANSFER_STATUS_OF_COMPLETED) {
-	// logger.warn("Did not find the corresponding transfer information");
+	// logger.info("Did not find the corresponding transfer information");
 	// return;
 	// }
 	// String transferId2 =
@@ -610,7 +610,7 @@ public class TransferManagerImpl implements TransferManager {
 //
 //		Transfer transfer = transferDAO.getTransferById(unregistered.getTransferId());
 //		if (transfer == null || transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_COMPLETED) {
-//			logger.warn("Did not find the corresponding transfer information");
+//			logger.info("Did not find the corresponding transfer information");
 //			return;
 //		}
 //
@@ -714,7 +714,7 @@ public class TransferManagerImpl implements TransferManager {
 
 				Currency unit = commonManager.getCurreny(ServerConsts.CURRENCY_OF_USD);
 
-				logger.warn("Exceeds the maximum amount of each transaction");
+				logger.info("Exceeds the maximum amount of each transaction");
 				result.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
 				result.put("msg", "Exceeds the maximum amount of each transaction");
 				result.put("transferLimitPerPay", transferLimitPerPay.toString());
@@ -727,7 +727,7 @@ public class TransferManagerImpl implements TransferManager {
 
 		// Currency不在激活列表
 		if (StringUtils.isNotBlank(currency) && !commonManager.verifyCurrency(currency)) {
-			logger.warn("This currency is not a tradable currency");
+			logger.info("This currency is not a tradable currency");
 			result.put("retCode", RetCodeConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
 			result.put("msg", "This currency is not a tradable currency");
 			return result;
@@ -736,7 +736,7 @@ public class TransferManagerImpl implements TransferManager {
 		// Goldpay不是整数
 		if ((StringUtils.isNotBlank(currency) && currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY))
 				&& (amount.doubleValue() % 1 > 0)) {
-			logger.warn("The GDQ must be an integer value");
+			logger.info("The GDQ must be an integer value");
 			result.put("retCode", RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			result.put("msg", "The GDQ must be an integer value");
 			return result;
@@ -951,7 +951,7 @@ public class TransferManagerImpl implements TransferManager {
 		HashMap<String, String> map = new HashMap<>();
 		final TransactionNotification notification = notificationDAO.getNotificationById(noticeId);
 		if (notification == null) {
-			logger.warn("Can not find the corresponding notification information");
+			logger.info("Can not find the corresponding notification information");
 			map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 			map.put("msg", "Can not find the corresponding notification information");
 			return map;
@@ -1053,7 +1053,7 @@ public class TransferManagerImpl implements TransferManager {
 			case "isTradableCurrency":
 				logger.info("Currency : {}", (String) entry.getValue());
 				if (!commonManager.verifyCurrency((String) entry.getValue())) {
-					logger.warn("This currency is not a tradable currency");
+					logger.info("This currency is not a tradable currency");
 					result.put("retCode", RetCodeConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
 					result.put("msg", "This currency is not a tradable currency");
 					return result;
@@ -1063,7 +1063,7 @@ public class TransferManagerImpl implements TransferManager {
 			case "isAccountFrozened":
 				User payer = userDAO.getUser((Integer) entry.getValue());
 				if (payer == null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
-					logger.warn("The user does not exist or the account is blocked");
+					logger.info("The user does not exist or the account is blocked");
 					result.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
 					result.put("msg", "The user does not exist or the account is blocked");
 					return result;
@@ -1080,20 +1080,20 @@ public class TransferManagerImpl implements TransferManager {
 				BigDecimal amount = (BigDecimal) args.get("amount");
 
 				if (notification == null) {
-					logger.warn("Can not find the corresponding notification information");
+					logger.info("Can not find the corresponding notification information");
 					result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 					result.put("msg", "Can not find the corresponding notification information");
 					return result;
 				}
 				if (notification.getPayerId() != userId
 						|| notification.getTradingStatus() == ServerConsts.NOTIFICATION_STATUS_OF_ALREADY_PAID) {
-					logger.warn("Order status exception");
+					logger.info("Order status exception");
 					result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 					result.put("msg", "Order status exception");
 					return result;
 				}
 				if (StringUtils.isBlank(currency) || amount.compareTo(new BigDecimal("0")) == 0) {
-					logger.warn("The requestor currency and amount information is blank");
+					logger.info("The requestor currency and amount information is blank");
 					result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 					result.put("msg", "The requestor currency and amount information is blank");
 					return result;
@@ -1102,7 +1102,7 @@ public class TransferManagerImpl implements TransferManager {
 						&& notification.getAmount().compareTo(new BigDecimal("0")) != 0)
 						&& (!notification.getCurrency().equals(currency)
 								|| notification.getAmount().compareTo(amount) != 0)) {
-					logger.warn("The input and order information do not match");
+					logger.info("The input and order information do not match");
 					result.put("retCode", RetCodeConsts.TRANSFER_REQUEST_INFORMATION_NOT_MATCH);
 					result.put("msg", "The input and order information do not match");
 					return result;
@@ -1121,13 +1121,13 @@ public class TransferManagerImpl implements TransferManager {
 				User receiver = userDAO.getUser(sponsorId);
 				// 不用给自己转账
 				if (receiver != null && userId == receiver.getUserId()) {
-					logger.warn("Prohibit transfers to yourself");
+					logger.info("Prohibit transfers to yourself");
 					result.put("retCode", RetCodeConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
 					result.put("msg", "Prohibit transfers to yourself");
 					return result;
 				}
 				if (!receiver.getAreaCode().equals(areaCode) || !receiver.getUserPhone().equals(userPhone)) {
-					logger.warn("Payee phone information does not match");
+					logger.info("Payee phone information does not match");
 					result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 					result.put("msg", "Payee phone information does not match");
 					return result;
@@ -1145,7 +1145,7 @@ public class TransferManagerImpl implements TransferManager {
 				if (currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
 					GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.getGoldpayUserInfo(userId);
 					if (new BigDecimal(goldpayUser.getBalance() + "").compareTo(amount) == -1) {
-						logger.warn("Current balance is insufficient");
+						logger.info("Current balance is insufficient");
 						result.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
 						result.put("msg", "Current balance is insufficient");
 						return result;
@@ -1154,7 +1154,7 @@ public class TransferManagerImpl implements TransferManager {
 				} else {
 					Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
 					if (wallet == null || wallet.getBalance().compareTo(amount) == -1) {
-						logger.warn("Current balance is insufficient");
+						logger.info("Current balance is insufficient");
 						result.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
 						result.put("msg", "Current balance is insufficient");
 						return result;
@@ -1226,9 +1226,9 @@ public class TransferManagerImpl implements TransferManager {
 			return map;
 		}
 
-		logger.warn("transferLimitPerPay : {}", transferLimitPerPay);
+		logger.info("transferLimitPerPay : {}", transferLimitPerPay);
 		if ((oandaRatesManager.getDefaultCurrencyAmount(currency, amount)).compareTo(transferLimitPerPay) == 1) {
-			logger.warn("Exceeds the maximum amount of each transaction");
+			logger.info("Exceeds the maximum amount of each transaction");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
 			map.put("msg", transferLimitPerPay.setScale(2).toString());
 			map.put("unit", unit.getCurrencyUnit());
@@ -1250,9 +1250,9 @@ public class TransferManagerImpl implements TransferManager {
 		// 每次支付金额限制
 		BigDecimal transferLimitPerPay = BigDecimal
 				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
-		logger.warn("transferLimitPerPay : {}", transferLimitPerPay);
+		logger.info("transferLimitPerPay : {}", transferLimitPerPay);
 		if ((oandaRatesManager.getDefaultCurrencyAmount(currency, amount)).compareTo(transferLimitPerPay) == 1) {
-			logger.warn("Exceeds the maximum amount of each transaction");
+			logger.info("Exceeds the maximum amount of each transaction");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
 			map.put("msg", transferLimitPerPay.setScale(2).toString());
 			map.put("unit", unit.getCurrencyUnit());
@@ -1263,10 +1263,10 @@ public class TransferManagerImpl implements TransferManager {
 		BigDecimal transferLimitDailyPay = BigDecimal
 				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITDAILYPAY, 100000d));
 		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount("transfer_" + userId);
-		logger.warn("transferLimitDailyPay : {},accumulatedAmount : {} ", transferLimitDailyPay, accumulatedAmount);
+		logger.info("transferLimitDailyPay : {},accumulatedAmount : {} ", transferLimitDailyPay, accumulatedAmount);
 		if ((accumulatedAmount.add(oandaRatesManager.getDefaultCurrencyAmount(currency, amount)))
 				.compareTo(transferLimitDailyPay) == 1) {
-			logger.warn("More than the maximum daily transaction limit");
+			logger.info("More than the maximum daily transaction limit");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY);
 			map.put("msg", transferLimitDailyPay.setScale(2).toString());
 			map.put("thawTime", DateFormatUtils.getIntervalDay(new Date(), 1).getTime() + "");
@@ -1277,10 +1277,10 @@ public class TransferManagerImpl implements TransferManager {
 		Double transferLimitNumOfPayPerDay = configManager
 				.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITNUMBEROFPAYPERDAY, 100000d);
 		Integer dayTradubgVolume = transferDAO.getCumulativeNumofTimes("transfer_" + userId);
-		logger.warn("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ", transferLimitNumOfPayPerDay,
+		logger.info("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ", transferLimitNumOfPayPerDay,
 				dayTradubgVolume);
 		if (transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)) {
-			logger.warn("Exceeds the maximum number of transactions per day");
+			logger.info("Exceeds the maximum number of transactions per day");
 			map.put("retCode", RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY);
 			map.put("msg", (transferLimitNumOfPayPerDay).intValue() + "");
 			map.put("thawTime", DateFormatUtils.getIntervalDay(new Date(), 1).getTime() + "");
@@ -1596,7 +1596,7 @@ public class TransferManagerImpl implements TransferManager {
 		User payer = userDAO.getUser(userId);
 		
 		if (payer == null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
-			logger.warn("The user does not exist or the account is blocked");
+			logger.info("The user does not exist or the account is blocked");
 			result.put("msg", "The user does not exist or the account is blocked");
 			result.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
 			return result;
@@ -1612,7 +1612,7 @@ public class TransferManagerImpl implements TransferManager {
 			return result;
 
 		case ServerConsts.CHECKPWD_STATUS_INCORRECT:
-			logger.warn("payPwd is wrong !");
+			logger.info("payPwd is wrong !");
 			result.put("msg", String.valueOf(checkPwdResult.getInfo()));
 			result.put("retCode", RetCodeConsts.PAY_PWD_NOT_MATCH);
 			return result;
@@ -1625,19 +1625,19 @@ public class TransferManagerImpl implements TransferManager {
 //				ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		Transfer transfer = transferDAO.getTransferById(transferId);
 		if (transfer == null) {
-			logger.warn("The transaction order does not exist");
+			logger.info("The transaction order does not exist");
 			result.put("msg", "The transaction order does not exist");
 			result.put("retCode", RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST);
 			return result;
 		}
 		if(transfer.getTransferStatus()!= ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION){
-			logger.warn("Orders have been paid");
+			logger.info("Orders have been paid");
 			result.put("msg", "Orders have been paid");
 			result.put("retCode", RetCodeConsts.TRANSFER_ORDERS_HAVE_BEEN_PAID);
 			return result;
 		}
 		if (userId != transfer.getUserFrom()) {
-			logger.warn("userId is different from UserFromId");
+			logger.info("userId is different from UserFromId");
 			result.put("msg", "userId is different from UserFromId");
 			result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 			return result;
@@ -1648,10 +1648,10 @@ public class TransferManagerImpl implements TransferManager {
 		// 每次支付金额限制
 		BigDecimal transferLimitPerPay = BigDecimal
 				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
-		logger.warn("transferLimitPerPay : {}", transferLimitPerPay);
+		logger.info("transferLimitPerPay : {}", transferLimitPerPay);
 		if ((oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount()))
 				.compareTo(transferLimitPerPay) == 1) {
-			logger.warn("Exceeds the maximum amount of each transaction");
+			logger.info("Exceeds the maximum amount of each transaction");
 			result.put("msg", "Exceeds the maximum amount of each transaction");
 			result.put("retCode", RetCodeConsts.TRANSFER_LIMIT_EACH_TIME);
 			return result;
@@ -1661,11 +1661,11 @@ public class TransferManagerImpl implements TransferManager {
 		BigDecimal transferLimitDailyPay = BigDecimal
 				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITDAILYPAY, 100000d));
 		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount("transfer_" + userId);
-		logger.warn("transferLimitDailyPay : {},accumulatedAmount : {} ", transferLimitDailyPay, accumulatedAmount);
+		logger.info("transferLimitDailyPay : {},accumulatedAmount : {} ", transferLimitDailyPay, accumulatedAmount);
 		if ((accumulatedAmount
 				.add(oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount())))
 						.compareTo(transferLimitDailyPay) == 1) {
-			logger.warn("More than the maximum daily transaction limit");
+			logger.info("More than the maximum daily transaction limit");
 			result.put("msg", "More than the maximum daily transaction limit");
 			result.put("retCode", RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY);
 			return result;
@@ -1675,10 +1675,10 @@ public class TransferManagerImpl implements TransferManager {
 				.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITNUMBEROFPAYPERDAY, 100000d);
 		
 		Integer dayTradubgVolume = transferDAO.getCumulativeNumofTimes("transfer_" + userId);
-		logger.warn("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ", transferLimitNumOfPayPerDay,
+		logger.info("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ", transferLimitNumOfPayPerDay,
 				dayTradubgVolume);
 		if (transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)) {
-			logger.warn("Exceeds the maximum number of transactions per day");
+			logger.info("Exceeds the maximum number of transactions per day");
 			result.put("msg", "Exceeds the maximum number of transactions per day");
 			result.put("retCode", RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY);
 			return result;
@@ -1740,7 +1740,7 @@ public class TransferManagerImpl implements TransferManager {
 				User receiver = userDAO.getUser(payeeId);
 				// 不用给自己转账
 				if (receiver != null && payerId == receiver.getUserId()) {
-					logger.warn("Prohibit transfers to yourself");
+					logger.info("Prohibit transfers to yourself");
 					map.put("retCode", RetCodeConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
 					map.put("msg", "Prohibit transfers to yourself");
 					return map;
@@ -1797,7 +1797,7 @@ public class TransferManagerImpl implements TransferManager {
 
 		Transfer transfer = transferDAO.getTransferById(unregistered.getTransferId());
 		if (transfer == null || transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_COMPLETED) {
-			logger.warn("Did not find the corresponding transfer information");
+			logger.info("Did not find the corresponding transfer information");
 			return null;
 		}
 
@@ -1862,5 +1862,15 @@ public class TransferManagerImpl implements TransferManager {
 		pushManager.push4Refund(payee, transfer.getAreaCode(), transfer.getPhone(), transfer.getCurrency(),
 				amountFormatByCurrency(transfer.getCurrency(), transfer.getTransferAmount()));
 
+	}
+	
+	@Override
+	public String createTransId(int transferType){
+		return transferDAO.createTransId(transferType);
+	}
+	
+	@Override
+	public void addTransfer(Transfer transfer){
+		transferDAO.addTransfer(transfer);
 	}
 }

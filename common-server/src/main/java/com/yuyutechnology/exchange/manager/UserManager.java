@@ -239,4 +239,8 @@ public interface UserManager {
 	 */
 	UserDTO getUser(String areaCode, String userPhone);
 
+	User getUserById(Integer userId);
+
+	Integer getSystemUserId();
+
 }

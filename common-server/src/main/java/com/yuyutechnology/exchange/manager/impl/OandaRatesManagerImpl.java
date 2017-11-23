@@ -88,7 +88,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 					return result;
 				} else {
 
-					logger.warn("left:{},right:{} has no exchangeRate", currencyLeft, currencyRight);
+					logger.info("left:{},right:{} has no exchangeRate", currencyLeft, currencyRight);
 
 					return result;
 				}
@@ -183,7 +183,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 			}
 		}
 
-		logger.warn("left:{},right:{} has no exchangeRate", currencyLeft, currencyRight);
+		logger.info("left:{},right:{} has no exchangeRate", currencyLeft, currencyRight);
 
 		return result;
 
