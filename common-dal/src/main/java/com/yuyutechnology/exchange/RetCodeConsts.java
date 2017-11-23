@@ -158,11 +158,11 @@ public class RetCodeConsts {
 	 */
 	public static final String EXCHANGE_LIMIT_EACH_TIME = "02007";
 	/**
-	 * 超过每日兑换次数限制
+	 * 超过每日兑换金额限制
 	 */
 	public static final String EXCHANGE_LIMIT_DAILY_PAY = "02008";
 	/**
-	 * 超过每日兑换金额限制
+	 * 超过每日兑换次数限制
 	 */
 	public static final String EXCHANGE_LIMIT_NUM_OF_PAY_PER_DAY = "02009";
 

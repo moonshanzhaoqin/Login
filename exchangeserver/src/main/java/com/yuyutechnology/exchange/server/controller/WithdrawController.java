@@ -1,9 +1,6 @@
 package com.yuyutechnology.exchange.server.controller;
 
-import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,29 +41,10 @@ public class WithdrawController {
 
 		WithdrawCalResult result = withdrawManager.withdrawCalculate(sessionData.getUserId(),
 				withdrawCalculateRequset.getGoldBullion());
-
-		rep.setGoldpay(result.getGoldpay().intValue());
-		rep.setFee(result.getFee().intValue());
-		logger.info(MessageConsts.RET_CODE_SUCCESS);
-		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-
-		return rep;
-
-	}
-
-	@ResponseEncryptBody
-	@ApiOperation(value = "提现确认", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/withdraw/withdrawConfirm", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public WithdrawConfirmResponse withdrawConfirm(@PathVariable String token,
-			@RequestDecryptBody WithdrawConfirmRequset withdrawConfirmRequset) throws ParseException {
-		logger.info("========withdrawConfirm : {}============", token);
-		WithdrawConfirmResponse rep = new WithdrawConfirmResponse();
-		SessionData sessionData = SessionDataHolder.getSessionData();
-		String retCode = withdrawManager.applyConfirm(sessionData.getUserId(), withdrawConfirmRequset.getGoldBullion());
-		
-		switch (retCode) {
+		switch (result.getRetCode()) {
 		case RetCodeConsts.RET_CODE_SUCCESS:
+			rep.setGoldpay(result.getGoldpay().intValue());
+			rep.setFee(result.getFee().intValue());
 			logger.info(MessageConsts.RET_CODE_SUCCESS);
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
@@ -83,6 +61,33 @@ public class WithdrawController {
 			break;
 		}
 
+		return rep;
+
+	}
+
+	@ResponseEncryptBody
+	@ApiOperation(value = "提现确认", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/withdraw/withdrawConfirm", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public WithdrawConfirmResponse withdrawConfirm(@PathVariable String token,
+			@RequestDecryptBody WithdrawConfirmRequset withdrawConfirmRequset) throws ParseException {
+		logger.info("========withdrawConfirm : {}============", token);
+		WithdrawConfirmResponse rep = new WithdrawConfirmResponse();
+		SessionData sessionData = SessionDataHolder.getSessionData();
+
+		Integer withdrawId = withdrawManager.applyConfirm(sessionData.getUserId(),
+				withdrawConfirmRequset.getGoldBullion());
+		if (withdrawId == null) {
+			logger.info(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+			rep.setRetCode(RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+			rep.setMessage(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+		} else {
+			withdrawManager.goldpayTrans4Apply(withdrawId);
+			/* 通知管理员 */
+			withdrawManager.notifyWithdraw(sessionData.getUserId(), withdrawConfirmRequset.getGoldBullion());
+			logger.info(MessageConsts.RET_CODE_SUCCESS);
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		}
 		return rep;
 	}
 

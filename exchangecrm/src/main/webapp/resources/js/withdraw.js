@@ -163,6 +163,7 @@ function finishWithdraw(withdrawId) {
 				searchWithdraw(page);
 			}else{
 				alert("操作失败");
+				searchWithdraw(page);
 			}
 		},
 		error : function(xhr, err) {
@@ -191,6 +192,7 @@ function cancelWithdraw(withdrawId) {
 					searchWithdraw(page);
 				}else{
 					alert("操作失败");
+					searchWithdraw(page);
 				}
 			},
 			error : function(xhr, err) {

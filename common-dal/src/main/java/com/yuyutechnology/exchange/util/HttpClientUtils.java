@@ -137,7 +137,7 @@ public class HttpClientUtils {
 	            //获取数据
 	        	result = EntityUtils.toString(response.getEntity());
 	            //输出
-	            logger.info("sendPost url : {},  result : {}",url, result);
+	            logger.info("sendPost url : {},{},  result : {}",url,params ,result);
 	            
 	        } else {
 	            //输出

@@ -75,6 +75,9 @@ public class Goldpay4MergeTest  extends BaseSpringJunit4 {
 //				rqMsg.getTransferId());
 //		
 //		System.out.println(map.toString());
+		
+		goldpayTrans4MergeManager.createGoldpay("+86", "9999999", "system", false);
+		
 	}
 	
 }

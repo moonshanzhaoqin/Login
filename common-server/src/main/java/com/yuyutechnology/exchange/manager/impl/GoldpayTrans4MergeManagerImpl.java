@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.RetCodeConsts;
@@ -28,6 +29,7 @@ import com.yuyutechnology.exchange.goldpay.msg.GetGoldpayUserS2C;
 import com.yuyutechnology.exchange.goldpay.msg.GoldpayTransactionC2S;
 import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
+import com.yuyutechnology.exchange.manager.TransDetailsManager;
 import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Exchange;
 import com.yuyutechnology.exchange.pojo.Transfer;
@@ -51,6 +53,8 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 	ExchangeDAO exchangeDAO;
 	@Autowired
 	TransferDAO transferDAO;
+	@Autowired
+	TransDetailsManager transDetailsManager;
 
 	public static Logger logger = LogManager.getLogger(GoldpayTrans4MergeManagerImpl.class);
 
@@ -74,6 +78,9 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 	@Override
 	public GoldpayUserDTO getGoldpayUserInfo(Integer exUserId) {
 		Bind bind = bindDAO.getBind(exUserId);
+		if (bind==null) {
+			return null;
+		}
 		GetGoldpayUserC2S param = new GetGoldpayUserC2S();
 		param.setAccountNum(bind.getGoldpayAcount());
 		String result = HttpClientUtils.sendPost(
@@ -99,16 +106,13 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 	}
 
 	@Override
+	@Async
 	public void updateWallet4GoldpayTrans(String transferId) {
+		logger.info("updateWallet4GoldpayTrans for transfer {}",transferId);
 		Transfer transfer = transferDAO.getTransferById(transferId);
-		int i= 0;
-		while (transfer == null && i<10) {
-			transfer = transferDAO.getTransferById(transferId);
-			i++;
-			logger.info("**************Request data for the {} time**********************",i+1);
-		}
+		logger.info("transfer:{}",transfer);
 		HashMap<String, String> result = updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getUserTo(),
-				transfer.getCurrency(), transfer.getTransferAmount(), transfer.getTransferType(), transferId, true,
+				transfer.getCurrency(), transfer.getTransferAmount(), transfer.getTransferType(), transfer.getTransferId(), true,
 				transfer.getGoldpayOrderId());
 
 		if (!RetCodeConsts.RET_CODE_SUCCESS.equals(result.get("retCode"))) {

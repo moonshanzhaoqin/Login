@@ -38,8 +38,8 @@ public class WithdrawDAOImpl implements WithdrawDAO {
 	}
 
 	@Override
-	public void saveWithdraw(Withdraw withdraw) {
-		hibernateTemplate.save(withdraw);
+	public Integer saveWithdraw(Withdraw withdraw) {
+		return (Integer) hibernateTemplate.save(withdraw);
 	}
 
 	@Override

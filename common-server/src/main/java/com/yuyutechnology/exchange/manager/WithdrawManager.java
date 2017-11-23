@@ -11,12 +11,18 @@ public interface WithdrawManager {
 
 	PageBean getWithdrawByPage(int currentPage, String userPhone, String userName, String startTime, String endTime);
 
-	String applyConfirm(Integer userId, int goldBullion);
+	Integer applyConfirm(Integer userId, int goldBullion);
 
 	String cancelWithdraw(Integer withdrawId, String adminName);
 
 	String finishWithdraw(Integer withdrawId, String adminName);
 
 	WithdrawCalResult withdrawCalculate(Integer userId, int goldBullion);
+
+	void goldpayTrans4Apply(Integer withdrawId);
+
+	void goldpayTrans4Handle(Integer withdrawId);
+
+	void notifyWithdraw(Integer userId, int goldBullion);
 
 }

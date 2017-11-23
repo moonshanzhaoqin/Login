@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.aspectj.weaver.reflect.ReflectionBasedReferenceTypeDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -77,47 +78,46 @@ public class WithdrawManagerImpl implements WithdrawManager {
 
 		FeeResult feeResult;
 		if (userManager.isHappyLivesVIP(userId)) {
-			feeResult = feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_VIP, goldpayAmount);
+			feeResult = feeManager.figureOutFee(FeePurpose.Withdraw_GoldBullion_VIP, goldpayAmount);
 		} else {
-			feeResult = feeManager.figureOutFee(FeePurpose.PayPal_Purchase_GoldBullion_Ordinary, goldpayAmount);
+			feeResult = feeManager.figureOutFee(FeePurpose.Withdraw_GoldBullion_Ordinary, goldpayAmount);
 		}
 
 		if (checkManager.isInsufficientBalance(userId, ServerConsts.CURRENCY_OF_GOLDPAY,
 				goldpayAmount.add(feeResult.getFee()))) {
-
-		}
-		if (checkManager.isInsufficientBalance(userId, ServerConsts.CURRENCY_OF_GOLDPAY,
-				goldpayAmount.add(feeResult.getFee()))) {
+			result.setRetCode(RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+		} else {
 			result.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			result.setGoldpay(goldpayAmount);
 			result.setFee(feeResult.getFee());
 			result.setFormula(feeResult.getFormula());
-		} else {
-			result.setRetCode(RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
 		}
 		return result;
 	}
 
 	@Override
-	public String applyConfirm(Integer userId, int goldBullion) {
-		WithdrawCalResult result= withdrawCalculate(userId, goldBullion);
+	public Integer applyConfirm(Integer userId, int goldBullion) {
+		WithdrawCalResult result = withdrawCalculate(userId, goldBullion);
 		if (result.getRetCode().equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			User frozenUser = userDAO.getFrozenUser();
 
-			Withdraw withdraw = new Withdraw(userId, goldBullion, result.getGoldpay(),
-					result.getFee(), new Date());
+			Withdraw withdraw = new Withdraw(userId, goldBullion, result.getGoldpay(), result.getFee(), new Date());
 			/* 把Goldpay转到冻结账户 */
-			withdraw.setGoldTransferA(transfer4Withdraw(userId, frozenUser.getUserId(), result.getGoldpay(),
-					ServerConsts.TRANSFER_TYPE_IN_WITHDRAW));
+			String goldTransferA = transfer4Withdraw(userId, frozenUser.getUserId(), result.getGoldpay(),
+					ServerConsts.TRANSFER_TYPE_IN_WITHDRAW);
+			// goldpayTrans4MergeManager.updateWallet4GoldpayTrans(goldTransferA);
+
 			/* 把手续费转到冻结账户 */
-			withdraw.setFeeTransferA(transfer4Withdraw(userId, frozenUser.getUserId(),result.getFee(),
-					ServerConsts.TRANSFER_TYPE_IN_FEE));
-			withdrawDAO.saveWithdraw(withdraw);
-			/* 通知管理员 */
-			notifyWithdraw(userId, goldBullion);
-			return RetCodeConsts.RET_CODE_SUCCESS;
-		}else {
-			return result.getRetCode();
+			String feeTransferA = transfer4Withdraw(userId, frozenUser.getUserId(), result.getFee(),
+					ServerConsts.TRANSFER_TYPE_IN_FEE);
+			// goldpayTrans4MCergeManager.updateWallet4GoldpayTrans(feeTransferA);
+
+			withdraw.setGoldTransferA(goldTransferA);
+			withdraw.setFeeTransferA(feeTransferA);
+			return withdrawDAO.saveWithdraw(withdraw);
+
+		} else {
+			return null;
 		}
 
 	}
@@ -127,17 +127,25 @@ public class WithdrawManagerImpl implements WithdrawManager {
 		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
 		if (withdraw.getHandleResult() == ServerConsts.WITHDRAW_HANDLE_RESULT_DEFAULT) {
 			User frozenUser = userDAO.getFrozenUser();
-			
+
 			/* 把Goldpay退回给用户 */
-			withdraw.setGoldTransferB(transfer4Withdraw(frozenUser.getUserId(), withdraw.getUserId(),
-					withdraw.getGoldpay(), ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND));
+			String goldTransferB = transfer4Withdraw(frozenUser.getUserId(), withdraw.getUserId(),
+					withdraw.getGoldpay(), ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND);
+			// goldpayTrans4MergeManager.updateWallet4GoldpayTrans(goldTransferB);
+
 			/* 把手续费退回给用户 */
-			withdraw.setFeeTransferB(transfer4Withdraw(frozenUser.getUserId(), withdraw.getUserId(), withdraw.getFee(),
-					ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND));
+			String feeTransferB = transfer4Withdraw(frozenUser.getUserId(), withdraw.getUserId(), withdraw.getFee(),
+					ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND);
+			// goldpayTrans4MergeManager.updateWallet4GoldpayTrans(feeTransferB);
+
+			withdraw.setGoldTransferB(goldTransferB);
+			withdraw.setFeeTransferB(feeTransferB);
+
 			/* 操作记录 */
 			withdraw.setHandleResult(ServerConsts.WITHDRAW_HANDLE_RESULT_CANCEL);
 			withdraw.setHandler(adminName);
 			withdraw.setHandleTime(new Date());
+
 			withdrawDAO.updateWithdraw(withdraw);
 			return RetCodeConsts.RET_CODE_SUCCESS;
 		} else {
@@ -154,13 +162,20 @@ public class WithdrawManagerImpl implements WithdrawManager {
 			User frozenUser = userDAO.getFrozenUser();
 			User feeUser = userDAO.getFeeUser();
 			User recovery = userDAO.getRecoveryUser();
-			
+
 			/* 把Goldpay转到回收账户 */
-			withdraw.setGoldTransferB(transfer4Withdraw(frozenUser.getUserId(), recovery.getUserId(),
-					withdraw.getGoldpay(), ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND));
+			String goldTransferB = transfer4Withdraw(frozenUser.getUserId(), recovery.getUserId(),
+					withdraw.getGoldpay(), ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND);
+			// goldpayTrans4MergeManager.updateWallet4GoldpayTrans(goldTransferB);
+
 			/* 把手续费转到手续费账户 */
-			withdraw.setFeeTransferB(transfer4Withdraw(frozenUser.getUserId(), feeUser.getUserId(), withdraw.getFee(),
-					ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND));
+			String feeTransferB = transfer4Withdraw(frozenUser.getUserId(), feeUser.getUserId(), withdraw.getFee(),
+					ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND);
+			// goldpayTrans4MergeManager.updateWallet4GoldpayTrans(feeTransferB);
+
+			withdraw.setGoldTransferB(goldTransferB);
+			withdraw.setFeeTransferB(feeTransferB);
+
 			/* 操作记录 */
 			withdraw.setHandleResult(ServerConsts.WITHDRAW_HANDLE_RESULT_FINISHT);
 			withdraw.setHandler(adminName);
@@ -182,19 +197,21 @@ public class WithdrawManagerImpl implements WithdrawManager {
 		transfer.setCreateTime(new Date());
 		transfer.setCurrency(ServerConsts.CURRENCY_OF_GOLDPAY);
 		transfer.setTransferAmount(amount);
-		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		transfer.setUserFrom(from);
 		transfer.setUserTo(to);
 		transfer.setGoldpayOrderId(goldpayOrderId);
 		transferDAO.addTransfer(transfer);
+
 		transDetailsManager.addTransDetails(transferId, from, to, "", "", "", ServerConsts.CURRENCY_OF_GOLDPAY, amount,
 				BigDecimal.ZERO, null, "", type);
-		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId);
+	
 		return transferId;
 
 	}
 
 	// TODO
+	@Override
 	public void notifyWithdraw(Integer userId, int goldBullion) {
 		HashMap<String, Object> params = new HashMap<String, Object>();
 		List<CrmAlarm> list = crmAlarmDAO.getConfigListByTypeAndStatus(ServerConsts.ALARM_TYPE_WITHDRAW, 1);
@@ -238,4 +255,16 @@ public class WithdrawManagerImpl implements WithdrawManager {
 
 	}
 
+	@Override
+	public void goldpayTrans4Apply(Integer withdrawId) {
+		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
+		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(withdraw.getGoldTransferA());
+		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(withdraw.getFeeTransferA());
+	}
+	@Override
+	public void goldpayTrans4Handle(Integer withdrawId) {
+		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
+		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(withdraw.getGoldTransferB());
+		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(withdraw.getFeeTransferB());
+	}
 }

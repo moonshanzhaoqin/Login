@@ -33,7 +33,7 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 		switch (transType) {
 		case ServerConsts.TRANSFER_TYPE_TRANSACTION:
 		
-			logger.info("the transType is {} ServerConsts.TRANSFER_TYPE_TRANSACTION", transType);
+			logger.info("the transType is {} ", transType);
 
 			TransDetails payerTransDetails = new TransDetails(transferId, payerId, traderName, traderAreaCode,
 					traderPhone, transCurrency, transAmount.negate(), transFee.negate(),transRemarks,transSnapshot);
@@ -52,7 +52,7 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 		case ServerConsts.TRANSFER_TYPE_OUT_INVITE:
 		case ServerConsts.TRANSFER_TYPE_IN_FEE:
 		case ServerConsts.TRANSFER_TYPE_IN_WITHDRAW:
-			logger.info("the transType is {} ServerConsts.TRANSFER_TYPE_OUT_INVITE", transType);
+			logger.info("the transType is {} ", transType);
 
 			TransDetails payerTransDetails4Invite = new TransDetails(transferId, payerId, traderName, traderAreaCode,
 					traderPhone, transCurrency, transAmount.negate(), transAmount.negate(), transRemarks,transSnapshot);

@@ -78,7 +78,7 @@ function updateFeeTemplate() {
 			success : function(data) {
 				if (data.retCode == "00000") {
 					console.log("updateFeeTemplate success");
-					$('#changeBonusModal').modal('hide')
+					$('#feeTemplateModal').modal('hide')
 					alert("修改成功！");
 					initCampaign(1);
 				} else if (data.retCode == "00002") {

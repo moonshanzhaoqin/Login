@@ -13,7 +13,7 @@ public interface WithdrawDAO {
 
 	List<Withdraw> listWithdraw();
 
-	void saveWithdraw(Withdraw withdraw);
+	Integer saveWithdraw(Withdraw withdraw);
 
 	PageBean getWithdrawByPage(String hql, List<Object> values, int currentPage, int pageSize);
 

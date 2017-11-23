@@ -94,7 +94,7 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public void updateSQL(final String sql, final Object[] values) {
 		logger.info(sql);
-		logger.info(values);
+		logger.info(values.toString());
 		hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
 			@Override
 			public Integer doInHibernate(Session session) throws HibernateException {

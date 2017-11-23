@@ -69,6 +69,8 @@ public class WithdrawHandleController {
 		try {
 			withdrawManager.finishWithdraw(withdrawRequest.getWithdrawId(),
 					(String) request.getSession().getAttribute("adminName"));
+			withdrawManager.goldpayTrans4Handle(withdrawRequest.getWithdrawId());
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		} catch (Exception e) {
 			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 		}
@@ -84,6 +86,7 @@ public class WithdrawHandleController {
 		try {
 			withdrawManager.cancelWithdraw(withdrawRequest.getWithdrawId(),
 					(String) request.getSession().getAttribute("adminName"));
+			withdrawManager.goldpayTrans4Handle(withdrawRequest.getWithdrawId());
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		} catch (Exception e) {
 			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
