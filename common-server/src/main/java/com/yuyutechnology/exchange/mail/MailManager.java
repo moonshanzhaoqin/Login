@@ -6,6 +6,7 @@ package com.yuyutechnology.exchange.mail;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -19,6 +20,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.dto.NotifyWithdrawDTO;
+import com.yuyutechnology.exchange.util.DateFormatUtils;
 import com.yuyutechnology.exchange.util.HttpClientUtils;
 import com.yuyutechnology.exchange.util.JsonBinder;
 import com.yuyutechnology.exchange.util.ResourceUtils;
@@ -50,11 +53,14 @@ public class MailManager {
 	private StringBuffer registrationWarnTital = new StringBuffer();
 	private StringBuffer registrationWarnContent = new StringBuffer();
 
-//	private StringBuffer remitFailWarnTital = new StringBuffer();
-//	private StringBuffer remitFailWarnContent = new StringBuffer();
+	// private StringBuffer remitFailWarnTital = new StringBuffer();
+	// private StringBuffer remitFailWarnContent = new StringBuffer();
 
 	private StringBuffer totalGDQWarnTital = new StringBuffer();
 	private StringBuffer totalGDQWarnContent = new StringBuffer();
+
+	private StringBuffer notifyWithdrawTital = new StringBuffer();
+	private StringBuffer notifyWithdrawContent = new StringBuffer();
 
 	private final String MAIL_REPLACE_EMAIL = "[EMAIL]";
 	private final String MAIL_REPLACE_NAME = "[NAME]";
@@ -80,6 +86,7 @@ public class MailManager {
 
 	private final String MAIL_REPLACE_PERCENT = "[PERCENT]";
 	private final String MAIL_REPLACE_NUMBER = "[NUMBER]";
+	private final String MAIL_REPLACE_PHONE = "[PHONE]";
 
 	@PostConstruct
 	@Scheduled(cron = "0 1/10 * * * ?")
@@ -92,8 +99,10 @@ public class MailManager {
 				largeExchangeWarnContent);
 		readTemplate("template/mail/zh_CN/badAccountAlarm.template", badAccountWarnTital, badAccountWarnContent);
 		readTemplate("template/mail/zh_CN/registrationAlarm.template", registrationWarnTital, registrationWarnContent);
-//		readTemplate("template/mail/zh_CN/remitFailAlarm.template", remitFailWarnTital, remitFailWarnContent);
+		// readTemplate("template/mail/zh_CN/remitFailAlarm.template",
+		// remitFailWarnTital, remitFailWarnContent);
 		readTemplate("template/mail/zh_CN/totalGDQWarn.template", totalGDQWarnTital, totalGDQWarnContent);
+		readTemplate("template/mail/zh_CN/notifyWithdraw.template", notifyWithdrawTital, notifyWithdrawContent);
 		initMail = true;
 	}
 
@@ -176,21 +185,24 @@ public class MailManager {
 
 	@Async
 	public void mail4Registration(String email, String dateTime, String number) {
-		String content = registrationWarnContent.toString().replace(MAIL_REPLACE_TIME, dateTime).replace(MAIL_REPLACE_NUMBER, number);
+		String content = registrationWarnContent.toString().replace(MAIL_REPLACE_TIME, dateTime)
+				.replace(MAIL_REPLACE_NUMBER, number);
 		logger.info("content : {},tital : {}", content, registrationWarnTital.toString());
 		List<String> toMails = new ArrayList<>();
 		toMails.add(email);
 		sendMail(toMails, registrationWarnTital.toString(), content);
 	}
 
-//	@Async
-//	public void mail4RemitFail(String email, String dateTime) {
-//		String content = remitFailWarnContent.toString().replace(MAIL_REPLACE_TIME, dateTime);
-//		logger.info("content : {},tital : {}", content, remitFailWarnTital.toString());
-//		List<String> toMails = new ArrayList<>();
-//		toMails.add(email);
-//		sendMail(toMails, remitFailWarnTital.toString(), content);
-//	}
+	// @Async
+	// public void mail4RemitFail(String email, String dateTime) {
+	// String content = remitFailWarnContent.toString().replace(MAIL_REPLACE_TIME,
+	// dateTime);
+	// logger.info("content : {},tital : {}", content,
+	// remitFailWarnTital.toString());
+	// List<String> toMails = new ArrayList<>();
+	// toMails.add(email);
+	// sendMail(toMails, remitFailWarnTital.toString(), content);
+	// }
 
 	@Async
 	public void mail4ReachTotalGDQLimit(String email, String amount, String percent) {
@@ -200,6 +212,19 @@ public class MailManager {
 		List<String> toMails = new ArrayList<>();
 		toMails.add(email);
 		sendMail(toMails, totalGDQWarnTital.toString(), content);
+	}
+
+	@Async
+	public void mail4NotifyWithdray(String email, NotifyWithdrawDTO notifyWithdrawDTO) {
+		String content = notifyWithdrawContent.toString()
+				.replace(MAIL_REPLACE_PHONE, notifyWithdrawDTO.getAreaCode() + notifyWithdrawDTO.getUserPhone())
+				.replace(MAIL_REPLACE_NAME, notifyWithdrawDTO.getUserName())
+				.replace(MAIL_REPLACE_NUMBER, String.valueOf(notifyWithdrawDTO.getQuantity()))
+				.replace(MAIL_REPLACE_TIME, DateFormatUtils.formatDateGMT8(notifyWithdrawDTO.getApplyTime()));
+		List<String> toMails = new ArrayList<>();
+		toMails.add(email);
+		sendMail(toMails, notifyWithdrawTital.toString(), content);
+
 	}
 
 	public void sendMail(List<String> toMails, String tital, String content) {

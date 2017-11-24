@@ -21,6 +21,7 @@ import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WithdrawDAO;
 import com.yuyutechnology.exchange.dto.FeeResult;
+import com.yuyutechnology.exchange.dto.NotifyWithdrawDTO;
 import com.yuyutechnology.exchange.dto.WithdrawCalResult;
 import com.yuyutechnology.exchange.enums.FeePurpose;
 import com.yuyutechnology.exchange.mail.MailManager;
@@ -96,12 +97,13 @@ public class WithdrawManagerImpl implements WithdrawManager {
 	}
 
 	@Override
-	public Integer applyConfirm(Integer userId, int goldBullion,String userEmail) {
+	public Integer applyConfirm(Integer userId, int goldBullion, String userEmail) {
 		WithdrawCalResult result = withdrawCalculate(userId, goldBullion);
 		if (result.getRetCode().equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			User frozenUser = userDAO.getFrozenUser();
-
-			Withdraw withdraw = new Withdraw(userId,userEmail, goldBullion, result.getGoldpay(), result.getFee(), new Date());
+			User user = userDAO.getUser(userId);
+			Withdraw withdraw = new Withdraw(userId, userEmail, goldBullion, result.getGoldpay(), result.getFee(),
+					new Date());
 			/* 把Goldpay转到冻结账户 */
 			String goldTransferA = transfer4Withdraw(userId, frozenUser.getUserId(), result.getGoldpay(),
 					ServerConsts.TRANSFER_TYPE_IN_WITHDRAW);
@@ -114,6 +116,10 @@ public class WithdrawManagerImpl implements WithdrawManager {
 
 			withdraw.setGoldTransferA(goldTransferA);
 			withdraw.setFeeTransferA(feeTransferA);
+			/*通知管理员*/
+			crmAlarmManager.notifyWithdraw(new NotifyWithdrawDTO(userId, user.getAreaCode(), user.getUserPhone(),
+					user.getUserName(), userEmail, goldBullion, new Date()));
+
 			return withdrawDAO.saveWithdraw(withdraw);
 
 		} else {
@@ -205,7 +211,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 
 		transDetailsManager.addTransDetails(transferId, from, to, "", "", "", ServerConsts.CURRENCY_OF_GOLDPAY, amount,
 				BigDecimal.ZERO, null, "", type);
-	
+
 		return transferId;
 
 	}
@@ -261,6 +267,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(withdraw.getGoldTransferA());
 		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(withdraw.getFeeTransferA());
 	}
+
 	@Override
 	public void goldpayTrans4Handle(Integer withdrawId) {
 		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);

@@ -1,5 +1,9 @@
 package com.yuyutechnology.exchange;
 
+/**
+ * @author suzan.wu
+ *
+ */
 public class ServerConsts {
 	// 用户类型
 	/**
@@ -255,5 +259,11 @@ public class ServerConsts {
 	public static final int GOLDPAY_RETURN_SUCCESS = 1;
 
 	public static final int ALARM_TYPE_WITHDRAW = 6;
+	
+	//通知方式
+	public static final int ALARM_MODE_SMS = 1;
+	public static final int ALARM_MODE_EMAIL = 2;
+	public static final int ALARM_MODE_SMS_AND_EMAIL = 3;
+	
 
 }

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 
+import com.yuyutechnology.exchange.dto.NotifyWithdrawDTO;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.pojo.CrmSupervisor;
 
@@ -51,5 +52,7 @@ public interface CrmAlarmManager {
 	 * 
 	 */
 	void registrationAlarm();
+
+	void notifyWithdraw(NotifyWithdrawDTO notifyWithdrawDTO);
 
 }

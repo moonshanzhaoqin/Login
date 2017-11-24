@@ -13,6 +13,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.dto.WithdrawCalResult;
+import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.WithdrawManager;
 import com.yuyutechnology.exchange.server.controller.request.WithdrawCalculateRequset;
 import com.yuyutechnology.exchange.server.controller.request.WithdrawConfirmRequset;
@@ -29,6 +30,7 @@ public class WithdrawController {
 
 	@Autowired
 	WithdrawManager withdrawManager;
+	
 
 	@ResponseEncryptBody
 	@ApiOperation(value = "提现计算", httpMethod = "POST", notes = "")
@@ -81,9 +83,6 @@ public class WithdrawController {
 			rep.setRetCode(RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
 			rep.setMessage(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
 		} else {
-			withdrawManager.goldpayTrans4Apply(withdrawId);
-			/* 通知管理员 */
-			withdrawManager.notifyWithdraw(sessionData.getUserId(), withdrawConfirmRequset.getGoldBullion());
 			logger.info(MessageConsts.RET_CODE_SUCCESS);
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
