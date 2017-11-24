@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -211,14 +212,14 @@ public class CampaignManagerImpl implements CampaignManager {
 	}
 
 	@Override
-	public void grantBonus(Integer userId, String areaCode, String userPhone) {
+	public List<String> grantBonus(Integer userId, String areaCode, String userPhone) {
 		logger.info("grantBonus : {} ", userId);
-
+		List<String> transferIds = new ArrayList<>();
 		/* 领取是否过了有效期 */
 		Collect collect = activeCollect(areaCode, userPhone);
 		if (collect == null) {
 			logger.info("collect is not active");
-			return;
+			return transferIds;
 		}
 		collect.setRegisterStatus(ServerConsts.COLLECT_STATUS_REGISTER);
 		collectDAO.updateCollect(collect);
@@ -227,30 +228,29 @@ public class CampaignManagerImpl implements CampaignManager {
 		Campaign campaign = campaignDAO.getCampaign(collect.getCampaignId());
 		if (campaign == null) {
 			logger.warn("The collect is illegal, no campaign.");
-			return;
+			return transferIds;
 		}
 		if (campaign.getBudgetSurplus().compareTo(collect.getInviteeBonus().add(collect.getInviterBonus())) == -1) {
 			logger.info("The budget is not enough");
-			return;
+			return transferIds;
 		}
 
 		/* 判断邀请人的人数限制 */
 		Inviter inviter = inviterDAO.getInviter(collect.getInviterId());
 		if (inviter == null) {
 			logger.warn("The collect is illegal, no inviter.");
-			return;
+			return transferIds;
 		}
 		if (inviter.getInviteQuantity() >= configManager.getConfigLongValue(ConfigKeyEnum.INVITE_QUANTITY_RESTRICTION,
 				1000L)) {
 			logger.info("Exceed quanlity restriction");
-			return;
+			return transferIds;
 		}
 
 		/* 给邀请人发钱 */
-		settlement(collect.getInviterId(), collect.getInviterBonus());
+		transferIds.add(settlement(collect.getInviterId(), collect.getInviterBonus()));
 		/* 给注册用户发钱 */
-		settlement(userId, collect.getInviteeBonus());
-
+		transferIds.add(settlement(userId, collect.getInviteeBonus()));
 		/* 更新预算 */
 		campaign.setBudgetSurplus(
 				campaign.getBudgetSurplus().subtract(collect.getInviteeBonus().add(collect.getInviterBonus())));
@@ -258,18 +258,17 @@ public class CampaignManagerImpl implements CampaignManager {
 		campaignDAO.updateCampaign(campaign);
 
 		/* 更新邀请人信息 */
-//		inviter.setInviteBonus(inviter.getInviteBonus().add(collect.getInviterBonus()));
-//		inviter.setInviteQuantity(inviter.getInviteQuantity() + 1);
-		inviterDAO.updateInviter(inviter.getUserId(),1,collect.getInviterBonus());
-
+		// inviter.setInviteBonus(inviter.getInviteBonus().add(collect.getInviterBonus()));
+		// inviter.setInviteQuantity(inviter.getInviteQuantity() + 1);
+		inviterDAO.updateInviter(inviter.getUserId(), 1, collect.getInviterBonus());
+		return transferIds;
 	}
 
-	
-	private void settlement(Integer userId, BigDecimal bonus) {
+	private String settlement(Integer userId, BigDecimal bonus) {
 
 		User user = userDAO.getUser(userId);
 		User system = userDAO.getSystemUser();
-		
+
 		String goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
 
 		/* 生成订单 */
@@ -284,26 +283,28 @@ public class CampaignManagerImpl implements CampaignManager {
 		transfer.setTransferAmount(bonus);
 		transfer.setTransferComment("inviteBonus");
 		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
-		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		transfer.setAreaCode(user.getAreaCode());
 		transfer.setPhone(user.getUserPhone());
 		transfer.setGoldpayOrderId(goldpayOrderId);
 		transferDAO.addTransfer(transfer);
-		
+
 		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId);
-		
+
 		/* 生成详情 */
 		transDetailsManager.addTransDetails(transferId, userId, system.getUserId(), "", "", "",
-				ServerConsts.CURRENCY_OF_GOLDPAY, bonus,BigDecimal.ZERO,null
-				, null, ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
-		
-//		walletDAO.updateWalletByUserIdAndCurrency(userId, ServerConsts.CURRENCY_OF_GOLDPAY, bonus, "+",
-//				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId);
-//		walletDAO.updateWalletByUserIdAndCurrency(system.getUserId(), ServerConsts.CURRENCY_OF_GOLDPAY, bonus, "-",
-//				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId);
-		
-		pushManager.push4Invite(user, transferId, bonus);
+				ServerConsts.CURRENCY_OF_GOLDPAY, bonus, BigDecimal.ZERO, null, null,
+				ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
 
+		// walletDAO.updateWalletByUserIdAndCurrency(userId,
+		// ServerConsts.CURRENCY_OF_GOLDPAY, bonus, "+",
+		// ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId);
+		// walletDAO.updateWalletByUserIdAndCurrency(system.getUserId(),
+		// ServerConsts.CURRENCY_OF_GOLDPAY, bonus, "-",
+		// ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN, transferId);
+
+		pushManager.push4Invite(user, transferId, bonus);
+		return transferId;
 	}
 
 	@Override

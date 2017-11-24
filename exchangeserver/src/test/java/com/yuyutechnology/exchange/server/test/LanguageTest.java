@@ -2,6 +2,8 @@ package com.yuyutechnology.exchange.server.test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -72,9 +74,21 @@ public class LanguageTest extends BaseSpringJunit4 {
 
 	// }
 
-//	@Test
-//	public void test() {
+
+	@Test
+	public void test() {
+//		List<String> list=null;
+//		
+//		if (list.isEmpty()) {
+//			System.out.println("empty");
+//		}
+//		for (String string : list) {
+//			System.out.println(string);
+//		}
+		
+		
+		
 //		logger.info(campaignManager.getCampaignInfo().toString());
-//	}
+	}
 
 }

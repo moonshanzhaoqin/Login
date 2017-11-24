@@ -3,6 +3,8 @@ package com.yuyutechnology.exchange.manager.impl;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -126,6 +128,13 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		}
 	}
 
+	@Override
+	public void updateWallet4GoldpayTransList(List<String> transferIds) {
+		for (String transferId : transferIds) {
+			updateWallet4GoldpayTrans(transferId);
+		}
+	}
+	
 	@Override
 	public void updateWallet4GoldpayExchange(String exchangeId, Integer systemUserId) {
 		Exchange exchange = exchangeDAO.getExchangeById(exchangeId);

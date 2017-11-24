@@ -5,6 +5,8 @@ package com.yuyutechnology.exchange.manager;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+
 import com.yuyutechnology.exchange.dto.CampaignInfo;
 import com.yuyutechnology.exchange.dto.InviterInfo;
 import com.yuyutechnology.exchange.pojo.Collect;
@@ -67,8 +69,9 @@ public interface CampaignManager {
 	 * @param userId
 	 * @param areaCode
 	 * @param userPhone
+	 * @return 
 	 */
-	void grantBonus(Integer userId, String areaCode, String userPhone);
+	List<String> grantBonus(Integer userId, String areaCode, String userPhone);
 
 	/**
 	 * 有效的领取记录

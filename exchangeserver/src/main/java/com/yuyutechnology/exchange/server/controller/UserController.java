@@ -27,6 +27,7 @@ import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
+import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
 import com.yuyutechnology.exchange.server.controller.request.ForgetPasswordRequest;
@@ -73,6 +74,8 @@ public class UserController {
 	ConfigManager configManager;
 	@Autowired
 	CampaignManager campaignManager;
+	@Autowired
+	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
 
 	@ResponseEncryptBody
 	@ApiOperation(value = "功能模块的可用性", httpMethod = "POST", notes = "")
@@ -396,9 +399,8 @@ public class UserController {
 						userManager.updateUser(userId, HttpClientUtils.getIP(request), registerRequest.getPushId(),
 								registerRequest.getLanguage());
 						/* 发放奖励金 */
-						campaignManager.grantBonus(userId, registerRequest.getAreaCode(),
-								registerRequest.getUserPhone());
-
+						goldpayTrans4MergeManager.updateWallet4GoldpayTransList(campaignManager.grantBonus(userId,
+								registerRequest.getAreaCode(), registerRequest.getUserPhone()));
 						/* 生成session Token */
 						SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 						sessionManager.saveSessionData(sessionData);
