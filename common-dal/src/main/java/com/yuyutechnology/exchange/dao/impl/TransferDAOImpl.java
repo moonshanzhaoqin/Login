@@ -263,5 +263,14 @@ public class TransferDAOImpl implements TransferDAO {
 				ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION,ServerConsts.TRANSFER_TYPE_IN_FEE);
 		return (Transfer) (list.isEmpty() ? null : list.get(0));
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Transfer> getTransferListByTime(int transferStatus, int transferType,Date time){
+		List<?> list = hibernateTemplate.find("from Transfer where transferStatus = ? and transferType = ? and createTime < ?", 
+				transferStatus,transferType,time);
+		return (List<Transfer>) list;
+	}
 
 }

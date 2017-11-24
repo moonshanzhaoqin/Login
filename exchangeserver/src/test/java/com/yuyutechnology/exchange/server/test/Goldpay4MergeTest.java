@@ -1,18 +1,19 @@
 package com.yuyutechnology.exchange.server.test;
 
-import java.util.HashMap;
+import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
-import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
+import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
-import com.yuyutechnology.exchange.pojo.Bind;
-import com.yuyutechnology.exchange.server.controller.request.TransConfirmRequest;
+import com.yuyutechnology.exchange.pojo.Transfer;
+import com.yuyutechnology.exchange.util.DateFormatUtils;
 
 public class Goldpay4MergeTest  extends BaseSpringJunit4 {
 
@@ -24,6 +25,8 @@ public class Goldpay4MergeTest  extends BaseSpringJunit4 {
 	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
 	@Autowired
 	BindDAO bindDAO;
+	@Autowired 
+	TransferDAO transferDAO;
 	
 	@Test
 	public void test(){
@@ -76,7 +79,16 @@ public class Goldpay4MergeTest  extends BaseSpringJunit4 {
 //		
 //		System.out.println(map.toString());
 		
-		goldpayTrans4MergeManager.createGoldpay("+86", "9999999", "system", false);
+//		goldpayTrans4MergeManager.createGoldpay("+86", "9999999", "system", false);
+		
+		Date time = DateFormatUtils.getpreDays(3);
+		
+		List<Transfer> list = transferDAO.getTransferListByTime(
+				ServerConsts.TRANSFER_STATUS_OF_PROCESSING, ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN,time);
+		
+		for (Transfer transfer : list) {
+			System.out.println("sssssssssssssssssssss"+transfer.getTransferId());
+		}
 		
 	}
 	
