@@ -83,6 +83,8 @@
 										href="<c:url value='/alarm/getRegistrationAlarmConfigList' />">注册人数预警设置</a></li>
 									<li><a
 										href="<c:url value='/alarm/getTotalGDQAlarmConfigList' />">已售金本总量预警设置</a></li>
+										<li><a
+										href="<c:url value='/alarm/getNotifyWithdrawConfigList' />">提取金条通知</a></li>
 									<li class="divider"></li>
 									<li><a href="<c:url value='/alarm/getSupervisorList' />">预警人设置</a></li>
 								</ul></li>

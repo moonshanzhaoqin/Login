@@ -42,7 +42,8 @@ function updateAlarmConfig(obj) {
 
 						if (data.crmAlarm.alarmType == 3
 								|| data.crmAlarm.alarmType == 4
-								|| data.crmAlarm.alarmType == 5) {
+								|| data.crmAlarm.alarmType == 5
+								|| data.crmAlarm.alarmType == 6) {
 							$("#updateLimitConfig").hide();
 							$('#updateLimitConfig :input').attr('disabled',
 									true);
@@ -124,7 +125,7 @@ $("#addAlarmConfigBtn")
 				function() {
 					if ($("#alarmType").val().trim() != 3
 							&& $("#alarmType").val().trim() != 4
-							&& $("#alarmType").val().trim() != 5) {
+							&& $("#alarmType").val().trim() != 5&& $("#alarmType").val().trim() != 6) {
 						var lowerLimit = $("#criticalThresholdLowerLimit")
 								.val().trim();
 						var upperLimit = $("#criticalThresholdUpperLimit")
@@ -154,7 +155,7 @@ $("#updateAlarmConfigBtn").click(
 		function() {
 			if ($("#updateAlarmType").val().trim() != 3
 					&& $("#updateAlarmType").val().trim() != 4
-					&& $("#updateAlarmType").val().trim() != 5) {
+					&& $("#updateAlarmType").val().trim() != 5&& $("#updateAlarmType").val().trim() != 6) {
 				var lowerLimit = $("#updateLowerLimit").val().trim();
 				var upperLimit = $("#updateUpperLimit").val().trim();
 				if (checkNotBlank(lowerLimit) && checkNotBlank(upperLimit)) {
@@ -191,7 +192,7 @@ function isNumeric(obj) {
 function addLargeTransConfig(alarmType) {
 	$("#addAlarmConfigModal").modal('show');
 	$("#alarmType").val(alarmType);
-	if (alarmType == 3 || alarmType == 5) {
+	if (alarmType == 3 || alarmType == 5 || alarmType == 6) {
 		$("#limitConfig").hide();
 	}
 
