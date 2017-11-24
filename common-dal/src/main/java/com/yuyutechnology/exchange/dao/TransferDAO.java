@@ -49,4 +49,6 @@ public interface TransferDAO {
 
 	Transfer getFeeTransfer(String transferId);
 
+	List<Transfer> getTransferListByTime(int transferStatus, int transferType,Date time);
+
 }
