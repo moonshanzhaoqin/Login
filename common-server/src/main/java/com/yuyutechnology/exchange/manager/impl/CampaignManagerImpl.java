@@ -284,7 +284,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		transfer.setTransferAmount(bonus);
 		transfer.setTransferComment("inviteBonus");
 		transfer.setTransferType(ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN);
-		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		transfer.setAreaCode(user.getAreaCode());
 		transfer.setPhone(user.getUserPhone());
 		transfer.setGoldpayOrderId(goldpayOrderId);

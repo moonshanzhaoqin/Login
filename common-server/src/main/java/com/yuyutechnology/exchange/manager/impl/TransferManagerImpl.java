@@ -269,39 +269,6 @@ public class TransferManagerImpl implements TransferManager {
 			return map.get("retCode");
 		}
 		
-//		// 每次支付金额限制
-//		BigDecimal transferLimitPerPay = BigDecimal
-//				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITPERPAY, 100000d));
-//		logger.warn("transferLimitPerPay : {}", transferLimitPerPay);
-//		if ((oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount()))
-//				.compareTo(transferLimitPerPay) == 1) {
-//			logger.warn("Exceeds the maximum amount of each transaction");
-//			return RetCodeConsts.TRANSFER_LIMIT_EACH_TIME;
-//		}
-//
-//		// 每天累计金额限制
-//		BigDecimal transferLimitDailyPay = BigDecimal
-//				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITDAILYPAY, 100000d));
-//		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount("transfer_" + userId);
-//		logger.warn("transferLimitDailyPay : {},accumulatedAmount : {} ", transferLimitDailyPay, accumulatedAmount);
-//		if ((accumulatedAmount
-//				.add(oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(), transfer.getTransferAmount())))
-//						.compareTo(transferLimitDailyPay) == 1) {
-//			logger.warn("More than the maximum daily transaction limit");
-//			return RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY;
-//		}
-//		// 每天累计给付次数限制
-//		Double transferLimitNumOfPayPerDay = configManager
-//				.getConfigDoubleValue(ConfigKeyEnum.TRANSFERLIMITNUMBEROFPAYPERDAY, 100000d);
-//
-//		Integer dayTradubgVolume = transferDAO.getCumulativeNumofTimes("transfer_" + userId);
-//		logger.warn("transferLimitNumOfPayPerDay : {},dayTradubgVolume : {} ", transferLimitNumOfPayPerDay,
-//				dayTradubgVolume);
-//		if (transferLimitNumOfPayPerDay <= new Double(dayTradubgVolume)) {
-//			logger.warn("Exceeds the maximum number of transactions per day");
-//			return RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY;
-//		}
-
 		// 获取系统账号
 		User systemUser = userDAO.getSystemUser();
 
@@ -845,6 +812,7 @@ public class TransferManagerImpl implements TransferManager {
 		//扣除手续费
 		Transfer transfer4fee = transferDAO.getFeeTransfer(transferId);
 		if(transfer4fee != null){
+			goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transfer4fee.getTransferId());
 			transferDAO.updateTransferStatus(transfer4fee.getTransferId(), ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 		}
 
@@ -915,10 +883,6 @@ public class TransferManagerImpl implements TransferManager {
 			return null;
 		}
 		
-		//判断被邀请用户是否已经注册
-		User  invitePeople = userDAO.getUserByUserPhone(unregistered.getAreaCode(), unregistered.getUserPhone());
-		
-
 		String transferId2 = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		User systemUser = userDAO.getSystemUser();
 

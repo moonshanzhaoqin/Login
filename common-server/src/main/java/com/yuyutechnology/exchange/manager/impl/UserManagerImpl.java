@@ -576,7 +576,7 @@ public class UserManagerImpl implements UserManager {
 			transfer.setTransferAmount(unregistered.getAmount());
 			transfer.setCreateTime(new Date());
 			transfer.setFinishTime(new Date());
-			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 			transfer.setTransferComment(unregistered.getTransferId());
 			transfer.setNoticeId(0);

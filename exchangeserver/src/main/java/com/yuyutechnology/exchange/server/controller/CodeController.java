@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuyutechnology.exchange.server.controller.request.DecryptRequest;
 import com.yuyutechnology.exchange.server.controller.response.EncryptResponse;
-import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
-import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 import com.yuyutechnology.exchange.util.AESCipher;
 
 //@ApiIgnore

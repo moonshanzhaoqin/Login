@@ -3,7 +3,6 @@ package com.yuyutechnology.exchange.manager;
 import org.springframework.scheduling.annotation.Async;
 
 import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
-import com.yuyutechnology.exchange.pojo.Transfer;
 
 public interface GoldpayTrans4MergeManager {
 
