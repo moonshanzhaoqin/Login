@@ -70,8 +70,19 @@ function getWithdrawByPage(currentPage, userPhone, userName) {
 				for ( var i in data.rows) {
 					html += '<tr>'
 					// +'<td>'+data.rows[i][0].withdrawId +'</td>'
-					+ '<td>'
-							+ data.rows[i][0].userId
+//					+ '<td>'
+//							+ data.rows[i][0].userId
+//							+ '</td>'
+							+ '<td>'
+							+ data.rows[i][1].areaCode
+							+ '</td>'
+							+ '<td>'
+							+ data.rows[i][1].userPhone
+							+ '</td>'+ '<td>'
+							+ data.rows[i][1].userName
+							+ '</td>'
+							+ '<td>'
+							+ data.rows[i][0].userEmail
 							+ '</td>'
 							+ '<td>'
 							+ data.rows[i][0].quantity
@@ -97,21 +108,21 @@ function getWithdrawByPage(currentPage, userPhone, userName) {
 							+ (data.rows[i][0].handleTime == null ? ""
 									: timeDate(data.rows[i][0].handleTime))
 							+ '</td>'
-							+ '<td>'
-							+ (data.rows[i][0].goldTransferA == null ? ""
-									: data.rows[i][0].goldTransferA)
-							+ '</td>'
-							+ '<td>'
-							+ (data.rows[i][0].feeTransferA == null ? ""
-									: data.rows[i][0].feeTransferA)
-							+ '</td>'
-							+ '<td>'
-							+ (data.rows[i][0].goldTransferB == null ? ""
-									: data.rows[i][0].goldTransferB)
-							+ '</td>'
-							+ '<td>'
-							+ (data.rows[i][0].feeTransferB == null ? ""
-									: data.rows[i][0].feeTransferB) + '</td>'
+//							+ '<td>'
+//							+ (data.rows[i][0].goldTransferA == null ? ""
+//									: data.rows[i][0].goldTransferA)
+//							+ '</td>'
+//							+ '<td>'
+//							+ (data.rows[i][0].feeTransferA == null ? ""
+//									: data.rows[i][0].feeTransferA)
+//							+ '</td>'
+//							+ '<td>'
+//							+ (data.rows[i][0].goldTransferB == null ? ""
+//									: data.rows[i][0].goldTransferB)
+//							+ '</td>'
+//							+ '<td>'
+//							+ (data.rows[i][0].feeTransferB == null ? ""
+//									: data.rows[i][0].feeTransferB) + '</td>'
 							+ '</tr>'
 				}
 				$('#withdraw tbody').html(html);
@@ -132,10 +143,10 @@ function getWithdrawByPage(currentPage, userPhone, userName) {
 function showHandleResult(handleResult, withdrawId) {
 	switch (handleResult) {
 	case WITHDRAW_HANDLE_RESULT_DEFAULT:
-		return '<button type="button" class="btn btn-primary" onclick="finishWithdraw('
+		return '<button type="button" class="btn btn-success" onclick="finishWithdraw('
 				+ withdrawId
 				+ ')">完成</button>'
-				+ '<button type="button" class="btn btn-primary" onclick="cancelWithdraw('
+				+ '<button type="button" class="btn btn-warning" onclick="cancelWithdraw('
 				+ withdrawId + ')">取消</button>';
 	case WITHDRAW_HANDLE_RESULT_FINISHT:
 		return "交易完成";

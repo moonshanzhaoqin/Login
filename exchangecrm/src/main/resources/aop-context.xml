@@ -29,7 +29,7 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 	<aop:config>
 		<!-- 定义一个切入点 -->
 		<aop:pointcut
-			expression="execution (* com.yuyutechnology.exchange.*.*Manager.*(..)) || execution (* com.yuyutechnology.exchange.crm.*.*Manager*.*(..))"
+			expression="execution (* com.yuyutechnology.exchange.*.*Manager.*(..)) || execution (* com.yuyutechnology.exchange.crm.*.*Manager*.*(..))|| execution (* com.yuyutechnology.exchange.crm.*.*.*Manager.*(..))"
 			id="services" />
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="services" />
 		<aop:advisor advice-ref="txAdviceTPPS" pointcut-ref="services" />

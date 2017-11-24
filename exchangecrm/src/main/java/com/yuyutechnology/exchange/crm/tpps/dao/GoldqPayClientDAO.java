@@ -8,7 +8,6 @@ import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.crm.tpps.pojo.GoldqPayClient;
-import com.yuyutechnology.exchange.crm.tpps.pojo.GoldqPayFee;
 import com.yuyutechnology.exchange.util.page.PageBean;
 import com.yuyutechnology.exchange.util.page.PageUtils;
 
@@ -23,6 +22,10 @@ public class GoldqPayClientDAO {
 
 	public PageBean getGoldqPayClientByPage(String hql, List<Object> values, int currentPage, int pageSize) {
 		return PageUtils.getPageContent(hibernateTemplateTPPS, hql.toString(), values, currentPage, pageSize);
+	}
+
+	public void updateGoldqPayClient(GoldqPayClient goldqPayClient) {
+		hibernateTemplateTPPS.update(goldqPayClient);
 	}
 
 }

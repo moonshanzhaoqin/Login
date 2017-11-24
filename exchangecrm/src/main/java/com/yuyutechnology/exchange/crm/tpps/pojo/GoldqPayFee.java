@@ -25,11 +25,6 @@ public class GoldqPayFee implements java.io.Serializable {
 	public GoldqPayFee() {
 	}
 
-	public GoldqPayFee(String clientId, byte payRole) {
-		this.clientId = clientId;
-		this.payRole = payRole;
-	}
-
 	public GoldqPayFee(String clientId, byte payRole, BigDecimal exemptAmount, BigDecimal feePercent, BigDecimal minFee,
 			BigDecimal maxFee, byte feePayer) {
 		this.clientId = clientId;

@@ -1,5 +1,5 @@
 package pojo;
-// Generated Nov 20, 2017 6:14:04 PM by Hibernate Tools 5.2.6.Final
+// Generated Nov 23, 2017 5:02:31 PM by Hibernate Tools 5.2.6.Final
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -21,6 +21,7 @@ public class EWithdraw implements java.io.Serializable {
 
 	private Integer withdrawId;
 	private int userId;
+	private String userEmail;
 	private int quantity;
 	private BigDecimal goldpay;
 	private BigDecimal fee;
@@ -36,8 +37,10 @@ public class EWithdraw implements java.io.Serializable {
 	public EWithdraw() {
 	}
 
-	public EWithdraw(int userId, int quantity, BigDecimal goldpay, BigDecimal fee, Date applyTime, byte handleResult) {
+	public EWithdraw(int userId, String userEmail, int quantity, BigDecimal goldpay, BigDecimal fee, Date applyTime,
+			byte handleResult) {
 		this.userId = userId;
+		this.userEmail = userEmail;
 		this.quantity = quantity;
 		this.goldpay = goldpay;
 		this.fee = fee;
@@ -45,10 +48,11 @@ public class EWithdraw implements java.io.Serializable {
 		this.handleResult = handleResult;
 	}
 
-	public EWithdraw(int userId, int quantity, BigDecimal goldpay, BigDecimal fee, Date applyTime, byte handleResult,
-			String handler, Date handleTime, String goldTransferA, String feeTransferA, String goldTransferB,
-			String feeTransferB) {
+	public EWithdraw(int userId, String userEmail, int quantity, BigDecimal goldpay, BigDecimal fee, Date applyTime,
+			byte handleResult, String handler, Date handleTime, String goldTransferA, String feeTransferA,
+			String goldTransferB, String feeTransferB) {
 		this.userId = userId;
+		this.userEmail = userEmail;
 		this.quantity = quantity;
 		this.goldpay = goldpay;
 		this.fee = fee;
@@ -81,6 +85,15 @@ public class EWithdraw implements java.io.Serializable {
 
 	public void setUserId(int userId) {
 		this.userId = userId;
+	}
+
+	@Column(name = "user_email", nullable = false)
+	public String getUserEmail() {
+		return this.userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
 	}
 
 	@Column(name = "quantity", nullable = false)

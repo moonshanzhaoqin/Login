@@ -96,12 +96,12 @@ public class WithdrawManagerImpl implements WithdrawManager {
 	}
 
 	@Override
-	public Integer applyConfirm(Integer userId, int goldBullion) {
+	public Integer applyConfirm(Integer userId, int goldBullion,String userEmail) {
 		WithdrawCalResult result = withdrawCalculate(userId, goldBullion);
 		if (result.getRetCode().equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			User frozenUser = userDAO.getFrozenUser();
 
-			Withdraw withdraw = new Withdraw(userId, goldBullion, result.getGoldpay(), result.getFee(), new Date());
+			Withdraw withdraw = new Withdraw(userId,userEmail, goldBullion, result.getGoldpay(), result.getFee(), new Date());
 			/* 把Goldpay转到冻结账户 */
 			String goldTransferA = transfer4Withdraw(userId, frozenUser.getUserId(), result.getGoldpay(),
 					ServerConsts.TRANSFER_TYPE_IN_WITHDRAW);

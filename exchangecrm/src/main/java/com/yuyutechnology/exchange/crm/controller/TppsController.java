@@ -3,7 +3,6 @@ package com.yuyutechnology.exchange.crm.controller;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,16 +17,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
-import com.yuyutechnology.exchange.crm.request.AddPayClientRequset;
+import com.yuyutechnology.exchange.crm.request.AddGoldqPayClientRequset;
 import com.yuyutechnology.exchange.crm.request.GetGoldqPayClientByPageRequest;
 import com.yuyutechnology.exchange.crm.request.GetGoldqPayFeeRequest;
-import com.yuyutechnology.exchange.crm.tpps.manager.TppsMananger;
+import com.yuyutechnology.exchange.crm.tpps.manager.TppsManager;
+import com.yuyutechnology.exchange.crm.tpps.pojo.GoldqPayClient;
 import com.yuyutechnology.exchange.crm.tpps.pojo.GoldqPayFee;
 import com.yuyutechnology.exchange.enums.Operation;
 import com.yuyutechnology.exchange.manager.CrmLogManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.CrmLog;
-import com.yuyutechnology.exchange.pojo.FeeTemplate;
 import com.yuyutechnology.exchange.util.page.PageBean;
 
 @Controller
@@ -38,57 +37,73 @@ public class TppsController {
 	@Autowired
 	UserManager userManager;
 	@Autowired
-	TppsMananger tppsMananger;
+	TppsManager tppsManager;
+
 	// TODO add new pay client
 
 	@ResponseBody
-	@RequestMapping(value = "/addPayClient", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse addPayClient(@RequestBody AddPayClientRequset addPayClientRequset, HttpServletRequest request,
-			HttpServletResponse response) {
+	@RequestMapping(value = "/addGoldqPayClient", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public BaseResponse addGoldqPayClient(@RequestBody AddGoldqPayClientRequset addGoldqPayClientRequset,
+			HttpServletRequest request, HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
-		logger.info("addPayClient({})", addPayClientRequset.toString());
-		Integer exId = userManager.getUserId(addPayClientRequset.getAreaCode(), addPayClientRequset.getUserPhone());
-		if (exId == null || exId == 0) {
-			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+		logger.info("addGoldqPayClient({})", addGoldqPayClientRequset.toString());
+		Integer exId = userManager.getUserId(addGoldqPayClientRequset.getAreaCode(),
+				addGoldqPayClientRequset.getUserPhone());
+		if (exId == null) {
+			rep.setRetCode(RetCodeConsts.PHONE_NOT_EXIST);
+			rep.setMessage("phone not exist");
+		} else if (exId == 0) {
+			rep.setRetCode(RetCodeConsts.USER_BLOCKED);
+			rep.setMessage("user is blocked");
 		} else {
-			tppsMananger.addPayClient(exId);
+			tppsManager.addGoldqPayClient(exId);
 			crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
-					Operation.ADD_PAY_CLIENT.getOperationName(), addPayClientRequset.toString()));
+					Operation.ADD_GOLDQPAYCLIENT.getOperationName(), addGoldqPayClientRequset.toString()));
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		}
+
 		return rep;
 	}
 
-	// TODO edit pay client
-	// TODO edit feeTemplate
 	@ResponseBody
-	@RequestMapping(value = "/updateGoldqPayFee", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse updateGoldqPayFee(@RequestBody GoldqPayFee goldqPayFee,HttpServletRequest request,
+	@RequestMapping(value = "/updateGoldqPayClient", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public BaseResponse updateGoldqPayClient(@RequestBody GoldqPayClient goldqPayClient, HttpServletRequest request,
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
-		
-		logger.info("updateFeeTemplate({})", goldqPayFee.toString());
-		tppsMananger.updateGoldqPayFee(goldqPayFee);
+		logger.info("updateGoldqPayClient({})", goldqPayClient.toString());
+		tppsManager.updateGoldqPayClient(goldqPayClient);
+		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+				Operation.UPDATE_GOLDQPAYCLIENT.getOperationName(), goldqPayClient.toString()));
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		return rep;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/updategoldqPayClient", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public BaseResponse updateGoldqPayFee(@RequestBody GoldqPayFee goldqPayFee, HttpServletRequest request,
+			HttpServletResponse response) {
+		BaseResponse rep = new BaseResponse();
+		logger.info("updategoldqPayClient({})", goldqPayFee.toString());
+		tppsManager.updateGoldqPayFee(goldqPayFee);
 		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.UPDATE_GOLDQPAYFEE.getOperationName(), goldqPayFee.toString()));
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
-	
-	// TODO list pay client ,search by page
+
 	@ResponseBody
 	@RequestMapping(value = "/getGoldqPayClientByPage", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public PageBean getGoldqPayClientByPage(@RequestBody GetGoldqPayClientByPageRequest getGoldqPayClientByPageRequest,
 			HttpServletRequest request, HttpServletResponse response) {
 		logger.info(getGoldqPayClientByPageRequest.toString());
-		return tppsMananger.getGoldqPayClientByPage(Integer.parseInt(getGoldqPayClientByPageRequest.getCurrentPage()));
+		return tppsManager.getGoldqPayClientByPage(Integer.parseInt(getGoldqPayClientByPageRequest.getCurrentPage()));
 
 	}
-	// TODO search feeTemplate by client
+
 	@ResponseBody
 	@RequestMapping(value = "/getGoldqPayFee", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public List<GoldqPayFee> getGoldqPayFee(@RequestBody GetGoldqPayFeeRequest getGoldqPayFeeRequest ) {
+	public List<GoldqPayFee> getGoldqPayFee(@RequestBody GetGoldqPayFeeRequest getGoldqPayFeeRequest) {
 		logger.info("getGoldqPayFee({})", getGoldqPayFeeRequest.getClientId());
-		return tppsMananger.getGoldqPayFeeByClientId(getGoldqPayFeeRequest.getClientId());
+		return tppsManager.getGoldqPayFeeByClientId(getGoldqPayFeeRequest.getClientId());
 	}
 }

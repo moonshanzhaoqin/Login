@@ -7,6 +7,14 @@
 <%@ include file="common/header.jsp"%>
 <body>
 	<div class="container">
+		<div class="row ">
+			<ul class="formbar pull-right">
+				<li>
+					<button type="button" class="btn btn-primary " data-toggle="modal"
+						data-target="#addGoldqPayClientModal">新增商户</button>
+				</li>
+			</ul>
+		</div>
 		<div class="row">
 			<table class="table table-bordered table-hover table-striped"
 				id="goldqPayClient">
@@ -52,20 +60,56 @@
 
 	</div>
 	<!-- 模态框（Modal） -->
-	<div class="modal fade" id="goldqPayClientModal" tabindex="-1"
-		role="dialog" aria-labelledby="goldqPayClientModalLabel"
+		<div class="modal fade" id="addGoldqPayClientModal" tabindex="-1"
+		role="dialog" aria-labelledby="addGoldqPayClientModalLabel"
 		aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"
 						aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="goldqPayClientModalLabel">修改模板</h4>
+					<h4 class="modal-title" id="addGoldqPayClientModalLabel">新增商户</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-horizontal" role="form" id="addGoldqPayClient">
+
+						<div class="form-group">
+							<label for="areaCode" class="col-sm-4 control-label">国家码</label>
+							<div class="col-sm-5">
+								<input type="text" name="areaCode" class="form-control" >
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="userPhone" class="col-sm-4 control-label">手机号</label>
+							<div class="col-sm-5">
+								<input type="text" name="userPhone" class="form-control" >
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary"
+						onclick="addGoldqPayClient()">添加</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="updategoldqPayClientModal" tabindex="-1"
+		role="dialog" aria-labelledby="updategoldqPayClientModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="updategoldqPayClientModalLabel">修改商户</h4>
 				</div>
 				<div class="modal-body">
 					<form class="form-horizontal" role="form" id="updateGoldqPayClient">
-						<input type="hidden" name="id" class="form-control" >
-						
+						<input type="hidden" name="id" class="form-control">
+
 						<div class="form-group">
 							<label for="exId" class="col-sm-4 control-label">exId</label>
 							<div class="col-sm-5">
@@ -88,7 +132,7 @@
 						<div class="form-group">
 							<label for="name" class="col-sm-4 control-label">name</label>
 							<div class="col-sm-5">
-								<input type="text" name="name" class="form-control" >
+								<input type="text" name="name" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
@@ -115,19 +159,19 @@
 		</div>
 	</div>
 
-	<div class="modal fade" id="goldqPayFeeModal" tabindex="-1"
-		role="dialog" aria-labelledby="goldqPayFeeModalLabel"
+	<div class="modal fade" id="updategoldqPayFeeModal" tabindex="-1"
+		role="dialog" aria-labelledby="updategoldqPayFeeModalLabel"
 		aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"
 						aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="goldqPayFeeModalLabel">修改模板</h4>
+					<h4 class="modal-title" id="updategoldqPayFeeModalLabel">修改手续费模板</h4>
 				</div>
 				<div class="modal-body">
 					<form class="form-horizontal" role="form" id="updateGoldqPayFee">
-<input type="hidden" name="feeId" class="form-control" >
+						<input type="hidden" name="feeId" class="form-control">
 						<div class="form-group">
 							<label for="clientId" class="col-sm-4 control-label">clientId</label>
 							<div class="col-sm-5">
@@ -172,7 +216,7 @@
 						<div class="form-group">
 							<label for="feePayer" class="col-sm-4 control-label">手续费承担者</label>
 							<div class="col-sm-5">
-								<input type="text" name="feePayer" class="form-control" >
+								<input type="text" name="feePayer" class="form-control">
 							</div>
 						</div>
 					</form>

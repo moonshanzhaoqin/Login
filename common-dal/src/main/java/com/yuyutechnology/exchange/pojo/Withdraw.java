@@ -17,6 +17,7 @@ public class Withdraw implements java.io.Serializable {
 
 	private Integer withdrawId;
 	private int userId;
+	private String userEmail;
 	private int quantity;
 	private BigDecimal goldpay;
 	private BigDecimal fee;
@@ -32,18 +33,20 @@ public class Withdraw implements java.io.Serializable {
 	public Withdraw() {
 	}
 
-	public Withdraw(int userId, int quantity, BigDecimal goldpay, BigDecimal fee, Date applyTime) {
+	public Withdraw(int userId, String userEmail, int quantity, BigDecimal goldpay, BigDecimal fee, Date applyTime) {
 		this.userId = userId;
+		this.userEmail = userEmail;
 		this.quantity = quantity;
 		this.goldpay = goldpay;
 		this.fee = fee;
 		this.applyTime = applyTime;
 	}
 
-	public Withdraw(int userId, int quantity, BigDecimal goldpay, BigDecimal fee, Date applyTime, byte handleResult,
-			String handler, Date handleTime, String goldTransferA, String feeTransferA, String goldTransferB,
-			String feeTransferB) {
+	public Withdraw(int userId, String userEmail, int quantity, BigDecimal goldpay, BigDecimal fee, Date applyTime,
+			byte handleResult, String handler, Date handleTime, String goldTransferA, String feeTransferA,
+			String goldTransferB, String feeTransferB) {
 		this.userId = userId;
+		this.userEmail = userEmail;
 		this.quantity = quantity;
 		this.goldpay = goldpay;
 		this.fee = fee;
@@ -76,6 +79,15 @@ public class Withdraw implements java.io.Serializable {
 
 	public void setUserId(int userId) {
 		this.userId = userId;
+	}
+
+	@Column(name = "user_email", nullable = false)
+	public String getUserEmail() {
+		return this.userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
 	}
 
 	@Column(name = "quantity", nullable = false)

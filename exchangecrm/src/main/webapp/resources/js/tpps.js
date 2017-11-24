@@ -1,7 +1,12 @@
 $(function() {
 	getGoldqPayClientByPage(1);
-
-	$('#goldqPayClientModal').on('show.bs.modal', function(e) {
+	$('#addGoldqPayClientModal').on('show.bs.modal', function(e) {
+		form = document.getElementById("addGoldqPayClient");
+		form.areaCode.value = '';
+		form.userPhone.value = '';
+	})
+	
+	$('#updategoldqPayClientModal').on('show.bs.modal', function(e) {
 		// do something...
 		var tr = $(e.relatedTarget) // Button that triggered the modal
 		var goldqPayClient = tr.data('whatever') // Extract info from data-*
@@ -17,7 +22,7 @@ $(function() {
 		form.customDomain.value = goldqPayClient.customDomain;
 	})
 
-	$('#goldqPayFeeModal').on('show.bs.modal', function(e) {
+	$('#updategoldqPayFeeModal').on('show.bs.modal', function(e) {
 		// do something...
 		var tr = $(e.relatedTarget) // Button that triggered the modal
 		var goldqPayFee = tr.data('whatever') // Extract info from data-*
@@ -64,7 +69,10 @@ function getGoldqPayClientByPage(currentPage) {
 						console.log("success");
 						var html = "";
 						for ( var i in data.rows) {
-							html += '<tr id="'+data.rows[i].clientId+'">' + '<td>'
+							html += '<tr id="'
+									+ data.rows[i].clientId
+									+ '">'
+									+ '<td>'
 									+ data.rows[i].exId
 									+ '</td>'
 									+ '<td>'
@@ -86,7 +94,7 @@ function getGoldqPayClientByPage(currentPage) {
 											: data.rows[i].customDomain)
 									+ '</td>'
 									+ '<td>'
-									+ '<a  data-toggle="modal" data-target="#goldqPayClientModal" data-whatever='
+									+ '<a  data-toggle="modal" data-target="#updategoldqPayClientModal" data-whatever='
 									+ "'"
 									+ JSON.stringify(data.rows[i])
 									+ "'"
@@ -131,7 +139,7 @@ function updateGoldqPayClient() {
 		success : function(data) {
 			if (data.retCode == "00000") {
 				console.log("updateGoldqPayClient success");
-				$('#goldqPayClientModal').modal('hide')
+				$('#updategoldqPayClientModal').modal('hide')
 				alert("修改成功！");
 				getGoldqPayClientByPage(page);
 			} else if (data.retCode == "00002") {
@@ -153,8 +161,8 @@ function updateGoldqPayClient() {
 }
 
 function getGoldqPayFee(clientId) {
-	  $("tr").removeClass("success")
-      $("#" + clientId).addClass("success")
+	$("tr").removeClass("success")
+	$("#" + clientId).addClass("success")
 	var data = {
 		clientId : clientId,
 	}
@@ -191,7 +199,7 @@ function getGoldqPayFee(clientId) {
 								+ data[i].feePayer
 								+ '</td>'
 								+ '<td>'
-								+ '<a  data-toggle="modal" data-target="#goldqPayFeeModal" data-whatever='
+								+ '<a  data-toggle="modal" data-target="#updategoldqPayFeeModal" data-whatever='
 								+ "'" + JSON.stringify(data[i]) + "'"
 								+ '>修改</a>' + '</td>' + '</tr>'
 					}
@@ -229,7 +237,7 @@ function updateGoldqPayFee() {
 			success : function(data) {
 				if (data.retCode == "00000") {
 					console.log("updateGoldqPayFee success");
-					$('#goldqPayFeeModal').modal('hide')
+					$('#updategoldqPayFeeModal').modal('hide')
 					alert("修改成功！");
 					getGoldqPayFee(clientId);
 				} else if (data.retCode == "00002") {
@@ -251,6 +259,43 @@ function updateGoldqPayFee() {
 		alert("GDQ需为整数");
 	}
 }
+
+function addGoldqPayClient() {
+	form = document.getElementById("addGoldqPayClient");
+	data = {
+		areaCode : form.areaCode.value,
+		userPhone : form.userPhone.value,
+	}
+	$.ajax({
+		type : "post",
+		url : "/crm/addGoldqPayClient",
+		contentType : "application/json; charset=utf-8",
+		dataType : 'json',
+		data : JSON.stringify(data),
+		success : function(data) {
+			if (data.retCode == "00000") {
+				console.log("addGoldqPayClient success");
+				$('#addGoldqPayClientModal').modal('hide')
+				alert("添加成功！");
+				getGoldqPayClientByPage(1);
+			} else if (data.retCode == "00002") {
+				location.href = loginUrl;
+			} else {
+				console.log("updateGoldqPayFee" + data.message);
+				alert(data.message);
+			}
+		},
+		error : function(xhr, err) {
+			console.log("error");
+			console.log(err);
+			console.log(xhr);
+			alert("未知错误！");
+		},
+		async : false
+	});
+
+}
+
 // 分页
 function paginator(currentPage, pageTotal) {
 	console.log("paginator:currentPage=" + currentPage + ",pageTotal="

@@ -1,10 +1,6 @@
 package com.yuyutechnology.exchange.crm.request;
 
-public class AddPayClientRequset {
-	@Override
-	public String toString() {
-		return "AddPayClientRequset [areaCode=" + areaCode + ", userPhone=" + userPhone + "]";
-	}
+public class AddGoldqPayClientRequset {
 	private String areaCode;
 	private String userPhone;
 	public String getAreaCode() {
@@ -19,4 +15,5 @@ public class AddPayClientRequset {
 	public void setUserPhone(String userPhone) {
 		this.userPhone = userPhone;
 	}
+	
 }

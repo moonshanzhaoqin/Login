@@ -1,5 +1,6 @@
 package com.yuyutechnology.exchange.crm.tpps.manager;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,21 +18,21 @@ import com.yuyutechnology.exchange.util.UidUtils;
 import com.yuyutechnology.exchange.util.page.PageBean;
 
 @Service
-public class TppsMananger {
-	private static Logger logger = LogManager.getLogger(TppsMananger.class);
+public class TppsManager {
+	private static Logger logger = LogManager.getLogger(TppsManager.class);
 
 	@Autowired
 	GoldqPayClientDAO goldqPayClientDAO;
 	@Autowired
 	GoldqPayFeeDAO goldqPayFeeDAO;
 
-	public void addPayClient(Integer exId) {
+	public void addGoldqPayClient(Integer exId) {
 		/* 生成商户ClientId */
 		GoldqPayClient goldqPayClient = new GoldqPayClient(exId, UidUtils.genUid(), UidUtils.genUid());
 		goldqPayClientDAO.saveGoldqPayClient(goldqPayClient);
 		/* 生成默认手续费模板 */
-		goldqPayFeeDAO.saveGoldqPayFee(new GoldqPayFee(goldqPayClient.getClientId(), TppsConsts.PAY_ROLE_PAYER));
-		goldqPayFeeDAO.saveGoldqPayFee(new GoldqPayFee(goldqPayClient.getClientId(), TppsConsts.PAY_ROLE_PAYEE));
+		goldqPayFeeDAO.saveGoldqPayFee(new GoldqPayFee(goldqPayClient.getClientId(), TppsConsts.PAY_ROLE_PAYER, BigDecimal.ZERO,  BigDecimal.ZERO,  BigDecimal.ZERO,  BigDecimal.ZERO, TppsConsts.PAY_ROLE_PAYEE));
+		goldqPayFeeDAO.saveGoldqPayFee(new GoldqPayFee(goldqPayClient.getClientId(), TppsConsts.PAY_ROLE_PAYEE,  BigDecimal.ZERO,  BigDecimal.ZERO,  BigDecimal.ZERO,  BigDecimal.ZERO, TppsConsts.PAY_ROLE_PAYEE));
 	}
 
 	public void updateGoldqPayFee(GoldqPayFee goldqPayFee) {
@@ -43,10 +44,10 @@ public class TppsMananger {
 		List<GoldqPayFee> goldqPayFees=goldqPayFeeDAO.getGoldqPayFeeByClientId(clientId);
 		if (goldqPayFees.isEmpty()) {
 			/* 生成默认手续费模板 */
-			goldqPayFeeDAO.saveGoldqPayFee(new GoldqPayFee(clientId, TppsConsts.PAY_ROLE_PAYER));
-			goldqPayFeeDAO.saveGoldqPayFee(new GoldqPayFee(clientId, TppsConsts.PAY_ROLE_PAYEE));
+			goldqPayFeeDAO.saveGoldqPayFee(new GoldqPayFee(clientId, TppsConsts.PAY_ROLE_PAYER, BigDecimal.ZERO,  BigDecimal.ZERO,  BigDecimal.ZERO,  BigDecimal.ZERO, TppsConsts.PAY_ROLE_PAYEE));
+			goldqPayFeeDAO.saveGoldqPayFee(new GoldqPayFee(clientId, TppsConsts.PAY_ROLE_PAYEE,  BigDecimal.ZERO,  BigDecimal.ZERO,  BigDecimal.ZERO,  BigDecimal.ZERO, TppsConsts.PAY_ROLE_PAYEE));
+			goldqPayFees=goldqPayFeeDAO.getGoldqPayFeeByClientId(clientId);
 		}
-		goldqPayFees=goldqPayFeeDAO.getGoldqPayFeeByClientId(clientId);
 		return goldqPayFees;
 	}
 
@@ -75,5 +76,10 @@ public class TppsMananger {
 		// }
 		// hql.append(" order by w.applyTime desc");
 		return goldqPayClientDAO.getGoldqPayClientByPage(hql.toString(), values, currentPage, 10);
+	}
+
+	public void updateGoldqPayClient(GoldqPayClient goldqPayClient) {
+		goldqPayClientDAO.updateGoldqPayClient(goldqPayClient);
+		
 	}
 }

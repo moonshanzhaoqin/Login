@@ -75,7 +75,7 @@ public class WithdrawController {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 
 		Integer withdrawId = withdrawManager.applyConfirm(sessionData.getUserId(),
-				withdrawConfirmRequset.getGoldBullion());
+				withdrawConfirmRequset.getGoldBullion(),withdrawConfirmRequset.getUserEmail());
 		if (withdrawId == null) {
 			logger.info(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
 			rep.setRetCode(RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);

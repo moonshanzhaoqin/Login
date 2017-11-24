@@ -11,7 +11,7 @@ public interface WithdrawManager {
 
 	PageBean getWithdrawByPage(int currentPage, String userPhone, String userName, String startTime, String endTime);
 
-	Integer applyConfirm(Integer userId, int goldBullion);
+	Integer applyConfirm(Integer userId, int goldBullion,String userEmail);
 
 	String cancelWithdraw(Integer withdrawId, String adminName);
 
