@@ -94,7 +94,7 @@ function getGoldqPayClientByPage(currentPage) {
 											: data.rows[i].customDomain)
 									+ '</td>'
 									+ '<td>'
-									+ '<a  data-toggle="modal" data-target="#updategoldqPayClientModal" data-whatever='
+									+ '<a href="" data-toggle="modal" data-target="#updategoldqPayClientModal" data-whatever='
 									+ "'"
 									+ JSON.stringify(data.rows[i])
 									+ "'"
@@ -199,7 +199,7 @@ function getGoldqPayFee(clientId) {
 								+ showPayRole(data[i].feePayer)
 								+ '</td>'
 								+ '<td>'
-								+ '<a  data-toggle="modal" data-target="#updategoldqPayFeeModal" data-whatever='
+								+ '<a href="" data-toggle="modal" data-target="#updategoldqPayFeeModal" data-whatever='
 								+ "'" + JSON.stringify(data[i]) + "'"
 								+ '>修改</a>' + '</td>' + '</tr>'
 					}
@@ -239,7 +239,7 @@ function updateGoldqPayFee() {
 					console.log("updateGoldqPayFee success");
 					$('#updategoldqPayFeeModal').modal('hide')
 					alert("修改成功！");
-					getGoldqPayFee(clientId);
+					getGoldqPayFee(form.clientId.value);
 				} else if (data.retCode == "00002") {
 					location.href = loginUrl;
 				} else {

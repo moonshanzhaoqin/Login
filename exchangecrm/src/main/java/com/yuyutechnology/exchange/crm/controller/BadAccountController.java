@@ -34,6 +34,7 @@ public class BadAccountController {
 	WalletManager walletManager;
 	@Autowired
 	CommonManager commonManager;
+	@Autowired
 	TransferManager transferManager;
 	@Autowired
 	ExchangeManager exchangeManager;

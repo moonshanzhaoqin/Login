@@ -825,6 +825,7 @@ public class TransferManagerImpl implements TransferManager {
 	
 	@Override
 	public Object getTransfer(String transferId) {
+		logger.info(transferId);
 		return transferDAO.getTransferByIdJoinUser(transferId);
 	}
 	
