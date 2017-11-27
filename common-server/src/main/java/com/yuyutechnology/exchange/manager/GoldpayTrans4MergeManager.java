@@ -1,5 +1,6 @@
 package com.yuyutechnology.exchange.manager;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.scheduling.annotation.Async;
@@ -20,5 +21,7 @@ public interface GoldpayTrans4MergeManager {
 	GoldpayUserDTO createGoldpay(String areaCode, String userPhone, String userName, boolean newUser);
 
 	void updateWallet4GoldpayTransList(List<String> transferIds);
+
+	HashMap<String, String> updateWallet4FeeTrans(String transferId, String feeTransferId);
 
 }
