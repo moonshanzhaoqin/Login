@@ -191,16 +191,18 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		transferDAO.updateTransfer(transfer);
 		
 		//对于Transfer  扣款
-		walletDAO.updateWalletByUserIdAndCurrency(feeTransfer.getUserFrom(), feeTransfer.getCurrency(),
-				feeTransfer.getTransferAmount(), "-", feeTransfer.getTransferType(), feeTransfer.getTransferId());
-		// 加款
-		walletDAO.updateWalletByUserIdAndCurrency(feeTransfer.getUserTo(), feeTransfer.getCurrency(), 
-				feeTransfer.getTransferAmount(), "+", feeTransfer.getTransferType(), feeTransfer.getTransferId());
-		
-		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-		transfer.setFinishTime(new Date());
-		transferDAO.updateTransfer(transfer);
-		
+		if(feeTransfer != null){
+			walletDAO.updateWalletByUserIdAndCurrency(feeTransfer.getUserFrom(), feeTransfer.getCurrency(),
+					feeTransfer.getTransferAmount(), "-", feeTransfer.getTransferType(), feeTransfer.getTransferId());
+			// 加款
+			walletDAO.updateWalletByUserIdAndCurrency(feeTransfer.getUserTo(), feeTransfer.getCurrency(), 
+					feeTransfer.getTransferAmount(), "+", feeTransfer.getTransferType(), feeTransfer.getTransferId());
+			
+			feeTransfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+			feeTransfer.setFinishTime(new Date());
+			transferDAO.updateTransfer(feeTransfer);
+		}
+
 		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		result.put("msg", "success");
 		return result;
