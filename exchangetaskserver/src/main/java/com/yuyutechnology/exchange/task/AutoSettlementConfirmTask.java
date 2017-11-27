@@ -28,18 +28,18 @@ public class AutoSettlementConfirmTask {
 	
 	public void settlementConfirm(){
 		
-		Date time = DateFormatUtils.getpreDays(3);
-		
-		List<Transfer> list = transferDAO.getTransferListByTime(
-				ServerConsts.TRANSFER_STATUS_OF_PROCESSING, ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN,time);
-		
-		for (Transfer transfer : list) {
-			boolean isInsufficient = checkManager.isInsufficientBalance(
-					transfer.getUserFrom(), transfer.getCurrency(), transfer.getTransferAmount());
-			if(!isInsufficient){
-				goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transfer.getTransferId());
-			}
-		}
+//		Date time = DateFormatUtils.getpreDays(3);
+//		
+//		List<Transfer> list = transferDAO.getTransferListByTime(
+//				ServerConsts.TRANSFER_STATUS_OF_PROCESSING, ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN,time);
+//		
+//		for (Transfer transfer : list) {
+//			boolean isInsufficient = checkManager.isInsufficientBalance(
+//					transfer.getUserFrom(), transfer.getCurrency(), transfer.getTransferAmount());
+//			if(!isInsufficient){
+//				goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transfer.getTransferId());
+//			}
+//		}
 		
 	}
 
