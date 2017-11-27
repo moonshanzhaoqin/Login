@@ -1,5 +1,5 @@
 package pojo;
-// Generated Nov 23, 2017 5:02:31 PM by Hibernate Tools 5.2.6.Final
+// Generated Nov 27, 2017 12:17:17 PM by Hibernate Tools 5.2.6.Final
 
 import java.math.BigDecimal;
 import javax.persistence.Column;
@@ -19,6 +19,7 @@ public class EFeeTemplate implements java.io.Serializable {
 	private BigDecimal feePercent;
 	private BigDecimal minFee;
 	private BigDecimal maxFee;
+	private String feeName;
 
 	public EFeeTemplate() {
 	}
@@ -30,6 +31,16 @@ public class EFeeTemplate implements java.io.Serializable {
 		this.feePercent = feePercent;
 		this.minFee = minFee;
 		this.maxFee = maxFee;
+	}
+
+	public EFeeTemplate(String feePurpose, BigDecimal exemptAmount, BigDecimal feePercent, BigDecimal minFee,
+			BigDecimal maxFee, String feeName) {
+		this.feePurpose = feePurpose;
+		this.exemptAmount = exemptAmount;
+		this.feePercent = feePercent;
+		this.minFee = minFee;
+		this.maxFee = maxFee;
+		this.feeName = feeName;
 	}
 
 	@Id
@@ -77,6 +88,15 @@ public class EFeeTemplate implements java.io.Serializable {
 
 	public void setMaxFee(BigDecimal maxFee) {
 		this.maxFee = maxFee;
+	}
+
+	@Column(name = "fee_name")
+	public String getFeeName() {
+		return this.feeName;
+	}
+
+	public void setFeeName(String feeName) {
+		this.feeName = feeName;
 	}
 
 }

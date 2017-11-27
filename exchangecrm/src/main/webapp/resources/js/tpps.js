@@ -5,7 +5,7 @@ $(function() {
 		form.areaCode.value = '';
 		form.userPhone.value = '';
 	})
-	
+
 	$('#updategoldqPayClientModal').on('show.bs.modal', function(e) {
 		// do something...
 		var tr = $(e.relatedTarget) // Button that triggered the modal
@@ -181,7 +181,7 @@ function getGoldqPayFee(clientId) {
 								+ data[i].clientId
 								+ '</td>'
 								+ '<td>'
-								+ data[i].payRole
+								+ showPayRole(data[i].payRole)
 								+ '</td>'
 								+ '<td>'
 								+ data[i].exemptAmount
@@ -196,7 +196,7 @@ function getGoldqPayFee(clientId) {
 								+ data[i].maxFee
 								+ '</td>'
 								+ '<td>'
-								+ data[i].feePayer
+								+ showPayRole(data[i].feePayer)
 								+ '</td>'
 								+ '<td>'
 								+ '<a  data-toggle="modal" data-target="#updategoldqPayFeeModal" data-whatever='
@@ -293,6 +293,18 @@ function addGoldqPayClient() {
 		},
 		async : false
 	});
+
+}
+
+function showPayRole(payRole) {
+	switch (payRole) {
+	case 1:
+		return "接收方";
+	case 2:
+		return "付款方";
+	default:
+		return "未知，出错！"
+	}
 
 }
 

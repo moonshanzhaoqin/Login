@@ -22,6 +22,7 @@ public class FeeTemplate implements java.io.Serializable {
 	private BigDecimal feePercent;
 	private BigDecimal minFee;
 	private BigDecimal maxFee;
+	private String feeName;
 
 	public FeeTemplate() {
 	}
@@ -33,6 +34,16 @@ public class FeeTemplate implements java.io.Serializable {
 		this.feePercent = feePercent;
 		this.minFee = minFee;
 		this.maxFee = maxFee;
+	}
+
+	public FeeTemplate(String feePurpose, BigDecimal exemptAmount, BigDecimal feePercent, BigDecimal minFee,
+			BigDecimal maxFee, String feeName) {
+		this.feePurpose = feePurpose;
+		this.exemptAmount = exemptAmount;
+		this.feePercent = feePercent;
+		this.minFee = minFee;
+		this.maxFee = maxFee;
+		this.feeName = feeName;
 	}
 
 	@Id
@@ -82,5 +93,12 @@ public class FeeTemplate implements java.io.Serializable {
 		this.maxFee = maxFee;
 	}
 
+	@Column(name = "fee_name")
+	public String getFeeName() {
+		return this.feeName;
+	}
 
+	public void setFeeName(String feeName) {
+		this.feeName = feeName;
+	}
 }

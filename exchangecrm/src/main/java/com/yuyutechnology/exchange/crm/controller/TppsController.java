@@ -79,7 +79,7 @@ public class TppsController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/updategoldqPayClient", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	@RequestMapping(value = "/updateGoldqPayFee", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public BaseResponse updateGoldqPayFee(@RequestBody GoldqPayFee goldqPayFee, HttpServletRequest request,
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
