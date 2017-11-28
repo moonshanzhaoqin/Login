@@ -3,7 +3,6 @@ package com.yuyutechnology.exchange.util;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import javax.net.ssl.SSLException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;

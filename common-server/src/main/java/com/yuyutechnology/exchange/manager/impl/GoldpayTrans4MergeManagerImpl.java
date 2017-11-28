@@ -155,7 +155,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		
 		if(feeTransfer != null){
 
-			GoldpayUserDTO feeAccount = getGoldpayUserInfo(feeTransfer.getUserFrom());
+			GoldpayUserDTO feeAccount = getGoldpayUserInfo(feeTransfer.getUserTo());
 	
 			param.setFeePayOrderId(feeTransfer.getGoldpayOrderId());
 			if(feeTransfer.getUserFrom() == transfer.getUserFrom()){
