@@ -3,10 +3,14 @@ package com.yuyutechnology.exchange.util;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
+import javax.net.ssl.SSLException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpRequestRetryHandler;
+import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -16,6 +20,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,24 +31,81 @@ public class HttpClientUtils {
 	
 	private static Object lock = new Object();
 	private static CloseableHttpClient client;
+	private static CloseableHttpClient retryClient;
 	
-	private static CloseableHttpClient getClient() {
-		if (client == null) {
-			synchronized (lock)
-			{
-				if (client == null)
+	private static CloseableHttpClient getClient(boolean retry) {
+		if (retry) {
+			if (retryClient == null) {
+				synchronized (lock)
 				{
-					PoolingHttpClientConnectionManager cm =new PoolingHttpClientConnectionManager();
-			        cm.setMaxTotal(200);
-			        cm.setDefaultMaxPerRoute(100);
-					RequestConfig config = RequestConfig.custom()
-			                .setConnectTimeout(5000) 
-			                .setSocketTimeout(5000).build();
-					client = HttpClients.custom().setConnectionManager(cm).setDefaultRequestConfig(config).disableAutomaticRetries().build();
+					if (retryClient == null)
+					{
+						ServiceUnavailableRetryStrategy serviceUnavailableRetryStrategy = new ServiceUnavailableRetryStrategy() {
+							/**
+							 * retry逻辑
+							 */
+							@Override
+							public boolean retryRequest(HttpResponse response, int executionCount, HttpContext context) {
+						        if (response.getStatusLine().getStatusCode() != 200 && executionCount <= 3)  
+						            return true;  
+						        else  
+						            return false; 
+							}
+							/**
+							 * retry间隔时间
+							 */
+							@Override
+							public long getRetryInterval() {
+								return 500;
+							}
+						};
+						HttpRequestRetryHandler myRetryHandler = new HttpRequestRetryHandler() {
+
+						    public boolean retryRequest(
+						            IOException exception,
+						            int executionCount,
+						            HttpContext context) {
+						        if (executionCount > 3) {
+						            // Do not retry if over max retry count
+						            return false;
+						        }
+						        if (exception instanceof SSLException) {
+						            // SSL handshake exception
+						            return false;
+						        }
+						        return true;
+						    }
+						};
+						
+						PoolingHttpClientConnectionManager cm =new PoolingHttpClientConnectionManager();
+				        cm.setMaxTotal(200);
+				        cm.setDefaultMaxPerRoute(100);
+						RequestConfig config = RequestConfig.custom()
+				                .setConnectTimeout(5000) 
+				                .setSocketTimeout(5000).build();
+						retryClient = HttpClients.custom().setServiceUnavailableRetryStrategy(serviceUnavailableRetryStrategy).setRetryHandler(myRetryHandler).setConnectionManager(cm).setDefaultRequestConfig(config).build();
+					}
 				}
 			}
+			return retryClient;
+		}else{
+			if (client == null) {
+				synchronized (lock)
+				{
+					if (client == null)
+					{
+						PoolingHttpClientConnectionManager cm =new PoolingHttpClientConnectionManager();
+						cm.setMaxTotal(200);
+						cm.setDefaultMaxPerRoute(100);
+						RequestConfig config = RequestConfig.custom()
+								.setConnectTimeout(5000) 
+								.setSocketTimeout(5000).build();
+						client = HttpClients.custom().setConnectionManager(cm).setDefaultRequestConfig(config).disableAutomaticRetries().build();
+					}
+				}
+			}
+			return client;
 		}
-		return client;
 	}
 	
 	public static String sendGet(String domain,String params){
@@ -55,7 +117,7 @@ public class HttpClientUtils {
 		CloseableHttpResponse resp=null;
         try {
         	HttpGet httpGet = new HttpGet(urlName);
-            resp = getClient().execute(httpGet);
+            resp = getClient(false).execute(httpGet);
             HttpEntity entity = resp.getEntity();
             if (resp.getStatusLine().getStatusCode() == 200 && entity != null) {
                 result = EntityUtils.toString(entity, "UTF-8");  
@@ -86,7 +148,7 @@ public class HttpClientUtils {
         try {
         	HttpGet httpGet = new HttpGet(urlName);
             httpGet.setHeader(basicHeader);
-            resp = getClient().execute(httpGet);
+            resp = getClient(false).execute(httpGet);
             HttpEntity entity = resp.getEntity();
             if (resp.getStatusLine().getStatusCode() == 200 && entity != null) {
                 result = EntityUtils.toString(entity, "UTF-8");  
@@ -107,16 +169,21 @@ public class HttpClientUtils {
 		return result;
 	}
 	
+	public static String sendPost(String url,String params) {
+		return sendPost(url,params, false);
+	}
 	
-	public static String sendPost(String url,String params){
-		
+	public static String sendPost4Retry(String url,String params) {
+		return sendPost(url,params, true);
+	}
+	
+	private static String sendPost(String url,String params, boolean retry){
 		CloseableHttpClient client4Post = null;
 		CloseableHttpResponse response = null;
 		String result = "";
-
 		try {
 			//创建一个httpclient对象
-			client4Post =  getClient();
+			client4Post =  getClient(retry);
 			//创建一个post对象
 			HttpPost post = new HttpPost(url);
 			//包装成一个Entity对象
@@ -153,9 +220,7 @@ public class HttpClientUtils {
 			} catch (Exception e) {
 			}
 		}
-		
 		return result;
-		
 	}
 	
 	public static String sendPost4form(String url,String params){
@@ -166,7 +231,7 @@ public class HttpClientUtils {
 
 		try {
 			//创建一个httpclient对象
-			client4Post =  getClient();
+			client4Post =  getClient(false);
 			//创建一个post对象
 			HttpPost post = new HttpPost(url);
 			//包装成一个Entity对象
