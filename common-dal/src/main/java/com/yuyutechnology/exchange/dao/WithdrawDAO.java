@@ -11,7 +11,7 @@ public interface WithdrawDAO {
 
 	void updateWithdraw(Withdraw withdraw);
 
-	String saveWithdraw(Withdraw withdraw);
+	void saveWithdraw(Withdraw withdraw);
 
 	PageBean getWithdrawByPage(String hql, List<Object> values, int currentPage, int pageSize);
 

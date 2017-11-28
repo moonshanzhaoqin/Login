@@ -95,6 +95,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 
 	@Override
 	public String getGoldpayOrderId() {
+		logger.info("get Goldpay OrderId -->");
 		GetGoldpayOrderIdC2S param = new GetGoldpayOrderIdC2S();
 		param.setType("3");
 		String result = HttpClientUtils.sendPost(

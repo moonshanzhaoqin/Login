@@ -16,14 +16,14 @@ UPDATE `e_crm_admin` SET `admin_power`='1,2,3,4,5,6,7' WHERE `admin_id`=1;
 
 DROP TABLE IF EXISTS `e_withdraw`;
 CREATE TABLE `e_withdraw` (
-  `withdraw_id` int(11) NOT NULL AUTO_INCREMENT,
+  `withdraw_id` varchar(255) NOT NULL DEFAULT '' COMMENT '提取申请编号',
   `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
   `user_email` varchar(255) NOT NULL DEFAULT '' COMMENT '联系邮箱',
   `quantity` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '金条数量',
   `goldpay` decimal(20,0) unsigned NOT NULL DEFAULT '0' COMMENT '对应的goldpay',
   `fee` decimal(20,0) unsigned NOT NULL DEFAULT '0' COMMENT '手续费',
   `apply_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '申请时间',
-  `handle_result` tinyint(3) NOT NULL DEFAULT '0' COMMENT '处理结果',
+  `handle_result` tinyint(3) NOT NULL DEFAULT '0' COMMENT '提取结果',
   `handler` varchar(255) DEFAULT NULL COMMENT '处理者',
   `handle_time` timestamp NULL DEFAULT NULL COMMENT '处理时间',
   `gold_transfer_a` varchar(255) DEFAULT NULL COMMENT '金条交易ID(申请)',
@@ -31,7 +31,7 @@ CREATE TABLE `e_withdraw` (
   `gold_transfer_b` varchar(255) DEFAULT NULL COMMENT '金条交易ID(失败/成功)',
   `fee_transfer_b` varchar(255) DEFAULT NULL COMMENT '手续费交易ID(失败/成功)',
   PRIMARY KEY (`withdraw_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='提取金条';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='提取金条';
 
 DROP TABLE IF EXISTS `e_fee_template`;
 CREATE TABLE `e_fee_template` (
@@ -44,6 +44,3 @@ CREATE TABLE `e_fee_template` (
   PRIMARY KEY (`fee_purpose`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='手续费模板';
 INSERT INTO `e_fee_template` VALUES ('paypal_purchase_goldbullion_ordinary',100,0.0010,5,100,'Paypal充值（普通）'),('paypal_purchase_goldbullion_vip',0,0.0000,0,999999999,'Paypal充值（VIP）'),('withdraw_goldbullion_ordinary',10000,0.0010,10,999999999,'提取金条（普通）'),('withdraw_goldbullion_vip',0,0.0000,0,999999999,'提取金条（VIP）');
-
-ALTER TABLE `e_withdraw`
-  CHANGE COLUMN `withdraw_id` `withdraw_id` varchar(255) NOT NULL DEFAULT '' COMMENT '提取申请编号';

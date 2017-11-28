@@ -37,7 +37,7 @@
 				id="withdraw">
 				<thead>
 					<tr>
-<!-- 						<th>提现ID</th> -->
+						<th>提现编号</th>
 <!-- 						<th>用户ID</th> -->
 						<th>国家码</th>
 						<th>手机号</th>

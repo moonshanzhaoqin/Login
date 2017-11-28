@@ -83,7 +83,6 @@ public class WithdrawManagerImpl implements WithdrawManager {
 
 		if (checkManager.isInsufficientBalance(userId, ServerConsts.CURRENCY_OF_GOLDPAY,
 				goldpayAmount.add(feeResult.getFee()))) {
-			logger.info("*** current balance is insufficient ***");
 			result.setRetCode(RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
 		} else {
 			result.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
@@ -101,7 +100,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 			User frozenUser = userDAO.getFrozenUser();
 
 			String withdrawId = withdrawDAO.createWithdrawId();
-			logger.info("createWithdrawId:{}", withdrawId);
+			logger.info("create withdrawId : {}", withdrawId);
 			Withdraw withdraw = new Withdraw(withdrawId, userId, userEmail, goldBullion, result.getGoldpay(),
 					result.getFee(), new Date(), ServerConsts.WITHDRAW_RESULT_DEFAULT);
 
@@ -109,18 +108,17 @@ public class WithdrawManagerImpl implements WithdrawManager {
 			String goldTransferA = transfer4Withdraw(userId, frozenUser.getUserId(), withdraw.getGoldpay(),
 					ServerConsts.TRANSFER_TYPE_IN_WITHDRAW);
 			withdraw.setGoldTransferA(goldTransferA);
-			logger.info("transfer goldpay to frozenUser, tansferId={} ", goldTransferA);
+			logger.info("transfer goldpay to frozenUser, tansferId : {} ", goldTransferA);
 
 			/* 把手续费转到冻结账户 */
 			if (withdraw.getFee().compareTo(BigDecimal.ZERO) > 0) {
-				String feeTransferB = transfer4Withdraw(userId, frozenUser.getUserId(), withdraw.getFee(),
+				String feeTransferA = transfer4Withdraw(userId, frozenUser.getUserId(), withdraw.getFee(),
 						ServerConsts.TRANSFER_TYPE_IN_FEE);
-				withdraw.setFeeTransferB(feeTransferB);
-				logger.info("transfer fee to frozenUser, tansferId={} ", feeTransferB);
+				withdraw.setFeeTransferA(feeTransferA);
+				logger.info("transfer fee to frozenUser, tansferId : {} ", feeTransferA);
 			}
 
-			String id = withdrawDAO.saveWithdraw(withdraw);
-			logger.info("withdrawId(after save) : {}", id);
+			withdrawDAO.saveWithdraw(withdraw);
 			return withdrawId;
 		} else {
 			return null;
@@ -130,9 +128,11 @@ public class WithdrawManagerImpl implements WithdrawManager {
 	@Override
 	public String goldpayTrans4Apply(String withdrawId) {
 		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
+		logger.info("goldpayTrans4Apply : {}, {} -->", withdraw.getGoldTransferA(), withdraw.getFeeTransferA());
 		HashMap<String, String> result = goldpayTrans4MergeManager.updateWallet4FeeTrans(withdraw.getGoldTransferA(),
 				withdraw.getFeeTransferA());
 		if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
+			logger.info("*** success ***");
 			User user = userDAO.getUser(withdraw.getUserId());
 			/* 通知管理员 */
 			crmAlarmManager
@@ -142,6 +142,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 			withdraw.setHandleResult(ServerConsts.WITHDRAW_RESULT_APPLY_SUCCESS);
 			withdrawDAO.updateWithdraw(withdraw);
 		} else {
+			logger.info("*** fail ***");
 			withdraw.setHandleResult(ServerConsts.WITHDRAW_RESULT_APPLY_FAIL);
 			withdrawDAO.updateWithdraw(withdraw);
 		}

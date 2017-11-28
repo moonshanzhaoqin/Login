@@ -62,8 +62,8 @@ public class WithdrawDAOImpl implements WithdrawDAO {
 	}
 
 	@Override
-	public String saveWithdraw(Withdraw withdraw) {
-		return (String) hibernateTemplate.save(withdraw);
+	public void saveWithdraw(Withdraw withdraw) {
+		hibernateTemplate.save(withdraw);
 	}
 
 	@Override

@@ -61,24 +61,26 @@ function getWithdrawByPage(currentPage, userPhone, userName) {
 		contentType : "application/json; charset=utf-8",
 		data : JSON.stringify(data),
 		success : function(data) {
-//			console.log(data);
+			// console.log(data);
 			if (data.retCode == "00002") {
 				location.href = loginUrl;
 			} else {
 				console.log("success");
 				var html = "";
 				for ( var i in data.rows) {
-					html += '<tr>'
-					// +'<td>'+data.rows[i][0].withdrawId +'</td>'
-//					+ '<td>'
-//							+ data.rows[i][0].userId
-//							+ '</td>'
+					html += '<tr>' + '<td>'
+							+ data.rows[i][0].withdrawId
+							+ '</td>'
+							// + '<td>'
+							// + data.rows[i][0].userId
+							// + '</td>'
 							+ '<td>'
 							+ data.rows[i][1].areaCode
 							+ '</td>'
 							+ '<td>'
 							+ data.rows[i][1].userPhone
-							+ '</td>'+ '<td>'
+							+ '</td>'
+							+ '<td>'
 							+ data.rows[i][1].userName
 							+ '</td>'
 							+ '<td>'
@@ -108,21 +110,21 @@ function getWithdrawByPage(currentPage, userPhone, userName) {
 							+ (data.rows[i][0].handleTime == null ? ""
 									: timeDate(data.rows[i][0].handleTime))
 							+ '</td>'
-//							+ '<td>'
-//							+ (data.rows[i][0].goldTransferA == null ? ""
-//									: data.rows[i][0].goldTransferA)
-//							+ '</td>'
-//							+ '<td>'
-//							+ (data.rows[i][0].feeTransferA == null ? ""
-//									: data.rows[i][0].feeTransferA)
-//							+ '</td>'
-//							+ '<td>'
-//							+ (data.rows[i][0].goldTransferB == null ? ""
-//									: data.rows[i][0].goldTransferB)
-//							+ '</td>'
-//							+ '<td>'
-//							+ (data.rows[i][0].feeTransferB == null ? ""
-//									: data.rows[i][0].feeTransferB) + '</td>'
+							// + '<td>'
+							// + (data.rows[i][0].goldTransferA == null ? ""
+							// : data.rows[i][0].goldTransferA)
+							// + '</td>'
+							// + '<td>'
+							// + (data.rows[i][0].feeTransferA == null ? ""
+							// : data.rows[i][0].feeTransferA)
+							// + '</td>'
+							// + '<td>'
+							// + (data.rows[i][0].goldTransferB == null ? ""
+							// : data.rows[i][0].goldTransferB)
+							// + '</td>'
+							// + '<td>'
+							// + (data.rows[i][0].feeTransferB == null ? ""
+							// : data.rows[i][0].feeTransferB) + '</td>'
 							+ '</tr>'
 				}
 				$('#withdraw tbody').html(html);
@@ -130,7 +132,7 @@ function getWithdrawByPage(currentPage, userPhone, userName) {
 					paginator(data.currentPage, data.pageTotal);
 				}
 				$('#total').html(data.total);
-				page=data.currentPage;
+				page = data.currentPage;
 			}
 		},
 		error : function(xhr, err) {
@@ -146,16 +148,19 @@ function showHandleResult(handleResult, withdrawId) {
 		return "申请处理中";
 	case WITHDRAW_RESULT_APPLY_SUCCESS:
 		return '<button type="button" class="btn btn-success" onclick="finishWithdraw('
+				+ "'"
 				+ withdrawId
+				+ "'"
 				+ ')">完成</button>'
+				+ ' '
 				+ '<button type="button" class="btn btn-warning" onclick="cancelWithdraw('
-				+ withdrawId + ')">取消</button>';
+				+ "'" + withdrawId + "'" + ')">取消</button>';
 
 	case WITHDRAW_RESULT_APPLY_FAIL:
 		return "申请失败";
-	case WITHDRAW_HANDLE_RESULT_FINISHT:
+	case WITHDRAW_RESULT_FINISHT:
 		return "交易完成";
-	case WITHDRAW_HANDLE_RESULT_CANCEL:
+	case WITHDRAW_RESULT_CANCEL:
 		return "交易取消";
 	}
 }
@@ -174,10 +179,10 @@ function finishWithdraw(withdrawId) {
 			console.log(data);
 			if (data.retCode == "00002") {
 				location.href = loginUrl;
-			} else if(data.retCode=="00000"){
+			} else if (data.retCode == "00000") {
 				console.log("success");
 				searchWithdraw(page);
-			}else{
+			} else {
 				alert("操作失败");
 				searchWithdraw(page);
 			}
@@ -191,31 +196,31 @@ function finishWithdraw(withdrawId) {
 
 function cancelWithdraw(withdrawId) {
 	var data = {
-			withdrawId : withdrawId
-		};
-		$.ajax({
-			type : "POST",
-			url : "/crm/cancelWithdraw",
-			dataType : 'json',
-			contentType : "application/json; charset=utf-8",
-			data : JSON.stringify(data),
-			success : function(data) {
-				console.log(data);
-				if (data.retCode == "00002") {
-					location.href = loginUrl;
-				} else if(data.retCode=="00000"){
-					console.log("success");
-					searchWithdraw(page);
-				}else{
-					alert("操作失败");
-					searchWithdraw(page);
-				}
-			},
-			error : function(xhr, err) {
-				alert("未知错误");
-				console.log(err);
+		withdrawId : withdrawId
+	};
+	$.ajax({
+		type : "POST",
+		url : "/crm/cancelWithdraw",
+		dataType : 'json',
+		contentType : "application/json; charset=utf-8",
+		data : JSON.stringify(data),
+		success : function(data) {
+			console.log(data);
+			if (data.retCode == "00002") {
+				location.href = loginUrl;
+			} else if (data.retCode == "00000") {
+				console.log("success");
+				searchWithdraw(page);
+			} else {
+				alert("操作失败");
+				searchWithdraw(page);
 			}
-		});
+		},
+		error : function(xhr, err) {
+			alert("未知错误");
+			console.log(err);
+		}
+	});
 }
 
 // 分页
