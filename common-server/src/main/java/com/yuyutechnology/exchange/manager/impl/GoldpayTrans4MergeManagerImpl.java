@@ -110,7 +110,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 	
 	public GoldpayTransaction4FeeS2C goldpayTransaction4fee(GoldpayTransaction4FeeC2S param){
 		
-		String result = HttpClientUtils.sendPost(
+		String result = HttpClientUtils.sendPost4Retry(
 				ResourceUtils.getBundleValue4String("goldpay.url") + "trans/goldpayTransaction4fee",
 				JsonBinder.getInstance().toJson(param));
 
@@ -211,7 +211,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 	
 
 	@Override
-	@Async
+//	@Async
 	public void updateWallet4GoldpayTrans(String transferId) {
 		logger.info("updateWallet4GoldpayTrans for transfer {}",transferId);
 		Transfer transfer = transferDAO.getTransferById(transferId);
@@ -355,7 +355,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		param.setToAccountNum(toAccountNum);
 		param.setComment(comment);
 
-		String result = HttpClientUtils.sendPost(
+		String result = HttpClientUtils.sendPost4Retry(
 				ResourceUtils.getBundleValue4String("goldpay.url") + "trans/goldpayTransaction",
 				JsonBinder.getInstance().toJson(param));
 
