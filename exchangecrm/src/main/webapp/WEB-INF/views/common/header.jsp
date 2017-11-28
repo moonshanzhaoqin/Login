@@ -5,7 +5,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Exanytime</title>
+<title>Goldpay</title>
 <link rel='icon' href='<c:url value="/resources/img/ex_28x28.ico" />'
 	type='image/x-ico' />
 <link rel="stylesheet"
@@ -14,8 +14,8 @@
 	href='<c:url value="/resources/bootstrap/css/bootstrap-paginator.min.css" />' />
 <link rel="stylesheet"
 	href="<c:url value="/resources/css/common.css" />" />
-	<link rel="stylesheet"
-    href="<c:url value="/resources/laydate/need/laydate.css" />" />
+<link rel="stylesheet"
+	href="<c:url value="/resources/laydate/need/laydate.css" />" />
 <script type="text/javascript"
 	src="<c:url value="/resources/js/jquery.min.js" />"></script>
 <script type="text/javascript"
@@ -23,7 +23,7 @@
 <script type="text/javascript"
 	src="<c:url value="/resources/bootstrap/js/bootstrap-paginator.min.js" />"></script>
 <script type="text/javascript"
-    src="<c:url value="/resources/laydate/laydate.js" />"></script>
+	src="<c:url value="/resources/laydate/laydate.js" />"></script>
 
 </head>
 <body>
@@ -53,10 +53,6 @@
 						href="<c:url value='/exchangeRate/getAllExchangeRates' />">Oanda汇率</a></li>
 					<c:forTokens items="${sessionScope.adminPower}" delims=","
 						var="adminPower">
-						<c:if test="${adminPower eq 0}">
-							<li><a
-								href="<c:url value='/account/getTotalAssetsDetails' />">账户汇总</a></li>
-						</c:if>
 						<c:if test="${adminPower eq 1}">
 							<li class="dropdown"><a href="#" class="dropdown-toggle"
 								data-toggle="dropdown" aria-expanded="true">用户管理 <span
@@ -64,38 +60,59 @@
 								<ul class="dropdown-menu" role="menu">
 									<li><a href="<c:url value='/account/accountOverview' />">用户资产</a></li>
 									<li><a href="<c:url value='/userInfo' />">用户信息</a></li>
+									<li><a
+										href="<c:url value='/account/getTotalAssetsDetails' />">账户汇总</a></li>
 								</ul></li>
 						</c:if>
 						<c:if test="${adminPower eq 2}">
 							<li><a href="<c:url value='/badAccount' />">坏账管理</a></li>
 						</c:if>
-						<c:if test="${adminPower eq 4}">
+						<c:if test="${adminPower eq 3}">
 							<li class="dropdown"><a href="#" class="dropdown-toggle"
 								data-toggle="dropdown" aria-expanded="true">预警管理 <span
 									class="caret"></span></a>
 								<ul class="dropdown-menu" role="menu">
 									<li><a href="<c:url value='/alarm/getAlarmConfigList' />">预备金预警设置</a></li>
-									<li><a href="<c:url value='/alarm/getLargeTransAlarmConfigList' />">大额预警设置</a></li>
-									<li><a href="<c:url value='/alarm/getBadAccountAlarmConfigList' />">坏账预警设置</a></li>
-									<li><a href="<c:url value='/alarm/getRegistrationAlarmConfigList' />">注册人数预警设置</a></li>
-									<li><a href="<c:url value='/alarm/getTotalGDQAlarmConfigList' />">已售金本总量预警设置</a></li>
+									<li><a
+										href="<c:url value='/alarm/getLargeTransAlarmConfigList' />">大额预警设置</a></li>
+									<li><a
+										href="<c:url value='/alarm/getBadAccountAlarmConfigList' />">坏账预警设置</a></li>
+									<li><a
+										href="<c:url value='/alarm/getRegistrationAlarmConfigList' />">注册人数预警设置</a></li>
+									<li><a
+										href="<c:url value='/alarm/getTotalGDQAlarmConfigList' />">已售金本总量预警设置</a></li>
+									<li><a
+										href="<c:url value='/alarm/getNotifyWithdrawConfigList' />">提取金条通知</a></li>
 									<li class="divider"></li>
 									<li><a href="<c:url value='/alarm/getSupervisorList' />">预警人设置</a></li>
 								</ul></li>
 						</c:if>
+						<c:if test="${adminPower eq 4}">
+							<li class="dropdown"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" aria-expanded="true">配置管理<span
+									class="caret"></span></a>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="<c:url value='/config' />">系统</a></li>
+									<li><a href="<c:url value='/currency' />">币种</a></li>
+								</ul></li>
+						</c:if>
 						<c:if test="${adminPower eq 5}">
-							<li><a href="<c:url value='/currency' />">币种管理</a></li>
+							<li class="dropdown"><a href="#" class="dropdown-toggle"
+								data-toggle="dropdown" aria-expanded="true">充值提现<span
+									class="caret"></span></a>
+								<ul class="dropdown-menu" role="menu">
+									<li><a href="<c:url value='/recharge' />">充值管理</a></li>
+									<li><a href="<c:url value='/withdraw' />">提现管理</a></li>
+									<li class="divider"></li>
+									<li><a href="<c:url value='/feeTemplate' />">手续费管理</a></li>
+								</ul></li>
 						</c:if>
 						<c:if test="${adminPower eq 6}">
-							<li><a href="<c:url value='/config' />">系统配置管理</a></li>
+							<li><a href="<c:url value='/campaign' />">活动管理</a></li>
 						</c:if>
 						<c:if test="${adminPower eq 7}">
-							<li><a href="<c:url value='/recharge' />">充值管理</a></li>
+							<li><a href="<c:url value='/tpps' />">TPPS</a></li>
 						</c:if>
-						<c:if test="${adminPower eq 8}">
-                            <li><a href="<c:url value='/campaign' />">活动管理</a></li>
-                        </c:if>
-                        
 					</c:forTokens>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">

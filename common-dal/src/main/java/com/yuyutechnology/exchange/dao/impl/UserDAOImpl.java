@@ -37,6 +37,24 @@ public class UserDAOImpl implements UserDAO {
 		List<?> list = hibernateTemplate.find("from User where userType = ?", ServerConsts.USER_TYPE_OF_SYSTEM);
 		return list.isEmpty() ? null : (User) list.get(0);
 	}
+	
+	@Override
+	public User getFeeUser() {
+		List<?> list = hibernateTemplate.find("from User where userType = ?", ServerConsts.USER_TYPE_OF_FEE);
+		return list.isEmpty() ? null : (User) list.get(0);
+	}
+	
+	@Override
+	public User getFrozenUser() {
+		List<?> list = hibernateTemplate.find("from User where userType = ?", ServerConsts.USER_TYPE_OF_FROZEN);
+		return list.isEmpty() ? null : (User) list.get(0);
+	}
+	
+	@Override
+	public User getRecoveryUser() {
+		List<?> list = hibernateTemplate.find("from User where userType = ?", ServerConsts.USER_TYPE_OF_RECOVERY);
+		return list.isEmpty() ? null : (User) list.get(0);
+	}
 
 	@Override
 	public User getUser(Integer userId) {
@@ -76,7 +94,6 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public void updateSQL(final String sql, final Object[] values) {
 		logger.info(sql);
-		logger.info(values);
 		hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
 			@Override
 			public Integer doInHibernate(Session session) throws HibernateException {

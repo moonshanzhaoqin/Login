@@ -13,6 +13,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 	private String phone;
 	private String currency;
 	private BigDecimal amount;
+	private BigDecimal fee;
 	private String paypalCurrency;
 	private BigDecimal paypalExchange;
 	private String unit;
@@ -72,6 +73,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.transferComment = dto.getTransRemarks();
 		this.isFriend = dto.isFriend();
 		this.isRegiste = dto.isRegistered();
+		this.fee = dto.getTransFee();
 	}
 
 	public String getTrader() {
@@ -112,6 +114,14 @@ public class GetTransDetailsResponse extends BaseResponse {
 
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
+	}
+
+	public BigDecimal getFee() {
+		return fee;
+	}
+
+	public void setFee(BigDecimal fee) {
+		this.fee = fee;
 	}
 
 	public String getPaypalCurrency() {

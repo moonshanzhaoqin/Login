@@ -17,19 +17,22 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.GetUserRequest;
+import com.yuyutechnology.exchange.server.controller.request.HappyLivesVIPRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransInitRequest;
 import com.yuyutechnology.exchange.server.controller.response.GetUserResponse;
-import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
-import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
+import com.yuyutechnology.exchange.server.controller.response.HappyLivesVIPResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransConfirmResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransInitResponse;
+import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
+import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 
 /**
  * @author silent.sun
@@ -100,12 +103,13 @@ public class ThirdPartyController {
 			return rep;
 		}
 
-		HashMap<String, String> map = transferManager.transferInitiate(reqMsg.getPayerId(), reqMsg.getPayeeId(),
-				 reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())),
-				reqMsg.getTransferComment(), 0);
+		HashMap<String, String> map = transferManager.transInit4ThirdParty(reqMsg.getRestricted(),reqMsg.getPayerId(), 
+				reqMsg.getPayeeId(), reqMsg.getCurrency(),new BigDecimal(reqMsg.getAmount()+""), 
+				reqMsg.getTransferComment(), reqMsg.getFeeDeduction(), reqMsg.getFee(), reqMsg.getFeepayerId());
 
 		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			rep.setTransferId(map.get("transferId"));
+			rep.setTransferId4Fee(map.get("transferId4Fee"));
 		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY)) {
 			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit"), map.get("thawTime") });
 		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)) {
@@ -127,15 +131,44 @@ public class ThirdPartyController {
 	public TransConfirmResponse transConfirm(@RequestDecryptBody TransConfirmRequest reqMsg) {
 		
 		TransConfirmResponse rep = new TransConfirmResponse();
-		HashMap<String, String> map = transferManager.transConfirm4TPPS(reqMsg.getUserId(), 
-				reqMsg.getTransferId(), reqMsg.getUserPayPwd());
+		HashMap<String, String> map = new HashMap<>();
+		
+		// 验证支付密码
+		CheckPwdResult checkPwdResult = userManager.checkPayPassword(reqMsg.getUserId(), 
+				reqMsg.getUserPayPwd());
+	
+		switch (checkPwdResult.getStatus()) {
+		case FREEZE:
+			rep.setRetCode(RetCodeConsts.PAY_FREEZE);
+			rep.setMessage(String.valueOf(checkPwdResult.getInfo()));
+			return rep;
+
+		case INCORRECT:
+			logger.warn("payPwd is wrong !");
+			rep.setRetCode(RetCodeConsts.PAY_PWD_NOT_MATCH);
+			rep.setMessage(String.valueOf(checkPwdResult.getInfo()));
+			return rep;
+
+		default:
+			break;
+		}
+		
+		map = transferManager.transConfirm4ThirdParty(reqMsg.getRestricted(),reqMsg.getUserId(), 
+				reqMsg.getTransferId());
 		
 		rep.setRetCode(map.get("retCode"));
 		rep.setMessage(map.get("msg"));
-		
 		return rep;
 	}
 	
-	
-	
+	@ResponseEncryptBody
+	@ApiOperation(value = "愉愉俱乐部会员")
+	@RequestMapping(method = RequestMethod.POST, value = "/3rd/happyLivesVIP")
+	public HappyLivesVIPResponse happyLivesVIP(@RequestDecryptBody HappyLivesVIPRequest reqMsg) {
+		HappyLivesVIPResponse rep = new HappyLivesVIPResponse();
+		userManager.updateHappyLivesVIP(reqMsg.getHappyLivesId(), reqMsg.getUserId());
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		return rep;
+	}
 }

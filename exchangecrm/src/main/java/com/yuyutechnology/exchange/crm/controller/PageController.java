@@ -49,4 +49,18 @@ public class PageController {
 	public String registration(HttpServletRequest request, HttpServletResponse response) {
 		return "registration";
 	}
+
+	@RequestMapping(value = "/feeTemplate", method = { RequestMethod.GET })
+	public String feeTemplate(HttpServletRequest request, HttpServletResponse response) {
+		return "feeTemplate";
+	}
+
+	@RequestMapping(value = "/withdraw", method = { RequestMethod.GET })
+	public String withdraw(HttpServletRequest request, HttpServletResponse response) {
+		return "withdraw";
+	}
+	@RequestMapping(value = "/tpps", method = { RequestMethod.GET })
+	public String tpps(HttpServletRequest request, HttpServletResponse response) {
+		return "tpps";
+	}
 }

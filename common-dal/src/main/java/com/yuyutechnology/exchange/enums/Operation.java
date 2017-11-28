@@ -116,7 +116,23 @@ public enum Operation {
 	/**
 	 * 关闭活动
 	 */
-	OFF_CAMPAIGN("off_campaign");
+	OFF_CAMPAIGN("off_campaign"), 
+	/**
+	 *更新手续费模板 
+	 */
+	UPDATE_FEETEMPLATE("update_feetemplate"), 
+	/**
+	 * 添加商户
+	 */
+	ADD_GOLDQPAYCLIENT("add_goldqpayclient"), 
+	/**
+	 * 更新tpps手续费模板 
+	 */
+	UPDATE_GOLDQPAYFEE("update_goldqpayfee"), 
+	/**
+	 * 更新商户信息
+	 */
+	UPDATE_GOLDQPAYCLIENT("update_goldqpayclient");
 	
 	private String operationName;
 

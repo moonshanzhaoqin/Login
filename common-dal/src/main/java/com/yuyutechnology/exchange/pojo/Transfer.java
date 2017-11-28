@@ -30,6 +30,7 @@ public class Transfer implements java.io.Serializable {
 	private String phone;
 	private String currency;
 	private BigDecimal transferAmount;
+	private BigDecimal transferFee;
 	private String transferComment;
 	private Date createTime;
 	private Date finishTime;
@@ -144,6 +145,15 @@ public class Transfer implements java.io.Serializable {
 
 	public void setTransferAmount(BigDecimal transferAmount) {
 		this.transferAmount = transferAmount;
+	}
+
+	@Column(name = "transfer_fee", precision = 20, scale = 4)
+	public BigDecimal getTransferFee() {
+		return transferFee;
+	}
+
+	public void setTransferFee(BigDecimal transferFee) {
+		this.transferFee = transferFee;
 	}
 
 	@Column(name = "transfer_comment")

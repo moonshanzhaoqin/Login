@@ -9,6 +9,7 @@ public class TransDetailsDTO {
 	private String transId;
 	private String transCurrency;
 	private BigDecimal transAmount;
+	private BigDecimal transFee;
 	private String transUnit;
 	private String transRemarks;
 	private Integer transType;
@@ -47,6 +48,12 @@ public class TransDetailsDTO {
 	}
 	public void setTransAmount(BigDecimal transAmount) {
 		this.transAmount = transAmount;
+	}
+	public BigDecimal getTransFee() {
+		return transFee;
+	}
+	public void setTransFee(BigDecimal transFee) {
+		this.transFee = transFee;
 	}
 	public String getTransUnit() {
 		return transUnit;

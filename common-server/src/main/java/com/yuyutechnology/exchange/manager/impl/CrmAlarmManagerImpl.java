@@ -10,10 +10,12 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CrmAlarmDAO;
 import com.yuyutechnology.exchange.dao.CrmSupervisorDAO;
 import com.yuyutechnology.exchange.dao.CrmUserInfoDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
+import com.yuyutechnology.exchange.dto.NotifyWithdrawDTO;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.mail.MailManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
@@ -27,6 +29,7 @@ import com.yuyutechnology.exchange.util.DateFormatUtils;
 @Service
 public class CrmAlarmManagerImpl implements CrmAlarmManager {
 
+	private static Logger logger = LogManager.getLogger(CrmAlarmManagerImpl.class);
 	@Autowired
 	CrmAlarmDAO crmAlarmDAO;
 	@Autowired
@@ -35,17 +38,16 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	CrmUserInfoDAO crmUserInfoDAO;
 	@Autowired
 	TransferDAO transferDAO;
+
 	@Autowired
 	ConfigManager configManager;
-
 	@Autowired
 	SmsManager smsManager;
 	@Autowired
 	MailManager mailManager;
+
 	@Autowired
 	OandaRatesManager oandaRatesManager;
-
-	private static Logger logger = LogManager.getLogger(CrmAlarmManagerImpl.class);
 
 	@Override
 	public void addAlarmConfig(int alarmType, BigDecimal lowerLimit, BigDecimal upperLimit, int alarmMode, int editorid,
@@ -584,6 +586,35 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 
 		default:
 			break;
+		}
+	}
+
+	@Override
+	public void notifyWithdraw(NotifyWithdrawDTO notifyWithdrawDTO) {
+		List<CrmAlarm> crmAlarms = crmAlarmDAO.getConfigListByTypeAndStatus(ServerConsts.ALARM_TYPE_WITHDRAW, 1);
+		if (crmAlarms == null || crmAlarms.isEmpty()) {
+			return;
+		}
+		for (CrmAlarm crmAlarm : crmAlarms) {
+			String[] supervisorIdArr = (crmAlarm.getSupervisorIdArr().replace("[", "").replace("]", "")).split(",");
+			for (String supervisorId : supervisorIdArr) {
+				CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
+				switch (crmAlarm.getAlarmMode()) {
+				case ServerConsts.ALARM_MODE_SMS:
+					smsManager.sendSMS4NotifyWithdray(crmSupervisor.getSupervisorMobile(), notifyWithdrawDTO);
+					break;
+				case ServerConsts.ALARM_MODE_EMAIL:
+					mailManager.mail4NotifyWithdray(crmSupervisor.getSupervisorEmail(), notifyWithdrawDTO);
+					break;
+				case ServerConsts.ALARM_MODE_SMS_AND_EMAIL:
+					smsManager.sendSMS4NotifyWithdray(crmSupervisor.getSupervisorMobile(), notifyWithdrawDTO);
+					mailManager.mail4NotifyWithdray(crmSupervisor.getSupervisorEmail(), notifyWithdrawDTO);
+					break;
+
+				default:
+					break;
+				}
+			}
 		}
 	}
 }

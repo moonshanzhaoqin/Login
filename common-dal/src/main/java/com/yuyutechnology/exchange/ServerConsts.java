@@ -1,5 +1,9 @@
 package com.yuyutechnology.exchange;
 
+/**
+ * @author suzan.wu
+ *
+ */
 public class ServerConsts {
 	// 用户类型
 	/**
@@ -10,6 +14,18 @@ public class ServerConsts {
 	 * 系统用户
 	 */
 	public static final int USER_TYPE_OF_SYSTEM = 1;
+	/**
+	 * 手续费账户
+	 */
+	public static final int USER_TYPE_OF_FEE = 2;
+	/**
+	 * 回收账户
+	 */
+	public static final int USER_TYPE_OF_RECOVERY = 3;
+	/**
+	 * 冻结账户
+	 */
+	public static final int USER_TYPE_OF_FROZEN = 4;
 
 	// 冻结状态
 	/**
@@ -38,9 +54,9 @@ public class ServerConsts {
 	public static final int PAY_AVAILABLE_OF_UNAVAILABLE = 0;
 
 	// 检查密码，返回状态
-	public static final int CHECKPWD_STATUS_CORRECT = 0;
-	public static final int CHECKPWD_STATUS_INCORRECT = 1;
-	public static final int CHECKPWD_STATUS_FREEZE = 2;
+	// public static final int CHECKPWD_STATUS_CORRECT = 0;
+	// public static final int CHECKPWD_STATUS_INCORRECT = 1;
+	// public static final int CHECKPWD_STATUS_FREEZE = 2;
 
 	// 币种
 	public static final String CURRENCY_OF_GOLDPAY = "GDQ";
@@ -72,28 +88,34 @@ public class ServerConsts {
 	 * 系统退款
 	 */
 	public static final int TRANSFER_TYPE_IN_SYSTEM_REFUND = 3;
-	 /**
-	 * 黄金宝提现
+	/**
+	 * 提取金条
 	 */
-	 public static final int TRANSFER_TYPE_OUT_GOLDPAY_WITHDRAW = 4;
-	 /**
+	public static final int TRANSFER_TYPE_IN_WITHDRAW = 4;
+	/**
 	 * 黄金宝充值
 	 */
-	 public static final int TRANSFER_TYPE_IN_GOLDPAY_RECHARGE = 5;
-	 /**
-	 * 黄金宝提现退款
+	public static final int TRANSFER_TYPE_IN_GOLDPAY_RECHARGE = 5;
+	/**
+	 * 提现退款
 	 */
-	 public static final int TRANSFER_TYPE_IN_GOLDPAY_REFUND = 6;
+	public static final int TRANSFER_TYPE_IN_WITHDRAW_REFUND = 6;
 	/**
 	 * Paypal充值
 	 */
 	public static final int TRANSFER_TYPE_IN_PAYPAL_RECHAEGE = 7;
-
 	/**
 	 * 邀请活动奖励
 	 */
 	public static final int TRANSFER_TYPE_IN_INVITE_CAMPAIGN = 8;
-
+	/**
+	 * 手续费
+	 */
+	public static final int TRANSFER_TYPE_IN_FEE = 9;
+	/**
+	 * 回收
+	 */
+	public static final int TRANSFER_TYPE_IN_RECOVERY = 10;
 	// 交易状态
 	/**
 	 * 交易初始化
@@ -111,24 +133,11 @@ public class ServerConsts {
 	 * 交易退回
 	 */
 	public static final int TRANSFER_STATUS_OF_REFUND = 3;
-	
+
 	public static final int EXCHANGE_STATUS_OF_INITIALIZATION = 1;
 	public static final int EXCHANGE_STATUS_OF_PROCESS = 2;
 	public static final int EXCHANGE_STATUS_OF_COMPLETED = 0;
 	public static final int EXCHANGE_STATUS_OF_INTERRUPTED = 3;
-
-	// /**
-	// * 待支付
-	// */
-	// public static final int TRANSFER_STATUS_OF_AUTOREVIEW_SUCCESS = 4;
-	// /**
-	// * 审核失败
-	// */
-	// public static final int TRANSFER_STATUS_OF_AUTOREVIEW_FAIL = 5;
-	// /**
-	// * 支付失败
-	// */
-	// public static final int TRANSFER_STATUS_OF_GOLDPAYREMIT_FAIL = 8;
 
 	// notification状态
 	public static final int NOTIFICATION_STATUS_OF_PENDING = 0;
@@ -151,6 +160,8 @@ public class ServerConsts {
 	 * 非法记录
 	 */
 	public static final int UNREGISTERED_STATUS_OF_ERROR = 3;
+
+	
 
 	// configKey
 	/**
@@ -238,11 +249,27 @@ public class ServerConsts {
 
 	public static final int COLLECT_STATUS_UNREGISTER = 0;
 	public static final int COLLECT_STATUS_REGISTER = 1;
-	
+
 	/**
 	 * goldpay返回成功
-	 */	
+	 */
 	public static final int GOLDPAY_RETURN_FAIL = 0;
 	public static final int GOLDPAY_RETURN_SUCCESS = 1;
+
+	public static final int ALARM_TYPE_WITHDRAW = 6;
 	
+	//通知方式
+	public static final int ALARM_MODE_SMS = 1;
+	public static final int ALARM_MODE_EMAIL = 2;
+	public static final int ALARM_MODE_SMS_AND_EMAIL = 3;
+	
+	
+	/*提取状态*/
+	public static final byte WITHDRAW_RESULT_DEFAULT = 0;
+	public static final byte WITHDRAW_RESULT_APPLY_SUCCESS = 1;
+	public static final byte WITHDRAW_RESULT_APPLY_FAIL = 2;
+	public static final byte WITHDRAW_RESULT_FINISHT = 3;
+	public static final byte WITHDRAW_RESULT_CANCEL = 4;
+	
+
 }

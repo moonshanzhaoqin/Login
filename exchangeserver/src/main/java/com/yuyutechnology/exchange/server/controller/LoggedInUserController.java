@@ -191,21 +191,21 @@ public class LoggedInUserController {
 			CheckPwdResult result = userManager.checkPayPassword(sessionData.getUserId(),
 					checkPayPwdRequest.getUserPayPwd());
 			switch (result.getStatus()) {
-			case ServerConsts.CHECKPWD_STATUS_FREEZE:
+			case FREEZE:
 				logger.info(MessageConsts.PAY_FREEZE);
 				rep.setRetCode(RetCodeConsts.PAY_FREEZE);
 				rep.setMessage(String.valueOf(result.getInfo()));
 				rep.setOpts(new String[] { String.valueOf(result.getInfo()) });
 				break;
 
-			case ServerConsts.CHECKPWD_STATUS_INCORRECT:
+			case INCORRECT:
 				logger.info(MessageConsts.PAY_PWD_NOT_MATCH);
 				rep.setRetCode(RetCodeConsts.PAY_PWD_NOT_MATCH);
 				rep.setMessage(String.valueOf(result.getInfo()));
 				rep.setOpts(new String[] { String.valueOf(result.getInfo()) });
 				break;
 
-			case ServerConsts.CHECKPWD_STATUS_CORRECT:
+			case CORRECT:
 				String checkToken = sessionManager.createCheckToken(sessionData.getUserId(),
 						checkPayPwdRequest.getPurpose());
 				logger.info("********Operation succeeded********");
@@ -241,19 +241,19 @@ public class LoggedInUserController {
 			CheckPwdResult result = userManager.checkLoginPassword(sessionData.getUserId(),
 					modifyPasswordRequest.getOldPassword());
 			switch (result.getStatus()) {
-			case ServerConsts.CHECKPWD_STATUS_FREEZE:
+			case FREEZE:
 				logger.info(MessageConsts.LOGIN_FREEZE);
 				rep.setRetCode(RetCodeConsts.LOGIN_FREEZE);
 				rep.setMessage(String.valueOf(result.getInfo()));
 				rep.setOpts(new String[] { String.valueOf(result.getInfo()) });
 				break;
-			case ServerConsts.CHECKPWD_STATUS_INCORRECT:
+			case INCORRECT:
 				logger.info(MessageConsts.PASSWORD_NOT_MATCH);
 				rep.setRetCode(RetCodeConsts.PASSWORD_NOT_MATCH);
 				rep.setMessage(String.valueOf(result.getInfo()));
 				rep.setOpts(new String[] { String.valueOf(result.getInfo()) });
 				break;
-			case ServerConsts.CHECKPWD_STATUS_CORRECT:
+			case CORRECT:
 				if (modifyPasswordRequest.getOldPassword().equals(modifyPasswordRequest.getNewPassword())) {
 					logger.info(MessageConsts.NEW_PWD_EQUALS_OLD);
 					rep.setRetCode(RetCodeConsts.NEW_PWD_EQUALS_OLD);

@@ -1,5 +1,6 @@
 package com.yuyutechnology.exchange.manager.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -82,7 +83,7 @@ public class TaskManagerImpl implements TaskManager {
 		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId);
 
 		transDetailsManager.addTransDetails(transferId, userId, payer.getUserId(), payer.getUserName(),
-				payer.getAreaCode(), payer.getUserPhone(), unregistered.getCurrency(), unregistered.getAmount(),comment
+				payer.getAreaCode(), payer.getUserPhone(), unregistered.getCurrency(), unregistered.getAmount(),BigDecimal.ZERO,"", comment
 				, ServerConsts.TRANSFER_TYPE_TRANSACTION - 1);
 
 		/* 更改unregistered状态 */

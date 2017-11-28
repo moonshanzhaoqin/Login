@@ -1,8 +1,12 @@
 package com.yuyutechnology.exchange.crm;
 
+import javax.annotation.Resource;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.HibernateTemplate;
 
+import com.yuyutechnology.exchange.crm.tpps.pojo.GoldqPayClient;
 import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
 
 public class AccountInfoManagerTest extends BaseSpringJunit4 {
@@ -10,12 +14,13 @@ public class AccountInfoManagerTest extends BaseSpringJunit4 {
 	@Autowired
 	CrmUserInfoManager crmUserInfoManager;
 	
-//	@Test
-//	public void crmAccountTest(){
-		
-//		crmUserInfoManager.getUserAccountInfoListByPage(null, null, 3, 
-//				new BigDecimal(10000), new BigDecimal(1000), 1, 10);
-
-//	}
+	@Resource
+	HibernateTemplate hibernateTemplateTPPS;
+	
+	@Test
+	public void testTPPS(){
+		GoldqPayClient client = hibernateTemplateTPPS.get(GoldqPayClient.class, 1L);
+		System.out.println(client.getName());
+	}
 
 }
