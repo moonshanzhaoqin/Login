@@ -931,20 +931,20 @@ public class TransferManagerImpl implements TransferManager {
 
 	}
 	
-	@Override
-	public String createTransId(int transferType){
-		return transferDAO.createTransId(transferType);
-	}
-	
-	@Override
-	public void addTransfer(Transfer transfer){
-		transferDAO.addTransfer(transfer);
-	}
-	
-	@Override
-	public Transfer getTransferById(String transferId) {
-		return transferDAO.getTransferById(transferId);
-	}
+//	@Override
+//	public String createTransId(int transferType){
+//		return transferDAO.createTransId(transferType);
+//	}
+//	
+//	@Override
+//	public void addTransfer(Transfer transfer){
+//		transferDAO.addTransfer(transfer);
+//	}
+//	
+//	@Override
+//	public Transfer getTransferById(String transferId) {
+//		return transferDAO.getTransferById(transferId);
+//	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -1019,8 +1019,9 @@ public class TransferManagerImpl implements TransferManager {
 
 			switch (type) {
 			case "expenses":// 支出
-				sb.append("and t1.trans_amount < 0 and t2.transfer_type in (0,?) ");
+				sb.append("and t1.trans_amount < 0 and t2.transfer_type in (0,?,?) ");
 				values.add(ServerConsts.TRANSFER_TYPE_OUT_INVITE + "");
+				values.add(ServerConsts.TRANSFER_TYPE_IN_FEE + "");
 				break;
 			case "income":// 收入
 				sb.append("and t1.trans_amount > 0 and t2.transfer_type in (0,?,?) ");

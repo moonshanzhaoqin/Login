@@ -48,10 +48,10 @@ public interface TransferManager {
 
 	void systemRefundStep2(String transferId, Unregistered unregistered);
 
-	String createTransId(int createTransId);
-
-	void addTransfer(Transfer transfer);
-
-	Transfer getTransferById(String transferId);
+//	String createTransId(int createTransId);
+//
+//	void addTransfer(Transfer transfer);
+//
+//	Transfer getTransferById(String transferId);
 
 }
