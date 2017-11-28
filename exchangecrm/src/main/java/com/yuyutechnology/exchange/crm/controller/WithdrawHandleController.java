@@ -66,14 +66,12 @@ public class WithdrawHandleController {
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
 		logger.info("finishWithdraw:{}", withdrawRequest.getWithdrawId());
-		try {
-			withdrawManager.finishWithdraw(withdrawRequest.getWithdrawId(),
+		String retCode = withdrawManager.finishWithdraw(withdrawRequest.getWithdrawId());
+		if (retCode.equals(RetCodeConsts.RET_CODE_SUCCESS)) {
+			retCode = withdrawManager.goldpayTrans4finish(withdrawRequest.getWithdrawId(),
 					(String) request.getSession().getAttribute("adminName"));
-			withdrawManager.goldpayTrans4Handle(withdrawRequest.getWithdrawId());
-			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-		} catch (Exception e) {
-			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 		}
+		rep.setRetCode(retCode);
 		return rep;
 	}
 
@@ -83,15 +81,12 @@ public class WithdrawHandleController {
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
 		logger.info("cancelWithdraw:{}", withdrawRequest.getWithdrawId());
-		try {
-			withdrawManager.cancelWithdraw(withdrawRequest.getWithdrawId(),
+		String retCode = withdrawManager.cancelWithdraw(withdrawRequest.getWithdrawId());
+		if (retCode.equals(RetCodeConsts.RET_CODE_SUCCESS)) {
+			retCode = withdrawManager.goldpayTrans4cancel(withdrawRequest.getWithdrawId(),
 					(String) request.getSession().getAttribute("adminName"));
-			withdrawManager.goldpayTrans4Handle(withdrawRequest.getWithdrawId());
-			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-		} catch (Exception e) {
-			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 		}
-
+		rep.setRetCode(retCode);
 		return rep;
 	}
 

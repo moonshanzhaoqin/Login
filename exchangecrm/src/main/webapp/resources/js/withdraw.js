@@ -142,12 +142,17 @@ function getWithdrawByPage(currentPage, userPhone, userName) {
 
 function showHandleResult(handleResult, withdrawId) {
 	switch (handleResult) {
-	case WITHDRAW_HANDLE_RESULT_DEFAULT:
+	case WITHDRAW_RESULT_DEFAULT:
+		return "申请处理中";
+	case WITHDRAW_RESULT_APPLY_SUCCESS:
 		return '<button type="button" class="btn btn-success" onclick="finishWithdraw('
 				+ withdrawId
 				+ ')">完成</button>'
 				+ '<button type="button" class="btn btn-warning" onclick="cancelWithdraw('
 				+ withdrawId + ')">取消</button>';
+
+	case WITHDRAW_RESULT_APPLY_FAIL:
+		return "申请失败";
 	case WITHDRAW_HANDLE_RESULT_FINISHT:
 		return "交易完成";
 	case WITHDRAW_HANDLE_RESULT_CANCEL:
@@ -245,6 +250,8 @@ function paginator(currentPage, pageTotal) {
 	$('#paginator').bootstrapPaginator(options);
 }
 
-var WITHDRAW_HANDLE_RESULT_DEFAULT = 0;
-var WITHDRAW_HANDLE_RESULT_FINISHT = 1;
-var WITHDRAW_HANDLE_RESULT_CANCEL = 2;
+var WITHDRAW_RESULT_DEFAULT = 0;
+var WITHDRAW_RESULT_APPLY_SUCCESS = 1;
+var WITHDRAW_RESULT_APPLY_FAIL = 2;
+var WITHDRAW_RESULT_FINISHT = 3;
+var WITHDRAW_RESULT_CANCEL = 4;

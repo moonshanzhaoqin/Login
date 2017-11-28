@@ -7,14 +7,15 @@ import com.yuyutechnology.exchange.util.page.PageBean;
 
 public interface WithdrawDAO {
 
-	Withdraw getWithdraw(Integer withdrawId);
+	Withdraw getWithdraw(String withdrawId);
 
 	void updateWithdraw(Withdraw withdraw);
 
-	List<Withdraw> listWithdraw();
-
-	Integer saveWithdraw(Withdraw withdraw);
+	String saveWithdraw(Withdraw withdraw);
 
 	PageBean getWithdrawByPage(String hql, List<Object> values, int currentPage, int pageSize);
 
+	String createWithdrawId();
+
+	List<Withdraw> listWithdrawByUserId(Integer userId);
 }

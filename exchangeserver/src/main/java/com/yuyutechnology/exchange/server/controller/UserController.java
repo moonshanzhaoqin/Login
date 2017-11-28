@@ -386,7 +386,7 @@ public class UserController {
 							registerRequest.getUserName(), registerRequest.getUserPassword(),
 							registerRequest.getLanguage());
 
-					logger.info("userId==={}", userId);
+					logger.info("register end! userId={}", userId);
 					if (userId == null) {
 						logger.info(MessageConsts.RET_CODE_FAILUE);
 						rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
@@ -399,8 +399,8 @@ public class UserController {
 						userManager.updateUser(userId, HttpClientUtils.getIP(request), registerRequest.getPushId(),
 								registerRequest.getLanguage());
 						/* 发放奖励金 */
-						goldpayTrans4MergeManager.updateWallet4GoldpayTransList(campaignManager.grantBonus(userId,
-								registerRequest.getAreaCode(), registerRequest.getUserPhone()));
+						campaignManager.grantBonus(userId,
+								registerRequest.getAreaCode(), registerRequest.getUserPhone());
 						/* 生成session Token */
 						SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 						sessionManager.saveSessionData(sessionData);

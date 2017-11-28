@@ -3,6 +3,7 @@
  */
 package com.yuyutechnology.exchange.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.yuyutechnology.exchange.pojo.Campaign;
@@ -33,5 +34,7 @@ public interface CampaignDAO {
 	 * @return
 	 */
 	PageBean getCampaignsByPage(String hql, List<Object> values, int currentPage, int pageSize);
+
+	Integer updateCampaignSurplus(Integer campaignId, BigDecimal inviterBonus, BigDecimal inviteeBonus);
 
 }

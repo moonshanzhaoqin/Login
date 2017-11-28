@@ -233,9 +233,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 
 	@Override
 	public void updateWallet4GoldpayTransList(List<String> transferIds) {
-		for (String transferId : transferIds) {
-			updateWallet4GoldpayTrans(transferId);
-		}
+			updateWallet4FeeTrans(transferIds.get(0), transferIds.get(1));
 	}
 	
 	@Override

@@ -344,7 +344,7 @@ public class UserManagerImpl implements UserManager {
 		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
 		if (user != null) {
 			if (user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_AVAILABLE) {
-				logger.info(" -- UserId = {}", user.getUserId());
+				logger.info("*** UserId = {} ", user.getUserId());
 				return user.getUserId();
 			}
 			logger.info("User is frozen!");
@@ -362,7 +362,7 @@ public class UserManagerImpl implements UserManager {
 		if (user != null) {
 			userInfo = new UserInfo(user.getUserId(), user.getAreaCode(), user.getUserPhone(), user.getUserName(),
 					StringUtils.isNotBlank(user.getUserPayPwd()));
-			logger.info(" -- {}", userInfo.toString());
+			logger.info("*** {}", userInfo.toString());
 		} else {
 			logger.warn("Can not find the user!!!");
 		}
@@ -407,7 +407,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public void switchLanguage(Integer userId, String language) {
 		Language newLanguage = LanguageUtils.standard(language);
-		logger.info("{} switchLanguage to {} -->", userId, newLanguage.toString());
+		logger.info("USER {} switchLanguage to {} -->", userId, newLanguage.toString());
 		User user = userDAO.getUser(userId);
 		if (!user.getPushTag().equals(newLanguage)) {
 			logger.info("***Language inconsistency***");
@@ -439,7 +439,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void updatePassword(Integer userId, String newPassword) {
-		logger.info("Update user {} password {} -->", userId, newPassword);
+		logger.info("Update USER {} password {} -->", userId, newPassword);
 		User user = userDAO.getUser(userId);
 		user.setUserPassword(PasswordUtils.encrypt(newPassword, user.getPasswordSalt()));
 		userDAO.updateUser(user);
@@ -448,7 +448,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void updateUser(Integer userId, String loginIp, String pushId, String language) {
-		logger.info("Update user login information -->");
+		logger.info("Update USER {} login information -->",userId);
 		User user = userDAO.getUser(userId);
 		if (user == null) {
 			return;
@@ -467,7 +467,7 @@ public class UserManagerImpl implements UserManager {
 
 		/* 切换语言 */
 		Language newLanguage = LanguageUtils.standard(language);
-		logger.info("{} switchLanguage to {} -->", userId, newLanguage.toString());
+		logger.info("USER {} switchLanguage to {} -->", userId, newLanguage.toString());
 		if (!user.getPushTag().equals(newLanguage)) {
 			logger.info("***Language inconsistency***");
 			user.setPushTag(newLanguage);
@@ -480,7 +480,8 @@ public class UserManagerImpl implements UserManager {
 		userDAO.updateUser(user);
 
 		/* 清除其他账号的此pushId */
-		clearPushId(userId, pushId);
+		if (StringUtils.isNotBlank(pushId)){
+		clearPushId(userId, pushId);}
 	}
 
 	private void clearPushId(Integer userId, String pushId) {
@@ -685,7 +686,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void addDevice(Integer userId, String deviceId, String deviceName) {
-		logger.info("{} add {} device {}==>", userId, deviceName, deviceId);
+		logger.info("User{} add device {}-{} -->", userId, deviceName, deviceId);
 		userDeviceDAO.addUserDevice(new UserDevice(new UserDeviceId(userId, deviceId), deviceName));
 	}
 

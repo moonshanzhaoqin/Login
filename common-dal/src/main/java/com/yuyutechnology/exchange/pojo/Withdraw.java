@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -15,7 +13,7 @@ import javax.persistence.TemporalType;
 @Table(name = "e_withdraw")
 public class Withdraw implements java.io.Serializable {
 
-	private Integer withdrawId;
+	private String withdrawId;
 	private int userId;
 	private String userEmail;
 	private int quantity;
@@ -33,18 +31,22 @@ public class Withdraw implements java.io.Serializable {
 	public Withdraw() {
 	}
 
-	public Withdraw(int userId, String userEmail, int quantity, BigDecimal goldpay, BigDecimal fee, Date applyTime) {
+	public Withdraw(String withdrawId, int userId, String userEmail, int quantity, BigDecimal goldpay, BigDecimal fee,
+			Date applyTime, byte handleResult) {
+		this.withdrawId = withdrawId;
 		this.userId = userId;
 		this.userEmail = userEmail;
 		this.quantity = quantity;
 		this.goldpay = goldpay;
 		this.fee = fee;
 		this.applyTime = applyTime;
+		this.handleResult = handleResult;
 	}
 
-	public Withdraw(int userId, String userEmail, int quantity, BigDecimal goldpay, BigDecimal fee, Date applyTime,
-			byte handleResult, String handler, Date handleTime, String goldTransferA, String feeTransferA,
-			String goldTransferB, String feeTransferB) {
+	public Withdraw(String withdrawId, int userId, String userEmail, int quantity, BigDecimal goldpay, BigDecimal fee,
+			Date applyTime, byte handleResult, String handler, Date handleTime, String goldTransferA,
+			String feeTransferA, String goldTransferB, String feeTransferB) {
+		this.withdrawId = withdrawId;
 		this.userId = userId;
 		this.userEmail = userEmail;
 		this.quantity = quantity;
@@ -61,14 +63,13 @@ public class Withdraw implements java.io.Serializable {
 	}
 
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
 
 	@Column(name = "withdraw_id", unique = true, nullable = false)
-	public Integer getWithdrawId() {
+	public String getWithdrawId() {
 		return this.withdrawId;
 	}
 
-	public void setWithdrawId(Integer withdrawId) {
+	public void setWithdrawId(String withdrawId) {
 		this.withdrawId = withdrawId;
 	}
 

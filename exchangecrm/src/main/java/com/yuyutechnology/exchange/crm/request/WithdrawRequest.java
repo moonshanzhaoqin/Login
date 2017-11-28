@@ -1,13 +1,14 @@
 package com.yuyutechnology.exchange.crm.request;
 
 public class WithdrawRequest {
-	private Integer withdrawId;
+	private String withdrawId;
 
-	public Integer getWithdrawId() {
+	public String getWithdrawId() {
 		return withdrawId;
 	}
 
-	public void setWithdrawId(Integer withdrawId) {
+	public void setWithdrawId(String withdrawId) {
 		this.withdrawId = withdrawId;
 	}
+
 }

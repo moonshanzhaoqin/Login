@@ -161,9 +161,7 @@ public class ServerConsts {
 	 */
 	public static final int UNREGISTERED_STATUS_OF_ERROR = 3;
 
-	public static final byte WITHDRAW_HANDLE_RESULT_DEFAULT = 0;
-	public static final byte WITHDRAW_HANDLE_RESULT_FINISHT = 1;
-	public static final byte WITHDRAW_HANDLE_RESULT_CANCEL = 2;
+	
 
 	// configKey
 	/**
@@ -264,6 +262,14 @@ public class ServerConsts {
 	public static final int ALARM_MODE_SMS = 1;
 	public static final int ALARM_MODE_EMAIL = 2;
 	public static final int ALARM_MODE_SMS_AND_EMAIL = 3;
+	
+	
+	/*提取状态*/
+	public static final byte WITHDRAW_RESULT_DEFAULT = 0;
+	public static final byte WITHDRAW_RESULT_APPLY_SUCCESS = 1;
+	public static final byte WITHDRAW_RESULT_APPLY_FAIL = 2;
+	public static final byte WITHDRAW_RESULT_FINISHT = 3;
+	public static final byte WITHDRAW_RESULT_CANCEL = 4;
 	
 
 }

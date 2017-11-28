@@ -1,12 +1,10 @@
 package pojo;
-// Generated Nov 27, 2017 12:17:17 PM by Hibernate Tools 5.2.6.Final
+// Generated Nov 28, 2017 4:13:30 PM by Hibernate Tools 5.2.6.Final
 
 import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -19,7 +17,7 @@ import javax.persistence.TemporalType;
 @Table(name = "e_withdraw", catalog = "anytime_exchange")
 public class EWithdraw implements java.io.Serializable {
 
-	private Integer withdrawId;
+	private String withdrawId;
 	private int userId;
 	private String userEmail;
 	private int quantity;
@@ -37,8 +35,9 @@ public class EWithdraw implements java.io.Serializable {
 	public EWithdraw() {
 	}
 
-	public EWithdraw(int userId, String userEmail, int quantity, BigDecimal goldpay, BigDecimal fee, Date applyTime,
-			byte handleResult) {
+	public EWithdraw(String withdrawId, int userId, String userEmail, int quantity, BigDecimal goldpay, BigDecimal fee,
+			Date applyTime, byte handleResult) {
+		this.withdrawId = withdrawId;
 		this.userId = userId;
 		this.userEmail = userEmail;
 		this.quantity = quantity;
@@ -48,9 +47,10 @@ public class EWithdraw implements java.io.Serializable {
 		this.handleResult = handleResult;
 	}
 
-	public EWithdraw(int userId, String userEmail, int quantity, BigDecimal goldpay, BigDecimal fee, Date applyTime,
-			byte handleResult, String handler, Date handleTime, String goldTransferA, String feeTransferA,
-			String goldTransferB, String feeTransferB) {
+	public EWithdraw(String withdrawId, int userId, String userEmail, int quantity, BigDecimal goldpay, BigDecimal fee,
+			Date applyTime, byte handleResult, String handler, Date handleTime, String goldTransferA,
+			String feeTransferA, String goldTransferB, String feeTransferB) {
+		this.withdrawId = withdrawId;
 		this.userId = userId;
 		this.userEmail = userEmail;
 		this.quantity = quantity;
@@ -67,14 +67,13 @@ public class EWithdraw implements java.io.Serializable {
 	}
 
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
 
 	@Column(name = "withdraw_id", unique = true, nullable = false)
-	public Integer getWithdrawId() {
+	public String getWithdrawId() {
 		return this.withdrawId;
 	}
 
-	public void setWithdrawId(Integer withdrawId) {
+	public void setWithdrawId(String withdrawId) {
 		this.withdrawId = withdrawId;
 	}
 

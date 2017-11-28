@@ -1,11 +1,17 @@
 package com.yuyutechnology.exchange.dao.impl;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -35,6 +41,23 @@ public class CampaignDAOImpl implements CampaignDAO {
 	@Override
 	public void updateCampaign(Campaign campaign) {
 		hibernateTemplate.saveOrUpdate(campaign);
+	}
+
+	@Override
+	public Integer updateCampaignSurplus(final Integer campaignId, final BigDecimal inviterBonus,
+			final BigDecimal inviteeBonus) {
+		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
+			@Override
+			public Integer doInHibernate(Session session) throws HibernateException {
+				Query query = session.createQuery(
+						"update Campaign set budgetSurplus = budgetSurplus - :inviterBonus - :inviteeBonus, updateTime = :date where campaignId = :campaignId ");
+				query.setBigDecimal("inviterBonus", inviterBonus);
+				query.setBigDecimal("inviteeBonus", inviteeBonus);
+				query.setDate("date", new Date());
+				query.setInteger("campaignId", campaignId);
+				return query.executeUpdate();
+			}
+		});
 	}
 
 }

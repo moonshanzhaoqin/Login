@@ -71,7 +71,7 @@ public interface CampaignManager {
 	 * @param userPhone
 	 * @return 
 	 */
-	List<String> grantBonus(Integer userId, String areaCode, String userPhone);
+	void grantBonus(Integer userId, String areaCode, String userPhone);
 
 	/**
 	 * 有效的领取记录
