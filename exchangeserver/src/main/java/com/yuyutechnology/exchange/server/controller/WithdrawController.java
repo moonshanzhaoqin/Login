@@ -30,7 +30,6 @@ public class WithdrawController {
 
 	@Autowired
 	WithdrawManager withdrawManager;
-	
 
 	@ResponseEncryptBody
 	@ApiOperation(value = "提现计算", httpMethod = "POST", notes = "")
@@ -62,9 +61,7 @@ public class WithdrawController {
 			rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 			break;
 		}
-
 		return rep;
-
 	}
 
 	@ResponseEncryptBody
@@ -77,7 +74,7 @@ public class WithdrawController {
 		SessionData sessionData = SessionDataHolder.getSessionData();
 
 		Integer withdrawId = withdrawManager.applyConfirm(sessionData.getUserId(),
-				withdrawConfirmRequset.getGoldBullion(),withdrawConfirmRequset.getUserEmail());
+				withdrawConfirmRequset.getGoldBullion(), withdrawConfirmRequset.getUserEmail());
 		if (withdrawId == null) {
 			logger.info(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
 			rep.setRetCode(RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
@@ -90,4 +87,6 @@ public class WithdrawController {
 		return rep;
 	}
 
+	//TODO  提取记录
+	
 }

@@ -8,6 +8,7 @@ $(function() {
 		console.log(feeTemplate);
 		form = document.getElementById("updateFeeTemplate");
 		form.feePurpose.value = feeTemplate.feePurpose;
+		form.feeName.value = feeTemplate.feeName;
 		form.exemptAmount.value = feeTemplate.exemptAmount;
 		form.feePercent.value = feeTemplate.feePercent;
 		form.minFee.value = feeTemplate.minFee;
@@ -28,7 +29,7 @@ function initFeeTemplate() {
 					var html = "";
 					for (var i = 0; i < data.length; i++) {
 						html += '<tr>' + '<td>'
-								+ data[i].feePurpose
+								+ data[i].feeName
 								+ '</td>'
 								+ '<td>'
 								+ data[i].exemptAmount
@@ -43,7 +44,7 @@ function initFeeTemplate() {
 								+ data[i].maxFee
 								+ '</td>'
 								+ '<td>'
-								+ '<a  data-toggle="modal" data-target="#feeTemplateModal" data-whatever='
+								+ '<a href="" data-toggle="modal" data-target="#feeTemplateModal" data-whatever='
 								+ "'" + JSON.stringify(data[i]) + "'"
 								+ '>修改</a>' + '</td>' + '</tr>'
 					}
@@ -63,6 +64,7 @@ function updateFeeTemplate() {
 			&& parseInt(form.minFee.value) == form.minFee.value
 			&& parseInt(form.maxFee.value) == form.maxFee.value) {
 		data = {
+			feeName : form.feeName.value,
 			feePurpose : form.feePurpose.value,
 			exemptAmount : form.exemptAmount.value,
 			feePercent : form.feePercent.value,

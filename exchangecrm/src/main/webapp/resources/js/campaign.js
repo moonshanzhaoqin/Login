@@ -116,14 +116,14 @@ function initCampaign(currentPage) {
 												+ data.rows[i].campaignId + ')">关闭</a>'))
 								+ '</td>'
 								+ '<td>'
-								+ '<a  data-toggle="modal" data-target="#changeBonusModal" data-whatever='
+								+ '<a href="" data-toggle="modal" data-target="#changeBonusModal" data-whatever='
 								+ "'"
 								+ JSON.stringify(data.rows[i])
 								+ "'"
 								+ '>修改</a>'
 								+ '</td>'
 								+ '<td>'
-								+ '<a  data-toggle="modal" data-target="#addBudgetModal" data-whatever='
+								+ '<a href="" data-toggle="modal" data-target="#addBudgetModal" data-whatever='
 								+ "'" + JSON.stringify(data.rows[i]) + "'"
 								+ '>追加</a>' + '</td>' + '</tr>'
 					}

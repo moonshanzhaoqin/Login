@@ -13,10 +13,10 @@
 				<thead>
 					<tr>
 						<th>模板名称</th>
-						<th>免手续费额度</th>
+						<th>免手续费额度(Q)</th>
 						<th>手续费率</th>
-						<th>最小手续费</th>
-						<th>最大手续费</th>
+						<th>最小手续费(Q)</th>
+						<th>最大手续费(Q)</th>
 						<th>操作</th>
 					</tr>
 				</thead>
@@ -38,15 +38,17 @@
 				</div>
 				<div class="modal-body">
 					<form class="form-horizontal" role="form" id="updateFeeTemplate">
+						<input type="hidden" name="feePurpose" class="form-control"
+									readonly>
 						<div class="form-group">
 							<label for="feePurpose" class="col-sm-4 control-label">模板名称</label>
 							<div class="col-sm-5">
-								<input type="text" name="feePurpose" class="form-control"
+								<input type="text" name="feeName" class="form-control"
 									readonly>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="exemptAmount" class="col-sm-4 control-label">免手续费额度</label>
+							<label for="exemptAmount" class="col-sm-4 control-label">免手续费额度(Q)</label>
 							<div class="col-sm-5">
 								<input type="number" min="0" onkeydown="onlyNum();"
 									style="ime-mode: Disabled" name="exemptAmount"
@@ -60,14 +62,14 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="minFee" class="col-sm-4 control-label">最小手续费</label>
+							<label for="minFee" class="col-sm-4 control-label">最小手续费(Q)</label>
 							<div class="col-sm-5">
 								<input type="number" min="0" onkeydown="onlyNum();"
 									style="ime-mode: Disabled" name="minFee" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="maxFee" class="col-sm-4 control-label">最大手续费</label>
+							<label for="maxFee" class="col-sm-4 control-label">最大手续费(Q)</label>
 							<div class="col-sm-5">
 								<input type="number" min="0" onkeydown="onlyNum();"
 									style="ime-mode: Disabled" name="maxFee" class="form-control">

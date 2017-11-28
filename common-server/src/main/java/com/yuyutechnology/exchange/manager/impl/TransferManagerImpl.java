@@ -787,34 +787,27 @@ public class TransferManagerImpl implements TransferManager {
 			}
 		}
 		
-		//根据transferId更新账户		
-		goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId);
-
+		Transfer transfer4fee = transferDAO.getFeeTransfer(transferId);
+		String feeTransferId = transfer4fee==null?null:transfer4fee.getTransferId();
+		result = goldpayTrans4MergeManager.updateWallet4FeeTrans(transferId, feeTransferId);
+		
+		if(!RetCodeConsts.RET_CODE_SUCCESS.equals(result.get("retCode"))){
+			return result; 
+		}
+		
 		// 推送到账通知
 		User payee = userDAO.getUser(transfer.getUserTo());
 		pushManager.push4Transfer(transfer.getTransferId(), payer, payee, transfer.getCurrency(),
 				amountFormatByCurrency(transfer.getCurrency(), transfer.getTransferAmount()));
-		
-		// 更改Transfer状态
-		transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-	
 		// 转换金额
 		BigDecimal exchangeResult = oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(),
 				transfer.getTransferAmount());
 		transferDAO.updateAccumulatedAmount("transfer_" + transfer.getUserFrom(),
 				exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
 		// 更改累计次数
-		transferDAO.updateCumulativeNumofTimes("transfer_" + transfer.getUserFrom(), new BigDecimal("1"));
-	
+		transferDAO.updateCumulativeNumofTimes("transfer_" + transfer.getUserFrom(), new BigDecimal("1"));		
 		// 预警
 		largeTransWarn(payer, transfer);
-		
-		//扣除手续费
-		Transfer transfer4fee = transferDAO.getFeeTransfer(transferId);
-		if(transfer4fee != null){
-			goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transfer4fee.getTransferId());
-			transferDAO.updateTransferStatus(transfer4fee.getTransferId(), ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-		}
 
 		result.put("msg", "success");
 		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
@@ -832,6 +825,7 @@ public class TransferManagerImpl implements TransferManager {
 	
 	@Override
 	public Object getTransfer(String transferId) {
+		logger.info(transferId);
 		return transferDAO.getTransferByIdJoinUser(transferId);
 	}
 	

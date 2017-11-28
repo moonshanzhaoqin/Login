@@ -46,10 +46,10 @@
 					<tr>
 						<th>clientId</th>
 						<th>商户角色</th>
-						<th>免手续费额度</th>
+						<th>免手续费额度(Q)</th>
 						<th>手续费率</th>
-						<th>最小手续费</th>
-						<th>最大手续费</th>
+						<th>最小手续费(Q)</th>
+						<th>最大手续费(Q)</th>
 						<th>手续费承担者</th>
 						<th>操作</th>
 					</tr>
@@ -60,7 +60,7 @@
 
 	</div>
 	<!-- 模态框（Modal） -->
-		<div class="modal fade" id="addGoldqPayClientModal" tabindex="-1"
+	<div class="modal fade" id="addGoldqPayClientModal" tabindex="-1"
 		role="dialog" aria-labelledby="addGoldqPayClientModalLabel"
 		aria-hidden="true">
 		<div class="modal-dialog">
@@ -76,13 +76,13 @@
 						<div class="form-group">
 							<label for="areaCode" class="col-sm-4 control-label">国家码</label>
 							<div class="col-sm-5">
-								<input type="text" name="areaCode" class="form-control" >
+								<input type="text" name="areaCode" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="userPhone" class="col-sm-4 control-label">手机号</label>
 							<div class="col-sm-5">
-								<input type="text" name="userPhone" class="form-control" >
+								<input type="text" name="userPhone" class="form-control">
 							</div>
 						</div>
 					</form>
@@ -95,7 +95,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<div class="modal fade" id="updategoldqPayClientModal" tabindex="-1"
 		role="dialog" aria-labelledby="updategoldqPayClientModalLabel"
 		aria-hidden="true">
@@ -182,11 +182,14 @@
 						<div class="form-group">
 							<label for="payRole" class="col-sm-4 control-label">商户角色</label>
 							<div class="col-sm-5">
-								<input type="text" name="payRole" class="form-control" readonly>
+								<select name="payRole" class="form-control" disabled="disabled">
+									<option value=1>接收方</option>
+									<option value=2>付款方</option>
+								</select>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="exemptAmount" class="col-sm-4 control-label">免手续费额度</label>
+							<label for="exemptAmount" class="col-sm-4 control-label">免手续费额度(Q)</label>
 							<div class="col-sm-5">
 								<input type="number" min="0" onkeydown="onlyNum();"
 									style="ime-mode: Disabled" name="exemptAmount"
@@ -200,14 +203,14 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="minFee" class="col-sm-4 control-label">最小手续费</label>
+							<label for="minFee" class="col-sm-4 control-label">最小手续费(Q)</label>
 							<div class="col-sm-5">
 								<input type="number" min="0" onkeydown="onlyNum();"
 									style="ime-mode: Disabled" name="minFee" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="maxFee" class="col-sm-4 control-label">最大手续费</label>
+							<label for="maxFee" class="col-sm-4 control-label">最大手续费(Q)</label>
 							<div class="col-sm-5">
 								<input type="number" min="0" onkeydown="onlyNum();"
 									style="ime-mode: Disabled" name="maxFee" class="form-control">
@@ -216,7 +219,10 @@
 						<div class="form-group">
 							<label for="feePayer" class="col-sm-4 control-label">手续费承担者</label>
 							<div class="col-sm-5">
-								<input type="text" name="feePayer" class="form-control">
+								<select name="feePayer" class="form-control">
+									<option value=1>接收方</option>
+									<option value=2>付款方</option>
+								</select>
 							</div>
 						</div>
 					</form>
