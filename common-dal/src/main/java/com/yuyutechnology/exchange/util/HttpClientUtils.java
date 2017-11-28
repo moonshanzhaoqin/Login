@@ -33,6 +33,14 @@ public class HttpClientUtils {
 	private static CloseableHttpClient client;
 	private static CloseableHttpClient retryClient;
 	
+	private final static int RETRYCOUNT = 3;
+	private final static int RETRYINTERVAL = 1000;
+	
+	private final static int POOLMAXTOTAL = 200;
+	private final static int POOLMAXPERROUTE = 100;
+	private final static int POOLCONNECTTIMEOUT = 5000;
+	private final static int POOLSOCKETTIMEOUT = 5000;
+	
 	private static CloseableHttpClient getClient(boolean retry) {
 		if (retry) {
 			if (retryClient == null) {
@@ -41,48 +49,35 @@ public class HttpClientUtils {
 					if (retryClient == null)
 					{
 						ServiceUnavailableRetryStrategy serviceUnavailableRetryStrategy = new ServiceUnavailableRetryStrategy() {
-							/**
-							 * retry逻辑
-							 */
 							@Override
 							public boolean retryRequest(HttpResponse response, int executionCount, HttpContext context) {
-						        if (response.getStatusLine().getStatusCode() != 200 && executionCount <= 3)  
+						        if (response.getStatusLine().getStatusCode() != 200 && executionCount <= RETRYCOUNT)  
 						            return true;  
 						        else  
 						            return false; 
 							}
-							/**
-							 * retry间隔时间
-							 */
 							@Override
 							public long getRetryInterval() {
-								return 500;
+								return RETRYINTERVAL;
 							}
 						};
 						HttpRequestRetryHandler myRetryHandler = new HttpRequestRetryHandler() {
-
 						    public boolean retryRequest(
 						            IOException exception,
 						            int executionCount,
 						            HttpContext context) {
-						        if (executionCount > 3) {
-						            // Do not retry if over max retry count
-						            return false;
-						        }
-						        if (exception instanceof SSLException) {
-						            // SSL handshake exception
+						        if (executionCount > RETRYCOUNT) {
 						            return false;
 						        }
 						        return true;
 						    }
 						};
-						
 						PoolingHttpClientConnectionManager cm =new PoolingHttpClientConnectionManager();
-				        cm.setMaxTotal(200);
-				        cm.setDefaultMaxPerRoute(100);
+				        cm.setMaxTotal(POOLMAXTOTAL);
+				        cm.setDefaultMaxPerRoute(POOLMAXPERROUTE);
 						RequestConfig config = RequestConfig.custom()
-				                .setConnectTimeout(5000) 
-				                .setSocketTimeout(5000).build();
+				                .setConnectTimeout(POOLCONNECTTIMEOUT) 
+				                .setSocketTimeout(POOLSOCKETTIMEOUT).build();
 						retryClient = HttpClients.custom().setServiceUnavailableRetryStrategy(serviceUnavailableRetryStrategy).setRetryHandler(myRetryHandler).setConnectionManager(cm).setDefaultRequestConfig(config).build();
 					}
 				}
@@ -95,11 +90,11 @@ public class HttpClientUtils {
 					if (client == null)
 					{
 						PoolingHttpClientConnectionManager cm =new PoolingHttpClientConnectionManager();
-						cm.setMaxTotal(200);
-						cm.setDefaultMaxPerRoute(100);
+						cm.setMaxTotal(POOLMAXTOTAL);
+						cm.setDefaultMaxPerRoute(POOLMAXPERROUTE);
 						RequestConfig config = RequestConfig.custom()
-								.setConnectTimeout(5000) 
-								.setSocketTimeout(5000).build();
+								.setConnectTimeout(POOLCONNECTTIMEOUT) 
+								.setSocketTimeout(POOLSOCKETTIMEOUT).build();
 						client = HttpClients.custom().setConnectionManager(cm).setDefaultRequestConfig(config).disableAutomaticRetries().build();
 					}
 				}
