@@ -48,13 +48,14 @@ public class Transfer implements java.io.Serializable {
 	public Transfer() {
 	}
 
-	public Transfer(String transferId, int userFrom, int userTo, String currency, BigDecimal transferAmount,
+	public Transfer(String transferId, int userFrom, int userTo, String currency, BigDecimal transferAmount,BigDecimal transferFee,
 			int transferStatus, int transferType) {
 		this.transferId = transferId;
 		this.userFrom = userFrom;
 		this.userTo = userTo;
 		this.currency = currency;
 		this.transferAmount = transferAmount;
+		this.transferFee = transferFee;
 		this.transferStatus = transferStatus;
 		this.transferType = transferType;
 	}
@@ -147,7 +148,7 @@ public class Transfer implements java.io.Serializable {
 		this.transferAmount = transferAmount;
 	}
 
-	@Column(name = "transfer_fee", precision = 20, scale = 4)
+	@Column(name = "transfer_fee", nullable = false, precision = 20, scale = 4)
 	public BigDecimal getTransferFee() {
 		return transferFee;
 	}
