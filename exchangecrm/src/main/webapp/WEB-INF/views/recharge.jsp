@@ -36,7 +36,7 @@
 				<div class="form-group">
 					<label class="sr-only" for="transferType">transferType</label> <select
 						class="form-control" name="transferType">
-						<option value="5">GoldPay</option>
+<!-- 						<option value="5">GoldPay</option> -->
 						<option value="7">PayPal</option>
 					</select>
 				</div>
@@ -55,9 +55,9 @@
 						<th>手机号</th>
 						<th>交易号</th>
 						<th>交易数量(GDQ)</th>
+						<th>手续费(GDQ)</th>
 						<th>支付币种</th>
 						<th>支付金额</th>
-						<th>手续费</th>
 						<th>交易方式</th>
 						<th>交易时间（GMT+8）</th>
 					</tr>
