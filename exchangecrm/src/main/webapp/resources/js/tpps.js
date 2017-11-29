@@ -31,6 +31,8 @@ $(function() {
 					form.areaCode.value = data.areaCode;
 					form.userPhone.value = data.userPhone;
 					form.userName.value = data.userName;
+					form.userPayToken.value = data.userPayToken;
+					form.exId.value = goldqPayClient.exId;
 					form.clientId.value = goldqPayClient.clientId;
 					form.secretKey.value = goldqPayClient.secretKey;
 					form.name.value = goldqPayClient.name;
@@ -56,7 +58,7 @@ $(function() {
 		form.clientId.value = goldqPayFee.clientId;
 		form.payRole.value = goldqPayFee.payRole;
 		form.exemptAmount.value = goldqPayFee.exemptAmount;
-		form.feePercent.value =(goldqPayFee.feePercent*100).toFixed(2);
+		form.feePercent.value = (goldqPayFee.feePercent * 100).toFixed(2);
 		form.minFee.value = goldqPayFee.minFee;
 		form.maxFee.value = goldqPayFee.maxFee;
 		form.feePayer.value = goldqPayFee.feePayer;
@@ -101,36 +103,38 @@ function getGoldqPayClientByPage(currentPage) {
 									+ '<td>'
 									+ data.rows[i].clientId
 									+ '</td>'
-//									+ '<td>'
-//									+ data.rows[i].secretKey
-//									+ '</td>'
+									// + '<td>'
+									// + data.rows[i].secretKey
+									// + '</td>'
 									+ '<td>'
 									+ (data.rows[i].name == null ? ""
 											: data.rows[i].name)
 									+ '</td>'
-//									+ '<td>'
-//									+ (data.rows[i].redirectUrl == null ? ""
-//											: data.rows[i].redirectUrl)
-//									+ '</td>'
-//									+ '<td>'
-//									+ (data.rows[i].customDomain == null ? ""
-//											: data.rows[i].customDomain)
-//									+ '</td>'
+									// + '<td>'
+									// + (data.rows[i].redirectUrl == null ? ""
+									// : data.rows[i].redirectUrl)
+									// + '</td>'
+									// + '<td>'
+									// + (data.rows[i].customDomain == null ? ""
+									// : data.rows[i].customDomain)
+									// + '</td>'
 									+ '<td>'
 									+ '<a href="" data-toggle="modal" data-target="#updategoldqPayClientModal" data-whatever='
 									+ "'"
 									+ JSON.stringify(data.rows[i])
 									+ "'"
 									+ '>修改</a> '
+									+ '</td>'
+									+ '<td>'
 									+ '<a href="javascript:void(0)" onclick="getGoldqPayFee('
 									+ "'" + data.rows[i].clientId + "'"
-									+ ')">手续费</a> ' + '</td>' + '</tr>'
+									+ ')">手续费模板</a> ' + '</td>' + '</tr>'
 						}
 						$('#goldqPayClient tbody').html(html);
 						if (data.currentPage == 1) {
 							paginator(data.currentPage, data.pageTotal);
 						}
-						$('#total').html("共 "+data.total+" 条记录");
+						$('#total').html("共 " + data.total + " 条记录");
 						page = data.currentPage;
 					}
 				},
@@ -145,12 +149,11 @@ function updateGoldqPayClient() {
 	var form = document.getElementById("updateGoldqPayClient");
 
 	var data = {
-		areaCode : form.areaCode.value,
-		userPhone : form.userPhone.value,
+		exId : form.exId.value,
 		clientId : form.clientId.value,
-		secretKey:form.secretKey.value,
+		secretKey : form.secretKey.value,
+		userPayToken : form.userPayToken.value,
 		name : form.name.value,
-		redirectUrl : form.redirectUrl.value,
 		customDomain : form.customDomain.value,
 	}
 	$.ajax({
@@ -210,7 +213,7 @@ function getGoldqPayFee(clientId) {
 								+ data[i].exemptAmount
 								+ '</td>'
 								+ '<td>'
-								+ (data[i].feePercent*100).toFixed(2)
+								+ (data[i].feePercent * 100).toFixed(2)
 								+ '</td>'
 								+ '<td>'
 								+ data[i].minFee
@@ -246,7 +249,7 @@ function updateGoldqPayFee() {
 			clientId : form.clientId.value,
 			payRole : form.payRole.value,
 			exemptAmount : form.exemptAmount.value,
-			feePercent : form.feePercent.value/100,
+			feePercent : form.feePercent.value / 100,
 			minFee : form.minFee.value,
 			maxFee : form.maxFee.value,
 			feePayer : form.feePayer.value
@@ -339,7 +342,6 @@ function showFeePayer(feePayer) {
 		return "未知，出错！"
 	}
 }
-
 
 // 分页
 function paginator(currentPage, pageTotal) {

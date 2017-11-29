@@ -79,11 +79,8 @@ public class TppsManager {
 		return tppsDAO.getGoldqPayClientByPage(hql.toString(), values, currentPage, 5);
 	}
 
-	public void updateGoldqPayClient(Integer exId, String clientId, String secretKey, String name, String redirectUrl,
-			String customDomain) {
+	public void updateGoldqPayClient(String clientId, String name, String redirectUrl, String customDomain) {
 		GoldqPayClient goldqPayClient = tppsDAO.getGoldqPayClientByClientId(clientId);
-		goldqPayClient.setExId(exId);
-		goldqPayClient.setSecretKey(secretKey);
 		goldqPayClient.setName(name);
 		goldqPayClient.setRedirectUrl(redirectUrl);
 		goldqPayClient.setCustomDomain(customDomain);

@@ -24,16 +24,17 @@ td {
 		</div>
 		<div class="row table-responsive">
 			<table class="table table-bordered table-hover table-striped"
-				 id="goldqPayClient">
+				id="goldqPayClient">
 				<thead>
 					<tr>
 						<!-- 						<th>exId</th> -->
-						<th >clientId</th>
-<!-- 						<th style="width: 24%">secretKey</th> -->
-						<th >name</th>
-<!-- 						<th style="width: 20%">redirectUrl</th> -->
-<!-- 						<th style="width: 12%">customDomain</th> -->
-						<th >操作</th>
+						<th>商户ID</th>
+						<!-- 						<th style="width: 24%">secretKey</th> -->
+						<th>商户名称</th>
+						<!-- 						<th style="width: 20%">redirectUrl</th> -->
+						<!-- 						<th style="width: 12%">customDomain</th> -->
+						<th>操作</th>
+						<th>手续费模板</th>
 					</tr>
 				</thead>
 				<tbody></tbody>
@@ -51,8 +52,8 @@ td {
 				id="goldqPayFee">
 				<thead>
 					<tr>
-						<th>clientId</th>
-						<th>转账类型</th>
+						<th>商户ID</th>
+						<th>模板类型</th>
 						<th>免手续费额度(Q)</th>
 						<th>手续费率(%)</th>
 						<th>最小手续费(Q)</th>
@@ -117,50 +118,58 @@ td {
 					<form class="form-horizontal" role="form" id="updateGoldqPayClient">
 
 						<div class="form-group">
-							<label for="areaCode" class="col-sm-3 control-label">国家码</label>
+							<label for="areaCode" class="col-sm-3 control-label">Goldpay国家码</label>
 							<div class="col-sm-8">
-								<input type="text" name="areaCode" class="form-control">
+								<input type="text" name="areaCode" class="form-control" readonly>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="userPhone" class="col-sm-3 control-label">手机号</label>
+							<label for="userPhone" class="col-sm-3 control-label">Goldpay手机号</label>
 							<div class="col-sm-8">
-								<input type="text" name="userPhone" class="form-control">
+								<input type="text" name="userPhone" class="form-control"
+									readonly>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="userName" class="col-sm-3 control-label">用户名</label>
+							<label for="userName" class="col-sm-3 control-label">Goldpay用户名</label>
 							<div class="col-sm-8">
-								<input type="text" name="userName" class="form-control">
+								<input type="text" name="userName" class="form-control" readonly>
 							</div>
 						</div>
+						<input type="hidden" name="exId" class="form-control" >
 						<div class="form-group">
-							<label for="clientId" class="col-sm-3 control-label">clientId</label>
+							<label for="clientId" class="col-sm-3 control-label">商户ID</label>
 							<div class="col-sm-8">
 								<input type="text" name="clientId" class="form-control" readonly>
 							</div>
 						</div>
-
 						<div class="form-group">
-							<label for="secretKey" class="col-sm-3 control-label">secretKey</label>
+							<label for="secretKey" class="col-sm-3 control-label">API密钥</label>
 							<div class="col-sm-8">
-								<input type="text" name="secretKey" class="form-control">
+								<input type="text" name="secretKey" class="form-control" readonly>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label for="userPayToken" class="col-sm-3 control-label">支付密钥</label>
+							<div class="col-sm-8">
+								<input type="text" name="userPayToken" class="form-control" >
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="name" class="col-sm-3 control-label">name</label>
+							<label for="name" class="col-sm-3 control-label">商户名称</label>
 							<div class="col-sm-8">
 								<input type="text" name="name" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="redirectUrl" class="col-sm-3 control-label">redirectUrl</label>
+							<label for="redirectUrl" class="col-sm-3 control-label">跳转URL</label>
 							<div class="col-sm-8">
 								<input type="text" name="redirectUrl" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="customDomain" class="col-sm-3 control-label">customDomain</label>
+							<label for="customDomain" class="col-sm-3 control-label">自定义域名</label>
 							<div class="col-sm-8">
 								<input type="text" name="customDomain" class="form-control">
 							</div>

@@ -111,7 +111,7 @@
 							<li><a href="<c:url value='/campaign' />">活动管理</a></li>
 						</c:if>
 						<c:if test="${adminPower eq 7}">
-							<li><a href="<c:url value='/tpps' />">TPPS</a></li>
+							<li><a href="<c:url value='/tpps' />">商户设置</a></li>
 						</c:if>
 					</c:forTokens>
 				</ul>

@@ -76,6 +76,7 @@ public class TppsController {
 		rep.setAreaCode(user.getAreaCode());
 		rep.setUserPhone(user.getUserPhone());
 		rep.setUserName(user.getUserName());
+		rep.setUserPayToken(user.getUserPayToken());
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
@@ -87,22 +88,17 @@ public class TppsController {
 		BaseResponse rep = new BaseResponse();
 		logger.info("updateGoldqPayClient({})", updateGoldqPayClientRequest.toString());
 
-		Integer exId = userManager.getUserId(updateGoldqPayClientRequest.getAreaCode(),
-				updateGoldqPayClientRequest.getUserPhone());
-		if (exId == null) {
-			rep.setRetCode(RetCodeConsts.PHONE_NOT_EXIST);
-			rep.setMessage("phone not exist");
-		} else if (exId == 0) {
-			rep.setRetCode(RetCodeConsts.USER_BLOCKED);
-			rep.setMessage("user is blocked");
-		} else {
-			tppsManager.updateGoldqPayClient(exId, updateGoldqPayClientRequest.getClientId(),
-					updateGoldqPayClientRequest.getSecretKey(), updateGoldqPayClientRequest.getName(),
-					updateGoldqPayClientRequest.getRedirectUrl(), updateGoldqPayClientRequest.getCustomDomain());
-			crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
-					Operation.UPDATE_GOLDQPAYCLIENT.getOperationName(), updateGoldqPayClientRequest.toString()));
-			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-		}
+		userManager.updatePayToken(updateGoldqPayClientRequest.getExId(),
+				updateGoldqPayClientRequest.getUserPayToken());
+		
+		tppsManager.updateGoldqPayClient(updateGoldqPayClientRequest.getClientId(),
+				updateGoldqPayClientRequest.getName(), updateGoldqPayClientRequest.getRedirectUrl(),
+				updateGoldqPayClientRequest.getCustomDomain());
+		
+		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+				Operation.UPDATE_GOLDQPAYCLIENT.getOperationName(), updateGoldqPayClientRequest.toString()));
+		
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
 

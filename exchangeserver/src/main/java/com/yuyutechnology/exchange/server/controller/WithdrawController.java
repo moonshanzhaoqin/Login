@@ -19,6 +19,7 @@ import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.manager.WithdrawManager;
 import com.yuyutechnology.exchange.server.controller.request.WithdrawCalculateRequset;
 import com.yuyutechnology.exchange.server.controller.request.WithdrawConfirmRequset;
+import com.yuyutechnology.exchange.server.controller.response.GetWithdrawDetailResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetWithdrawRecordResponse;
 import com.yuyutechnology.exchange.server.controller.response.WithdrawCalculateResponse;
 import com.yuyutechnology.exchange.server.controller.response.WithdrawConfirmResponse;
@@ -120,6 +121,29 @@ public class WithdrawController {
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			rep.setList(list);
 		}
+
+		return rep;
+	}
+	@ResponseEncryptBody
+	@ApiOperation(value = "获取提取详情", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/withdraw/getWithdrawDetail", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public GetWithdrawDetailResponse getWithdrawDetail(@PathVariable String token) {
+		logger.info("========getWithdrawDetail : {}============", token);
+		GetWithdrawDetailResponse rep = new GetWithdrawDetailResponse();
+		SessionData sessionData = SessionDataHolder.getSessionData();
+
+//		List<WithdrawDTO> list = withdrawManager.getWithdrawRecord(sessionData.getUserId());
+//
+//		if (list.isEmpty()) {
+//			logger.info(MessageConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
+//			rep.setRetCode(RetCodeConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
+//			rep.setMessage(MessageConsts.TRANSFER_HISTORY_NOT_ACQUIRED);
+//		} else {
+//			logger.info(MessageConsts.RET_CODE_SUCCESS);
+//			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+//			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+//			rep.setList(list);
+//		}
 
 		return rep;
 	}
