@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 
 import com.yuyutechnology.exchange.dto.TransDetailsDTO;
-import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.util.page.PageBean;
 
