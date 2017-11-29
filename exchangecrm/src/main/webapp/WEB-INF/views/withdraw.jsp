@@ -65,8 +65,7 @@
 		</div>
 		
 	</div>
-
-
+	
 	<script src="<c:url value="/resources/js/withdraw.js" />"></script>
 	<%@ include file="common/footer.jsp"%>
 </body>

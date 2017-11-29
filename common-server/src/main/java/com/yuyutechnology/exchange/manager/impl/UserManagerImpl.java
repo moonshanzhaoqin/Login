@@ -757,4 +757,11 @@ public class UserManagerImpl implements UserManager {
 		}
 		return StringUtils.isNotBlank(bind.getHappyLivesId());
 	}
+
+	@Override
+	public void updatePayToken(int userId, String userPayToken) {
+		User user=userDAO.getUser(userId);
+		user.setUserPayToken(userPayToken);
+		userDAO.updateUser(user);
+	}
 }

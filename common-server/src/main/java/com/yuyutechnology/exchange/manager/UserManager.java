@@ -253,4 +253,6 @@ public interface UserManager {
 
 	User getUserByPhone(String areaCode, String phone);
 
+	void updatePayToken(int userId, String userPayToken);
+
 }

@@ -7,6 +7,7 @@ public class GetExUserResponse extends BaseResponse {
 	private String areaCode;
 	private String userPhone;
 	private String userName;
+	private String userPayToken;
 
 	public String getAreaCode() {
 		return areaCode;
@@ -30,5 +31,13 @@ public class GetExUserResponse extends BaseResponse {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public String getUserPayToken() {
+		return userPayToken;
+	}
+
+	public void setUserPayToken(String userPayToken) {
+		this.userPayToken = userPayToken;
 	}
 }
