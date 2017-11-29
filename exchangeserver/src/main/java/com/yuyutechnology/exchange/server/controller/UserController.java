@@ -27,10 +27,12 @@ import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
+import com.yuyutechnology.exchange.manager.FeeManager;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
 import com.yuyutechnology.exchange.server.controller.request.ForgetPasswordRequest;
+import com.yuyutechnology.exchange.server.controller.request.GetFeeTemplateRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetVerificationCodeRequest;
 import com.yuyutechnology.exchange.server.controller.request.LoginRequest;
 import com.yuyutechnology.exchange.server.controller.request.LoginValidateRequest;
@@ -76,6 +78,8 @@ public class UserController {
 	CampaignManager campaignManager;
 	@Autowired
 	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
+	@Autowired
+	FeeManager feeManager;
 
 	@ResponseEncryptBody
 	@ApiOperation(value = "功能模块的可用性", httpMethod = "POST", notes = "")
@@ -87,6 +91,18 @@ public class UserController {
 		rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
 		/* 银行汇款开启状态 */
 		rep.setBankRechage(configManager.getConfigBooleanValue(ConfigKeyEnum.BANK_RECHARGE));
+		logger.info(MessageConsts.RET_CODE_SUCCESS);
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		return rep;
+	}
+	@ResponseEncryptBody
+	@ApiOperation(value = "手续费模板", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/getFeeTemplate", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public GetFeeTemplateResponse getFeeTemplate(@RequestDecryptBody GetFeeTemplateRequest  getFeeTemplateRequest) {
+		logger.info("========feeTemplate============");
+		GetFeeTemplateResponse rep = new GetFeeTemplateResponse();
+		rep.setFeeTemplate(feeManager.getFeeTemplateByPursose(getFeeTemplateRequest.getFeePurpose()));
 		logger.info(MessageConsts.RET_CODE_SUCCESS);
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);

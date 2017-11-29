@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.yuyutechnology.exchange.dto.FeeResult;
+import com.yuyutechnology.exchange.dto.FeeTemplateDTO;
 import com.yuyutechnology.exchange.enums.FeePurpose;
 import com.yuyutechnology.exchange.pojo.FeeTemplate;
 
@@ -16,5 +17,7 @@ public interface FeeManager {
 	List<FeeTemplate> listAllFeeTemplate();
 
 	void updateFeeTemplate(FeeTemplate feeTemplate);
+
+	FeeTemplateDTO getFeeTemplateByPursose(FeePurpose feePurpose);
 
 }

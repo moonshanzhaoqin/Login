@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.dao.FeeTemplateDAO;
 import com.yuyutechnology.exchange.dto.FeeResult;
+import com.yuyutechnology.exchange.dto.FeeTemplateDTO;
 import com.yuyutechnology.exchange.enums.FeePurpose;
 import com.yuyutechnology.exchange.manager.FeeManager;
 import com.yuyutechnology.exchange.pojo.FeeTemplate;
@@ -85,6 +86,15 @@ public class FeeManagerImpl implements FeeManager {
 		return feeResult;
 	}
 
-	
+	@Override
+	public FeeTemplateDTO getFeeTemplateByPursose(FeePurpose feePurpose) {
+		FeeTemplateDTO feeTemplateDTO=new FeeTemplateDTO();
+		FeeTemplate feeTemplate=feeTmeplateMap.get(feePurpose.getPurpose());
+		feeTemplateDTO.setExemptAmount(feeTemplate.getExemptAmount());
+		feeTemplateDTO.setFeePercent(feeTemplate.getFeePercent());
+		feeTemplateDTO.setMaxFee(feeTemplate.getMaxFee());
+		feeTemplateDTO.setMinFee(feeTemplate.getMinFee());
+		return feeTemplateDTO;
+	}
 
 }

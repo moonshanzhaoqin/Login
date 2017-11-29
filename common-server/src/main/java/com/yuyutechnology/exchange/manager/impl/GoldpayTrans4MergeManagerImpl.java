@@ -128,7 +128,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		
 		HashMap<String, String> result = new HashMap<>();
 		
-		logger.info("updateWallet4FeeTrans for transfer {}",transferId);
+		logger.info("updateWallet4FeeTrans for transfer {},{}",transferId,feeTransferId);
 		Transfer transfer = transferDAO.getTransferById(transferId);
 		Transfer feeTransfer = transferDAO.getTransferById(feeTransferId);
 

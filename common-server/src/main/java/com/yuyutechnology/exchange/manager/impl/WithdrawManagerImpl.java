@@ -128,11 +128,10 @@ public class WithdrawManagerImpl implements WithdrawManager {
 	@Override
 	public String goldpayTrans4Apply(String withdrawId) {
 		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
-		logger.info("goldpayTrans4Apply : {}, {} -->", withdraw.getGoldTransferA(), withdraw.getFeeTransferA());
 		HashMap<String, String> result = goldpayTrans4MergeManager.updateWallet4FeeTrans(withdraw.getGoldTransferA(),
 				withdraw.getFeeTransferA());
 		if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
-			logger.info("*** success ***");
+			logger.info("***goldpayTrans4Apply success ***");
 			User user = userDAO.getUser(withdraw.getUserId());
 			/* 通知管理员 */
 			crmAlarmManager
@@ -160,6 +159,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 				String goldTransferB = transfer4Withdraw(frozenUser.getUserId(), withdraw.getUserId(),
 						withdraw.getGoldpay(), ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND);
 				withdraw.setGoldTransferB(goldTransferB);
+				logger.info("transfer goldpay from frozenUser to user, tansferId : {} ", goldTransferB);
 			}
 
 			/* 把手续费退回给用户 */
@@ -168,6 +168,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 				String feeTransferB = transfer4Withdraw(frozenUser.getUserId(), withdraw.getUserId(), withdraw.getFee(),
 						ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND);
 				withdraw.setFeeTransferB(feeTransferB);
+				logger.info("transfer fee from frozenUser to user, tansferId : {} ", feeTransferB);
 			}
 
 			withdrawDAO.updateWithdraw(withdraw);
@@ -185,6 +186,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 		HashMap<String, String> result = goldpayTrans4MergeManager.updateWallet4FeeTrans(withdraw.getGoldTransferB(),
 				withdraw.getFeeTransferB());
 		if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
+			logger.info("*** goldpayTrans4cancel success ***");
 			/* 操作记录 */
 			withdraw.setHandleResult(ServerConsts.WITHDRAW_RESULT_CANCEL);
 			withdraw.setHandler(adminName);
@@ -200,18 +202,20 @@ public class WithdrawManagerImpl implements WithdrawManager {
 		if (withdraw.getHandleResult() == ServerConsts.WITHDRAW_RESULT_APPLY_SUCCESS) {
 			User frozenUser = userDAO.getFrozenUser();
 			User feeUser = userDAO.getFeeUser();
-			User recovery = userDAO.getRecoveryUser();
+			User recoveryUser = userDAO.getRecoveryUser();
 			if (withdraw.getGoldTransferB() == null) {
 				/* 把Goldpay转到回收账户 */
-				String goldTransferB = transfer4Withdraw(frozenUser.getUserId(), recovery.getUserId(),
+				String goldTransferB = transfer4Withdraw(frozenUser.getUserId(), recoveryUser.getUserId(),
 						withdraw.getGoldpay(), ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND);
 				withdraw.setGoldTransferB(goldTransferB);
+				logger.info("transfer goldpay from frozenUser to recoveryUser, tansferId : {} ", goldTransferB);
 			}
 			if (withdraw.getFee().compareTo(BigDecimal.ZERO) > 0 && withdraw.getFeeTransferB() == null) {
 				/* 把手续费转到手续费账户 */
 				String feeTransferB = transfer4Withdraw(frozenUser.getUserId(), feeUser.getUserId(), withdraw.getFee(),
 						ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND);
 				withdraw.setFeeTransferB(feeTransferB);
+				logger.info("transfer goldpay from frozenUser to feeUser, tansferId : {} ", feeTransferB);
 			}
 			withdrawDAO.updateWithdraw(withdraw);
 			return RetCodeConsts.RET_CODE_SUCCESS;
@@ -227,6 +231,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 		HashMap<String, String> result = goldpayTrans4MergeManager.updateWallet4FeeTrans(withdraw.getGoldTransferB(),
 				withdraw.getFeeTransferB());
 		if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
+			logger.info("*** goldpayTrans4finish success ***");
 			/* 操作记录 */
 			withdraw.setHandleResult(ServerConsts.WITHDRAW_RESULT_FINISHT);
 			withdraw.setHandler(adminName);
