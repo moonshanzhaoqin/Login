@@ -531,7 +531,7 @@ public class TransferManagerImpl implements TransferManager {
 			dto.setFinishAt((Date) obj[5]);
 			dto.setTrader((String) obj[6] == null ? " " : (String) obj[6]);
 			dto.setPhoneNum((String) obj[7] + " " + (String) obj[8]);
-			dto.setFee(((BigDecimal) obj[9]).doubleValue());
+			dto.setFee(obj[9] == null ? 0:((BigDecimal) obj[9]).doubleValue());
 
 			dtos.add(dto);
 		}

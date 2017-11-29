@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
 import com.yuyutechnology.exchange.crm.request.AddGoldqPayClientRequset;
+import com.yuyutechnology.exchange.crm.request.GetExUserRequest;
 import com.yuyutechnology.exchange.crm.request.GetGoldqPayClientByPageRequest;
 import com.yuyutechnology.exchange.crm.request.GetGoldqPayFeeRequest;
+import com.yuyutechnology.exchange.crm.request.UpdateGoldqPayClientRequest;
 import com.yuyutechnology.exchange.crm.tpps.manager.TppsManager;
 import com.yuyutechnology.exchange.crm.tpps.pojo.GoldqPayClient;
 import com.yuyutechnology.exchange.crm.tpps.pojo.GoldqPayFee;
@@ -27,6 +29,7 @@ import com.yuyutechnology.exchange.enums.Operation;
 import com.yuyutechnology.exchange.manager.CrmLogManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.CrmLog;
+import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.util.page.PageBean;
 
 @Controller
@@ -38,8 +41,6 @@ public class TppsController {
 	UserManager userManager;
 	@Autowired
 	TppsManager tppsManager;
-
-	// TODO add new pay client
 
 	@ResponseBody
 	@RequestMapping(value = "/addGoldqPayClient", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
@@ -66,15 +67,42 @@ public class TppsController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/updateGoldqPayClient", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public BaseResponse updateGoldqPayClient(@RequestBody GoldqPayClient goldqPayClient, HttpServletRequest request,
+	@RequestMapping(value = "/getExUser", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public GetExUserResponse getExUser(@RequestBody GetExUserRequest getExUserRequest, HttpServletRequest request,
 			HttpServletResponse response) {
-		BaseResponse rep = new BaseResponse();
-		logger.info("updateGoldqPayClient({})", goldqPayClient.toString());
-		tppsManager.updateGoldqPayClient(goldqPayClient);
-		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
-				Operation.UPDATE_GOLDQPAYCLIENT.getOperationName(), goldqPayClient.toString()));
+		GetExUserResponse rep = new GetExUserResponse();
+		logger.info("getExUser({})", getExUserRequest.toString());
+		User user = userManager.getUserById(getExUserRequest.getExId());
+		rep.setAreaCode(user.getAreaCode());
+		rep.setUserPhone(user.getUserPhone());
+		rep.setUserName(user.getUserName());
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		return rep;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/updateGoldqPayClient", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public BaseResponse updateGoldqPayClient(@RequestBody UpdateGoldqPayClientRequest updateGoldqPayClientRequest,
+			HttpServletRequest request, HttpServletResponse response) {
+		BaseResponse rep = new BaseResponse();
+		logger.info("updateGoldqPayClient({})", updateGoldqPayClientRequest.toString());
+
+		Integer exId = userManager.getUserId(updateGoldqPayClientRequest.getAreaCode(),
+				updateGoldqPayClientRequest.getUserPhone());
+		if (exId == null) {
+			rep.setRetCode(RetCodeConsts.PHONE_NOT_EXIST);
+			rep.setMessage("phone not exist");
+		} else if (exId == 0) {
+			rep.setRetCode(RetCodeConsts.USER_BLOCKED);
+			rep.setMessage("user is blocked");
+		} else {
+			tppsManager.updateGoldqPayClient(exId, updateGoldqPayClientRequest.getClientId(),
+					updateGoldqPayClientRequest.getSecretKey(), updateGoldqPayClientRequest.getName(),
+					updateGoldqPayClientRequest.getRedirectUrl(), updateGoldqPayClientRequest.getCustomDomain());
+			crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+					Operation.UPDATE_GOLDQPAYCLIENT.getOperationName(), updateGoldqPayClientRequest.toString()));
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		}
 		return rep;
 	}
 

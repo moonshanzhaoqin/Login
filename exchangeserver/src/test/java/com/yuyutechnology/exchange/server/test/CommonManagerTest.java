@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
+import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 
 /**
@@ -25,6 +26,9 @@ public class CommonManagerTest extends BaseSpringJunit4 {
 	
 	@Autowired
 	UserManager userManager;
+	
+	@Autowired
+	TransferManager transferManager;
 	
 	@Test
 	public void testFlag() throws InterruptedException {
@@ -46,5 +50,9 @@ public class CommonManagerTest extends BaseSpringJunit4 {
 //		msgFlagInfo = commonManager.getMsgFlag(7);
 //		System.out.println("readMsgFlag : " + msgFlagInfo.isNewTrans());
 //		System.out.println("readMsgFlag : " + msgFlagInfo.isNewRequestTrans());
+		
+		transferManager.getTransRecordbyPage("all", "expenses", 2, 1, 10);
+		
+		
 	}
 }

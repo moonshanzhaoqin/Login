@@ -12,14 +12,37 @@ $(function() {
 		var goldqPayClient = tr.data('whatever') // Extract info from data-*
 		// attributes
 		console.log(goldqPayClient);
-		form = document.getElementById("updateGoldqPayClient");
-		form.id.value = goldqPayClient.id;
-		form.exId.value = goldqPayClient.exId;
-		form.clientId.value = goldqPayClient.clientId;
-		form.secretKey.value = goldqPayClient.secretKey;
-		form.name.value = goldqPayClient.name;
-		form.redirectUrl.value = goldqPayClient.redirectUrl;
-		form.customDomain.value = goldqPayClient.customDomain;
+		var data = {
+			exId : goldqPayClient.exId
+		}
+		$.ajax({
+			type : "POST",
+			url : "/crm/getExUser",
+			dataType : 'json',
+			contentType : "application/json; charset=utf-8",
+			data : JSON.stringify(data),
+			success : function(data) {
+				// console.log(data);
+				if (data.retCode == "00002") {
+					location.href = loginUrl;
+				} else {
+					console.log("success");
+					form = document.getElementById("updateGoldqPayClient");
+					form.areaCode.value = data.areaCode;
+					form.userPhone.value = data.userPhone;
+					form.userName.value = data.userName;
+					form.clientId.value = goldqPayClient.clientId;
+					form.secretKey.value = goldqPayClient.secretKey;
+					form.name.value = goldqPayClient.name;
+					form.redirectUrl.value = goldqPayClient.redirectUrl;
+					form.customDomain.value = goldqPayClient.customDomain;
+				}
+			},
+			error : function(xhr, err) {
+				alert("未知错误");
+				console.log(err);
+			}
+		});
 	})
 
 	$('#updategoldqPayFeeModal').on('show.bs.modal', function(e) {
@@ -72,9 +95,9 @@ function getGoldqPayClientByPage(currentPage) {
 							html += '<tr id="'
 									+ data.rows[i].clientId
 									+ '">'
-									+ '<td>'
-									+ data.rows[i].exId
-									+ '</td>'
+									// + '<td>'
+									// + data.rows[i].exId
+									// + '</td>'
 									+ '<td>'
 									+ data.rows[i].clientId
 									+ '</td>'
@@ -107,7 +130,7 @@ function getGoldqPayClientByPage(currentPage) {
 						if (data.currentPage == 1) {
 							paginator(data.currentPage, data.pageTotal);
 						}
-						$('#total').html(data.total);
+						$('#total').html("共 "+data.total+" 条记录");
 						page = data.currentPage;
 					}
 				},
@@ -122,10 +145,10 @@ function updateGoldqPayClient() {
 	var form = document.getElementById("updateGoldqPayClient");
 
 	var data = {
-		id : form.id.value,
-		exId : form.exId.value,
+		areaCode : form.areaCode.value,
+		userPhone : form.userPhone.value,
 		clientId : form.clientId.value,
-		secretKey : form.secretKey.value,
+		secretKey:form.secretKey.value,
 		name : form.name.value,
 		redirectUrl : form.redirectUrl.value,
 		customDomain : form.customDomain.value,

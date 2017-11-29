@@ -5,6 +5,13 @@
 <!DOCTYPE html>
 <html>
 <%@ include file="common/header.jsp"%>
+<head>
+<style type="text/css">
+td {
+	overflow: hidden
+}
+</style>
+</head>
 <body>
 	<div class="container">
 		<div class="row ">
@@ -15,18 +22,18 @@
 				</li>
 			</ul>
 		</div>
-		<div class="row">
+		<div class="row table-responsive">
 			<table class="table table-bordered table-hover table-striped"
-				id="goldqPayClient">
+				style="table-layout: fixed;" id="goldqPayClient">
 				<thead>
 					<tr>
-						<th>exId</th>
-						<th>clientId</th>
-						<th>secretKey</th>
-						<th>name</th>
-						<th>redirectUrl</th>
-						<th>customDomain</th>
-						<th>操作</th>
+						<!-- 						<th>exId</th> -->
+						<th style="width: 24%">clientId</th>
+						<th style="width: 24%">secretKey</th>
+						<th style="width: 10%">name</th>
+						<th style="width: 20%">redirectUrl</th>
+						<th style="width: 12%">customDomain</th>
+						<th style="width: 10%">操作</th>
 					</tr>
 				</thead>
 				<tbody></tbody>
@@ -108,12 +115,23 @@
 				</div>
 				<div class="modal-body">
 					<form class="form-horizontal" role="form" id="updateGoldqPayClient">
-						<input type="hidden" name="id" class="form-control">
 
 						<div class="form-group">
-							<label for="exId" class="col-sm-4 control-label">exId</label>
+							<label for="areaCode" class="col-sm-4 control-label">国家码</label>
 							<div class="col-sm-5">
-								<input type="text" name="exId" class="form-control" readonly>
+								<input type="text" name="areaCode" class="form-control">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="userPhone" class="col-sm-4 control-label">手机号</label>
+							<div class="col-sm-5">
+								<input type="text" name="userPhone" class="form-control">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="userName" class="col-sm-4 control-label">用户名</label>
+							<div class="col-sm-5">
+								<input type="text" name="userName" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
