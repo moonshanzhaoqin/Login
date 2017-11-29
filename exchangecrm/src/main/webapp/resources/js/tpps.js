@@ -101,21 +101,21 @@ function getGoldqPayClientByPage(currentPage) {
 									+ '<td>'
 									+ data.rows[i].clientId
 									+ '</td>'
-									+ '<td>'
-									+ data.rows[i].secretKey
-									+ '</td>'
+//									+ '<td>'
+//									+ data.rows[i].secretKey
+//									+ '</td>'
 									+ '<td>'
 									+ (data.rows[i].name == null ? ""
 											: data.rows[i].name)
 									+ '</td>'
-									+ '<td>'
-									+ (data.rows[i].redirectUrl == null ? ""
-											: data.rows[i].redirectUrl)
-									+ '</td>'
-									+ '<td>'
-									+ (data.rows[i].customDomain == null ? ""
-											: data.rows[i].customDomain)
-									+ '</td>'
+//									+ '<td>'
+//									+ (data.rows[i].redirectUrl == null ? ""
+//											: data.rows[i].redirectUrl)
+//									+ '</td>'
+//									+ '<td>'
+//									+ (data.rows[i].customDomain == null ? ""
+//											: data.rows[i].customDomain)
+//									+ '</td>'
 									+ '<td>'
 									+ '<a href="" data-toggle="modal" data-target="#updategoldqPayClientModal" data-whatever='
 									+ "'"
@@ -219,7 +219,7 @@ function getGoldqPayFee(clientId) {
 								+ data[i].maxFee
 								+ '</td>'
 								+ '<td>'
-								+ showPayRole(data[i].feePayer)
+								+ showFeePayer(data[i].feePayer)
 								+ '</td>'
 								+ '<td>'
 								+ '<a href="" data-toggle="modal" data-target="#updategoldqPayFeeModal" data-whatever='
@@ -322,13 +322,22 @@ function addGoldqPayClient() {
 function showPayRole(payRole) {
 	switch (payRole) {
 	case 1:
-		return "接收方";
+		return "转入";
+	case 2:
+		return "转出";
+	default:
+		return "未知，出错！"
+	}
+}
+function showFeePayer(feePayer) {
+	switch (feePayer) {
+	case 1:
+		return "收款方";
 	case 2:
 		return "付款方";
 	default:
 		return "未知，出错！"
 	}
-
 }
 
 // 分页
