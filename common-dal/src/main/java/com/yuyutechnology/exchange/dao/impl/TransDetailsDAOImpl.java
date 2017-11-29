@@ -61,7 +61,7 @@ public class TransDetailsDAOImpl implements TransDetailsDAO {
 		sb.append("t2.goldpay_name, ");
 		sb.append("t2.paypal_currency, ");
 		sb.append("t2.paypal_exchange, ");
-		sb.append("t1.trans_fee ");
+		sb.append("t1.trans_fee ,t1.transfer_fee_gp ");
 		sb.append("FROM e_trans_details t1 ");
 		sb.append("LEFT JOIN e_transfer t2 ON t1.transfer_id = t2.transfer_id ");
 		sb.append("LEFT JOIN e_currency t3 ON t1.trans_currency = t3.currency ");

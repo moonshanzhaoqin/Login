@@ -137,7 +137,8 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		transfer.setCreateTime(new Date());
 		transfer.setCurrency(ServerConsts.CURRENCY_OF_GOLDPAY);
 		transfer.setTransferAmount(amount);
-		transfer.setTransferFee(feeResult.getFee());
+		transfer.setTransferFee(baseFee);
+		transfer.setTransferFee4GP(feeResult.getFee());
 		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 		transfer.setUserFrom(systemUser.getUserId());
 		transfer.setUserTo(userId);
