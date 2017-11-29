@@ -54,7 +54,7 @@ td {
 						<th>clientId</th>
 						<th>转账类型</th>
 						<th>免手续费额度(Q)</th>
-						<th>手续费率</th>
+						<th>手续费率(%)</th>
 						<th>最小手续费(Q)</th>
 						<th>最大手续费(Q)</th>
 						<th>手续费承担者</th>
@@ -214,7 +214,7 @@ td {
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="feePercent" class="col-sm-4 control-label">手续费率</label>
+							<label for="feePercent" class="col-sm-4 control-label">手续费率(%)</label>
 							<div class="col-sm-5">
 								<input type="text" name="feePercent" class="form-control">
 							</div>
