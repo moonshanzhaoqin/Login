@@ -160,29 +160,12 @@ public class CommonManagerImpl implements CommonManager {
 
 	@Override
 	public List<String> getAllConfigurableCurrencies() {
-		// List<String> currencies = new ArrayList<String>();
-		// currencies.add(ServerConsts.STANDARD_CURRENCY);
-		// currencies.add(ServerConsts.CURRENCY_OF_GOLDPAY);
-		// String result = redisDAO.getValueByKey("redis_exchangeRate");
-		// if (StringUtils.isNotBlank(result)) {
-		// @SuppressWarnings("unchecked")
-		// HashMap<String, String> map = JsonBinder.getInstance().fromJson(result,
-		// HashMap.class);
-		// String value = map.get(ServerConsts.STANDARD_CURRENCY);
-		// ExchangeRate exchangeRate = JsonBinder.getInstanceNonNull().fromJson(value,
-		// ExchangeRate.class);
-		// currencies.addAll(exchangeRate.getRates().keySet());
-		// return currencies;
-		// }
-		// String[] currency =
-		// {"USD","GDQ","AUD","BGN","BRL","CAD","CHF","CNY","CZK","DKK","GBP","HKD","HRK","HUF","IDR","ILS","INR","JPY","KRW","MXN","MYR","NOK","NZD","PHP","PLN","RON","RUB","SEK","SGD","THB","TRY","ZAR","EUR"};
 		String[] currency = { "AUD", "CAD", "CHF", "CNY", "EUR", "GBP", "HKD", "JPY", "USD", "GDQ" };
 		return Arrays.asList(currency);
 	}
 
 	@Override
 	public void checkAndUpdateWallet(Integer userId, String currency) {
-		logger.info("Update Wallet==>");
 		Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currency);
 		if (wallet == null) {
 			// 没有该货币的钱包，需要新增

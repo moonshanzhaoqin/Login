@@ -3,11 +3,13 @@ package com.yuyutechnology.exchange.manager.impl;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.RetCodeConsts;
@@ -25,9 +27,12 @@ import com.yuyutechnology.exchange.goldpay.msg.GetGoldpayOrderIdC2S;
 import com.yuyutechnology.exchange.goldpay.msg.GetGoldpayOrderIdS2C;
 import com.yuyutechnology.exchange.goldpay.msg.GetGoldpayUserC2S;
 import com.yuyutechnology.exchange.goldpay.msg.GetGoldpayUserS2C;
+import com.yuyutechnology.exchange.goldpay.msg.GoldpayTransaction4FeeC2S;
+import com.yuyutechnology.exchange.goldpay.msg.GoldpayTransaction4FeeS2C;
 import com.yuyutechnology.exchange.goldpay.msg.GoldpayTransactionC2S;
 import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
+import com.yuyutechnology.exchange.manager.TransDetailsManager;
 import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Exchange;
 import com.yuyutechnology.exchange.pojo.Transfer;
@@ -51,6 +56,8 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 	ExchangeDAO exchangeDAO;
 	@Autowired
 	TransferDAO transferDAO;
+	@Autowired
+	TransDetailsManager transDetailsManager;
 
 	public static Logger logger = LogManager.getLogger(GoldpayTrans4MergeManagerImpl.class);
 
@@ -73,7 +80,10 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 
 	@Override
 	public GoldpayUserDTO getGoldpayUserInfo(Integer exUserId) {
-		Bind bind = bindDAO.getBindByUserId(exUserId);
+		Bind bind = bindDAO.getBind(exUserId);
+		if (bind==null) {
+			return null;
+		}
 		GetGoldpayUserC2S param = new GetGoldpayUserC2S();
 		param.setAccountNum(bind.getGoldpayAcount());
 		String result = HttpClientUtils.sendPost(
@@ -85,6 +95,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 
 	@Override
 	public String getGoldpayOrderId() {
+		logger.info("get Goldpay OrderId -->");
 		GetGoldpayOrderIdC2S param = new GetGoldpayOrderIdC2S();
 		param.setType("3");
 		String result = HttpClientUtils.sendPost(
@@ -97,12 +108,117 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 				GetGoldpayOrderIdS2C.class);
 		return getGoldpayOrderIdS2C.getPayOrderId();
 	}
+	
+	public GoldpayTransaction4FeeS2C goldpayTransaction4fee(GoldpayTransaction4FeeC2S param){
+		
+		String result = HttpClientUtils.sendPost4Retry(
+				ResourceUtils.getBundleValue4String("goldpay.url") + "trans/goldpayTransaction4fee",
+				JsonBinder.getInstance().toJson(param));
+
+		logger.info("result : {}", result);
+		
+		GoldpayTransaction4FeeS2C goldpayTransaction4FeeS2C = JsonBinder.
+				getInstanceNonNull().fromJson(result, GoldpayTransaction4FeeS2C.class);
+		
+		return goldpayTransaction4FeeS2C;
+	}
+	
+	@Override
+	public HashMap<String, String> updateWallet4FeeTrans(String transferId,String feeTransferId){
+		
+		HashMap<String, String> result = new HashMap<>();
+		
+		logger.info("updateWallet4FeeTrans for transfer {}",transferId);
+		Transfer transfer = transferDAO.getTransferById(transferId);
+		Transfer feeTransfer = transferDAO.getTransferById(feeTransferId);
+
+		if (!StringUtils.isNotBlank(transfer.getGoldpayOrderId())) {
+			logger.error("error : Not generated goldpayId");
+		}
+		
+		// 获取交易双方goldpayaccount
+		GoldpayUserDTO payerAccount = getGoldpayUserInfo(transfer.getUserFrom());
+		GoldpayUserDTO payeeIdAccount = getGoldpayUserInfo(transfer.getUserTo());
+
+		if (payerAccount == null || payeeIdAccount == null) {
+			logger.error("error :  Account information does not exist");
+			result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+			result.put("msg", "Account information does not exist");
+			return result;
+		}
+		
+		GoldpayTransaction4FeeC2S param = new GoldpayTransaction4FeeC2S();
+		
+		param.setPayOrderId(transfer.getGoldpayOrderId());
+		param.setFromAccountNum(payerAccount.getAccountNum());
+		param.setToAccountNum(payeeIdAccount.getAccountNum());
+		param.setBalance(transfer.getTransferAmount().longValue());
+		
+		if(feeTransfer != null){
+
+			GoldpayUserDTO feeAccount = getGoldpayUserInfo(feeTransfer.getUserTo());
+	
+			param.setFeePayOrderId(feeTransfer.getGoldpayOrderId());
+			if(feeTransfer.getUserFrom() == transfer.getUserFrom()){
+				param.setFeeFromAccountNum(payerAccount.getAccountNum());
+			}else{
+				param.setFeeFromAccountNum(payeeIdAccount.getAccountNum());
+			}
+			
+			param.setFeeToAccountNum(feeAccount.getAccountNum());
+			param.setFeeBalance(feeTransfer.getTransferAmount().longValue());
+		}
+		
+		param.setComment(transfer.getTransferComment());
+		
+		GoldpayTransaction4FeeS2C s2c =  goldpayTransaction4fee(param);
+
+		if (s2c != null && s2c.getRetCode() != ServerConsts.GOLDPAY_RETURN_SUCCESS) {
+			logger.warn("goldpay transaction failed");
+			result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+			result.put("msg", "Insufficient balance");
+			return result;
+		}
+
+		//对于Transfer 扣款
+		walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getCurrency(),
+				transfer.getTransferAmount(), "-", transfer.getTransferType(), transfer.getTransferId());
+		// 加款
+		walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserTo(), transfer.getCurrency(), 
+				transfer.getTransferAmount(), "+", transfer.getTransferType(), transfer.getTransferId());
+		
+		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+		transfer.setFinishTime(new Date());
+		transferDAO.updateTransfer(transfer);
+		
+		//对于Transfer  扣款
+		if(feeTransfer != null){
+			walletDAO.updateWalletByUserIdAndCurrency(feeTransfer.getUserFrom(), feeTransfer.getCurrency(),
+					feeTransfer.getTransferAmount(), "-", feeTransfer.getTransferType(), feeTransfer.getTransferId());
+			// 加款
+			walletDAO.updateWalletByUserIdAndCurrency(feeTransfer.getUserTo(), feeTransfer.getCurrency(), 
+					feeTransfer.getTransferAmount(), "+", feeTransfer.getTransferType(), feeTransfer.getTransferId());
+			
+			feeTransfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+			feeTransfer.setFinishTime(new Date());
+			transferDAO.updateTransfer(feeTransfer);
+		}
+
+		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
+		result.put("msg", "success");
+		return result;
+
+	}
+	
 
 	@Override
+//	@Async
 	public void updateWallet4GoldpayTrans(String transferId) {
+		logger.info("updateWallet4GoldpayTrans for transfer {}",transferId);
 		Transfer transfer = transferDAO.getTransferById(transferId);
+		logger.info("transfer:{}",transfer);
 		HashMap<String, String> result = updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getUserTo(),
-				transfer.getCurrency(), transfer.getTransferAmount(), transfer.getTransferType(), transferId, true,
+				transfer.getCurrency(), transfer.getTransferAmount(), transfer.getTransferType(), transfer.getTransferId(), true,
 				transfer.getGoldpayOrderId());
 
 		if (!RetCodeConsts.RET_CODE_SUCCESS.equals(result.get("retCode"))) {
@@ -116,6 +232,11 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		}
 	}
 
+	@Override
+	public void updateWallet4GoldpayTransList(List<String> transferIds) {
+			updateWallet4FeeTrans(transferIds.get(0), transferIds.get(1));
+	}
+	
 	@Override
 	public void updateWallet4GoldpayExchange(String exchangeId, Integer systemUserId) {
 		Exchange exchange = exchangeDAO.getExchangeById(exchangeId);
@@ -233,7 +354,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		param.setToAccountNum(toAccountNum);
 		param.setComment(comment);
 
-		String result = HttpClientUtils.sendPost(
+		String result = HttpClientUtils.sendPost4Retry(
 				ResourceUtils.getBundleValue4String("goldpay.url") + "trans/goldpayTransaction",
 				JsonBinder.getInstance().toJson(param));
 

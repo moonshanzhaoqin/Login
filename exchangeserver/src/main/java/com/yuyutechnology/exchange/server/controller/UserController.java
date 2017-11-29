@@ -27,6 +27,7 @@ import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
+import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
 import com.yuyutechnology.exchange.server.controller.request.ForgetPasswordRequest;
@@ -73,6 +74,8 @@ public class UserController {
 	ConfigManager configManager;
 	@Autowired
 	CampaignManager campaignManager;
+	@Autowired
+	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
 
 	@ResponseEncryptBody
 	@ApiOperation(value = "功能模块的可用性", httpMethod = "POST", notes = "")
@@ -166,8 +169,9 @@ public class UserController {
 			/* 检验手机号是否存在 */
 			Integer userId = userManager.getUserId(getVerificationCodeRequest.getAreaCode(),
 					getVerificationCodeRequest.getUserPhone());
-			if (getVerificationCodeRequest.getPurpose().equals(ServerConsts.PIN_FUNC_REGISTER)
-					|| getVerificationCodeRequest.getPurpose().equals(ServerConsts.PIN_FUNC_CHANGEPHONE)) {
+			switch (getVerificationCodeRequest.getPurpose()) {
+			case ServerConsts.PIN_FUNC_REGISTER:
+			case ServerConsts.PIN_FUNC_CHANGEPHONE:
 				if (userId != null) {
 					logger.info(MessageConsts.PHONE_IS_REGISTERED);
 					rep.setRetCode(RetCodeConsts.PHONE_IS_REGISTERED);
@@ -192,7 +196,8 @@ public class UserController {
 								sendMessageResponse.getLimitTime().toString() });
 					}
 				}
-			} else {
+				break;
+			default:
 				if (userId == null) {
 					logger.info(MessageConsts.PHONE_NOT_EXIST);
 					rep.setRetCode(RetCodeConsts.PHONE_NOT_EXIST);
@@ -220,8 +225,8 @@ public class UserController {
 						rep.setOpts(new String[] { sendMessageResponse.getLimitCount().toString(),
 								sendMessageResponse.getLimitTime().toString() });
 					}
-
 				}
+				break;
 			}
 		}
 		return rep;
@@ -292,7 +297,7 @@ public class UserController {
 			} else {
 				CheckPwdResult result = userManager.checkLoginPassword(userId, loginRequest.getUserPassword());
 				switch (result.getStatus()) {
-				case ServerConsts.CHECKPWD_STATUS_CORRECT:
+				case CORRECT:
 					if (userManager.isNewDevice(userId, loginRequest.getDeviceId())) {
 						/* 新设备，需要手机验证 */
 						logger.info(MessageConsts.NEW_DEVICE);
@@ -319,13 +324,13 @@ public class UserController {
 						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 					}
 					break;
-				case ServerConsts.CHECKPWD_STATUS_INCORRECT:
+				case INCORRECT:
 					logger.info(MessageConsts.PASSWORD_NOT_MATCH);
 					rep.setRetCode(RetCodeConsts.PASSWORD_NOT_MATCH);
 					rep.setMessage(String.valueOf(result.getInfo()));
 					rep.setOpts(new String[] { String.valueOf(result.getInfo()) });
 					break;
-				case ServerConsts.CHECKPWD_STATUS_FREEZE:
+				case FREEZE:
 					logger.info(MessageConsts.LOGIN_FREEZE);
 					rep.setRetCode(RetCodeConsts.LOGIN_FREEZE);
 					rep.setMessage(String.valueOf(result.getInfo()));
@@ -381,7 +386,7 @@ public class UserController {
 							registerRequest.getUserName(), registerRequest.getUserPassword(),
 							registerRequest.getLanguage());
 
-					logger.info("userId==={}", userId);
+					logger.info("register end! userId={}", userId);
 					if (userId == null) {
 						logger.info(MessageConsts.RET_CODE_FAILUE);
 						rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
@@ -394,9 +399,8 @@ public class UserController {
 						userManager.updateUser(userId, HttpClientUtils.getIP(request), registerRequest.getPushId(),
 								registerRequest.getLanguage());
 						/* 发放奖励金 */
-						campaignManager.grantBonus(userId, registerRequest.getAreaCode(),
-								registerRequest.getUserPhone());
-
+						campaignManager.grantBonus(userId,
+								registerRequest.getAreaCode(), registerRequest.getUserPhone());
 						/* 生成session Token */
 						SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 						sessionManager.saveSessionData(sessionData);
@@ -500,8 +504,7 @@ public class UserController {
 			} else {
 				CheckPwdResult result = userManager.checkLoginPassword(userId, loginValidateRequest.getUserPassword());
 				switch (result.getStatus()) {
-				case ServerConsts.CHECKPWD_STATUS_CORRECT:
-
+				case CORRECT:
 					/* 验证短信验证码 */
 					Boolean resultBool = userManager.testPinCode(ServerConsts.PIN_FUNC_NEWDEVICE,
 							loginValidateRequest.getAreaCode(), loginValidateRequest.getUserPhone(),
@@ -541,13 +544,13 @@ public class UserController {
 						rep.setMessage(MessageConsts.PHONE_AND_CODE_NOT_MATCH);
 					}
 					break;
-				case ServerConsts.CHECKPWD_STATUS_INCORRECT:
+				case INCORRECT:
 					logger.info(MessageConsts.PASSWORD_NOT_MATCH);
 					rep.setRetCode(RetCodeConsts.PASSWORD_NOT_MATCH);
 					rep.setMessage(String.valueOf(result.getInfo()));
 					rep.setOpts(new String[] { String.valueOf(result.getInfo()) });
 					break;
-				case ServerConsts.CHECKPWD_STATUS_FREEZE:
+				case FREEZE:
 					logger.info(MessageConsts.LOGIN_FREEZE);
 					rep.setRetCode(RetCodeConsts.LOGIN_FREEZE);
 					rep.setMessage(String.valueOf(result.getInfo()));

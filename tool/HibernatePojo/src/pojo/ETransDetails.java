@@ -1,5 +1,5 @@
 package pojo;
-// Generated Nov 1, 2017 11:26:58 AM by Hibernate Tools 5.2.3.Final
+// Generated Nov 28, 2017 4:13:30 PM by Hibernate Tools 5.2.6.Final
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -27,8 +27,10 @@ public class ETransDetails implements java.io.Serializable {
 	private String traderPhone;
 	private String transCurrency;
 	private BigDecimal transAmount;
+	private BigDecimal transFee;
 	private String transRemarks;
 	private Date detailsCreateTime;
+	private String transSnapshot;
 
 	public ETransDetails() {
 	}
@@ -38,8 +40,8 @@ public class ETransDetails implements java.io.Serializable {
 	}
 
 	public ETransDetails(String transferId, Integer userId, String traderName, String traderAreaCode,
-			String traderPhone, String transCurrency, BigDecimal transAmount, String transRemarks,
-			Date detailsCreateTime) {
+			String traderPhone, String transCurrency, BigDecimal transAmount, BigDecimal transFee, String transRemarks,
+			Date detailsCreateTime, String transSnapshot) {
 		this.transferId = transferId;
 		this.userId = userId;
 		this.traderName = traderName;
@@ -47,8 +49,10 @@ public class ETransDetails implements java.io.Serializable {
 		this.traderPhone = traderPhone;
 		this.transCurrency = transCurrency;
 		this.transAmount = transAmount;
+		this.transFee = transFee;
 		this.transRemarks = transRemarks;
 		this.detailsCreateTime = detailsCreateTime;
+		this.transSnapshot = transSnapshot;
 	}
 
 	@Id
@@ -126,6 +130,15 @@ public class ETransDetails implements java.io.Serializable {
 		this.transAmount = transAmount;
 	}
 
+	@Column(name = "trans_fee", precision = 20, scale = 4)
+	public BigDecimal getTransFee() {
+		return this.transFee;
+	}
+
+	public void setTransFee(BigDecimal transFee) {
+		this.transFee = transFee;
+	}
+
 	@Column(name = "trans_remarks", length = 500)
 	public String getTransRemarks() {
 		return this.transRemarks;
@@ -143,6 +156,15 @@ public class ETransDetails implements java.io.Serializable {
 
 	public void setDetailsCreateTime(Date detailsCreateTime) {
 		this.detailsCreateTime = detailsCreateTime;
+	}
+
+	@Column(name = "trans_snapshot")
+	public String getTransSnapshot() {
+		return this.transSnapshot;
+	}
+
+	public void setTransSnapshot(String transSnapshot) {
+		this.transSnapshot = transSnapshot;
 	}
 
 }

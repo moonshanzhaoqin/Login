@@ -23,10 +23,10 @@
 			<param-name>encoding</param-name>
 			<param-value>UTF-8</param-value>
 		</init-param>
-		<init-param>   
-            <param-name>forceEncoding</param-name>   
-            <param-value>true</param-value>   
-        </init-param>  
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
 	</filter>
 	<filter-mapping>
 		<filter-name>encodingFilter</filter-name>
@@ -41,49 +41,45 @@
 			org.springframework.web.servlet.DispatcherServlet
 		</servlet-class>
 		<init-param>
-			<param-name>contextConfigLocation</param-name>			
-			<!-- 
-			  指定XML文件位置
-			  <param-value>/WEB-INF/classes/springmvc.xml			  
-			  <param-value>classpath*:springmvc.xml
-			 -->
-			 <!-- 在classpath路径下去寻找springmvc.xml文件 -->			 
-			 <param-value>classpath:springmvc.xml
+			<param-name>contextConfigLocation</param-name>
+			<!-- 指定XML文件位置 <param-value>/WEB-INF/classes/springmvc.xml <param-value>classpath*:springmvc.xml -->
+			<!-- 在classpath路径下去寻找springmvc.xml文件 -->
+			<param-value>classpath:springmvc.xml
 			</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-	
- 	<servlet-mapping>
+
+	<servlet-mapping>
 		<servlet-name>springmvc</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
-	    <servlet-name>DruidStatView</servlet-name>
-	    <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
-	    <init-param>  
-	    <!-- 允许清空统计数据 -->  
-	    <param-name>resetEnable</param-name>  
-	    <param-value>false</param-value>  
-	    </init-param>
-	    <init-param>  
-	    <!-- 用户名 -->  
-	    <param-name>loginUsername</param-name>  
-	    <param-value>admin</param-value>  
-	    </init-param>  
-	    <init-param>  
-	    <!-- 密码 -->  
-	    <param-name>loginPassword</param-name>  
-	    <param-value>admin</param-value>  
-	    </init-param>
+		<servlet-name>DruidStatView</servlet-name>
+		<servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+		<init-param>
+			<!-- 允许清空统计数据 -->
+			<param-name>resetEnable</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<init-param>
+			<!-- 用户名 -->
+			<param-name>loginUsername</param-name>
+			<param-value>admin</param-value>
+		</init-param>
+		<init-param>
+			<!-- 密码 -->
+			<param-name>loginPassword</param-name>
+			<param-value>admin</param-value>
+		</init-param>
 	</servlet>
 	<servlet-mapping>
-	    <servlet-name>DruidStatView</servlet-name>
-	    <url-pattern>/druid/*</url-pattern>
+		<servlet-name>DruidStatView</servlet-name>
+		<url-pattern>/druid/*</url-pattern>
 	</servlet-mapping>
-	
+
 	<welcome-file-list>
-		<welcome-file>index.html</welcome-file> 
-	</welcome-file-list> 
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
 </web-app>

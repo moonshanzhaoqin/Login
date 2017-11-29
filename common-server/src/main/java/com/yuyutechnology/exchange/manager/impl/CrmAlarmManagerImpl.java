@@ -1,19 +1,21 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.CrmAlarmDAO;
 import com.yuyutechnology.exchange.dao.CrmSupervisorDAO;
 import com.yuyutechnology.exchange.dao.CrmUserInfoDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
+import com.yuyutechnology.exchange.dto.NotifyWithdrawDTO;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.mail.MailManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
@@ -27,6 +29,7 @@ import com.yuyutechnology.exchange.util.DateFormatUtils;
 @Service
 public class CrmAlarmManagerImpl implements CrmAlarmManager {
 
+	private static Logger logger = LogManager.getLogger(CrmAlarmManagerImpl.class);
 	@Autowired
 	CrmAlarmDAO crmAlarmDAO;
 	@Autowired
@@ -35,17 +38,16 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 	CrmUserInfoDAO crmUserInfoDAO;
 	@Autowired
 	TransferDAO transferDAO;
+
 	@Autowired
 	ConfigManager configManager;
-
 	@Autowired
 	SmsManager smsManager;
 	@Autowired
 	MailManager mailManager;
+
 	@Autowired
 	OandaRatesManager oandaRatesManager;
-
-	private static Logger logger = LogManager.getLogger(CrmAlarmManagerImpl.class);
 
 	@Override
 	public void addAlarmConfig(int alarmType, BigDecimal lowerLimit, BigDecimal upperLimit, int alarmMode, int editorid,
@@ -584,6 +586,44 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 
 		default:
 			break;
+		}
+	}
+
+	@Override
+	public void notifyWithdraw(NotifyWithdrawDTO notifyWithdrawDTO) {
+		List<CrmAlarm> crmAlarms = crmAlarmDAO.getConfigListByTypeAndStatus(ServerConsts.ALARM_TYPE_WITHDRAW, 1);
+		if (crmAlarms == null || crmAlarms.isEmpty()) {
+			return;
+		}
+		for (CrmAlarm crmAlarm : crmAlarms) {
+			String[] supervisorIdArr = (crmAlarm.getSupervisorIdArr().replace("[", "").replace("]", "")).split(",");
+			List<String> toMails = new ArrayList<>();
+			List<String> toPhones = new ArrayList<>();
+			
+			for (String supervisorId : supervisorIdArr) {
+				CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
+				toMails.add(crmSupervisor.getSupervisorEmail());
+				toPhones.add(crmSupervisor.getSupervisorMobile());
+			}
+
+			switch (crmAlarm.getAlarmMode()) {
+			case ServerConsts.ALARM_MODE_SMS:
+				for (String phone : toPhones) {
+					smsManager.sendSMS4NotifyWithdray(phone, notifyWithdrawDTO);
+				}
+				break;
+			case ServerConsts.ALARM_MODE_EMAIL:
+				mailManager.mail4NotifyWithdray(toMails, notifyWithdrawDTO);
+				break;
+			case ServerConsts.ALARM_MODE_SMS_AND_EMAIL:
+				for (String phone : toPhones) {
+					smsManager.sendSMS4NotifyWithdray(phone, notifyWithdrawDTO);
+				}
+				mailManager.mail4NotifyWithdray(toMails, notifyWithdrawDTO);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 }

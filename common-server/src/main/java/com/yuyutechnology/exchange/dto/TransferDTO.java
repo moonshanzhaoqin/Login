@@ -7,6 +7,7 @@ public class TransferDTO {
 	private String transferId;
 	private String currency;
 	private Double amount;
+	private Double fee;
 	private String currencyUnit;
 	private String comments;
 	private int transferType;
@@ -32,6 +33,12 @@ public class TransferDTO {
 	}
 	public void setAmount(Double amount) {
 		this.amount = amount;
+	}
+	public Double getFee() {
+		return fee;
+	}
+	public void setFee(Double fee) {
+		this.fee = fee;
 	}
 	public String getCurrencyUnit() {
 		return currencyUnit;

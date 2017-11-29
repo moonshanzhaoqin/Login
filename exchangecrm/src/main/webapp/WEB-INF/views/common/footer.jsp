@@ -117,7 +117,14 @@
 		  fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));   
 		  return fmt;   
 		}  
-
+		
+		
+		function onlyNum() {
+			if (!(event.keyCode == 46) && !(event.keyCode == 8)
+					&& !(event.keyCode == 37) && !(event.keyCode == 39))
+				if (!((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105)))
+					event.returnValue = false;
+		}
 		
 	</script>
 </body>

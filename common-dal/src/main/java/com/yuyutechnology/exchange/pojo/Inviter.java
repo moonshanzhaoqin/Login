@@ -14,6 +14,12 @@ import javax.persistence.Table;
 @Table(name = "e_inviter")
 public class Inviter implements java.io.Serializable {
 
+	@Override
+	public String toString() {
+		return "Inviter [userId=" + userId + ", inviteQuantity=" + inviteQuantity + ", inviteBonus=" + inviteBonus
+				+ "]";
+	}
+
 	/**
 	 * 
 	 */

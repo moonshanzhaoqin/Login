@@ -51,7 +51,7 @@
 			<properties>
 				<env>auto</env>
 			</properties>
-		</profile>		
+		</profile>
 	</profiles>
 	<dependencies>
 		<dependency>
@@ -160,8 +160,8 @@
 					</webAppConfig>
 					<scanIntervalSeconds>0</scanIntervalSeconds>
 					<httpConnector>
-                         <port>8080</port>
-                    </httpConnector>
+						<port>8080</port>
+					</httpConnector>
 				</configuration>
 			</plugin>
 			<plugin>

@@ -116,14 +116,14 @@ function initCampaign(currentPage) {
 												+ data.rows[i].campaignId + ')">关闭</a>'))
 								+ '</td>'
 								+ '<td>'
-								+ '<a  data-toggle="modal" data-target="#changeBonusModal" data-whatever='
+								+ '<a href="" data-toggle="modal" data-target="#changeBonusModal" data-whatever='
 								+ "'"
 								+ JSON.stringify(data.rows[i])
 								+ "'"
 								+ '>修改</a>'
 								+ '</td>'
 								+ '<td>'
-								+ '<a  data-toggle="modal" data-target="#addBudgetModal" data-whatever='
+								+ '<a href="" data-toggle="modal" data-target="#addBudgetModal" data-whatever='
 								+ "'" + JSON.stringify(data.rows[i]) + "'"
 								+ '>追加</a>' + '</td>' + '</tr>'
 					}
@@ -335,12 +335,7 @@ function closeCampaign(campaignId) {
 	});
 }
 
-function onlyNum() {
-	if (!(event.keyCode == 46) && !(event.keyCode == 8)
-			&& !(event.keyCode == 37) && !(event.keyCode == 39))
-		if (!((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105)))
-			event.returnValue = false;
-}
+
 // 分页
 function paginator(currentPage, pageTotal) {
 	console.log("paginator:currentPage=" + currentPage + ",pageTotal="

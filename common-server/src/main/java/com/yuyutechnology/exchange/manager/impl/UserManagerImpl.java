@@ -31,6 +31,7 @@ import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
+import com.yuyutechnology.exchange.enums.CheckPWDStatus;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
 import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
@@ -168,7 +169,7 @@ public class UserManagerImpl implements UserManager {
 
 				if (new Date().before(time.getTime())) {
 					logger.info("***Login is frozen!***");
-					result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
+					result.setStatus(CheckPWDStatus.FREEZE);
 					result.setInfo(time.getTime().getTime());
 					return result;
 				}
@@ -184,7 +185,7 @@ public class UserManagerImpl implements UserManager {
 			logger.info("***match***");
 			redisDAO.deleteData(ServerConsts.WRONG_PASSWORD + userId);
 			redisDAO.deleteData(ServerConsts.LOGIN_FREEZE + userId);
-			result.setStatus(ServerConsts.CHECKPWD_STATUS_CORRECT);
+			result.setStatus(CheckPWDStatus.CORRECT);
 			return result;
 		} else {
 			long t = 1;
@@ -205,7 +206,7 @@ public class UserManagerImpl implements UserManager {
 				time.add(Calendar.HOUR_OF_DAY,
 						configManager.getConfigLongValue(ConfigKeyEnum.LOGIN_UNAVAILIABLE_TIME, 24l).intValue());
 
-				result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
+				result.setStatus(CheckPWDStatus.FREEZE);
 				result.setInfo(time.getTime().getTime());
 				return result;
 			}
@@ -218,7 +219,7 @@ public class UserManagerImpl implements UserManager {
 			/* 记录错误次数 */
 			redisDAO.saveData(ServerConsts.WRONG_PASSWORD + userId, t, cal.getTime());
 			logger.info("***Does not match,{}***", t);
-			result.setStatus(ServerConsts.CHECKPWD_STATUS_INCORRECT);
+			result.setStatus(CheckPWDStatus.INCORRECT);
 			result.setInfo(
 					configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PASSWORD_FREQUENCY, 3l).longValue() - t);
 			return result;
@@ -241,7 +242,7 @@ public class UserManagerImpl implements UserManager {
 
 				if (new Date().before(time.getTime())) {
 					logger.info("***Pay is frozen!***");
-					result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
+					result.setStatus(CheckPWDStatus.FREEZE);
 					result.setInfo(time.getTime().getTime());
 					return result;
 				}
@@ -255,7 +256,7 @@ public class UserManagerImpl implements UserManager {
 				|| (StringUtils.isNotBlank(user.getUserPayToken()) && userPayPwd.equals(user.getUserPayToken()))) {
 			logger.info("***match***");
 			redisDAO.deleteData(ServerConsts.WRONG_PAYPWD + userId);
-			result.setStatus(ServerConsts.CHECKPWD_STATUS_CORRECT);
+			result.setStatus(CheckPWDStatus.CORRECT);
 			return result;
 		} else {
 
@@ -277,7 +278,7 @@ public class UserManagerImpl implements UserManager {
 				time.add(Calendar.HOUR_OF_DAY,
 						configManager.getConfigLongValue(ConfigKeyEnum.PAY_UNAVAILIABLE_TIME, 24l).intValue());
 
-				result.setStatus(ServerConsts.CHECKPWD_STATUS_FREEZE);
+				result.setStatus(CheckPWDStatus.FREEZE);
 				result.setInfo(time.getTime().getTime());
 				return result;
 			}
@@ -290,7 +291,7 @@ public class UserManagerImpl implements UserManager {
 			// 记录错误次数
 			redisDAO.saveData(ServerConsts.WRONG_PAYPWD + userId, t, cal.getTime());
 			logger.info("***Does not match,{}***", t);
-			result.setStatus(ServerConsts.CHECKPWD_STATUS_INCORRECT);
+			result.setStatus(CheckPWDStatus.INCORRECT);
 			result.setInfo(configManager.getConfigLongValue(ConfigKeyEnum.WRONG_PAYPWD_FREQUENCY, 3l).longValue() - t);
 			return result;
 		}
@@ -343,7 +344,7 @@ public class UserManagerImpl implements UserManager {
 		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
 		if (user != null) {
 			if (user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_AVAILABLE) {
-				logger.info(" -- UserId = {}", user.getUserId());
+				logger.info("*** UserId = {} ", user.getUserId());
 				return user.getUserId();
 			}
 			logger.info("User is frozen!");
@@ -361,7 +362,7 @@ public class UserManagerImpl implements UserManager {
 		if (user != null) {
 			userInfo = new UserInfo(user.getUserId(), user.getAreaCode(), user.getUserPhone(), user.getUserName(),
 					StringUtils.isNotBlank(user.getUserPayPwd()));
-			logger.info(" -- {}", userInfo.toString());
+			logger.info("*** {}", userInfo.toString());
 		} else {
 			logger.info("Can not find the user!!!");
 		}
@@ -406,7 +407,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public void switchLanguage(Integer userId, String language) {
 		Language newLanguage = LanguageUtils.standard(language);
-		logger.info("{} switchLanguage to {} -->", userId, newLanguage.toString());
+		logger.info("USER {} switchLanguage to {} -->", userId, newLanguage.toString());
 		User user = userDAO.getUser(userId);
 		if (!user.getPushTag().equals(newLanguage)) {
 			logger.info("***Language inconsistency***");
@@ -438,7 +439,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void updatePassword(Integer userId, String newPassword) {
-		logger.info("Update user {} password {} -->", userId, newPassword);
+		logger.info("Update USER {} password {} -->", userId, newPassword);
 		User user = userDAO.getUser(userId);
 		user.setUserPassword(PasswordUtils.encrypt(newPassword, user.getPasswordSalt()));
 		userDAO.updateUser(user);
@@ -447,7 +448,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void updateUser(Integer userId, String loginIp, String pushId, String language) {
-		logger.info("Update user login information -->");
+		logger.info("Update USER {} login information -->",userId);
 		User user = userDAO.getUser(userId);
 		if (user == null) {
 			return;
@@ -466,7 +467,7 @@ public class UserManagerImpl implements UserManager {
 
 		/* 切换语言 */
 		Language newLanguage = LanguageUtils.standard(language);
-		logger.info("{} switchLanguage to {} -->", userId, newLanguage.toString());
+		logger.info("USER {} switchLanguage to {} -->", userId, newLanguage.toString());
 		if (!user.getPushTag().equals(newLanguage)) {
 			logger.info("***Language inconsistency***");
 			user.setPushTag(newLanguage);
@@ -479,7 +480,8 @@ public class UserManagerImpl implements UserManager {
 		userDAO.updateUser(user);
 
 		/* 清除其他账号的此pushId */
-		clearPushId(userId, pushId);
+		if (StringUtils.isNotBlank(pushId)){
+		clearPushId(userId, pushId);}
 	}
 
 	private void clearPushId(Integer userId, String pushId) {
@@ -575,7 +577,7 @@ public class UserManagerImpl implements UserManager {
 			transfer.setTransferAmount(unregistered.getAmount());
 			transfer.setCreateTime(new Date());
 			transfer.setFinishTime(new Date());
-			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
 			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 			transfer.setTransferComment(unregistered.getTransferId());
 			transfer.setNoticeId(0);
@@ -592,8 +594,9 @@ public class UserManagerImpl implements UserManager {
 			// unregistered.getAmount(), "+",
 			// ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
 
-			transDetailsManager.addTransDetails(transferId, userId, payer.getUserId(), payer.getUserName(),
-					payer.getAreaCode(), payer.getUserPhone(), unregistered.getCurrency(), unregistered.getAmount(),
+			transDetailsManager.addTransDetails(transferId, userId, payer.getUserId(), 
+					payer.getUserName(),payer.getAreaCode(), payer.getUserPhone(), 
+					unregistered.getCurrency(), unregistered.getAmount(),BigDecimal.ZERO,null,
 					payerTransfer.getTransferComment(), ServerConsts.TRANSFER_TYPE_TRANSACTION - 1);
 
 			/* 更改unregistered状态 */
@@ -683,7 +686,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void addDevice(Integer userId, String deviceId, String deviceName) {
-		logger.info("{} add {} device {}==>", userId, deviceName, deviceId);
+		logger.info("User{} add device {}-{} -->", userId, deviceName, deviceId);
 		userDeviceDAO.addUserDevice(new UserDevice(new UserDeviceId(userId, deviceId), deviceName));
 	}
 
@@ -711,7 +714,7 @@ public class UserManagerImpl implements UserManager {
 			userDTO.setUserPassword(user.getUserPassword());
 			userDTO.setPasswordSalt(user.getPasswordSalt());
 			userDTO.setUserAvailable(user.getUserAvailable());
-			Bind bind = bindDAO.getBindByUserId(user.getUserId());
+			Bind bind = bindDAO.getBind(user.getUserId());
 			userDTO.setGoldpayAccount(bind == null ? "" : bind.getGoldpayAcount());
 			userDTO.setGoldpayId(bind == null ? 0L : Long.valueOf(bind.getGoldpayId()));
 			userDTO.setGoldpayUserName(bind == null ? "" : bind.getGoldpayName());
@@ -736,4 +739,22 @@ public class UserManagerImpl implements UserManager {
 		return userDAO.getUserByUserPhone(areaCode, phone);
 	}
 
+	@Override
+	public void updateHappyLivesVIP(String happyLivesId, Integer userId) {
+		Bind bind = bindDAO.getBind(userId);
+		if (bind != null){
+			bindDAO.clearHappyLivesId(happyLivesId);
+			bind.setHappyLivesId(happyLivesId);
+			bindDAO.updateBind(bind);
+		}
+	}
+
+	@Override
+	public boolean isHappyLivesVIP(Integer userId) {
+		Bind bind = bindDAO.getBind(userId);
+		if (bind == null) {
+			return false;
+		}
+		return StringUtils.isNotBlank(bind.getHappyLivesId());
+	}
 }

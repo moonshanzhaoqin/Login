@@ -10,17 +10,28 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
 http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
-	<tx:annotation-driven transaction-manager="transactionManager" />
+	<!-- 
+	 <tx:annotation-driven transaction-manager="transactionManager" />
+	 -->
+	
 	<tx:advice id="txAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
 			<tx:method name="*" propagation="REQUIRED" />
 		</tx:attributes>
 	</tx:advice>
+	
+	<tx:advice id="txAdviceTPPS" transaction-manager="transactionManagerTPPS">
+		<tx:attributes>
+			<tx:method name="*" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+	
 	<aop:config>
 		<!-- 定义一个切入点 -->
 		<aop:pointcut
-			expression="execution (* com.yuyutechnology.exchange.*.*Manager.*(..)) || execution (* com.yuyutechnology.exchange.crm.*.*Manager*.*(..))"
+			expression="execution (* com.yuyutechnology.exchange.*.*Manager.*(..)) || execution (* com.yuyutechnology.exchange.crm.*.*Manager*.*(..))|| execution (* com.yuyutechnology.exchange.crm.*.*.*Manager.*(..))"
 			id="services" />
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="services" />
+		<aop:advisor advice-ref="txAdviceTPPS" pointcut-ref="services" />
 	</aop:config>
 </beans>

@@ -7,7 +7,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Exanytime</title>
-<link rel='icon'  href='<c:url value="/resources/img/ex_28x28.ico" />' type='image/x-ico' />
+<link rel='icon' href='<c:url value="/resources/img/ex_28x28.ico" />'
+	type='image/x-ico' />
 <link rel="stylesheet"
 	href='<c:url value="/resources/bootstrap/css/bootstrap.min.css" />' />
 <link rel="stylesheet"
@@ -37,7 +38,8 @@
 					<c:if test="${not empty totalAssets }">
 						<c:forEach var="totalAssets" items="${totalAssets}">
 							<tr>
-								<td style="font-weight: bold;">${totalAssets.currency.currency} （${totalAssets.currency.nameCn}）</td>
+								<td style="font-weight: bold;">${totalAssets.currency.currency}
+									（${totalAssets.currency.nameCn}）</td>
 								<td>${totalAssets.systemTotalAsset}</td>
 								<td>${totalAssets.userTotalAsset}</td>
 							</tr>

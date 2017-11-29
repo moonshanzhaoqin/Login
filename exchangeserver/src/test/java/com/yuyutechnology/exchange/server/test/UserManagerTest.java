@@ -12,6 +12,8 @@ public class UserManagerTest extends BaseSpringJunit4 {
 	
 	@Test
 	public void testUpdate(){
-		userManager.updateUser(2, "", "1", "");
+//		userManager.updateUser(2, "", "1", "");
+		userManager.updateHappyLivesVIP("123", 5);
+		System.out.println(userManager.isHappyLivesVIP(5));
 	}
 }

@@ -5,6 +5,7 @@ package com.yuyutechnology.exchange.sms;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -20,10 +21,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
+import com.yuyutechnology.exchange.dto.NotifyWithdrawDTO;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.pojo.User;
+import com.yuyutechnology.exchange.util.DateFormatUtils;
 import com.yuyutechnology.exchange.util.HttpClientUtils;
 import com.yuyutechnology.exchange.util.JsonBinder;
 import com.yuyutechnology.exchange.util.ResourceUtils;
@@ -60,6 +63,11 @@ public class SmsManager {
 	private final String SMS_REPLACE_AMOUNTIN = "[AMOUNTIN]";
 	private final String SMS_REPLACE_PERCENT = "[PERCENT]";
 	private final String SMS_REPLACE_NUMBER = "[NUMBER]";
+
+	private final String SMS_REPLACE_PHONE = "[PHONE]";
+	private final String SMS_REPLACE_NAME = "[NAME]";
+	private final String SMS_REPLACE_EMAIL = "[EMAIL]";
+
 	// en
 	private StringBuffer phoneVerify_en = new StringBuffer();
 	// zh_CN
@@ -85,9 +93,10 @@ public class SmsManager {
 	// zh_CN
 	private StringBuffer registrationAlarm_cn = new StringBuffer();
 	// zh_CN
-//	private StringBuffer remitFailAlarm_cn = new StringBuffer();
+	// private StringBuffer remitFailAlarm_cn = new StringBuffer();
 	// zh_CN
 	private StringBuffer reachTotalGDQLimitAlarm_cn = new StringBuffer();
+	private StringBuffer notifyWithdraw_cn = new StringBuffer();
 
 	@PostConstruct
 	@Scheduled(cron = "0 1/2 * * * ?")
@@ -108,9 +117,11 @@ public class SmsManager {
 
 		readTemplate("template/sms/zh_CN/badAccountAlarm.template", badAccountAlarm_cn);
 		readTemplate("template/sms/zh_CN/registrationAlarm.template", registrationAlarm_cn);
-//		readTemplate("template/sms/zh_CN/remitFailAlarm.template", remitFailAlarm_cn);
+		// readTemplate("template/sms/zh_CN/remitFailAlarm.template",
+		// remitFailAlarm_cn);
 
 		readTemplate("template/sms/zh_CN/reachTotalGDQLimitAlarm.template", reachTotalGDQLimitAlarm_cn);
+		readTemplate("template/sms/zh_CN/notifyWithdraw.template", notifyWithdraw_cn);
 
 		initSMS = true;
 	}
@@ -213,17 +224,27 @@ public class SmsManager {
 		sendSMS(phone, content, "");
 	}
 
-//	@Async
-//	public void sendSMS4RemitFail(String phone, String dateTime) {
-//		String content = remitFailAlarm_cn.toString();
-//		content = content.replace(SMS_REPLACE_TIME, dateTime);
-//		sendSMS(phone, content, "");
-//	}
+	// @Async
+	// public void sendSMS4RemitFail(String phone, String dateTime) {
+	// String content = remitFailAlarm_cn.toString();
+	// content = content.replace(SMS_REPLACE_TIME, dateTime);
+	// sendSMS(phone, content, "");
+	// }
 
 	@Async
 	public void sendSMS4ReachTotalGDQLimit(String phone, String amount, String percent) {
 		String content = reachTotalGDQLimitAlarm_cn.toString();
 		content = content.replace(SMS_REPLACE_AMOUNT, amount).replace(SMS_REPLACE_PERCENT, percent);
+		sendSMS(phone, content, "");
+	}
+
+	public void sendSMS4NotifyWithdray(String phone, NotifyWithdrawDTO notifyWithdrawDTO) {
+		String content = notifyWithdraw_cn.toString()
+				.replace(SMS_REPLACE_PHONE, notifyWithdrawDTO.getAreaCode() + notifyWithdrawDTO.getUserPhone())
+				.replace(SMS_REPLACE_NAME, notifyWithdrawDTO.getUserName())
+				.replace(SMS_REPLACE_NUMBER, String.valueOf(notifyWithdrawDTO.getQuantity()))
+				.replace(SMS_REPLACE_EMAIL, notifyWithdrawDTO.getUserEmail())
+				.replace(SMS_REPLACE_TIME, DateFormatUtils.formatDateGMT8(notifyWithdrawDTO.getApplyTime()));
 		sendSMS(phone, content, "");
 	}
 

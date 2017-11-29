@@ -172,8 +172,8 @@
 				</executions>
 			</plugin>
 			<plugin>
-			    <groupId>org.eclipse.jetty</groupId>
-			    <artifactId>jetty-maven-plugin</artifactId>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
 				<version>9.2.21.v20170120</version>
 				<configuration>
 					<stopKey>stop</stopKey>
@@ -185,8 +185,8 @@
 						<contextPath>/server</contextPath>
 					</webAppConfig>
 					<httpConnector>
-                         <port>8011</port>
-                    </httpConnector>
+						<port>8011</port>
+					</httpConnector>
 				</configuration>
 			</plugin>
 			<plugin>

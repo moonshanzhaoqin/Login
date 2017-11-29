@@ -8,6 +8,7 @@ public class PaypalTransInitResponse extends BaseResponse {
 	private String accessToken;
 	private String currency;
 	private Double amount;
+	private Double fee;
 	private String unit;
 
 	private Date createAt;
@@ -43,6 +44,14 @@ public class PaypalTransInitResponse extends BaseResponse {
 
 	public void setAmount(Double amount) {
 		this.amount = amount;
+	}
+
+	public Double getFee() {
+		return fee;
+	}
+
+	public void setFee(Double fee) {
+		this.fee = fee;
 	}
 
 	public String getUnit() {

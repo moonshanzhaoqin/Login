@@ -49,11 +49,11 @@ public class AlarmController {
 	TransferManager transferManager;
 
 	private static final String[] VIEWNAMEARR = { "getAlarmConfigList", "getLargeTransAlarmConfigList",
-			"getLargeTransAlarmConfigList", "getBadAccountAlarmConfigList", "getTotalGDQAlarmConfigList", "getRegistrationAlarmConfigList"};
+			"getLargeTransAlarmConfigList", "getBadAccountAlarmConfigList", "getTotalGDQAlarmConfigList", "getRegistrationAlarmConfigList","getNotifyWithdrawConfigList"};
 
 	ModelAndView mav;
 
-	private static Logger logger = LogManager.getLogger(AlarmController.class);
+//	private static Logger logger = LogManager.getLogger(AlarmController.class);
 
 	@RequestMapping(value = "/alarm/getAlarmConfigList", method = RequestMethod.GET)
 	public ModelAndView getAlarmConfigList() {
@@ -120,6 +120,16 @@ public class AlarmController {
 		List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
 		mav.addObject("supervisorList", supervisorList);
 		mav.setViewName("alarm/registrationAlarmConfigInfo");
+		return mav;
+	}
+	@RequestMapping(value = "/alarm/getNotifyWithdrawConfigList", method = RequestMethod.GET)
+	public ModelAndView NotifyWithdraw() {
+		mav = new ModelAndView();
+		List<CrmAlarm> list = crmAlarmManager.getCrmAlarmConfigList();
+		mav.addObject("list", list);
+		List<CrmSupervisor> supervisorList = crmAlarmManager.getCrmSupervisorList();
+		mav.addObject("supervisorList", supervisorList);
+		mav.setViewName("alarm/notifyWithdraw");
 		return mav;
 	}
 
