@@ -39,7 +39,7 @@ public class TransferDAOImpl implements TransferDAO {
 	private final String ACCUMULATED_AMOUNT_KEY = "accumulated_amount_[key]";
 
 	private final String ACCUMULATED_TIMES_KEY = "accumulated_times_[key]";
-	
+
 	public static Logger logger = LogManager.getLogger(TransferDAOImpl.class);
 
 	@Override
@@ -60,9 +60,8 @@ public class TransferDAOImpl implements TransferDAO {
 	@Override
 	public void addTransfer(Transfer transfer) {
 		hibernateTemplate.save(transfer);
-		logger.info("addTransfer {}",transfer.getTransferId());
+		logger.info("addTransfer {}", transfer.getTransferId());
 	}
-	
 
 	@Override
 	public void updateTransfer(Transfer transfer) {
@@ -219,7 +218,6 @@ public class TransferDAOImpl implements TransferDAO {
 		return sum;
 	}
 
-
 	@Override
 	public PageBean searchTransfersByPage(String hql, List<Object> values, int currentPage, int pageSize) {
 		return PageUtils.getPageContent(hibernateTemplate, hql, values, currentPage, pageSize);
@@ -255,21 +253,21 @@ public class TransferDAOImpl implements TransferDAO {
 			}
 		});
 	}
-	
+
 	@Override
-	public Transfer getFeeTransfer(String transferId){
-		List<?> list = hibernateTemplate.find("from Transfer where transferComment = ? "
-				+ "and transferStatus = ? and transferType = ?", transferId,
-				ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION,ServerConsts.TRANSFER_TYPE_IN_FEE);
+	public Transfer getFeeTransfer(String transferId) {
+		List<?> list = hibernateTemplate.find(
+				"from Transfer where transferComment = ? " + "and transferStatus = ? and transferType = ?", transferId,
+				ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION, ServerConsts.TRANSFER_TYPE_IN_FEE);
 		return (Transfer) (list.isEmpty() ? null : list.get(0));
 	}
-	
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Transfer> getTransferListByTime(int transferStatus, int transferType,Date time){
-		List<?> list = hibernateTemplate.find("from Transfer where transferStatus = ? and transferType = ? and createTime < ?", 
-				transferStatus,transferType,time);
+	public List<Transfer> getTransferListByTime(int transferStatus, int transferType, Date time) {
+		List<?> list = hibernateTemplate.find(
+				"from Transfer where transferStatus = ? and transferType = ? and createTime < ?", transferStatus,
+				transferType, time);
 		return (List<Transfer>) list;
 	}
 
