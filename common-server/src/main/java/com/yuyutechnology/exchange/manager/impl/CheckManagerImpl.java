@@ -31,15 +31,14 @@ import com.yuyutechnology.exchange.util.DateFormatUtils;
 
 @Service
 public class CheckManagerImpl implements CheckManager {
-	
+
 	@Autowired
 	UserDAO userDAO;
 	@Autowired
 	WalletDAO walletDAO;
 	@Autowired
 	TransferDAO transferDAO;
-	
-	
+
 	@Autowired
 	CommonManager commonManager;
 	@Autowired
@@ -48,15 +47,16 @@ public class CheckManagerImpl implements CheckManager {
 	OandaRatesManager oandaRatesManager;
 	@Autowired
 	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
-	
+
 	public static Logger logger = LogManager.getLogger(CheckManagerImpl.class);
-	
+
 	@Override
-	public boolean isInsufficientBalance(Integer userId,String currency,BigDecimal amount){
-		
+	public boolean isInsufficientBalance(Integer userId, String currency, BigDecimal amount) {
+		logger.info("check the balance is sufficient -->");
 		if (currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
 			GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.getGoldpayUserInfo(userId);
-			if ((null == goldpayUser || null == goldpayUser.getBalance() )|| new BigDecimal(goldpayUser.getBalance() + "").compareTo(amount) == -1) {
+			if ((null == goldpayUser || null == goldpayUser.getBalance())
+					|| new BigDecimal(goldpayUser.getBalance() + "").compareTo(amount) == -1) {
 				logger.warn("Current balance is insufficient");
 				return true;
 			}
@@ -68,7 +68,7 @@ public class CheckManagerImpl implements CheckManager {
 				return true;
 			}
 		}
-		
+		logger.info("Current balance is sufficient");
 		return false;
 	}
 
@@ -117,13 +117,13 @@ public class CheckManagerImpl implements CheckManager {
 		}
 		return map;
 	}
-	
+
 	@Override
-	public HashMap<String, String> checkNotificationStatus(TransactionNotification notification,Integer userId,
-			String currency,BigDecimal amount){
-		
+	public HashMap<String, String> checkNotificationStatus(TransactionNotification notification, Integer userId,
+			String currency, BigDecimal amount) {
+
 		HashMap<String, String> result = new HashMap<>();
-		
+
 		if (notification == null) {
 			logger.warn("Can not find the corresponding notification information");
 			result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
@@ -145,22 +145,21 @@ public class CheckManagerImpl implements CheckManager {
 		}
 		if ((StringUtils.isNotBlank(notification.getCurrency())
 				&& notification.getAmount().compareTo(new BigDecimal("0")) != 0)
-				&& (!notification.getCurrency().equals(currency)
-						|| notification.getAmount().compareTo(amount) != 0)) {
+				&& (!notification.getCurrency().equals(currency) || notification.getAmount().compareTo(amount) != 0)) {
 			logger.warn("The input and order information do not match");
 			result.put("retCode", RetCodeConsts.TRANSFER_REQUEST_INFORMATION_NOT_MATCH);
 			result.put("msg", "The input and order information do not match");
 			return result;
 		}
-		
+
 		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		return result;
 	}
-	
+
 	@Override
-	public HashMap<String, String> checkRecevierStatus(Integer sponsorId,Integer userId,
-			String areaCode,String userPhone){
-		
+	public HashMap<String, String> checkRecevierStatus(Integer sponsorId, Integer userId, String areaCode,
+			String userPhone) {
+
 		HashMap<String, String> result = new HashMap<>();
 		User receiver = userDAO.getUser(sponsorId);
 		// 不用给自己转账
@@ -176,16 +175,16 @@ public class CheckManagerImpl implements CheckManager {
 			result.put("msg", "Payee phone information does not match");
 			return result;
 		}
-		
+
 		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		return result;
-		
+
 	}
-	
+
 	@Override
-	public HashMap<String, String> checkPayerAndTrasStatus(User payer,Transfer transfer,int userId){
+	public HashMap<String, String> checkPayerAndTrasStatus(User payer, Transfer transfer, int userId) {
 		HashMap<String, String> result = new HashMap<>();
-		
+
 		if (payer == null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
 			logger.warn("The user does not exist or the account is blocked");
 			result.put("msg", "The user does not exist or the account is blocked");
@@ -200,22 +199,22 @@ public class CheckManagerImpl implements CheckManager {
 			return result;
 		}
 
-		if(transfer.getTransferStatus()!= ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION){
+		if (transfer.getTransferStatus() != ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION) {
 			logger.warn("Orders have been paid");
 			result.put("msg", "Orders have been paid");
 			result.put("retCode", RetCodeConsts.TRANSFER_ORDERS_HAVE_BEEN_PAID);
 			return result;
 		}
-		
+
 		if (userId != transfer.getUserFrom()) {
 			logger.warn("userId is different from UserFromId");
 			result.put("msg", "userId is different from UserFromId");
 			result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 			return result;
 		}
-		
+
 		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		return result;
 	}
-	
+
 }

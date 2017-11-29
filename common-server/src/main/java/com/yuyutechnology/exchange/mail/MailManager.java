@@ -6,8 +6,6 @@ package com.yuyutechnology.exchange.mail;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.io.IOUtils;
@@ -215,20 +213,19 @@ public class MailManager {
 	}
 
 	@Async
-	public void mail4NotifyWithdray(String email, NotifyWithdrawDTO notifyWithdrawDTO) {
+	public void mail4NotifyWithdray(List<String> toMails, NotifyWithdrawDTO notifyWithdrawDTO) {
 		String content = notifyWithdrawContent.toString()
 				.replace(MAIL_REPLACE_PHONE, notifyWithdrawDTO.getAreaCode() + notifyWithdrawDTO.getUserPhone())
 				.replace(MAIL_REPLACE_NAME, notifyWithdrawDTO.getUserName())
 				.replace(MAIL_REPLACE_NUMBER, String.valueOf(notifyWithdrawDTO.getQuantity()))
+				.replace(MAIL_REPLACE_EMAIL, notifyWithdrawDTO.getUserEmail())
 				.replace(MAIL_REPLACE_TIME, DateFormatUtils.formatDateGMT8(notifyWithdrawDTO.getApplyTime()));
-		List<String> toMails = new ArrayList<>();
-		toMails.add(email);
 		sendMail(toMails, notifyWithdrawTital.toString(), content);
 
 	}
 
 	public void sendMail(List<String> toMails, String tital, String content) {
-		logger.info("sendMail,tital : {}, content : {}", tital, content);
+		logger.info("sendMail, tital : {}, content : {}", tital, content);
 		if (StringUtils.isNotBlank(content)) {
 			SendMailRequest sendMessageRequest = new SendMailRequest();
 			sendMessageRequest.setContent(content);

@@ -1,10 +1,10 @@
 package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -597,23 +597,32 @@ public class CrmAlarmManagerImpl implements CrmAlarmManager {
 		}
 		for (CrmAlarm crmAlarm : crmAlarms) {
 			String[] supervisorIdArr = (crmAlarm.getSupervisorIdArr().replace("[", "").replace("]", "")).split(",");
+			List<String> toMails = new ArrayList<>();
+			List<String> toPhones = new ArrayList<>();
+			
 			for (String supervisorId : supervisorIdArr) {
 				CrmSupervisor crmSupervisor = crmSupervisorDAO.getCrmSupervisorById(Integer.parseInt(supervisorId));
-				switch (crmAlarm.getAlarmMode()) {
-				case ServerConsts.ALARM_MODE_SMS:
-					smsManager.sendSMS4NotifyWithdray(crmSupervisor.getSupervisorMobile(), notifyWithdrawDTO);
-					break;
-				case ServerConsts.ALARM_MODE_EMAIL:
-					mailManager.mail4NotifyWithdray(crmSupervisor.getSupervisorEmail(), notifyWithdrawDTO);
-					break;
-				case ServerConsts.ALARM_MODE_SMS_AND_EMAIL:
-					smsManager.sendSMS4NotifyWithdray(crmSupervisor.getSupervisorMobile(), notifyWithdrawDTO);
-					mailManager.mail4NotifyWithdray(crmSupervisor.getSupervisorEmail(), notifyWithdrawDTO);
-					break;
+				toMails.add(crmSupervisor.getSupervisorEmail());
+				toPhones.add(crmSupervisor.getSupervisorMobile());
+			}
 
-				default:
-					break;
+			switch (crmAlarm.getAlarmMode()) {
+			case ServerConsts.ALARM_MODE_SMS:
+				for (String phone : toPhones) {
+					smsManager.sendSMS4NotifyWithdray(phone, notifyWithdrawDTO);
 				}
+				break;
+			case ServerConsts.ALARM_MODE_EMAIL:
+				mailManager.mail4NotifyWithdray(toMails, notifyWithdrawDTO);
+				break;
+			case ServerConsts.ALARM_MODE_SMS_AND_EMAIL:
+				for (String phone : toPhones) {
+					smsManager.sendSMS4NotifyWithdray(phone, notifyWithdrawDTO);
+				}
+				mailManager.mail4NotifyWithdray(toMails, notifyWithdrawDTO);
+				break;
+			default:
+				break;
 			}
 		}
 	}
