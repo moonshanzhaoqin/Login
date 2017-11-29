@@ -56,7 +56,7 @@ $(function() {
 		form.clientId.value = goldqPayFee.clientId;
 		form.payRole.value = goldqPayFee.payRole;
 		form.exemptAmount.value = goldqPayFee.exemptAmount;
-		form.feePercent.value = goldqPayFee.feePercent;
+		form.feePercent.value =goldqPayFee.feePercent*100;
 		form.minFee.value = goldqPayFee.minFee;
 		form.maxFee.value = goldqPayFee.maxFee;
 		form.feePayer.value = goldqPayFee.feePayer;
@@ -210,7 +210,7 @@ function getGoldqPayFee(clientId) {
 								+ data[i].exemptAmount
 								+ '</td>'
 								+ '<td>'
-								+ data[i].feePercent
+								+data[i].feePercent*100
 								+ '</td>'
 								+ '<td>'
 								+ data[i].minFee
@@ -246,7 +246,7 @@ function updateGoldqPayFee() {
 			clientId : form.clientId.value,
 			payRole : form.payRole.value,
 			exemptAmount : form.exemptAmount.value,
-			feePercent : form.feePercent.value,
+			feePercent : form.feePercent.value/100,
 			minFee : form.minFee.value,
 			maxFee : form.maxFee.value,
 			feePayer : form.feePayer.value
@@ -339,6 +339,7 @@ function showFeePayer(feePayer) {
 		return "未知，出错！"
 	}
 }
+
 
 // 分页
 function paginator(currentPage, pageTotal) {
