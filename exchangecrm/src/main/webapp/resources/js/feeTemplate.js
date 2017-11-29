@@ -10,7 +10,7 @@ $(function() {
 		form.feePurpose.value = feeTemplate.feePurpose;
 		form.feeName.value = feeTemplate.feeName;
 		form.exemptAmount.value = feeTemplate.exemptAmount;
-		form.feePercent.value = feeTemplate.feePercent*100;
+		form.feePercent.value = (feeTemplate.feePercent*100).toFixed(2);
 		form.minFee.value = feeTemplate.minFee;
 		form.maxFee.value = feeTemplate.maxFee;
 	})
@@ -35,7 +35,7 @@ function initFeeTemplate() {
 								+ data[i].exemptAmount
 								+ '</td>'
 								+ '<td>'
-								+ data[i].feePercent*100
+								+ (data[i].feePercent*100).toFixed(2)
 								+ '</td>'
 								+ '<td>'
 								+ data[i].minFee

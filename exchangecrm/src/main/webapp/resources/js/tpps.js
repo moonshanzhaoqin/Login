@@ -56,7 +56,7 @@ $(function() {
 		form.clientId.value = goldqPayFee.clientId;
 		form.payRole.value = goldqPayFee.payRole;
 		form.exemptAmount.value = goldqPayFee.exemptAmount;
-		form.feePercent.value =goldqPayFee.feePercent*100;
+		form.feePercent.value =(goldqPayFee.feePercent*100).toFixed(2);
 		form.minFee.value = goldqPayFee.minFee;
 		form.maxFee.value = goldqPayFee.maxFee;
 		form.feePayer.value = goldqPayFee.feePayer;
@@ -210,7 +210,7 @@ function getGoldqPayFee(clientId) {
 								+ data[i].exemptAmount
 								+ '</td>'
 								+ '<td>'
-								+data[i].feePercent*100
+								+ (data[i].feePercent*100).toFixed(2)
 								+ '</td>'
 								+ '<td>'
 								+ data[i].minFee

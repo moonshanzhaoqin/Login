@@ -1,5 +1,5 @@
 package pojo;
-// Generated Nov 28, 2017 4:13:30 PM by Hibernate Tools 5.2.6.Final
+// Generated Nov 29, 2017 5:23:39 PM by Hibernate Tools 5.2.6.Final
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -44,12 +44,13 @@ public class ETransfer implements java.io.Serializable {
 	}
 
 	public ETransfer(String transferId, int userFrom, int userTo, String currency, BigDecimal transferAmount,
-			int transferStatus, int transferType) {
+			BigDecimal transferFee, int transferStatus, int transferType) {
 		this.transferId = transferId;
 		this.userFrom = userFrom;
 		this.userTo = userTo;
 		this.currency = currency;
 		this.transferAmount = transferAmount;
+		this.transferFee = transferFee;
 		this.transferStatus = transferStatus;
 		this.transferType = transferType;
 	}
@@ -155,7 +156,7 @@ public class ETransfer implements java.io.Serializable {
 		this.transferAmount = transferAmount;
 	}
 
-	@Column(name = "transfer_fee", precision = 20, scale = 4)
+	@Column(name = "transfer_fee", nullable = false, precision = 20, scale = 4)
 	public BigDecimal getTransferFee() {
 		return this.transferFee;
 	}

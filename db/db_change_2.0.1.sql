@@ -5,9 +5,9 @@ ALTER TABLE `e_bind` DROP INDEX `index_user_id`;
 ALTER TABLE `e_bind` ADD KEY `index_happyLives` (`happy_lives_id`);
 
 ALTER TABLE `e_transfer`
-  ADD COLUMN `transfer_fee` decimal(20,4) NULL DEFAULT NULL COMMENT '手续费';
+  ADD COLUMN `transfer_fee` decimal(20,4) NULL DEFAULT 0 COMMENT '手续费';
 ALTER TABLE `e_trans_detail`
-  ADD COLUMN `trans_fee` decimal(20,4) NULL DEFAULT NULL COMMENT '手续费' AFTER `trans_amount`;
+  ADD COLUMN `trans_fee` decimal(20,4) NULL DEFAULT 0 COMMENT '手续费' AFTER `trans_amount`;
 ALTER TABLE `e_trans_detail`
   ADD COLUMN `trans_snapshot` varchar(255) NULL DEFAULT NULL COMMENT '交易快照' AFTER `trans_remarks`;
 
@@ -44,3 +44,6 @@ CREATE TABLE `e_fee_template` (
   PRIMARY KEY (`fee_purpose`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='手续费模板';
 INSERT INTO `e_fee_template` VALUES ('paypal_purchase_goldbullion_ordinary',100,0.0010,5,100,'Paypal充值（普通）'),('paypal_purchase_goldbullion_vip',0,0.0000,0,999999999,'Paypal充值（VIP）'),('withdraw_goldbullion_ordinary',10000,0.0010,10,999999999,'提取金条（普通）'),('withdraw_goldbullion_vip',0,0.0000,0,999999999,'提取金条（VIP）');
+
+ALTER TABLE `e_transfer`
+  CHANGE COLUMN `transfer_fee` `transfer_fee` numeric(20,4) NOT NULL DEFAULT 0 COMMENT '手续费';
