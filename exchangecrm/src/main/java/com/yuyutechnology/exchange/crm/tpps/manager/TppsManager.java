@@ -10,8 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.crm.tpps.TppsConsts;
-import com.yuyutechnology.exchange.crm.tpps.dao.GoldqPayClientDAO;
-import com.yuyutechnology.exchange.crm.tpps.dao.GoldqPayFeeDAO;
+import com.yuyutechnology.exchange.crm.tpps.dao.TppsDAO;
 import com.yuyutechnology.exchange.crm.tpps.pojo.GoldqPayClient;
 import com.yuyutechnology.exchange.crm.tpps.pojo.GoldqPayFee;
 import com.yuyutechnology.exchange.util.UidUtils;
@@ -22,31 +21,33 @@ public class TppsManager {
 	private static Logger logger = LogManager.getLogger(TppsManager.class);
 
 	@Autowired
-	GoldqPayClientDAO goldqPayClientDAO;
-	@Autowired
-	GoldqPayFeeDAO goldqPayFeeDAO;
+	TppsDAO tppsDAO;
 
 	public void addGoldqPayClient(Integer exId) {
 		/* 生成商户ClientId */
 		GoldqPayClient goldqPayClient = new GoldqPayClient(exId, UidUtils.genUid(), UidUtils.genUid());
-		goldqPayClientDAO.saveGoldqPayClient(goldqPayClient);
+		tppsDAO.saveGoldqPayClient(goldqPayClient);
 		/* 生成默认手续费模板 */
-		goldqPayFeeDAO.saveGoldqPayFee(new GoldqPayFee(goldqPayClient.getClientId(), TppsConsts.PAY_ROLE_PAYER, BigDecimal.ZERO,  BigDecimal.ZERO,  BigDecimal.ZERO,  BigDecimal.ZERO, TppsConsts.PAY_ROLE_PAYEE));
-		goldqPayFeeDAO.saveGoldqPayFee(new GoldqPayFee(goldqPayClient.getClientId(), TppsConsts.PAY_ROLE_PAYEE,  BigDecimal.ZERO,  BigDecimal.ZERO,  BigDecimal.ZERO,  BigDecimal.ZERO, TppsConsts.PAY_ROLE_PAYEE));
+		tppsDAO.saveGoldqPayFee(new GoldqPayFee(goldqPayClient.getClientId(), TppsConsts.PAY_ROLE_PAYER,
+				BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, TppsConsts.PAY_ROLE_PAYEE));
+		tppsDAO.saveGoldqPayFee(new GoldqPayFee(goldqPayClient.getClientId(), TppsConsts.PAY_ROLE_PAYEE,
+				BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, TppsConsts.PAY_ROLE_PAYEE));
 	}
 
 	public void updateGoldqPayFee(GoldqPayFee goldqPayFee) {
-		goldqPayFeeDAO.updateGoldqPayFee(goldqPayFee);
+		tppsDAO.updateGoldqPayFee(goldqPayFee);
 
 	}
 
 	public List<GoldqPayFee> getGoldqPayFeeByClientId(String clientId) {
-		List<GoldqPayFee> goldqPayFees=goldqPayFeeDAO.getGoldqPayFeeByClientId(clientId);
+		List<GoldqPayFee> goldqPayFees = tppsDAO.getGoldqPayFeeByClientId(clientId);
 		if (goldqPayFees.isEmpty()) {
 			/* 生成默认手续费模板 */
-			goldqPayFeeDAO.saveGoldqPayFee(new GoldqPayFee(clientId, TppsConsts.PAY_ROLE_PAYER, BigDecimal.ZERO,  BigDecimal.ZERO,  BigDecimal.ZERO,  BigDecimal.ZERO, TppsConsts.PAY_ROLE_PAYEE));
-			goldqPayFeeDAO.saveGoldqPayFee(new GoldqPayFee(clientId, TppsConsts.PAY_ROLE_PAYEE,  BigDecimal.ZERO,  BigDecimal.ZERO,  BigDecimal.ZERO,  BigDecimal.ZERO, TppsConsts.PAY_ROLE_PAYEE));
-			goldqPayFees=goldqPayFeeDAO.getGoldqPayFeeByClientId(clientId);
+			tppsDAO.saveGoldqPayFee(new GoldqPayFee(clientId, TppsConsts.PAY_ROLE_PAYER, BigDecimal.ZERO,
+					BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, TppsConsts.PAY_ROLE_PAYEE));
+			tppsDAO.saveGoldqPayFee(new GoldqPayFee(clientId, TppsConsts.PAY_ROLE_PAYEE, BigDecimal.ZERO,
+					BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, TppsConsts.PAY_ROLE_PAYEE));
+			goldqPayFees = tppsDAO.getGoldqPayFeeByClientId(clientId);
 		}
 		return goldqPayFees;
 	}
@@ -75,11 +76,17 @@ public class TppsManager {
 		// values.add(DateFormatUtils.getEndTime(endTime));
 		// }
 		// hql.append(" order by w.applyTime desc");
-		return goldqPayClientDAO.getGoldqPayClientByPage(hql.toString(), values, currentPage, 10);
+		return tppsDAO.getGoldqPayClientByPage(hql.toString(), values, currentPage, 5);
 	}
 
-	public void updateGoldqPayClient(GoldqPayClient goldqPayClient) {
-		goldqPayClientDAO.updateGoldqPayClient(goldqPayClient);
-		
+	public void updateGoldqPayClient(Integer exId, String clientId, String secretKey, String name, String redirectUrl,
+			String customDomain) {
+		GoldqPayClient goldqPayClient = tppsDAO.getGoldqPayClientByClientId(clientId);
+		goldqPayClient.setExId(exId);
+		goldqPayClient.setSecretKey(secretKey);
+		goldqPayClient.setName(name);
+		goldqPayClient.setRedirectUrl(redirectUrl);
+		goldqPayClient.setCustomDomain(customDomain);
+		tppsDAO.updateGoldqPayClient(goldqPayClient);
 	}
 }

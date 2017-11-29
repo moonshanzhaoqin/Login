@@ -83,7 +83,7 @@ function getUserInfoByPage(currentPage, userPhone, userName) {
 				if (data.currentPage == 1) {
 					paginator(data.currentPage, data.pageTotal);
 				}
-				$('#total').html(data.total);
+				$('#total').html("共 "+data.total+" 条记录");
 			}
 		},
 		error : function(xhr, err) {

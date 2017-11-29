@@ -66,6 +66,7 @@
 			</table>
 			<!--分页插件-->
 			<div id="paginator"></div>
+			<div id="total" class="pull-right"></div>
 		</div>
 
 	</div>
@@ -225,6 +226,7 @@
 								if (data.currentPage == 1) {
 									paginator(data.currentPage, data.pageTotal);
 								}
+								$('#total').html("共 "+data.total+" 条记录");
 							}
 						},
 						error : function(xhr, err) {
