@@ -82,7 +82,7 @@ function updateFeeTemplate() {
 					console.log("updateFeeTemplate success");
 					$('#feeTemplateModal').modal('hide')
 					alert("修改成功！");
-					initCampaign(1);
+					initFeeTemplate();
 				} else if (data.retCode == "00002") {
 					location.href = loginUrl;
 				} else {
