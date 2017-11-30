@@ -7,6 +7,14 @@
 <%@ include file="common/header.jsp"%>
 <body>
 	<div class="container">
+	<div class="row">
+			<div class="alert alert-info alert-dismissible" role="alert">
+				<button type="button" class="close" data-dismiss="alert">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<strong>注意!</strong> 所有操作将会在10分钟后起效。
+			</div>
+		</div>
 		<div class="row">
 			<table class="table table-bordered table-hover table-striped"
 				id="feeTemplate">
