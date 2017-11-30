@@ -53,24 +53,6 @@ public class ExchangeController {
 
 	public static Logger logger = LogManager.getLogger(ExchangeController.class);
 
-	@ApiOperation(value = "获取当前余额")
-	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/getCurrentBalance")
-	public @ResponseEncryptBody GetCurrentBalanceResponse getCurrentBalance(@PathVariable String token) {
-		// 从Session中获取Id
-		SessionData sessionData = SessionDataHolder.getSessionData();
-		GetCurrentBalanceResponse rep = new GetCurrentBalanceResponse();
-		List<WalletInfo> wallets = exchangeManager.getWalletsByUserId(sessionData.getUserId());
-		if (wallets.isEmpty()) {
-			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-			rep.setMessage(MessageConsts.RET_CODE_FAILUE);
-		} else {
-			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-			rep.setWallets(wallets);
-		}
-		return rep;
-	}
-
 	@ApiOperation(value = "兑换计算")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/exchangeCalculation")
 	public @ResponseEncryptBody ExchangeCalculationResponse exchangeCalculation(@PathVariable String token,
@@ -138,7 +120,7 @@ public class ExchangeController {
 		rep.setExchangeRates(map);
 		return rep;
 	}
-	
+
 	@ApiOperation(value = "获取Goldpay汇率")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/getGoldRate")
 	public @ResponseBody GetExchangeRateResponse getExchangeRate(@PathVariable String token) {
@@ -147,7 +129,7 @@ public class ExchangeController {
 
 		LinkedHashMap<String, Double> result = oandaRatesManager
 				.getExchangeRateDiffLeft4OneRight(ServerConsts.CURRENCY_OF_GOLDPAY);
-		
+
 		result.remove(ServerConsts.CURRENCY_OF_CNY);
 
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
@@ -155,9 +137,9 @@ public class ExchangeController {
 		rep.setBase(ServerConsts.CURRENCY_OF_GOLDPAY);
 		rep.setRateUpdateTime(oandaRatesManager.getExchangeRateUpdateDate());
 		rep.setExchangeRates(result);
-		
+
 		return rep;
-		
+
 	}
 
 	@ApiOperation(value = "兑换确认")

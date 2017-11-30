@@ -21,6 +21,7 @@ import com.yuyutechnology.exchange.dto.FeeResult;
 import com.yuyutechnology.exchange.dto.NotifyWithdrawDTO;
 import com.yuyutechnology.exchange.dto.WithdrawCalResult;
 import com.yuyutechnology.exchange.dto.WithdrawDTO;
+import com.yuyutechnology.exchange.dto.WithdrawDetailDTO;
 import com.yuyutechnology.exchange.enums.FeePurpose;
 import com.yuyutechnology.exchange.mail.MailManager;
 import com.yuyutechnology.exchange.manager.CheckManager;
@@ -307,6 +308,20 @@ public class WithdrawManagerImpl implements WithdrawManager {
 		}
 
 		return list;
+	}
+
+	@Override
+	public WithdrawDetailDTO getWithdrawDetail(String withdrawId) {
+		Withdraw withdraw=withdrawDAO.getWithdraw(withdrawId);
+		WithdrawDetailDTO withdrawDetailDTO=new WithdrawDetailDTO();
+		withdrawDetailDTO.setWithdrawId(withdrawId);
+		withdrawDetailDTO.setApplyTime(withdraw.getApplyTime());
+		withdrawDetailDTO.setFee(withdraw.getFee());
+		withdrawDetailDTO.setGoldpay(withdraw.getGoldpay());
+		withdrawDetailDTO.setHandleResult(withdraw.getHandleResult());
+		withdrawDetailDTO.setQuantity(withdraw.getQuantity());
+		withdrawDetailDTO.setHandleTime(withdraw.getHandleTime());
+		return withdrawDetailDTO;
 	}
 
 }

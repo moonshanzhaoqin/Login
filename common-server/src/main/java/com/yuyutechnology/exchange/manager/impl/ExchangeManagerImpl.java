@@ -63,39 +63,11 @@ public class ExchangeManagerImpl implements ExchangeManager {
 	ConfigManager configManager;
 	@Autowired
 	CrmAlarmManager crmAlarmManager;
-	
+
 	@Autowired
 	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
-	
 
 	public static Logger logger = LogManager.getLogger(ExchangeManagerImpl.class);
-
-	@Override
-	public List<WalletInfo> getWalletsByUserId(int userId) {
-		List<WalletInfo> list = new ArrayList<>();
-		List<Wallet> wallets = walletDAO.getWalletsByUserId(userId);
-		for (Wallet wallet : wallets) {
-			if (wallet.getCurrency().getCurrencyStatus() == ServerConsts.CURRENCY_AVAILABLE
-					|| wallet.getBalance().compareTo(BigDecimal.ZERO) != 0) {
-				list.add(new WalletInfo(wallet.getCurrency().getCurrency(), wallet.getCurrency().getNameEn(),
-						wallet.getCurrency().getNameCn(), wallet.getCurrency().getNameHk(),
-						wallet.getCurrency().getCurrencyStatus(), wallet.getCurrency().getCurrencyUnit(),
-						wallet.getBalance()));
-			}
-		}
-		
-		//add by Niklaus.chi at 2017-10-13
-		for (WalletInfo walletInfo : list) {
-			if(walletInfo.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
-				GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.getGoldpayUserInfo(userId);
-				if(goldpayUser!=null){
-					walletInfo.setBalance(new BigDecimal(goldpayUser.getBalance()+""));
-				}
-			}
-		}
-		
-		return list;
-	}
 
 	@Override
 	public HashMap<String, String> exchangeCalculation(int userId, String currencyOut, String currencyIn,
@@ -149,17 +121,17 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			map.put("thawTime", DateFormatUtils.getIntervalDay(new Date(), 1).getTime() + "");
 			return map;
 		}
-		
-		//add by niklaus.chi at 2017-10-16
-		if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut)){
+
+		// add by niklaus.chi at 2017-10-16
+		if (ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut)) {
 			//
 			GoldpayUserDTO dto = goldpayTrans4MergeManager.getGoldpayUserInfo(userId);
-			if(dto == null || amountOut.compareTo(new BigDecimal(dto.getBalance()+"")) == 1){
+			if (dto == null || amountOut.compareTo(new BigDecimal(dto.getBalance() + "")) == 1) {
 				map.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
 				map.put("msg", "The output amount is greater than the balance");
 				return map;
 			}
-		}else{
+		} else {
 			Wallet wallet = walletDAO.getWalletByUserIdAndCurrency(userId, currencyOut);
 			if (wallet == null) {
 				map.put("retCode", RetCodeConsts.EXCHANGE_WALLET_CAN_NOT_BE_QUERIED);
@@ -173,7 +145,6 @@ public class ExchangeManagerImpl implements ExchangeManager {
 				return map;
 			}
 		}
-		
 
 		// 然后判断换算后金额是否超过最小限额
 		BigDecimal result = oandaRatesManager.getExchangedAmount(currencyOut, amountOut, currencyIn);
@@ -200,77 +171,89 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		return map;
 	}
 
-//	@Override
-//	public HashMap<String, String> exchangeConfirm(int userId, String currencyOut, String currencyIn,
-//			BigDecimal amountOut) {
-//		HashMap<String, String> result = exchangeCalculation(userId, currencyOut, currencyIn, amountOut);
-//		if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
-//			// 用户账户
-//			// 扣款
-//			String exchangeId = exchangeDAO.createExchangeId(ServerConsts.TRANSFER_TYPE_EXCHANGE);
-//
-//			int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut,
-//					new BigDecimal(result.get("out")), "-", ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
-//			if (updateCount == 0) {// 余额不足
-//				result.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
-//				result.put("msg", "Insufficient balance");
-//				return result;
-//			}
-//			// 加款
-//			walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, new BigDecimal(result.get("in")), "+",
-//					ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
-//
-//			// 系统账户
-//			int systemUserId = userDAO.getSystemUser().getUserId();
-//			// 加款
-//			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyOut, new BigDecimal(result.get("out")), "+",
-//					ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
-//			// 扣款
-//			walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new BigDecimal(result.get("in")), "-",
-//					ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
-//
-//			// 添加Exchange记录
-//			Exchange exchange = new Exchange();
-//			exchange.setExchangeId(exchangeId);
-//			exchange.setUserId(userId);
-//			exchange.setCurrencyOut(currencyOut);
-//			exchange.setAmountOut(new BigDecimal(result.get("out")));
-//			exchange.setCurrencyIn(currencyIn);
-//			exchange.setAmountIn(new BigDecimal(result.get("in")));
-//			exchange.setCreateTime(new Date());
-//			exchange.setFinishTime(new Date());
-//			exchange.setExchangeRate(new BigDecimal(result.get("rate")));
-//			exchange.setExchangeFeePerThousand(new BigDecimal(result.get("perThousand")));
-//			exchange.setExchangeFeeAmount(new BigDecimal(result.get("fee")));
-//
-//			exchangeDAO.addExchange(exchange);
-//
-//			// 添加seq记录
-//			// walletSeqDAO.addWalletSeq4Exchange(userId,
-//			// ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId, currencyOut,
-//			// new BigDecimal(result.get("out")), currencyIn, new
-//			// BigDecimal(result.get("in")));
-//			// walletSeqDAO.addWalletSeq4Exchange(systemUserId,
-//			// ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId,
-//			// currencyIn, new BigDecimal(result.get("in")), currencyOut, new
-//			// BigDecimal(result.get("out")));
-//
-//			// 添加累计金额
-//			BigDecimal exchangeResult = oandaRatesManager.getDefaultCurrencyAmount(exchange.getCurrencyOut(),
-//					exchange.getAmountOut());
-//			transferDAO.updateAccumulatedAmount("exchange_" + userId,
-//					exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
-//			// 更改累计次数
-//			transferDAO.updateCumulativeNumofTimes("exchange_" + userId, new BigDecimal("1"));
-//
-//			// 预警
-//			largeExchangeWarn(exchange);
-//
-//		}
-//
-//		return result;
-//	}
-	
+	// @Override
+	// public HashMap<String, String> exchangeConfirm(int userId, String
+	// currencyOut, String currencyIn,
+	// BigDecimal amountOut) {
+	// HashMap<String, String> result = exchangeCalculation(userId, currencyOut,
+	// currencyIn, amountOut);
+	// if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
+	// // 用户账户
+	// // 扣款
+	// String exchangeId =
+	// exchangeDAO.createExchangeId(ServerConsts.TRANSFER_TYPE_EXCHANGE);
+	//
+	// int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId,
+	// currencyOut,
+	// new BigDecimal(result.get("out")), "-", ServerConsts.TRANSFER_TYPE_EXCHANGE,
+	// exchangeId);
+	// if (updateCount == 0) {// 余额不足
+	// result.put("retCode",
+	// RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
+	// result.put("msg", "Insufficient balance");
+	// return result;
+	// }
+	// // 加款
+	// walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, new
+	// BigDecimal(result.get("in")), "+",
+	// ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+	//
+	// // 系统账户
+	// int systemUserId = userDAO.getSystemUser().getUserId();
+	// // 加款
+	// walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyOut, new
+	// BigDecimal(result.get("out")), "+",
+	// ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+	// // 扣款
+	// walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new
+	// BigDecimal(result.get("in")), "-",
+	// ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+	//
+	// // 添加Exchange记录
+	// Exchange exchange = new Exchange();
+	// exchange.setExchangeId(exchangeId);
+	// exchange.setUserId(userId);
+	// exchange.setCurrencyOut(currencyOut);
+	// exchange.setAmountOut(new BigDecimal(result.get("out")));
+	// exchange.setCurrencyIn(currencyIn);
+	// exchange.setAmountIn(new BigDecimal(result.get("in")));
+	// exchange.setCreateTime(new Date());
+	// exchange.setFinishTime(new Date());
+	// exchange.setExchangeRate(new BigDecimal(result.get("rate")));
+	// exchange.setExchangeFeePerThousand(new
+	// BigDecimal(result.get("perThousand")));
+	// exchange.setExchangeFeeAmount(new BigDecimal(result.get("fee")));
+	//
+	// exchangeDAO.addExchange(exchange);
+	//
+	// // 添加seq记录
+	// // walletSeqDAO.addWalletSeq4Exchange(userId,
+	// // ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId, currencyOut,
+	// // new BigDecimal(result.get("out")), currencyIn, new
+	// // BigDecimal(result.get("in")));
+	// // walletSeqDAO.addWalletSeq4Exchange(systemUserId,
+	// // ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId,
+	// // currencyIn, new BigDecimal(result.get("in")), currencyOut, new
+	// // BigDecimal(result.get("out")));
+	//
+	// // 添加累计金额
+	// BigDecimal exchangeResult =
+	// oandaRatesManager.getDefaultCurrencyAmount(exchange.getCurrencyOut(),
+	// exchange.getAmountOut());
+	// transferDAO.updateAccumulatedAmount("exchange_" + userId,
+	// exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
+	// // 更改累计次数
+	// transferDAO.updateCumulativeNumofTimes("exchange_" + userId, new
+	// BigDecimal("1"));
+	//
+	// // 预警
+	// largeExchangeWarn(exchange);
+	//
+	// }
+	//
+	// return result;
+	// }
+
 	@Override
 	public HashMap<String, String> exchangeConfirm(int userId, String currencyOut, String currencyIn,
 			BigDecimal amountOut) {
@@ -280,8 +263,8 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			String exchangeId = exchangeDAO.createExchangeId(ServerConsts.TRANSFER_TYPE_EXCHANGE);
 			// 系统账户
 			int systemUserId = userDAO.getSystemUser().getUserId();
-			
-			if(!ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut)){
+
+			if (!ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut)) {
 				int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut,
 						new BigDecimal(result.get("out")), "-", ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
 				if (updateCount == 0) {// 余额不足
@@ -290,45 +273,51 @@ public class ExchangeManagerImpl implements ExchangeManager {
 					return result;
 				}
 				// 加款
-				walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyOut, new BigDecimal(result.get("out")), "+",
-						ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+				walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyOut, new BigDecimal(result.get("out")),
+						"+", ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
 			}
-			
-			if(!ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyIn)){
+
+			if (!ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyIn)) {
 				walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, new BigDecimal(result.get("in")), "+",
 						ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
 				// 扣款
-				walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new BigDecimal(result.get("in")), "-",
-						ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+				walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new BigDecimal(result.get("in")),
+						"-", ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
 			}
-			
-//			if(!ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyIn) 
-//					&& !ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut)){
-//				
-//				int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId, currencyOut,
-//						new BigDecimal(result.get("out")), "-", ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
-//				if (updateCount == 0) {// 余额不足
-//					result.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
-//					result.put("msg", "Insufficient balance");
-//					return result;
-//				}
-//				walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, new BigDecimal(result.get("in")), "+",
-//						ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
-//
-//				// 加款
-//				walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyOut, new BigDecimal(result.get("out")), "+",
-//						ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
-//				// 扣款
-//				walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new BigDecimal(result.get("in")), "-",
-//						ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
-//			}
-			
+
+			// if(!ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyIn)
+			// && !ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut)){
+			//
+			// int updateCount = walletDAO.updateWalletByUserIdAndCurrency(userId,
+			// currencyOut,
+			// new BigDecimal(result.get("out")), "-", ServerConsts.TRANSFER_TYPE_EXCHANGE,
+			// exchangeId);
+			// if (updateCount == 0) {// 余额不足
+			// result.put("retCode",
+			// RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
+			// result.put("msg", "Insufficient balance");
+			// return result;
+			// }
+			// walletDAO.updateWalletByUserIdAndCurrency(userId, currencyIn, new
+			// BigDecimal(result.get("in")), "+",
+			// ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+			//
+			// // 加款
+			// walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyOut, new
+			// BigDecimal(result.get("out")), "+",
+			// ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+			// // 扣款
+			// walletDAO.updateWalletByUserIdAndCurrency(systemUserId, currencyIn, new
+			// BigDecimal(result.get("in")), "-",
+			// ServerConsts.TRANSFER_TYPE_EXCHANGE, exchangeId);
+			// }
+
 			String goldpayOrderId = null;
-			if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut) || 
-					ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyIn)){
+			if (ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut)
+					|| ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyIn)) {
 				goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
 			}
-			
+
 			// 添加Exchange记录
 			Exchange exchange = new Exchange();
 			exchange.setExchangeId(exchangeId);
@@ -347,7 +336,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			exchangeDAO.addExchange(exchange);
 
 			goldpayTrans4MergeManager.updateWallet4GoldpayExchange(exchangeId, systemUserId);
-			
+
 			// 添加累计金额
 			BigDecimal exchangeResult = oandaRatesManager.getDefaultCurrencyAmount(exchange.getCurrencyOut(),
 					exchange.getAmountOut());
@@ -363,8 +352,6 @@ public class ExchangeManagerImpl implements ExchangeManager {
 
 		return result;
 	}
-	
-	
 
 	@Override
 	public HashMap<String, Object> getExchangeRecordsByPage(int userId, String period, int currentPage, int pageSize) {
