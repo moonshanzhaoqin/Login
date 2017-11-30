@@ -532,6 +532,7 @@ public class TransferManagerImpl implements TransferManager {
 			dto.setTrader((String) obj[6] == null ? " " : (String) obj[6]);
 			dto.setPhoneNum((String) obj[7] + " " + (String) obj[8]);
 			dto.setFee(obj[9] == null ? 0:((BigDecimal) obj[9]).doubleValue());
+			dto.setFee4GP(obj[10] == null ? 0:((BigDecimal) obj[10]).doubleValue());
 
 			dtos.add(dto);
 		}
@@ -593,6 +594,7 @@ public class TransferManagerImpl implements TransferManager {
 		dto.setPaypalCurrency((String) obj[13]);
 		dto.setPaypalExchange((BigDecimal) obj[14]);
 		dto.setTransFee((BigDecimal) obj[15]);
+		dto.setTransFee4GP((BigDecimal) obj[16]);
 		
 
 		if (user.getAreaCode().equals(dto.getTraderAreaCode()) && user.getUserPhone().equals(dto.getTraderPhone())) {
@@ -1003,7 +1005,7 @@ public class TransferManagerImpl implements TransferManager {
 
 		StringBuffer sql = new StringBuffer("select t1.transfer_id,t1.trans_currency,t1.trans_amount, ");
 		sql.append("t3.currency_unit,t2.transfer_type,t2.finish_time, ");
-		sql.append("t1.trader_name,t1.trader_area_code,t1.trader_phone,t1.trans_fee ");
+		sql.append("t1.trader_name,t1.trader_area_code,t1.trader_phone,t1.trans_fee,t2.transfer_fee_gp ");
 
 		StringBuffer sb = new StringBuffer("FROM e_trans_details t1 ");
 		sb.append("LEFT JOIN e_transfer t2 ON t1.transfer_id = t2.transfer_id ");

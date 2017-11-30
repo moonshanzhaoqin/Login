@@ -8,6 +8,7 @@ public class TransferDTO {
 	private String currency;
 	private Double amount;
 	private Double fee;
+	private Double fee4GP;
 	private String currencyUnit;
 	private String comments;
 	private int transferType;
@@ -39,6 +40,12 @@ public class TransferDTO {
 	}
 	public void setFee(Double fee) {
 		this.fee = fee;
+	}
+	public Double getFee4GP() {
+		return fee4GP;
+	}
+	public void setFee4GP(Double fee4gp) {
+		fee4GP = fee4gp;
 	}
 	public String getCurrencyUnit() {
 		return currencyUnit;
