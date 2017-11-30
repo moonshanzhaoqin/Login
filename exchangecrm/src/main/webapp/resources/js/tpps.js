@@ -293,6 +293,10 @@ function addGoldqPayClient() {
 		redirectUrl: form.redirectUrl.value,
 		customDomain : form.customDomain.value
 	}
+	if(data.name==''){
+		alert("商户名称必填")
+		return;
+	}
 	$.ajax({
 		type : "post",
 		url : "/crm/addGoldqPayClient",
