@@ -10,7 +10,7 @@ $(function() {
 		form.feePurpose.value = feeTemplate.feePurpose;
 		form.feeName.value = feeTemplate.feeName;
 		form.exemptAmount.value = feeTemplate.exemptAmount;
-		form.feePercent.value = (feeTemplate.feePercent*100).toFixed(2);
+		form.feePercent.value = (feeTemplate.feePercent * 100).toFixed(2);
 		form.minFee.value = feeTemplate.minFee;
 		form.maxFee.value = feeTemplate.maxFee;
 	})
@@ -35,7 +35,7 @@ function initFeeTemplate() {
 								+ data[i].exemptAmount
 								+ '</td>'
 								+ '<td>'
-								+ (data[i].feePercent*100).toFixed(2)
+								+ (data[i].feePercent * 100).toFixed(2)
 								+ '</td>'
 								+ '<td>'
 								+ data[i].minFee
@@ -60,45 +60,49 @@ function initFeeTemplate() {
 
 function updateFeeTemplate() {
 	form = document.getElementById("updateFeeTemplate");
-	if (parseInt(form.exemptAmount.value) == form.exemptAmount.value
-			&& parseInt(form.minFee.value) == form.minFee.value
-			&& parseInt(form.maxFee.value) == form.maxFee.value) {
-		data = {
-			feeName : form.feeName.value,
-			feePurpose : form.feePurpose.value,
-			exemptAmount : form.exemptAmount.value,
-			feePercent : form.feePercent.value/100,
-			minFee : form.minFee.value,
-			maxFee : form.maxFee.value
-		}
-		$.ajax({
-			type : "post",
-			url : "/crm/updateFeeTemplate",
-			contentType : "application/json; charset=utf-8",
-			dataType : 'json',
-			data : JSON.stringify(data),
-			success : function(data) {
-				if (data.retCode == "00000") {
-					console.log("updateFeeTemplate success");
-					$('#feeTemplateModal').modal('hide')
-					alert("修改成功！");
-					initFeeTemplate();
-				} else if (data.retCode == "00002") {
-					location.href = loginUrl;
-				} else {
-					console.log("changeBonus" + data.message);
-					alert(data.message);
-				}
-			},
-			error : function(xhr, err) {
-				console.log("error");
-				console.log(err);
-				console.log(xhr);
-				alert("未知错误！");
-			},
-			async : false
-		});
-	} else {
-		alert("GDQ需为整数");
+	var  data = {
+		feeName : form.feeName.value,
+		feePurpose : form.feePurpose.value,
+		exemptAmount : form.exemptAmount.value,
+		feePercent : form.feePercent.value / 100,
+		minFee : form.minFee.value,
+		maxFee : form.maxFee.value
 	}
+	if (parseInt(data.exemptAmount) != data.exemptAmount
+			|| parseInt(data.minFee) != data.minFee
+			|| parseInt(data.maxFee) != data.maxFee) {
+		alert("GDQ需为整数");
+		return;
+	}
+	if (parseInt(data.maxFee) < parseInt(data.minFee)) {
+		alert("最少手续费不能小于最大手续费");
+		return;
+	}
+	$.ajax({
+		type : "post",
+		url : "/crm/updateFeeTemplate",
+		contentType : "application/json; charset=utf-8",
+		dataType : 'json',
+		data : JSON.stringify(data),
+		success : function(data) {
+			if (data.retCode == "00000") {
+				console.log("updateFeeTemplate success");
+				$('#feeTemplateModal').modal('hide')
+				alert("修改成功！");
+				initFeeTemplate();
+			} else if (data.retCode == "00002") {
+				location.href = loginUrl;
+			} else {
+				console.log("changeBonus" + data.message);
+				alert(data.message);
+			}
+		},
+		error : function(xhr, err) {
+			console.log("error");
+			console.log(err);
+			console.log(xhr);
+			alert("未知错误！");
+		},
+		async : false
+	});
 }

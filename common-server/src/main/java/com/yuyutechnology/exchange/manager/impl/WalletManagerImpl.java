@@ -14,6 +14,7 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BadAccountDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
+import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
@@ -93,6 +94,33 @@ public class WalletManagerImpl implements WalletManager {
 			}
 		};
 		return map;
+	}
+	
+	@Override
+	public List<WalletInfo> getWalletsByUserId(int userId) {
+		List<WalletInfo> list = new ArrayList<>();
+		List<Wallet> wallets = walletDAO.getWalletsByUserId(userId);
+		for (Wallet wallet : wallets) {
+			if (wallet.getCurrency().getCurrencyStatus() == ServerConsts.CURRENCY_AVAILABLE
+					|| wallet.getBalance().compareTo(BigDecimal.ZERO) != 0) {
+				list.add(new WalletInfo(wallet.getCurrency().getCurrency(), wallet.getCurrency().getNameEn(),
+						wallet.getCurrency().getNameCn(), wallet.getCurrency().getNameHk(),
+						wallet.getCurrency().getCurrencyStatus(), wallet.getCurrency().getCurrencyUnit(),
+						wallet.getBalance()));
+			}
+		}
+		
+		//add by Niklaus.chi at 2017-10-13
+		for (WalletInfo walletInfo : list) {
+			if(walletInfo.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
+				GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.getGoldpayUserInfo(userId);
+				if(goldpayUser!=null){
+					walletInfo.setBalance(new BigDecimal(goldpayUser.getBalance()+""));
+				}
+			}
+		}
+		
+		return list;
 	}
 
 	@Override

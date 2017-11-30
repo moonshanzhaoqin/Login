@@ -241,49 +241,55 @@ function getGoldqPayFee(clientId) {
 
 function updateGoldqPayFee() {
 	form = document.getElementById("updateGoldqPayFee");
-	if (parseInt(form.exemptAmount.value) == form.exemptAmount.value
-			&& parseInt(form.minFee.value) == form.minFee.value
-			&& parseInt(form.maxFee.value) == form.maxFee.value) {
-		data = {
-			feeId : form.feeId.value,
-			clientId : form.clientId.value,
-			payRole : form.payRole.value,
-			exemptAmount : form.exemptAmount.value,
-			feePercent : form.feePercent.value / 100,
-			minFee : form.minFee.value,
-			maxFee : form.maxFee.value,
-			feePayer : form.feePayer.value
-		}
-		$.ajax({
-			type : "post",
-			url : "/crm/updateGoldqPayFee",
-			contentType : "application/json; charset=utf-8",
-			dataType : 'json',
-			data : JSON.stringify(data),
-			success : function(data) {
-				if (data.retCode == "00000") {
-					console.log("updateGoldqPayFee success");
-					$('#updategoldqPayFeeModal').modal('hide')
-					alert("修改成功！");
-					getGoldqPayFee(form.clientId.value);
-				} else if (data.retCode == "00002") {
-					location.href = loginUrl;
-				} else {
-					console.log("updateGoldqPayFee" + data.message);
-					alert(data.message);
-				}
-			},
-			error : function(xhr, err) {
-				console.log("error");
-				console.log(err);
-				console.log(xhr);
-				alert("未知错误！");
-			},
-			async : false
-		});
-	} else {
-		alert("GDQ需为整数");
+
+	var data = {
+		feeId : form.feeId.value,
+		clientId : form.clientId.value,
+		payRole : form.payRole.value,
+		exemptAmount : form.exemptAmount.value,
+		feePercent : form.feePercent.value / 100,
+		minFee : form.minFee.value,
+		maxFee : form.maxFee.value,
+		feePayer : form.feePayer.value
 	}
+
+	if (parseInt(data.exemptAmount) != data.exemptAmount
+			|| parseInt(data.minFee) != data.minFee
+			|| parseInt(data.maxFee) != data.maxFee) {
+		alert("GDQ需为整数");
+		return;
+	}
+	if (parseInt(data.maxFee) < parseInt(data.minFee)) {
+		alert("最少手续费不能小于最大手续费");
+		return;
+	}
+	$.ajax({
+		type : "post",
+		url : "/crm/updateGoldqPayFee",
+		contentType : "application/json; charset=utf-8",
+		dataType : 'json',
+		data : JSON.stringify(data),
+		success : function(data) {
+			if (data.retCode == "00000") {
+				console.log("updateGoldqPayFee success");
+				$('#updategoldqPayFeeModal').modal('hide')
+				alert("修改成功！");
+				getGoldqPayFee(form.clientId.value);
+			} else if (data.retCode == "00002") {
+				location.href = loginUrl;
+			} else {
+				console.log("updateGoldqPayFee" + data.message);
+				alert(data.message);
+			}
+		},
+		error : function(xhr, err) {
+			console.log("error");
+			console.log(err);
+			console.log(xhr);
+			alert("未知错误！");
+		},
+		async : false
+	});
 }
 
 function addGoldqPayClient() {

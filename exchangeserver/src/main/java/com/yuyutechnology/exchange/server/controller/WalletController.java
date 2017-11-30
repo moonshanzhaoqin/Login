@@ -2,6 +2,7 @@ package com.yuyutechnology.exchange.server.controller;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
+import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.manager.WalletManager;
+import com.yuyutechnology.exchange.server.controller.response.GetCurrentBalanceResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetTotalAmontGoldResponse;
 import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 import com.yuyutechnology.exchange.session.SessionData;
@@ -49,6 +52,23 @@ public class WalletController {
 
 		return rep;
 	}
-	//TODO  手续费模板
+
+	@ApiOperation(value = "获取当前余额")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/getCurrentBalance")
+	public @ResponseEncryptBody GetCurrentBalanceResponse getCurrentBalance(@PathVariable String token) {
+		// 从Session中获取Id
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		GetCurrentBalanceResponse rep = new GetCurrentBalanceResponse();
+		List<WalletInfo> wallets = walletManager.getWalletsByUserId(sessionData.getUserId());
+		if (wallets.isEmpty()) {
+			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+			rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+		} else {
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+			rep.setWallets(wallets);
+		}
+		return rep;
+	}
 
 }

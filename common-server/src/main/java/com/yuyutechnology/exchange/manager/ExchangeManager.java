@@ -14,15 +14,6 @@ import com.yuyutechnology.exchange.pojo.Exchange;
 public interface ExchangeManager {
 
 	/**
-	 * @Descrition : 根据UserId获取用户的wallets
-	 * @author : nicholas.chi
-	 * @time : 2016年12月5日 下午4:17:36
-	 * @param userId
-	 * @return
-	 */
-	List<WalletInfo> getWalletsByUserId(int userId);
-
-	/**
 	 * @Descrition : 兑换金额计算
 	 * @author : nicholas.chi
 	 * @time : 2016年12月5日 下午4:17:40

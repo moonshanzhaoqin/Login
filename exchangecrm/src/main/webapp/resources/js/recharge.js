@@ -133,7 +133,7 @@ $(function() {
 											+ data.rows[i][0].transferAmount
 											+ '</td>'
 											+ '<td>'
-											+ data.rows[i][0].transferFee
+											+ data.rows[i][0].transferFee4GP
 											+ '</td>'
 											+ '<td>'
 											+ (!data.rows[i][0].paypalCurrency ? ""
@@ -142,6 +142,9 @@ $(function() {
 											+ '<td>'
 											+ (!data.rows[i][0].paypalExchange ? ""
 													: data.rows[i][0].paypalExchange)
+											+ '</td>'
+											+ '<td>'
+											+ data.rows[i][0].transferFee
 											+ '</td>'
 											+ '<td>'
 											+ (data.rows[i][0].transferType == 5 ? "GoldPay"

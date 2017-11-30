@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.yuyutechnology.exchange.dto.WithdrawCalResult;
 import com.yuyutechnology.exchange.dto.WithdrawDTO;
+import com.yuyutechnology.exchange.dto.WithdrawDetailDTO;
 import com.yuyutechnology.exchange.util.page.PageBean;
 
 public interface WithdrawManager {
@@ -30,5 +31,7 @@ public interface WithdrawManager {
 	PageBean getWithdrawByPage(int currentPage, String userPhone, String userName, String startTime, String endTime);
 
 	List<WithdrawDTO> getWithdrawRecord(Integer userId);
+
+	WithdrawDetailDTO getWithdrawDetail(String withdrawId);
 
 }
