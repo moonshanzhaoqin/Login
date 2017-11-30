@@ -4,6 +4,10 @@ $(function() {
 		form = document.getElementById("addGoldqPayClient");
 		form.areaCode.value = '';
 		form.userPhone.value = '';
+		form.userPayToken.value = '';
+		form.name.value = '';
+		form.redirectUrl.value = '';
+		form.customDomain.value = '';
 	})
 
 	$('#updategoldqPayClientModal').on('show.bs.modal', function(e) {
@@ -97,27 +101,13 @@ function getGoldqPayClientByPage(currentPage) {
 							html += '<tr id="'
 									+ data.rows[i].clientId
 									+ '">'
-									// + '<td>'
-									// + data.rows[i].exId
-									// + '</td>'
 									+ '<td>'
 									+ data.rows[i].clientId
 									+ '</td>'
-									// + '<td>'
-									// + data.rows[i].secretKey
-									// + '</td>'
 									+ '<td>'
 									+ (data.rows[i].name == null ? ""
 											: data.rows[i].name)
 									+ '</td>'
-									// + '<td>'
-									// + (data.rows[i].redirectUrl == null ? ""
-									// : data.rows[i].redirectUrl)
-									// + '</td>'
-									// + '<td>'
-									// + (data.rows[i].customDomain == null ? ""
-									// : data.rows[i].customDomain)
-									// + '</td>'
 									+ '<td>'
 									+ '<a href="" data-toggle="modal" data-target="#updategoldqPayClientModal" data-whatever='
 									+ "'"
@@ -154,7 +144,12 @@ function updateGoldqPayClient() {
 		secretKey : form.secretKey.value,
 		userPayToken : form.userPayToken.value,
 		name : form.name.value,
-		customDomain : form.customDomain.value,
+		redirectUrl: form.redirectUrl.value,
+		customDomain : form.customDomain.value
+	}
+	if(data.name==''){
+		alert("商户名称必填")
+		return;
 	}
 	$.ajax({
 		type : "post",
@@ -297,6 +292,14 @@ function addGoldqPayClient() {
 	data = {
 		areaCode : form.areaCode.value,
 		userPhone : form.userPhone.value,
+		userPayToken : form.userPayToken.value,
+		name : form.name.value,
+		redirectUrl: form.redirectUrl.value,
+		customDomain : form.customDomain.value
+	}
+	if(data.name==''){
+		alert("商户名称必填")
+		return;
 	}
 	$.ajax({
 		type : "post",

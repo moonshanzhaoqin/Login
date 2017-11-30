@@ -57,7 +57,10 @@ public class TppsController {
 			rep.setRetCode(RetCodeConsts.USER_BLOCKED);
 			rep.setMessage("user is blocked");
 		} else {
-			tppsManager.addGoldqPayClient(exId);
+			userManager.updatePayToken(exId,
+					addGoldqPayClientRequset.getUserPayToken());
+			tppsManager.addGoldqPayClient(exId, addGoldqPayClientRequset.getName(),
+					addGoldqPayClientRequset.getRedirectUrl(), addGoldqPayClientRequset.getCustomDomain());
 			crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 					Operation.ADD_GOLDQPAYCLIENT.getOperationName(), addGoldqPayClientRequset.toString()));
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
@@ -90,14 +93,14 @@ public class TppsController {
 
 		userManager.updatePayToken(updateGoldqPayClientRequest.getExId(),
 				updateGoldqPayClientRequest.getUserPayToken());
-		
+
 		tppsManager.updateGoldqPayClient(updateGoldqPayClientRequest.getClientId(),
 				updateGoldqPayClientRequest.getName(), updateGoldqPayClientRequest.getRedirectUrl(),
 				updateGoldqPayClientRequest.getCustomDomain());
-		
+
 		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.UPDATE_GOLDQPAYCLIENT.getOperationName(), updateGoldqPayClientRequest.toString()));
-		
+
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
