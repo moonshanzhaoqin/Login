@@ -144,10 +144,10 @@ function updateGoldqPayClient() {
 		secretKey : form.secretKey.value,
 		userPayToken : form.userPayToken.value,
 		name : form.name.value,
-		redirectUrl: form.redirectUrl.value,
+		redirectUrl : form.redirectUrl.value,
 		customDomain : form.customDomain.value
 	}
-	if(data.name==''){
+	if (data.name == '') {
 		alert("商户名称必填")
 		return;
 	}
@@ -294,10 +294,10 @@ function addGoldqPayClient() {
 		userPhone : form.userPhone.value,
 		userPayToken : form.userPayToken.value,
 		name : form.name.value,
-		redirectUrl: form.redirectUrl.value,
+		redirectUrl : form.redirectUrl.value,
 		customDomain : form.customDomain.value
 	}
-	if(data.name==''){
+	if (data.name == '') {
 		alert("商户名称必填")
 		return;
 	}
@@ -315,6 +315,10 @@ function addGoldqPayClient() {
 				getGoldqPayClientByPage(1);
 			} else if (data.retCode == "00002") {
 				location.href = loginUrl;
+			} else if (data.retCode == "01002") {
+				alert("用户不存在");
+			} else if (data.retCode == "01009") {
+				alert("用户已冻结");
 			} else {
 				console.log("updateGoldqPayFee" + data.message);
 				alert(data.message);
