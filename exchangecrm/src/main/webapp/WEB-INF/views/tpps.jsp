@@ -27,12 +27,8 @@ td {
 				id="goldqPayClient">
 				<thead>
 					<tr>
-						<!-- 						<th>exId</th> -->
 						<th>商户ID</th>
-						<!-- 						<th style="width: 24%">secretKey</th> -->
 						<th>商户名称</th>
-						<!-- 						<th style="width: 20%">redirectUrl</th> -->
-						<!-- 						<th style="width: 12%">customDomain</th> -->
 						<th>操作</th>
 						<th>手续费模板</th>
 					</tr>
@@ -43,10 +39,9 @@ td {
 			<div id="paginator"></div>
 			<div id="total" class="pull-right"></div>
 		</div>
-
-
-		<hr style="background-color: grey; height: 1px;" />
-
+		
+		<hr class="divide" />
+		
 		<div class="row">
 			<table class="table table-bordered table-hover table-striped"
 				id="goldqPayFee">
@@ -91,6 +86,30 @@ td {
 							<label for="userPhone" class="col-sm-4 control-label">手机号</label>
 							<div class="col-sm-5">
 								<input type="text" name="userPhone" class="form-control">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="userPayToken" class="col-sm-4 control-label">支付密钥</label>
+							<div class="col-sm-5">
+								<input type="text" name="userPayToken" class="form-control">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="name" class="col-sm-4 control-label">商户名称</label>
+							<div class="col-sm-5">
+								<input type="text" name="name" class="form-control">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="redirectUrl" class="col-sm-4 control-label">跳转URL</label>
+							<div class="col-sm-5">
+								<input type="text" name="redirectUrl" class="form-control">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="customDomain" class="col-sm-4 control-label">自定义域名</label>
+							<div class="col-sm-5">
+								<input type="text" name="customDomain" class="form-control">
 							</div>
 						</div>
 					</form>
