@@ -77,7 +77,7 @@ td {
 					<form class="form-horizontal" role="form" id="addGoldqPayClient">
 
 						<div class="form-group">
-							<label for="areaCode" class="col-sm-4 control-label">国家码</label>
+							<label for="areaCode" class="col-sm-4 control-label">国家码(e.g.'+86')</label>
 							<div class="col-sm-5">
 								<input type="text" name="areaCode" class="form-control">
 							</div>
@@ -95,7 +95,7 @@ td {
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="name" class="col-sm-4 control-label">商户名称</label>
+							<label for="name" class="col-sm-4 control-label">商户名称(必填)</label>
 							<div class="col-sm-5">
 								<input type="text" name="name" class="form-control">
 							</div>
