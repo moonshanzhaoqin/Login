@@ -24,24 +24,26 @@ public class TppsManager {
 	TppsDAO tppsDAO;
 
 	public void addGoldqPayClient(Integer exId) {
-		
+
 	}
 
 	public void addGoldqPayClient(Integer exId, String name, String redirectUrl, String customDomain) {
 		/* 生成商户ClientId */
-		GoldqPayClient goldqPayClient = new GoldqPayClient(exId, UidUtils.genUid(), UidUtils.genUid(),name,redirectUrl,customDomain);
+		GoldqPayClient goldqPayClient = new GoldqPayClient(exId, UidUtils.genUid(), UidUtils.genUid(), name,
+				redirectUrl, customDomain);
 		tppsDAO.saveGoldqPayClient(goldqPayClient);
 		/* 生成默认手续费模板 */
-		tppsDAO.saveGoldqPayFee(new GoldqPayFee(goldqPayClient.getClientId(), TppsConsts.PAY_ROLE_PAYER,
-				BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, TppsConsts.PAY_ROLE_PAYEE));
-		tppsDAO.saveGoldqPayFee(new GoldqPayFee(goldqPayClient.getClientId(), TppsConsts.PAY_ROLE_PAYEE,
-				BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, TppsConsts.PAY_ROLE_PAYEE));
-		
+		tppsDAO.saveGoldqPayFee(
+				new GoldqPayFee(goldqPayClient.getClientId(), TppsConsts.PAY_ROLE_PAYER, BigDecimal.ZERO,
+						BigDecimal.ZERO, BigDecimal.ONE.negate(), BigDecimal.ONE.negate(), TppsConsts.PAY_ROLE_PAYEE));
+		tppsDAO.saveGoldqPayFee(
+				new GoldqPayFee(goldqPayClient.getClientId(), TppsConsts.PAY_ROLE_PAYEE, BigDecimal.ZERO,
+						BigDecimal.ZERO, BigDecimal.ONE.negate(), BigDecimal.ONE.negate(), TppsConsts.PAY_ROLE_PAYEE));
+
 	}
-	
+
 	public void updateGoldqPayFee(GoldqPayFee goldqPayFee) {
 		tppsDAO.updateGoldqPayFee(goldqPayFee);
-
 	}
 
 	public List<GoldqPayFee> getGoldqPayFeeByClientId(String clientId) {
@@ -49,9 +51,9 @@ public class TppsManager {
 		if (goldqPayFees.isEmpty()) {
 			/* 生成默认手续费模板 */
 			tppsDAO.saveGoldqPayFee(new GoldqPayFee(clientId, TppsConsts.PAY_ROLE_PAYER, BigDecimal.ZERO,
-					BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, TppsConsts.PAY_ROLE_PAYEE));
+					BigDecimal.ZERO, BigDecimal.ONE.negate(), BigDecimal.ONE.negate(), TppsConsts.PAY_ROLE_PAYEE));
 			tppsDAO.saveGoldqPayFee(new GoldqPayFee(clientId, TppsConsts.PAY_ROLE_PAYEE, BigDecimal.ZERO,
-					BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, TppsConsts.PAY_ROLE_PAYEE));
+					BigDecimal.ZERO, BigDecimal.ONE.negate(), BigDecimal.ONE.negate(), TppsConsts.PAY_ROLE_PAYEE));
 			goldqPayFees = tppsDAO.getGoldqPayFeeByClientId(clientId);
 		}
 		return goldqPayFees;
@@ -92,5 +94,4 @@ public class TppsManager {
 		tppsDAO.updateGoldqPayClient(goldqPayClient);
 	}
 
-	
 }

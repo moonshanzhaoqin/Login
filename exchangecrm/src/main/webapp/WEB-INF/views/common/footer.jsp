@@ -90,7 +90,7 @@
 		//时间戳变格式化
 		function timeDate(time) {
 			var date = new Date();
-			date.setTime(time+8*60*60*1000);
+			date.setTime(time + 8 * 60 * 60 * 1000);
 			return date.UTCFormat("yyyy-MM-dd hh:mm:ss");
 		}
 
@@ -100,32 +100,33 @@
 		// 例子：   
 		// (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423   
 		// (new Date()).Format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18   
-		Date.prototype.UTCFormat = function(fmt)   
-		{ //author: meizz   
-		  var o = {   
-		    "M+" : this.getUTCMonth()+1,                 //月份   
-		    "d+" : this.getUTCDate(),                    //日   
-		    "h+" : this.getUTCHours(),                   //小时   
-		    "m+" : this.getUTCMinutes(),                 //分   
-		    "s+" : this.getUTCSeconds(),                 //秒   
-		    "S"  : this.getUTCMilliseconds()             //毫秒   
-		  };   
-		  if(/(y+)/.test(fmt))   
-		    fmt=fmt.replace(RegExp.$1, (this.getUTCFullYear()+"").substr(4 - RegExp.$1.length));   
-		  for(var k in o)   
-		    if(new RegExp("("+ k +")").test(fmt))   
-		  fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));   
-		  return fmt;   
-		}  
-		
-		
+		Date.prototype.UTCFormat = function(fmt) { //author: meizz   
+			var o = {
+				"M+" : this.getUTCMonth() + 1, //月份   
+				"d+" : this.getUTCDate(), //日   
+				"h+" : this.getUTCHours(), //小时   
+				"m+" : this.getUTCMinutes(), //分   
+				"s+" : this.getUTCSeconds(), //秒   
+				"S" : this.getUTCMilliseconds()
+			//毫秒   
+			};
+			if (/(y+)/.test(fmt))
+				fmt = fmt.replace(RegExp.$1, (this.getUTCFullYear() + "")
+						.substr(4 - RegExp.$1.length));
+			for ( var k in o)
+				if (new RegExp("(" + k + ")").test(fmt))
+					fmt = fmt.replace(RegExp.$1,
+							(RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k])
+									.substr(("" + o[k]).length)));
+			return fmt;
+		}
+
 		function onlyNum() {
 			if (!(event.keyCode == 46) && !(event.keyCode == 8)
 					&& !(event.keyCode == 37) && !(event.keyCode == 39))
 				if (!((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105)))
 					event.returnValue = false;
 		}
-		
 	</script>
 </body>
 </html>

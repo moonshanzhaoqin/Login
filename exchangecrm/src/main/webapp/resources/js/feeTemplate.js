@@ -68,13 +68,14 @@ function updateFeeTemplate() {
 		minFee : form.minFee.value,
 		maxFee : form.maxFee.value
 	}
-	if (parseInt(data.exemptAmount) != data.exemptAmount
-			|| parseInt(data.minFee) != data.minFee
+	if ( parseInt(data.exemptAmount) != data.exemptAmount
+			||  parseInt(data.minFee) != data.minFee
 			|| parseInt(data.maxFee) != data.maxFee) {
 		alert("GDQ需为整数");
 		return;
 	}
-	if (parseInt(data.maxFee) < parseInt(data.minFee)) {
+	if (parseInt(data.maxFee) >= 0 && parseInt(data.minFee) >= 0 
+			&& parseInt(data.maxFee) < parseInt(data.minFee)) {
 		alert("最少手续费不能小于最大手续费");
 		return;
 	}

@@ -248,7 +248,7 @@ function paginator(currentPage, pageTotal) {
 			}
 		},
 		onPageClicked : function(event, originalEvent, type, page) {
-			initWithdraw(page);
+			searchWithdraw(page);
 		}
 	}
 	// 分页控件
