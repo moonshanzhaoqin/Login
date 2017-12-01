@@ -91,6 +91,12 @@ public class UserController {
 		rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
 		/* 银行汇款开启状态 */
 		rep.setBankRechage(configManager.getConfigBooleanValue(ConfigKeyEnum.BANK_RECHARGE));
+		/* 提取金本开启状态 */
+		rep.setWithdrawGold(configManager.getConfigBooleanValue(ConfigKeyEnum.WITHDRAW_GOLD));
+		
+		rep.setGoldg2goldpay(configManager.getConfigLongValue(ConfigKeyEnum.GOLDG_TO_GOLDPAY, 1000L).intValue());
+		rep.setGoldbullion2goldg(configManager.getConfigLongValue(ConfigKeyEnum.GOLDBULLION_TO_GOLDG, 187L).intValue());
+		
 		logger.info(MessageConsts.RET_CODE_SUCCESS);
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
