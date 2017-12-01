@@ -52,10 +52,8 @@ public class TppsController {
 				addGoldqPayClientRequset.getUserPhone());
 		if (exId == null) {
 			rep.setRetCode(RetCodeConsts.PHONE_NOT_EXIST);
-			rep.setMessage("phone not exist");
 		} else if (exId == 0) {
 			rep.setRetCode(RetCodeConsts.USER_BLOCKED);
-			rep.setMessage("user is blocked");
 		} else {
 			userManager.updatePayToken(exId,
 					addGoldqPayClientRequset.getUserPayToken());

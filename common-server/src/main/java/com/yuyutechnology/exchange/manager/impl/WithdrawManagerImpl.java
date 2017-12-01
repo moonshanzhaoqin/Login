@@ -246,14 +246,8 @@ public class WithdrawManagerImpl implements WithdrawManager {
 		String goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
 		/* 生成TransId */
 		String transferId = transferDAO.createTransId(type);
-		Transfer transfer = new Transfer();
-		transfer.setTransferId(transferId);
+		Transfer transfer = new Transfer(transferId, from, to, ServerConsts.CURRENCY_OF_GOLDPAY, amount, BigDecimal.ZERO, ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION, type);
 		transfer.setCreateTime(new Date());
-		transfer.setCurrency(ServerConsts.CURRENCY_OF_GOLDPAY);
-		transfer.setTransferAmount(amount);
-		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
-		transfer.setUserFrom(from);
-		transfer.setUserTo(to);
 		transfer.setGoldpayOrderId(goldpayOrderId);
 		transferDAO.addTransfer(transfer);
 
