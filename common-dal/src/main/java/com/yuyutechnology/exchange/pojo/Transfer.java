@@ -149,7 +149,7 @@ public class Transfer implements java.io.Serializable {
 		this.transferAmount = transferAmount;
 	}
 
-	@Column(name = "transfer_fee", nullable = false, precision = 20, scale = 4)
+	@Column(name = "transfer_fee", precision = 20, scale = 4)
 	public BigDecimal getTransferFee() {
 		return transferFee;
 	}

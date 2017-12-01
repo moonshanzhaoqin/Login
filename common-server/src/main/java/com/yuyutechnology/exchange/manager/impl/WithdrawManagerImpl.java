@@ -37,7 +37,6 @@ import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Withdraw;
 import com.yuyutechnology.exchange.util.DateFormatUtils;
-import com.yuyutechnology.exchange.util.ResourceUtils;
 import com.yuyutechnology.exchange.util.page.PageBean;
 
 @Service
