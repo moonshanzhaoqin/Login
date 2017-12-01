@@ -267,24 +267,24 @@ public class WithdrawManagerImpl implements WithdrawManager {
 				endTime);
 
 		List<Object> values = new ArrayList<Object>();
-		StringBuilder hql = new StringBuilder("from Withdraw w,User u where w.userId = u.userId");
+		StringBuilder hql = new StringBuilder("from Withdraw w,User u where w.userId = u.userId ");
 		if (StringUtils.isNotBlank(userPhone)) {
-			hql.append("and u.userPhone = ?");
+			hql.append("and u.userPhone = ? ");
 			values.add(userPhone);
 		}
 		if (StringUtils.isNotBlank(userName)) {
-			hql.append("and u.userName like ?");
+			hql.append("and u.userName like ? ");
 			values.add("%" + userName + "%");
 		}
 		if (StringUtils.isNotBlank(startTime)) {
-			hql.append("and w.applyTime >   ?");
+			hql.append("and w.applyTime > ? ");
 			values.add(DateFormatUtils.getStartTime(startTime));
 		}
 		if (StringUtils.isNotBlank(endTime)) {
-			hql.append("and  w.applyTime < ?");
+			hql.append("and  w.applyTime < ? ");
 			values.add(DateFormatUtils.getEndTime(endTime));
 		}
-		hql.append(" order by w.handleTime, w.applyTime desc");
+		hql.append("order by w.handleTime, w.applyTime desc");
 		return withdrawDAO.getWithdrawByPage(hql.toString(), values, currentPage, 10);
 
 	}
