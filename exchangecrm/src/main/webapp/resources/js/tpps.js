@@ -151,6 +151,10 @@ function updateGoldqPayClient() {
 		alert("商户名称必填")
 		return;
 	}
+	if (data.redirectUrl == '') {
+		alert("跳转URL必填")
+		return;
+	}
 	$.ajax({
 		type : "post",
 		url : "/crm/updateGoldqPayClient",
@@ -248,14 +252,15 @@ function updateGoldqPayFee() {
 		feePayer : form.feePayer.value
 	}
 
-	if (parseInt(data.exemptAmount) != data.exemptAmount
-			|| parseInt(data.minFee) != data.minFee
-			|| parseInt(data.maxFee) != data.maxFee) {
+	if ((parseInt(data.exemptAmount) >= 0 && parseInt(data.exemptAmount) != data.exemptAmount)
+			|| (parseInt(data.minFee) >= 0 && parseInt(data.minFee) != data.minFee)
+			|| (parseInt(data.maxFee) >= 0 && parseInt(data.maxFee) != data.maxFee)) {
 		alert("GDQ需为整数");
 		return;
 	}
-	if (parseInt(data.maxFee) < parseInt(data.minFee)) {
-		alert("最少手续费不能小于最大手续费");
+	if ((parseInt(data.maxFee) >= 0 || parseInt(data.minFee) >= 0 )
+			&& parseInt(data.maxFee) < parseInt(data.minFee)) {
+		alert("最大手续费不能小于最小手续费");
 		return;
 	}
 	$.ajax({
@@ -299,6 +304,10 @@ function addGoldqPayClient() {
 	}
 	if (data.name == '') {
 		alert("商户名称必填")
+		return;
+	}
+	if (data.redirectUrl == '') {
+		alert("跳转URL必填")
 		return;
 	}
 	$.ajax({

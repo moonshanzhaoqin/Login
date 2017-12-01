@@ -4,25 +4,8 @@
 <%@page contentType="text/html; charset=utf-8"%>
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8">
-<title>Exanytime</title>
-<link rel='icon' href='<c:url value="/resources/img/ex_28x28.ico" />'
-	type='image/x-ico' />
-<link rel="stylesheet"
-	href='<c:url value="/resources/bootstrap/css/bootstrap.min.css" />' />
-<link rel="stylesheet"
-	href='<c:url value="/resources/bootstrap/css/bootstrap-table.css" />' />
-<link rel="stylesheet"
-	href='<c:url value="/resources/bootstrap/css/bootstrap-paginator.min.css" />' />
-<link rel="stylesheet"
-	href="<c:url value="/resources/css/common.css" />" />
-
-</head>
-
+<%@ include file="../common/header.jsp"%>
 <body>
-	<%@ include file="../common/header.jsp"%>
-
 	<div class="container">
 		<!-- -->
 		<div class="row">
@@ -197,117 +180,113 @@
 
 
 	<script type="text/javascript">
-			$(function(){
-				var currentPage = parseInt('${model.pageBean.currentPage}');
-				var totalPage = parseInt('${model.pageBean.pageTotal}');
-				var pageSize = parseInt('${model.pageBean.pageSize}');
-				
-				var options = {
-			        currentPage: currentPage,
-			        totalPages: totalPage,
-			        size:'normal',
-			        alignment:'right',
-			        numberOfPages:pageSize,
-			        itemTexts: function (type, page, current) {
-			            switch (type) {
-			            case "first":
-			                return "<<";
-			            case "prev":
-			                return "<";
+		$(function() {
+			var currentPage = parseInt('${model.pageBean.currentPage}');
+			var totalPage = parseInt('${model.pageBean.pageTotal}');
+			var pageSize = parseInt('${model.pageBean.pageSize}');
+
+			var options = {
+				currentPage : currentPage,
+				totalPages : totalPage,
+				size : 'normal',
+				alignment : 'right',
+				numberOfPages : pageSize,
+				itemTexts : function(type, page, current) {
+					switch (type) {
+					case "first":
+						return "<<";
+					case "prev":
+						return "<";
 			            case "next":
 			                return ">";
-			            case "last":
-			                return ">>";
-			            case "page":
-			                return ""+page;
-			            }
-			        },
-			        itemContainerClass: function (type, page, current) {
-			            return (page === current) ? "active" : "pointer-cursor";
-			        },
-			        onPageClicked:function(event, originalEvent, type,page){
+					case "last":
+						return ">>";
+					case "page":
+						return "" + page;
+					}
+				},
+				itemContainerClass : function(type, page, current) {
+					return (page === current) ? "active" : "pointer-cursor";
+				},
+				onPageClicked : function(event, originalEvent, type, page) {
 
-						if(!test()){
-							alert("输入金额必须为数字，请重填！");
-							return ;
-						}
-			        	
-			        	 $(".currentPage").val(page);
-			        	 $("#searchForm").submit();
-			        }
-			    }
-				//分页控件
-				$('#paginator').bootstrapPaginator(options);	
-			});
-			
-			function userFreeze(obj,operate){
-				
-				if(operate == 0 ){
-					var r = confirm("确定冻结该用户么？");
-					if(r != true){
-						return ;
+					if (!test()) {
+						alert("输入金额必须为数字，请重填！");
+						return;
 					}
-				}else{
-					var r = confirm("确定要解除冻结该用户么？");
-					if(r != true){
-						return ;
-					}
+
+					$(".currentPage").val(page);
+					$("#searchForm").submit();
 				}
-
-				var tds=$(obj).parent().parent();
-				var userId = tds.attr('id');
-				
-				var userFreezeUrl = "<c:url value='/account/userFreeze' />";
-				location.href=userFreezeUrl+'?userId='+userId+'&operate='+operate;
 			}
-			
-			$("#updateImmediately").click(function(){
-// 				alert("点击立即更新按钮");
-				$("#updateImmediately").attr("disabled", true); 
-				$("#updateImmediately").text("更新中...");
-				
-				location.href="<c:url value='/account/updateImmediately' />";
-				
-			});
-			
-			
-			$("#searchBtn").click(function(){
-				
-				if(!test()){
-					alert("输入金额必须为数字，请重填！");
-					return ;
-				}
+			//分页控件
+			$('#paginator').bootstrapPaginator(options);
+		});
 
-				$("#currentPage").val(1);
-				 $("#searchForm").submit();
-			})
-			
-			
-			function test(){
-				
-				var lowerLimit = $("#lowerLimit").val();
-				if( !isEmpty(lowerLimit) && !$.isNumeric(lowerLimit)){
-					return false;
+		function userFreeze(obj, operate) {
+
+			if (operate == 0) {
+				var r = confirm("确定冻结该用户么？");
+				if (r != true) {
+					return;
 				}
-				
-				var upperLimit = $("#upperLimit").val();
-				if(!isEmpty(upperLimit) && !$.isNumeric(upperLimit)){
-					return false;
+			} else {
+				var r = confirm("确定要解除冻结该用户么？");
+				if (r != true) {
+					return;
 				}
-				
+			}
+
+			var tds = $(obj).parent().parent();
+			var userId = tds.attr('id');
+
+			var userFreezeUrl = "<c:url value='/account/userFreeze' />";
+			location.href = userFreezeUrl + '?userId=' + userId + '&operate='
+					+ operate;
+		}
+
+		$("#updateImmediately").click(function() {
+			// 				alert("点击立即更新按钮");
+			$("#updateImmediately").attr("disabled", true);
+			$("#updateImmediately").text("更新中...");
+
+			location.href = "<c:url value='/account/updateImmediately' />";
+
+		});
+
+		$("#searchBtn").click(function() {
+
+			if (!test()) {
+				alert("输入金额必须为数字，请重填！");
+				return;
+			}
+
+			$("#currentPage").val(1);
+			$("#searchForm").submit();
+		})
+
+		function test() {
+
+			var lowerLimit = $("#lowerLimit").val();
+			if (!isEmpty(lowerLimit) && !$.isNumeric(lowerLimit)) {
+				return false;
+			}
+
+			var upperLimit = $("#upperLimit").val();
+			if (!isEmpty(upperLimit) && !$.isNumeric(upperLimit)) {
+				return false;
+			}
+
+			return true;
+
+		}
+
+		function isEmpty(obj) {
+			if ((obj == undefined || obj == null) || obj == '') {
 				return true;
-				
 			}
-			
-			
-			function isEmpty(obj){
-				if((obj == undefined || obj == null) ||obj == ''){
-					return true;
-				}
-			}
-			
-			
-		</script>
+		}
+	</script>
 	<%@ include file="../common/footer.jsp"%>
 </body>
 </html>

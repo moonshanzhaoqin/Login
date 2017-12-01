@@ -208,14 +208,14 @@ public class WithdrawManagerImpl implements WithdrawManager {
 			if (withdraw.getGoldTransferB() == null) {
 				/* 把Goldpay转到回收账户 */
 				String goldTransferB = transfer4Withdraw(frozenUser.getUserId(), recoveryUser.getUserId(),
-						withdraw.getGoldpay(), ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND);
+						withdraw.getGoldpay(), ServerConsts.TRANSFER_TYPE_IN_RECOVERY);
 				withdraw.setGoldTransferB(goldTransferB);
 				logger.info("transfer goldpay from frozenUser to recoveryUser, tansferId : {} ", goldTransferB);
 			}
 			if (withdraw.getFee().compareTo(BigDecimal.ZERO) > 0 && withdraw.getFeeTransferB() == null) {
 				/* 把手续费转到手续费账户 */
 				String feeTransferB = transfer4Withdraw(frozenUser.getUserId(), feeUser.getUserId(), withdraw.getFee(),
-						ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND);
+						ServerConsts.TRANSFER_TYPE_IN_FEE);
 				withdraw.setFeeTransferB(feeTransferB);
 				logger.info("transfer goldpay from frozenUser to feeUser, tansferId : {} ", feeTransferB);
 			}
@@ -284,7 +284,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 			hql.append("and  w.applyTime < ?");
 			values.add(DateFormatUtils.getEndTime(endTime));
 		}
-		hql.append(" order by w.applyTime desc");
+		hql.append(" order by w.handleTime, w.applyTime desc");
 		return withdrawDAO.getWithdrawByPage(hql.toString(), values, currentPage, 10);
 
 	}

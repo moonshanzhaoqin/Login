@@ -82,7 +82,14 @@ public class PayPalTransController {
 
 		logger.info("Maximum amount of single transaction : {}", max);
 		logger.info("The minimum amount of a single transaction : {}", mini);
-
+		
+		//金条转goldpay silent
+		BigDecimal goldpayAmount = reqMsg.getAmount()
+				.multiply(new BigDecimal(configManager.getConfigStringValue(ConfigKeyEnum.GOLDBULLION_TO_GOLDG, "187")))
+				.multiply(new BigDecimal(configManager.getConfigStringValue(ConfigKeyEnum.GOLDG_TO_GOLDPAY, "10000")));
+		logger.info("goldpayAmount is {}", goldpayAmount);
+		reqMsg.setAmount(goldpayAmount);
+		
 		// 判断条件.币种合法，GDQ数量为整数且大于
 		if (reqMsg.getAmount() == null
 				|| ((reqMsg.getAmount().doubleValue() < mini || reqMsg.getAmount().doubleValue() > max)
@@ -93,6 +100,8 @@ public class PayPalTransController {
 			rep.setOpts(new String[] { mini.toString(), max.toString() });
 			return rep;
 		}
+		
+		
 
 		HashMap<String, Object> result = payPalTransManager.paypalTransInit(sessionData.getUserId(),
 				reqMsg.getCurrency(), reqMsg.getAmount());
