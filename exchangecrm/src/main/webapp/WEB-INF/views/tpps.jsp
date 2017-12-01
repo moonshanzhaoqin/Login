@@ -225,7 +225,7 @@ td {
 						</div>
 
 						<div class="form-group">
-							<label for="payRole" class="col-sm-4 control-label">转账类型</label>
+							<label for="payRole" class="col-sm-4 control-label">模板类型</label>
 							<div class="col-sm-5">
 								<select name="payRole" class="form-control" disabled="disabled">
 									<option value=1>转入</option>
