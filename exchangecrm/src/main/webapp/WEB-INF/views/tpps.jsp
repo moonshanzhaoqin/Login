@@ -102,7 +102,7 @@ td {
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="redirectUrl" class="col-sm-4 control-label">跳转URL</label>
+							<label for="redirectUrl" class="col-sm-4 control-label">跳转URL(必填)</label>
 							<div class="col-sm-5">
 								<input type="text" name="redirectUrl" class="form-control">
 							</div>
@@ -178,13 +178,13 @@ td {
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="name" class="col-sm-3 control-label">商户名称</label>
+							<label for="name" class="col-sm-3 control-label">商户名称(必填)</label>
 							<div class="col-sm-8">
 								<input type="text" name="name" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="redirectUrl" class="col-sm-3 control-label">跳转URL</label>
+							<label for="redirectUrl" class="col-sm-3 control-label">跳转URL(必填)</label>
 							<div class="col-sm-8">
 								<input type="text" name="redirectUrl" class="form-control">
 							</div>

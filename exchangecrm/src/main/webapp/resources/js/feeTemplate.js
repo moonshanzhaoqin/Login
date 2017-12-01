@@ -76,7 +76,7 @@ function updateFeeTemplate() {
 	}
 	if (parseInt(data.maxFee) >= 0 && parseInt(data.minFee) >= 0 
 			&& parseInt(data.maxFee) < parseInt(data.minFee)) {
-		alert("最少手续费不能小于最大手续费");
+		alert("最大手续费不能小于最小手续费");
 		return;
 	}
 	$.ajax({

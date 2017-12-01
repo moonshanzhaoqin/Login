@@ -181,6 +181,7 @@ function finishWithdraw(withdrawId) {
 				location.href = loginUrl;
 			} else if (data.retCode == "00000") {
 				console.log("success");
+				alert("操作成功");
 				searchWithdraw(page);
 			} else {
 				alert("操作失败");
@@ -210,6 +211,7 @@ function cancelWithdraw(withdrawId) {
 				location.href = loginUrl;
 			} else if (data.retCode == "00000") {
 				console.log("success");
+				alert("操作成功");
 				searchWithdraw(page);
 			} else {
 				alert("操作失败");
