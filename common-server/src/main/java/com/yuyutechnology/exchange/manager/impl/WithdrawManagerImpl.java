@@ -191,7 +191,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 			logger.info("*** goldpayTrans4cancel success ***");
 			/* 操作记录 */
 			withdraw.setHandleResult(ServerConsts.WITHDRAW_RESULT_CANCEL);
-			withdraw.setHandler(adminName);
+			withdraw.setHandleAdmin(adminName);
 			withdraw.setHandleTime(new Date());
 			withdrawDAO.updateWithdraw(withdraw);
 		}
@@ -236,7 +236,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 			logger.info("*** goldpayTrans4finish success ***");
 			/* 操作记录 */
 			withdraw.setHandleResult(ServerConsts.WITHDRAW_RESULT_FINISHT);
-			withdraw.setHandler(adminName);
+			withdraw.setHandleAdmin(adminName);
 			withdraw.setHandleTime(new Date());
 			withdrawDAO.updateWithdraw(withdraw);
 		}

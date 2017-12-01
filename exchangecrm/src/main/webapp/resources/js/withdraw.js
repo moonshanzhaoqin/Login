@@ -103,8 +103,8 @@ function getWithdrawByPage(currentPage, userPhone, userName) {
 									data.rows[i][0].withdrawId)
 							+ '</td>'
 							+ '<td>'
-							+ (data.rows[i][0].handler == null ? ""
-									: data.rows[i][0].handler)
+							+ (data.rows[i][0].handleAdmin == null ? ""
+									: data.rows[i][0].handleAdmin)
 							+ '</td>'
 							+ '<td>'
 							+ (data.rows[i][0].handleTime == null ? ""

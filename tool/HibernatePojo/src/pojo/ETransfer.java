@@ -1,5 +1,5 @@
 package pojo;
-// Generated Nov 29, 2017 5:23:39 PM by Hibernate Tools 5.2.6.Final
+// Generated Dec 1, 2017 5:32:27 PM by Hibernate Tools 5.2.6.Final
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -27,6 +27,7 @@ public class ETransfer implements java.io.Serializable {
 	private String currency;
 	private BigDecimal transferAmount;
 	private BigDecimal transferFee;
+	private BigDecimal transferFeeGp;
 	private String transferComment;
 	private Date createTime;
 	private Date finishTime;
@@ -44,21 +45,21 @@ public class ETransfer implements java.io.Serializable {
 	}
 
 	public ETransfer(String transferId, int userFrom, int userTo, String currency, BigDecimal transferAmount,
-			BigDecimal transferFee, int transferStatus, int transferType) {
+			int transferStatus, int transferType) {
 		this.transferId = transferId;
 		this.userFrom = userFrom;
 		this.userTo = userTo;
 		this.currency = currency;
 		this.transferAmount = transferAmount;
-		this.transferFee = transferFee;
 		this.transferStatus = transferStatus;
 		this.transferType = transferType;
 	}
 
 	public ETransfer(String transferId, int userFrom, int userTo, String areaCode, String phone, String currency,
-			BigDecimal transferAmount, BigDecimal transferFee, String transferComment, Date createTime, Date finishTime,
-			int transferStatus, int transferType, Integer noticeId, String goldpayResult, String goldpayName,
-			String goldpayAcount, String paypalCurrency, BigDecimal paypalExchange, String goldpayOrderId) {
+			BigDecimal transferAmount, BigDecimal transferFee, BigDecimal transferFeeGp, String transferComment,
+			Date createTime, Date finishTime, int transferStatus, int transferType, Integer noticeId,
+			String goldpayResult, String goldpayName, String goldpayAcount, String paypalCurrency,
+			BigDecimal paypalExchange, String goldpayOrderId) {
 		this.transferId = transferId;
 		this.userFrom = userFrom;
 		this.userTo = userTo;
@@ -67,6 +68,7 @@ public class ETransfer implements java.io.Serializable {
 		this.currency = currency;
 		this.transferAmount = transferAmount;
 		this.transferFee = transferFee;
+		this.transferFeeGp = transferFeeGp;
 		this.transferComment = transferComment;
 		this.createTime = createTime;
 		this.finishTime = finishTime;
@@ -156,13 +158,22 @@ public class ETransfer implements java.io.Serializable {
 		this.transferAmount = transferAmount;
 	}
 
-	@Column(name = "transfer_fee", nullable = false, precision = 20, scale = 4)
+	@Column(name = "transfer_fee", precision = 20, scale = 4)
 	public BigDecimal getTransferFee() {
 		return this.transferFee;
 	}
 
 	public void setTransferFee(BigDecimal transferFee) {
 		this.transferFee = transferFee;
+	}
+
+	@Column(name = "transfer_fee_gp", precision = 20, scale = 4)
+	public BigDecimal getTransferFeeGp() {
+		return this.transferFeeGp;
+	}
+
+	public void setTransferFeeGp(BigDecimal transferFeeGp) {
+		this.transferFeeGp = transferFeeGp;
 	}
 
 	@Column(name = "transfer_comment")

@@ -1,5 +1,5 @@
 package pojo;
-// Generated Nov 29, 2017 5:23:39 PM by Hibernate Tools 5.2.6.Final
+// Generated Dec 1, 2017 5:32:27 PM by Hibernate Tools 5.2.6.Final
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -25,7 +25,7 @@ public class EWithdraw implements java.io.Serializable {
 	private BigDecimal fee;
 	private Date applyTime;
 	private byte handleResult;
-	private String handler;
+	private String handleAdmin;
 	private Date handleTime;
 	private String goldTransferA;
 	private String feeTransferA;
@@ -48,7 +48,7 @@ public class EWithdraw implements java.io.Serializable {
 	}
 
 	public EWithdraw(String withdrawId, int userId, String userEmail, int quantity, BigDecimal goldpay, BigDecimal fee,
-			Date applyTime, byte handleResult, String handler, Date handleTime, String goldTransferA,
+			Date applyTime, byte handleResult, String handleAdmin, Date handleTime, String goldTransferA,
 			String feeTransferA, String goldTransferB, String feeTransferB) {
 		this.withdrawId = withdrawId;
 		this.userId = userId;
@@ -58,7 +58,7 @@ public class EWithdraw implements java.io.Serializable {
 		this.fee = fee;
 		this.applyTime = applyTime;
 		this.handleResult = handleResult;
-		this.handler = handler;
+		this.handleAdmin = handleAdmin;
 		this.handleTime = handleTime;
 		this.goldTransferA = goldTransferA;
 		this.feeTransferA = feeTransferA;
@@ -141,13 +141,13 @@ public class EWithdraw implements java.io.Serializable {
 		this.handleResult = handleResult;
 	}
 
-	@Column(name = "handler")
-	public String getHandler() {
-		return this.handler;
+	@Column(name = "handle_admin")
+	public String getHandleAdmin() {
+		return this.handleAdmin;
 	}
 
-	public void setHandler(String handler) {
-		this.handler = handler;
+	public void setHandleAdmin(String handleAdmin) {
+		this.handleAdmin = handleAdmin;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)

@@ -54,10 +54,14 @@ INSERT INTO `e_config` SET `config_key`='goldg_to_goldpay',`config_value`='10000
 DELETE FROM `e_config` WHERE `config_key`='goldpay_system_account';
 INSERT INTO `e_config` SET `config_key`='withdraw_gold',`config_value`='true',`config_name`='开启提取金条',`config_order`=0,`config_canChange`=0;
 
-
+--2017/12/1 suzan
 ALTER TABLE `e_fee_template`
   CHANGE COLUMN `min_fee` `min_fee` numeric(20,0) NOT NULL DEFAULT -1 COMMENT '最小手续费(负数无效)';
 ALTER TABLE `e_fee_template`
   CHANGE COLUMN `max_fee` `max_fee` numeric(20,0) NOT NULL DEFAULT -1 COMMENT '最大手续费(负数无效)';
+
+--2017/12/1 suzan  
+ALTER TABLE `e_withdraw`
+  CHANGE COLUMN `handler` `handle_admin` varchar(255) NULL DEFAULT NULL COMMENT '处理者';
 
 
