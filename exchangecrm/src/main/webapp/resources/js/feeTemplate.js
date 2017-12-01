@@ -44,7 +44,7 @@ function initFeeTemplate() {
 								+ data[i].maxFee
 								+ '</td>'
 								+ '<td>'
-								+ '<a href="" data-toggle="modal" data-target="#feeTemplateModal" data-whatever='
+								+ '<a href="" data-backdrop="static" data-toggle="modal" data-target="#feeTemplateModal" data-whatever='
 								+ "'" + JSON.stringify(data[i]) + "'"
 								+ '>修改</a>' + '</td>' + '</tr>'
 					}

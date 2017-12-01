@@ -109,7 +109,7 @@ function getGoldqPayClientByPage(currentPage) {
 											: data.rows[i].name)
 									+ '</td>'
 									+ '<td>'
-									+ '<a href="" data-toggle="modal" data-target="#updategoldqPayClientModal" data-whatever='
+									+ '<a href="" data-backdrop="static" data-toggle="modal" data-target="#updategoldqPayClientModal" data-whatever='
 									+ "'"
 									+ JSON.stringify(data.rows[i])
 									+ "'"
@@ -220,7 +220,7 @@ function getGoldqPayFee(clientId) {
 								+ showFeePayer(data[i].feePayer)
 								+ '</td>'
 								+ '<td>'
-								+ '<a href="" data-toggle="modal" data-target="#updategoldqPayFeeModal" data-whatever='
+								+ '<a href="" data-backdrop="static" data-toggle="modal" data-target="#updategoldqPayFeeModal" data-whatever='
 								+ "'" + JSON.stringify(data[i]) + "'"
 								+ '>修改</a>' + '</td>' + '</tr>'
 					}

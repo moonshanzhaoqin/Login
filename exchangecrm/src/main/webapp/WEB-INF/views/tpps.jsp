@@ -17,7 +17,7 @@ td {
 		<div class="row ">
 			<ul class="formbar pull-right">
 				<li>
-					<button type="button" class="btn btn-primary " data-toggle="modal"
+					<button type="button" class="btn btn-primary " data-backdrop="static" data-toggle="modal"
 						data-target="#addGoldqPayClientModal">新增商户</button>
 				</li>
 			</ul>

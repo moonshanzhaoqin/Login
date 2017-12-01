@@ -233,11 +233,11 @@
                                             + transferTypeName(data[i].transferType)
                                             + '</td>'
                                             + '<td>'
-                                            + ((data[i].transferType == "1") ? ('<a href="" data-toggle="modal" data-target="#exchange" onclick= "getExchange(\''
+                                            + ((data[i].transferType == "1") ? ('<a href="" data-backdrop="static" data-toggle="modal" data-target="#exchange" onclick= "getExchange(\''
                                                     + data[i].transactionId
                                                     + '\')">    '
                                                     + data[i].transactionId + '</a>')
-                                                    : ('<a href="" data-toggle="modal" data-target="#transfer" onclick= "getTransfer(\''
+                                                    : ('<a href="" data-backdrop="static" data-toggle="modal" data-target="#transfer" onclick= "getTransfer(\''
                                                             + data[i].transactionId
                                                             + '\')">    '
                                                             + data[i].transactionId + '</a>'))

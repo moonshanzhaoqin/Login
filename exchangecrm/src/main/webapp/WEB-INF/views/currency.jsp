@@ -234,7 +234,7 @@
 										+ '<td>'
 										+ data[i].currencyOrder
 										+ '</td>'
-										+ '<td><a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" data-whatever='
+										+ '<td><a href="javascript:void(0)" data-backdrop="static" data-toggle="modal" data-target="#myModal" data-whatever='
 										+ "'"
 										+ JSON.stringify(data[i])
 										+ "'"

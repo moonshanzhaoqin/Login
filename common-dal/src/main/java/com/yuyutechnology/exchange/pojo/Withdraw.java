@@ -13,6 +13,11 @@ import javax.persistence.TemporalType;
 @Table(name = "e_withdraw")
 public class Withdraw implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3456579337813846703L;
+	
 	private String withdrawId;
 	private int userId;
 	private String userEmail;
