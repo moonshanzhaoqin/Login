@@ -47,3 +47,9 @@ INSERT INTO `e_fee_template` VALUES ('paypal_purchase_goldbullion_ordinary',100,
 
 ALTER TABLE `e_transfer`
   ADD COLUMN `transfer_fee_gp` decimal(20,4) NULL DEFAULT 0 COMMENT '手续费' AFTER `transfer_fee`;
+
+ --2017/12/1 suzan
+INSERT INTO `e_config` SET `config_key`='goldbullion_to_goldg',`config_value`='187',`config_name`='1根金条对应的黄金克数',`config_order`=0,`config_canChange`=0;
+INSERT INTO `e_config` SET `config_key`='gold_to_goldpay',`config_value`='10000',`config_name`='1g黄金对应的Goldpay数量',`config_order`=0,`config_canChange`=0;
+DELETE FROM `e_config` WHERE `config_key`='goldpay_system_account';
+INSERT INTO `e_config` SET `config_key`='withdraw_able',`config_value`='true',`config_name`='开启提取金条',`config_order`=0,`config_canChange`=0;

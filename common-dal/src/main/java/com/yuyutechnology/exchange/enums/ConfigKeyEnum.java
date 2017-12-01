@@ -3,6 +3,8 @@
  */
 package com.yuyutechnology.exchange.enums;
 
+import com.yuyutechnology.exchange.util.ResourceUtils;
+
 /**
  * @author silent.sun
  *
@@ -109,7 +111,6 @@ public enum ConfigKeyEnum {
 	 * PayPal单笔交易金额上限
 	 */
 	PAYPALMAXLIMITEACHTIME("paypal_max_limit_each_time"),
-
 	/**
 	 * PayPal单笔交易金额下限
 	 */
@@ -130,13 +131,24 @@ public enum ConfigKeyEnum {
 	 * 领取有效时间（H）
 	 */
 	COLLECT_ACTIVE_TIME("collect_active_time"),
-	
-	GOLDPAY_SYSTEM_ACCOUNT("goldpay_system_account"),
-	
 	/**
 	 * 注册预警人数
 	 */
-	REGISTRATION_WARN("registration_warn");
+	REGISTRATION_WARN("registration_warn"),
+	/**
+	 * 1根金条对应的黄金克数
+	 */
+	GOLDBULLION_TO_GOLDG("goldbullion_to_goldg"),
+	/**
+	 * 1g黄金对应的Goldpay数量
+	 */
+	GOLDG_TO_GOLDPAY("goldg_to_goldpay"),
+	/**
+	 * 开启提取金条
+	 */
+	WITHDRAW_GOLD("withdraw_gold");
+	
+
 	private String key;
 
 	private ConfigKeyEnum(String key) {

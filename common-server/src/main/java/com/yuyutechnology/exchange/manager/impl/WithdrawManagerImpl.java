@@ -22,9 +22,11 @@ import com.yuyutechnology.exchange.dto.NotifyWithdrawDTO;
 import com.yuyutechnology.exchange.dto.WithdrawCalResult;
 import com.yuyutechnology.exchange.dto.WithdrawDTO;
 import com.yuyutechnology.exchange.dto.WithdrawDetailDTO;
+import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.enums.FeePurpose;
 import com.yuyutechnology.exchange.mail.MailManager;
 import com.yuyutechnology.exchange.manager.CheckManager;
+import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
 import com.yuyutechnology.exchange.manager.FeeManager;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
@@ -41,10 +43,6 @@ import com.yuyutechnology.exchange.util.page.PageBean;
 @Service
 public class WithdrawManagerImpl implements WithdrawManager {
 	private static Logger logger = LogManager.getLogger(WithdrawManagerImpl.class);
-
-	private static BigDecimal gold2goldpay = new BigDecimal("10000");
-	private static BigDecimal goldbullion2gold = new BigDecimal(
-			ResourceUtils.getBundleValue4String("gold.bullion.g", "187"));
 
 	@Autowired
 	FeeManager feeManager;
@@ -66,13 +64,17 @@ public class WithdrawManagerImpl implements WithdrawManager {
 	CrmAlarmManager crmAlarmManager;
 	@Autowired
 	CheckManager checkManager;
+	@Autowired
+	ConfigManager configManager;
 
 	@Override
 	public WithdrawCalResult withdrawCalculate(Integer userId, int goldBullion) {
 		logger.info("calculate {} gold bullion --> ", goldBullion);
 		WithdrawCalResult result = new WithdrawCalResult();
 
-		BigDecimal goldpayAmount = goldbullion2gold.multiply(gold2goldpay).multiply(new BigDecimal(goldBullion));
+		BigDecimal goldpayAmount = new BigDecimal(goldBullion)
+				.multiply(new BigDecimal(configManager.getConfigStringValue(ConfigKeyEnum.GOLDBULLION_TO_GOLDG, "187")))
+				.multiply(new BigDecimal(configManager.getConfigStringValue(ConfigKeyEnum.GOLDG_TO_GOLDPAY, "10000")));
 		logger.info("goldpayAmount is {}", goldpayAmount);
 
 		FeeResult feeResult;
@@ -246,7 +248,8 @@ public class WithdrawManagerImpl implements WithdrawManager {
 		String goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
 		/* 生成TransId */
 		String transferId = transferDAO.createTransId(type);
-		Transfer transfer = new Transfer(transferId, from, to, ServerConsts.CURRENCY_OF_GOLDPAY, amount, BigDecimal.ZERO, ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION, type);
+		Transfer transfer = new Transfer(transferId, from, to, ServerConsts.CURRENCY_OF_GOLDPAY, amount,
+				BigDecimal.ZERO, ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION, type);
 		transfer.setCreateTime(new Date());
 		transfer.setGoldpayOrderId(goldpayOrderId);
 		transferDAO.addTransfer(transfer);
@@ -306,8 +309,8 @@ public class WithdrawManagerImpl implements WithdrawManager {
 
 	@Override
 	public WithdrawDetailDTO getWithdrawDetail(String withdrawId) {
-		Withdraw withdraw=withdrawDAO.getWithdraw(withdrawId);
-		WithdrawDetailDTO withdrawDetailDTO=new WithdrawDetailDTO();
+		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
+		WithdrawDetailDTO withdrawDetailDTO = new WithdrawDetailDTO();
 		withdrawDetailDTO.setWithdrawId(withdrawId);
 		withdrawDetailDTO.setApplyTime(withdraw.getApplyTime());
 		withdrawDetailDTO.setFee(withdraw.getFee());
