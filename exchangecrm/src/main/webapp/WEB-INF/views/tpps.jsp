@@ -218,14 +218,14 @@ td {
 					<form class="form-horizontal" role="form" id="updateGoldqPayFee">
 						<input type="hidden" name="feeId" class="form-control">
 						<div class="form-group">
-							<label for="clientId" class="col-sm-4 control-label">clientId</label>
+							<label for="clientId" class="col-sm-4 control-label">商户ID</label>
 							<div class="col-sm-5">
 								<input type="text" name="clientId" class="form-control" readonly>
 							</div>
 						</div>
 
 						<div class="form-group">
-							<label for="payRole" class="col-sm-4 control-label">转账类型</label>
+							<label for="payRole" class="col-sm-4 control-label">模板类型</label>
 							<div class="col-sm-5">
 								<select name="payRole" class="form-control" disabled="disabled">
 									<option value=1>转入</option>
@@ -265,7 +265,7 @@ td {
 							<label for="feePayer" class="col-sm-4 control-label">手续费承担者</label>
 							<div class="col-sm-5">
 								<select name="feePayer" class="form-control">
-									<option value=1>接收方</option>
+									<option value=1>收款方</option>
 									<option value=2>付款方</option>
 								</select>
 							</div>
