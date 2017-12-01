@@ -10,7 +10,7 @@
 		<div class="row">
 			<!-- Button trigger modal -->
 			<button type="button" class="btn btn-primary pull-right"
-				data-toggle="modal" data-target="#addCampaignModal">新增活动</button>
+				data-backdrop="static" data-toggle="modal" data-target="#addCampaignModal">新增活动</button>
 		</div>
 
 		<div class="row">
