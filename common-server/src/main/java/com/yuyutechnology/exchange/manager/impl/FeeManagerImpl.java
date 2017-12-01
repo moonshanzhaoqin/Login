@@ -51,6 +51,7 @@ public class FeeManagerImpl implements FeeManager {
 	public List<FeeTemplate> listAllFeeTemplate() {
 		return feeTemplateList;
 	}
+
 	@Override
 	public void updateFeeTemplate(FeeTemplate feeTemplate) {
 		feeTemplateDAO.updateFeeTemplate(feeTemplate);
@@ -58,24 +59,26 @@ public class FeeManagerImpl implements FeeManager {
 
 	@Override
 	public FeeResult figureOutFee(FeePurpose feePurpose, BigDecimal amount) {
-		FeeResult feeResult=new FeeResult();
+		FeeResult feeResult = new FeeResult();
 		FeeTemplate feeTemplate = feeTmeplateMap.get(feePurpose.getPurpose());
 		logger.info("{} aoumout={} -->", feeTemplate.toString(), amount);
-		
-		String formula="exempt_amount:" + feeTemplate.getExemptAmount() + ";min_fee:" + feeTemplate.getMinFee()
-		+ ";max_fee:" + feeTemplate.getMaxFee() + ";formula:ceiling((" + amount.toString() + "-"
-		+ feeTemplate.getExemptAmount() + ")*" + feeTemplate.getFeePercent() + ")";
+
+		String formula = "exempt_amount:" + feeTemplate.getExemptAmount() + ";min_fee:" + feeTemplate.getMinFee()
+				+ ";max_fee:" + feeTemplate.getMaxFee() + ";formula:ceiling((" + amount.toString() + "-"
+				+ feeTemplate.getExemptAmount() + ")*" + feeTemplate.getFeePercent() + ")";
 		logger.info(formula);
-		
+
 		BigDecimal fee = BigDecimal.ZERO;
 		if (amount.compareTo(feeTemplate.getExemptAmount()) <= 0) {
 			logger.info("the amout({}) is not more than exempt_amount({})", amount, feeTemplate.getExemptAmount());
 		} else {
-			fee = (amount.subtract(feeTemplate.getExemptAmount())).multiply(feeTemplate.getFeePercent()).setScale(0, RoundingMode.CEILING);
-			if (fee.compareTo(feeTemplate.getMinFee()) < 0) {
+			fee = (amount.subtract(feeTemplate.getExemptAmount())).multiply(feeTemplate.getFeePercent()).setScale(0,
+					RoundingMode.CEILING);
+			if (feeTemplate.getMinFee().compareTo(BigDecimal.ZERO) >= 0 && fee.compareTo(feeTemplate.getMinFee()) < 0) {
 				logger.info("the fee({}) is less than min_fee({})", fee, feeTemplate.getMinFee());
 				fee = feeTemplate.getMinFee();
-			} else if (fee.compareTo(feeTemplate.getMaxFee()) > 0) {
+			} else if (feeTemplate.getMaxFee().compareTo(BigDecimal.ZERO) >= 0
+					&& fee.compareTo(feeTemplate.getMaxFee()) > 0) {
 				logger.info("the fee({}) is more than max_fee({})", fee, feeTemplate.getMaxFee());
 				fee = feeTemplate.getMaxFee();
 			}
@@ -88,8 +91,8 @@ public class FeeManagerImpl implements FeeManager {
 
 	@Override
 	public FeeTemplateDTO getFeeTemplateByPursose(FeePurpose feePurpose) {
-		FeeTemplateDTO feeTemplateDTO=new FeeTemplateDTO();
-		FeeTemplate feeTemplate=feeTmeplateMap.get(feePurpose.getPurpose());
+		FeeTemplateDTO feeTemplateDTO = new FeeTemplateDTO();
+		FeeTemplate feeTemplate = feeTmeplateMap.get(feePurpose.getPurpose());
 		feeTemplateDTO.setExemptAmount(feeTemplate.getExemptAmount());
 		feeTemplateDTO.setFeePercent(feeTemplate.getFeePercent());
 		feeTemplateDTO.setMaxFee(feeTemplate.getMaxFee());

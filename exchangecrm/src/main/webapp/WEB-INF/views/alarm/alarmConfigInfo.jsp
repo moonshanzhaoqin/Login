@@ -4,20 +4,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Exanytime</title>
-<link rel='icon' href='<c:url value="/resources/img/ex_28x28.ico" />'
-	type='image/x-ico' />
-<link rel="stylesheet"
-	href='<c:url value="/resources/bootstrap/css/bootstrap.min.css" />' />
-<link rel="stylesheet"
-	href='<c:url value="/resources/bootstrap/css/bootstrap-table.css" />' />
-</head>
-
+<%@ include file="../common/header.jsp"%>
 <body>
-
-	<%@ include file="../common/header.jsp"%>
-
 	<div class="container">
 		<!-- -->
 		<div class="row well">

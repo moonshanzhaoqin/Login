@@ -7,7 +7,7 @@
 <%@ include file="common/header.jsp"%>
 <body>
 	<div class="container">
-	<div class="row">
+		<div class="row">
 			<div class="alert alert-info alert-dismissible" role="alert">
 				<button type="button" class="close" data-dismiss="alert">
 					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
@@ -47,16 +47,15 @@
 				<div class="modal-body">
 					<form class="form-horizontal" role="form" id="updateFeeTemplate">
 						<input type="hidden" name="feePurpose" class="form-control"
-									readonly>
+							readonly>
 						<div class="form-group">
-							<label for="feePurpose" class="col-sm-4 control-label">模板名称</label>
+							<label for="feePurpose" class="col-sm-5 control-label">模板名称</label>
 							<div class="col-sm-5">
-								<input type="text" name="feeName" class="form-control"
-									readonly>
+								<input type="text" name="feeName" class="form-control" readonly>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="exemptAmount" class="col-sm-4 control-label">免手续费额度(Q)</label>
+							<label for="exemptAmount" class="col-sm-5 control-label">免手续费额度(Q)</label>
 							<div class="col-sm-5">
 								<input type="number" min="0" onkeydown="onlyNum();"
 									style="ime-mode: Disabled" name="exemptAmount"
@@ -64,23 +63,21 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="feePercent" class="col-sm-4 control-label">手续费率(%)</label>
+							<label for="feePercent" class="col-sm-5 control-label">手续费率(%)</label>
 							<div class="col-sm-5">
 								<input type="text" name="feePercent" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="minFee" class="col-sm-4 control-label">最小手续费(Q)</label>
+							<label for="minFee" class="col-sm-5 control-label">最小手续费(Q)(负数此项无效)</label>
 							<div class="col-sm-5">
-								<input type="number" min="0" onkeydown="onlyNum();"
-									style="ime-mode: Disabled" name="minFee" class="form-control">
+								<input type="number" name="minFee" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="maxFee" class="col-sm-4 control-label">最大手续费(Q)</label>
+							<label for="maxFee" class="col-sm-5 control-label">最大手续费(Q)(负数此项无效)</label>
 							<div class="col-sm-5">
-								<input type="number" min="0" onkeydown="onlyNum();"
-									style="ime-mode: Disabled" name="maxFee" class="form-control">
+								<input type="number" name="maxFee" class="form-control">
 							</div>
 						</div>
 					</form>

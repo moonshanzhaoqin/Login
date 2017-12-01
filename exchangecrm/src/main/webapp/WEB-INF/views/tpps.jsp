@@ -17,7 +17,8 @@ td {
 		<div class="row ">
 			<ul class="formbar pull-right">
 				<li>
-					<button type="button" class="btn btn-primary " data-backdrop="static" data-toggle="modal"
+					<button type="button" class="btn btn-primary "
+						data-backdrop="static" data-toggle="modal"
 						data-target="#addGoldqPayClientModal">新增商户</button>
 				</li>
 			</ul>
@@ -39,9 +40,9 @@ td {
 			<div id="paginator"></div>
 			<div id="total" class="pull-right"></div>
 		</div>
-		
+
 		<hr class="divide" />
-		
+
 		<div class="row">
 			<table class="table table-bordered table-hover table-striped"
 				id="goldqPayFee">
@@ -101,7 +102,7 @@ td {
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="redirectUrl" class="col-sm-4 control-label">跳转URL</label>
+							<label for="redirectUrl" class="col-sm-4 control-label">跳转URL(必填)</label>
 							<div class="col-sm-5">
 								<input type="text" name="redirectUrl" class="form-control">
 							</div>
@@ -155,7 +156,7 @@ td {
 								<input type="text" name="userName" class="form-control" readonly>
 							</div>
 						</div>
-						<input type="hidden" name="exId" class="form-control" >
+						<input type="hidden" name="exId" class="form-control">
 						<div class="form-group">
 							<label for="clientId" class="col-sm-3 control-label">商户ID</label>
 							<div class="col-sm-8">
@@ -165,24 +166,25 @@ td {
 						<div class="form-group">
 							<label for="secretKey" class="col-sm-3 control-label">API密钥</label>
 							<div class="col-sm-8">
-								<input type="text" name="secretKey" class="form-control" readonly>
+								<input type="text" name="secretKey" class="form-control"
+									readonly>
 							</div>
 						</div>
-						
+
 						<div class="form-group">
 							<label for="userPayToken" class="col-sm-3 control-label">支付密钥</label>
 							<div class="col-sm-8">
-								<input type="text" name="userPayToken" class="form-control" >
+								<input type="text" name="userPayToken" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="name" class="col-sm-3 control-label">商户名称</label>
+							<label for="name" class="col-sm-3 control-label">商户名称(必填)</label>
 							<div class="col-sm-8">
 								<input type="text" name="name" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="redirectUrl" class="col-sm-3 control-label">跳转URL</label>
+							<label for="redirectUrl" class="col-sm-3 control-label">跳转URL(必填)</label>
 							<div class="col-sm-8">
 								<input type="text" name="redirectUrl" class="form-control">
 							</div>
@@ -218,14 +220,14 @@ td {
 					<form class="form-horizontal" role="form" id="updateGoldqPayFee">
 						<input type="hidden" name="feeId" class="form-control">
 						<div class="form-group">
-							<label for="clientId" class="col-sm-4 control-label">商户ID</label>
+							<label for="clientId" class="col-sm-5 control-label">商户ID</label>
 							<div class="col-sm-5">
 								<input type="text" name="clientId" class="form-control" readonly>
 							</div>
 						</div>
 
 						<div class="form-group">
-							<label for="payRole" class="col-sm-4 control-label">模板类型</label>
+							<label for="payRole" class="col-sm-5 control-label">模板类型</label>
 							<div class="col-sm-5">
 								<select name="payRole" class="form-control" disabled="disabled">
 									<option value=1>转入</option>
@@ -234,7 +236,7 @@ td {
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="exemptAmount" class="col-sm-4 control-label">免手续费额度(Q)</label>
+							<label for="exemptAmount" class="col-sm-5 control-label">免手续费额度(Q)</label>
 							<div class="col-sm-5">
 								<input type="number" min="0" onkeydown="onlyNum();"
 									style="ime-mode: Disabled" name="exemptAmount"
@@ -242,27 +244,25 @@ td {
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="feePercent" class="col-sm-4 control-label">手续费率(%)</label>
+							<label for="feePercent" class="col-sm-5 control-label">手续费率(%)</label>
 							<div class="col-sm-5">
 								<input type="text" name="feePercent" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="minFee" class="col-sm-4 control-label">最小手续费(Q)</label>
+							<label for="minFee" class="col-sm-5 control-label">最小手续费(Q)(负数此项无效)</label>
 							<div class="col-sm-5">
-								<input type="number" min="0" onkeydown="onlyNum();"
-									style="ime-mode: Disabled" name="minFee" class="form-control">
+								<input type="number" name="minFee" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="maxFee" class="col-sm-4 control-label">最大手续费(Q)</label>
+							<label for="maxFee" class="col-sm-5 control-label">最大手续费(Q)(负数此项无效)</label>
 							<div class="col-sm-5">
-								<input type="number" min="0" onkeydown="onlyNum();"
-									style="ime-mode: Disabled" name="maxFee" class="form-control">
+								<input type="number" name="maxFee" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="feePayer" class="col-sm-4 control-label">手续费承担者</label>
+							<label for="feePayer" class="col-sm-5 control-label">手续费承担者</label>
 							<div class="col-sm-5">
 								<select name="feePayer" class="form-control">
 									<option value=1>收款方</option>
