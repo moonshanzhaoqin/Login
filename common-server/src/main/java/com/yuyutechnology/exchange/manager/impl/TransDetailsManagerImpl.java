@@ -54,7 +54,7 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 			logger.info("the transType is {} ", transType);
 
 			TransDetails payerTransDetails4Invite = new TransDetails(transferId, payerId, traderName, traderAreaCode,
-					traderPhone, transCurrency, transAmount.negate(), transAmount.negate(), transRemarks,transSnapshot);
+					traderPhone, transCurrency, transAmount.negate(), transFee.negate(), transRemarks,transSnapshot);
 
 			transDetailsDAO.addTransDetails(payerTransDetails4Invite);
 			break;
@@ -68,7 +68,7 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 			logger.info("the transType is {} ", transType);
 
 			TransDetails payerTransDetails4Refund = new TransDetails(transferId, payerId, traderName, traderAreaCode,
-					traderPhone, transCurrency, transAmount,transAmount, transRemarks,transSnapshot);
+					traderPhone, transCurrency, transAmount,transFee, transRemarks,transSnapshot);
 
 			transDetailsDAO.addTransDetails(payerTransDetails4Refund);
 			break;

@@ -19,7 +19,6 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
-import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ExchangeManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
@@ -32,7 +31,6 @@ import com.yuyutechnology.exchange.server.controller.request.GetExchangeHistoryR
 import com.yuyutechnology.exchange.server.controller.request.GetExchangeRateRequest;
 import com.yuyutechnology.exchange.server.controller.response.ExchangeCalculationResponse;
 import com.yuyutechnology.exchange.server.controller.response.ExchangeConfirmResponse;
-import com.yuyutechnology.exchange.server.controller.response.GetCurrentBalanceResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetExchangeDetailsResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetExchangeHistoryResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetExchangeRateResponse;

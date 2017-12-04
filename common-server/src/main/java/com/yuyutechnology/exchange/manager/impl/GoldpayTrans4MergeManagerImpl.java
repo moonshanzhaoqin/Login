@@ -129,8 +129,12 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		HashMap<String, String> result = new HashMap<>();
 		
 		logger.info("updateWallet4FeeTrans for transfer {},{}",transferId,feeTransferId);
+		Transfer feeTransfer = null;
 		Transfer transfer = transferDAO.getTransferById(transferId);
-		Transfer feeTransfer = transferDAO.getTransferById(feeTransferId);
+		if(StringUtils.isNotBlank(feeTransferId)){
+			feeTransfer = transferDAO.getTransferById(feeTransferId);
+		}
+		
 
 		if (!StringUtils.isNotBlank(transfer.getGoldpayOrderId())) {
 			logger.error("error : Not generated goldpayId");
