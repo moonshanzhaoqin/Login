@@ -277,11 +277,22 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 				result.put("msg", "Insufficient balance");
 				return result;
 			}
-			
+			// 对于Transfer 扣款
+			walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getCurrency(),
+					transfer.getTransferAmount(), "-", transfer.getTransferType(), transfer.getTransferId());
+			// 加款
+			walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserTo(), transfer.getCurrency(),
+					transfer.getTransferAmount(), "+", transfer.getTransferType(), transfer.getTransferId());
 			//更改订单状态
 			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 			transfer.setFinishTime(new Date());
 			transferDAO.updateTransfer(transfer);
+			
+			walletDAO.updateWalletByUserIdAndCurrency(feeTransfer.getUserFrom(), feeTransfer.getCurrency(),
+					feeTransfer.getTransferAmount(), "-", feeTransfer.getTransferType(), feeTransfer.getTransferId());
+			// 加款
+			walletDAO.updateWalletByUserIdAndCurrency(feeTransfer.getUserTo(), feeTransfer.getCurrency(),
+					feeTransfer.getTransferAmount(), "+", feeTransfer.getTransferType(), feeTransfer.getTransferId());
 			feeTransfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 			feeTransfer.setFinishTime(new Date());
 			transferDAO.updateTransfer(feeTransfer);
@@ -316,6 +327,18 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 				result.put("msg", "Insufficient balance");
 				return result;
 			}
+			
+			// 对于Transfer 扣款
+			walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getCurrency(),
+					transfer.getTransferAmount(), "-", transfer.getTransferType(), transfer.getTransferId());
+			// 加款
+			walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserTo(), transfer.getCurrency(),
+					transfer.getTransferAmount(), "+", transfer.getTransferType(), transfer.getTransferId());
+			
+			//更改订单状态
+			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+			transfer.setFinishTime(new Date());
+			transferDAO.updateTransfer(transfer);
 
 		}else{
 			result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
