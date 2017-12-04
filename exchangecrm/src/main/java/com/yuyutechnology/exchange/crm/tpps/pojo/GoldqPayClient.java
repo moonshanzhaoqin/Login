@@ -15,6 +15,10 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "goldq_pay_client", uniqueConstraints = @UniqueConstraint(columnNames = "client_id"))
 public class GoldqPayClient implements java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5667520851486500441L;
 	private Long id;
 	private int exId;
 	private String clientId;
@@ -22,6 +26,7 @@ public class GoldqPayClient implements java.io.Serializable {
 	private String name;
 	private String redirectUrl;
 	private String customDomain;
+	private boolean disabled;
 
 	public GoldqPayClient() {
 	}
@@ -30,6 +35,7 @@ public class GoldqPayClient implements java.io.Serializable {
 		this.exId = exId;
 		this.clientId = clientId;
 		this.secretKey = secretKey;
+		this.disabled = false;
 	}
 
 	public GoldqPayClient(int exId, String clientId, String secretKey, String name, String redirectUrl,
@@ -40,6 +46,7 @@ public class GoldqPayClient implements java.io.Serializable {
 		this.name = name;
 		this.redirectUrl = redirectUrl;
 		this.customDomain = customDomain;
+		this.disabled = false;
 	}
 
 	@Id
@@ -107,5 +114,13 @@ public class GoldqPayClient implements java.io.Serializable {
 	public void setCustomDomain(String customDomain) {
 		this.customDomain = customDomain;
 	}
+	
+	@Column(name = "disabled", nullable = false)
+	public boolean isDisabled() {
+		return disabled;
+	}
 
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+	}
 }
