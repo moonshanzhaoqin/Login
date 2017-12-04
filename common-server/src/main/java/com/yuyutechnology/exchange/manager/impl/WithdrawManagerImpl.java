@@ -130,7 +130,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 	@Override
 	public String goldpayTrans4Apply(String withdrawId) {
 		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
-		HashMap<String, String> result = goldpayTrans4MergeManager.updateWallet4FeeTrans(withdraw.getGoldTransferA(),
+		HashMap<String, String> result = goldpayTrans4MergeManager.updateWallet4Withdraw(withdraw.getGoldTransferA(),
 				withdraw.getFeeTransferA());
 
 		if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
@@ -186,7 +186,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 	@Override
 	public String goldpayTrans4cancel(String withdrawId, String adminName) {
 		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
-		HashMap<String, String> result = goldpayTrans4MergeManager.updateWallet4FeeTrans(withdraw.getGoldTransferB(),
+		HashMap<String, String> result = goldpayTrans4MergeManager.updateWallet4Withdraw(withdraw.getGoldTransferB(),
 				withdraw.getFeeTransferB());
 		if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			logger.info("*** goldpayTrans4cancel success ***");
@@ -232,7 +232,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 	@Override
 	public String goldpayTrans4finish(String withdrawId, String adminName) {
 		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
-		HashMap<String, String> result = goldpayTrans4MergeManager.updateWallet4FeeTrans(withdraw.getGoldTransferB(),
+		HashMap<String, String> result = goldpayTrans4MergeManager.updateWallet4Withdraw(withdraw.getGoldTransferB(),
 				withdraw.getFeeTransferB());
 		if (result.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			logger.info("*** goldpayTrans4finish success ***");
