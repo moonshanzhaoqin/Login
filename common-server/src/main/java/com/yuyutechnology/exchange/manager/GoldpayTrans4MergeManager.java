@@ -24,4 +24,6 @@ public interface GoldpayTrans4MergeManager {
 
 	HashMap<String, String> updateWallet4FeeTrans(String transferId, String feeTransferId);
 
+	HashMap<String, String> updateWallet4Withdraw(String transferId, String feeTransferId);
+
 }

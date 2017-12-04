@@ -194,7 +194,7 @@ public class RetCodeConsts {
 
 	// public static final String TRANSFER_NOTIFICATION_NOT_ACQUIRED = "03008";
 
-	// public static final String TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST = "03009";
+	 public static final String TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST = "03009";
 	//
 	// public static final String TRANSFER_GOLDPAYTRANS_CHECK_PIN_CODE_FAIL =
 	// "03010";

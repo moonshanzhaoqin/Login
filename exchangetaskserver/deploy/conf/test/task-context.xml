@@ -46,7 +46,7 @@ http://www.springframework.org/schema/task http://www.springframework.org/schema
 			initial-delay="60000" />
 
 		<task:scheduled ref="autoUpdateExchangeRateTask"
-			method="autoSystemRefundBatch" fixed-delay="300000" initial-delay="300000" />
+			method="autoSystemRefundBatch" fixed-delay="300000" initial-delay="10000" />
 
 		<task:scheduled ref="autoCalculateUserAssetsTask"
 			method="autoCalculateUserAssetsTask" fixed-delay="900000"
