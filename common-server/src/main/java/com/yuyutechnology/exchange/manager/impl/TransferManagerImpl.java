@@ -1026,9 +1026,10 @@ public class TransferManagerImpl implements TransferManager {
 				values.add(ServerConsts.TRANSFER_TYPE_IN_FEE + "");
 				break;
 			case "income":// 收入
-				sb.append("and t1.trans_amount > 0 and t2.transfer_type in (0,?,?) ");
+				sb.append("and t1.trans_amount > 0 and t2.transfer_type in (0,?,?,?) ");
 				values.add(ServerConsts.TRANSFER_TYPE_IN_SYSTEM_REFUND + "");
 				values.add(ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN + "");
+				values.add(ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND + "");//新增提现退款。suzan-2017/12/04
 				break;
 			case "withdraw":// 提现
 				sb.append("and t2.transfer_type = ? ");
