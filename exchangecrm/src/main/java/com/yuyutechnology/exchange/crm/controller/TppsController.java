@@ -23,7 +23,6 @@ import com.yuyutechnology.exchange.crm.request.GetGoldqPayClientByPageRequest;
 import com.yuyutechnology.exchange.crm.request.GetGoldqPayFeeRequest;
 import com.yuyutechnology.exchange.crm.request.UpdateGoldqPayClientRequest;
 import com.yuyutechnology.exchange.crm.tpps.manager.TppsManager;
-import com.yuyutechnology.exchange.crm.tpps.pojo.GoldqPayClient;
 import com.yuyutechnology.exchange.crm.tpps.pojo.GoldqPayFee;
 import com.yuyutechnology.exchange.enums.Operation;
 import com.yuyutechnology.exchange.manager.CrmLogManager;
