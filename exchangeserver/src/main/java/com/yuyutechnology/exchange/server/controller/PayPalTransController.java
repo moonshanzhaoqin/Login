@@ -101,8 +101,6 @@ public class PayPalTransController {
 			return rep;
 		}
 		
-		
-
 		HashMap<String, Object> result = payPalTransManager.paypalTransInit(sessionData.getUserId(),
 				reqMsg.getCurrency(), reqMsg.getAmount());
 		if (RetCodeConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY.equals(result.get("retCode"))) {
