@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.RetCodeConsts;
@@ -123,44 +122,141 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		return goldpayTransaction4FeeS2C;
 	}
 
+//	@Override
+//	public HashMap<String, String> updateWallet4FeeTrans(String transferId, String feeTransferId) {
+//
+//		HashMap<String, String> result = new HashMap<>();
+//
+//		logger.info("updateWallet4FeeTrans for transfer {},{}", transferId, feeTransferId);
+//		Transfer feeTransfer = null;
+//		Transfer transfer = transferDAO.getTransferById(transferId);
+//		if(StringUtils.isNotBlank(feeTransferId)){
+//			feeTransfer = transferDAO.getTransferById(feeTransferId);
+//		}
+//		
+//
+//		if (!StringUtils.isNotBlank(transfer.getGoldpayOrderId())) {
+//			logger.error("error : Not generated goldpayId");
+//			result.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST);
+//			result.put("msg", "Not generated goldpayId");
+//			return result;
+//		}
+//
+//		// 获取交易双方goldpayaccount
+//		GoldpayUserDTO payerAccount = getGoldpayUserInfo(transfer.getUserFrom());
+//		GoldpayUserDTO payeeIdAccount = getGoldpayUserInfo(transfer.getUserTo());
+//
+//		if (payerAccount == null || payeeIdAccount == null) {
+//			logger.error("error :  Account information does not exist");
+//			result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+//			result.put("msg", "Account information does not exist");
+//			return result;
+//		}
+//
+//		GoldpayTransaction4FeeC2S param = new GoldpayTransaction4FeeC2S();
+//
+//		param.setPayOrderId(transfer.getGoldpayOrderId());
+//		param.setFromAccountNum(payerAccount.getAccountNum());
+//		param.setToAccountNum(payeeIdAccount.getAccountNum());
+//		param.setBalance(transfer.getTransferAmount().longValue());
+//
+//		if (feeTransfer != null) {
+//
+//			GoldpayUserDTO feeAccount = getGoldpayUserInfo(feeTransfer.getUserTo());
+//
+//			param.setFeePayOrderId(feeTransfer.getGoldpayOrderId());
+//			if (feeTransfer.getUserFrom() == transfer.getUserFrom()) {
+//				param.setFeeFromAccountNum(payerAccount.getAccountNum());
+//			} else {
+//				param.setFeeFromAccountNum(payeeIdAccount.getAccountNum());
+//			}
+//
+//			param.setFeeToAccountNum(feeAccount.getAccountNum());
+//			param.setFeeBalance(feeTransfer.getTransferAmount().longValue());
+//		}
+//
+//		param.setComment(transfer.getTransferComment());
+//
+//		GoldpayTransaction4FeeS2C s2c = goldpayTransaction4fee(param);
+//
+//		if (s2c != null && s2c.getRetCode() != ServerConsts.GOLDPAY_RETURN_SUCCESS) {
+//			logger.warn("goldpay transaction failed");
+//			result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+//			result.put("msg", "Insufficient balance");
+//			return result;
+//		}
+//
+//		// 对于Transfer 扣款
+//		walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getCurrency(),
+//				transfer.getTransferAmount(), "-", transfer.getTransferType(), transfer.getTransferId());
+//		// 加款
+//		walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserTo(), transfer.getCurrency(),
+//				transfer.getTransferAmount(), "+", transfer.getTransferType(), transfer.getTransferId());
+//
+//		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+//		transfer.setFinishTime(new Date());
+//		transferDAO.updateTransfer(transfer);
+//
+//		// 对于Transfer 扣款
+//		if (feeTransfer != null) {
+//			walletDAO.updateWalletByUserIdAndCurrency(feeTransfer.getUserFrom(), feeTransfer.getCurrency(),
+//					feeTransfer.getTransferAmount(), "-", feeTransfer.getTransferType(), feeTransfer.getTransferId());
+//			// 加款
+//			walletDAO.updateWalletByUserIdAndCurrency(feeTransfer.getUserTo(), feeTransfer.getCurrency(),
+//					feeTransfer.getTransferAmount(), "+", feeTransfer.getTransferType(), feeTransfer.getTransferId());
+//
+//			feeTransfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+//			feeTransfer.setFinishTime(new Date());
+//			transferDAO.updateTransfer(feeTransfer);
+//		}
+//
+//		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
+//		result.put("msg", "success");
+//		return result;
+//
+//	}
+	
 	@Override
 	public HashMap<String, String> updateWallet4FeeTrans(String transferId, String feeTransferId) {
 
 		HashMap<String, String> result = new HashMap<>();
-
-		logger.info("updateWallet4FeeTrans for transfer {},{}", transferId, feeTransferId);
-		Transfer feeTransfer = null;
-		Transfer transfer = transferDAO.getTransferById(transferId);
-		if(StringUtils.isNotBlank(feeTransferId)){
-			feeTransfer = transferDAO.getTransferById(feeTransferId);
-		}
 		
+		if(StringUtils.isNotBlank(transferId) && StringUtils.isNotBlank(feeTransferId)){
+			Transfer transfer = transferDAO.getTransferById(transferId);
+			Transfer feeTransfer = transferDAO.getTransferById(feeTransferId);
+			if (!StringUtils.isNotBlank(transfer.getGoldpayOrderId())) {
+				logger.error("error : Not generated goldpayId");
+				result.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST);
+				result.put("msg", "Not generated goldpayId");
+				return result;
+			}
 
-		if (!StringUtils.isNotBlank(transfer.getGoldpayOrderId())) {
-			logger.error("error : Not generated goldpayId");
-		}
+			// 获取交易双方goldpayaccount
+			GoldpayUserDTO payerAccount = getGoldpayUserInfo(transfer.getUserFrom());
+			GoldpayUserDTO payeeIdAccount = getGoldpayUserInfo(transfer.getUserTo());
 
-		// 获取交易双方goldpayaccount
-		GoldpayUserDTO payerAccount = getGoldpayUserInfo(transfer.getUserFrom());
-		GoldpayUserDTO payeeIdAccount = getGoldpayUserInfo(transfer.getUserTo());
+			if (payerAccount == null || payeeIdAccount == null) {
+				logger.error("error :  Account information does not exist");
+				result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+				result.put("msg", "Account information does not exist");
+				return result;
+			}
 
-		if (payerAccount == null || payeeIdAccount == null) {
-			logger.error("error :  Account information does not exist");
-			result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
-			result.put("msg", "Account information does not exist");
-			return result;
-		}
+			GoldpayTransaction4FeeC2S param = new GoldpayTransaction4FeeC2S();
 
-		GoldpayTransaction4FeeC2S param = new GoldpayTransaction4FeeC2S();
-
-		param.setPayOrderId(transfer.getGoldpayOrderId());
-		param.setFromAccountNum(payerAccount.getAccountNum());
-		param.setToAccountNum(payeeIdAccount.getAccountNum());
-		param.setBalance(transfer.getTransferAmount().longValue());
-
-		if (feeTransfer != null) {
-
+			param.setPayOrderId(transfer.getGoldpayOrderId());
+			param.setFromAccountNum(payerAccount.getAccountNum());
+			param.setToAccountNum(payeeIdAccount.getAccountNum());
+			param.setBalance(transfer.getTransferAmount().longValue());
+			
 			GoldpayUserDTO feeAccount = getGoldpayUserInfo(feeTransfer.getUserTo());
+			
+			if (!StringUtils.isNotBlank(feeTransfer.getGoldpayOrderId())) {
+				logger.error("error : Not generated goldpayId");
+				result.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST);
+				result.put("msg", "Not generated goldpayId");
+				return result;
+			}
 
 			param.setFeePayOrderId(feeTransfer.getGoldpayOrderId());
 			if (feeTransfer.getUserFrom() == transfer.getUserFrom()) {
@@ -170,42 +266,61 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 			}
 
 			param.setFeeToAccountNum(feeAccount.getAccountNum());
-			param.setFeeBalance(feeTransfer.getTransferAmount().longValue());
-		}
+			param.setFeeBalance(feeTransfer.getTransferAmount().longValue());			
+			param.setComment(transfer.getTransferComment());
 
-		param.setComment(transfer.getTransferComment());
+			GoldpayTransaction4FeeS2C s2c = goldpayTransaction4fee(param);
 
-		GoldpayTransaction4FeeS2C s2c = goldpayTransaction4fee(param);
-
-		if (s2c != null && s2c.getRetCode() != ServerConsts.GOLDPAY_RETURN_SUCCESS) {
-			logger.warn("goldpay transaction failed");
-			result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
-			result.put("msg", "Insufficient balance");
-			return result;
-		}
-
-		// 对于Transfer 扣款
-		walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserFrom(), transfer.getCurrency(),
-				transfer.getTransferAmount(), "-", transfer.getTransferType(), transfer.getTransferId());
-		// 加款
-		walletDAO.updateWalletByUserIdAndCurrency(transfer.getUserTo(), transfer.getCurrency(),
-				transfer.getTransferAmount(), "+", transfer.getTransferType(), transfer.getTransferId());
-
-		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
-		transfer.setFinishTime(new Date());
-		transferDAO.updateTransfer(transfer);
-
-		// 对于Transfer 扣款
-		if (feeTransfer != null) {
-			walletDAO.updateWalletByUserIdAndCurrency(feeTransfer.getUserFrom(), feeTransfer.getCurrency(),
-					feeTransfer.getTransferAmount(), "-", feeTransfer.getTransferType(), feeTransfer.getTransferId());
-			// 加款
-			walletDAO.updateWalletByUserIdAndCurrency(feeTransfer.getUserTo(), feeTransfer.getCurrency(),
-					feeTransfer.getTransferAmount(), "+", feeTransfer.getTransferType(), feeTransfer.getTransferId());
-
+			if (s2c != null && s2c.getRetCode() != ServerConsts.GOLDPAY_RETURN_SUCCESS) {
+				logger.warn("goldpay transaction failed");
+				result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+				result.put("msg", "Insufficient balance");
+				return result;
+			}
+			
+			//更改订单状态
+			transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+			transfer.setFinishTime(new Date());
+			transferDAO.updateTransfer(transfer);
 			feeTransfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
 			feeTransfer.setFinishTime(new Date());
 			transferDAO.updateTransfer(feeTransfer);
+		}else if(StringUtils.isNotBlank(transferId) && !StringUtils.isNotBlank(feeTransferId)){
+			
+			Transfer transfer = transferDAO.getTransferById(transferId);
+			
+			if (!StringUtils.isNotBlank(transfer.getGoldpayOrderId())) {
+				logger.error("error : Not generated goldpayId");
+				result.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST);
+				result.put("msg", "Not generated goldpayId");
+				return result;
+			}
+
+			// 获取交易双方goldpayaccount
+			GoldpayUserDTO payerAccount = getGoldpayUserInfo(transfer.getUserFrom());
+			GoldpayUserDTO payeeIdAccount = getGoldpayUserInfo(transfer.getUserTo());
+
+			if (payerAccount == null || payeeIdAccount == null) {
+				logger.error("error :  Account information does not exist");
+				result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+				result.put("msg", "Account information does not exist");
+				return result;
+			}
+			
+			Integer retCode = goldpayTransaction(payerAccount.getAccountNum(), payeeIdAccount.getAccountNum(),
+					transfer.getTransferAmount(), transfer.getGoldpayOrderId(), null);
+
+			if (retCode != ServerConsts.GOLDPAY_RETURN_SUCCESS) {
+				logger.info("goldpay transaction failed");
+				result.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
+				result.put("msg", "Insufficient balance");
+				return result;
+			}
+
+		}else{
+			result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+			result.put("msg", "fail");
+			return result;
 		}
 
 		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
@@ -367,5 +482,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		return confirmTransactionS2C.getRetCode();
 
 	}
+	
+	
 
 }

@@ -94,4 +94,10 @@ public class TppsManager {
 		tppsDAO.updateGoldqPayClient(goldqPayClient);
 	}
 
+	public void changeGoldqPayClientAble(String clientId, boolean disabled) {
+		GoldqPayClient goldqPayClient = tppsDAO.getGoldqPayClientByClientId(clientId);
+		goldqPayClient.setDisabled(disabled);
+		tppsDAO.updateGoldqPayClient(goldqPayClient);
+	}
+
 }
