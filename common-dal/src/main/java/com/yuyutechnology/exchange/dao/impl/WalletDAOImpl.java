@@ -142,16 +142,19 @@ public class WalletDAOImpl implements WalletDAO {
 	@Override
 	public Integer updateWalletByUserIdAndCurrency(int userId, String currency, BigDecimal amount, String capitalFlows,
 			int transferType, String transactionId) {
-		amount = amount.abs();
-		if (capitalFlows.equals("-")) {
-			amount = amount.negate();
-		}
-		WalletSeq walletSeq = new WalletSeq(userId, transferType, currency, amount, transactionId, new Date());
-		hibernateTemplate.save(walletSeq);
-
+		
 		int update = 0;
-
+		
 		if (!ServerConsts.CURRENCY_OF_GOLDPAY.equals(currency)) {
+			
+			amount = amount.abs();
+			if (capitalFlows.equals("-")) {
+				amount = amount.negate();
+			}
+			
+			WalletSeq walletSeq = new WalletSeq(userId, transferType, currency, amount, transactionId, new Date());
+			hibernateTemplate.save(walletSeq);
+
 			update = updateWalletByUserIdAndCurrency(userId, currency, amount.abs(), capitalFlows,
 					walletSeq.getSeqId());
 			if (update == 0) {
