@@ -334,7 +334,7 @@ function updateGoldqPayFee() {
 		alert("GDQ需为整数");
 		return;
 	}
-	if ((parseInt(data.maxFee) >= 0 || parseInt(data.minFee) >= 0 )
+	if (parseInt(data.maxFee) >= 0 && parseInt(data.minFee) >= 0 
 			&& parseInt(data.maxFee) < parseInt(data.minFee)) {
 		alert("最大手续费不能小于最小手续费");
 		return;
