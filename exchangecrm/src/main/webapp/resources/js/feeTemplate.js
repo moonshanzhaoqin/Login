@@ -45,7 +45,7 @@ function initFeeTemplate() {
 								+ '</td>'
 								+ '<td>'
 								+ '<a href="" data-backdrop="static" data-toggle="modal" data-target="#feeTemplateModal" data-whatever='
-								+ "'" + JSON.stringify(data[i]) + "'"
+								 + JSON.stringify(data[i])
 								+ '>修改</a>' + '</td>' + '</tr>'
 					}
 					$('#feeTemplate tbody').html(html);

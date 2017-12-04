@@ -28,7 +28,7 @@ public interface WithdrawManager {
 
 	String goldpayTrans4finish(String withdrawId, String adminName);
 
-	PageBean getWithdrawByPage(int currentPage, String userPhone, String userName, String startTime, String endTime);
+	PageBean getWithdrawByPage(int currentPage, String userPhone, String userName, String startTime, String endTime,String handleResult);
 
 	List<WithdrawDTO> getWithdrawRecord(Integer userId);
 

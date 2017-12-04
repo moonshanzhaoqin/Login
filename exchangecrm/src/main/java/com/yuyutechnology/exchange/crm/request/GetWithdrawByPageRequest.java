@@ -6,6 +6,7 @@ public class GetWithdrawByPageRequest {
 	private String userName;
 	private String startTime;
 	private String endTime;
+	private String handleResult;
 	public String getCurrentPage() {
 		return currentPage;
 	}
@@ -35,6 +36,12 @@ public class GetWithdrawByPageRequest {
 	}
 	public void setEndTime(String endTime) {
 		this.endTime = endTime;
+	}
+	public String getHandleResult() {
+		return handleResult;
+	}
+	public void setHandleResult(String handleResult) {
+		this.handleResult = handleResult;
 	}
 
 }

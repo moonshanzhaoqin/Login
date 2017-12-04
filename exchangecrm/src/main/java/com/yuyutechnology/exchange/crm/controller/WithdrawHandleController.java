@@ -56,7 +56,7 @@ public class WithdrawHandleController {
 		logger.info(getWithdrawByPageRequest.toString());
 		return withdrawManager.getWithdrawByPage(Integer.parseInt(getWithdrawByPageRequest.getCurrentPage()),
 				getWithdrawByPageRequest.getUserPhone(), getWithdrawByPageRequest.getUserName(),
-				getWithdrawByPageRequest.getStartTime(), getWithdrawByPageRequest.getEndTime());
+				getWithdrawByPageRequest.getStartTime(), getWithdrawByPageRequest.getEndTime(),getWithdrawByPageRequest.getHandleResult());
 
 	}
 

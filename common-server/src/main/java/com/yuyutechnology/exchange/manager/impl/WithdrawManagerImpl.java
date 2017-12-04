@@ -271,7 +271,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 
 	@Override
 	public PageBean getWithdrawByPage(int currentPage, String userPhone, String userName, String startTime,
-			String endTime) {
+			String endTime,String handleResult) {
 		logger.info("currentPage={},userPhone={},userName={}  {}->{}", currentPage, userPhone, userName, startTime,
 				endTime);
 
@@ -293,7 +293,11 @@ public class WithdrawManagerImpl implements WithdrawManager {
 			hql.append("and  w.applyTime < ? ");
 			values.add(DateFormatUtils.getEndTime(endTime));
 		}
-		hql.append("order by w.handleTime, w.applyTime desc");
+		if (StringUtils.isNotBlank(handleResult)) {
+			hql.append("and  w.handleResult = ? ");
+			values.add((byte)Integer.parseInt(handleResult) );
+		}
+		hql.append("order by w.applyTime desc");
 		return withdrawDAO.getWithdrawByPage(hql.toString(), values, currentPage, 10);
 
 	}
