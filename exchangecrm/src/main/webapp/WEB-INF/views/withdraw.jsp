@@ -44,7 +44,7 @@
 						<th>用户名</th>
 						<th>联系邮箱</th>
 						<th>金条数量</th>
-						<th>对应的goldpay(GDQ)</th>
+						<th>对应的Goldpay(GDQ)</th>
 						<th>手续费(GDQ)</th>
 						<th>申请时间</th>
 						<th>处理结果</th>
