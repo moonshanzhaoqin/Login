@@ -18,6 +18,17 @@ public class UserDTO {
 	private Long goldpayId;
 	private String goldpayUserName;
 	private String goldpayAccount;
+	
+	public UserDTO(String areaCode, String userPhone, String userName) {
+		super();
+		this.areaCode = areaCode;
+		this.userPhone = userPhone;
+		this.userName = userName;
+	}
+
+	public UserDTO() {
+		super();
+	}
 
 	public Integer getUserId() {
 		return userId;
