@@ -23,6 +23,8 @@ import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
 import com.yuyutechnology.exchange.manager.UserManager;
+import com.yuyutechnology.exchange.pojo.User;
+import com.yuyutechnology.exchange.server.controller.request.GetUserByIdRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetUserRequest;
 import com.yuyutechnology.exchange.server.controller.request.HappyLivesVIPRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransConfirmRequest;
@@ -68,6 +70,32 @@ public class ThirdPartyController {
 				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
 			} else {
 				rep.setUserDTO(userDTO);
+				logger.info("********Operation succeeded********");
+				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+			}
+		}
+		return rep;
+	}
+	
+	@ResponseEncryptBody
+	@ApiOperation(value = "获取用户手机号信息", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/3rd/getUserById", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public GetUserResponse getUserById(@RequestDecryptBody GetUserByIdRequest getUserRequest) {
+		logger.info("========getUser : {}============");
+		GetUserResponse rep = new GetUserResponse();
+		if (getUserRequest.getUserId() == null || getUserRequest.getUserId() == 0) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+		} else {
+			User user = userManager.getUserById(getUserRequest.getUserId().intValue());
+			if (user == null) {
+				logger.info(MessageConsts.PHONE_NOT_EXIST);
+				rep.setRetCode(RetCodeConsts.PHONE_NOT_EXIST);
+				rep.setMessage(MessageConsts.PHONE_NOT_EXIST);
+			} else {
+				rep.setUserDTO(new UserDTO(user.getAreaCode(), user.getUserPhone(), user.getUserName()));
 				logger.info("********Operation succeeded********");
 				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
