@@ -114,6 +114,15 @@ function getGoldqPayClientByPage(currentPage) {
 									+ JSON.stringify(data.rows[i])
 									+ "'"
 									+ '>修改</a> '
+									+(data.rows[i].disabled==1 ? ('<a href="" onclick="enableGoldPayClient('
+									+ "'"
+									+ data.rows[i].clientId
+									+ "'"
+									+ ')">启用</a>'):('<a href="" onclick="disableGoldPayClient('
+									+ "'"
+									+ data.rows[i].clientId
+									+ "'"
+									+ ')">禁用</a>'))
 									+ '</td>'
 									+ '<td>'
 									+ '<a href="javascript:void(0)" onclick="getGoldqPayFee('
@@ -134,6 +143,73 @@ function getGoldqPayClientByPage(currentPage) {
 				}
 			});
 }
+
+
+function enableGoldPayClient(clientId){
+	var data = {
+			clientId : clientId,
+			disabled : 0
+		}
+	$.ajax({
+		type : "post",
+		url : "/crm/changeGoldqPayClientAble",
+		contentType : "application/json; charset=utf-8",
+		dataType : 'json',
+		data : JSON.stringify(data),
+		success : function(data) {
+			if (data.retCode == "00000") {
+				console.log("changeGoldqPayClientAble success");
+				alert( "启用成功！");
+				getGoldqPayClientByPage(page);
+			} else if (data.retCode == "00002") {
+				location.href = loginUrl;
+			} else {
+				console.log("changeGoldqPayClientAble" + data.message);
+				alert(data.message);
+			}
+		},
+		error : function(xhr, err) {
+			console.log("error");
+			console.log(err);
+			console.log(xhr);
+			alert("未知错误！");
+		},
+		async : false
+	});
+}
+function disableGoldPayClient(clientId){
+	var data = {
+			clientId : clientId,
+			disabled : 1
+		}
+	$.ajax({
+		type : "post",
+		url : "/crm/changeGoldqPayClientAble",
+		contentType : "application/json; charset=utf-8",
+		dataType : 'json',
+		data : JSON.stringify(data),
+		success : function(data) {
+			if (data.retCode == "00000") {
+				console.log("changeGoldqPayClientAble success");
+				alert( "禁用成功！");
+				getGoldqPayClientByPage(page);
+			} else if (data.retCode == "00002") {
+				location.href = loginUrl;
+			} else {
+				console.log("changeGoldqPayClientAble" + data.message);
+				alert(data.message);
+			}
+		},
+		error : function(xhr, err) {
+			console.log("error");
+			console.log(err);
+			console.log(xhr);
+			alert("未知错误！");
+		},
+		async : false
+	});
+}
+
 
 function updateGoldqPayClient() {
 	var form = document.getElementById("updateGoldqPayClient");

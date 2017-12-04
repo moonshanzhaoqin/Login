@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.crm.reponse.BaseResponse;
 import com.yuyutechnology.exchange.crm.request.AddGoldqPayClientRequset;
+import com.yuyutechnology.exchange.crm.request.ChangeGoldqPayClientAbleRequest;
 import com.yuyutechnology.exchange.crm.request.GetExUserRequest;
 import com.yuyutechnology.exchange.crm.request.GetGoldqPayClientByPageRequest;
 import com.yuyutechnology.exchange.crm.request.GetGoldqPayFeeRequest;
@@ -54,8 +55,7 @@ public class TppsController {
 		} else if (exId == 0) {
 			rep.setRetCode(RetCodeConsts.USER_BLOCKED);
 		} else {
-			userManager.updatePayToken(exId,
-					addGoldqPayClientRequset.getUserPayToken());
+			userManager.updatePayToken(exId, addGoldqPayClientRequset.getUserPayToken());
 			tppsManager.addGoldqPayClient(exId, addGoldqPayClientRequset.getName(),
 					addGoldqPayClientRequset.getRedirectUrl(), addGoldqPayClientRequset.getCustomDomain());
 			crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
@@ -97,6 +97,24 @@ public class TppsController {
 
 		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.UPDATE_GOLDQPAYCLIENT.getOperationName(), updateGoldqPayClientRequest.toString()));
+
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		return rep;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/changeGoldqPayClientAble", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public BaseResponse changeGoldqPayClientAble(
+			@RequestBody ChangeGoldqPayClientAbleRequest changeGoldqPayClientAbleRequest, HttpServletRequest request,
+			HttpServletResponse response) {
+		BaseResponse rep = new BaseResponse();
+		logger.info("changeGoldqPayClientAble({})", changeGoldqPayClientAbleRequest.toString());
+
+		tppsManager.changeGoldqPayClientAble(changeGoldqPayClientAbleRequest.getClientId(),
+				changeGoldqPayClientAbleRequest.isDisabled());
+
+		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
+				Operation.UPDATE_GOLDQPAYCLIENT.getOperationName(), changeGoldqPayClientAbleRequest.toString()));
 
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		return rep;
