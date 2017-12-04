@@ -110,19 +110,14 @@ function getGoldqPayClientByPage(currentPage) {
 									+ '</td>'
 									+ '<td>'
 									+ '<a href="" data-backdrop="static" data-toggle="modal" data-target="#updategoldqPayClientModal" data-whatever='
-									+ "'"
 									+ JSON.stringify(data.rows[i])
-									+ "'"
 									+ '>修改</a> '
-									+(data.rows[i].disabled==1 ? ('<a href="" onclick="enableGoldPayClient('
-									+ "'"
-									+ data.rows[i].clientId
-									+ "'"
-									+ ')">启用</a>'):('<a href="" onclick="disableGoldPayClient('
-									+ "'"
-									+ data.rows[i].clientId
-									+ "'"
-									+ ')">禁用</a>'))
+									+ (data.rows[i].disabled == 1 ? ('<a href="" onclick="enableGoldPayClient('
+											+ "'" + data.rows[i].clientId + "'" + ')">启用</a>')
+											: ('<a href="" onclick="disableGoldPayClient('
+													+ "'"
+													+ data.rows[i].clientId
+													+ "'" + ')">禁用</a>'))
 									+ '</td>'
 									+ '<td>'
 									+ '<a href="javascript:void(0)" onclick="getGoldqPayFee('
@@ -144,12 +139,11 @@ function getGoldqPayClientByPage(currentPage) {
 			});
 }
 
-
-function enableGoldPayClient(clientId){
+function enableGoldPayClient(clientId) {
 	var data = {
-			clientId : clientId,
-			disabled : 0
-		}
+		clientId : clientId,
+		disabled : 0
+	}
 	$.ajax({
 		type : "post",
 		url : "/crm/changeGoldqPayClientAble",
@@ -159,7 +153,7 @@ function enableGoldPayClient(clientId){
 		success : function(data) {
 			if (data.retCode == "00000") {
 				console.log("changeGoldqPayClientAble success");
-				alert( "启用成功！");
+				alert("启用成功！");
 				getGoldqPayClientByPage(page);
 			} else if (data.retCode == "00002") {
 				location.href = loginUrl;
@@ -177,11 +171,11 @@ function enableGoldPayClient(clientId){
 		async : false
 	});
 }
-function disableGoldPayClient(clientId){
+function disableGoldPayClient(clientId) {
 	var data = {
-			clientId : clientId,
-			disabled : 1
-		}
+		clientId : clientId,
+		disabled : 1
+	}
 	$.ajax({
 		type : "post",
 		url : "/crm/changeGoldqPayClientAble",
@@ -191,7 +185,7 @@ function disableGoldPayClient(clientId){
 		success : function(data) {
 			if (data.retCode == "00000") {
 				console.log("changeGoldqPayClientAble success");
-				alert( "禁用成功！");
+				alert("禁用成功！");
 				getGoldqPayClientByPage(page);
 			} else if (data.retCode == "00002") {
 				location.href = loginUrl;
@@ -209,7 +203,6 @@ function disableGoldPayClient(clientId){
 		async : false
 	});
 }
-
 
 function updateGoldqPayClient() {
 	var form = document.getElementById("updateGoldqPayClient");
@@ -301,7 +294,7 @@ function getGoldqPayFee(clientId) {
 								+ '</td>'
 								+ '<td>'
 								+ '<a href="" data-backdrop="static" data-toggle="modal" data-target="#updategoldqPayFeeModal" data-whatever='
-								+ "'" + JSON.stringify(data[i]) + "'"
+								 + JSON.stringify(data[i])
 								+ '>修改</a>' + '</td>' + '</tr>'
 					}
 					$('#goldqPayFee tbody').html(html);
@@ -334,7 +327,7 @@ function updateGoldqPayFee() {
 		alert("GDQ需为整数");
 		return;
 	}
-	if (parseInt(data.maxFee) >= 0 && parseInt(data.minFee) >= 0 
+	if (parseInt(data.maxFee) >= 0 && parseInt(data.minFee) >= 0
 			&& parseInt(data.maxFee) < parseInt(data.minFee)) {
 		alert("最大手续费不能小于最小手续费");
 		return;

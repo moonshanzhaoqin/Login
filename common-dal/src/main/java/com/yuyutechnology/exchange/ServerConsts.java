@@ -70,6 +70,8 @@ public class ServerConsts {
 	public static final String CURRENCY_OF_USD = "USD";
 
 	public static final String CURRENCY_OF_JPY = "JPY";
+	
+	public static final String CURRENCY_OF_HKD = "HKD";
 
 	// 交易类型
 	/**

@@ -119,19 +119,19 @@ public class PushManager {
 //	private StringBuffer withdraw_complete_hk = new StringBuffer();
 
 	/* 提现退回 withdraw_refund */
-//	// en_us
-//	private StringBuffer withdraw_refund_title_en = new StringBuffer();
-//	// zh_cn
-//	private StringBuffer withdraw_refund_title_cn = new StringBuffer();
-//	// zh_hk
-//	private StringBuffer withdraw_refund_title_hk = new StringBuffer();
-//	// en_us
-//	private StringBuffer withdraw_refund_en = new StringBuffer();
-//	// zh_cn
-//	private StringBuffer withdraw_refund_cn = new StringBuffer();
-//	// zh_hk
-//	private StringBuffer withdraw_refund_hk = new StringBuffer();
-//
+	// en_us
+	private StringBuffer withdraw_refund_title_en = new StringBuffer();
+	// zh_cn
+	private StringBuffer withdraw_refund_title_cn = new StringBuffer();
+	// zh_hk
+	private StringBuffer withdraw_refund_title_hk = new StringBuffer();
+	// en_us
+	private StringBuffer withdraw_refund_en = new StringBuffer();
+	// zh_cn
+	private StringBuffer withdraw_refund_cn = new StringBuffer();
+	// zh_hk
+	private StringBuffer withdraw_refund_hk = new StringBuffer();
+
 	/* 邀请活动奖励 invite */
 	// en_us
 	private StringBuffer invite_title_en = new StringBuffer();
@@ -319,15 +319,14 @@ public class PushManager {
 	 * @param pushTag
 	 * @param amount
 	 */
-//	@Async
-//	public void push4WithdrawRefund(String pushId, Language pushTag, BigDecimal amount) {
-//		String title = titleChoose("withdraw_refund", pushTag);
-//		String offlineBody = templateChoose("withdraw_refund", pushTag);
-//		String body = offlineBody.replace(PUSH_REPLACE_AMOUNT, GDQ.format(amount));
-//		Map<String, String> ext = new HashMap<>();
-//		ext.put("type", "withdraw_refund");
-//		pushToCustom(pushId, title, body, JsonBinder.getInstance().toJson(ext));
-//	}
+	@Async
+	public void push4WithdrawRefund(User user, BigDecimal amount) {
+		String title = titleChoose("withdraw_refund",user.getPushTag());
+		String body = templateChoose("withdraw_refund", user.getPushTag()).replace(PUSH_REPLACE_AMOUNT, GDQ.format(amount));
+		Map<String, String> ext = new HashMap<>();
+		ext.put("type", "withdraw_refund");
+		pushToCustom(user.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
+	}
 
 	/**
 	 * 邀请奖励金
@@ -472,21 +471,21 @@ public class PushManager {
 //				break;
 //			}
 //			break;
-//		case "withdraw_refund":
-//			switch (pushTag) {
-//			case en_US:
-//				body = withdraw_refund_en;
-//				break;
-//			case zh_CN:
-//				body = withdraw_refund_cn;
-//				break;
-//			case zh_TW:
-//				body = withdraw_refund_hk;
-//				break;
-//			default:
-//				break;
-//			}
-//			break;
+		case "withdraw_refund":
+			switch (pushTag) {
+			case en_US:
+				body = withdraw_refund_en;
+				break;
+			case zh_CN:
+				body = withdraw_refund_cn;
+				break;
+			case zh_TW:
+				body = withdraw_refund_hk;
+				break;
+			default:
+				break;
+			}
+			break;
 		case "invite":
 			switch (pushTag) {
 			case en_US:
@@ -593,21 +592,21 @@ public class PushManager {
 //				break;
 //			}
 //			break;
-//		case "withdraw_refund":
-//			switch (pushTag) {
-//			case en_US:
-//				title = withdraw_refund_title_en;
-//				break;
-//			case zh_CN:
-//				title = withdraw_refund_title_cn;
-//				break;
-//			case zh_TW:
-//				title = withdraw_refund_title_hk;
-//				break;
-//			default:
-//				break;
-//			}
-//			break;
+		case "withdraw_refund":
+			switch (pushTag) {
+			case en_US:
+				title = withdraw_refund_title_en;
+				break;
+			case zh_CN:
+				title = withdraw_refund_title_cn;
+				break;
+			case zh_TW:
+				title = withdraw_refund_title_hk;
+				break;
+			default:
+				break;
+			}
+			break;
 		case "invite":
 			switch (pushTag) {
 			case en_US:
@@ -665,5 +664,7 @@ public class PushManager {
 			return;
 		}
 	}
+
+	
 
 }

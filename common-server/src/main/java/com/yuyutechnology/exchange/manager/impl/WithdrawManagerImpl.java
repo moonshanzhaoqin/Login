@@ -36,6 +36,7 @@ import com.yuyutechnology.exchange.manager.WithdrawManager;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Withdraw;
+import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.util.DateFormatUtils;
 import com.yuyutechnology.exchange.util.page.PageBean;
 
@@ -65,6 +66,8 @@ public class WithdrawManagerImpl implements WithdrawManager {
 	CheckManager checkManager;
 	@Autowired
 	ConfigManager configManager;
+	@Autowired
+	PushManager pushManager;
 
 	@Override
 	public WithdrawCalResult withdrawCalculate(Integer userId, int goldBullion) {
@@ -195,6 +198,10 @@ public class WithdrawManagerImpl implements WithdrawManager {
 			withdraw.setHandleAdmin(adminName);
 			withdraw.setHandleTime(new Date());
 			withdrawDAO.updateWithdraw(withdraw);
+			User user = userDAO.getUser(withdraw.getUserId());
+			/* 推送 */
+			pushManager.push4WithdrawRefund(user, withdraw.getGoldpay());
+			pushManager.push4WithdrawRefund(user, withdraw.getFee());
 		}
 		return result.get("retCode");
 	}
@@ -264,7 +271,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 
 	@Override
 	public PageBean getWithdrawByPage(int currentPage, String userPhone, String userName, String startTime,
-			String endTime) {
+			String endTime,String handleResult) {
 		logger.info("currentPage={},userPhone={},userName={}  {}->{}", currentPage, userPhone, userName, startTime,
 				endTime);
 
@@ -286,7 +293,11 @@ public class WithdrawManagerImpl implements WithdrawManager {
 			hql.append("and  w.applyTime < ? ");
 			values.add(DateFormatUtils.getEndTime(endTime));
 		}
-		hql.append("order by w.handleTime, w.applyTime desc");
+		if (StringUtils.isNotBlank(handleResult)) {
+			hql.append("and  w.handleResult = ? ");
+			values.add((byte)Integer.parseInt(handleResult) );
+		}
+		hql.append("order by w.applyTime desc");
 		return withdrawDAO.getWithdrawByPage(hql.toString(), values, currentPage, 10);
 
 	}

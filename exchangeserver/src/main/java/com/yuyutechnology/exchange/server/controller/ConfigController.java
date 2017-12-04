@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mangofactory.swagger.annotations.ApiIgnore;
-import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.FeeManager;
@@ -23,11 +22,11 @@ public class ConfigController {
 	FeeManager feeManager;
 	
 	@ResponseBody
-	@ApiOperation(value = "邀请人信息")
 	@RequestMapping(value = "/refresh", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
-	public void refresh() {
+	public String refresh() {
 		commonManager.refreshConfig();
 		configManager.refreshConfig();
 		feeManager.refresh();
+		return "ok!!";
 	}
 }
