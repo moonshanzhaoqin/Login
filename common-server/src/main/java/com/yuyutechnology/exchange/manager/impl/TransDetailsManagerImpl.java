@@ -64,13 +64,20 @@ public class TransDetailsManagerImpl implements TransDetailsManager {
 			// case ServerConsts.TRANSFER_TYPE_IN_GOLDPAY_RECHARGE:
 		case ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE:
 		case ServerConsts.TRANSFER_TYPE_IN_INVITE_CAMPAIGN:
-		case ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND:
 			logger.info("the transType is {} ", transType);
 
 			TransDetails payerTransDetails4Refund = new TransDetails(transferId, payerId, traderName, traderAreaCode,
 					traderPhone, transCurrency, transAmount,transFee, transRemarks,transSnapshot);
 
 			transDetailsDAO.addTransDetails(payerTransDetails4Refund);
+			break;
+		case ServerConsts.TRANSFER_TYPE_IN_WITHDRAW_REFUND:
+			logger.info("the transType is {} ", transType);
+
+			TransDetails payerTransDetails4WithdrawRefund = new TransDetails(transferId, traderId, traderName, traderAreaCode,
+					traderPhone, transCurrency, transAmount,transFee, transRemarks,transSnapshot);
+
+			transDetailsDAO.addTransDetails(payerTransDetails4WithdrawRefund);
 			break;
 
 		default:
