@@ -22,6 +22,13 @@ public class GoldqPayFee implements java.io.Serializable {
 	private BigDecimal maxFee;
 	private byte feePayer;
 
+	@Override
+	public String toString() {
+		return "GoldqPayFee [feeId=" + feeId + ", clientId=" + clientId + ", payRole=" + payRole + ", exemptAmount="
+				+ exemptAmount + ", feePercent=" + feePercent + ", minFee=" + minFee + ", maxFee=" + maxFee
+				+ ", feePayer=" + feePayer + "]";
+	}
+
 	public GoldqPayFee() {
 	}
 

@@ -1,6 +1,12 @@
 package com.yuyutechnology.exchange.crm.request;
 
 public class UpdateGoldqPayClientRequest {
+	@Override
+	public String toString() {
+		return "UpdateGoldqPayClientRequest [exId=" + exId + ", userPayToken=" + userPayToken + ", clientId=" + clientId
+				+ ", name=" + name + ", redirectUrl=" + redirectUrl + ", customDomain=" + customDomain + "]";
+	}
+
 	private int exId;
 	private String userPayToken;
 	private String clientId;

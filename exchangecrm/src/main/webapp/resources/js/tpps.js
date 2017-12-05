@@ -110,7 +110,7 @@ function getGoldqPayClientByPage(currentPage) {
 									+ '</td>'
 									+ '<td>'
 									+ '<a href="" data-backdrop="static" data-toggle="modal" data-target="#updategoldqPayClientModal" data-whatever='
-									+ JSON.stringify(data.rows[i])
+									+ JSON.stringify(data.rows[i]).replace(/\"/g,"\'")
 									+ '>修改</a> '
 									+ (data.rows[i].disabled == 1 ? ('<a href="" onclick="enableGoldPayClient('
 											+ "'" + data.rows[i].clientId + "'" + ')">启用</a>')
@@ -294,7 +294,7 @@ function getGoldqPayFee(clientId) {
 								+ '</td>'
 								+ '<td>'
 								+ '<a href="" data-backdrop="static" data-toggle="modal" data-target="#updategoldqPayFeeModal" data-whatever='
-								 + JSON.stringify(data[i])
+								 + JSON.stringify(data[i]).replace(/\"/g,"\'")
 								+ '>修改</a>' + '</td>' + '</tr>'
 					}
 					$('#goldqPayFee tbody').html(html);

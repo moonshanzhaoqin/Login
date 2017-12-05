@@ -1,6 +1,13 @@
 package com.yuyutechnology.exchange.crm.request;
 
 public class AddGoldqPayClientRequset {
+	@Override
+	public String toString() {
+		return "AddGoldqPayClientRequset [areaCode=" + areaCode + ", userPhone=" + userPhone + ", userPayToken="
+				+ userPayToken + ", name=" + name + ", redirectUrl=" + redirectUrl + ", customDomain=" + customDomain
+				+ "]";
+	}
+
 	private String areaCode;
 	private String userPhone;
 	private String userPayToken;
