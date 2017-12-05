@@ -10,4 +10,16 @@ public class WithdrawCalculateRequset {
 	public void setGoldBullion(int goldBullion) {
 		this.goldBullion = goldBullion;
 	}
+
+	/**
+	 * 判断参数是否为空
+	 * 
+	 * @return
+	 */
+	public boolean empty() {
+		if (this.goldBullion <= 0) {
+			return true;
+		}
+		return false;
+	}
 }

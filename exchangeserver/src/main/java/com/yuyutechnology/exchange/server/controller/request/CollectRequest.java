@@ -56,17 +56,17 @@ public class CollectRequest {
 	/**
 	 * @return
 	 */
-	public boolean Empty() {
-		if (StringUtils.isEmpty(this.areaCode)) {
+	public boolean empty() {
+		if (StringUtils.isBlank(this.areaCode)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.userPhone)) {
+		if (StringUtils.isBlank(this.userPhone)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.inviterCode)) {
+		if (StringUtils.isBlank(this.inviterCode)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.sharePath)) {
+		if (StringUtils.isBlank(this.sharePath)) {
 			return true;
 		}
 		return false;

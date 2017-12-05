@@ -27,11 +27,11 @@ public class ResetPayPwdRequest {
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty() {
-		if (StringUtils.isEmpty(this.checkToken)) {
+	public boolean empty() {
+		if (StringUtils.isBlank(this.checkToken)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.newUserPayPwd)) {
+		if (StringUtils.isBlank(this.newUserPayPwd)) {
 			return true;
 		}
 		return false;

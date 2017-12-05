@@ -18,8 +18,8 @@ public class CheckPasswordRequest {
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty() {
-		if (StringUtils.isEmpty(this.userPassword)) {
+	public boolean empty() {
+		if (StringUtils.isBlank(this.userPassword)) {
 			return true;
 		}
 		return false;

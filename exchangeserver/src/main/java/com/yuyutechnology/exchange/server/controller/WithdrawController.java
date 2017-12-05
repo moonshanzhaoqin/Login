@@ -45,29 +45,34 @@ public class WithdrawController {
 			@RequestDecryptBody WithdrawCalculateRequset withdrawCalculateRequset) {
 		logger.info("========withdrawCalculate : {}============", token);
 		WithdrawCalculateResponse rep = new WithdrawCalculateResponse();
-		SessionData sessionData = SessionDataHolder.getSessionData();
-
-		WithdrawCalResult result = withdrawManager.withdrawCalculate(sessionData.getUserId(),
-				withdrawCalculateRequset.getGoldBullion());
-		switch (result.getRetCode()) {
-		case RetCodeConsts.RET_CODE_SUCCESS:
-			rep.setGoldpay(result.getGoldpay().intValue());
-			rep.setFee(result.getFee().intValue());
-			rep.setVip(userManager.isHappyLivesVIP(sessionData.getUserId()));
-			logger.info(MessageConsts.RET_CODE_SUCCESS);
-			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-			break;
-		case RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT:
-			logger.info(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-			rep.setRetCode(RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-			rep.setMessage(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-			break;
-		default:
-			logger.info(MessageConsts.RET_CODE_FAILUE);
-			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-			rep.setMessage(MessageConsts.RET_CODE_FAILUE);
-			break;
+		if (withdrawCalculateRequset.empty()) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+		} else {
+			SessionData sessionData = SessionDataHolder.getSessionData();
+			WithdrawCalResult result = withdrawManager.withdrawCalculate(sessionData.getUserId(),
+					withdrawCalculateRequset.getGoldBullion());
+			switch (result.getRetCode()) {
+			case RetCodeConsts.RET_CODE_SUCCESS:
+				rep.setGoldpay(result.getGoldpay().intValue());
+				rep.setFee(result.getFee().intValue());
+				rep.setVip(userManager.isHappyLivesVIP(sessionData.getUserId()));
+				logger.info(MessageConsts.RET_CODE_SUCCESS);
+				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+				break;
+			case RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT:
+				logger.info(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+				rep.setRetCode(RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+				rep.setMessage(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+				break;
+			default:
+				logger.info(MessageConsts.RET_CODE_FAILUE);
+				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+				break;
+			}
 		}
 		return rep;
 	}
@@ -79,24 +84,30 @@ public class WithdrawController {
 			@RequestDecryptBody WithdrawConfirmRequset withdrawConfirmRequset) {
 		logger.info("========withdrawConfirm : {}============", token);
 		WithdrawConfirmResponse rep = new WithdrawConfirmResponse();
-		SessionData sessionData = SessionDataHolder.getSessionData();
-
-		String withdrawId = withdrawManager.applyConfirm(sessionData.getUserId(),
-				withdrawConfirmRequset.getGoldBullion(), withdrawConfirmRequset.getUserEmail());
-		if (withdrawId == null) {
-			logger.info(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-			rep.setRetCode(RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-			rep.setMessage(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+		if (withdrawConfirmRequset.empty()) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
-			String retCode = withdrawManager.goldpayTrans4Apply(withdrawId);
-			if (retCode.equals(RetCodeConsts.RET_CODE_SUCCESS)) {
-				logger.info(MessageConsts.RET_CODE_SUCCESS);
-				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+			SessionData sessionData = SessionDataHolder.getSessionData();
+
+			String withdrawId = withdrawManager.applyConfirm(sessionData.getUserId(),
+					withdrawConfirmRequset.getGoldBullion(), withdrawConfirmRequset.getUserEmail());
+			if (withdrawId == null) {
+				logger.info(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+				rep.setRetCode(RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+				rep.setMessage(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
 			} else {
-				logger.info(MessageConsts.RET_CODE_FAILUE);
-				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+				String retCode = withdrawManager.goldpayTrans4Apply(withdrawId);
+				if (retCode.equals(RetCodeConsts.RET_CODE_SUCCESS)) {
+					logger.info(MessageConsts.RET_CODE_SUCCESS);
+					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+				} else {
+					logger.info(MessageConsts.RET_CODE_FAILUE);
+					rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+					rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+				}
 			}
 		}
 		return rep;
@@ -133,14 +144,19 @@ public class WithdrawController {
 			@RequestDecryptBody GetWithdrawDetailRequset getWithdrawDetailRequset) {
 		logger.info("========getWithdrawDetail : {}============", token);
 		GetWithdrawDetailResponse rep = new GetWithdrawDetailResponse();
-//		SessionData sessionData = SessionDataHolder.getSessionData();
+		if (getWithdrawDetailRequset.empty()) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+		} else {
+			// SessionData sessionData = SessionDataHolder.getSessionData();
 
-		rep.setWithdrawDetail(withdrawManager.getWithdrawDetail(getWithdrawDetailRequset.getWithdrawId()));
+			rep.setWithdrawDetail(withdrawManager.getWithdrawDetail(getWithdrawDetailRequset.getWithdrawId()));
 
-		logger.info(MessageConsts.RET_CODE_SUCCESS);
-		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-
+			logger.info(MessageConsts.RET_CODE_SUCCESS);
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		}
 		return rep;
 	}
 }

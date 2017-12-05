@@ -18,8 +18,8 @@ public class SetUserPayPwdRequest {
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty() {
-		if (StringUtils.isEmpty(this.userPayPwd)) {
+	public boolean empty() {
+		if (StringUtils.isBlank(this.userPayPwd)) {
 			return true;
 		}
 		return false;

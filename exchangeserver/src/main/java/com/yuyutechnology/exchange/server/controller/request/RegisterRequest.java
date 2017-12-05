@@ -90,23 +90,23 @@ public class RegisterRequest {
 	 * 
 	 * @return
 	 */
-	public boolean Empty() {
-		if (StringUtils.isEmpty(this.language)) {
+	public boolean empty() {
+		if (StringUtils.isBlank(this.language)) {
 			this.language = "zh_CN";
 		}
-		if (StringUtils.isEmpty(this.areaCode)) {
+		if (StringUtils.isBlank(this.areaCode)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.userPhone)) {
+		if (StringUtils.isBlank(this.userPhone)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.userName)) {
+		if (StringUtils.isBlank(this.userName)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.registrationCode)) {
+		if (StringUtils.isBlank(this.registrationCode)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.userPassword)) {
+		if (StringUtils.isBlank(this.userPassword)) {
 			return true;
 		}
 		if (StringUtils.isBlank(this.deviceId)) {

@@ -27,11 +27,11 @@ public class DeleteFriendRequest {
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty() {
-		if (StringUtils.isEmpty(this.areaCode)) {
+	public boolean empty() {
+		if (StringUtils.isBlank(this.areaCode)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.phone)) {
+		if (StringUtils.isBlank(this.phone)) {
 			return true;
 		}
 		return false;

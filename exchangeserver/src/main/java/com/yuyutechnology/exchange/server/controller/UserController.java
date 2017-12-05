@@ -130,7 +130,7 @@ public class UserController {
 			HttpServletRequest request, HttpServletResponse response) {
 		logger.info("forgetPassword : {}", forgetPasswordRequest.getAreaCode() + forgetPasswordRequest.getUserPhone());
 		ForgetPasswordResponse rep = new ForgetPasswordResponse();
-		if (forgetPasswordRequest.isEmpty()) {
+		if (forgetPasswordRequest.empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
@@ -269,7 +269,7 @@ public class UserController {
 			HttpServletResponse response) {
 		logger.info("============login==========");
 		LoginResponse rep = new LoginResponse();
-		switch (loginRequest.Empty()) {
+		switch (loginRequest.empty()) {
 		case 1:
 			// loginToken
 			Integer userId = sessionManager.validateLoginToken(loginRequest.getLoginToken());
@@ -388,7 +388,7 @@ public class UserController {
 			HttpServletResponse response) {
 		logger.info("register : {}", registerRequest.getAreaCode() + registerRequest.getUserPhone());
 		RegisterResponse rep = new RegisterResponse();
-		if (registerRequest.Empty()) {
+		if (registerRequest.empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
@@ -468,7 +468,7 @@ public class UserController {
 			HttpServletResponse response) {
 		logger.info("testCode : {}", testRequest.getAreaCode() + testRequest.getUserPhone());
 		TestCodeResponse rep = new TestCodeResponse();
-		if (testRequest.isEmpty()) {
+		if (testRequest.empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
@@ -508,7 +508,7 @@ public class UserController {
 			HttpServletRequest request, HttpServletResponse response) {
 		logger.info("loginValidate : ");
 		LoginValidateResponse rep = new LoginValidateResponse();
-		if (loginValidateRequest.Empty()) {
+		if (loginValidateRequest.empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
@@ -551,8 +551,6 @@ public class UserController {
 						rep.setLoginToken(sessionManager.createLoginToken(userId));
 						/* 获取用户信息 */
 						rep.setUser(userManager.getUserInfo(userId));
-						/* Paypal开启状态 */
-						// rep.setPaypalRecharge(configManager.getConfigBooleanValue(ConfigKeyEnum.PAYPAL_RECHARGE));
 
 						logger.info(MessageConsts.RET_CODE_SUCCESS);
 						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);

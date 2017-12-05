@@ -45,17 +45,17 @@ public class ForgetPasswordRequest {
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty() {
-		if (StringUtils.isEmpty(this.areaCode)) {
+	public boolean empty() {
+		if (StringUtils.isBlank(this.areaCode)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.userPhone)) {
+		if (StringUtils.isBlank(this.userPhone)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.newPassword)) {
+		if (StringUtils.isBlank(this.newPassword)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.verificationCode)) {
+		if (StringUtils.isBlank(this.verificationCode)) {
 			return true;
 		}
 		return false;

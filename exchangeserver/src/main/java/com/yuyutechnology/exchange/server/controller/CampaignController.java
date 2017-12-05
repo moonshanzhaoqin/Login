@@ -104,7 +104,7 @@ public class CampaignController {
 		logger.info("========collect : {}============",collectRequest.toString());
 		CollectResponse rep = new CollectResponse();
 
-		if (collectRequest.Empty()) {
+		if (collectRequest.empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);

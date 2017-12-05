@@ -45,17 +45,17 @@ public class ChangePhoneRequest {
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty() {
-		if (StringUtils.isEmpty(this.checkToken)) {
+	public boolean empty() {
+		if (StringUtils.isBlank(this.checkToken)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.areaCode)) {
+		if (StringUtils.isBlank(this.areaCode)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.userPhone)) {
+		if (StringUtils.isBlank(this.userPhone)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.verificationCode)) {
+		if (StringUtils.isBlank(this.verificationCode)) {
 			return true;
 		}
 		return false;

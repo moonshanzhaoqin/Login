@@ -89,7 +89,7 @@ public class LoggedInUserController {
 			@RequestDecryptBody ChangePhoneRequest changePhoneRequest) throws ParseException {
 		logger.info("========changePhone : {}============", token);
 		ChangePhoneResponse rep = new ChangePhoneResponse();
-		if (changePhoneRequest.isEmpty()) {
+		if (changePhoneRequest.empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
@@ -182,7 +182,7 @@ public class LoggedInUserController {
 			@RequestDecryptBody CheckPayPwdRequest checkPayPwdRequest) {
 		logger.info("========checkPayPwd : {}============", token);
 		CheckPayPwdResponse rep = new CheckPayPwdResponse();
-		if (checkPayPwdRequest.isEmpty()) {
+		if (checkPayPwdRequest.empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
@@ -232,7 +232,7 @@ public class LoggedInUserController {
 			@RequestDecryptBody ModifyPasswordRequest modifyPasswordRequest) {
 		logger.info("========modifyPassword : {}============", token);
 		ModifyPasswordResponse rep = new ModifyPasswordResponse();
-		if (modifyPasswordRequest.Empty()) {
+		if (modifyPasswordRequest.empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
@@ -287,8 +287,7 @@ public class LoggedInUserController {
 			@RequestDecryptBody ModifyUserNameRequest modifyUserNameRequest) {
 		logger.info("========modifyUserName : {}============", token);
 		ModifyUserNameResponse rep = new ModifyUserNameResponse();
-
-		if (modifyUserNameRequest.Empty()) {
+		if (modifyUserNameRequest.empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
@@ -316,7 +315,7 @@ public class LoggedInUserController {
 			@RequestDecryptBody SetUserPayPwdRequest setUserPayPwdRequest) {
 		logger.info("========setUserPayPwd : {}============", token);
 		SetUserPayPwdResponse rep = new SetUserPayPwdResponse();
-		if (setUserPayPwdRequest.isEmpty()) {
+		if (setUserPayPwdRequest.empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
@@ -352,7 +351,7 @@ public class LoggedInUserController {
 			@RequestDecryptBody ModifyPayPwdByOldRequest modifyPayPwdByOldRequest) {
 		logger.info("========modifyPayPwdByOld : {}============", token);
 		ModifyPayPwdByOldResponse rep = new ModifyPayPwdByOldResponse();
-		if (modifyPayPwdByOldRequest.Empty()) {
+		if (modifyPayPwdByOldRequest.empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
@@ -405,7 +404,7 @@ public class LoggedInUserController {
 			@RequestDecryptBody ResetPayPwdRequest resetPayPwdRequest) {
 		logger.info("========modifyPayPwdByOld : {}============", token);
 		ResetPayPwdResponse rep = new ResetPayPwdResponse();
-		if (resetPayPwdRequest.isEmpty()) {
+		if (resetPayPwdRequest.empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
@@ -450,7 +449,7 @@ public class LoggedInUserController {
 		logger.info("========switchLanguage : {}============", token);
 		SwitchLanguageResponse rep = new SwitchLanguageResponse();
 
-		if (switchLanguageRequest.isEmpty()) {
+		if (switchLanguageRequest.empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
