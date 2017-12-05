@@ -16,6 +16,7 @@ import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.WithdrawCalResult;
 import com.yuyutechnology.exchange.dto.WithdrawDTO;
+import com.yuyutechnology.exchange.dto.WithdrawDetailDTO;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.manager.WithdrawManager;
 import com.yuyutechnology.exchange.server.controller.request.GetWithdrawDetailRequset;
@@ -114,12 +115,13 @@ public class WithdrawController {
 						rep.setMessage(MessageConsts.TRANSFER_GOLDPAYTRANS_FAIL);
 					}
 				}
-			}else {
+				sessionManager.delCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_WITHDRAW);
+			} else {
 				logger.info("***checkToken is wrong!***");
 				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 			}
-			
+
 		}
 		return rep;
 	}
@@ -160,13 +162,20 @@ public class WithdrawController {
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
-			// SessionData sessionData = SessionDataHolder.getSessionData();
+			 SessionData sessionData = SessionDataHolder.getSessionData();
+			WithdrawDetailDTO withdrawDetailDTO = withdrawManager
+					.getWithdrawDetail(sessionData.getUserId(),getWithdrawDetailRequset.getWithdrawId());
+			if (withdrawDetailDTO == null) {
+				logger.info(MessageConsts.RET_CODE_FAILUE);
+				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+			} else {
+				rep.setWithdrawDetail(withdrawDetailDTO);
+				logger.info(MessageConsts.RET_CODE_SUCCESS);
+				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+			}
 
-			rep.setWithdrawDetail(withdrawManager.getWithdrawDetail(getWithdrawDetailRequset.getWithdrawId()));
-
-			logger.info(MessageConsts.RET_CODE_SUCCESS);
-			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		}
 		return rep;
 	}
