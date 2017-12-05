@@ -192,23 +192,17 @@ public class RetCodeConsts {
 
 	public static final String TRANSFER_HISTORY_NOT_ACQUIRED = "03007";
 
-	// public static final String TRANSFER_NOTIFICATION_NOT_ACQUIRED = "03008";
-
-	 public static final String TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST = "03009";
-	//
-	// public static final String TRANSFER_GOLDPAYTRANS_CHECK_PIN_CODE_FAIL =
-	// "03010";
+	public static final String TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST = "03009";
+	/**
+	 * goldpay交易失败
+	 */ 
+	public static final String TRANSFER_GOLDPAYTRANS_FAIL = "03010";
 
 	public static final String TRANSFER_LESS_THAN_MINIMUM_AMOUNT = "03011";
 
 	public static final String TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED = "03012";
 
 	public static final String TRANSFER_TRANS_ORDERID_NOT_EXIST = "03013";
-
-	// public static final String TRANSFER_GOLDPAYTRANS_HAS_COMPLETED = "03014";
-	//
-	// public static final String TRANSFER_GOLDPAYTRANS_GOLDPAY_NOT_ENOUGH =
-	// "03015";
 
 	public static final String TRANSFER_PHONE_NUMBER_IS_EMPTY = "03016";
 
@@ -264,6 +258,7 @@ public class RetCodeConsts {
 	 * 币种已存在
 	 */
 	public static final String CURRENCY_IS_EXIST = "05001";
+
 
 	static {
 		successCodeList.add(RET_CODE_SUCCESS);

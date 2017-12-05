@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.WithdrawCalResult;
 import com.yuyutechnology.exchange.dto.WithdrawDTO;
 import com.yuyutechnology.exchange.manager.UserManager;
@@ -28,6 +29,7 @@ import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody
 import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
+import com.yuyutechnology.exchange.session.SessionManager;
 
 @Controller
 public class WithdrawController {
@@ -37,6 +39,8 @@ public class WithdrawController {
 	WithdrawManager withdrawManager;
 	@Autowired
 	UserManager userManager;
+	@Autowired
+	SessionManager sessionManager;
 
 	@ResponseEncryptBody
 	@ApiOperation(value = "提现计算", httpMethod = "POST", notes = "")
@@ -90,25 +94,32 @@ public class WithdrawController {
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
 			SessionData sessionData = SessionDataHolder.getSessionData();
-
-			String withdrawId = withdrawManager.applyConfirm(sessionData.getUserId(),
-					withdrawConfirmRequset.getGoldBullion(), withdrawConfirmRequset.getUserEmail());
-			if (withdrawId == null) {
-				logger.info(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-				rep.setRetCode(RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-				rep.setMessage(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-			} else {
-				String retCode = withdrawManager.goldpayTrans4Apply(withdrawId);
-				if (retCode.equals(RetCodeConsts.RET_CODE_SUCCESS)) {
-					logger.info(MessageConsts.RET_CODE_SUCCESS);
-					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+			if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_WITHDRAW,
+					withdrawConfirmRequset.getCheckToken())) {
+				String withdrawId = withdrawManager.applyConfirm(sessionData.getUserId(),
+						withdrawConfirmRequset.getGoldBullion(), withdrawConfirmRequset.getUserEmail());
+				if (withdrawId == null) {
+					logger.info(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+					rep.setRetCode(RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+					rep.setMessage(MessageConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
 				} else {
-					logger.info(MessageConsts.RET_CODE_FAILUE);
-					rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-					rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+					String retCode = withdrawManager.goldpayTrans4Apply(withdrawId);
+					if (retCode.equals(RetCodeConsts.RET_CODE_SUCCESS)) {
+						logger.info(MessageConsts.RET_CODE_SUCCESS);
+						rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+						rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+					} else {
+						logger.info(MessageConsts.TRANSFER_GOLDPAYTRANS_FAIL);
+						rep.setRetCode(RetCodeConsts.TRANSFER_GOLDPAYTRANS_FAIL);
+						rep.setMessage(MessageConsts.TRANSFER_GOLDPAYTRANS_FAIL);
+					}
 				}
+			}else {
+				logger.info("***checkToken is wrong!***");
+				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 			}
+			
 		}
 		return rep;
 	}

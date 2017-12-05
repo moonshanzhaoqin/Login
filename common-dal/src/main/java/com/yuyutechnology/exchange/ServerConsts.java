@@ -233,6 +233,11 @@ public class ServerConsts {
 	 */
 	public static final String PAYPWD_MODIFYPAYPWD = "PAYPWD_MODIFYPAYPWD";
 	/**
+	 *  校验支付密码功能——提取金条
+	 */
+	public static final String PAYPWD_WITHDRAW = "PAYPWD_WITHDRAW";
+	
+	/**
 	 * 重置支付密码
 	 */
 	public static final String RESETPAYPWD = "RESETPAYPWD";
