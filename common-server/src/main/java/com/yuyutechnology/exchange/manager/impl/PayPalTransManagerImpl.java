@@ -98,7 +98,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 //			return result;
 //		}
 		
-		if (!ServerConsts.CURRENCY_OF_USD.equals(currencyLeft) || !ServerConsts.CURRENCY_OF_HKD.equals(currencyLeft)) {
+		if (!(ServerConsts.CURRENCY_OF_USD.equals(currencyLeft) || ServerConsts.CURRENCY_OF_HKD.equals(currencyLeft))) {
 			logger.info("This currency is not a tradable currency");
 			result.put("retCode", RetCodeConsts.EXCHANGE_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
 			result.put("msg", "This currency is not a tradable currency");

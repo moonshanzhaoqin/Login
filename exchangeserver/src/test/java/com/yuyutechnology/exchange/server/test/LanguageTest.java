@@ -10,6 +10,8 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.yuyutechnology.exchange.RetCodeConsts;
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.manager.CampaignManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
@@ -89,6 +91,17 @@ public class LanguageTest extends BaseSpringJunit4 {
 		
 		
 //		logger.info(campaignManager.getCampaignInfo().toString());
+		
+		
+		String currencyLeft = "USD";
+		
+		if (!(ServerConsts.CURRENCY_OF_USD.equals(currencyLeft) || ServerConsts.CURRENCY_OF_HKD.equals(currencyLeft))) {
+			System.out.println("This currency is not a tradable currency");
+
+		}
+		
+		
+		
 	}
 
 }
