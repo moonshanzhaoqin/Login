@@ -1,5 +1,6 @@
 package com.yuyutechnology.exchange.dto;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class NotifyWithdrawDTO {
@@ -10,12 +11,14 @@ public class NotifyWithdrawDTO {
 	private String userEmail;
 	private int quantity;
 	private Date applyTime;
+	private BigDecimal goldpay;
+	private BigDecimal fee;
 
 	public NotifyWithdrawDTO() {
 	}
 
 	public NotifyWithdrawDTO(int userId, String areaCode, String userPhone, String userName, String userEmail,
-			int quantity, Date applyTime) {
+			int quantity, Date applyTime, BigDecimal goldpay, BigDecimal fee) {
 		super();
 		this.userId = userId;
 		this.areaCode = areaCode;
@@ -24,6 +27,8 @@ public class NotifyWithdrawDTO {
 		this.userEmail = userEmail;
 		this.quantity = quantity;
 		this.applyTime = applyTime;
+		this.goldpay = goldpay;
+		this.fee = fee;
 	}
 
 	public int getUserId() {
@@ -80,5 +85,21 @@ public class NotifyWithdrawDTO {
 
 	public void setApplyTime(Date applyTime) {
 		this.applyTime = applyTime;
+	}
+
+	public BigDecimal getGoldpay() {
+		return goldpay;
+	}
+
+	public void setGoldpay(BigDecimal goldpay) {
+		this.goldpay = goldpay;
+	}
+
+	public BigDecimal getFee() {
+		return fee;
+	}
+
+	public void setFee(BigDecimal fee) {
+		this.fee = fee;
 	}
 }

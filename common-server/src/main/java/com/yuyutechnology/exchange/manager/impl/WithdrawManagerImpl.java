@@ -140,9 +140,9 @@ public class WithdrawManagerImpl implements WithdrawManager {
 			logger.info("*** goldpayTrans4Apply success ***");
 			User user = userDAO.getUser(withdraw.getUserId());
 			/* 通知管理员 */
-			crmAlarmManager
-					.notifyWithdraw(new NotifyWithdrawDTO(withdraw.getUserId(), user.getAreaCode(), user.getUserPhone(),
-							user.getUserName(), withdraw.getUserEmail(), withdraw.getQuantity(), new Date()));
+			crmAlarmManager.notifyWithdraw(new NotifyWithdrawDTO(withdraw.getUserId(), user.getAreaCode(),
+					user.getUserPhone(), user.getUserName(), withdraw.getUserEmail(), withdraw.getQuantity(),
+					new Date(), withdraw.getGoldpay(), withdraw.getFee()));
 
 			withdraw.setHandleResult(ServerConsts.WITHDRAW_RESULT_APPLY_SUCCESS);
 			withdrawDAO.updateWithdraw(withdraw);

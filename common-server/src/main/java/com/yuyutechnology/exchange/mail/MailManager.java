@@ -4,6 +4,7 @@
 package com.yuyutechnology.exchange.mail;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -12,13 +13,16 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.NotifyWithdrawDTO;
+import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.util.DateFormatUtils;
 import com.yuyutechnology.exchange.util.HttpClientUtils;
 import com.yuyutechnology.exchange.util.JsonBinder;
@@ -31,6 +35,11 @@ import com.yuyutechnology.exchange.util.ResourceUtils;
 @Service
 public class MailManager {
 	public static Logger logger = LogManager.getLogger(MailManager.class);
+	public static DecimalFormat CURRENCY = new DecimalFormat(",##0.00");
+	public static DecimalFormat GDQ = new DecimalFormat(",##0");
+	@Autowired
+	CommonManager commonManager;
+
 	private boolean initMail = false;
 
 	private StringBuffer contactTital = new StringBuffer();
@@ -85,6 +94,9 @@ public class MailManager {
 	private final String MAIL_REPLACE_PERCENT = "[PERCENT]";
 	private final String MAIL_REPLACE_NUMBER = "[NUMBER]";
 	private final String MAIL_REPLACE_PHONE = "[PHONE]";
+
+	private final String MAIL_REPLACE_GOLDPAY = "[GOLDPAY]";
+	private final String MAIL_REPLACE_FEE = "[FEE]";
 
 	@PostConstruct
 	@Scheduled(cron = "0 1/10 * * * ?")
@@ -219,7 +231,12 @@ public class MailManager {
 				.replace(MAIL_REPLACE_NAME, notifyWithdrawDTO.getUserName())
 				.replace(MAIL_REPLACE_NUMBER, String.valueOf(notifyWithdrawDTO.getQuantity()))
 				.replace(MAIL_REPLACE_EMAIL, notifyWithdrawDTO.getUserEmail())
-				.replace(MAIL_REPLACE_TIME, DateFormatUtils.formatDateGMT8(notifyWithdrawDTO.getApplyTime()));
+				.replace(MAIL_REPLACE_TIME, DateFormatUtils.formatDateGMT8(notifyWithdrawDTO.getApplyTime()))
+				.replace(MAIL_REPLACE_CURRENCY,
+						commonManager.getCurreny(ServerConsts.CURRENCY_OF_GOLDPAY).getCurrencyUnit())
+				.replace(MAIL_REPLACE_GOLDPAY, GDQ.format(notifyWithdrawDTO.getGoldpay()))
+				.replace(MAIL_REPLACE_FEE, GDQ.format(notifyWithdrawDTO.getFee())).replace(MAIL_REPLACE_AMOUNT,
+						GDQ.format(notifyWithdrawDTO.getGoldpay().add(notifyWithdrawDTO.getFee())));
 		sendMail(toMails, notifyWithdrawTital.toString(), content);
 
 	}

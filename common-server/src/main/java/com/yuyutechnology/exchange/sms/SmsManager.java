@@ -239,12 +239,7 @@ public class SmsManager {
 	}
 
 	public void sendSMS4NotifyWithdray(String phone, NotifyWithdrawDTO notifyWithdrawDTO) {
-		String content = notifyWithdraw_cn.toString()
-				.replace(SMS_REPLACE_PHONE, notifyWithdrawDTO.getAreaCode() + notifyWithdrawDTO.getUserPhone())
-				.replace(SMS_REPLACE_NAME, notifyWithdrawDTO.getUserName())
-				.replace(SMS_REPLACE_NUMBER, String.valueOf(notifyWithdrawDTO.getQuantity()))
-				.replace(SMS_REPLACE_EMAIL, notifyWithdrawDTO.getUserEmail())
-				.replace(SMS_REPLACE_TIME, DateFormatUtils.formatDateGMT8(notifyWithdrawDTO.getApplyTime()));
+		String content = notifyWithdraw_cn.toString();
 		sendSMS(phone, content, "");
 	}
 
