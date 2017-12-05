@@ -105,18 +105,18 @@ public class PushManager {
 	private StringBuffer offline_hk = new StringBuffer();
 
 	/* 提现成功 withdraw_complete */
-//	// en_us
-//	private StringBuffer withdraw_complete_title_en = new StringBuffer();
-//	// zh_cn
-//	private StringBuffer withdraw_complete_title_cn = new StringBuffer();
-//	// zh_hk
-//	private StringBuffer withdraw_complete_title_hk = new StringBuffer();
-//	// en_us
-//	private StringBuffer withdraw_complete_en = new StringBuffer();
-//	// zh_cn
-//	private StringBuffer withdraw_complete_cn = new StringBuffer();
-//	// zh_hk
-//	private StringBuffer withdraw_complete_hk = new StringBuffer();
+	// // en_us
+	// private StringBuffer withdraw_complete_title_en = new StringBuffer();
+	// // zh_cn
+	// private StringBuffer withdraw_complete_title_cn = new StringBuffer();
+	// // zh_hk
+	// private StringBuffer withdraw_complete_title_hk = new StringBuffer();
+	// // en_us
+	// private StringBuffer withdraw_complete_en = new StringBuffer();
+	// // zh_cn
+	// private StringBuffer withdraw_complete_cn = new StringBuffer();
+	// // zh_hk
+	// private StringBuffer withdraw_complete_hk = new StringBuffer();
 
 	/* 提现退回 withdraw_refund */
 	// en_us
@@ -131,6 +131,20 @@ public class PushManager {
 	private StringBuffer withdraw_refund_cn = new StringBuffer();
 	// zh_hk
 	private StringBuffer withdraw_refund_hk = new StringBuffer();
+
+	/* 提现退回 (手续费) withdraw_refund_fee */
+	// en_us
+	private StringBuffer withdraw_refund_fee_title_en = new StringBuffer();
+	// zh_cn
+	private StringBuffer withdraw_refund_fee_title_cn = new StringBuffer();
+	// zh_hk
+	private StringBuffer withdraw_refund_fee_title_hk = new StringBuffer();
+	// en_us
+	private StringBuffer withdraw_refund_fee_en = new StringBuffer();
+	// zh_cn
+	private StringBuffer withdraw_refund_fee_cn = new StringBuffer();
+	// zh_hk
+	private StringBuffer withdraw_refund_fee_hk = new StringBuffer();
 
 	/* 邀请活动奖励 invite */
 	// en_us
@@ -173,16 +187,26 @@ public class PushManager {
 		readTemplate("template/push/zh_CN/offline.template", offline_title_cn, offline_cn);
 		readTemplate("template/push/zh_HK/offline.template", offline_title_hk, offline_hk);
 
-//		readTemplate("template/push/en_US/withdraw_complete.template", withdraw_complete_title_en,
-//				withdraw_complete_en);
-//		readTemplate("template/push/zh_CN/withdraw_complete.template", withdraw_complete_title_cn,
-//				withdraw_complete_cn);
-//		readTemplate("template/push/zh_HK/withdraw_complete.template", withdraw_complete_title_hk,
-//				withdraw_complete_hk);
-//
-//		readTemplate("template/push/en_US/withdraw_refund.template", withdraw_refund_title_en, withdraw_refund_en);
-//		readTemplate("template/push/zh_CN/withdraw_refund.template", withdraw_refund_title_cn, withdraw_refund_cn);
-//		readTemplate("template/push/zh_HK/withdraw_refund.template", withdraw_refund_title_hk, withdraw_refund_hk);
+		// readTemplate("template/push/en_US/withdraw_complete.template",
+		// withdraw_complete_title_en,
+		// withdraw_complete_en);
+		// readTemplate("template/push/zh_CN/withdraw_complete.template",
+		// withdraw_complete_title_cn,
+		// withdraw_complete_cn);
+		// readTemplate("template/push/zh_HK/withdraw_complete.template",
+		// withdraw_complete_title_hk,
+		// withdraw_complete_hk);
+		//
+		readTemplate("template/push/en_US/withdraw_refund.template", withdraw_refund_title_en, withdraw_refund_en);
+		readTemplate("template/push/zh_CN/withdraw_refund.template", withdraw_refund_title_cn, withdraw_refund_cn);
+		readTemplate("template/push/zh_HK/withdraw_refund.template", withdraw_refund_title_hk, withdraw_refund_hk);
+
+		readTemplate("template/push/en_US/withdraw_refund_fee.template", withdraw_refund_fee_title_en,
+				withdraw_refund_fee_en);
+		readTemplate("template/push/zh_CN/withdraw_refund_fee.template", withdraw_refund_fee_title_cn,
+				withdraw_refund_fee_cn);
+		readTemplate("template/push/zh_HK/withdraw_refund_fee.template", withdraw_refund_fee_title_hk,
+				withdraw_refund_fee_hk);
 
 		readTemplate("template/push/en_US/invite.template", invite_title_en, invite_en);
 		readTemplate("template/push/zh_CN/invite.template", invite_title_cn, invite_cn);
@@ -302,29 +326,55 @@ public class PushManager {
 	 * @param pushTag
 	 * @param amount
 	 */
-//	@Async
-//	public void push4WithdrawComplete(String pushId, Language pushTag, BigDecimal amount) {
-//		String title = titleChoose("withdraw_complete", pushTag);
-//		String offlineBody = templateChoose("withdraw_complete", pushTag);
-//		String body = offlineBody.replace(PUSH_REPLACE_AMOUNT, GDQ.format(amount));
-//		Map<String, String> ext = new HashMap<>();
-//		ext.put("type", "withdraw_complete");
-//		pushToCustom(pushId, title, body, JsonBinder.getInstance().toJson(ext));
-//	}
+	// @Async
+	// public void push4WithdrawComplete(String pushId, Language pushTag, BigDecimal
+	// amount) {
+	// String title = titleChoose("withdraw_complete", pushTag);
+	// String offlineBody = templateChoose("withdraw_complete", pushTag);
+	// String body = offlineBody.replace(PUSH_REPLACE_AMOUNT, GDQ.format(amount));
+	// Map<String, String> ext = new HashMap<>();
+	// ext.put("type", "withdraw_complete");
+	// pushToCustom(pushId, title, body, JsonBinder.getInstance().toJson(ext));
+	// }
 
 	/**
 	 * 提现退回
 	 * 
-	 * @param pushId
-	 * @param pushTag
+	 * @param user
 	 * @param amount
+	 * @param currency
 	 */
+
 	@Async
-	public void push4WithdrawRefund(User user, BigDecimal amount) {
-		String title = titleChoose("withdraw_refund",user.getPushTag());
-		String body = templateChoose("withdraw_refund", user.getPushTag()).replace(PUSH_REPLACE_AMOUNT, GDQ.format(amount));
+	public void push4WithdrawRefund(User user, BigDecimal amount, String currency) {
+		String title = titleChoose("withdraw_refund", user.getPushTag());
+		String body = templateChoose("withdraw_refund", user.getPushTag())
+				.replace(PUSH_REPLACE_AMOUNT,
+						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? GDQ.format(amount)
+								: CURRENCY.format(amount))
+				.replace(PUSH_REPLACE_CURRENCY, commonManager.getCurreny(currency).getCurrencyUnit());
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "withdraw_refund");
+		pushToCustom(user.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
+	}
+
+	/**
+	 * 提现退回(手续费)
+	 * 
+	 * @param user
+	 * @param amount
+	 * @param currency
+	 */
+
+	@Async
+	public void push4WithdrawRefundFee(User user, BigDecimal amount, String currency) {
+		String title = titleChoose("withdraw_refund_fee", user.getPushTag());
+		String body = templateChoose("withdraw_refund_fee", user.getPushTag()).replace(PUSH_REPLACE_AMOUNT,
+				currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? GDQ.format(amount)
+						: CURRENCY.format(amount))
+		.replace(PUSH_REPLACE_CURRENCY, commonManager.getCurreny(currency).getCurrencyUnit());
+		Map<String, String> ext = new HashMap<>();
+		ext.put("type", "withdraw_refund_fee");
 		pushToCustom(user.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 	}
 
@@ -456,21 +506,21 @@ public class PushManager {
 				break;
 			}
 			break;
-//		case "withdraw_complete":
-//			switch (pushTag) {
-//			case en_US:
-//				body = withdraw_complete_en;
-//				break;
-//			case zh_CN:
-//				body = withdraw_complete_cn;
-//				break;
-//			case zh_TW:
-//				body = withdraw_complete_hk;
-//				break;
-//			default:
-//				break;
-//			}
-//			break;
+		// case "withdraw_complete":
+		// switch (pushTag) {
+		// case en_US:
+		// body = withdraw_complete_en;
+		// break;
+		// case zh_CN:
+		// body = withdraw_complete_cn;
+		// break;
+		// case zh_TW:
+		// body = withdraw_complete_hk;
+		// break;
+		// default:
+		// break;
+		// }
+		// break;
 		case "withdraw_refund":
 			switch (pushTag) {
 			case en_US:
@@ -481,6 +531,21 @@ public class PushManager {
 				break;
 			case zh_TW:
 				body = withdraw_refund_hk;
+				break;
+			default:
+				break;
+			}
+			break;
+		case "withdraw_refund_fee":
+			switch (pushTag) {
+			case en_US:
+				body = withdraw_refund_fee_en;
+				break;
+			case zh_CN:
+				body = withdraw_refund_fee_cn;
+				break;
+			case zh_TW:
+				body = withdraw_refund_fee_hk;
 				break;
 			default:
 				break;
@@ -577,21 +642,21 @@ public class PushManager {
 				break;
 			}
 			break;
-//		case "withdraw_complete":
-//			switch (pushTag) {
-//			case en_US:
-//				title = withdraw_complete_title_en;
-//				break;
-//			case zh_CN:
-//				title = withdraw_complete_title_cn;
-//				break;
-//			case zh_TW:
-//				title = withdraw_complete_title_hk;
-//				break;
-//			default:
-//				break;
-//			}
-//			break;
+		// case "withdraw_complete":
+		// switch (pushTag) {
+		// case en_US:
+		// title = withdraw_complete_title_en;
+		// break;
+		// case zh_CN:
+		// title = withdraw_complete_title_cn;
+		// break;
+		// case zh_TW:
+		// title = withdraw_complete_title_hk;
+		// break;
+		// default:
+		// break;
+		// }
+		// break;
 		case "withdraw_refund":
 			switch (pushTag) {
 			case en_US:
@@ -602,6 +667,21 @@ public class PushManager {
 				break;
 			case zh_TW:
 				title = withdraw_refund_title_hk;
+				break;
+			default:
+				break;
+			}
+			break;
+		case "withdraw_refund_fee":
+			switch (pushTag) {
+			case en_US:
+				title = withdraw_refund_fee_title_en;
+				break;
+			case zh_CN:
+				title = withdraw_refund_fee_title_cn;
+				break;
+			case zh_TW:
+				title = withdraw_refund_fee_title_hk;
 				break;
 			default:
 				break;
@@ -630,6 +710,7 @@ public class PushManager {
 
 	private void pushToCustom(String deviceID, String title, String body, String extParameters) {
 		if (StringUtils.isBlank(deviceID) || StringUtils.isBlank(body)) {
+			logger.warn("deviceID is {} OR body is {}",deviceID,body);
 			return;
 		}
 		PushToCustom pushToCustom = new PushToCustom();
@@ -664,7 +745,5 @@ public class PushManager {
 			return;
 		}
 	}
-
-	
 
 }
