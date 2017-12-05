@@ -86,15 +86,6 @@
 	</div>
 
 
-	<!--引入Js文件-->
-	<script type="text/javascript"
-		src="<c:url value="/resources/js/jquery.min.js" />"></script>
-	<script type="text/javascript"
-		src="<c:url value="/resources/bootstrap/js/bootstrap.min.js" />"></script>
-	<script type="text/javascript"
-		src="<c:url value="/resources/bootstrap/js/bootstrap-table.js" />"></script>
-	<script type="text/javascript"
-		src="<c:url value="/resources/js/alarm/alarmConfig.js" />"></script>
 
 	<%@ include file="../common/footer.jsp"%>
 </body>

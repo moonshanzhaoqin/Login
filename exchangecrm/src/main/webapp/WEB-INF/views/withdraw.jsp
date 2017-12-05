@@ -59,7 +59,7 @@
 						<th>金条数量</th>
 						<th>对应的Goldpay(GDQ)</th>
 						<th>手续费(GDQ)</th>
-						<th>申请时间</th>
+						<th>申请时间（GMT+8）</th>
 						<th>提取结果</th>
 						<th>详情</th>
 						<!-- 						<th>处理者</th> -->
@@ -125,7 +125,7 @@
 							<div class="col-sm-5" id="fee"></div>
 						</div>
 						<div class="form-group">
-							<label for="applyTime" class="col-sm-4 control-label">申请时间：</label>
+							<label for="applyTime" class="col-sm-4 control-label">申请时间（GMT+8）：</label>
 							<div class="col-sm-5" id="applyTime"></div>
 						</div>
 						<div class="form-group">
@@ -137,7 +137,7 @@
 							<div class="col-sm-5" id="handleAdmin"></div>
 						</div>
 						<div class="form-group">
-							<label for="handleTime" class="col-sm-4 control-label">处理时间：</label>
+							<label for="handleTime" class="col-sm-4 control-label">处理时间（GMT+8）：</label>
 							<div class="col-sm-5" id="handleTime"></div>
 						</div>
 						<div class="form-group">

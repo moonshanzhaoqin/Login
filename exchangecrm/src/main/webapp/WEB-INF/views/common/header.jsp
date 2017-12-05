@@ -16,14 +16,18 @@
 	href="<c:url value="/resources/css/common.css" />" />
 <link rel="stylesheet"
 	href="<c:url value="/resources/laydate/need/laydate.css" />" />
+<link rel="stylesheet"
+	href="<c:url value="/resources/bootstrapValidator/css/bootstrapValidator.min.css" />" />
 <script type="text/javascript"
-	src="<c:url value="/resources/js/jquery.min.js" />"></script>
+	src="<c:url value="/resources/jquery/jquery.min.js" />"></script>
 <script type="text/javascript"
 	src="<c:url value="/resources/bootstrap/js/bootstrap.min.js" />"></script>
 <script type="text/javascript"
 	src="<c:url value="/resources/bootstrap/js/bootstrap-paginator.min.js" />"></script>
 <script type="text/javascript"
 	src="<c:url value="/resources/laydate/laydate.js" />"></script>
+<script
+	src='<c:url value="/resources/bootstrapValidator/js/bootstrapValidator.min.js"/>'></script>
 
 </head>
 <body>

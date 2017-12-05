@@ -111,11 +111,6 @@
 			</div>
 		</div>
 	</div>
-
-	<script type="text/javascript"
-		src="<c:url value="/resources/js/jquery.min.js" />"></script>
-	<script type="text/javascript"
-		src="<c:url value="/resources/bootstrap/js/bootstrap.min.js" />"></script>
 	<script type="text/javascript">
 		$(function() {
 			initCurrency();
