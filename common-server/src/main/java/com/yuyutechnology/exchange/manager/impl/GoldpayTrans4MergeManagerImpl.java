@@ -273,8 +273,8 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 
 			if (s2c != null && s2c.getRetCode() != ServerConsts.GOLDPAY_RETURN_SUCCESS) {
 				logger.warn("goldpay transaction failed");
-				result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
-				result.put("msg", "Insufficient balance");
+				result.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_FAIL);
+				result.put("msg", "goldpay transaction failed");
 				return result;
 			}
 			// 对于Transfer 扣款
@@ -323,8 +323,8 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 
 			if (retCode != ServerConsts.GOLDPAY_RETURN_SUCCESS) {
 				logger.info("goldpay transaction failed");
-				result.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
-				result.put("msg", "Insufficient balance");
+				result.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_FAIL);
+				result.put("msg", "goldpay transaction failed");
 				return result;
 			}
 			
@@ -454,8 +454,8 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 
 				if (retCode != ServerConsts.GOLDPAY_RETURN_SUCCESS) {
 					logger.info("goldpay transaction failed");
-					result.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
-					result.put("msg", "Insufficient balance");
+					result.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_FAIL);
+					result.put("msg", "goldpay transaction failed");
 					return result;
 				}
 
