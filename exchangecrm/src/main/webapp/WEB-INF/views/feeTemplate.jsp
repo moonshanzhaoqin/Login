@@ -21,10 +21,10 @@
 				<thead>
 					<tr>
 						<th>模板名称</th>
-						<th>免手续费额度(Q)</th>
+						<th>免手续费额度(GDQ)</th>
 						<th>手续费率(%)</th>
-						<th>最小手续费(Q)</th>
-						<th>最大手续费(Q)</th>
+						<th>最小手续费(GDQ)</th>
+						<th>最大手续费(GDQ)</th>
 						<th>操作</th>
 					</tr>
 				</thead>
@@ -55,7 +55,7 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="exemptAmount" class="col-sm-5 control-label">免手续费额度(Q)</label>
+							<label for="exemptAmount" class="col-sm-5 control-label">免手续费额度(GDQ)</label>
 							<div class="col-sm-5">
 								<input type="number" min="0" onkeydown="onlyNum();"
 									style="ime-mode: Disabled" name="exemptAmount"
@@ -69,13 +69,13 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="minFee" class="col-sm-5 control-label">最小手续费(Q)(负数此项无效)</label>
+							<label for="minFee" class="col-sm-5 control-label">最小手续费(GDQ)(负数此项无效)</label>
 							<div class="col-sm-5">
 								<input type="number" name="minFee" class="form-control">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="maxFee" class="col-sm-5 control-label">最大手续费(Q)(负数此项无效)</label>
+							<label for="maxFee" class="col-sm-5 control-label">最大手续费(GDQ)(负数此项无效)</label>
 							<div class="col-sm-5">
 								<input type="number" name="maxFee" class="form-control">
 							</div>
