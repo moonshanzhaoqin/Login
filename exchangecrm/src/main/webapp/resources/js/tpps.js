@@ -16,6 +16,7 @@ $(function() {
 		var goldqPayClient = tr.data('whatever') // Extract info from data-*
 		// attributes
 		console.log(goldqPayClient);
+		console.log(typeof goldqPayClient)
 		var data = {
 			exId : goldqPayClient.exId
 		}
@@ -109,9 +110,9 @@ function getGoldqPayClientByPage(currentPage) {
 											: data.rows[i].name)
 									+ '</td>'
 									+ '<td>'
-									+ '<a href="" data-backdrop="static" data-toggle="modal" data-target="#updategoldqPayClientModal" data-whatever='
-									+ JSON.stringify(data.rows[i]).replace(/\"/g,"\'")
-									+ '>修改</a> '
+									+ "<a href='' data-backdrop='static' data-toggle='modal' data-target='#updategoldqPayClientModal' data-whatever='"
+									+ $.trim(JSON.stringify(data.rows[i]))
+									+ "'>修改</a> "
 									+ (data.rows[i].disabled == 1 ? ('<a href="" onclick="enableGoldPayClient('
 											+ "'" + data.rows[i].clientId + "'" + ')">启用</a>')
 											: ('<a href="" onclick="disableGoldPayClient('
@@ -294,7 +295,7 @@ function getGoldqPayFee(clientId) {
 								+ '</td>'
 								+ '<td>'
 								+ '<a href="" data-backdrop="static" data-toggle="modal" data-target="#updategoldqPayFeeModal" data-whatever='
-								 + JSON.stringify(data[i]).replace(/\"/g,"\'")
+								 + JSON.stringify(data[i])
 								+ '>修改</a>' + '</td>' + '</tr>'
 					}
 					$('#goldqPayFee tbody').html(html);

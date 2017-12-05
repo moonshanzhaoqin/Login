@@ -204,7 +204,7 @@ function getWithdrawByPage(currentPage, userPhone, userName, startTime,
 									+ '</td>'
 									+ '<td>'
 									+ '<a href="" data-backdrop="static" data-toggle="modal" data-target="#withdrawDetailModal" data-whatever='
-									 + JSON.stringify(data.rows[i]).replace(/\"/g,"\'")
+									 + JSON.stringify(data.rows[i])
 									+ '>详情</a> ' + '</td>'
 
 									// + '<td>'
