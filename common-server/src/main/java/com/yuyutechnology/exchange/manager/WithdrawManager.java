@@ -32,6 +32,6 @@ public interface WithdrawManager {
 
 	List<WithdrawDTO> getWithdrawRecord(Integer userId);
 
-	WithdrawDetailDTO getWithdrawDetail(String withdrawId);
+	WithdrawDetailDTO getWithdrawDetail(Integer userId, String withdrawId);
 
 }

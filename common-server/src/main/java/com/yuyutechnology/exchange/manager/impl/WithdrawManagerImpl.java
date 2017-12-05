@@ -200,8 +200,8 @@ public class WithdrawManagerImpl implements WithdrawManager {
 			withdrawDAO.updateWithdraw(withdraw);
 			User user = userDAO.getUser(withdraw.getUserId());
 			/* 推送 */
-			pushManager.push4WithdrawRefund(user, withdraw.getGoldpay(),ServerConsts.CURRENCY_OF_GOLDPAY);
-			pushManager.push4WithdrawRefundFee(user, withdraw.getFee(),ServerConsts.CURRENCY_OF_GOLDPAY);
+			pushManager.push4WithdrawRefund(user, withdraw.getGoldpay(), ServerConsts.CURRENCY_OF_GOLDPAY);
+			pushManager.push4WithdrawRefundFee(user, withdraw.getFee(), ServerConsts.CURRENCY_OF_GOLDPAY);
 		}
 		return result.get("retCode");
 	}
@@ -271,7 +271,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 
 	@Override
 	public PageBean getWithdrawByPage(int currentPage, String userPhone, String userName, String startTime,
-			String endTime,String handleResult) {
+			String endTime, String handleResult) {
 		logger.info("currentPage={},userPhone={},userName={}  {}->{}", currentPage, userPhone, userName, startTime,
 				endTime);
 
@@ -295,7 +295,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 		}
 		if (StringUtils.isNotBlank(handleResult)) {
 			hql.append("and  w.handleResult = ? ");
-			values.add((byte)Integer.parseInt(handleResult) );
+			values.add((byte) Integer.parseInt(handleResult));
 		}
 		hql.append("order by w.applyTime desc");
 		return withdrawDAO.getWithdrawByPage(hql.toString(), values, currentPage, 10);
@@ -320,8 +320,14 @@ public class WithdrawManagerImpl implements WithdrawManager {
 	}
 
 	@Override
-	public WithdrawDetailDTO getWithdrawDetail(String withdrawId) {
+	public WithdrawDetailDTO getWithdrawDetail(Integer userId, String withdrawId) {
 		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
+		if (withdraw == null) {
+			return null;
+		}
+		if (withdraw.getUserId() != userId) {
+			return null;
+		}
 		WithdrawDetailDTO withdrawDetailDTO = new WithdrawDetailDTO();
 		withdrawDetailDTO.setWithdrawId(withdrawId);
 		withdrawDetailDTO.setApplyTime(withdraw.getApplyTime());
