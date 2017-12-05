@@ -265,6 +265,7 @@ public class RetCodeConsts {
 	 */
 	public static final String CURRENCY_IS_EXIST = "05001";
 
+
 	static {
 		successCodeList.add(RET_CODE_SUCCESS);
 		successCodeList.add(TRANSFER_REQUIRES_PHONE_VERIFICATION);

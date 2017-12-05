@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 public class WithdrawConfirmRequset {
 	private int goldBullion;
 	private String userEmail;
+	private String checkToken;
 
 	public int getGoldBullion() {
 		return goldBullion;
@@ -22,6 +23,14 @@ public class WithdrawConfirmRequset {
 		this.userEmail = userEmail;
 	}
 	
+	public String getCheckToken() {
+		return checkToken;
+	}
+
+	public void setCheckToken(String checkToken) {
+		this.checkToken = checkToken;
+	}
+
 	/**
 	 * 判断参数是否为空
 	 * 
@@ -32,6 +41,9 @@ public class WithdrawConfirmRequset {
 			return true;
 		}
 		if (StringUtils.isBlank(this.userEmail)) {
+			return true;
+		}
+		if (StringUtils.isBlank(this.checkToken)) {
 			return true;
 		}
 		return false;
