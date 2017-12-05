@@ -200,8 +200,8 @@ public class WithdrawManagerImpl implements WithdrawManager {
 			withdrawDAO.updateWithdraw(withdraw);
 			User user = userDAO.getUser(withdraw.getUserId());
 			/* 推送 */
-			pushManager.push4WithdrawRefund(user, withdraw.getGoldpay());
-			pushManager.push4WithdrawRefund(user, withdraw.getFee());
+			pushManager.push4WithdrawRefund(user, withdraw.getGoldpay(),ServerConsts.CURRENCY_OF_GOLDPAY);
+			pushManager.push4WithdrawRefundFee(user, withdraw.getFee(),ServerConsts.CURRENCY_OF_GOLDPAY);
 		}
 		return result.get("retCode");
 	}

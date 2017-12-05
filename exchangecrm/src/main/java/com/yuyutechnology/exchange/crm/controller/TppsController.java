@@ -47,7 +47,7 @@ public class TppsController {
 	public BaseResponse addGoldqPayClient(@RequestBody AddGoldqPayClientRequset addGoldqPayClientRequset,
 			HttpServletRequest request, HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
-		logger.info("addGoldqPayClient({})", addGoldqPayClientRequset.toString());
+		logger.info("addGoldqPayClient: {} -->", addGoldqPayClientRequset.toString());
 		Integer exId = userManager.getUserId(addGoldqPayClientRequset.getAreaCode(),
 				addGoldqPayClientRequset.getUserPhone());
 		if (exId == null) {
@@ -71,7 +71,7 @@ public class TppsController {
 	public GetExUserResponse getExUser(@RequestBody GetExUserRequest getExUserRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		GetExUserResponse rep = new GetExUserResponse();
-		logger.info("getExUser({})", getExUserRequest.toString());
+		logger.info("getExUser: {} -->", getExUserRequest.getExId());
 		User user = userManager.getUserById(getExUserRequest.getExId());
 		rep.setAreaCode(user.getAreaCode());
 		rep.setUserPhone(user.getUserPhone());
@@ -86,7 +86,7 @@ public class TppsController {
 	public BaseResponse updateGoldqPayClient(@RequestBody UpdateGoldqPayClientRequest updateGoldqPayClientRequest,
 			HttpServletRequest request, HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
-		logger.info("updateGoldqPayClient({})", updateGoldqPayClientRequest.toString());
+		logger.info("updateGoldqPayClient: {} -->", updateGoldqPayClientRequest.toString());
 
 		userManager.updatePayToken(updateGoldqPayClientRequest.getExId(),
 				updateGoldqPayClientRequest.getUserPayToken());
@@ -108,7 +108,7 @@ public class TppsController {
 			@RequestBody ChangeGoldqPayClientAbleRequest changeGoldqPayClientAbleRequest, HttpServletRequest request,
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
-		logger.info("changeGoldqPayClientAble({})", changeGoldqPayClientAbleRequest.toString());
+		logger.info("changeGoldqPayClientAble: {} -->", changeGoldqPayClientAbleRequest.toString());
 
 		tppsManager.changeGoldqPayClientAble(changeGoldqPayClientAbleRequest.getClientId(),
 				changeGoldqPayClientAbleRequest.isDisabled());
@@ -125,7 +125,7 @@ public class TppsController {
 	public BaseResponse updateGoldqPayFee(@RequestBody GoldqPayFee goldqPayFee, HttpServletRequest request,
 			HttpServletResponse response) {
 		BaseResponse rep = new BaseResponse();
-		logger.info("updategoldqPayClient({})", goldqPayFee.toString());
+		logger.info("updategoldqPayClient: {} -->", goldqPayFee.toString());
 		tppsManager.updateGoldqPayFee(goldqPayFee);
 		crmLogManager.saveCrmLog(new CrmLog((String) request.getSession().getAttribute("adminName"), new Date(),
 				Operation.UPDATE_GOLDQPAYFEE.getOperationName(), goldqPayFee.toString()));
@@ -137,7 +137,7 @@ public class TppsController {
 	@RequestMapping(value = "/getGoldqPayClientByPage", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public PageBean getGoldqPayClientByPage(@RequestBody GetGoldqPayClientByPageRequest getGoldqPayClientByPageRequest,
 			HttpServletRequest request, HttpServletResponse response) {
-		logger.info(getGoldqPayClientByPageRequest.toString());
+		logger.info("getGoldqPayClientByPage : {} -->", getGoldqPayClientByPageRequest.toString());
 		return tppsManager.getGoldqPayClientByPage(Integer.parseInt(getGoldqPayClientByPageRequest.getCurrentPage()));
 
 	}
@@ -145,7 +145,7 @@ public class TppsController {
 	@ResponseBody
 	@RequestMapping(value = "/getGoldqPayFee", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public List<GoldqPayFee> getGoldqPayFee(@RequestBody GetGoldqPayFeeRequest getGoldqPayFeeRequest) {
-		logger.info("getGoldqPayFee({})", getGoldqPayFeeRequest.getClientId());
+		logger.info("getGoldqPayFee: {} -->", getGoldqPayFeeRequest.getClientId());
 		return tppsManager.getGoldqPayFeeByClientId(getGoldqPayFeeRequest.getClientId());
 	}
 }
