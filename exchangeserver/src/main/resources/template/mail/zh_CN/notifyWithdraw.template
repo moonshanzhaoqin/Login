@@ -1,15 +1,15 @@
 提取金条通知
-金本汇管理员：
-系统已收到一条新的金条提取申请，请及时处理。
-申请人资料：
-用户名：[NAME]
-手机号：[PHONE]
-电子邮箱：[EMAIL]
-申请时间(GMT+8)：[TIME]
-提取数量：[NUMBER]根
-商品金额：[GOLDPAY] [CURRENCY]
-手续费：[FEE] [CURRENCY]
-实际支付：[AMOUNT] [CURRENCY]
-
-此致
-                                金本汇CRM
+金本汇管理员：</br>
+系统已收到一条新的金条提取申请，请及时处理。</br>
+申请人资料：</br>
+用户名：[NAME]</br>
+手机号：[PHONE]</br>
+电子邮箱：[EMAIL]</br>
+申请时间(GMT+8)：[TIME]</br>
+提取数量：[NUMBER]根</br>
+商品金额：[GOLDPAY] [CURRENCY]</br>
+手续费：[FEE] [CURRENCY]</br>
+实际支付：[AMOUNT] [CURRENCY]</br>
+</br>
+&nbsp;&nbsp;&nbsp;&nbsp;此致</br>
+金本汇CRM
