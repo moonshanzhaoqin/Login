@@ -285,10 +285,10 @@ function finishWithdraw(withdrawId) {
 			} else if (data.retCode == "00000") {
 				console.log("success");
 				alert("操作成功");
+				$('#withdrawDetailModal').model('hide');
 				searchWithdraw(page);
 			} else {
 				alert("操作失败");
-				searchWithdraw(page);
 			}
 		},
 		error : function(xhr, err) {
@@ -315,10 +315,10 @@ function cancelWithdraw(withdrawId) {
 			} else if (data.retCode == "00000") {
 				console.log("success");
 				alert("操作成功");
+				$('#withdrawDetailModal').model('hide');
 				searchWithdraw(page);
 			} else {
 				alert("操作失败");
-				searchWithdraw(page);
 			}
 		},
 		error : function(xhr, err) {
