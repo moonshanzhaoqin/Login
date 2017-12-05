@@ -82,8 +82,8 @@ public class LoginRequest {
 	 * 
 	 * @return
 	 */
-	public int Empty() {
-		if (StringUtils.isEmpty(this.language)) {
+	public int empty() {
+		if (StringUtils.isBlank(this.language)) {
 			this.language = "zh_CN";
 		}
 		if (StringUtils.isNotBlank(this.loginToken)) {

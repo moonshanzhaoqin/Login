@@ -50,17 +50,17 @@ public class TestCodeRequest {
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty() {
-		if (StringUtils.isEmpty(this.purpose)) {
+	public boolean empty() {
+		if (StringUtils.isBlank(this.purpose)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.areaCode)) {
+		if (StringUtils.isBlank(this.areaCode)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.userPhone)) {
+		if (StringUtils.isBlank(this.userPhone)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.verificationCode)) {
+		if (StringUtils.isBlank(this.verificationCode)) {
 			return true;
 		}
 		return false;

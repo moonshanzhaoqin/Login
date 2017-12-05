@@ -27,11 +27,11 @@ public class AddFriendRequest {
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty() {
-		if (StringUtils.isEmpty(this.areaCode)) {
+	public boolean empty() {
+		if (StringUtils.isBlank(this.areaCode)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.userPhone)) {
+		if (StringUtils.isBlank(this.userPhone)) {
 			return true;
 		}
 		return false;

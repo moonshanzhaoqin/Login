@@ -18,8 +18,8 @@ public class SwitchLanguageRequest {
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty() {
-		if (StringUtils.isEmpty(this.language)) {
+	public boolean empty() {
+		if (StringUtils.isBlank(this.language)) {
 			return true;
 		}
 		return false;

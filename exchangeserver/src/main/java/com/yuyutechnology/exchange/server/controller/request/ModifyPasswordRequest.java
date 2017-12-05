@@ -28,11 +28,11 @@ public class ModifyPasswordRequest {
 	 * 
 	 * @return
 	 */
-	public boolean Empty() {
-		if (StringUtils.isEmpty(this.oldPassword)) {
+	public boolean empty() {
+		if (StringUtils.isBlank(this.oldPassword)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.newPassword)) {
+		if (StringUtils.isBlank(this.newPassword)) {
 			return true;
 		}
 		return false;

@@ -52,7 +52,7 @@ public class FriendController {
 		logger.info("========addFriend : {}============", token);
 		AddFriendResponse rep = new AddFriendResponse();
 
-		if (addFriendRequest.isEmpty()) {
+		if (addFriendRequest.empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
@@ -133,7 +133,7 @@ public class FriendController {
 		logger.info("========deleteFriend : {}============", token);
 		DeleteFriendResponse rep = new DeleteFriendResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		if (deleteFriendRequest.isEmpty()) {
+		if (deleteFriendRequest.empty()) {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);

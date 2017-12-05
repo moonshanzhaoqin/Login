@@ -31,11 +31,11 @@ public class CheckPayPwdRequest {
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty() {
-		if (StringUtils.isEmpty(this.purpose)) {
+	public boolean empty() {
+		if (StringUtils.isBlank(this.purpose)) {
 			return true;
 		}
-		if (StringUtils.isEmpty(this.userPayPwd)) {
+		if (StringUtils.isBlank(this.userPayPwd)) {
 			return true;
 		}
 		return false;
