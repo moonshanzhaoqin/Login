@@ -49,13 +49,13 @@ $(function() {
 										'<p class="form-control-static">'
 												+ (data[0].handleResult == 1 ? ('<button type="button" class="btn btn-success" onclick="finishWithdraw('
 														+ "'"
-														+ withdrawId
+														+ data[0].withdrawId
 														+ "'"
 														+ ')">完成</button>'
 														+ ' '
 														+ '<button type="button" class="btn btn-warning" onclick="cancelWithdraw('
 														+ "'"
-														+ withdrawId
+														+ data[0].withdrawId
 														+ "'" + ')">取消</button>')
 														: '') + '</p>');
 						$('#handleAdmin')
