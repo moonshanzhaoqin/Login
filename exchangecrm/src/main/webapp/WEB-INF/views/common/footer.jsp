@@ -4,9 +4,6 @@
 <head>
 </head>
 <body>
-	<script
-		src="//cdn.bootcss.com/bootstrap-validator/0.5.3/js/bootstrapValidator.min.js"></script>
-	<script src="<c:url value="/resources/js/dateFormat.min.js" />"></script>
 	<script>
 		$(function() {
 			$('.dropdown-toggle').dropdown();
