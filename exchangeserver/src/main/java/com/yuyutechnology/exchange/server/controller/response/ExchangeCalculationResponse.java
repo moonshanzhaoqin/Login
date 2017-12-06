@@ -2,6 +2,9 @@ package com.yuyutechnology.exchange.server.controller.response;
 
 import java.util.Date;
 
+import com.wordnik.swagger.annotations.ApiModel;
+
+@ApiModel(description="")
 public class ExchangeCalculationResponse extends BaseResponse {
 
 	private Double amountOut;

@@ -3,9 +3,12 @@ package com.yuyutechnology.exchange.server.controller.response;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 import com.yuyutechnology.exchange.dto.TransDetailsDTO;
 import com.yuyutechnology.exchange.util.MathUtils;
 
+@ApiModel
 public class GetTransDetailsResponse extends BaseResponse {
 
 	private String trader;
@@ -78,6 +81,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.fee4Gp = dto.getTransFee4GP();
 	}
 
+	@ApiModelProperty(required=true,value="交易方用户名")
 	public String getTrader() {
 		return trader;
 	}
@@ -86,6 +90,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.trader = trader;
 	}
 
+	@ApiModelProperty(required=true,value="手机区号")
 	public String getAreaCode() {
 		return areaCode;
 	}
@@ -94,6 +99,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.areaCode = areaCode;
 	}
 
+	@ApiModelProperty(required=true,value="手机号码")
 	public String getPhone() {
 		return phone;
 	}
@@ -102,6 +108,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.phone = phone;
 	}
 
+	@ApiModelProperty(required=true,value="货币类型")
 	public String getCurrency() {
 		return currency;
 	}
@@ -110,6 +117,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.currency = currency;
 	}
 
+	@ApiModelProperty(required=true,value="金额")
 	public BigDecimal getAmount() {
 		return amount;
 	}
@@ -118,6 +126,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.amount = amount;
 	}
 
+	@ApiModelProperty(required=true,value="手续费")
 	public BigDecimal getFee() {
 		return fee;
 	}
@@ -126,6 +135,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.fee = fee;
 	}
 
+	@ApiModelProperty(required=true,value="")
 	public BigDecimal getFee4Gp() {
 		return fee4Gp;
 	}
@@ -134,6 +144,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.fee4Gp = fee4Gp;
 	}
 
+	@ApiModelProperty(required=true,value="")
 	public String getPaypalCurrency() {
 		return paypalCurrency;
 	}
@@ -142,6 +153,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.paypalCurrency = paypalCurrency;
 	}
 
+	@ApiModelProperty(required=true,value="")
 	public BigDecimal getPaypalExchange() {
 		return paypalExchange;
 	}
@@ -150,6 +162,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.paypalExchange = paypalExchange;
 	}
 
+	@ApiModelProperty(required=true,value="货币单位")
 	public String getUnit() {
 		return unit;
 	}
@@ -158,6 +171,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.unit = unit;
 	}
 
+	@ApiModelProperty(required=true,value="交易类型")
 	public int getTransferType() {
 		return transferType;
 	}
@@ -166,6 +180,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.transferType = transferType;
 	}
 
+	@ApiModelProperty(required=true,value="创建时间")
 	public Date getCreateTime() {
 		return createTime;
 	}
@@ -174,6 +189,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.createTime = createTime;
 	}
 
+	@ApiModelProperty(required=true,value="完成时间")
 	public Date getFinishTime() {
 		return finishTime;
 	}
@@ -182,6 +198,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.finishTime = finishTime;
 	}
 
+	@ApiModelProperty(required=true,value="订单ID")
 	public String getTransferId() {
 		return transferId;
 	}
@@ -190,6 +207,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.transferId = transferId;
 	}
 
+	@ApiModelProperty(required=true,value="goldpay账户名")
 	public String getGoldpayName() {
 		return goldpayName;
 	}
@@ -198,6 +216,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.goldpayName = goldpayName;
 	}
 
+	@ApiModelProperty(required=true,value="备注")
 	public String getTransferComment() {
 		return transferComment;
 	}
@@ -205,7 +224,8 @@ public class GetTransDetailsResponse extends BaseResponse {
 	public void setTransferComment(String transferComment) {
 		this.transferComment = transferComment;
 	}
-
+	
+	@ApiModelProperty(required=true,value="交易对象是否是好友")
 	public boolean isFriend() {
 		return isFriend;
 	}
@@ -214,6 +234,7 @@ public class GetTransDetailsResponse extends BaseResponse {
 		this.isFriend = isFriend;
 	}
 
+	@ApiModelProperty(required=true,value="交易对象是否已注册")
 	public boolean isRegiste() {
 		return isRegiste;
 	}
