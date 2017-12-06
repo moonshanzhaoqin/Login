@@ -21,7 +21,6 @@ import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
-import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.CommonManager;

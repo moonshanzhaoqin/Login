@@ -34,6 +34,7 @@ public class RetCodeConsts {
 	 * 短信发送次数超过限制
 	 */
 	public static final String SEND_MORE_THAN_LIMIT = "00004";
+	
 	// 用户 01
 	/**
 	 * 手机号已注册
@@ -142,12 +143,13 @@ public class RetCodeConsts {
 	 * 换算后金额低于最小限额
 	 */
 	public static final String EXCHANGE_AMOUNT_LESS_THAN_MINIMUM_TRANSACTION_AMOUNT = "02003";
-
 	/**
 	 * 同货币兑换
 	 */
 	public static final String EXCHANGE_THE_SAME_CURRENCY_CAN_NOT_BE_EXCHANGED = "02004";
-
+	/**
+	 * 输入数目不正确（gp正整数，其他大于0.0001）
+	 */
 	public static final String EXCHANGE_ENTER_THE_AMOUNT_OF_VIOLATION = "02005";
 	/**
 	 * 货币不可用
@@ -179,7 +181,9 @@ public class RetCodeConsts {
 	 * 支付密码不正确
 	 */
 	public static final String TRANSFER_PAYMENTPWD_INCORRECT = "03003";
-
+	/**
+	 * 需要验证手机验证码
+	 */
 	public static final String TRANSFER_REQUIRES_PHONE_VERIFICATION = "03004";
 	/**
 	 * 支付手机验证码错误
@@ -189,27 +193,45 @@ public class RetCodeConsts {
 	 * 转账人为自己
 	 */
 	public static final String TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF = "03006";
-
+	/**
+	 * 没有更多数据
+	 */
 	public static final String TRANSFER_HISTORY_NOT_ACQUIRED = "03007";
-
+	/**
+	 * Goldpay账单不存在
+	 */
 	public static final String TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST = "03009";
 	/**
 	 * goldpay交易失败
 	 */ 
 	public static final String TRANSFER_GOLDPAYTRANS_FAIL = "03010";
-
+	/**
+	 * goldpay是小数
+	 */ 
 	public static final String TRANSFER_LESS_THAN_MINIMUM_AMOUNT = "03011";
-
+	/**
+	 * 用户不存在或者账户被冻结
+	 */ 
 	public static final String TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED = "03012";
-
+	/**
+	 * 订单不存在
+	 */
 	public static final String TRANSFER_TRANS_ORDERID_NOT_EXIST = "03013";
-
+	/**
+	 * 输入手机号为空
+	 */
 	public static final String TRANSFER_PHONE_NUMBER_IS_EMPTY = "03016";
-
+	/**
+	 * 输入金额数字长度超限
+	 */
 	public static final String TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT = "03017";
-
+	/**
+	 * 非法的货币种类
+	 */
 	public static final String TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY = "03018";
-
+	/**
+	 * 请求内容不匹配（transId对应的订单内容和输入内容不匹配）
+	 */
 	public static final String TRANSFER_REQUEST_INFORMATION_NOT_MATCH = "03019";
 
 	public static final String TRANSFER_LIMIT_EACH_TIME = "03020";
@@ -217,7 +239,9 @@ public class RetCodeConsts {
 	public static final String TRANSFER_LIMIT_DAILY_PAY = "03021";
 
 	public static final String TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY = "03022";
-
+	/**
+	 * 该订单已完成
+	 */
 	public static final String TRANSFER_ORDERS_HAVE_BEEN_PAID = "03023";
 
 	/**
@@ -236,7 +260,9 @@ public class RetCodeConsts {
 	 * GDP输入违法，小数或者低于100
 	 */
 	public static final String TRANSFER_PAYPALTRANS_ILLEGAL_DATA = "03027";
-
+	/**
+	 * Reach or exceed 100%,The transaction is forbidden
+	 */
 	public static final String TRANSFER_PAYPALTRANS_TOTAL_AMOUNT_OF_GDQ = "03028";
 	/**
 	 * PayPal关闭

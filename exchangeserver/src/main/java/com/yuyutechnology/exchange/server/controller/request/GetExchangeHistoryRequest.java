@@ -1,7 +1,7 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
 import com.wordnik.swagger.annotations.ApiModel;
-import com.wordnik.swagger.annotations.ApiParam;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel("")
 public class GetExchangeHistoryRequest {
@@ -10,7 +10,7 @@ public class GetExchangeHistoryRequest {
 	private int currentPage;
 	private int pageSize;
 
-	@ApiParam(value = "今天:today;最近一个月:lastMonth;最近三个月:last3Month;最近一年:lastYear;一年以前:aYearAgo;")
+	@ApiModelProperty(value = "今天:today;最近一个月:lastMonth;最近三个月:last3Month;最近一年:lastYear;一年以前:aYearAgo;")
 	public String getPeriod() {
 		return period;
 	}
