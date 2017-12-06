@@ -56,7 +56,7 @@
 						<th>手机号</th>
 						<th>用户名</th>
 						<!-- 						<th>联系邮箱</th> -->
-						<th>金条数量</th>
+						<th>金条数量(根)</th>
 						<th>对应的Goldpay(GDQ)</th>
 						<th>手续费(GDQ)</th>
 						<th>申请时间（GMT+8）</th>
@@ -113,7 +113,7 @@
 							<div class="col-sm-5" id="userEmail"></div>
 						</div>
 						<div class="form-group">
-							<label for="quantity" class="col-sm-4 control-label">金条数量：</label>
+							<label for="quantity" class="col-sm-4 control-label">金条数量(根)：</label>
 							<div class="col-sm-5" id="quantity"></div>
 						</div>
 						<div class="form-group">

@@ -1,5 +1,8 @@
 package com.yuyutechnology.exchange.server.controller.response;
 
+import com.wordnik.swagger.annotations.ApiModel;
+
+@ApiModel(value="retCode=02001,02002,02003,02006,02007,02008,02009")
 public class ExchangeConfirmResponse extends BaseResponse {
 
 	private Double amountOut;
