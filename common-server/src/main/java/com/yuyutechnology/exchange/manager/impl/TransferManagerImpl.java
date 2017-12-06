@@ -1005,7 +1005,7 @@ public class TransferManagerImpl implements TransferManager {
 
 		StringBuffer sql = new StringBuffer("select t1.transfer_id,t1.trans_currency,t1.trans_amount, ");
 		sql.append("t3.currency_unit,t2.transfer_type,t2.finish_time, ");
-		sql.append("t1.trader_name,t1.trader_area_code,t1.trader_phone,t1.trans_fee,t2.transfer_fee_gp ");
+		sql.append("t1.trader_name,t1.trader_area_code,t1.trader_phone,t2.trans_fee,t2.transfer_fee_gp ");
 
 		StringBuffer sb = new StringBuffer("FROM e_trans_details t1 ");
 		sb.append("LEFT JOIN e_transfer t2 ON t1.transfer_id = t2.transfer_id ");
