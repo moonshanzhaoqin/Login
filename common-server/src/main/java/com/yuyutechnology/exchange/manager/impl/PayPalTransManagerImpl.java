@@ -157,7 +157,7 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		transferDAO.addTransfer(transfer);
 
 		transDetailsManager.addTransDetails(transferId, userId, null, null, null, null,
-				ServerConsts.CURRENCY_OF_GOLDPAY, amount,feeResult.getFee(), feeResult.getFormula(),
+				ServerConsts.CURRENCY_OF_GOLDPAY, amount,baseFee, feeResult.getFormula(),
 				null, ServerConsts.TRANSFER_TYPE_IN_PAYPAL_RECHAEGE);
 
 		BraintreeGateway gateway = new BraintreeGateway(
