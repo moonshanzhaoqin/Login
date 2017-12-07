@@ -57,8 +57,7 @@ import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
 
 @Controller
-public class TransferController {
-
+public class TransferController{
 	@Autowired
 	UserManager userManager;
 	@Autowired

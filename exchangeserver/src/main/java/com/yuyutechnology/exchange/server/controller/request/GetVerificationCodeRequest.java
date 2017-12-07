@@ -11,8 +11,11 @@ public class GetVerificationCodeRequest {
 		return "[purpose=" + purpose + ", areaCode=" + areaCode + ", userPhone=" + userPhone + "]";
 	}
 
+	@ApiModelProperty(value = "目的", required = true)
 	private String purpose;
+	@ApiModelProperty(value = "国家码", required = true)
 	private String areaCode;
+	@ApiModelProperty(value = "手机号", required = true)
 	private String userPhone;
 
 	@ApiModelProperty(allowableValues = ServerConsts.PIN_FUNC_REGISTER + "," + ServerConsts.PIN_FUNC_CHANGEPHONE + ","

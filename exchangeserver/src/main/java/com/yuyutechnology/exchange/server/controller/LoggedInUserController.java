@@ -60,7 +60,7 @@ import com.yuyutechnology.exchange.session.SessionManager;
  * @author suzan.wu
  */
 @Controller
-public class LoggedInUserController {
+public class LoggedInUserController{
 	public static Logger logger = LogManager.getLogger(LoggedInUserController.class);
 
 	@Autowired
