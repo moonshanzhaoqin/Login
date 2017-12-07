@@ -713,11 +713,14 @@ public class TransferManagerImpl implements TransferManager {
 			
 			//判断手续费是否
 			if(feepayerId == payeeId){
-				if(checkManager.isInsufficientBalance(feepayerId, ServerConsts.CURRENCY_OF_GOLDPAY, fee) 
-						|| amount.compareTo(fee) < 0){
-					map.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-					map.put("msg", "Current balance is insufficient");
-					return map;
+				
+				if(amount.subtract(fee).compareTo(BigDecimal.ZERO) < 0){
+					if(checkManager.isInsufficientBalance(feepayerId, ServerConsts.CURRENCY_OF_GOLDPAY, fee.subtract(amount)) 
+							|| amount.compareTo(fee) < 0){
+						map.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+						map.put("msg", "Current balance is insufficient");
+						return map;
+					}
 				}
 			}
 			

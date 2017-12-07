@@ -54,6 +54,7 @@ import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.push.PushManager;
 import com.yuyutechnology.exchange.sms.SendMessageResponse;
 import com.yuyutechnology.exchange.sms.SmsManager;
+import com.yuyutechnology.exchange.util.DateFormatUtils;
 import com.yuyutechnology.exchange.util.JsonBinder;
 import com.yuyutechnology.exchange.util.LanguageUtils;
 import com.yuyutechnology.exchange.util.LanguageUtils.Language;
@@ -133,6 +134,7 @@ public class UserManagerImpl implements UserManager {
 		user.setUserPhone(userPhone);
 		userDAO.updateUser(user);
 		redisDAO.saveData("changephonetime" + userId, new Date().getTime());
+		redisDAO.expireAtData("changephonetime" + userId, DateFormatUtils.getIntervalMinute(new Date(), 1));
 		/* 根据Unregistered表 更新新用户钱包 将资金从系统帐户划给新用户 */
 		updateWalletsFromUnregistered(userId, areaCode, userPhone, user.getUserName());
 	}
