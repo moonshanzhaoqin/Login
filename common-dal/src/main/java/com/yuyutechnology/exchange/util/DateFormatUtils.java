@@ -70,6 +70,14 @@ public class DateFormatUtils {
 		return calendar.getTime();
 	}
 	
+	public static Date getIntervalMinute(Date date, int intervalMinute)
+	{
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.MINUTE, intervalMinute);
+		return calendar.getTime();
+	}
+	
 	public static Date getIntervalMinuteGMT8(Date date, int intervalMinute)
 	{
 		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
