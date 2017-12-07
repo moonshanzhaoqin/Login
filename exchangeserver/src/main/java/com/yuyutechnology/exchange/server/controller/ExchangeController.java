@@ -40,8 +40,7 @@ import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
 
 @Controller
-public class ExchangeController {
-
+class ExchangeController {
 	@Autowired
 	ExchangeManager exchangeManager;
 	@Autowired

@@ -1,4 +1,4 @@
-package com.yuyutechnology.exchange.server.controller;
+package com.yuyutechnology.exchange.server.controller.response;
 
 import com.yuyutechnology.exchange.dto.FeeTemplateDTO;
 import com.yuyutechnology.exchange.server.controller.response.BaseResponse;
