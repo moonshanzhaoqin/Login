@@ -1,6 +1,10 @@
 提取金条通知
+</br>
+</br>
 金本汇管理员：</br>
-系统已收到一条新的金条提取申请，请及时处理。</br>
+&nbsp;&nbsp;系统已收到一条新的金条提取申请，请及时处理。</br>
+</br>
+</br>
 申请人资料：</br>
 用户名：[NAME]</br>
 手机号：[PHONE]</br>
@@ -11,5 +15,6 @@
 手续费：[FEE] [CURRENCY]</br>
 实际支付：[AMOUNT] [CURRENCY]</br>
 </br>
-&nbsp;&nbsp;&nbsp;&nbsp;此致</br>
+</br>
+此致</br>
 金本汇CRM
