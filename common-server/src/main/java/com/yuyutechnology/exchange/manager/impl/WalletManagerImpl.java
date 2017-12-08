@@ -56,6 +56,9 @@ public class WalletManagerImpl implements WalletManager {
 
 			if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(wallet.getCurrency().getCurrency())){
 				GoldpayUserDTO dto = goldpayTrans4MergeManager.getGoldpayUserInfo(userId);
+				if(dto == null){
+					return null;
+				}
 				BigDecimal num = oandaRatesManager
 						.getDefaultCurrencyAmount(ServerConsts.CURRENCY_OF_GOLDPAY, new BigDecimal(dto.getBalance()+""))
 						.setScale(4, BigDecimal.ROUND_DOWN);

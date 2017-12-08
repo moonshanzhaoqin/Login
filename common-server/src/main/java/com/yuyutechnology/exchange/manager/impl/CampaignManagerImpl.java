@@ -251,12 +251,17 @@ public class CampaignManagerImpl implements CampaignManager {
 
 		/* 给邀请人发钱 */
 		String transferA = settlement(collect.getInviterId(), collect.getInviterBonus());
-		logger.info("grant  {}  to inviter user{},transferId={} ",collect.getInviterBonus(),collect.getInviterId(),transferA);
-		
+		logger.info("grant  {}  to inviter user{}, transferId = {} ", collect.getInviterBonus(), collect.getInviterId(),
+				transferA);
+		if (transferA == null) {
+			return;
+		}
 		/* 给注册用户发钱 */
 		String transferB = settlement(userId, collect.getInviteeBonus());
-		logger.info("grant  {}  to invitee user{},transferId={} ",collect.getInviteeBonus(),userId,transferB);
-		
+		logger.info("grant  {}  to invitee user{}, transferId = {} ", collect.getInviteeBonus(), userId, transferB);
+		if (transferB == null) {
+			return;
+		}
 		/* 更新预算 */
 		campaignDAO.updateCampaignSurplus(campaign.getCampaignId(), collect.getInviterBonus(),
 				collect.getInviteeBonus());
@@ -278,7 +283,15 @@ public class CampaignManagerImpl implements CampaignManager {
 		User system = userDAO.getSystemUser();
 
 		String goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
+<<<<<<< .mine
 		
+
+
+=======
+		if (goldpayOrderId == null) {
+			return null;
+		}
+>>>>>>> .theirs
 		/* 生成订单 */
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		Transfer transfer = new Transfer();

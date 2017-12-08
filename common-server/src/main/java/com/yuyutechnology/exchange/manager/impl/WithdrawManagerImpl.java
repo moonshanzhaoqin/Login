@@ -200,8 +200,10 @@ public class WithdrawManagerImpl implements WithdrawManager {
 			withdrawDAO.updateWithdraw(withdraw);
 			User user = userDAO.getUser(withdraw.getUserId());
 			/* 推送 */
-			pushManager.push4WithdrawRefund(user, withdraw.getGoldpay(), ServerConsts.CURRENCY_OF_GOLDPAY,withdraw.getGoldTransferB());
-			pushManager.push4WithdrawRefundFee(user, withdraw.getFee(), ServerConsts.CURRENCY_OF_GOLDPAY,withdraw.getFeeTransferB());
+			pushManager.push4WithdrawRefund(user, withdraw.getGoldpay(), ServerConsts.CURRENCY_OF_GOLDPAY,
+					withdraw.getGoldTransferB());
+			pushManager.push4WithdrawRefundFee(user, withdraw.getFee(), ServerConsts.CURRENCY_OF_GOLDPAY,
+					withdraw.getFeeTransferB());
 		}
 		return result.get("retCode");
 	}
@@ -254,6 +256,10 @@ public class WithdrawManagerImpl implements WithdrawManager {
 
 	private String transfer4Withdraw(Integer from, Integer to, BigDecimal amount, int type) {
 		String goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
+		if (goldpayOrderId == null) {
+			return null;
+		}
+
 		/* 生成TransId */
 		String transferId = transferDAO.createTransId(type);
 		Transfer transfer = new Transfer(transferId, from, to, ServerConsts.CURRENCY_OF_GOLDPAY, amount,
