@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -315,6 +316,11 @@ public class ExchangeManagerImpl implements ExchangeManager {
 			if (ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut)
 					|| ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyIn)) {
 				goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
+				if(!StringUtils.isNotBlank(goldpayOrderId)){
+					result.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST);
+					result.put("msg", "Not generated goldpayId");
+					return result;
+				}
 			}
 
 			// 添加Exchange记录

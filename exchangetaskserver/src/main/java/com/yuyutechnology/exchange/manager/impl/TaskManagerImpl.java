@@ -4,11 +4,13 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UnregisteredDAO;
@@ -48,6 +50,11 @@ public class TaskManagerImpl implements TaskManager {
 		String goldpayOrderId = null;
 		if (ServerConsts.CURRENCY_OF_GOLDPAY.equals(unregistered.getCurrency())) {
 			goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
+			if(!StringUtils.isNotBlank(goldpayOrderId)){
+				result.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST);
+				result.put("msg", "Not generated goldpayId");
+				return result;
+			}
 		}
 
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);			

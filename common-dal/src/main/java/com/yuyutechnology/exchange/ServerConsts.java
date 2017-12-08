@@ -278,5 +278,4 @@ public class ServerConsts {
 	public static final byte WITHDRAW_RESULT_FINISHT = 3;
 	public static final byte WITHDRAW_RESULT_CANCEL = 4;
 	
-
 }

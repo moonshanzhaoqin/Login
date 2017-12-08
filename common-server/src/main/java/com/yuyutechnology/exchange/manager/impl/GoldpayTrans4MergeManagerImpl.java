@@ -35,7 +35,6 @@ import com.yuyutechnology.exchange.manager.TransDetailsManager;
 import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Exchange;
 import com.yuyutechnology.exchange.pojo.Transfer;
-import com.yuyutechnology.exchange.pojo.WalletSeq;
 import com.yuyutechnology.exchange.util.HttpClientUtils;
 import com.yuyutechnology.exchange.util.JsonBinder;
 import com.yuyutechnology.exchange.util.ResourceUtils;
@@ -88,8 +87,13 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 		String result = HttpClientUtils.sendPost(
 				ResourceUtils.getBundleValue4String("goldpay.url") + "member/getMemberInfo",
 				JsonBinder.getInstance().toJson(param));
-		GetGoldpayUserS2C getGoldpayUserS2C = JsonBinder.getInstanceNonNull().fromJson(result, GetGoldpayUserS2C.class);
-		return getGoldpayUserS2C.getGoldpayUserDTO();
+		
+		if(StringUtils.isNotBlank(result)){
+			GetGoldpayUserS2C getGoldpayUserS2C = JsonBinder.getInstanceNonNull().fromJson(result, GetGoldpayUserS2C.class);
+			return getGoldpayUserS2C.getGoldpayUserDTO();
+		}
+		
+		return null;
 	}
 
 	@Override
@@ -103,9 +107,14 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 
 		logger.info("result : {}", result);
 
-		GetGoldpayOrderIdS2C getGoldpayOrderIdS2C = JsonBinder.getInstanceNonNull().fromJson(result,
-				GetGoldpayOrderIdS2C.class);
-		return getGoldpayOrderIdS2C.getPayOrderId();
+		if(StringUtils.isNotBlank(result)){
+			GetGoldpayOrderIdS2C getGoldpayOrderIdS2C = JsonBinder.getInstanceNonNull().fromJson(result,
+					GetGoldpayOrderIdS2C.class);
+			return getGoldpayOrderIdS2C.getPayOrderId();
+		}
+		
+		return null;
+		
 	}
 
 	public GoldpayTransaction4FeeS2C goldpayTransaction4fee(GoldpayTransaction4FeeC2S param) {
@@ -115,11 +124,17 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 				JsonBinder.getInstance().toJson(param));
 
 		logger.info("result : {}", result);
+		
+		if(StringUtils.isNotBlank(result)){
+			GoldpayTransaction4FeeS2C goldpayTransaction4FeeS2C = JsonBinder.getInstanceNonNull().fromJson(result,
+					GoldpayTransaction4FeeS2C.class);
 
-		GoldpayTransaction4FeeS2C goldpayTransaction4FeeS2C = JsonBinder.getInstanceNonNull().fromJson(result,
-				GoldpayTransaction4FeeS2C.class);
+			return goldpayTransaction4FeeS2C;
+		}
+		
+		return null;
 
-		return goldpayTransaction4FeeS2C;
+		
 	}
 
 //	@Override
@@ -499,10 +514,14 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 
 		logger.info("result : {}", result);
 
-		ConfirmTransactionS2C confirmTransactionS2C = JsonBinder.getInstanceNonNull().fromJson(result,
-				ConfirmTransactionS2C.class);
+		if(StringUtils.isNotBlank(result)){
+			ConfirmTransactionS2C confirmTransactionS2C = JsonBinder.getInstanceNonNull().fromJson(result,
+					ConfirmTransactionS2C.class);
 
-		return confirmTransactionS2C.getRetCode();
+			return confirmTransactionS2C.getRetCode();
+		}
+		
+		return -1;
 
 	}
 	

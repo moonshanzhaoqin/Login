@@ -278,6 +278,7 @@ public class CampaignManagerImpl implements CampaignManager {
 		User system = userDAO.getSystemUser();
 
 		String goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
+		
 		/* 生成订单 */
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
 		Transfer transfer = new Transfer();

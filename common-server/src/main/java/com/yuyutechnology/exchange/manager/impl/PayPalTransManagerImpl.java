@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,6 +135,12 @@ public class PayPalTransManagerImpl implements PayPalTransManager {
 		
 		
 		String goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
+		
+		if(!StringUtils.isNotBlank(goldpayOrderId)){
+			result.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST);
+			result.put("msg", "Not generated goldpayId");
+			return result;
+		}
 
 		// 生成TransId
 		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);

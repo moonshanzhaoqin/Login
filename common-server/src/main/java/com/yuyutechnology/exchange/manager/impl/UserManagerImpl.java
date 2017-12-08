@@ -558,6 +558,9 @@ public class UserManagerImpl implements UserManager {
 			String goldpayOrderId = null;
 			if (ServerConsts.CURRENCY_OF_GOLDPAY.equals(unregistered.getCurrency())) {
 				goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
+				if(!StringUtils.isNotBlank(goldpayOrderId)){
+					return ;
+				}
 			}
 
 			// walletDAO.updateWalletByUserIdAndCurrency(systemUserId,
