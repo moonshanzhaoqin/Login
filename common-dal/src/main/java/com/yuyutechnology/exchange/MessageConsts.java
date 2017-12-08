@@ -151,5 +151,6 @@ public class MessageConsts {
 	public static final String EXCESS_BUDGET = "EXCESS_BUDGET";
 	public static final String INVITERCODE_INCORRECT = "INVITERCODE_INCORRECT";
 	public static final String TRANSFER_GOLDPAYTRANS_FAIL = "TRANSFER_GOLDPAYTRANS_FAIL";
+	public static final String WITHDRAW_GOLD_OFF = "WITHDRAW_GOLD_OFF";
 
 }

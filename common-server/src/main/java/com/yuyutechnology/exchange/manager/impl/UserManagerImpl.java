@@ -122,8 +122,11 @@ public class UserManagerImpl implements UserManager {
 	private void bindGoldpay(String areaCode, String userPhone, String userName, Integer userId) {
 		/* 创建Goldpay账号 */
 		GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.createGoldpay(areaCode, userPhone, userName, true);
-		bindDAO.updateBind(
-				new Bind(userId, goldpayUser.getId() + "", goldpayUser.getUsername(), goldpayUser.getAccountNum()));
+		if(goldpayUser == null){
+			bindDAO.updateBind(
+					new Bind(userId, goldpayUser.getId() + "", goldpayUser.getUsername(), goldpayUser.getAccountNum()));
+		}
+
 	}
 
 	@Override
@@ -558,6 +561,9 @@ public class UserManagerImpl implements UserManager {
 			String goldpayOrderId = null;
 			if (ServerConsts.CURRENCY_OF_GOLDPAY.equals(unregistered.getCurrency())) {
 				goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
+				if(!StringUtils.isNotBlank(goldpayOrderId)){
+					return ;
+				}
 			}
 
 			// walletDAO.updateWalletByUserIdAndCurrency(systemUserId,
