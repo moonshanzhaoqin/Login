@@ -41,14 +41,18 @@ public class WalletController {
 		HashMap<String, BigDecimal> result = walletManager.getTotalAmoutGold(sessionData.getUserId());
 
 		if (result != null) {
-			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			rep.setAmountOfGold(result.get("goldAmount").doubleValue());
 			rep.setAmountOfGoldOz(result.get("goldAmountOz").doubleValue());
 		} else {
-			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-			rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+			
+			rep.setAmountOfGold(0d);
+			rep.setAmountOfGoldOz(0d);
+//			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+//			rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 		}
+		
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 
 		return rep;
 	}
