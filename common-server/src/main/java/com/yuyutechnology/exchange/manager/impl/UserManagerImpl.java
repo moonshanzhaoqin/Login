@@ -122,9 +122,11 @@ public class UserManagerImpl implements UserManager {
 	private void bindGoldpay(String areaCode, String userPhone, String userName, Integer userId) {
 		/* 创建Goldpay账号 */
 		GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.createGoldpay(areaCode, userPhone, userName, true);
-		if(goldpayUser == null){
+		if (goldpayUser!=null) {
 			bindDAO.updateBind(
 					new Bind(userId, goldpayUser.getId() + "", goldpayUser.getUsername(), goldpayUser.getAccountNum()));
+		}else {
+			throw new RuntimeException("goldpay user wrong!");
 		}
 
 	}
