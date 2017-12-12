@@ -139,7 +139,7 @@ public class UserManagerImpl implements UserManager {
 		user.setUserPhone(userPhone);
 		userDAO.updateUser(user);
 		redisDAO.saveData("changephonetime" + userId, new Date().getTime());
-		redisDAO.expireAtData("changephonetime" + userId, DateFormatUtils.getIntervalDay(new Date(), configManager.getConfigLongValue(ConfigKeyEnum.CHANGEPHONETIME, 10l).intValue()));
+//		redisDAO.expireAtData("changephonetime" + userId, DateFormatUtils.getIntervalDay(new Date(), configManager.getConfigLongValue(ConfigKeyEnum.CHANGEPHONETIME, 10l).intValue()));
 		/* 根据Unregistered表 更新新用户钱包 将资金从系统帐户划给新用户 */
 		updateWalletsFromUnregistered(userId, areaCode, userPhone, user.getUserName());
 	}
