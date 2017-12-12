@@ -19,6 +19,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.druid.sql.visitor.functions.If;
+import com.github.stuxuhai.jpinyin.PinyinException;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
@@ -64,6 +66,7 @@ import com.yuyutechnology.exchange.util.LanguageUtils;
 import com.yuyutechnology.exchange.util.LanguageUtils.Language;
 import com.yuyutechnology.exchange.util.MathUtils;
 import com.yuyutechnology.exchange.util.PasswordUtils;
+import com.yuyutechnology.exchange.util.PinyinUtils;
 import com.yuyutechnology.exchange.util.ResourceUtils;
 
 @Service
@@ -126,13 +129,12 @@ public class UserManagerImpl implements UserManager {
 	private void bindGoldpay(String areaCode, String userPhone, String userName, Integer userId) {
 		/* 创建Goldpay账号 */
 		GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.createGoldpay(areaCode, userPhone, userName, true);
-		if (goldpayUser!=null) {
+		if (goldpayUser != null) {
 			bindDAO.updateBind(
 					new Bind(userId, goldpayUser.getId() + "", goldpayUser.getUsername(), goldpayUser.getAccountNum()));
-		}else {
+		} else {
 			throw new RuntimeException("goldpay user wrong!");
 		}
-		
 
 	}
 
@@ -338,7 +340,10 @@ public class UserManagerImpl implements UserManager {
 			friendDTO.setAreaCode(friend.getUser().getAreaCode());
 			friendDTO.setPhone(friend.getUser().getUserPhone());
 			friendDTO.setName(friend.getUser().getUserName());
-			friendDTO.setInitial(friend.getUser().getNamePinyin().charAt(0));
+			char initial = friend.getUser().getNamePinyin().toUpperCase().charAt(0);
+			logger.info("initial letter: {}", initial);
+			friendDTO.setInitial(Character.isDigit(initial) ? '#' : initial);
+			friendDTOs.add(friendDTO);
 		}
 
 		return friendDTOs;
@@ -409,7 +414,7 @@ public class UserManagerImpl implements UserManager {
 		String passwordSalt = DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(6));
 		logger.info("Randomly generated salt values : salt={}", passwordSalt);
 		/* 添加用户 */
-		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName,
+		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName, PinyinUtils.toPinyin(userName),
 				PasswordUtils.encrypt(userPassword, passwordSalt), new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER,
 				ServerConsts.USER_AVAILABLE_OF_AVAILABLE, ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE,
 				ServerConsts.PAY_AVAILABLE_OF_AVAILABLE, passwordSalt, LanguageUtils.standard(language)));
@@ -518,6 +523,7 @@ public class UserManagerImpl implements UserManager {
 	public void updateUserName(Integer userId, String newUserName) {
 		User user = userDAO.getUser(userId);
 		user.setUserName(newUserName);
+		user.setNamePinyin(PinyinUtils.toPinyin(newUserName));
 		userDAO.updateUser(user);
 	}
 
@@ -709,9 +715,8 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public boolean isNewDevice(Integer userId, String deviceId) {
 		if (deviceId.equals(ResourceUtils.getBundleValue4String("device.id.web", "WEB"))) {
-			return true;
+			return false;
 		}
-
 		return userDeviceDAO.getUserDeviceByUserIdAndDeviceId(userId, deviceId) == null ? true : false;
 	}
 

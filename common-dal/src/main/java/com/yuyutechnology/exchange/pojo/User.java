@@ -51,11 +51,12 @@ public class User implements java.io.Serializable {
 	public User() {
 	}
 
-	public User(String areaCode, String userPhone, String userName, String userPassword, Date createTime, int userType,
+	public User(String areaCode, String userPhone, String userName, String namePinyin, String userPassword, Date createTime, int userType,
 			int userAvailable, int loginAvailable, int payAvailable, String passwordSalt, Language pushTag) {
 		this.areaCode = areaCode;
 		this.userPhone = userPhone;
 		this.userName = userName;
+		this.namePinyin = namePinyin;
 		this.userPassword = userPassword;
 		this.createTime = createTime;
 		this.userType = userType;

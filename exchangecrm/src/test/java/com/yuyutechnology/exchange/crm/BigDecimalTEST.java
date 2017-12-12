@@ -8,7 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class BigDecimalTEST extends BaseSpringJunit4 {
-	public static Logger logger = LogManager.getLogger(AdminTest.class);
+	public static Logger logger = LogManager.getLogger(BigDecimalTEST.class);
 
 	@Test
 	public void divideTEST() {

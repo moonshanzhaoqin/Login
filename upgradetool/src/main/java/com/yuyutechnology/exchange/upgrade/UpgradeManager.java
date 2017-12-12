@@ -28,6 +28,7 @@ import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.util.LanguageUtils.Language;
 import com.yuyutechnology.exchange.util.MathUtils;
 import com.yuyutechnology.exchange.util.PasswordUtils;
+import com.yuyutechnology.exchange.util.PinyinUtils;
 
 /**
  * @author silent.sun
@@ -53,34 +54,45 @@ public class UpgradeManager {
 	@Autowired
 	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
 	
-	public void registerAccount(String areaCode, String userPhone, String userName, String userPassword, int userType) {
-		if (userType == ServerConsts.USER_TYPE_OF_FEE && userDAO.getFeeUser() != null) {
-			return;
+//	public void registerAccount(String areaCode, String userPhone, String userName, String userPassword, int userType) {
+//		if (userType == ServerConsts.USER_TYPE_OF_FEE && userDAO.getFeeUser() != null) {
+//			return;
+//		}
+//		if (userType == ServerConsts.USER_TYPE_OF_FROZEN && userDAO.getFrozenUser() != null) {
+//			return;
+//		}
+//		if (userType == ServerConsts.USER_TYPE_OF_RECOVERY && userDAO.getRecoveryUser() != null) {
+//			return;
+//		}
+//		/* 随机生成盐值 */
+//		String passwordSalt = DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(6));
+//		logger.info("Randomly generated salt values : salt={}", passwordSalt);
+//		/* 添加用户 */
+//		Integer userId = userDAO.addUser(
+//				new User(areaCode, userPhone, userName, PasswordUtils.encrypt(userPassword, passwordSalt), new Date(),
+//						userType, ServerConsts.USER_AVAILABLE_OF_AVAILABLE, ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE,
+//						ServerConsts.PAY_AVAILABLE_OF_AVAILABLE, passwordSalt, Language.en_US));
+//		logger.info("Add user complete!");
+//		/* 添加钱包信息 */
+//		logger.info("New wallets for newly registered user {}==>", userId);
+//		List<Currency> currencies = commonManager.getCurrentCurrencies();
+//		for (Currency currency : currencies) {
+//			walletDAO.addwallet(new Wallet(currency, userId, BigDecimal.ZERO, new Date(), 0));
+//		}
+//		/* 创建Goldpay账号 */
+//		GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.createGoldpay(areaCode, userPhone, userName, true);
+//		bindDAO.updateBind(
+//				new Bind(userId, goldpayUser.getId() + "", goldpayUser.getUsername(), goldpayUser.getAccountNum()));
+//	}
+	
+	
+	public void userNameToPinyin() {
+		logger.info("=============UserNameToPinyin Start==================");
+		List<User> users = userDAO.listAllUser();
+		for (User user : users) {
+			user.setNamePinyin(PinyinUtils.toPinyin(user.getUserName()));
+			userDAO.updateUser(user);
 		}
-		if (userType == ServerConsts.USER_TYPE_OF_FROZEN && userDAO.getFrozenUser() != null) {
-			return;
-		}
-		if (userType == ServerConsts.USER_TYPE_OF_RECOVERY && userDAO.getRecoveryUser() != null) {
-			return;
-		}
-		/* 随机生成盐值 */
-		String passwordSalt = DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(6));
-		logger.info("Randomly generated salt values : salt={}", passwordSalt);
-		/* 添加用户 */
-		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName,
-				PasswordUtils.encrypt(userPassword, passwordSalt), new Date(), userType,
-				ServerConsts.USER_AVAILABLE_OF_AVAILABLE, ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE,
-				ServerConsts.PAY_AVAILABLE_OF_AVAILABLE, passwordSalt, Language.en_US));
-		logger.info("Add user complete!");
-		/* 添加钱包信息 */
-		logger.info("New wallets for newly registered user {}==>", userId);
-		List<Currency> currencies = commonManager.getCurrentCurrencies();
-		for (Currency currency : currencies) {
-			walletDAO.addwallet(new Wallet(currency, userId, BigDecimal.ZERO, new Date(), 0));
-		}
-		/* 创建Goldpay账号 */
-		GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.createGoldpay(areaCode, userPhone, userName, true);
-		bindDAO.updateBind(
-				new Bind(userId, goldpayUser.getId() + "", goldpayUser.getUsername(), goldpayUser.getAccountNum()));
+		logger.info("=============UserNameToPinyin End==================");
 	}
 }
