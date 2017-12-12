@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.management.RuntimeErrorException;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -124,10 +126,13 @@ public class UserManagerImpl implements UserManager {
 	private void bindGoldpay(String areaCode, String userPhone, String userName, Integer userId) {
 		/* 创建Goldpay账号 */
 		GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.createGoldpay(areaCode, userPhone, userName, true);
-		if (goldpayUser == null) {
+		if (goldpayUser!=null) {
 			bindDAO.updateBind(
 					new Bind(userId, goldpayUser.getId() + "", goldpayUser.getUsername(), goldpayUser.getAccountNum()));
+		}else {
+			throw new RuntimeException("goldpay user wrong!");
 		}
+		
 
 	}
 
@@ -703,6 +708,10 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public boolean isNewDevice(Integer userId, String deviceId) {
+		if (deviceId.equals(ResourceUtils.getBundleValue4String("device.id.web", "WEB"))) {
+			return true;
+		}
+
 		return userDeviceDAO.getUserDeviceByUserIdAndDeviceId(userId, deviceId) == null ? true : false;
 	}
 
