@@ -17,6 +17,9 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.WithdrawCalResult;
 import com.yuyutechnology.exchange.dto.WithdrawDTO;
 import com.yuyutechnology.exchange.dto.WithdrawDetailDTO;
+import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
+import com.yuyutechnology.exchange.manager.CommonManager;
+import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.manager.WithdrawManager;
 import com.yuyutechnology.exchange.server.controller.request.GetWithdrawDetailRequset;
@@ -42,6 +45,8 @@ public class WithdrawController {
 	UserManager userManager;
 	@Autowired
 	SessionManager sessionManager;
+	@Autowired
+	ConfigManager configManager;
 
 	@ResponseEncryptBody
 	@ApiOperation(value = "提现计算", httpMethod = "POST", notes = "")
@@ -54,7 +59,7 @@ public class WithdrawController {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
-		} else {
+		} else if (configManager.getConfigBooleanValue(ConfigKeyEnum.WITHDRAW_GOLD)) {
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			WithdrawCalResult result = withdrawManager.withdrawCalculate(sessionData.getUserId(),
 					withdrawCalculateRequset.getGoldBullion());
@@ -78,6 +83,10 @@ public class WithdrawController {
 				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 				break;
 			}
+		} else {
+			logger.info(MessageConsts.WITHDRAW_GOLD_OFF);
+			rep.setRetCode(RetCodeConsts.WITHDRAW_GOLD_OFF);
+			rep.setMessage(MessageConsts.WITHDRAW_GOLD_OFF);
 		}
 		return rep;
 	}
@@ -93,7 +102,8 @@ public class WithdrawController {
 			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
-		} else {
+		} else if (configManager.getConfigBooleanValue(ConfigKeyEnum.WITHDRAW_GOLD)) {
+
 			SessionData sessionData = SessionDataHolder.getSessionData();
 			if (sessionManager.validateCheckToken(sessionData.getUserId(), ServerConsts.PAYPWD_WITHDRAW,
 					withdrawConfirmRequset.getCheckToken())) {
@@ -122,6 +132,10 @@ public class WithdrawController {
 				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 			}
 
+		} else {
+			logger.info(MessageConsts.WITHDRAW_GOLD_OFF);
+			rep.setRetCode(RetCodeConsts.WITHDRAW_GOLD_OFF);
+			rep.setMessage(MessageConsts.WITHDRAW_GOLD_OFF);
 		}
 		return rep;
 	}
@@ -162,9 +176,9 @@ public class WithdrawController {
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
-			 SessionData sessionData = SessionDataHolder.getSessionData();
-			WithdrawDetailDTO withdrawDetailDTO = withdrawManager
-					.getWithdrawDetail(sessionData.getUserId(),getWithdrawDetailRequset.getWithdrawId());
+			SessionData sessionData = SessionDataHolder.getSessionData();
+			WithdrawDetailDTO withdrawDetailDTO = withdrawManager.getWithdrawDetail(sessionData.getUserId(),
+					getWithdrawDetailRequset.getWithdrawId());
 			if (withdrawDetailDTO == null) {
 				logger.info(MessageConsts.RET_CODE_FAILUE);
 				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
@@ -41,6 +42,7 @@ import com.yuyutechnology.exchange.server.controller.request.TestCodeRequest;
 import com.yuyutechnology.exchange.server.controller.response.ContactUsResponse;
 import com.yuyutechnology.exchange.server.controller.response.ForgetPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.FunctionalModulesAvailabilityResponse;
+import com.yuyutechnology.exchange.server.controller.response.GetFeeTemplateResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetVerificationCodeResponse;
 import com.yuyutechnology.exchange.server.controller.response.LoginResponse;
 import com.yuyutechnology.exchange.server.controller.response.LoginValidateResponse;
@@ -82,7 +84,7 @@ public class UserController {
 	FeeManager feeManager;
 
 	@ResponseEncryptBody
-	@ApiOperation(value = "功能模块的可用性", httpMethod = "POST", notes = "")
+	@ApiOperation(position = 0, value = "功能模块的可用性", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/functionalModulesAvailability", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public FunctionalModulesAvailabilityResponse functionalModulesAvailability() {
 		logger.info("========functionalModulesAvailability============");
@@ -93,19 +95,20 @@ public class UserController {
 		rep.setBankRechage(configManager.getConfigBooleanValue(ConfigKeyEnum.BANK_RECHARGE));
 		/* 提取金本开启状态 */
 		rep.setWithdrawGold(configManager.getConfigBooleanValue(ConfigKeyEnum.WITHDRAW_GOLD));
-		
+
 		rep.setGoldg2goldpay(configManager.getConfigLongValue(ConfigKeyEnum.GOLDG_TO_GOLDPAY, 10000L).intValue());
 		rep.setGoldbullion2goldg(configManager.getConfigLongValue(ConfigKeyEnum.GOLDBULLION_TO_GOLDG, 187L).intValue());
-		
+
 		logger.info(MessageConsts.RET_CODE_SUCCESS);
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
+
 	@ResponseEncryptBody
-	@ApiOperation(value = "手续费模板", httpMethod = "POST", notes = "")
+	@ApiOperation(position = 0,value = "手续费模板", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/getFeeTemplate", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public GetFeeTemplateResponse getFeeTemplate(@RequestDecryptBody GetFeeTemplateRequest  getFeeTemplateRequest) {
+	public GetFeeTemplateResponse getFeeTemplate(@RequestDecryptBody GetFeeTemplateRequest getFeeTemplateRequest) {
 		logger.info("========feeTemplate============");
 		GetFeeTemplateResponse rep = new GetFeeTemplateResponse();
 		rep.setFeeTemplate(feeManager.getFeeTemplateByPursose(getFeeTemplateRequest.getFeePurpose()));
@@ -124,7 +127,7 @@ public class UserController {
 	 * @return
 	 */
 	@ResponseEncryptBody
-	@ApiOperation(value = "忘记密码", httpMethod = "POST", notes = "")
+	@ApiOperation(value = "忘记密码", httpMethod = "POST", notes = "00003：参数错误<br>01002：手机号不存在<br>01009：账号冻结<br>01003：手机号与验证码不匹配")
 	@RequestMapping(value = "/forgetPassword", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public ForgetPasswordResponse forgetPassword(@RequestDecryptBody ForgetPasswordRequest forgetPasswordRequest,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -176,7 +179,7 @@ public class UserController {
 	 * @return
 	 */
 	@ResponseEncryptBody
-	@ApiOperation(value = "获取验证码", httpMethod = "POST", notes = "")
+	@ApiOperation(value = "获取验证码", httpMethod = "POST", notes = "00003：参数错误<br>01001：手机号已注册<br>00004：短信发送超过次数")
 	@RequestMapping(value = "/getVerificationCode", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
 	public GetVerificationCodeResponse getVerificationCode(
 			@RequestDecryptBody GetVerificationCodeRequest getVerificationCodeRequest, HttpServletRequest request,
@@ -421,8 +424,8 @@ public class UserController {
 						userManager.updateUser(userId, HttpClientUtils.getIP(request), registerRequest.getPushId(),
 								registerRequest.getLanguage());
 						/* 发放奖励金 */
-						campaignManager.grantBonus(userId,
-								registerRequest.getAreaCode(), registerRequest.getUserPhone());
+						campaignManager.grantBonus(userId, registerRequest.getAreaCode(),
+								registerRequest.getUserPhone());
 						/* 生成session Token */
 						SessionData sessionData = new SessionData(userId, UidUtils.genUid());
 						sessionManager.saveSessionData(sessionData);

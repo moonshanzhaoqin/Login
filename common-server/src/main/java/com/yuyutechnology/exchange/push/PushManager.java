@@ -346,7 +346,7 @@ public class PushManager {
 	 */
 
 	@Async
-	public void push4WithdrawRefund(User user, BigDecimal amount, String currency) {
+	public void push4WithdrawRefund(User user, BigDecimal amount, String currency,String transferId) {
 		String title = titleChoose("withdraw_refund", user.getPushTag());
 		String body = templateChoose("withdraw_refund", user.getPushTag())
 				.replace(PUSH_REPLACE_AMOUNT,
@@ -355,6 +355,8 @@ public class PushManager {
 				.replace(PUSH_REPLACE_CURRENCY, commonManager.getCurreny(currency).getCurrencyUnit());
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "withdraw_refund");
+		ext.put("transferId", transferId);
+		ext.put("userId", user.getUserId().toString());
 		pushToCustom(user.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 	}
 
@@ -367,7 +369,7 @@ public class PushManager {
 	 */
 
 	@Async
-	public void push4WithdrawRefundFee(User user, BigDecimal amount, String currency) {
+	public void push4WithdrawRefundFee(User user, BigDecimal amount, String currency,String transferId) {
 		String title = titleChoose("withdraw_refund_fee", user.getPushTag());
 		String body = templateChoose("withdraw_refund_fee", user.getPushTag()).replace(PUSH_REPLACE_AMOUNT,
 				currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? GDQ.format(amount)
@@ -375,6 +377,8 @@ public class PushManager {
 		.replace(PUSH_REPLACE_CURRENCY, commonManager.getCurreny(currency).getCurrencyUnit());
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "withdraw_refund_fee");
+		ext.put("transferId", transferId);
+		ext.put("userId", user.getUserId().toString());
 		pushToCustom(user.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 	}
 

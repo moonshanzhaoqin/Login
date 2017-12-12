@@ -2,10 +2,16 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 public class ForgetPasswordRequest {
+	@ApiModelProperty(value="国家码",required=true)
 	private String areaCode;
+	@ApiModelProperty(value="手机号",required=true)
 	private String userPhone;
+	@ApiModelProperty(value="验证码",required=true)
 	private String verificationCode;
+	@ApiModelProperty(value="新登录密码",required=true)
 	private String newPassword;
 
 	public String getAreaCode() {

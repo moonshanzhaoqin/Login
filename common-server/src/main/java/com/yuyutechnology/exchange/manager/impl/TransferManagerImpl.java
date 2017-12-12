@@ -484,6 +484,11 @@ public class TransferManagerImpl implements TransferManager {
 		
 		if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(currency)){
 			String goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
+			if(!StringUtils.isNotBlank(goldpayOrderId)){
+				map.put("retCode", RetCodeConsts.TRANSFER_GOLDPAYTRANS_ORDERID_NOT_EXIST);
+				map.put("msg", "Not generated goldpayId");
+				return map;
+			}
 			transfer.setGoldpayOrderId(goldpayOrderId);
 		}
 		
@@ -710,14 +715,15 @@ public class TransferManagerImpl implements TransferManager {
 		
 		//手续费订单生成
 		if(isFeeDeduction){
-			
 			//判断手续费是否
 			if(feepayerId == payeeId){
-				if(checkManager.isInsufficientBalance(feepayerId, ServerConsts.CURRENCY_OF_GOLDPAY, fee) 
-						|| amount.compareTo(fee) < 0){
-					map.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
-					map.put("msg", "Current balance is insufficient");
-					return map;
+				if(amount.subtract(fee).compareTo(BigDecimal.ZERO) < 0){
+					if(checkManager.isInsufficientBalance(feepayerId, ServerConsts.CURRENCY_OF_GOLDPAY, fee.subtract(amount)) 
+							|| amount.compareTo(fee) < 0){
+						map.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+						map.put("msg", "Current balance is insufficient");
+						return map;
+					}
 				}
 			}
 			
@@ -885,6 +891,9 @@ public class TransferManagerImpl implements TransferManager {
 		String goldpayOrderId = null;
 		if (ServerConsts.CURRENCY_OF_GOLDPAY.equals(transfer.getCurrency())) {
 			goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
+			if(!StringUtils.isNotBlank(goldpayOrderId)){
+				return null;
+			}
 		}
 
 		// 生成transfer系统退款订单

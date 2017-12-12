@@ -3,15 +3,22 @@
  */
 package com.yuyutechnology.exchange.server.controller.response;
 
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
 /**
  * @author suzan.wu
  *
  */
 public class FunctionalModulesAvailabilityResponse extends BaseResponse {
+	@ApiModelProperty(value = "Paypal开启状态")
 	private boolean paypalRecharge;
+	@ApiModelProperty(value = "银行汇款开启状态 ")
 	private boolean bankRechage;
+	@ApiModelProperty(value = "提取金本开启状态 ")
 	private boolean withdrawGold;
+	@ApiModelProperty(value = "1根金条对应的黄金克数")
 	private int goldbullion2goldg;
+	@ApiModelProperty(value = "1g黄金对应的Goldpay数量")
 	private int goldg2goldpay;
 
 	public boolean isPaypalRecharge() {
@@ -53,7 +60,5 @@ public class FunctionalModulesAvailabilityResponse extends BaseResponse {
 	public void setGoldg2goldpay(int goldg2goldpay) {
 		this.goldg2goldpay = goldg2goldpay;
 	}
-
-
 
 }

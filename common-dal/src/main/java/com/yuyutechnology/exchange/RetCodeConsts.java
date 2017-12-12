@@ -268,6 +268,11 @@ public class RetCodeConsts {
 	 * PayPal关闭
 	 */
 	public static final String PAYPAL_RECHARGE_OFF = "03030";
+	
+	/**
+	 *提取金条关闭 
+	 */
+	public static final String WITHDRAW_GOLD_OFF = "03031";
 
 	// crm 管理员04
 	/**
@@ -284,6 +289,7 @@ public class RetCodeConsts {
 	 * 币种已存在
 	 */
 	public static final String CURRENCY_IS_EXIST = "05001";
+	
 
 
 	static {
