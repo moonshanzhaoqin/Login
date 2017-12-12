@@ -330,7 +330,10 @@ public class UserManagerImpl implements UserManager {
 
 		for (Friend friend : friends) {
 			FriendDTO friendDTO = new FriendDTO();
-			// TODO
+			friendDTO.setAreaCode(friend.getUser().getAreaCode());
+			friendDTO.setPhone(friend.getUser().getUserPhone());
+			friendDTO.setName(friend.getUser().getUserName());
+			friendDTO.setInitial(friend.getUser().getNamePinyin().charAt(0));
 		}
 
 		return friendDTOs;
