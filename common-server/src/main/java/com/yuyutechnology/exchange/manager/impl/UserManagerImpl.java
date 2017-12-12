@@ -2,6 +2,7 @@ package com.yuyutechnology.exchange.manager.impl;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.UserDeviceDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
+import com.yuyutechnology.exchange.dto.FriendDTO;
 import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.CheckPWDStatus;
@@ -122,7 +124,7 @@ public class UserManagerImpl implements UserManager {
 	private void bindGoldpay(String areaCode, String userPhone, String userName, Integer userId) {
 		/* 创建Goldpay账号 */
 		GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.createGoldpay(areaCode, userPhone, userName, true);
-		if(goldpayUser == null){
+		if (goldpayUser == null) {
 			bindDAO.updateBind(
 					new Bind(userId, goldpayUser.getId() + "", goldpayUser.getUsername(), goldpayUser.getAccountNum()));
 		}
@@ -321,9 +323,17 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public List<Friend> getFriends(Integer userId) {
+	public List<FriendDTO> getFriends(Integer userId) {
+
+		List<FriendDTO> friendDTOs = new ArrayList<>();
 		List<Friend> friends = friendDAO.getFriendsByUserId(userId);
-		return friends;
+
+		for (Friend friend : friends) {
+			FriendDTO friendDTO = new FriendDTO();
+			// TODO
+		}
+
+		return friendDTOs;
 	}
 
 	@Override
@@ -453,7 +463,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void updateUser(Integer userId, String loginIp, String pushId, String language) {
-		logger.info("Update USER {} login information -->",userId);
+		logger.info("Update USER {} login information -->", userId);
 		User user = userDAO.getUser(userId);
 		if (user == null) {
 			return;
@@ -485,8 +495,9 @@ public class UserManagerImpl implements UserManager {
 		userDAO.updateUser(user);
 
 		/* 清除其他账号的此pushId */
-		if (StringUtils.isNotBlank(pushId)){
-		clearPushId(userId, pushId);}
+		if (StringUtils.isNotBlank(pushId)) {
+			clearPushId(userId, pushId);
+		}
 	}
 
 	private void clearPushId(Integer userId, String pushId) {
@@ -561,8 +572,8 @@ public class UserManagerImpl implements UserManager {
 			String goldpayOrderId = null;
 			if (ServerConsts.CURRENCY_OF_GOLDPAY.equals(unregistered.getCurrency())) {
 				goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
-				if(!StringUtils.isNotBlank(goldpayOrderId)){
-					return ;
+				if (!StringUtils.isNotBlank(goldpayOrderId)) {
+					return;
 				}
 			}
 
@@ -602,10 +613,10 @@ public class UserManagerImpl implements UserManager {
 			// unregistered.getAmount(), "+",
 			// ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
 
-			transDetailsManager.addTransDetails(transferId, userId, payer.getUserId(), 
-					payer.getUserName(),payer.getAreaCode(), payer.getUserPhone(), 
-					unregistered.getCurrency(), unregistered.getAmount(),BigDecimal.ZERO,null,
-					payerTransfer.getTransferComment(), ServerConsts.TRANSFER_TYPE_TRANSACTION - 1);
+			transDetailsManager.addTransDetails(transferId, userId, payer.getUserId(), payer.getUserName(),
+					payer.getAreaCode(), payer.getUserPhone(), unregistered.getCurrency(), unregistered.getAmount(),
+					BigDecimal.ZERO, null, payerTransfer.getTransferComment(),
+					ServerConsts.TRANSFER_TYPE_TRANSACTION - 1);
 
 			/* 更改unregistered状态 */
 			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
@@ -730,27 +741,27 @@ public class UserManagerImpl implements UserManager {
 		}
 		return null;
 	}
-	
+
 	@Override
-	public User getUserById(Integer userId){
+	public User getUserById(Integer userId) {
 		User user = userDAO.getUser(userId);
 		return user;
 	}
-	
+
 	@Override
-	public Integer getSystemUserId(){
+	public Integer getSystemUserId() {
 		return userDAO.getSystemUser().getUserId();
 	}
-	
+
 	@Override
-	public User getUserByPhone(String areaCode,String phone){
+	public User getUserByPhone(String areaCode, String phone) {
 		return userDAO.getUserByUserPhone(areaCode, phone);
 	}
 
 	@Override
 	public void updateHappyLivesVIP(String happyLivesId, Integer userId) {
 		Bind bind = bindDAO.getBind(userId);
-		if (bind != null){
+		if (bind != null) {
 			bindDAO.clearHappyLivesId(happyLivesId);
 			bind.setHappyLivesId(happyLivesId);
 			bindDAO.updateBind(bind);
@@ -768,7 +779,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void updatePayToken(int userId, String userPayToken) {
-		User user=userDAO.getUser(userId);
+		User user = userDAO.getUser(userId);
 		user.setUserPayToken(userPayToken);
 		userDAO.updateUser(user);
 	}

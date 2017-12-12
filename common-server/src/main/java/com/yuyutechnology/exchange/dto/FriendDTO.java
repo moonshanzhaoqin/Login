@@ -1,4 +1,4 @@
-package com.yuyutechnology.exchange.server.controller.dto;
+package com.yuyutechnology.exchange.dto;
 
 public class FriendDTO {
 

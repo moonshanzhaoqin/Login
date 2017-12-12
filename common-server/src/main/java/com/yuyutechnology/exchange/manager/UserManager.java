@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.List;
 
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
+import com.yuyutechnology.exchange.dto.FriendDTO;
 import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
@@ -83,7 +84,7 @@ public interface UserManager {
 	 * @param userId
 	 * @return
 	 */
-	List<Friend> getFriends(Integer userId);
+	List<FriendDTO> getFriends(Integer userId);
 
 	/**
 	 * 添加好友

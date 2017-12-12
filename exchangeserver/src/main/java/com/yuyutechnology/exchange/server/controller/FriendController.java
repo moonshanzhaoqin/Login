@@ -1,8 +1,5 @@
 package com.yuyutechnology.exchange.server.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +12,6 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.manager.UserManager;
-import com.yuyutechnology.exchange.pojo.Friend;
-import com.yuyutechnology.exchange.server.controller.dto.FriendDTO;
 import com.yuyutechnology.exchange.server.controller.request.AddFriendRequest;
 import com.yuyutechnology.exchange.server.controller.request.DeleteFriendRequest;
 import com.yuyutechnology.exchange.server.controller.response.AddFriendResponse;
@@ -104,14 +99,8 @@ public class FriendController {
 		logger.info("========friendsList : {}============", token);
 		FriendsListResponse rep = new FriendsListResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		List<FriendDTO> friendInfos = new ArrayList<FriendDTO>();
-		List<Friend> friends = userManager.getFriends(sessionData.getUserId());
-		for (Friend friend : friends) {
-			logger.info("friend={}", friend.toString());
-			friendInfos.add(new FriendDTO(friend.getUser().getAreaCode(), friend.getUser().getUserPhone(),
-					friend.getUser().getUserName()));
-		}
-		rep.setFriends(friendInfos);
+	
+		rep.setFriends(userManager.getFriends(sessionData.getUserId()));
 		logger.info("********Operation succeeded********");
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
