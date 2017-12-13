@@ -141,7 +141,7 @@ class ExchangeController {
 	
 	@ApiOperation(value = "获取Goldpay汇率")
 	@RequestMapping(method = RequestMethod.POST, value = "/exchange/getGoldRate4Page")
-	public @ResponseBody GetExchangeRateResponse getGoldRate4Page(@PathVariable String token) {
+	public @ResponseBody GetExchangeRateResponse getGoldRate4Page() {
 
 		GetExchangeRateResponse rep = new GetExchangeRateResponse();
 
