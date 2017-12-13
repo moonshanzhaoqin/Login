@@ -122,9 +122,11 @@ public class UserManagerImpl implements UserManager {
 	private void bindGoldpay(String areaCode, String userPhone, String userName, Integer userId) {
 		/* 创建Goldpay账号 */
 		GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.createGoldpay(areaCode, userPhone, userName, true);
-		if(goldpayUser == null){
+		if (goldpayUser!=null) {
 			bindDAO.updateBind(
 					new Bind(userId, goldpayUser.getId() + "", goldpayUser.getUsername(), goldpayUser.getAccountNum()));
+		}else {
+			throw new RuntimeException("goldpay user wrong!");
 		}
 
 	}
@@ -137,7 +139,7 @@ public class UserManagerImpl implements UserManager {
 		user.setUserPhone(userPhone);
 		userDAO.updateUser(user);
 		redisDAO.saveData("changephonetime" + userId, new Date().getTime());
-		redisDAO.expireAtData("changephonetime" + userId, DateFormatUtils.getIntervalMinute(new Date(), 1));
+//		redisDAO.expireAtData("changephonetime" + userId, DateFormatUtils.getIntervalDay(new Date(), configManager.getConfigLongValue(ConfigKeyEnum.CHANGEPHONETIME, 10l).intValue()));
 		/* 根据Unregistered表 更新新用户钱包 将资金从系统帐户划给新用户 */
 		updateWalletsFromUnregistered(userId, areaCode, userPhone, user.getUserName());
 	}
