@@ -147,9 +147,6 @@ class ExchangeController {
 
 		LinkedHashMap<String, Double> result = oandaRatesManager
 				.getExchangeRateDiffLeft4OneRight(ServerConsts.CURRENCY_OF_GOLDPAY);
-
-		result.remove(ServerConsts.CURRENCY_OF_CNY);
-
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		rep.setBase(ServerConsts.CURRENCY_OF_GOLDPAY);

@@ -177,16 +177,16 @@
 		</dependency>
 		<!-- PayPal -->
 		<dependency>
-		  <groupId>com.braintreepayments.gateway</groupId>
-		  <artifactId>braintree-java</artifactId>
-		  <version>2.72.0</version>
+		  	<groupId>com.braintreepayments.gateway</groupId>
+		  	<artifactId>braintree-java</artifactId>
+		  	<version>2.72.0</version>
 		</dependency>
 		<!-- jpinyin: 中文转拼音-->
 		<dependency>
-       <groupId>com.github.stuxuhai</groupId>
-       <artifactId>jpinyin</artifactId>
-       <version>1.1.8</version>
-    </dependency>
+       		<groupId>com.github.stuxuhai</groupId>
+       		<artifactId>jpinyin</artifactId>
+       		<version>1.1.8</version>
+    	</dependency>
 	</dependencies>
 	<modules>
 		<module>common-server</module>
