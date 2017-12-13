@@ -16,13 +16,13 @@ import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
-import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.CheckManager;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.pojo.Currency;
+import com.yuyutechnology.exchange.pojo.GoldpayAccount;
 import com.yuyutechnology.exchange.pojo.TransactionNotification;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.pojo.User;
@@ -54,7 +54,7 @@ public class CheckManagerImpl implements CheckManager {
 	public boolean isInsufficientBalance(Integer userId, String currency, BigDecimal amount) {
 		logger.info("check the balance is sufficient -->");
 		if (currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
-			GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.getGoldpayUserInfo(userId);
+			GoldpayAccount goldpayUser = goldpayTrans4MergeManager.getGoldpayUserAccount(userId);
 			if ((null == goldpayUser || null == goldpayUser.getBalance())
 					|| new BigDecimal(goldpayUser.getBalance() + "").compareTo(amount) == -1) {
 				logger.warn("Current balance is insufficient");

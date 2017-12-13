@@ -24,16 +24,14 @@ import com.yuyutechnology.exchange.goldpay.msg.CreateGoldpayC2S;
 import com.yuyutechnology.exchange.goldpay.msg.CreateGoldpayS2C;
 import com.yuyutechnology.exchange.goldpay.msg.GetGoldpayOrderIdC2S;
 import com.yuyutechnology.exchange.goldpay.msg.GetGoldpayOrderIdS2C;
-import com.yuyutechnology.exchange.goldpay.msg.GetGoldpayUserC2S;
-import com.yuyutechnology.exchange.goldpay.msg.GetGoldpayUserS2C;
 import com.yuyutechnology.exchange.goldpay.msg.GoldpayTransaction4FeeC2S;
 import com.yuyutechnology.exchange.goldpay.msg.GoldpayTransaction4FeeS2C;
 import com.yuyutechnology.exchange.goldpay.msg.GoldpayTransactionC2S;
 import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.TransDetailsManager;
-import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Exchange;
+import com.yuyutechnology.exchange.pojo.GoldpayAccount;
 import com.yuyutechnology.exchange.pojo.Transfer;
 import com.yuyutechnology.exchange.util.HttpClientUtils;
 import com.yuyutechnology.exchange.util.JsonBinder;
@@ -77,23 +75,22 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 	}
 
 	@Override
-	public GoldpayUserDTO getGoldpayUserInfo(Integer exUserId) {
-		Bind bind = bindDAO.getBind(exUserId);
-		if (bind == null) {
-			return null;
-		}
-		GetGoldpayUserC2S param = new GetGoldpayUserC2S();
-		param.setAccountNum(bind.getGoldpayAcount());
-		String result = HttpClientUtils.sendPost(
-				ResourceUtils.getBundleValue4String("goldpay.url") + "member/getMemberInfo",
-				JsonBinder.getInstance().toJson(param));
-		
-		if(StringUtils.isNotBlank(result)){
-			GetGoldpayUserS2C getGoldpayUserS2C = JsonBinder.getInstanceNonNull().fromJson(result, GetGoldpayUserS2C.class);
-			return getGoldpayUserS2C.getGoldpayUserDTO();
-		}
-		
-		return null;
+	public GoldpayAccount getGoldpayUserAccount(Integer exUserId) {
+		return bindDAO.getGoldpayAccount(exUserId);
+//		Bind bind = bindDAO.getBind(exUserId);
+//		if (bind == null) {
+//			return null;
+//		}
+//		GetGoldpayUserC2S param = new GetGoldpayUserC2S();
+//		param.setAccountNum(bind.getGoldpayAcount());
+//		String result = HttpClientUtils.sendPost(
+//				ResourceUtils.getBundleValue4String("goldpay.url") + "member/getMemberInfo",
+//				JsonBinder.getInstance().toJson(param));
+//		
+//		if(StringUtils.isNotBlank(result)){
+//			GetGoldpayUserS2C getGoldpayUserS2C = JsonBinder.getInstanceNonNull().fromJson(result, GetGoldpayUserS2C.class);
+//			return getGoldpayUserS2C.getGoldpayUserDTO();
+//		}
 	}
 
 	@Override
@@ -247,8 +244,8 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 			}
 
 			// 获取交易双方goldpayaccount
-			GoldpayUserDTO payerAccount = getGoldpayUserInfo(transfer.getUserFrom());
-			GoldpayUserDTO payeeIdAccount = getGoldpayUserInfo(transfer.getUserTo());
+			GoldpayAccount payerAccount = getGoldpayUserAccount(transfer.getUserFrom());
+			GoldpayAccount payeeIdAccount = getGoldpayUserAccount(transfer.getUserTo());
 
 			if (payerAccount == null || payeeIdAccount == null) {
 				logger.error("error :  Account information does not exist");
@@ -264,7 +261,7 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 			param.setToAccountNum(payeeIdAccount.getAccountNum());
 			param.setBalance(transfer.getTransferAmount().longValue());
 			
-			GoldpayUserDTO feeAccount = getGoldpayUserInfo(feeTransfer.getUserTo());
+			GoldpayAccount feeAccount = getGoldpayUserAccount(feeTransfer.getUserTo());
 			
 			if (!StringUtils.isNotBlank(feeTransfer.getGoldpayOrderId())) {
 				logger.error("error : Not generated goldpayId");
@@ -323,8 +320,8 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 			}
 
 			// 获取交易双方goldpayaccount
-			GoldpayUserDTO payerAccount = getGoldpayUserInfo(transfer.getUserFrom());
-			GoldpayUserDTO payeeIdAccount = getGoldpayUserInfo(transfer.getUserTo());
+			GoldpayAccount payerAccount = getGoldpayUserAccount(transfer.getUserFrom());
+			GoldpayAccount payeeIdAccount = getGoldpayUserAccount(transfer.getUserTo());
 
 			if (payerAccount == null || payeeIdAccount == null) {
 				logger.error("error :  Account information does not exist");
@@ -454,8 +451,8 @@ public class GoldpayTrans4MergeManagerImpl implements GoldpayTrans4MergeManager 
 					return result;
 				}
 				// 获取交易双方goldpayaccount
-				GoldpayUserDTO payerAccount = getGoldpayUserInfo(payerId);
-				GoldpayUserDTO payeeIdAccount = getGoldpayUserInfo(payeeId);
+				GoldpayAccount payerAccount = getGoldpayUserAccount(payerId);
+				GoldpayAccount payeeIdAccount = getGoldpayUserAccount(payeeId);
 
 				if (payerAccount == null || payeeIdAccount == null) {
 					logger.error("error :  Account information does not exist");

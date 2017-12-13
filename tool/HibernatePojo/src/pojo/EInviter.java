@@ -1,5 +1,5 @@
 package pojo;
-// Generated Dec 12, 2017 2:47:01 PM by Hibernate Tools 5.2.6.Final
+// Generated Dec 13, 2017 10:49:46 AM by Hibernate Tools 4.0.0
 
 import java.math.BigDecimal;
 import javax.persistence.Column;

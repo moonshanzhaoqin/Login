@@ -23,7 +23,6 @@ import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
-import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
 import com.yuyutechnology.exchange.manager.CrmAlarmManager;
@@ -34,6 +33,7 @@ import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Exchange;
+import com.yuyutechnology.exchange.pojo.GoldpayAccount;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.util.DateFormatUtils;
@@ -125,7 +125,7 @@ public class ExchangeManagerImpl implements ExchangeManager {
 		// add by niklaus.chi at 2017-10-16
 		if (ServerConsts.CURRENCY_OF_GOLDPAY.equals(currencyOut)) {
 			//
-			GoldpayUserDTO dto = goldpayTrans4MergeManager.getGoldpayUserInfo(userId);
+			GoldpayAccount dto = goldpayTrans4MergeManager.getGoldpayUserAccount(userId);
 			if (dto == null || amountOut.compareTo(new BigDecimal(dto.getBalance() + "")) == 1) {
 				map.put("retCode", RetCodeConsts.EXCHANGE_OUTPUTAMOUNT_BIGGER_THAN_BALANCE);
 				map.put("msg", "The output amount is greater than the balance");

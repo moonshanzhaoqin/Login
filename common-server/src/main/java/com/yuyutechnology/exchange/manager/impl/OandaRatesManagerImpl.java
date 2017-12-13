@@ -19,8 +19,10 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.manager.CommonManager;
+import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.pojo.Currency;
+import com.yuyutechnology.exchange.pojo.GoldpayAccount;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.util.DateFormatUtils;
 import com.yuyutechnology.exchange.util.HttpClientUtils;
@@ -36,6 +38,8 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 	WalletDAO walletDAO;
 	@Autowired
 	CommonManager commonManager;
+	@Autowired
+	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
 
 	@Autowired
 	RedisDAO redisDAO;
@@ -206,7 +210,6 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 			return DateFormatUtils.fromString(time, "yyyy-MM-dd HH:mm:ss");
 		}
 		return new Date();
-
 	}
 
 	@Override
@@ -219,6 +222,10 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 				if (wallet.getCurrency().getCurrency().equals(ServerConsts.STANDARD_CURRENCY)) {
 					totalBalance = totalBalance.add(wallet.getBalance());
 				} else {
+					if (wallet.getCurrency().getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
+						GoldpayAccount goldpayAccount = goldpayTrans4MergeManager.getGoldpayUserAccount(userId);
+						wallet.setBalance(new BigDecimal(goldpayAccount.getBalance()));
+					}
 					totalBalance = totalBalance
 							.add(getDefaultCurrencyAmount(wallet.getCurrency().getCurrency(), wallet.getBalance()));
 				}
