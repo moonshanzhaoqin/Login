@@ -138,6 +138,27 @@ class ExchangeController {
 		return rep;
 
 	}
+	
+	@ApiOperation(value = "获取Goldpay汇率")
+	@RequestMapping(method = RequestMethod.POST, value = "/exchange/getGoldRate4Page")
+	public @ResponseBody GetExchangeRateResponse getGoldRate4Page(@PathVariable String token) {
+
+		GetExchangeRateResponse rep = new GetExchangeRateResponse();
+
+		LinkedHashMap<String, Double> result = oandaRatesManager
+				.getExchangeRateDiffLeft4OneRight(ServerConsts.CURRENCY_OF_GOLDPAY);
+
+		result.remove(ServerConsts.CURRENCY_OF_CNY);
+
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		rep.setBase(ServerConsts.CURRENCY_OF_GOLDPAY);
+		rep.setRateUpdateTime(oandaRatesManager.getExchangeRateUpdateDate());
+		rep.setExchangeRates(result);
+
+		return rep;
+
+	}
 
 	@ApiOperation(value = "兑换确认")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/exchangeConfirm")
