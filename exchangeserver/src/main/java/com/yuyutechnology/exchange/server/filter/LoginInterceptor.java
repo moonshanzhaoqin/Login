@@ -86,7 +86,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			logger.info("request URI:" + requestURI + " session : " + sessionId + "==>session ok");
 			sessionManager.refreshSessionDataExpireTime(sessionData);
 			return true;
-		} else if (requestURI.contains("/user/logout") || requestURI.contains("/exchange/getGoldRate4Page")) {
+		} else if (requestURI.contains("/user/logout")) {
 			logger.info("request URI:" + requestURI + " ok");
 			return true;
 		} else {
