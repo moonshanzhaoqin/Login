@@ -1,9 +1,11 @@
 package pojo;
-// Generated Dec 13, 2017 10:49:46 AM by Hibernate Tools 4.0.0
+// Generated Dec 14, 2017 3:09:15 PM by Hibernate Tools 5.2.6.Final
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
@@ -13,39 +15,26 @@ import javax.persistence.Table;
 @Table(name = "e_user_config", catalog = "anytime_exchange")
 public class EUserConfig implements java.io.Serializable {
 
-	private int userId;
-	private String userConfigValue;
+	private EUserConfigId id;
 
 	public EUserConfig() {
 	}
 
-	public EUserConfig(int userId) {
-		this.userId = userId;
+	public EUserConfig(EUserConfigId id) {
+		this.id = id;
 	}
 
-	public EUserConfig(int userId, String userConfigValue) {
-		this.userId = userId;
-		this.userConfigValue = userConfigValue;
+	@EmbeddedId
+
+	@AttributeOverrides({
+			@AttributeOverride(name = "userId", column = @Column(name = "user_id", precision = 22, scale = 0)),
+			@AttributeOverride(name = "userConfigValue", column = @Column(name = "user_config_value")) })
+	public EUserConfigId getId() {
+		return this.id;
 	}
 
-	@Id
-
-	@Column(name = "user_id", unique = true, nullable = false)
-	public int getUserId() {
-		return this.userId;
-	}
-
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
-
-	@Column(name = "user_config_value", length = 65535)
-	public String getUserConfigValue() {
-		return this.userConfigValue;
-	}
-
-	public void setUserConfigValue(String userConfigValue) {
-		this.userConfigValue = userConfigValue;
+	public void setId(EUserConfigId id) {
+		this.id = id;
 	}
 
 }

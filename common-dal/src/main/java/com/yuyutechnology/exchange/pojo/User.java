@@ -34,6 +34,7 @@ public class User implements java.io.Serializable {
 	private String userPhone;
 	private String userName;
 	private String namePinyin;
+	private String userPortrait;
 	private String userPassword;
 	private String userPayPwd;
 	private String userPayToken;
@@ -51,8 +52,9 @@ public class User implements java.io.Serializable {
 	public User() {
 	}
 
-	public User(String areaCode, String userPhone, String userName, String namePinyin, String userPassword, Date createTime, int userType,
-			int userAvailable, int loginAvailable, int payAvailable, String passwordSalt, Language pushTag) {
+	public User(String areaCode, String userPhone, String userName, String namePinyin, String userPassword,
+			Date createTime, int userType, int userAvailable, int loginAvailable, int payAvailable, String passwordSalt,
+			Language pushTag) {
 		this.areaCode = areaCode;
 		this.userPhone = userPhone;
 		this.userName = userName;
@@ -67,14 +69,15 @@ public class User implements java.io.Serializable {
 		this.pushTag = pushTag;
 	}
 
-	public User(String areaCode, String userPhone, String userName, String namePinyin, String userPassword,
-			String userPayPwd, String userPayToken, Date createTime, Date loginTime, String loginIp, int userType,
-			int userAvailable, int loginAvailable, int payAvailable, String passwordSalt, String pushId,
-			Language pushTag) {
+	public User(String areaCode, String userPhone, String userName, String namePinyin, String userPortrait,
+			String userPassword, String userPayPwd, String userPayToken, Date createTime, Date loginTime,
+			String loginIp, int userType, int userAvailable, int loginAvailable, int payAvailable, String passwordSalt,
+			String pushId, Language pushTag) {
 		this.areaCode = areaCode;
 		this.userPhone = userPhone;
 		this.userName = userName;
 		this.namePinyin = namePinyin;
+		this.userPortrait = userPortrait;
 		this.userPassword = userPassword;
 		this.userPayPwd = userPayPwd;
 		this.userPayToken = userPayToken;
@@ -135,6 +138,15 @@ public class User implements java.io.Serializable {
 
 	public void setNamePinyin(String namePinyin) {
 		this.namePinyin = namePinyin;
+	}
+
+	@Column(name = "user_portrait")
+	public String getUserPortrait() {
+		return this.userPortrait;
+	}
+
+	public void setUserPortrait(String userPortrait) {
+		this.userPortrait = userPortrait;
 	}
 
 	@Column(name = "user_password", nullable = false)

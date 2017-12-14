@@ -1,5 +1,5 @@
 package pojo;
-// Generated Dec 13, 2017 10:49:46 AM by Hibernate Tools 4.0.0
+// Generated Dec 14, 2017 3:09:15 PM by Hibernate Tools 5.2.6.Final
 
 import java.util.Date;
 import javax.persistence.Column;
@@ -25,6 +25,7 @@ public class EUser implements java.io.Serializable {
 	private String userPhone;
 	private String userName;
 	private String namePinyin;
+	private String userPortrait;
 	private String userPassword;
 	private String userPayPwd;
 	private String userPayToken;
@@ -57,14 +58,15 @@ public class EUser implements java.io.Serializable {
 		this.pushTag = pushTag;
 	}
 
-	public EUser(String areaCode, String userPhone, String userName, String namePinyin, String userPassword,
-			String userPayPwd, String userPayToken, Date createTime, Date loginTime, String loginIp, int userType,
-			int userAvailable, int loginAvailable, int payAvailable, String passwordSalt, String pushId,
-			String pushTag) {
+	public EUser(String areaCode, String userPhone, String userName, String namePinyin, String userPortrait,
+			String userPassword, String userPayPwd, String userPayToken, Date createTime, Date loginTime,
+			String loginIp, int userType, int userAvailable, int loginAvailable, int payAvailable, String passwordSalt,
+			String pushId, String pushTag) {
 		this.areaCode = areaCode;
 		this.userPhone = userPhone;
 		this.userName = userName;
 		this.namePinyin = namePinyin;
+		this.userPortrait = userPortrait;
 		this.userPassword = userPassword;
 		this.userPayPwd = userPayPwd;
 		this.userPayToken = userPayToken;
@@ -126,6 +128,15 @@ public class EUser implements java.io.Serializable {
 
 	public void setNamePinyin(String namePinyin) {
 		this.namePinyin = namePinyin;
+	}
+
+	@Column(name = "user_portrait")
+	public String getUserPortrait() {
+		return this.userPortrait;
+	}
+
+	public void setUserPortrait(String userPortrait) {
+		this.userPortrait = userPortrait;
 	}
 
 	@Column(name = "user_password", nullable = false)

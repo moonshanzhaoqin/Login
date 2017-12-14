@@ -5,8 +5,6 @@ package com.yuyutechnology.exchange.manager;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
-
 import com.yuyutechnology.exchange.dto.CampaignInfo;
 import com.yuyutechnology.exchange.dto.InviterInfo;
 import com.yuyutechnology.exchange.pojo.Collect;

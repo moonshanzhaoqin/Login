@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.management.RuntimeErrorException;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -19,8 +17,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.druid.sql.visitor.functions.If;
-import com.github.stuxuhai.jpinyin.PinyinException;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
@@ -343,6 +339,7 @@ public class UserManagerImpl implements UserManager {
 			char initial = friend.getUser().getNamePinyin().toUpperCase().charAt(0);
 			logger.info("initial letter: {}", initial);
 			friendDTO.setInitial(Character.isDigit(initial) ? '#' : initial);
+			friendDTO.setPortrait(friend.getUser().getUserPortrait());
 			friendDTOs.add(friendDTO);
 		}
 

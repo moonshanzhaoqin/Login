@@ -9,3 +9,8 @@ CREATE TABLE `g_account` (
   `account_id` VARCHAR(12) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE =FEDERATED CONNECTION='mysql://root:@127.0.0.1:3306/goldq/goldq_account';
+
+
+--2017/12/14 suzan
+ALTER TABLE `e_user`
+  ADD COLUMN `user_portrait` varchar(255) NULL DEFAULT NULL COMMENT '头像' AFTER `name_pinyin`;
