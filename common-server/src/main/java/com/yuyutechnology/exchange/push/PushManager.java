@@ -253,7 +253,7 @@ public class PushManager {
 		ext.put("userId", userTo.getUserId().toString());
 		pushToCustom(userTo.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 
-		// 新请求转账标记
+		// 转账标记
 		commonManager.addMsgFlag(userTo.getUserId(), 1);
 	}
 
@@ -301,6 +301,9 @@ public class PushManager {
 		ext.put("type", "refund");
 
 		pushToCustom(userFrom.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
+		
+		// 转账标记
+		commonManager.addMsgFlag(userFrom.getUserId(), 1);
 	}
 
 	/**
@@ -358,6 +361,9 @@ public class PushManager {
 		ext.put("transferId", transferId);
 		ext.put("userId", user.getUserId().toString());
 		pushToCustom(user.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
+		
+		// 转账标记
+		commonManager.addMsgFlag(user.getUserId(), 1);
 	}
 
 	/**
@@ -380,6 +386,9 @@ public class PushManager {
 		ext.put("transferId", transferId);
 		ext.put("userId", user.getUserId().toString());
 		pushToCustom(user.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
+		
+		// 转账标记
+		commonManager.addMsgFlag(user.getUserId(), 1);
 	}
 
 	/**
