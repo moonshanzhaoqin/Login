@@ -1,8 +1,8 @@
 --2017/12/12
 ALTER TABLE `e_user`
-  ADD COLUMN `name_pinyin` varchar(255) NULL DEFAULT NULL COMMENT '用户名拼音';
-  
---2017/12/13 请开启MySQL的FEDERATED引擎, 并自行修改CONNECTION的链接指向Goldpay的数据库 
+  ADD COLUMN `name_pinyin` varchar(255) NULL DEFAULT NULL COMMENT '用户名拼音' AFTER `user_name`;
+
+  --2017/12/13 请开启MySQL的FEDERATED引擎, 并自行修改CONNECTION的链接指向Goldpay的数据库 
 CREATE TABLE `g_account` (
   `balance` BIGINT(20) UNSIGNED DEFAULT NULL,
   `user_id` BIGINT(20) DEFAULT NULL,
