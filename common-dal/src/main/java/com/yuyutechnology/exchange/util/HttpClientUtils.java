@@ -207,11 +207,12 @@ public class HttpClientUtils {
 		} catch (IOException e) {
 			logger.error("sendGet url :,"+url, e);
 		}finally {
-			//关闭response和client
-	        try {
-	        	response.close();
+			if(response!=null){
+				try {
+					response.close();
 //				client4Post.close();
-			} catch (Exception e) {
+				} catch (Exception e) {
+				}
 			}
 		}
 		return result;
@@ -256,10 +257,12 @@ public class HttpClientUtils {
 			logger.error("sendGet url :,"+url, e);
 		}finally {
 			//关闭response和client
-	        try {
-	        	response.close();
+			if(response!=null){
+				try {
+					response.close();
 //				client4Post.close();
-			} catch (IOException e) {
+				} catch (Exception e) {
+				}
 			}
 		}
 		
