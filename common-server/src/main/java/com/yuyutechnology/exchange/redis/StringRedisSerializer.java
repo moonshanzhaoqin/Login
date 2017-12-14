@@ -27,7 +27,7 @@ import com.yuyutechnology.exchange.ServerException;
 @Component
 public class StringRedisSerializer implements RedisSerializer<String>
 {
-	public static final String CHARSET = "iso-8859-1";
+	public static final String CHARSET = "utf-8";
 	/* (non-Javadoc)
 	 * @see org.springframework.data.redis.serializer.RedisSerializer#serialize(java.lang.Object)
 	 */
