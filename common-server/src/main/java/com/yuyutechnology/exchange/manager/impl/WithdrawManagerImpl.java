@@ -202,8 +202,10 @@ public class WithdrawManagerImpl implements WithdrawManager {
 			/* 推送 */
 			pushManager.push4WithdrawRefund(user, withdraw.getGoldpay(), ServerConsts.CURRENCY_OF_GOLDPAY,
 					withdraw.getGoldTransferB());
-			pushManager.push4WithdrawRefundFee(user, withdraw.getFee(), ServerConsts.CURRENCY_OF_GOLDPAY,
-					withdraw.getFeeTransferB());
+			if (withdraw.getFee().compareTo(BigDecimal.ZERO) > 0) {
+				pushManager.push4WithdrawRefundFee(user, withdraw.getFee(), ServerConsts.CURRENCY_OF_GOLDPAY,
+						withdraw.getFeeTransferB());
+			}
 		}
 		return result.get("retCode");
 	}
