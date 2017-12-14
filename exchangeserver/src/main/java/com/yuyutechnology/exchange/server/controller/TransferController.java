@@ -142,11 +142,13 @@ public class TransferController{
 			case FREEZE:
 				rep.setRetCode(RetCodeConsts.PAY_FREEZE);
 				rep.setMessage(String.valueOf(checkPwdResult.getInfo()));
+				rep.setOpts(new String[] { String.valueOf(checkPwdResult.getInfo()) });
 				return rep;
 			case INCORRECT:
 				logger.warn("payPwd is wrong !");
 				rep.setRetCode(RetCodeConsts.PAY_PWD_NOT_MATCH);
 				rep.setMessage(String.valueOf(checkPwdResult.getInfo()));
+				rep.setOpts(new String[] { String.valueOf(checkPwdResult.getInfo()) });
 				return rep;
 			default:
 				break;

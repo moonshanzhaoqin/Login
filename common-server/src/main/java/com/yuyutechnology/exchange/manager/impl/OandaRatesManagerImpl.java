@@ -18,7 +18,9 @@ import org.springframework.stereotype.Service;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
+import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.CommonManager;
+import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Wallet;
@@ -36,6 +38,10 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 	WalletDAO walletDAO;
 	@Autowired
 	CommonManager commonManager;
+	@Autowired
+	OandaRatesManager oandaRatesManager;
+	@Autowired
+	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
 
 	@Autowired
 	RedisDAO redisDAO;
@@ -218,7 +224,18 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 			for (Wallet wallet : list) {
 				if (wallet.getCurrency().getCurrency().equals(ServerConsts.STANDARD_CURRENCY)) {
 					totalBalance = totalBalance.add(wallet.getBalance());
-				} else {
+				} else if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(wallet.getCurrency().getCurrency())){					
+					GoldpayUserDTO dto = goldpayTrans4MergeManager.getGoldpayUserInfo(userId);
+					if(dto == null){
+						totalBalance = totalBalance.add(BigDecimal.ZERO);
+					}
+					BigDecimal num = oandaRatesManager
+							.getDefaultCurrencyAmount(ServerConsts.CURRENCY_OF_GOLDPAY, new BigDecimal(dto.getBalance()+""))
+							.setScale(4, BigDecimal.ROUND_DOWN);
+
+					logger.info("{} {} to {} USD", dto.getBalance(), ServerConsts.CURRENCY_OF_GOLDPAY, num);
+					totalBalance = totalBalance.add(num);
+				}else{
 					totalBalance = totalBalance
 							.add(getDefaultCurrencyAmount(wallet.getCurrency().getCurrency(), wallet.getBalance()));
 				}
