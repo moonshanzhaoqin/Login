@@ -439,7 +439,7 @@ public class UserManagerImpl implements UserManager {
 			user.setPushTag(newLanguage);
 			userDAO.updateUser(user);
 			/* 绑定Tag */
-			pushManager.bindPushTag(user.getPushId(), newLanguage);
+			pushManager.switchTag(user.getPushId(), newLanguage);
 		} else {
 			logger.info("***Language consistency,do nothing!***");
 		}
@@ -497,7 +497,7 @@ public class UserManagerImpl implements UserManager {
 			logger.info("***Language inconsistency***");
 			user.setPushTag(newLanguage);
 			/* 绑定Tag */
-			pushManager.bindPushTag(user.getPushId(), newLanguage);
+			pushManager.switchTag(user.getPushId(), newLanguage);
 		} else {
 			logger.info("***Language consistency,do nothing!***");
 		}
