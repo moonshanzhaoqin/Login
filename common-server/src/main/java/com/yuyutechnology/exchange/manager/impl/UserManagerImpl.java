@@ -348,19 +348,20 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public SendMessageResponse getPinCode(String func, String areaCode, String userPhone) {
-		/* 随机生成六位数 */
-		final String random;
-		if (ResourceUtils.getBundleValue4Boolean("qa.switch")) {
-			random = ResourceUtils.getBundleValue4String("verify.code", "654321");
-		} else {
-			random = MathUtils.randomFixedLengthStr(6);
+		String pinCode = redisDAO.getValueByKey(func + areaCode + userPhone);
+		if (pinCode == null) {
+			if (ResourceUtils.getBundleValue4Boolean("qa.switch")) {
+				pinCode = ResourceUtils.getBundleValue4String("verify.code", "654321");
+			} else {
+				/* 随机生成六位数 */
+				pinCode = MathUtils.randomFixedLengthStr(6);
+			}
 		}
-		logger.info("getPinCode : phone={}, pincode={}", areaCode + userPhone, random);
-		final String md5random = DigestUtils.md5Hex(random);
-		/* 存入redis userPhone:md5random */
-		redisDAO.saveData(func + areaCode + userPhone, md5random,
+		logger.info("getPinCode : phone={}, pincode={}", areaCode + userPhone, pinCode);
+		/* 存入redis */
+		redisDAO.saveData(func + areaCode + userPhone, pinCode,
 				configManager.getConfigLongValue(ConfigKeyEnum.VERIFYTIME, 10l).intValue(), TimeUnit.MINUTES);
-		return smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random, func);
+		return smsManager.sendSMS4PhoneVerify(areaCode, userPhone, pinCode, func);
 	}
 
 	@Override
@@ -454,7 +455,7 @@ public class UserManagerImpl implements UserManager {
 			logger.info("***not get verify code***");
 			return null;
 		}
-		if (pinCode.equals(DigestUtils.md5Hex(verificationCode))) {
+		if (pinCode.equals(verificationCode)) {
 			logger.info("***match***");
 			return true;
 		}
