@@ -52,7 +52,6 @@ public class CheckManagerImpl implements CheckManager {
 
 	@Override
 	public boolean isInsufficientBalance(Integer userId, String currency, BigDecimal amount) {
-		logger.info("check the balance is sufficient -->");
 		if (currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
 			GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.getGoldpayUserInfo(userId);
 			if ((null == goldpayUser || null == goldpayUser.getBalance())
@@ -68,7 +67,6 @@ public class CheckManagerImpl implements CheckManager {
 				return true;
 			}
 		}
-		logger.info("Current balance is sufficient");
 		return false;
 	}
 
@@ -130,8 +128,8 @@ public class CheckManagerImpl implements CheckManager {
 			result.put("msg", "Can not find the corresponding notification information");
 			return result;
 		}
-		if (notification.getPayerId() != userId
-				|| notification.getTradingStatus() == ServerConsts.NOTIFICATION_STATUS_OF_ALREADY_PAID) {
+		if (!notification.getPayerId().equals(userId)
+				||  ServerConsts.NOTIFICATION_STATUS_OF_ALREADY_PAID == notification.getTradingStatus()) {
 			logger.warn("Order status exception");
 			result.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
 			result.put("msg", "Order status exception");
