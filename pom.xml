@@ -187,6 +187,13 @@
        		<artifactId>jpinyin</artifactId>
        		<version>1.1.8</version>
     	</dependency>
+
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk</artifactId>
+			<version>1.11.247</version>
+		</dependency>
+    	
 	</dependencies>
 	<modules>
 		<module>common-server</module>
