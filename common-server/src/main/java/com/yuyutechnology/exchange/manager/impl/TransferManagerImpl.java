@@ -567,6 +567,16 @@ public class TransferManagerImpl implements TransferManager {
 		transDetailsManager.addTransDetails(transferId, userId, notification.getSponsorId(),
 				Sponsor.getUserName(),areaCode, userPhone, currency, 
 				amount,BigDecimal.ZERO,null, transferComment, ServerConsts.TRANSFER_TYPE_TRANSACTION);
+		
+		
+		//判断是否需要验证码
+		boolean need = checkManager.isPaymentVerification(userId, currency,amount );
+		if(need){
+			userManager.getPinCode(transferId, payer.getAreaCode(), payer.getUserPhone());
+			map.put("codeVerification", ServerConsts.CODE_VERIFICATION_YES);
+		}else{
+			map.put("codeVerification", ServerConsts.CODE_VERIFICATION_NO);
+		}
 
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");

@@ -198,6 +198,8 @@ public class TransferController{
 			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit") });
 		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY)) {
 			rep.setOpts(new String[] { map.get("msg"), map.get("thawTime") });
+		}else if(map.get("retCode").equals(RetCodeConsts.PAY_FREEZE) || map.get("retCode").equals(RetCodeConsts.PAY_PWD_NOT_MATCH)){
+			rep.setOpts(new String[] { map.get("msg") });
 		}
 
 		rep.setRetCode(map.get("retCode"));
@@ -226,38 +228,6 @@ public class TransferController{
 		return rep;
 	}
 
-//	@ApiOperation(value = "交易确认")
-//	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transferConfirm")
-//	public @ResponseEncryptBody TransferConfirmResponse transferConfirm(@PathVariable String token,
-//			@RequestDecryptBody TransferConfirmRequest reqMsg) {
-//		// 从Session中获取Id
-//		SessionData sessionData = SessionDataHolder.getSessionData();
-//
-//		UserInfo user = userManager.getUserInfo(sessionData.getUserId());
-//		TransferConfirmResponse rep = new TransferConfirmResponse();
-//		// 判断PinCode是否正确
-//		Boolean resultBool = userManager.testPinCode(reqMsg.getTransferId(), user.getAreaCode(), user.getPhone(),
-//				reqMsg.getPinCode());
-//		if (resultBool == null) {
-//			logger.info(MessageConsts.NOT_GET_CODE);
-//			rep.setRetCode(RetCodeConsts.NOT_GET_CODE);
-//			rep.setMessage(MessageConsts.NOT_GET_CODE);
-//		} else if (resultBool.booleanValue()) {
-//			String result = transferManager.transferConfirm(sessionData.getUserId(), reqMsg.getTransferId());
-//			if (result.equals(RetCodeConsts.RET_CODE_SUCCESS)) {
-//				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-//				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-//			} else {
-//				rep.setRetCode(result);
-//				rep.setMessage("Current balance is insufficient");
-//			}
-//			userManager.clearPinCode(reqMsg.getTransferId(), user.getAreaCode(), user.getPhone());
-//		} else {
-//			rep.setRetCode(RetCodeConsts.PIN_CODE_INCORRECT);
-//			rep.setMessage("The pin code is incorrect");
-//		}
-//		return rep;
-//	}
 
 	@ApiOperation(value = "发起转账请求")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/makeRequest")
@@ -326,14 +296,13 @@ public class TransferController{
 
 		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			rep.setTransferId(map.get("transferId"));
+			rep.setCodeVerification(map.get("codeVerification"));
 		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY)) {
 			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit"), map.get("thawTime") });
 		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)) {
 			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit") });
 		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY)) {
 			rep.setOpts(new String[] { map.get("msg"), map.get("thawTime") });
-		}else if(map.get("retCode").equals(RetCodeConsts.PAY_FREEZE) || map.get("retCode").equals(RetCodeConsts.PAY_PWD_NOT_MATCH)){
-			rep.setOpts(new String[] { map.get("msg") });
 		}
 
 		rep.setRetCode(map.get("retCode"));
