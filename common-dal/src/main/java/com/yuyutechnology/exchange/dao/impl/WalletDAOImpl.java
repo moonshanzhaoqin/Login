@@ -56,6 +56,22 @@ public class WalletDAOImpl implements WalletDAO {
 			}
 		});
 	}
+	
+	@Override
+	public List<Object[]> getGoldpayAccountTotalAssets() {
+		HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>();
+		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<List<Object[]>>() {
+			@Override
+			public List<Object[]> doInHibernate(Session session) throws HibernateException {
+				Query query = session.createSQLQuery(
+						"SELECT u.`user_type`, SUM(balance) FROM `g_account` a "
+						+ "LEFT JOIN `e_bind` b ON b.`goldpay_id` = a.`user_id` "
+						+ "LEFT JOIN `e_user` u ON u.`user_id` = b.`user_id`"
+						+ "GROUP BY u.`user_type`");
+				return query.list();
+			}
+		});
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override

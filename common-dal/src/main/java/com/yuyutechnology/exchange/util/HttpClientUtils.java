@@ -295,14 +295,8 @@ public class HttpClientUtils {
 //				"Bearer " + "d413e2cd916ebc4613376c3a3ca826ae-ebdc8079ec4cca1b1d650ea030036226");
 //		String result = sendGet(domain,params,basicHeader);
 //		logger.info("result : {}",result);
-		
-
-		String result = sendPost("https://cloud888.yuyutechnology.com/notification/sendMail.do", "");
-		
-		System.out.println("result : "+result);
+//		String result = sendPost("https://fb.grandorientcasino.com/gameserver/jsonmessage/?rpc=RegisterPlayer","{\"facebookId\":\"1974075809513039\"}");
+//		String result = sendPost("http://172.18.188.169:8081/jsonmessage/?rpc=RegisterPlayer", "{\"facebookId\":\"1974075809513039\"}");
+//		System.out.println("result : "+result);
 	}
-	
-	
-	
-
 }

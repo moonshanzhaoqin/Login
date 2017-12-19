@@ -11,7 +11,11 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
@@ -71,7 +75,9 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 			return map;
 		}
 		for (Wallet wallet : list) {
-			map.put(wallet.getCurrency().getCurrency(), wallet.getBalance());
+			if (!wallet.getCurrency().getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
+				map.put(wallet.getCurrency().getCurrency(), wallet.getBalance());
+			}
 		}
 
 		// 计算系统账户总资产
@@ -86,7 +92,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 				logger.info("SystemAccountTotalAssets : {}", totalAssets);
 			}
 		}
-		map.put("totalAssets", totalAssets.setScale(4, RoundingMode.DOWN));
+		map.put("totalAssets", totalAssets.setScale(0, RoundingMode.DOWN));
 
 		logger.info("System Account Total Assets : {}", map.toString());
 		return map;
@@ -112,21 +118,54 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 			logger.info("get all users' total assets by currency FAILURE!!!");
 		} else {
 			for (Entry<String, BigDecimal> entry : map.entrySet()) {
-				if (entry.getKey().equals(ServerConsts.STANDARD_CURRENCY)) {
-					totalAssets = totalAssets.add(entry.getValue());
-					logger.info("UserAccountTotalAssets : {}", totalAssets);
-				} else {
-					totalAssets = totalAssets
-							.add(oandaRatesManager.getDefaultCurrencyAmount(entry.getKey(), entry.getValue()));
-					logger.info("UserAccountTotalAssets : {}", totalAssets);
+				if (!entry.getKey().equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
+					if (entry.getKey().equals(ServerConsts.STANDARD_CURRENCY)) {
+						totalAssets = totalAssets.add(entry.getValue());
+						logger.info("UserAccountTotalAssets : {}", totalAssets);
+					} else {
+						totalAssets = totalAssets
+								.add(oandaRatesManager.getDefaultCurrencyAmount(entry.getKey(), entry.getValue()));
+						logger.info("UserAccountTotalAssets : {}", totalAssets);
+					}
 				}
 			}
 		}
-		map.put("totalAssets", totalAssets.setScale(4, RoundingMode.DOWN));
+		map.put("totalAssets", totalAssets.setScale(0, RoundingMode.DOWN));
 
 		logger.info("User Account Total Assets : {}", map.toString());
 		return map;
-
+	}
+	
+	@Override
+	public HashMap<String, BigDecimal> getGoldpayAccountTotalAssets() {
+		HashMap<String, BigDecimal> map = new HashMap<String, BigDecimal>();
+		BigDecimal total = BigDecimal.ZERO;
+		List<Object[]> list = walletDAO.getGoldpayAccountTotalAssets();
+		if (!list.isEmpty()) {
+			for (Object object : list) {
+				Object[] obj = (Object[]) object;
+				total = total.add((BigDecimal)obj[1]);
+				if (obj[0] == null || (Integer)obj[0] == ServerConsts.USER_TYPE_OF_FROZEN) {
+					BigDecimal amount = map.get("frozen");
+					if (amount != null){
+						amount = amount.add((BigDecimal)obj[1]);
+					}else{
+						amount = (BigDecimal)obj[1];
+					}
+					map.put("frozen", amount);
+				} else if ((Integer)obj[0] == ServerConsts.USER_TYPE_OF_CUSTOMER) {
+					map.put("customer", (BigDecimal)obj[1]);
+				} else if ((Integer)obj[0] == ServerConsts.USER_TYPE_OF_FEE) {
+					map.put("fee", (BigDecimal)obj[1]);
+				} else if ((Integer)obj[0] == ServerConsts.USER_TYPE_OF_RECOVERY) {
+					map.put("recovery", (BigDecimal)obj[1]);
+				} else if ((Integer)obj[0] == ServerConsts.USER_TYPE_OF_SYSTEM) {
+					map.put("system", (BigDecimal)obj[1]);
+				}
+			}
+		}
+		map.put("total", total);
+		return map;
 	}
 
 	@Override
