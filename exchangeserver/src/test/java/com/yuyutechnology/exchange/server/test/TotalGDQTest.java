@@ -1,13 +1,11 @@
 package com.yuyutechnology.exchange.server.test;
 
-import java.math.BigDecimal;
-
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.manager.TransDetailsManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
+import com.yuyutechnology.exchange.util.S3Utils;
 
 public class TotalGDQTest extends BaseSpringJunit4{
 	
@@ -29,8 +27,10 @@ public class TotalGDQTest extends BaseSpringJunit4{
 //			transferManager.getTransDetails(transferDTO.getTransferId(), 2);
 //		}
 		
-		transDetailsManager.addTransDetails("xxxxxxxxxxxxxxxxx", 1, 2, "", "", "", ServerConsts.CURRENCY_OF_GOLDPAY, BigDecimal.TEN,
-				BigDecimal.ZERO, null, "", ServerConsts.TRANSFER_TYPE_IN_WITHDRAW);
+//		transDetailsManager.addTransDetails("xxxxxxxxxxxxxxxxx", 1, 2, "", "", "", ServerConsts.CURRENCY_OF_GOLDPAY, BigDecimal.TEN,
+//				BigDecimal.ZERO, null, "", ServerConsts.TRANSFER_TYPE_IN_WITHDRAW);
+		
+		S3Utils.uploadFile("1231231232131/xpf5.jpg", "C:\\Users\\nicholas.chi\\Downloads\\xpf2.jpg");
 		
 	}
 

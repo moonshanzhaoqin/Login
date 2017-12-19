@@ -287,7 +287,8 @@ public class PushManager {
 	 * @param amount
 	 */
 	@Async
-	public void push4Refund(User userFrom, String areaCode, String phone, String currency, BigDecimal amount) {
+	public void push4Refund(User userFrom, String areaCode, String phone, String currency, BigDecimal amount,
+			String transferId) {
 		String title = titleChoose("refund", userFrom.getPushTag());
 		String refundBody = templateChoose("refund", userFrom.getPushTag());
 		logger.info("refund,{}=={}", userFrom.getPushTag(), refundBody);
@@ -299,7 +300,8 @@ public class PushManager {
 				.replace(PUSH_REPLACE_DAY, configManager.getConfigStringValue(ConfigKeyEnum.REFUNTIME, "7"));
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "refund");
-
+		ext.put("transferId", transferId);
+		ext.put("userId", userFrom.getUserId().toString());
 		pushToCustom(userFrom.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 
 		// 转账标记
@@ -436,28 +438,28 @@ public class PushManager {
 	 * 
 	 * @param user
 	 */
-//	@Async
-//	public void bindPushTag(String pushId, Language pushTag) {
-//		switch (pushTag) {
-//		case en_US:
-//			tag(Func.unbindTag, pushId, Language.zh_CN);
-//			tag(Func.unbindTag, pushId, Language.zh_TW);
-//			tag(Func.bindTag, pushId, Language.en_US);
-//			return;
-//		case zh_CN:
-//			tag(Func.unbindTag, pushId, Language.en_US);
-//			tag(Func.unbindTag, pushId, Language.zh_TW);
-//			tag(Func.bindTag, pushId, Language.zh_CN);
-//			return;
-//		case zh_TW:
-//			tag(Func.unbindTag, pushId, Language.zh_CN);
-//			tag(Func.unbindTag, pushId, Language.en_US);
-//			tag(Func.bindTag, pushId, Language.zh_TW);
-//			return;
-//		default:
-//			return;
-//		}
-//	}
+	// @Async
+	// public void bindPushTag(String pushId, Language pushTag) {
+	// switch (pushTag) {
+	// case en_US:
+	// tag(Func.unbindTag, pushId, Language.zh_CN);
+	// tag(Func.unbindTag, pushId, Language.zh_TW);
+	// tag(Func.bindTag, pushId, Language.en_US);
+	// return;
+	// case zh_CN:
+	// tag(Func.unbindTag, pushId, Language.en_US);
+	// tag(Func.unbindTag, pushId, Language.zh_TW);
+	// tag(Func.bindTag, pushId, Language.zh_CN);
+	// return;
+	// case zh_TW:
+	// tag(Func.unbindTag, pushId, Language.zh_CN);
+	// tag(Func.unbindTag, pushId, Language.en_US);
+	// tag(Func.bindTag, pushId, Language.zh_TW);
+	// return;
+	// default:
+	// return;
+	// }
+	// }
 
 	/**
 	 * 解绑 Tag
@@ -758,26 +760,26 @@ public class PushManager {
 		HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("push.url") + "push_custom.do", param);
 	}
 
-	private void tag(Func func, String deviceID, Language pushTag) {
-		if (StringUtils.isBlank(deviceID)) {
-			return;
-		}
-		TagRequest tagRequest = new TagRequest();
-		tagRequest.setAppName(ResourceUtils.getBundleValue4String("appName"));
-		tagRequest.setDeviceIds(deviceID);
-		tagRequest.setTagName(pushTag.toString());
-		String param = JsonBinder.getInstance().toJson(tagRequest);
-		logger.info("{} -> TagRequest : {}", func, param);
-		switch (func) {
-		case bindTag:
-			HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("push.url") + "bindTag.do", param);
-			return;
-		case unbindTag:
-			HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("push.url") + "unBindTag.do", param);
-			return;
-		default:
-			return;
-		}
-	}
+//	private void tag(Func func, String deviceID, Language pushTag) {
+//		if (StringUtils.isBlank(deviceID)) {
+//			return;
+//		}
+//		TagRequest tagRequest = new TagRequest();
+//		tagRequest.setAppName(ResourceUtils.getBundleValue4String("appName"));
+//		tagRequest.setDeviceIds(deviceID);
+//		tagRequest.setTagName(pushTag.toString());
+//		String param = JsonBinder.getInstance().toJson(tagRequest);
+//		logger.info("{} -> TagRequest : {}", func, param);
+//		switch (func) {
+//		case bindTag:
+//			HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("push.url") + "bindTag.do", param);
+//			return;
+//		case unbindTag:
+//			HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("push.url") + "unBindTag.do", param);
+//			return;
+//		default:
+//			return;
+//		}
+//	}
 
 }

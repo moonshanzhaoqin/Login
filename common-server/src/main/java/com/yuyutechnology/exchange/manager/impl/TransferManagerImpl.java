@@ -938,7 +938,7 @@ public class TransferManagerImpl implements TransferManager {
 		// 发送推送
 		User payee = userDAO.getUser(transfer.getUserFrom());
 		pushManager.push4Refund(payee, transfer.getAreaCode(), transfer.getPhone(), transfer.getCurrency(),
-				amountFormatByCurrency(transfer.getCurrency(), transfer.getTransferAmount()));
+				amountFormatByCurrency(transfer.getCurrency(), transfer.getTransferAmount()),transfer.getTransferId());
 
 	}
 	
