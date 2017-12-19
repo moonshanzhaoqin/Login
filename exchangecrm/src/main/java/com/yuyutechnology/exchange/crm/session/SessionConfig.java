@@ -11,7 +11,7 @@ import com.yuyutechnology.exchange.util.ResourceUtils;
  * @author silent.sun
  *
  */
-@EnableRedisHttpSession(maxInactiveIntervalInSeconds=600)
+@EnableRedisHttpSession(maxInactiveIntervalInSeconds=1200)
 public class SessionConfig {
 	
     @Bean  

@@ -31,6 +31,14 @@ public interface WalletDAO {
 	 * @return
 	 */
 	public HashMap<String, BigDecimal> getUserAccountTotalAssets(int systemUserId);
+	
+	/**
+	 * 获取Goldpay 资产信息
+	 * 
+	 * @param systemUserId
+	 * @return
+	 */
+	public List<Object[]> getGoldpayAccountTotalAssets();
 
 	Integer emptyWallet(int userId, String currency);
 
