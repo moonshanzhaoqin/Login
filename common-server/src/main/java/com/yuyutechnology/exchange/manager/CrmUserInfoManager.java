@@ -13,6 +13,8 @@ public interface CrmUserInfoManager {
 	public HashMap<String, BigDecimal> getSystemAccountTotalAssets();
 
 	public HashMap<String, BigDecimal> getUserAccountTotalAssets();
+	
+	public HashMap<String, BigDecimal> getGoldpayAccountTotalAssets();
 
 	public HashMap<String, Object> getUserAccountInfoListByPage(String userPhone, String userName, int userAvailable,
 			int loginAvailable, int payAvailable, BigDecimal upperLimit, BigDecimal lowerLimit, int currentPage,

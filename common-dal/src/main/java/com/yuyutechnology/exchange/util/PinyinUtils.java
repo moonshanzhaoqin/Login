@@ -7,7 +7,10 @@ import com.github.stuxuhai.jpinyin.PinyinHelper;
 public class PinyinUtils {
 	public static String toPinyin(String string) {
 		try {
-			return PinyinHelper.convertToPinyinString(string, "", PinyinFormat.WITHOUT_TONE);
+			String pinyin = PinyinHelper.convertToPinyinString(string, "", PinyinFormat.WITHOUT_TONE).toUpperCase();
+			char initial = pinyin.charAt(0);
+			initial = Character.isAlphabetic(initial) ?initial : '#' ;
+			return initial+pinyin;
 		} catch (PinyinException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

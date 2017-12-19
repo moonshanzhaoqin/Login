@@ -18,6 +18,8 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 
+import antlr.StringUtils;
+
 @Component
 public class S3Utils {
 	
@@ -32,10 +34,10 @@ public class S3Utils {
 	
 	@PostConstruct
 	public void init(){
-		awsSAccessKeyId = ResourceUtils.getBundleValue4String("aws.saccesskey.id");
-		awsSecretKey = ResourceUtils.getBundleValue4String("aws.secretkey");
-		s3region = ResourceUtils.getBundleValue4String("s3.region");
-		s3bucketName = ResourceUtils.getBundleValue4String("s3.bucketname");
+		awsSAccessKeyId = ResourceUtils.getBundleValue4String("aws.saccesskey.id","AKIAIUWEBIICN6VCXRCQ");
+		awsSecretKey = ResourceUtils.getBundleValue4String("aws.secretkey","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");
+		s3region = ResourceUtils.getBundleValue4String("s3.region","ap-southeast-1");
+		s3bucketName = ResourceUtils.getBundleValue4String("s3.bucketname","test-goldpay");
 		
 		 BasicAWSCredentials awsCreds = new BasicAWSCredentials(awsSAccessKeyId, awsSecretKey);
 		 s3Client = AmazonS3ClientBuilder.standard()
@@ -87,5 +89,11 @@ public class S3Utils {
 	        return imgUrl;
 	    }
 	
-
+	public static String getImgUrl(String keyName) {
+		String imgUrl = "https://s3-[s3region].amazonaws.com/[s3bucketName]/[keyName]"
+	    		.replace("[s3bucketName]", s3bucketName)
+	    		.replace("[s3region]", s3region)
+	    		.replace("[keyName]", keyName);
+		return imgUrl;
+	}
 }

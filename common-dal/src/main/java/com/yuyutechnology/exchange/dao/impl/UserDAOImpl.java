@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.hql.internal.ast.HqlASTFactory;
 import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
@@ -18,7 +17,6 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.pojo.UserConfig;
-import com.yuyutechnology.exchange.util.DateFormatUtils;
 
 @Repository
 public class UserDAOImpl implements UserDAO {

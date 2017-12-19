@@ -30,7 +30,7 @@
 					</c:if>
 
 					<tr style="font-weight: bold;">
-						<td>总金额（USD）</td>
+						<td>总金额（GDQ）</td>
 						<c:if test="${not empty systemAmount }">
 							<td>${systemAmount}</td>
 						</c:if>
@@ -39,7 +39,31 @@
 						</c:if>
 					</tr>
 				</tbody>
-
+			</table>
+		</div>
+		
+		<div class="row">
+			<table class="table table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>GDQ总量</th>
+						<th>公司持有量</th>
+						<th>用户持有量</th>
+						<th>手续费</th>
+						<th>回收量</th>
+						<th>暂时冻结</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th>${goldpayAssets.total}</th>
+						<th>${goldpayAssets.system+systemAmount}</th>
+						<th>${goldpayAssets.customer+usermAmount}</th>
+						<th>${goldpayAssets.fee}</th>
+						<th>${goldpayAssets.recovery}</th>
+						<th>${goldpayAssets.frozen}</th>
+					</tr>
+				</tbody>
 			</table>
 		</div>
 

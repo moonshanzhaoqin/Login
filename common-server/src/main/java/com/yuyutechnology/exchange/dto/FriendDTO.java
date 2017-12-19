@@ -7,11 +7,8 @@ public class FriendDTO {
 	private String areaCode;
 	private String phone;
 	private String name;
-	@ApiModelProperty(value="用户名首字母")
-	private char initial;
-	@ApiModelProperty(value="头像")
+	@ApiModelProperty(value = "头像")
 	private String portrait;
-
 
 	public String getAreaCode() {
 		return areaCode;
@@ -37,7 +34,6 @@ public class FriendDTO {
 		this.name = name;
 	}
 
-
 	public String getPortrait() {
 		return portrait;
 	}
@@ -46,11 +42,4 @@ public class FriendDTO {
 		this.portrait = portrait;
 	}
 
-	public char getInitial() {
-		return initial;
-	}
-
-	public void setInitial(char initial) {
-		this.initial = initial;
-	}
 }

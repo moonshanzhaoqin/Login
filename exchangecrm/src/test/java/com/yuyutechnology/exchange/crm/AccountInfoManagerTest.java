@@ -1,5 +1,8 @@
 package com.yuyutechnology.exchange.crm;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
+
 import javax.annotation.Resource;
 
 import org.junit.Test;
@@ -17,10 +20,15 @@ public class AccountInfoManagerTest extends BaseSpringJunit4 {
 	@Resource
 	HibernateTemplate hibernateTemplateTPPS;
 	
+//	@Test
+//	public void testTPPS(){
+//		GoldqPayClient client = hibernateTemplateTPPS.get(GoldqPayClient.class, 1L);
+//		System.out.println(client.getName());
+//	}
 	@Test
-	public void testTPPS(){
-		GoldqPayClient client = hibernateTemplateTPPS.get(GoldqPayClient.class, 1L);
-		System.out.println(client.getName());
+	public void testGoldpayAccount() {
+		 HashMap<String, BigDecimal> accounts = crmUserInfoManager.getGoldpayAccountTotalAssets();
+		 System.out.println(accounts);
 	}
 
 }
