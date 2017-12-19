@@ -14,9 +14,11 @@ import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.server.controller.request.AddFriendRequest;
 import com.yuyutechnology.exchange.server.controller.request.DeleteFriendRequest;
+import com.yuyutechnology.exchange.server.controller.request.SearchFriendRequest;
 import com.yuyutechnology.exchange.server.controller.response.AddFriendResponse;
 import com.yuyutechnology.exchange.server.controller.response.DeleteFriendResponse;
 import com.yuyutechnology.exchange.server.controller.response.FriendsListResponse;
+import com.yuyutechnology.exchange.server.controller.response.SearchFriendResponse;
 import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
 import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 import com.yuyutechnology.exchange.session.SessionData;
@@ -100,7 +102,7 @@ public class FriendController {
 		FriendsListResponse rep = new FriendsListResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
 	
-		rep.setFriends(userManager.getFriends(sessionData.getUserId()));
+		rep.setInitials(userManager.getFriends(sessionData.getUserId()));
 		logger.info("********Operation succeeded********");
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
@@ -157,6 +159,26 @@ public class FriendController {
 				break;
 			}
 		}
+		return rep;
+	}
+	
+	//TODO 搜索好友
+	@ResponseEncryptBody
+	@ApiOperation(value = "搜索好友", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/searchFriend", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public SearchFriendResponse searchFriend(@PathVariable String token,@RequestDecryptBody SearchFriendRequest searchFriendRequest) {
+		logger.info("========friendsList : {}============", token);
+		SearchFriendResponse rep = new SearchFriendResponse();
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		if (searchFriendRequest.empty()) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+		} else {
+		rep.setFriends(userManager.searchFriend(sessionData.getUserId(),searchFriendRequest.getKeyWords()));
+		logger.info("********Operation succeeded********");
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);}
 		return rep;
 	}
 }

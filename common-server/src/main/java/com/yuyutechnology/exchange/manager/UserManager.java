@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.FriendDTO;
+import com.yuyutechnology.exchange.dto.FriendInitial;
 import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
@@ -83,7 +84,7 @@ public interface UserManager {
 	 * @param userId
 	 * @return
 	 */
-	List<FriendDTO> getFriends(Integer userId);
+	List<FriendInitial> getFriends(Integer userId);
 
 	/**
 	 * 添加好友
@@ -254,5 +255,10 @@ public interface UserManager {
 	User getUserByPhone(String areaCode, String phone);
 
 	void updatePayToken(int userId, String userPayToken);
+
+	List<FriendDTO> searchFriend(Integer userId, String keyWords);
+
+
+	String updateUserPortrait(Integer userId, String uploadFile);
 
 }

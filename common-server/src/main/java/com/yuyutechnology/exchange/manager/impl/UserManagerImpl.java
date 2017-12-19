@@ -31,6 +31,7 @@ import com.yuyutechnology.exchange.dao.UserDeviceDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.FriendDTO;
+import com.yuyutechnology.exchange.dto.FriendInitial;
 import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
 import com.yuyutechnology.exchange.enums.CheckPWDStatus;
@@ -64,6 +65,8 @@ import com.yuyutechnology.exchange.util.MathUtils;
 import com.yuyutechnology.exchange.util.PasswordUtils;
 import com.yuyutechnology.exchange.util.PinyinUtils;
 import com.yuyutechnology.exchange.util.ResourceUtils;
+import com.yuyutechnology.exchange.util.S3Utils;
+import com.yuyutechnology.exchange.util.UidUtils;
 
 @Service
 public class UserManagerImpl implements UserManager {
@@ -326,23 +329,63 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public List<FriendDTO> getFriends(Integer userId) {
-
+	public List<FriendInitial> getFriends(Integer userId) {
 		List<FriendDTO> friendDTOs = new ArrayList<>();
+		List<FriendInitial> friendInitials = new ArrayList<>();
 		List<Friend> friends = friendDAO.getFriendsByUserId(userId);
+		char index = 'A';
+		for (Friend friend : friends) {
+			if (friend.getUser().getNamePinyin().charAt(0) == index) {
+				FriendDTO friendDTO = new FriendDTO();
+				friendDTO.setAreaCode(friend.getUser().getAreaCode());
+				friendDTO.setPhone(friend.getUser().getUserPhone());
+				friendDTO.setName(friend.getUser().getUserName());
+				friendDTO.setPortrait(friend.getUser().getUserPortrait() == null ? null
+						: S3Utils.getImgUrl(friend.getUser().getUserPortrait()));
+				friendDTOs.add(friendDTO);
+			} else {
+				/* 将上一个字母存入List<FriendInitial> */
+				if (friendDTOs.size() > 0) {
+					FriendInitial friendInitial = new FriendInitial();
+					friendInitial.setInitial(index);
+					friendInitial.setFriends(friendDTOs);
+					friendInitials.add(friendInitial);
+					/* 清空 List<FriendDTO> */
+					friendDTOs = new ArrayList<>();
+				}
+				/* 处理当前Friend信息 */
+				FriendDTO friendDTO = new FriendDTO();
+				friendDTO.setAreaCode(friend.getUser().getAreaCode());
+				friendDTO.setPhone(friend.getUser().getUserPhone());
+				friendDTO.setName(friend.getUser().getUserName());
+				friendDTO.setPortrait(friend.getUser().getUserPortrait() == null ? null
+						: S3Utils.getImgUrl(friend.getUser().getUserPortrait()));
+				friendDTOs.add(friendDTO);
+				index = friend.getUser().getNamePinyin().charAt(0);
+			}
 
+		}
+		/* 处理最后一个字母 */
+		FriendInitial friendInitial = new FriendInitial();
+		friendInitial.setInitial(index);
+		friendInitial.setFriends(friendDTOs);
+		friendInitials.add(friendInitial);
+		return friendInitials;
+	}
+
+	@Override
+	public List<FriendDTO> searchFriend(Integer userId, String keyWords) {
+		List<FriendDTO> friendDTOs = new ArrayList<>();
+		List<Friend> friends = friendDAO.getFriendByUserIdAndKeyWords(userId, keyWords);
 		for (Friend friend : friends) {
 			FriendDTO friendDTO = new FriendDTO();
 			friendDTO.setAreaCode(friend.getUser().getAreaCode());
 			friendDTO.setPhone(friend.getUser().getUserPhone());
 			friendDTO.setName(friend.getUser().getUserName());
-			char initial = friend.getUser().getNamePinyin().toUpperCase().charAt(0);
-			logger.info("initial letter: {}", initial);
-			friendDTO.setInitial(Character.isDigit(initial) ? '#' : initial);
-			friendDTO.setPortrait(friend.getUser().getUserPortrait());
+			friendDTO.setPortrait(friend.getUser().getUserPortrait() == null ? null
+					: S3Utils.getImgUrl(friend.getUser().getUserPortrait()));
 			friendDTOs.add(friendDTO);
 		}
-
 		return friendDTOs;
 	}
 
@@ -387,6 +430,7 @@ public class UserManagerImpl implements UserManager {
 		UserInfo userInfo = null;
 		if (user != null) {
 			userInfo = new UserInfo(user.getUserId(), user.getAreaCode(), user.getUserPhone(), user.getUserName(),
+					user.getUserPortrait() == null ? null : S3Utils.getImgUrl(user.getUserPortrait()),
 					StringUtils.isNotBlank(user.getUserPayPwd()));
 			logger.info("*** {}", userInfo.toString());
 		} else {
@@ -797,5 +841,17 @@ public class UserManagerImpl implements UserManager {
 		User user = userDAO.getUser(userId);
 		user.setUserPayToken(userPayToken);
 		userDAO.updateUser(user);
+	}
+
+	@Override
+	public String updateUserPortrait(Integer userId, String uploadFile) {
+		User user = userDAO.getUser(userId);
+		String portrait = userId + "/" + UidUtils.genUid();
+		String imgUrl = S3Utils.uploadFile(portrait, uploadFile);
+		if (imgUrl != null) {
+			user.setUserPortrait(portrait);
+			userDAO.updateUser(user);
+		}
+		return imgUrl;
 	}
 }

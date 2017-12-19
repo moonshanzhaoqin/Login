@@ -54,6 +54,7 @@ public class UnregisteredDAOImpl implements UnregisteredDAO {
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Unregistered> getUnregisteredByPhoneAllStatus(String areaCode, String userPhone){
 		List<?> list = hibernateTemplate.find(

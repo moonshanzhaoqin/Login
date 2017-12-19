@@ -1,29 +1,31 @@
 package com.yuyutechnology.exchange.dto;
 
 public class UserInfo {
+	@Override
+	public String toString() {
+		return "UserInfo [userId=" + userId + ", areaCode=" + areaCode + ", phone=" + phone + ", name=" + name
+				+ ", portrait=" + portrait + ", PayPwd=" + PayPwd + "]";
+	}
+
+	private int userId;
+	private String areaCode;
+	private String phone;
+	private String name;
+	private String portrait;
+	private boolean PayPwd;
+
 	public UserInfo() {
 	}
 
-	public UserInfo(int userId, String areaCode, String phone, String name, boolean payPwd) {
+	public UserInfo(int userId, String areaCode, String phone, String name, String portrait, boolean payPwd) {
 		super();
 		this.userId = userId;
 		this.areaCode = areaCode;
 		this.phone = phone;
 		this.name = name;
+		this.portrait = portrait;
 		PayPwd = payPwd;
 	}
-
-	private int userId;
-	@Override
-	public String toString() {
-		return "UserInfo [userId=" + userId + ", areaCode=" + areaCode + ", phone=" + phone + ", name=" + name
-				+ ", PayPwd=" + PayPwd + "]";
-	}
-
-	private String areaCode;
-	private String phone;
-	private String name;
-	private boolean PayPwd;
 
 	public String getAreaCode() {
 		return areaCode;
@@ -47,6 +49,14 @@ public class UserInfo {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getPortrait() {
+		return portrait;
+	}
+
+	public void setPortrait(String portrait) {
+		this.portrait = portrait;
 	}
 
 	public boolean isPayPwd() {

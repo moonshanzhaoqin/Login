@@ -44,7 +44,7 @@ public class BindDAOImpl implements BindDAO {
 
 	@Override
 	public GoldpayAccount getGoldpayAccount(Integer userId) {
-		List accounts = hibernateTemplate.find("from Bind b, GoldpayAccount g where b.goldpayId = g.goldpayUserId and b.userId = ?", userId);
+		List<?> accounts = hibernateTemplate.find("from Bind b, GoldpayAccount g where b.goldpayId = g.goldpayUserId and b.userId = ?", userId);
 		if (accounts != null && accounts.size() > 0) {
 			return (GoldpayAccount) ((Object[])accounts.get(0))[1];
 		}

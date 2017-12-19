@@ -34,6 +34,7 @@ import com.yuyutechnology.exchange.server.controller.request.LogoutRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByOldRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyUserNameRequest;
+import com.yuyutechnology.exchange.server.controller.request.ModifyUserPortraitRequest;
 import com.yuyutechnology.exchange.server.controller.request.ResetPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.SetUserPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.SwitchLanguageRequest;
@@ -47,6 +48,7 @@ import com.yuyutechnology.exchange.server.controller.response.LogoutResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPayPwdByOldResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyUserNameResponse;
+import com.yuyutechnology.exchange.server.controller.response.ModifyUserPortraitResponse;
 import com.yuyutechnology.exchange.server.controller.response.ResetPayPwdResponse;
 import com.yuyutechnology.exchange.server.controller.response.SetUserPayPwdResponse;
 import com.yuyutechnology.exchange.server.controller.response.SwitchLanguageResponse;
@@ -302,6 +304,37 @@ public class LoggedInUserController {
 	}
 
 	// TODO 设置修改头像 portrait
+
+	@ResponseEncryptBody
+	@ApiOperation(value = "设置修改头像 ", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/modifyUserPortrait", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public ModifyUserPortraitResponse modifyUserPortrait(@PathVariable String token,
+			@RequestDecryptBody ModifyUserPortraitRequest modifyUserPortraitRequest) {
+		logger.info("========modifyUserName : {}============", token);
+		ModifyUserPortraitResponse rep = new ModifyUserPortraitResponse();
+		if (modifyUserPortraitRequest.empty()) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+		} else {
+			SessionData sessionData = SessionDataHolder.getSessionData();
+
+			String imgUrl = userManager.updateUserPortrait(sessionData.getUserId(),
+					modifyUserPortraitRequest.getUploadFile());
+			if (imgUrl == null) {
+				logger.info("********upload fail ********");
+				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+			}else {
+				rep.setPortrait(imgUrl);
+				logger.info("********Operation succeeded********");
+				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+			}
+		}
+		return rep;
+	}
+
 	/**
 	 * 设置支付密码
 	 * 
