@@ -53,4 +53,5 @@ public class TransferInitiateRequest {
 		this.transferComment = transferComment;
 	}
 
+
 }

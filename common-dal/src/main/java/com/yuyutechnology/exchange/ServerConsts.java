@@ -277,5 +277,9 @@ public class ServerConsts {
 	public static final byte WITHDRAW_RESULT_APPLY_FAIL = 2;
 	public static final byte WITHDRAW_RESULT_FINISHT = 3;
 	public static final byte WITHDRAW_RESULT_CANCEL = 4;
+	/*需要验证码验证*/
+	public static final String CODE_VERIFICATION_YES = "0";
+	/*不需要验证码验证*/
+	public static final String CODE_VERIFICATION_NO = "1";
 	
 }

@@ -71,6 +71,36 @@ public class CheckManagerImpl implements CheckManager {
 		logger.info("Current balance is sufficient");
 		return false;
 	}
+	
+	@Override
+	public boolean isPaymentVerification(Integer userId,String currency,BigDecimal transAmount){
+		// 总账大于设置安全基数，弹出需要短信验证框===============================================
+		BigDecimal totalBalance = oandaRatesManager.getTotalBalance(userId);
+		BigDecimal totalBalanceMax = BigDecimal
+				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TOTALBALANCETHRESHOLD, 100000d));
+		// 当天累计转出总金额大于设置安全基数，弹出需要短信验证框
+		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount("transfer_" + userId);
+		BigDecimal accumulatedAmountMax = BigDecimal
+				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.DAILYTRANSFERTHRESHOLD, 100000d));
+		// 单笔转出金额大于设置安全基数，弹出需要短信验证框
+		BigDecimal singleTransferAmount = oandaRatesManager.getDefaultCurrencyAmount(currency,transAmount);
+		BigDecimal singleTransferAmountMax = BigDecimal
+				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.EACHTRANSFERTHRESHOLD, 100000d));
+
+		logger.info("totalBalance : {},totalBalanceMax: {} ", totalBalance, totalBalanceMax);
+		logger.info("accumulatedAmount : {},accumulatedAmountMax: {} ", accumulatedAmount, accumulatedAmountMax);
+		logger.info("singleTransferAmount : {},singleTransferAmountMax: {} ", singleTransferAmount,
+				singleTransferAmountMax);
+
+		if (totalBalance.compareTo(totalBalanceMax) == 1 || (accumulatedAmount.compareTo(accumulatedAmountMax) == 1
+				|| singleTransferAmount.compareTo(singleTransferAmountMax) == 1)) {
+			logger.info("The transaction amount exceeds the limit");
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 
 	@Override
 	public HashMap<String, String> checkTransferLimit(String currency, BigDecimal amount, int userId) {

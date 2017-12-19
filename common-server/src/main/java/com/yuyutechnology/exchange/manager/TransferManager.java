@@ -8,13 +8,14 @@ import com.yuyutechnology.exchange.pojo.Unregistered;
 import com.yuyutechnology.exchange.util.page.PageBean;
 
 public interface TransferManager {
+	
+	HashMap<String, String> transactionPreview(Integer userId, String areaCode, String userPhone, String currency,
+			BigDecimal amount);
 
 	HashMap<String, String> transferInitiate(Integer userId, String areaCode, String userPhone, String currency,
-			BigDecimal bigDecimal, String transferComment, int i);
-
-	HashMap<String, String> whenPayPwdConfirmed(Integer userId, String transferId, String userPayPwd);
-
-	String transferConfirm(Integer userId, String transferId);
+			BigDecimal bigDecimal, String transferComment, int noticeId);
+	
+	HashMap<String, String> transferConfirm(Integer userId, String transferId, String userPayPwd, String pinCode);
 
 	HashMap<String, Object> makeRequest(Integer userId, String areaCode, String phone, String currency,
 			BigDecimal bigDecimal);
@@ -47,10 +48,9 @@ public interface TransferManager {
 
 	void systemRefundStep2(String transferId, Unregistered unregistered);
 
-//	String createTransId(int createTransId);
+
+//	HashMap<String, String> whenPayPwdConfirmed(Integer userId, String transferId, String userPayPwd);
 //
-//	void addTransfer(Transfer transfer);
-//
-//	Transfer getTransferById(String transferId);
+//	String transferConfirm(Integer userId, String transferId);
 
 }

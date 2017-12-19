@@ -11,6 +11,8 @@ public interface CheckManager {
 
 	boolean isInsufficientBalance(Integer userId, String currency, BigDecimal amount);
 	
+	boolean isPaymentVerification(Integer userId, String currency, BigDecimal transAmount);
+	
 	HashMap<String, String> checkTransferLimit(String currency, BigDecimal amount, int userId);
 
 	HashMap<String, String> checkNotificationStatus(TransactionNotification notification, Integer userId,

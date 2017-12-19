@@ -37,7 +37,7 @@ public class PasswordUtils {
 	}
 
 	public static void main(String[] args) {
-		String str = encrypt("123456", "a7661cdaf601baa525e916bac0ddb430");
+		String str = encrypt("12345678", "ddaf1514c283018d522ffee56bb5cccc");
 		System.out.println(str);
 	}
 }
