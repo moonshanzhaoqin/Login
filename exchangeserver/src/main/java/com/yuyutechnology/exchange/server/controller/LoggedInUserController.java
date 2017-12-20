@@ -7,19 +7,24 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
@@ -316,8 +321,8 @@ public class LoggedInUserController {
 
 	@ResponseEncryptBody
 	@ApiOperation(value = "设置修改头像 ", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/user/uploadPortrait", method = RequestMethod.POST, produces = "application/json; charset=utf-8", consumes = "multipart/form-data")
-	public ModifyUserPortraitResponse uploadPortrait(@PathVariable String token, HttpServletRequest request) {
+	@RequestMapping(value = "/token/{token}/user/uploadPortrait", method = RequestMethod.POST, produces = "application/json; charset=utf-8",consumes = "multipart/form-data")
+	public ModifyUserPortraitResponse uploadPortrait(@PathVariable String token,HttpServletRequest request) throws HttpException {
 		logger.info("========uploadPortrait : {}============", token);
 		ModifyUserPortraitResponse rep = new ModifyUserPortraitResponse();
 
@@ -325,14 +330,15 @@ public class LoggedInUserController {
 
 		if (request.getContentLength() > 0) {
 			InputStream inputStream = null;
-			FileOutputStream outputStream = null;
+			OutputStream outputStream = null;
 			try {
+				logger.info(request.toString());
 				inputStream = request.getInputStream();
 				File file = File.createTempFile(String.valueOf(new Date().getTime()), ".jpg");
 
 				outputStream = new FileOutputStream(file);
 				byte[] temp = new byte[1024];
-				int size = -1;
+				int size = 0;
 				while ((size = inputStream.read(temp)) != -1) { // 每次读取1KB，直至读完
 					outputStream.write(temp, 0, size);
 				}
@@ -353,13 +359,11 @@ public class LoggedInUserController {
 				try {
 					outputStream.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				try {
 					inputStream.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
