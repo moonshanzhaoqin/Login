@@ -20,7 +20,6 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
-import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.TransDetailsDTO;
 import com.yuyutechnology.exchange.dto.TransferDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
@@ -41,7 +40,7 @@ import com.yuyutechnology.exchange.server.controller.request.MakeRequestRequest;
 import com.yuyutechnology.exchange.server.controller.request.RegenerateQRCodeRequest;
 import com.yuyutechnology.exchange.server.controller.request.ResendTransferPinRequest;
 import com.yuyutechnology.exchange.server.controller.request.Respond2RequestRequest;
-import com.yuyutechnology.exchange.server.controller.request.TransPwdConfirmRequest;
+import com.yuyutechnology.exchange.server.controller.request.TransactionPreviewRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransferConfirmRequest;
 import com.yuyutechnology.exchange.server.controller.request.TransferInitiateRequest;
 import com.yuyutechnology.exchange.server.controller.response.GetNotificationRecordsResponse;
@@ -52,7 +51,7 @@ import com.yuyutechnology.exchange.server.controller.response.MakeRequestRespons
 import com.yuyutechnology.exchange.server.controller.response.RegenerateQRCodeResponse;
 import com.yuyutechnology.exchange.server.controller.response.ResendTransferPinResponse;
 import com.yuyutechnology.exchange.server.controller.response.Respond2RequestResponse;
-import com.yuyutechnology.exchange.server.controller.response.TransPwdConfirmResponse;
+import com.yuyutechnology.exchange.server.controller.response.TransactionPreviewResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransferConfirmResponse;
 import com.yuyutechnology.exchange.server.controller.response.TransferInitiateResponse;
 import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
@@ -74,6 +73,59 @@ public class TransferController {
 	CommonManager commonManager;
 
 	public static Logger logger = LogManager.getLogger(TransferController.class);
+	
+	
+	@ApiOperation(value = "交易预览")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transactionPreview")
+	public @ResponseEncryptBody TransactionPreviewResponse transactionPreview(
+			@PathVariable String token,@RequestDecryptBody TransactionPreviewRequest reqMsg){
+		
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		TransactionPreviewResponse rep = new TransactionPreviewResponse();
+		
+		if (StringUtils.isEmpty(reqMsg.getAreaCode()) || StringUtils.isEmpty(reqMsg.getUserPhone())) {
+			logger.info("Phone number is empty");
+			rep.setRetCode(RetCodeConsts.TRANSFER_PHONE_NUMBER_IS_EMPTY);
+			rep.setMessage("Phone number is empty");
+			return rep;
+		}
+		// 装张金额上限
+		if (!reqMsg.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY) && reqMsg.getTransAmount() < 0.0001) {
+			logger.info("The input amount is less than the minimum amount");
+			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
+			rep.setMessage("The input amount is less than the minimum amount");
+			return rep;
+		} else if ((reqMsg.getCurrency()).equals(ServerConsts.CURRENCY_OF_GOLDPAY)
+				&& (reqMsg.getTransAmount() % 1 > 0 || reqMsg.getTransAmount() == 0)) {
+			logger.info("The GDQ must be an integer value");
+			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
+			rep.setMessage("The GDQ must be an integer value");
+			return rep;
+		} else if (reqMsg.getTransAmount() > configManager.getConfigLongValue(ConfigKeyEnum.ENTERMAXIMUMAMOUNT,
+				1000000000L)) {
+			logger.info("Fill out the allowable amount");
+			rep.setRetCode(RetCodeConsts.TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT);
+			rep.setMessage("Fill out the allowable amount");
+			return rep;
+		}
+		
+		HashMap<String, String> map = transferManager.transactionPreview(sessionData.getUserId(),
+				reqMsg.getAreaCode(), reqMsg.getUserPhone(), reqMsg.getCurrency(), BigDecimal.valueOf(reqMsg.getTransAmount()));
+		
+		if(RetCodeConsts.RET_CODE_SUCCESS.equals(map.get("retCode"))){
+			rep.setUserAccount(map.get("userAccount"));
+			rep.setUserName(map.get("userName"));
+			rep.setCurrency(reqMsg.getCurrency());
+			rep.setTransAmount(reqMsg.getTransAmount()+"");
+			rep.setAvatarUrl(map.get("avatarUrl"));
+			rep.setAddFriends(map.get("addFriends"));
+		}
+		
+		rep.setRetCode(map.get("retCode"));
+		rep.setMessage(map.get("msg"));
+		
+		return rep;
+	}
 
 	@ResponseEncryptBody
 	@ApiOperation(value = "获取转账对象的信息", httpMethod = "POST", notes = "")
@@ -140,6 +192,7 @@ public class TransferController {
 
 		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			rep.setTransferId(map.get("transferId"));
+			rep.setCodeVerification(map.get("codeVerification"));
 		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY)) {
 			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit"), map.get("thawTime") });
 		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)) {
@@ -154,50 +207,38 @@ public class TransferController {
 		return rep;
 
 	}
-
-	@ApiOperation(value = "验证支付密码")
-	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transPwdConfirm")
-	public @ResponseEncryptBody TransPwdConfirmResponse transPwdConfirm(@PathVariable String token,
-			@RequestDecryptBody TransPwdConfirmRequest reqMsg) {
+	
+	@ApiOperation(value = "交易确认")
+	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transferConfirm")
+	public @ResponseEncryptBody TransferConfirmResponse transferConfirm(@PathVariable String token,
+			@RequestDecryptBody TransferConfirmRequest reqMsg){
+		
 		// 从Session中获取Id
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		TransPwdConfirmResponse rep = new TransPwdConfirmResponse();
+		TransferConfirmResponse rep = new TransferConfirmResponse();
 
-		// 验证支付密码
-		CheckPwdResult checkPwdResult = userManager.checkPayPassword(sessionData.getUserId(), reqMsg.getUserPayPwd());
-
-		switch (checkPwdResult.getStatus()) {
-		case FREEZE:
-			rep.setRetCode(RetCodeConsts.PAY_FREEZE);
-			rep.setMessage(String.valueOf(checkPwdResult.getInfo()));
-			return rep;
-		case INCORRECT:
-			logger.warn("payPwd is wrong !");
-			rep.setRetCode(RetCodeConsts.PAY_PWD_NOT_MATCH);
-			rep.setMessage(String.valueOf(checkPwdResult.getInfo()));
-			return rep;
-		default:
-			break;
+		HashMap<String, String> map = transferManager.transferConfirm(sessionData.getUserId(),
+				reqMsg.getTransferId(), reqMsg.getUserPayPwd(), reqMsg.getPinCode(),reqMsg.getAddFriends());
+		
+		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
+			rep.setMakeFriends(map.get("makeFriends"));
+		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY)) {
+			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit"), map.get("thawTime") });
+		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)) {
+			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit") });
+		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY)) {
+			rep.setOpts(new String[] { map.get("msg"), map.get("thawTime") });
+		}else if(map.get("retCode").equals(RetCodeConsts.PAY_FREEZE) || map.get("retCode").equals(RetCodeConsts.PAY_PWD_NOT_MATCH)){
+			rep.setOpts(new String[] { map.get("msg") });
 		}
 
-		HashMap<String, String> result = transferManager.whenPayPwdConfirmed(sessionData.getUserId(),
-				reqMsg.getTransferId(), reqMsg.getUserPayPwd());
-
-		if (result.get("retCode").equals(RetCodeConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION)) {
-			// 发PIN码
-			UserInfo user = userManager.getUserInfo(sessionData.getUserId());
-			userManager.getPinCode(reqMsg.getTransferId(), user.getAreaCode(), user.getPhone());
-			rep.setRetCode(result.get("retCode"));
-			rep.setMessage("Need to send pin code verification");
-		} else {
-			rep.setRetCode(result.get("retCode"));
-			rep.setMessage(result.get("msg"));
-			rep.setOpts(new String[] { result.get("msg") });
-		}
+		rep.setRetCode(map.get("retCode"));
+		rep.setMessage(map.get("msg"));
 
 		return rep;
+		
 	}
-
+	
 	@ApiOperation(value = "重新发送pin")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/resendPhonePin")
 	public @ResponseEncryptBody ResendTransferPinResponse resendTransferPin(@PathVariable String token,
@@ -217,38 +258,6 @@ public class TransferController {
 		return rep;
 	}
 
-	@ApiOperation(value = "交易确认")
-	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transferConfirm")
-	public @ResponseEncryptBody TransferConfirmResponse transferConfirm(@PathVariable String token,
-			@RequestDecryptBody TransferConfirmRequest reqMsg) {
-		// 从Session中获取Id
-		SessionData sessionData = SessionDataHolder.getSessionData();
-
-		UserInfo user = userManager.getUserInfo(sessionData.getUserId());
-		TransferConfirmResponse rep = new TransferConfirmResponse();
-		// 判断PinCode是否正确
-		Boolean resultBool = userManager.testPinCode(reqMsg.getTransferId(), user.getAreaCode(), user.getPhone(),
-				reqMsg.getPinCode());
-		if (resultBool == null) {
-			logger.info(MessageConsts.NOT_GET_CODE);
-			rep.setRetCode(RetCodeConsts.NOT_GET_CODE);
-			rep.setMessage(MessageConsts.NOT_GET_CODE);
-		} else if (resultBool.booleanValue()) {
-			String result = transferManager.transferConfirm(sessionData.getUserId(), reqMsg.getTransferId());
-			if (result.equals(RetCodeConsts.RET_CODE_SUCCESS)) {
-				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-			} else {
-				rep.setRetCode(result);
-				rep.setMessage("Current balance is insufficient");
-			}
-			userManager.clearPinCode(reqMsg.getTransferId(), user.getAreaCode(), user.getPhone());
-		} else {
-			rep.setRetCode(RetCodeConsts.PIN_CODE_INCORRECT);
-			rep.setMessage("The pin code is incorrect");
-		}
-		return rep;
-	}
 
 	@ApiOperation(value = "发起转账请求")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/makeRequest")
@@ -317,6 +326,7 @@ public class TransferController {
 
 		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			rep.setTransferId(map.get("transferId"));
+			rep.setCodeVerification(map.get("codeVerification"));
 		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY)) {
 			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit"), map.get("thawTime") });
 		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)) {
@@ -421,5 +431,157 @@ public class TransferController {
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		return rep;
 	}
+	
+//	@ApiOperation(value = "交易初始化")
+//	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transferInitiate")
+//	public @ResponseEncryptBody TransferInitiateResponse transferInitiate(@PathVariable String token,
+//			@RequestDecryptBody TransferInitiateRequest reqMsg) {
+//		// 从Session中获取Id
+//		SessionData sessionData = SessionDataHolder.getSessionData();
+//		TransferInitiateResponse rep = new TransferInitiateResponse();
+//
+//		if (StringUtils.isEmpty(reqMsg.getAreaCode()) || StringUtils.isEmpty(reqMsg.getUserPhone())) {
+//			logger.info("Phone number is empty");
+//			rep.setRetCode(RetCodeConsts.TRANSFER_PHONE_NUMBER_IS_EMPTY);
+//			rep.setMessage("Phone number is empty");
+//			return rep;
+//		}
+//		// 装张金额上限
+//		if (!reqMsg.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY) && reqMsg.getAmount() < 0.0001) {
+//			logger.info("The input amount is less than the minimum amount");
+//			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
+//			rep.setMessage("The input amount is less than the minimum amount");
+//			return rep;
+//		} else if ((reqMsg.getCurrency()).equals(ServerConsts.CURRENCY_OF_GOLDPAY)
+//				&& (reqMsg.getAmount() % 1 > 0 || reqMsg.getAmount() == 0)) {
+//			logger.info("The GDQ must be an integer value");
+//			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
+//			rep.setMessage("The GDQ must be an integer value");
+//			return rep;
+//		} else if (reqMsg.getAmount() > configManager.getConfigLongValue(ConfigKeyEnum.ENTERMAXIMUMAMOUNT,
+//				1000000000L)) {
+//			logger.info("Fill out the allowable amount");
+//			rep.setRetCode(RetCodeConsts.TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT);
+//			rep.setMessage("Fill out the allowable amount");
+//			return rep;
+//		}
+//
+//		HashMap<String, String> map = transferManager.transferInitiate(sessionData.getUserId(), reqMsg.getAreaCode(),
+//				reqMsg.getUserPhone(), reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())),
+//				reqMsg.getTransferComment(), 0);
+//
+//		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
+//			rep.setTransferId(map.get("transferId"));
+//		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY)) {
+//			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit"), map.get("thawTime") });
+//		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)) {
+//			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit") });
+//		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY)) {
+//			rep.setOpts(new String[] { map.get("msg"), map.get("thawTime") });
+//		}
+//
+//		rep.setRetCode(map.get("retCode"));
+//		rep.setMessage(map.get("msg"));
+//
+//		return rep;
+//
+//	}
+//
+//	@ApiOperation(value = "验证支付密码")
+//	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transPwdConfirm")
+//	public @ResponseEncryptBody TransPwdConfirmResponse transPwdConfirm(@PathVariable String token,
+//			@RequestDecryptBody TransPwdConfirmRequest reqMsg) {
+//		// 从Session中获取Id
+//		SessionData sessionData = SessionDataHolder.getSessionData();
+//		TransPwdConfirmResponse rep = new TransPwdConfirmResponse();
+//		
+//		// 验证支付密码
+//		CheckPwdResult checkPwdResult = userManager.checkPayPassword(
+//				sessionData.getUserId(), reqMsg.getUserPayPwd());
+//		
+//		switch (checkPwdResult.getStatus()) {
+//			case FREEZE:
+//				rep.setRetCode(RetCodeConsts.PAY_FREEZE);
+//				rep.setMessage(String.valueOf(checkPwdResult.getInfo()));
+//				return rep;
+//			case INCORRECT:
+//				logger.warn("payPwd is wrong !");
+//				rep.setRetCode(RetCodeConsts.PAY_PWD_NOT_MATCH);
+//				rep.setMessage(String.valueOf(checkPwdResult.getInfo()));
+//				return rep;
+//			default:
+//				break;
+//		}
+//		
+//		HashMap<String, String> result = transferManager.whenPayPwdConfirmed(
+//				sessionData.getUserId(), reqMsg.getTransferId(),reqMsg.getUserPayPwd());
+//
+//		if (result.get("retCode").equals(RetCodeConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION)) {
+//			// 发PIN码
+//			UserInfo user = userManager.getUserInfo(sessionData.getUserId());
+//			userManager.getPinCode(reqMsg.getTransferId(), user.getAreaCode(), user.getPhone());
+//			rep.setRetCode(result.get("retCode"));
+//			rep.setMessage("Need to send pin code verification");
+//		} else {
+//			rep.setRetCode(result.get("retCode"));
+//			rep.setMessage(result.get("msg"));
+//			rep.setOpts(new String[] { result.get("msg") });
+//		}
+//
+//		return rep;
+//	}
+//
+//	@ApiOperation(value = "重新发送pin")
+//	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/resendPhonePin")
+//	public @ResponseEncryptBody ResendTransferPinResponse resendTransferPin(@PathVariable String token,
+//			@RequestDecryptBody ResendTransferPinRequest reqMsg) {
+//		// 从Session中获取Id
+//		SessionData sessionData = SessionDataHolder.getSessionData();
+//		ResendTransferPinResponse rep = new ResendTransferPinResponse();
+//		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+//		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+//		try {
+//			UserInfo user = userManager.getUserInfo(sessionData.getUserId());
+//			userManager.getPinCode(reqMsg.getTransferId(), user.getAreaCode(), user.getPhone());
+//		} catch (Exception e) {
+//			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+//			rep.setMessage("Re-sending the phone pin failed");
+//		}
+//		return rep;
+//	}
+//
+//	@ApiOperation(value = "交易确认")
+//	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transferConfirm")
+//	public @ResponseEncryptBody TransferConfirmResponse transferConfirm(@PathVariable String token,
+//			@RequestDecryptBody TransferConfirmRequest reqMsg) {
+//		// 从Session中获取Id
+//		SessionData sessionData = SessionDataHolder.getSessionData();
+//
+//		UserInfo user = userManager.getUserInfo(sessionData.getUserId());
+//		TransferConfirmResponse rep = new TransferConfirmResponse();
+//		// 判断PinCode是否正确
+//		Boolean resultBool = userManager.testPinCode(reqMsg.getTransferId(), user.getAreaCode(), user.getPhone(),
+//				reqMsg.getPinCode());
+//		if (resultBool == null) {
+//			logger.info(MessageConsts.NOT_GET_CODE);
+//			rep.setRetCode(RetCodeConsts.NOT_GET_CODE);
+//			rep.setMessage(MessageConsts.NOT_GET_CODE);
+//		} else if (resultBool.booleanValue()) {
+//			String result = transferManager.transferConfirm(sessionData.getUserId(), reqMsg.getTransferId());
+//			if (result.equals(RetCodeConsts.RET_CODE_SUCCESS)) {
+//				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+//				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+//			} else {
+//				rep.setRetCode(result);
+//				rep.setMessage("Current balance is insufficient");
+//			}
+//			userManager.clearPinCode(reqMsg.getTransferId(), user.getAreaCode(), user.getPhone());
+//		} else {
+//			rep.setRetCode(RetCodeConsts.PIN_CODE_INCORRECT);
+//			rep.setMessage("The pin code is incorrect");
+//		}
+//		return rep;
+//	}
+
 
 }

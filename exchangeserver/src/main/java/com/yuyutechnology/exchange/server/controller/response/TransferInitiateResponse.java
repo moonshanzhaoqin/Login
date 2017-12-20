@@ -7,6 +7,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 public class TransferInitiateResponse extends BaseResponse {
 
 	private String transferId;
+	private String codeVerification;
 
 	@ApiModelProperty(required=true,value="生成的订单号",notes="")
 	public String getTransferId() {
@@ -15,6 +16,15 @@ public class TransferInitiateResponse extends BaseResponse {
 
 	public void setTransferId(String transferId) {
 		this.transferId = transferId;
+	}
+
+	@ApiModelProperty(required=true,value="是否需要验证验证码验证：0表示需要1表示不需要",notes="")
+	public String getCodeVerification() {
+		return codeVerification;
+	}
+
+	public void setCodeVerification(String codeVerification) {
+		this.codeVerification = codeVerification;
 	}
 
 }
