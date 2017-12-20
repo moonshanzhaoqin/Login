@@ -11,6 +11,7 @@ public class TransactionPreviewResponse extends BaseResponse {
 	private String currency;
 	private String transAmount;
 	private String avatarUrl;
+	private String addFriends;
 	
 	@ApiModelProperty(required=true,value="用户账户（区号+手机号）",notes="")
 	public String getUserAccount() {
@@ -46,5 +47,13 @@ public class TransactionPreviewResponse extends BaseResponse {
 	}
 	public void setAvatarUrl(String avatarUrl) {
 		this.avatarUrl = avatarUrl;
+	}
+	
+	@ApiModelProperty(required=true,value="好友关系：0已经是好友1还不是好友",notes="")
+	public String getAddFriends() {
+		return addFriends;
+	}
+	public void setAddFriends(String addFriends) {
+		this.addFriends = addFriends;
 	}
 }

@@ -15,7 +15,7 @@ public interface TransferManager {
 	HashMap<String, String> transferInitiate(Integer userId, String areaCode, String userPhone, String currency,
 			BigDecimal bigDecimal, String transferComment, int noticeId);
 	
-	HashMap<String, String> transferConfirm(Integer userId, String transferId, String userPayPwd, String pinCode);
+	HashMap<String, String> transferConfirm(Integer userId, String transferId, String userPayPwd, String pinCode,String addFriends);
 
 	HashMap<String, Object> makeRequest(Integer userId, String areaCode, String phone, String currency,
 			BigDecimal bigDecimal);

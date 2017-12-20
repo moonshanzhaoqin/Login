@@ -283,4 +283,9 @@ public class ServerConsts {
 	/*不需要验证码验证*/
 	public static final String CODE_VERIFICATION_NO = "1";
 	
+	/*需要验证码验证*/
+	public static final String MAKE_FRIENDS_YES = "0";
+	/*不需要验证码验证*/
+	public static final String MAKE_FRIENDS_NO = "1";
+	
 }

@@ -114,6 +114,7 @@ public class TransferController{
 			rep.setCurrency(reqMsg.getCurrency());
 			rep.setTransAmount(reqMsg.getTransAmount()+"");
 			rep.setAvatarUrl(map.get("avatarUrl"));
+			rep.setAddFriends(map.get("addFriends"));
 		}
 		
 		rep.setRetCode(map.get("retCode"));
@@ -188,7 +189,7 @@ public class TransferController{
 		TransferConfirmResponse rep = new TransferConfirmResponse();
 		
 		HashMap<String, String> map = transferManager.transferConfirm(sessionData.getUserId(),
-				reqMsg.getTransferId(), reqMsg.getUserPayPwd(), reqMsg.getPinCode());
+				reqMsg.getTransferId(), reqMsg.getUserPayPwd(), reqMsg.getPinCode(),reqMsg.getAddFriends());
 		
 		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
 			rep.setMakeFriends(map.get("makeFriends"));

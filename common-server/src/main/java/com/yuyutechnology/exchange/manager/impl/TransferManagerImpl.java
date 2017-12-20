@@ -134,6 +134,16 @@ public class TransferManagerImpl implements TransferManager {
 			return map;
 		}
 		
+		//是否是好友关系
+		if(receiver != null){
+			List<Friend> friends = friendDAO.getFriendsByUserId(receiver.getUserId());
+			if(friends.isEmpty()){
+				map.put("addFriends", "1");
+			}else{
+				map.put("addFriends", "0");
+			}
+		}
+
 		map.put("userAccount", areaCode.concat(userPhone));
 		map.put("userName", receiver.getUserName());
 		map.put("avatarUrl", receiver.getUserName());
@@ -255,7 +265,7 @@ public class TransferManagerImpl implements TransferManager {
 	}
 	
 	@Override
-	public HashMap<String, String> transferConfirm(Integer userId, String transferId,String userPayPwd,String pinCode){
+	public HashMap<String, String> transferConfirm(Integer userId, String transferId,String userPayPwd,String pinCode,String addFriends){
 		
 		HashMap<String, String> result = new HashMap<>();
 		
@@ -379,6 +389,10 @@ public class TransferManagerImpl implements TransferManager {
 		largeTransWarn(payer, transfer);
 		
 		//判断是否是好友
+		if(ServerConsts.MAKE_FRIENDS_YES.equals(addFriends)){
+			userManager.addfriend(userId, transfer.getAreaCode(), transfer.getPhone());
+			logger.info("Add good friends to success");
+		}
 
 		
 		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
