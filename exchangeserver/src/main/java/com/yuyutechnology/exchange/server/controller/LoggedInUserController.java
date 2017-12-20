@@ -328,7 +328,7 @@ public class LoggedInUserController {
 			FileOutputStream outputStream = null;
 			try {
 				inputStream = request.getInputStream();
-				File file = File.createTempFile(UidUtils.genUid(), ".jpg");
+				File file = File.createTempFile(String.valueOf(new Date().getTime()), ".jpg");
 
 				outputStream = new FileOutputStream(file);
 				byte[] temp = new byte[1024];

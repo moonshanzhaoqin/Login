@@ -848,7 +848,7 @@ public class UserManagerImpl implements UserManager {
 	@Override
 	public String updateUserPortrait(Integer userId, File uploadFile) {
 		User user = userDAO.getUser(userId);
-		String portrait = userId + "/" + UidUtils.genUid();
+		String portrait = userId + "/" + UidUtils.genUid()+".jpg";
 		String imgUrl = S3Utils.uploadFile(portrait, uploadFile);
 		if (imgUrl != null) {
 			user.setUserPortrait(portrait);
