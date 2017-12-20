@@ -1,5 +1,6 @@
 package com.yuyutechnology.exchange.manager;
 
+import java.io.File;
 import java.text.ParseException;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import com.yuyutechnology.exchange.dto.FriendDTO;
 import com.yuyutechnology.exchange.dto.FriendInitial;
 import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
+import com.yuyutechnology.exchange.dto.UserInfo4Transfer;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
 import com.yuyutechnology.exchange.pojo.User;
 import com.yuyutechnology.exchange.sms.SendMessageResponse;
@@ -259,6 +261,8 @@ public interface UserManager {
 	List<FriendDTO> searchFriend(Integer userId, String keyWords);
 
 
-	String updateUserPortrait(Integer userId, String uploadFile);
+	String updateUserPortrait(Integer userId, File uploadFile);
+
+	UserInfo4Transfer findFriend(Integer userId, String areaCode, String userPhone);
 
 }

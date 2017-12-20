@@ -1,24 +1,16 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-import org.apache.commons.lang.StringUtils;
-
 public class ModifyUserPortraitRequest {
-	private String uploadFile;
+	private byte[] uploadFile;
 
-	public String getUploadFile() {
+	public byte[] getUploadFile() {
 		return uploadFile;
 	}
 
-	public void setUploadFile(String uploadFile) {
+	public void setUploadFile(byte[] uploadFile) {
 		this.uploadFile = uploadFile;
 	}
 
-	public boolean empty() {
-		if (StringUtils.isBlank(this.uploadFile)) {
-			return true;
-		}
-		return false;
-	}
 	
 	
 }

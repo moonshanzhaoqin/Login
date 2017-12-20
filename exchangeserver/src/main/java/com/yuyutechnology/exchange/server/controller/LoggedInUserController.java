@@ -3,8 +3,14 @@
  */
 package com.yuyutechnology.exchange.server.controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -30,6 +36,7 @@ import com.yuyutechnology.exchange.server.controller.request.ChangePhoneRequest;
 import com.yuyutechnology.exchange.server.controller.request.CheckPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetUserConfigRequest;
+import com.yuyutechnology.exchange.server.controller.request.GetUserInfo4TransferRequest;
 import com.yuyutechnology.exchange.server.controller.request.LogoutRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByOldRequest;
@@ -44,6 +51,7 @@ import com.yuyutechnology.exchange.server.controller.response.CheckPayPwdRespons
 import com.yuyutechnology.exchange.server.controller.response.ContactUsResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetMsgFlagResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetUserConfigResponse;
+import com.yuyutechnology.exchange.server.controller.response.GetUserInfo4TransferResponse;
 import com.yuyutechnology.exchange.server.controller.response.LogoutResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPayPwdByOldResponse;
@@ -57,6 +65,7 @@ import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBod
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
 import com.yuyutechnology.exchange.session.SessionManager;
+import com.yuyutechnology.exchange.util.UidUtils;
 
 /**
  * @author suzan.wu
@@ -307,34 +316,57 @@ public class LoggedInUserController {
 
 	@ResponseEncryptBody
 	@ApiOperation(value = "设置修改头像 ", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/user/modifyUserPortrait", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public ModifyUserPortraitResponse modifyUserPortrait(@PathVariable String token,
-			@RequestDecryptBody ModifyUserPortraitRequest modifyUserPortraitRequest) {
-		logger.info("========modifyUserName : {}============", token);
+	@RequestMapping(value = "/token/{token}/user/uploadPortrait", method = RequestMethod.POST, produces = "application/json; charset=utf-8", consumes = "multipart/form-data")
+	public ModifyUserPortraitResponse uploadPortrait(@PathVariable String token, HttpServletRequest request) {
+		logger.info("========uploadPortrait : {}============", token);
 		ModifyUserPortraitResponse rep = new ModifyUserPortraitResponse();
-		if (modifyUserPortraitRequest.empty()) {
-			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
-		} else {
-			SessionData sessionData = SessionDataHolder.getSessionData();
 
-			String imgUrl = userManager.updateUserPortrait(sessionData.getUserId(),
-					modifyUserPortraitRequest.getUploadFile());
-			if (imgUrl == null) {
-				logger.info("********upload fail ********");
-				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
-			}else {
+		SessionData sessionData = SessionDataHolder.getSessionData();
+
+		if (request.getContentLength() > 0) {
+			InputStream inputStream = null;
+			FileOutputStream outputStream = null;
+			try {
+				inputStream = request.getInputStream();
+				File file = File.createTempFile(UidUtils.genUid(), ".jpg");
+
+				outputStream = new FileOutputStream(file);
+				byte[] temp = new byte[1024];
+				int size = -1;
+				while ((size = inputStream.read(temp)) != -1) { // 每次读取1KB，直至读完
+					outputStream.write(temp, 0, size);
+				}
+				logger.info("File load success.");
+
+				String imgUrl = userManager.updateUserPortrait(sessionData.getUserId(), file);
 				rep.setPortrait(imgUrl);
+
 				logger.info("********Operation succeeded********");
 				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+
+			} catch (IOException e) {
+				logger.warn("File load fail.{}", e.getMessage(), e);
+				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+			} finally {
+				try {
+					outputStream.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		return rep;
 	}
-
+	
 	/**
 	 * 设置支付密码
 	 * 

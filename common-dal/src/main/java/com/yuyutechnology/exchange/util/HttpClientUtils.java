@@ -1,5 +1,6 @@
 package com.yuyutechnology.exchange.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
@@ -8,12 +9,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -23,6 +26,8 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+
 
 public class HttpClientUtils {
 	
@@ -286,6 +291,7 @@ public class HttpClientUtils {
 		}
 		return request.getRemoteAddr();
 	}
+
 	
 	public static void main(String[] args){
 		
@@ -299,4 +305,5 @@ public class HttpClientUtils {
 //		String result = sendPost("http://172.18.188.169:8081/jsonmessage/?rpc=RegisterPlayer", "{\"facebookId\":\"1974075809513039\"}");
 //		System.out.println("result : "+result);
 	}
+
 }
