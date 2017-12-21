@@ -7,6 +7,7 @@ public class TransferConfirmRequest {
 	private String transferId;
 	private String userPayPwd;
 	private String pinCode;
+	@ApiModelProperty(value="是否需要添加好友",notes="")
 	private String addFriends;
 	
 	@ApiModelProperty(required=true,value="订单Id")
@@ -34,7 +35,7 @@ public class TransferConfirmRequest {
 	public void setPinCode(String pinCode) {
 		this.pinCode = pinCode;
 	}
-	@ApiModelProperty(required=true,value="是否需要验证验证码验证：0表示需要1表示不需要",notes="")
+	
 	public String getAddFriends() {
 		return addFriends;
 	}
