@@ -50,7 +50,6 @@ public class S3Utils {
 		 
 	        try {
 	        	logger.info("Uploading a new object to S3 from a file");
-//	            File file = new File(uploadFileName);
 	            s3Client.putObject(new PutObjectRequest(
 	            		s3bucketName, keyName, file).withCannedAcl(CannedAccessControlList.PublicRead));        
 //	            https://s3-ap-southeast-1.amazonaws.com/bucket4gp/xpf5.jpg

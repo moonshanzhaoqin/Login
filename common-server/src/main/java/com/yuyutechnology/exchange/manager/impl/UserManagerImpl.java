@@ -1,5 +1,6 @@
 package com.yuyutechnology.exchange.manager.impl;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import com.yuyutechnology.exchange.dto.FriendDTO;
 import com.yuyutechnology.exchange.dto.FriendInitial;
 import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
+import com.yuyutechnology.exchange.dto.UserInfo4Transfer;
 import com.yuyutechnology.exchange.enums.CheckPWDStatus;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
@@ -844,14 +846,28 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public String updateUserPortrait(Integer userId, String uploadFile) {
+	public String updateUserPortrait(Integer userId, File uploadFile) {
 		User user = userDAO.getUser(userId);
-		String portrait = userId + "/" + UidUtils.genUid();
+		String portrait = userId + "/" + UidUtils.genUid()+".jpg";
 		String imgUrl = S3Utils.uploadFile(portrait, uploadFile);
 		if (imgUrl != null) {
 			user.setUserPortrait(portrait);
 			userDAO.updateUser(user);
 		}
 		return imgUrl;
+	}
+
+	@Override
+	public UserInfo4Transfer findFriend(Integer userId, String areaCode, String userPhone) {
+		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
+		UserInfo4Transfer userInfo4Transfer = null;
+		if (user != null) {
+			Friend friend = friendDAO.getFriendByUserIdAndFrindId(userId, user.getUserId());
+			userInfo4Transfer = new UserInfo4Transfer();
+			userInfo4Transfer.setName(user.getUserName());
+			userInfo4Transfer.setPortrait(user.getUserPortrait());
+			userInfo4Transfer.setFriend(friend != null);
+		}
+		return userInfo4Transfer;
 	}
 }
