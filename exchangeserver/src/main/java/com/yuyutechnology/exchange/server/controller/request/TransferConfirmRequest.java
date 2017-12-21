@@ -34,7 +34,7 @@ public class TransferConfirmRequest {
 	public void setPinCode(String pinCode) {
 		this.pinCode = pinCode;
 	}
-	@ApiModelProperty(required=true,value="是否需要验证验证码验证：0表示需要1表示不需要",notes="")
+	
 	public String getAddFriend() {
 		return addFriend;
 	}
