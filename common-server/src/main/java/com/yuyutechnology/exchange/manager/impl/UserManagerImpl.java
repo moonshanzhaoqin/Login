@@ -432,7 +432,7 @@ public class UserManagerImpl implements UserManager {
 		UserInfo userInfo = null;
 		if (user != null) {
 			userInfo = new UserInfo(user.getUserId(), user.getAreaCode(), user.getUserPhone(), user.getUserName(),
-					user.getUserPortrait() == "" ? null : S3Utils.getImgUrl(user.getUserPortrait()),
+					user.getUserPortrait() == null ? "" : S3Utils.getImgUrl(user.getUserPortrait()),
 					StringUtils.isNotBlank(user.getUserPayPwd()));
 			logger.info("*** {}", userInfo.toString());
 		} else {
