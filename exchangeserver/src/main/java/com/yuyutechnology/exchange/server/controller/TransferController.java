@@ -113,12 +113,14 @@ public class TransferController {
 				reqMsg.getAreaCode(), reqMsg.getUserPhone(), reqMsg.getCurrency(), BigDecimal.valueOf(reqMsg.getTransAmount()));
 		
 		if(RetCodeConsts.RET_CODE_SUCCESS.equals(map.get("retCode"))){
-			rep.setUserAccount(map.get("userAccount"));
-			rep.setUserName(map.get("userName"));
+			rep.setUserAccount(reqMsg.getAreaCode().concat(reqMsg.getUserPhone()));
+//			rep.setUserName(map.get("userName"));
 			rep.setCurrency(reqMsg.getCurrency());
 			rep.setTransAmount(reqMsg.getTransAmount()+"");
-			rep.setAvatarUrl(map.get("avatarUrl"));
-			rep.setAddFriends(map.get("addFriends"));
+			
+			rep.setUserInfo(userManager.findFriend(sessionData.getUserId(), reqMsg.getAreaCode(), reqMsg.getUserPhone()));
+//			rep.setAvatarUrl(map.get("avatarUrl"));
+//			rep.setAddFriends(map.get("addFriends"));
 		}
 		
 		rep.setRetCode(map.get("retCode"));
@@ -127,30 +129,30 @@ public class TransferController {
 		return rep;
 	}
 
-	@ResponseEncryptBody
-	@ApiOperation(value = "获取转账对象的信息", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/transfer/getUserInfo4Transfer", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public GetUserInfo4TransferResponse getUserInfo4Transfer(@PathVariable String token,
-			@RequestDecryptBody GetUserInfo4TransferRequest getUserInfo4TransferRequest) throws ParseException {
-		logger.info("========getUserInfo4Transfer : {}  {} ============", token,
-				getUserInfo4TransferRequest.getAreaCode() + getUserInfo4TransferRequest.getUserPhone());
-		GetUserInfo4TransferResponse rep = new GetUserInfo4TransferResponse();
-		if (getUserInfo4TransferRequest.empty()) {
-			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
-			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
-		} else {
-			SessionData sessionData = SessionDataHolder.getSessionData();
-			UserInfo4Transfer userInfo4Transfer = userManager.findFriend(sessionData.getUserId(),
-					getUserInfo4TransferRequest.getAreaCode(), getUserInfo4TransferRequest.getUserPhone());
-			rep.setUserInfo(userInfo4Transfer);
-			logger.info("********Operation succeeded********");
-			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-		}
-
-		return rep;
-	}
+//	@ResponseEncryptBody
+//	@ApiOperation(value = "获取转账对象的信息", httpMethod = "POST", notes = "")
+//	@RequestMapping(value = "/token/{token}/transfer/getUserInfo4Transfer", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+//	public GetUserInfo4TransferResponse getUserInfo4Transfer(@PathVariable String token,
+//			@RequestDecryptBody GetUserInfo4TransferRequest getUserInfo4TransferRequest) throws ParseException {
+//		logger.info("========getUserInfo4Transfer : {}  {} ============", token,
+//				getUserInfo4TransferRequest.getAreaCode() + getUserInfo4TransferRequest.getUserPhone());
+//		GetUserInfo4TransferResponse rep = new GetUserInfo4TransferResponse();
+//		if (getUserInfo4TransferRequest.empty()) {
+//			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+//			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
+//			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+//		} else {
+//			SessionData sessionData = SessionDataHolder.getSessionData();
+//			UserInfo4Transfer userInfo4Transfer = userManager.findFriend(sessionData.getUserId(),
+//					getUserInfo4TransferRequest.getAreaCode(), getUserInfo4TransferRequest.getUserPhone());
+//			rep.setUserInfo(userInfo4Transfer);
+//			logger.info("********Operation succeeded********");
+//			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+//			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+//		}
+//
+//		return rep;
+//	}
 
 	@ApiOperation(value = "交易初始化")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transferInitiate")

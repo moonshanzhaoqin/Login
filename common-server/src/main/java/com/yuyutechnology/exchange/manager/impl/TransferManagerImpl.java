@@ -134,19 +134,19 @@ public class TransferManagerImpl implements TransferManager {
 			return map;
 		}
 		
-		//是否是好友关系
-		if(receiver != null){
-			List<Friend> friends = friendDAO.getFriendsByUserId(receiver.getUserId());
-			if(friends.isEmpty()){
-				map.put("addFriends", "1");
-			}else{
-				map.put("addFriends", "0");
-			}
-		}
-
-		map.put("userAccount", areaCode.concat(userPhone));
-		map.put("userName", receiver.getUserName());
-		map.put("avatarUrl", receiver.getUserName());
+//		//是否是好友关系
+//		if(receiver != null){
+//			List<Friend> friends = friendDAO.getFriendsByUserId(receiver.getUserId());
+//			if(friends.isEmpty()){
+//				map.put("addFriends", "1");
+//			}else{
+//				map.put("addFriends", "0");
+//			}
+//		}
+//
+//		map.put("userAccount", areaCode.concat(userPhone));
+//		map.put("userName", receiver.getUserName());
+//		map.put("avatarUrl", receiver.getUserName());
 
 		
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
