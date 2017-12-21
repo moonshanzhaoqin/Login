@@ -20,11 +20,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
@@ -41,12 +38,10 @@ import com.yuyutechnology.exchange.server.controller.request.ChangePhoneRequest;
 import com.yuyutechnology.exchange.server.controller.request.CheckPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.ContactUsRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetUserConfigRequest;
-import com.yuyutechnology.exchange.server.controller.request.GetUserInfo4TransferRequest;
 import com.yuyutechnology.exchange.server.controller.request.LogoutRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPasswordRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyPayPwdByOldRequest;
 import com.yuyutechnology.exchange.server.controller.request.ModifyUserNameRequest;
-import com.yuyutechnology.exchange.server.controller.request.ModifyUserPortraitRequest;
 import com.yuyutechnology.exchange.server.controller.request.ResetPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.SetUserPayPwdRequest;
 import com.yuyutechnology.exchange.server.controller.request.SwitchLanguageRequest;
@@ -56,7 +51,6 @@ import com.yuyutechnology.exchange.server.controller.response.CheckPayPwdRespons
 import com.yuyutechnology.exchange.server.controller.response.ContactUsResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetMsgFlagResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetUserConfigResponse;
-import com.yuyutechnology.exchange.server.controller.response.GetUserInfo4TransferResponse;
 import com.yuyutechnology.exchange.server.controller.response.LogoutResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPayPwdByOldResponse;
@@ -70,7 +64,6 @@ import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBod
 import com.yuyutechnology.exchange.session.SessionData;
 import com.yuyutechnology.exchange.session.SessionDataHolder;
 import com.yuyutechnology.exchange.session.SessionManager;
-import com.yuyutechnology.exchange.util.UidUtils;
 
 /**
  * @author suzan.wu

@@ -6,7 +6,7 @@ public class TransactionPreviewRequest {
 	private String userPhone;
 	private String currency;
 	private double transAmount;
-	private String transferComment;
+//	private String transferComment;
 	
 	public String getAreaCode() {
 		return areaCode;
@@ -33,11 +33,11 @@ public class TransactionPreviewRequest {
 	public void setTransAmount(double transAmount) {
 		this.transAmount = transAmount;
 	}
-	public String getTransferComment() {
-		return transferComment;
-	}
-	public void setTransferComment(String transferComment) {
-		this.transferComment = transferComment;
-	}
+//	public String getTransferComment() {
+//		return transferComment;
+//	}
+//	public void setTransferComment(String transferComment) {
+//		this.transferComment = transferComment;
+//	}
 
 }

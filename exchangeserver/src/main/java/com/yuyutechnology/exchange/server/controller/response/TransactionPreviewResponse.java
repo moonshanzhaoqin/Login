@@ -8,12 +8,9 @@ import com.yuyutechnology.exchange.dto.UserInfo4Transfer;
 public class TransactionPreviewResponse extends BaseResponse {
 	
 	private String userAccount;
-//	private String userName;
 	private String currency;
 	private String transAmount;
-//	private String avatarUrl;
-//	private String addFriends;
-	
+
 	@ApiModelProperty(value = "用户信息")
 	private UserInfo4Transfer userInfo;
 	
@@ -24,13 +21,6 @@ public class TransactionPreviewResponse extends BaseResponse {
 	public void setUserAccount(String userAccount) {
 		this.userAccount = userAccount;
 	}
-//	@ApiModelProperty(required=true,value="用户名",notes="")
-//	public String getUserName() {
-//		return userName;
-//	}
-//	public void setUserName(String userName) {
-//		this.userName = userName;
-//	}
 	@ApiModelProperty(required=true,value="货币类型",notes="")
 	public String getCurrency() {
 		return currency;
@@ -45,25 +35,11 @@ public class TransactionPreviewResponse extends BaseResponse {
 	public void setTransAmount(String transAmount) {
 		this.transAmount = transAmount;
 	}
-//	@ApiModelProperty(required=true,value="头像url",notes="")
-//	public String getAvatarUrl() {
-//		return avatarUrl;
-//	}
-//	public void setAvatarUrl(String avatarUrl) {
-//		this.avatarUrl = avatarUrl;
-//	}
 	public UserInfo4Transfer getUserInfo() {
 		return userInfo;
 	}
 	public void setUserInfo(UserInfo4Transfer userInfo) {
 		this.userInfo = userInfo;
 	}
-	
-//	@ApiModelProperty(value="好友关系：0已经是好友1还不是好友",notes="")
-//	public String getAddFriends() {
-//		return addFriends;
-//	}
-//	public void setAddFriends(String addFriends) {
-//		this.addFriends = addFriends;
-//	}
+
 }

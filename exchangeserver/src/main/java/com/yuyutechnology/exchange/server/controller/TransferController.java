@@ -188,10 +188,9 @@ public class TransferController {
 		TransferConfirmResponse rep = new TransferConfirmResponse();
 
 		HashMap<String, String> map = transferManager.transferConfirm(sessionData.getUserId(),
-				reqMsg.getTransferId(), reqMsg.getUserPayPwd(), reqMsg.getPinCode(),reqMsg.getAddFriends());
+				reqMsg.getTransferId(), reqMsg.getUserPayPwd(), reqMsg.getPinCode(),reqMsg.getAddFriend());
 		
 		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
-			rep.setMakeFriends(map.get("makeFriends"));
 		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY)) {
 			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit"), map.get("thawTime") });
 		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)) {

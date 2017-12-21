@@ -382,7 +382,6 @@ public class TransferManagerImpl implements TransferManager {
 		
 		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		result.put("msg", ServerConsts.GOLDPAY_RETURN_SUCCESS+"");
-		result.put("makeFriends", "0");
 		
 		return result;
 
