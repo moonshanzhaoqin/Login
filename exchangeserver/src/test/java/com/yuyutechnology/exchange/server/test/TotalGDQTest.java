@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.yuyutechnology.exchange.manager.TransDetailsManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
-import com.yuyutechnology.exchange.util.S3Utils;
 
 public class TotalGDQTest extends BaseSpringJunit4{
 	
