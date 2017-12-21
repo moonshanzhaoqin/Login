@@ -1,7 +1,6 @@
 package com.yuyutechnology.exchange.server.controller;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,7 +22,6 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.TransDetailsDTO;
 import com.yuyutechnology.exchange.dto.TransferDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
-import com.yuyutechnology.exchange.dto.UserInfo4Transfer;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
@@ -35,7 +33,6 @@ import com.yuyutechnology.exchange.server.controller.dto.NotificationDTO;
 import com.yuyutechnology.exchange.server.controller.request.GetNotificationRecordsRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetTransDetailsRequest;
 import com.yuyutechnology.exchange.server.controller.request.GetTransactionRecordRequest;
-import com.yuyutechnology.exchange.server.controller.request.GetUserInfo4TransferRequest;
 import com.yuyutechnology.exchange.server.controller.request.MakeRequestRequest;
 import com.yuyutechnology.exchange.server.controller.request.RegenerateQRCodeRequest;
 import com.yuyutechnology.exchange.server.controller.request.ResendTransferPinRequest;
@@ -46,7 +43,6 @@ import com.yuyutechnology.exchange.server.controller.request.TransferInitiateReq
 import com.yuyutechnology.exchange.server.controller.response.GetNotificationRecordsResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetTransDetailsResponse;
 import com.yuyutechnology.exchange.server.controller.response.GetTransactionRecordResponse;
-import com.yuyutechnology.exchange.server.controller.response.GetUserInfo4TransferResponse;
 import com.yuyutechnology.exchange.server.controller.response.MakeRequestResponse;
 import com.yuyutechnology.exchange.server.controller.response.RegenerateQRCodeResponse;
 import com.yuyutechnology.exchange.server.controller.response.ResendTransferPinResponse;
@@ -114,13 +110,10 @@ public class TransferController {
 		
 		if(RetCodeConsts.RET_CODE_SUCCESS.equals(map.get("retCode"))){
 			rep.setUserAccount(reqMsg.getAreaCode().concat(reqMsg.getUserPhone()));
-//			rep.setUserName(map.get("userName"));
 			rep.setCurrency(reqMsg.getCurrency());
 			rep.setTransAmount(reqMsg.getTransAmount()+"");
-			
 			rep.setUserInfo(userManager.findFriend(sessionData.getUserId(), reqMsg.getAreaCode(), reqMsg.getUserPhone()));
-//			rep.setAvatarUrl(map.get("avatarUrl"));
-//			rep.setAddFriends(map.get("addFriends"));
+
 		}
 		
 		rep.setRetCode(map.get("retCode"));
@@ -128,31 +121,6 @@ public class TransferController {
 		
 		return rep;
 	}
-
-//	@ResponseEncryptBody
-//	@ApiOperation(value = "获取转账对象的信息", httpMethod = "POST", notes = "")
-//	@RequestMapping(value = "/token/{token}/transfer/getUserInfo4Transfer", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-//	public GetUserInfo4TransferResponse getUserInfo4Transfer(@PathVariable String token,
-//			@RequestDecryptBody GetUserInfo4TransferRequest getUserInfo4TransferRequest) throws ParseException {
-//		logger.info("========getUserInfo4Transfer : {}  {} ============", token,
-//				getUserInfo4TransferRequest.getAreaCode() + getUserInfo4TransferRequest.getUserPhone());
-//		GetUserInfo4TransferResponse rep = new GetUserInfo4TransferResponse();
-//		if (getUserInfo4TransferRequest.empty()) {
-//			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
-//			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
-//			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
-//		} else {
-//			SessionData sessionData = SessionDataHolder.getSessionData();
-//			UserInfo4Transfer userInfo4Transfer = userManager.findFriend(sessionData.getUserId(),
-//					getUserInfo4TransferRequest.getAreaCode(), getUserInfo4TransferRequest.getUserPhone());
-//			rep.setUserInfo(userInfo4Transfer);
-//			logger.info("********Operation succeeded********");
-//			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-//			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-//		}
-//
-//		return rep;
-//	}
 
 	@ApiOperation(value = "交易初始化")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/transfer/transferInitiate")
