@@ -15,11 +15,11 @@ import com.yuyutechnology.exchange.dao.BadAccountDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dao.WalletSeqDAO;
 import com.yuyutechnology.exchange.dto.WalletInfo;
+import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.manager.WalletManager;
 import com.yuyutechnology.exchange.pojo.BadAccount;
-import com.yuyutechnology.exchange.pojo.GoldpayAccount;
 import com.yuyutechnology.exchange.pojo.Wallet;
 import com.yuyutechnology.exchange.util.ResourceUtils;
 import com.yuyutechnology.exchange.util.page.PageBean;
@@ -55,7 +55,7 @@ public class WalletManagerImpl implements WalletManager {
 		for (Wallet wallet : list) {
 
 			if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(wallet.getCurrency().getCurrency())){
-				GoldpayAccount dto = goldpayTrans4MergeManager.getGoldpayUserAccount(userId);
+				GoldpayUserDTO dto = goldpayTrans4MergeManager.getGoldpayUserAccount(userId);
 				if(dto == null){
 					return null;
 				}
@@ -116,7 +116,7 @@ public class WalletManagerImpl implements WalletManager {
 		//add by Niklaus.chi at 2017-10-13
 		for (WalletInfo walletInfo : list) {
 			if(walletInfo.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
-				GoldpayAccount goldpayUser = goldpayTrans4MergeManager.getGoldpayUserAccount(userId);
+				GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.getGoldpayUserAccount(userId);
 				if(goldpayUser!=null){
 					walletInfo.setBalance(new BigDecimal(goldpayUser.getBalance()+""));
 				}

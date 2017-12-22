@@ -6,11 +6,10 @@ import java.util.List;
 import org.springframework.scheduling.annotation.Async;
 
 import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
-import com.yuyutechnology.exchange.pojo.GoldpayAccount;
 
 public interface GoldpayTrans4MergeManager {
 
-	GoldpayAccount getGoldpayUserAccount(Integer exUserId);
+	GoldpayUserDTO getGoldpayUserAccount(Integer exUserId);
 
 	String getGoldpayOrderId();
 
