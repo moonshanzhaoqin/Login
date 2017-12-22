@@ -1,8 +1,5 @@
 package com.yuyutechnology.exchange.server.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +12,13 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.manager.UserManager;
-import com.yuyutechnology.exchange.pojo.Friend;
-import com.yuyutechnology.exchange.server.controller.dto.FriendDTO;
 import com.yuyutechnology.exchange.server.controller.request.AddFriendRequest;
 import com.yuyutechnology.exchange.server.controller.request.DeleteFriendRequest;
+import com.yuyutechnology.exchange.server.controller.request.SearchFriendRequest;
 import com.yuyutechnology.exchange.server.controller.response.AddFriendResponse;
 import com.yuyutechnology.exchange.server.controller.response.DeleteFriendResponse;
 import com.yuyutechnology.exchange.server.controller.response.FriendsListResponse;
+import com.yuyutechnology.exchange.server.controller.response.SearchFriendResponse;
 import com.yuyutechnology.exchange.server.security.annotation.RequestDecryptBody;
 import com.yuyutechnology.exchange.server.security.annotation.ResponseEncryptBody;
 import com.yuyutechnology.exchange.session.SessionData;
@@ -104,14 +101,8 @@ public class FriendController {
 		logger.info("========friendsList : {}============", token);
 		FriendsListResponse rep = new FriendsListResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		List<FriendDTO> friendInfos = new ArrayList<FriendDTO>();
-		List<Friend> friends = userManager.getFriends(sessionData.getUserId());
-		for (Friend friend : friends) {
-			logger.info("friend={}", friend.toString());
-			friendInfos.add(new FriendDTO(friend.getUser().getAreaCode(), friend.getUser().getUserPhone(),
-					friend.getUser().getUserName()));
-		}
-		rep.setFriends(friendInfos);
+	
+		rep.setInitials(userManager.getFriends(sessionData.getUserId()));
 		logger.info("********Operation succeeded********");
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
@@ -168,6 +159,26 @@ public class FriendController {
 				break;
 			}
 		}
+		return rep;
+	}
+	
+	//TODO 搜索好友
+	@ResponseEncryptBody
+	@ApiOperation(value = "搜索好友", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/searchFriend", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+	public SearchFriendResponse searchFriend(@PathVariable String token,@RequestDecryptBody SearchFriendRequest searchFriendRequest) {
+		logger.info("========friendsList : {}============", token);
+		SearchFriendResponse rep = new SearchFriendResponse();
+		SessionData sessionData = SessionDataHolder.getSessionData();
+		if (searchFriendRequest.empty()) {
+			logger.info(MessageConsts.PARAMETER_IS_EMPTY);
+			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
+			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
+		} else {
+		rep.setFriends(userManager.searchFriend(sessionData.getUserId(),searchFriendRequest.getKeyWords()));
+		logger.info("********Operation succeeded********");
+		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);}
 		return rep;
 	}
 }

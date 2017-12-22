@@ -1,5 +1,7 @@
 package com.yuyutechnology.exchange.dao.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.hibernate.HibernateException;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.yuyutechnology.exchange.dao.BindDAO;
 import com.yuyutechnology.exchange.pojo.Bind;
+import com.yuyutechnology.exchange.pojo.GoldpayAccount;
 
 @Repository
 public class BindDAOImpl implements BindDAO {
@@ -26,7 +29,7 @@ public class BindDAOImpl implements BindDAO {
 	public void updateBind(Bind bind) {
 		hibernateTemplate.saveOrUpdate(bind);
 	}
-
+	
 	@Override
 	public void clearHappyLivesId(final String happyLivesId) {
 		hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
@@ -37,5 +40,14 @@ public class BindDAOImpl implements BindDAO {
 				return query.executeUpdate();
 			}
 		});
+	}
+
+	@Override
+	public GoldpayAccount getGoldpayAccount(Integer userId) {
+		List<?> accounts = hibernateTemplate.find("from Bind b, GoldpayAccount g where b.goldpayId = g.goldpayUserId and b.userId = ?", userId);
+		if (accounts != null && accounts.size() > 0) {
+			return (GoldpayAccount) ((Object[])accounts.get(0))[1];
+		}
+		return null;
 	}
 }

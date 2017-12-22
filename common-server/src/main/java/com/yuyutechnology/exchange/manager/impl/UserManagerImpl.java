@@ -1,7 +1,9 @@
 package com.yuyutechnology.exchange.manager.impl;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,8 +31,11 @@ import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.dao.UserDeviceDAO;
 import com.yuyutechnology.exchange.dao.WalletDAO;
 import com.yuyutechnology.exchange.dto.CheckPwdResult;
+import com.yuyutechnology.exchange.dto.FriendDTO;
+import com.yuyutechnology.exchange.dto.FriendInitial;
 import com.yuyutechnology.exchange.dto.UserDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
+import com.yuyutechnology.exchange.dto.UserInfo4Transfer;
 import com.yuyutechnology.exchange.enums.CheckPWDStatus;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.enums.UserConfigKeyEnum;
@@ -60,7 +65,10 @@ import com.yuyutechnology.exchange.util.LanguageUtils;
 import com.yuyutechnology.exchange.util.LanguageUtils.Language;
 import com.yuyutechnology.exchange.util.MathUtils;
 import com.yuyutechnology.exchange.util.PasswordUtils;
+import com.yuyutechnology.exchange.util.PinyinUtils;
 import com.yuyutechnology.exchange.util.ResourceUtils;
+import com.yuyutechnology.exchange.util.S3Utils;
+import com.yuyutechnology.exchange.util.UidUtils;
 
 @Service
 public class UserManagerImpl implements UserManager {
@@ -323,26 +331,82 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public List<Friend> getFriends(Integer userId) {
+	public List<FriendInitial> getFriends(Integer userId) {
+		List<FriendDTO> friendDTOs = new ArrayList<>();
+		List<FriendInitial> friendInitials = new ArrayList<>();
 		List<Friend> friends = friendDAO.getFriendsByUserId(userId);
-		return friends;
+		char index = 'A';
+		for (Friend friend : friends) {
+			if (friend.getUser().getNamePinyin().charAt(0) == index) {
+				FriendDTO friendDTO = new FriendDTO();
+				friendDTO.setAreaCode(friend.getUser().getAreaCode());
+				friendDTO.setPhone(friend.getUser().getUserPhone());
+				friendDTO.setName(friend.getUser().getUserName());
+				friendDTO.setPortrait(friend.getUser().getUserPortrait() == null ? ""
+						: S3Utils.getImgUrl(friend.getUser().getUserPortrait()));
+				friendDTOs.add(friendDTO);
+			} else {
+				/* 将上一个字母存入List<FriendInitial> */
+				if (friendDTOs.size() > 0) {
+					FriendInitial friendInitial = new FriendInitial();
+					friendInitial.setInitial(index);
+					friendInitial.setFriends(friendDTOs);
+					friendInitials.add(friendInitial);
+					/* 清空 List<FriendDTO> */
+					friendDTOs = new ArrayList<>();
+				}
+				/* 处理当前Friend信息 */
+				FriendDTO friendDTO = new FriendDTO();
+				friendDTO.setAreaCode(friend.getUser().getAreaCode());
+				friendDTO.setPhone(friend.getUser().getUserPhone());
+				friendDTO.setName(friend.getUser().getUserName());
+				friendDTO.setPortrait(friend.getUser().getUserPortrait() == null ? ""
+						: S3Utils.getImgUrl(friend.getUser().getUserPortrait()));
+				friendDTOs.add(friendDTO);
+				index = friend.getUser().getNamePinyin().charAt(0);
+			}
+
+		}
+		/* 处理最后一个字母 */
+		FriendInitial friendInitial = new FriendInitial();
+		friendInitial.setInitial(index);
+		friendInitial.setFriends(friendDTOs);
+		friendInitials.add(friendInitial);
+		return friendInitials;
+	}
+
+	@Override
+	public List<FriendDTO> searchFriend(Integer userId, String keyWords) {
+		List<FriendDTO> friendDTOs = new ArrayList<>();
+		List<Friend> friends = friendDAO.getFriendByUserIdAndKeyWords(userId, keyWords);
+		for (Friend friend : friends) {
+			FriendDTO friendDTO = new FriendDTO();
+			friendDTO.setAreaCode(friend.getUser().getAreaCode());
+			friendDTO.setPhone(friend.getUser().getUserPhone());
+			friendDTO.setName(friend.getUser().getUserName());
+			friendDTO.setPortrait(friend.getUser().getUserPortrait() == null ? ""
+					: S3Utils.getImgUrl(friend.getUser().getUserPortrait()));
+			friendDTOs.add(friendDTO);
+		}
+		return friendDTOs;
 	}
 
 	@Override
 	public SendMessageResponse getPinCode(String func, String areaCode, String userPhone) {
-		/* 随机生成六位数 */
-		final String random;
-		if (ResourceUtils.getBundleValue4Boolean("qa.switch")) {
-			random = ResourceUtils.getBundleValue4String("verify.code", "654321");
-		} else {
-			random = MathUtils.randomFixedLengthStr(6);
+		String pinCode = redisDAO.getValueByKey(func + areaCode + userPhone);
+		if (pinCode == null) {
+			if (ResourceUtils.getBundleValue4Boolean("qa.switch")) {
+				pinCode = ResourceUtils.getBundleValue4String("verify.code", "654321");
+			} else {
+				/* 随机生成六位数 */
+				pinCode = MathUtils.randomFixedLengthStr(6);
+			}
 		}
-		logger.info("getPinCode : phone={}, pincode={}", areaCode + userPhone, random);
-		final String md5random = DigestUtils.md5Hex(random);
-		/* 存入redis userPhone:md5random */
-		redisDAO.saveData(func + areaCode + userPhone, md5random,
+		logger.info("getPinCode : phone={}, pincode={}", areaCode + userPhone, pinCode);
+		/* 存入redis */
+		redisDAO.saveData(func + areaCode + userPhone, pinCode,
 				configManager.getConfigLongValue(ConfigKeyEnum.VERIFYTIME, 10l).intValue(), TimeUnit.MINUTES);
-		return smsManager.sendSMS4PhoneVerify(areaCode, userPhone, random, func);
+		return smsManager.sendSMS4PhoneVerify(areaCode, userPhone, pinCode, func);
 	}
 
 	@Override
@@ -368,6 +432,7 @@ public class UserManagerImpl implements UserManager {
 		UserInfo userInfo = null;
 		if (user != null) {
 			userInfo = new UserInfo(user.getUserId(), user.getAreaCode(), user.getUserPhone(), user.getUserName(),
+					user.getUserPortrait() == null ? "" : S3Utils.getImgUrl(user.getUserPortrait()),
 					StringUtils.isNotBlank(user.getUserPayPwd()));
 			logger.info("*** {}", userInfo.toString());
 		} else {
@@ -393,7 +458,7 @@ public class UserManagerImpl implements UserManager {
 		String passwordSalt = DigestUtils.md5Hex(MathUtils.randomFixedLengthStr(6));
 		logger.info("Randomly generated salt values : salt={}", passwordSalt);
 		/* 添加用户 */
-		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName,
+		Integer userId = userDAO.addUser(new User(areaCode, userPhone, userName, PinyinUtils.toPinyin(userName),
 				PasswordUtils.encrypt(userPassword, passwordSalt), new Date(), ServerConsts.USER_TYPE_OF_CUSTOMER,
 				ServerConsts.USER_AVAILABLE_OF_AVAILABLE, ServerConsts.LOGIN_AVAILABLE_OF_AVAILABLE,
 				ServerConsts.PAY_AVAILABLE_OF_AVAILABLE, passwordSalt, LanguageUtils.standard(language)));
@@ -421,7 +486,7 @@ public class UserManagerImpl implements UserManager {
 			user.setPushTag(newLanguage);
 			userDAO.updateUser(user);
 			/* 绑定Tag */
-			pushManager.bindPushTag(user.getPushId(), newLanguage);
+			pushManager.switchTag(user.getPushId(), newLanguage);
 		} else {
 			logger.info("***Language consistency,do nothing!***");
 		}
@@ -436,7 +501,7 @@ public class UserManagerImpl implements UserManager {
 			logger.info("***not get verify code***");
 			return null;
 		}
-		if (pinCode.equals(DigestUtils.md5Hex(verificationCode))) {
+		if (pinCode.equals(verificationCode)) {
 			logger.info("***match***");
 			return true;
 		}
@@ -455,7 +520,7 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void updateUser(Integer userId, String loginIp, String pushId, String language) {
-		logger.info("Update USER {} login information -->",userId);
+		logger.info("Update USER {} login information -->", userId);
 		User user = userDAO.getUser(userId);
 		if (user == null) {
 			return;
@@ -479,7 +544,7 @@ public class UserManagerImpl implements UserManager {
 			logger.info("***Language inconsistency***");
 			user.setPushTag(newLanguage);
 			/* 绑定Tag */
-			pushManager.bindPushTag(user.getPushId(), newLanguage);
+			pushManager.switchTag(user.getPushId(), newLanguage);
 		} else {
 			logger.info("***Language consistency,do nothing!***");
 		}
@@ -487,8 +552,9 @@ public class UserManagerImpl implements UserManager {
 		userDAO.updateUser(user);
 
 		/* 清除其他账号的此pushId */
-		if (StringUtils.isNotBlank(pushId)){
-		clearPushId(userId, pushId);}
+		if (StringUtils.isNotBlank(pushId)) {
+			clearPushId(userId, pushId);
+		}
 	}
 
 	private void clearPushId(Integer userId, String pushId) {
@@ -501,6 +567,7 @@ public class UserManagerImpl implements UserManager {
 	public void updateUserName(Integer userId, String newUserName) {
 		User user = userDAO.getUser(userId);
 		user.setUserName(newUserName);
+		user.setNamePinyin(PinyinUtils.toPinyin(newUserName));
 		userDAO.updateUser(user);
 	}
 
@@ -563,8 +630,8 @@ public class UserManagerImpl implements UserManager {
 			String goldpayOrderId = null;
 			if (ServerConsts.CURRENCY_OF_GOLDPAY.equals(unregistered.getCurrency())) {
 				goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
-				if(!StringUtils.isNotBlank(goldpayOrderId)){
-					return ;
+				if (!StringUtils.isNotBlank(goldpayOrderId)) {
+					return;
 				}
 			}
 
@@ -604,10 +671,10 @@ public class UserManagerImpl implements UserManager {
 			// unregistered.getAmount(), "+",
 			// ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
 
-			transDetailsManager.addTransDetails(transferId, userId, payer.getUserId(), 
-					payer.getUserName(),payer.getAreaCode(), payer.getUserPhone(), 
-					unregistered.getCurrency(), unregistered.getAmount(),BigDecimal.ZERO,null,
-					payerTransfer.getTransferComment(), ServerConsts.TRANSFER_TYPE_TRANSACTION - 1);
+			transDetailsManager.addTransDetails(transferId, userId, payer.getUserId(), payer.getUserName(),
+					payer.getAreaCode(), payer.getUserPhone(), unregistered.getCurrency(), unregistered.getAmount(),
+					BigDecimal.ZERO, null, payerTransfer.getTransferComment(),
+					ServerConsts.TRANSFER_TYPE_TRANSACTION - 1);
 
 			/* 更改unregistered状态 */
 			unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_COMPLETED);
@@ -691,6 +758,9 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public boolean isNewDevice(Integer userId, String deviceId) {
+		if (deviceId.equals(ResourceUtils.getBundleValue4String("device.id.web", "WEB"))) {
+			return false;
+		}
 		return userDeviceDAO.getUserDeviceByUserIdAndDeviceId(userId, deviceId) == null ? true : false;
 	}
 
@@ -732,27 +802,27 @@ public class UserManagerImpl implements UserManager {
 		}
 		return null;
 	}
-	
+
 	@Override
-	public User getUserById(Integer userId){
+	public User getUserById(Integer userId) {
 		User user = userDAO.getUser(userId);
 		return user;
 	}
-	
+
 	@Override
-	public Integer getSystemUserId(){
+	public Integer getSystemUserId() {
 		return userDAO.getSystemUser().getUserId();
 	}
-	
+
 	@Override
-	public User getUserByPhone(String areaCode,String phone){
+	public User getUserByPhone(String areaCode, String phone) {
 		return userDAO.getUserByUserPhone(areaCode, phone);
 	}
 
 	@Override
 	public void updateHappyLivesVIP(String happyLivesId, Integer userId) {
 		Bind bind = bindDAO.getBind(userId);
-		if (bind != null){
+		if (bind != null) {
 			bindDAO.clearHappyLivesId(happyLivesId);
 			bind.setHappyLivesId(happyLivesId);
 			bindDAO.updateBind(bind);
@@ -770,8 +840,34 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public void updatePayToken(int userId, String userPayToken) {
-		User user=userDAO.getUser(userId);
+		User user = userDAO.getUser(userId);
 		user.setUserPayToken(userPayToken);
 		userDAO.updateUser(user);
+	}
+
+	@Override
+	public String updateUserPortrait(Integer userId, File uploadFile) {
+		User user = userDAO.getUser(userId);
+		String portrait = userId + "/" + UidUtils.genUid()+".jpg";
+		String imgUrl = S3Utils.uploadFile(portrait, uploadFile);
+		if (imgUrl != null) {
+			user.setUserPortrait(portrait);
+			userDAO.updateUser(user);
+		}
+		return imgUrl;
+	}
+
+	@Override
+	public UserInfo4Transfer findFriend(Integer userId, String areaCode, String userPhone) {
+		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
+		UserInfo4Transfer userInfo4Transfer = null;
+		if (user != null) {
+			Friend friend = friendDAO.getFriendByUserIdAndFrindId(userId, user.getUserId());
+			userInfo4Transfer = new UserInfo4Transfer();
+			userInfo4Transfer.setName(user.getUserName());
+			userInfo4Transfer.setPortrait(user.getUserPortrait());
+			userInfo4Transfer.setFriend(friend != null);
+		}
+		return userInfo4Transfer;
 	}
 }

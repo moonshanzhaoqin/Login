@@ -13,12 +13,14 @@ import com.yuyutechnology.exchange.pojo.Friend;
  */
 public interface FriendDAO {
 
-	public List<Friend> getFriendsByUserId(Integer userId);
+	List<Friend> getFriendsByUserId(Integer userId);
 
-	public void addFriend(Friend friend);
+	void addFriend(Friend friend);
 
-	public Friend getFriendByUserIdAndFrindId(Integer userId, Integer friendId);
+	Friend getFriendByUserIdAndFrindId(Integer userId, Integer friendId);
 
-	public void deleteFriend(Friend friend);
+	void deleteFriend(Friend friend);
+
+	List<Friend> getFriendByUserIdAndKeyWords(Integer userId, String keyWords);
 
 }

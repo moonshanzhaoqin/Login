@@ -3,10 +3,18 @@
  */
 package com.yuyutechnology.exchange.server.controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +55,7 @@ import com.yuyutechnology.exchange.server.controller.response.LogoutResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPasswordResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyPayPwdByOldResponse;
 import com.yuyutechnology.exchange.server.controller.response.ModifyUserNameResponse;
+import com.yuyutechnology.exchange.server.controller.response.ModifyUserPortraitResponse;
 import com.yuyutechnology.exchange.server.controller.response.ResetPayPwdResponse;
 import com.yuyutechnology.exchange.server.controller.response.SetUserPayPwdResponse;
 import com.yuyutechnology.exchange.server.controller.response.SwitchLanguageResponse;
@@ -60,7 +69,7 @@ import com.yuyutechnology.exchange.session.SessionManager;
  * @author suzan.wu
  */
 @Controller
-public class LoggedInUserController{
+public class LoggedInUserController {
 	public static Logger logger = LogManager.getLogger(LoggedInUserController.class);
 
 	@Autowired
@@ -301,6 +310,60 @@ public class LoggedInUserController{
 		return rep;
 	}
 
+	// TODO 设置修改头像 portrait
+
+	@ResponseEncryptBody
+	@ApiOperation(value = "设置修改头像 ", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/uploadPortrait", method = RequestMethod.POST, produces = "application/json; charset=utf-8",consumes = "multipart/form-data")
+	public ModifyUserPortraitResponse uploadPortrait(@PathVariable String token,HttpServletRequest request) throws HttpException {
+		logger.info("========uploadPortrait : {}============", token);
+		ModifyUserPortraitResponse rep = new ModifyUserPortraitResponse();
+
+		SessionData sessionData = SessionDataHolder.getSessionData();
+
+		if (request.getContentLength() > 0) {
+			InputStream inputStream = null;
+			OutputStream outputStream = null;
+			try {
+				logger.info(request.toString());
+				inputStream = request.getInputStream();
+				File file = File.createTempFile(String.valueOf(new Date().getTime()), ".jpg");
+
+				outputStream = new FileOutputStream(file);
+				byte[] temp = new byte[1024];
+				int size = 0;
+				while ((size = inputStream.read(temp)) != -1) { // 每次读取1KB，直至读完
+					outputStream.write(temp, 0, size);
+				}
+				logger.info("File load success.");
+
+				String imgUrl = userManager.updateUserPortrait(sessionData.getUserId(), file);
+				rep.setPortrait(imgUrl);
+
+				logger.info("********Operation succeeded********");
+				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+
+			} catch (IOException e) {
+				logger.warn("File load fail.{}", e.getMessage(), e);
+				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+			} finally {
+				try {
+					outputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return rep;
+	}
+	
 	/**
 	 * 设置支付密码
 	 * 

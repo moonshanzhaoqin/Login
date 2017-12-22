@@ -1,5 +1,5 @@
 package pojo;
-// Generated Dec 1, 2017 5:32:27 PM by Hibernate Tools 5.2.6.Final
+// Generated Dec 19, 2017 12:22:01 PM by Hibernate Tools 5.2.6.Final
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -29,8 +29,8 @@ public class ETransDetails implements java.io.Serializable {
 	private BigDecimal transAmount;
 	private BigDecimal transFee;
 	private String transRemarks;
-	private Date detailsCreateTime;
 	private String transSnapshot;
+	private Date detailsCreateTime;
 
 	public ETransDetails() {
 	}
@@ -41,7 +41,7 @@ public class ETransDetails implements java.io.Serializable {
 
 	public ETransDetails(String transferId, Integer userId, String traderName, String traderAreaCode,
 			String traderPhone, String transCurrency, BigDecimal transAmount, BigDecimal transFee, String transRemarks,
-			Date detailsCreateTime, String transSnapshot) {
+			String transSnapshot, Date detailsCreateTime) {
 		this.transferId = transferId;
 		this.userId = userId;
 		this.traderName = traderName;
@@ -51,8 +51,8 @@ public class ETransDetails implements java.io.Serializable {
 		this.transAmount = transAmount;
 		this.transFee = transFee;
 		this.transRemarks = transRemarks;
-		this.detailsCreateTime = detailsCreateTime;
 		this.transSnapshot = transSnapshot;
+		this.detailsCreateTime = detailsCreateTime;
 	}
 
 	@Id
@@ -148,6 +148,15 @@ public class ETransDetails implements java.io.Serializable {
 		this.transRemarks = transRemarks;
 	}
 
+	@Column(name = "trans_snapshot")
+	public String getTransSnapshot() {
+		return this.transSnapshot;
+	}
+
+	public void setTransSnapshot(String transSnapshot) {
+		this.transSnapshot = transSnapshot;
+	}
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "details_create_time", length = 19)
 	public Date getDetailsCreateTime() {
@@ -156,15 +165,6 @@ public class ETransDetails implements java.io.Serializable {
 
 	public void setDetailsCreateTime(Date detailsCreateTime) {
 		this.detailsCreateTime = detailsCreateTime;
-	}
-
-	@Column(name = "trans_snapshot")
-	public String getTransSnapshot() {
-		return this.transSnapshot;
-	}
-
-	public void setTransSnapshot(String transSnapshot) {
-		this.transSnapshot = transSnapshot;
 	}
 
 }

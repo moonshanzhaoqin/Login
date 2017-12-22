@@ -1,5 +1,6 @@
 package com.yuyutechnology.exchange.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
@@ -8,12 +9,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -23,6 +26,8 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+
 
 public class HttpClientUtils {
 	
@@ -207,11 +212,12 @@ public class HttpClientUtils {
 		} catch (IOException e) {
 			logger.error("sendGet url :,"+url, e);
 		}finally {
-			//关闭response和client
-	        try {
-	        	response.close();
+			if(response!=null){
+				try {
+					response.close();
 //				client4Post.close();
-			} catch (Exception e) {
+				} catch (Exception e) {
+				}
 			}
 		}
 		return result;
@@ -256,10 +262,12 @@ public class HttpClientUtils {
 			logger.error("sendGet url :,"+url, e);
 		}finally {
 			//关闭response和client
-	        try {
-	        	response.close();
+			if(response!=null){
+				try {
+					response.close();
 //				client4Post.close();
-			} catch (IOException e) {
+				} catch (Exception e) {
+				}
 			}
 		}
 		
@@ -283,6 +291,7 @@ public class HttpClientUtils {
 		}
 		return request.getRemoteAddr();
 	}
+
 	
 	public static void main(String[] args){
 		
@@ -292,14 +301,9 @@ public class HttpClientUtils {
 //				"Bearer " + "d413e2cd916ebc4613376c3a3ca826ae-ebdc8079ec4cca1b1d650ea030036226");
 //		String result = sendGet(domain,params,basicHeader);
 //		logger.info("result : {}",result);
-		
-
-		String result = sendPost("https://cloud888.yuyutechnology.com/notification/sendMail.do", "");
-		
-		System.out.println("result : "+result);
+//		String result = sendPost("https://fb.grandorientcasino.com/gameserver/jsonmessage/?rpc=RegisterPlayer","{\"facebookId\":\"1974075809513039\"}");
+//		String result = sendPost("http://172.18.188.169:8081/jsonmessage/?rpc=RegisterPlayer", "{\"facebookId\":\"1974075809513039\"}");
+//		System.out.println("result : "+result);
 	}
-	
-	
-	
 
 }

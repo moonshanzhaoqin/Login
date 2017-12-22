@@ -2,9 +2,6 @@ package com.yuyutechnology.exchange.manager;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
-
-import com.yuyutechnology.exchange.dto.WalletInfo;
 import com.yuyutechnology.exchange.pojo.Exchange;
 
 /**

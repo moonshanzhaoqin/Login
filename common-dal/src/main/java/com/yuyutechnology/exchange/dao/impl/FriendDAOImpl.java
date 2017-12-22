@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -12,13 +14,14 @@ import com.yuyutechnology.exchange.pojo.Friend;
 
 @Repository
 public class FriendDAOImpl implements FriendDAO {
+	public static Logger logger = LogManager.getLogger(FriendDAOImpl.class);
 	@Resource
 	HibernateTemplate hibernateTemplate;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Friend> getFriendsByUserId(Integer userId) {
-		List<?> list = hibernateTemplate.find("from Friend where id.userId = ? order by user.userName", userId);
+		List<?> list = hibernateTemplate.find("from Friend where id.userId = ? order by user.namePinyin", userId);
 		return (List<Friend>) list;
 	}
 
@@ -42,4 +45,12 @@ public class FriendDAOImpl implements FriendDAO {
 
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Friend> getFriendByUserIdAndKeyWords(Integer userId, String keyWords) {
+		List<?> list = hibernateTemplate.find(
+				"from Friend where id.userId = ? and (user.userName like ? or user.namePinyin = ? or user.userPhone = ?) order by user.namePinyin",
+				userId, '%' + keyWords + '%', '_' + '%' + keyWords + '%', '%' + keyWords + '%');
+		return (List<Friend>) list;
+	}
 }

@@ -169,7 +169,8 @@ public class ServerConsts {
 	/**
 	 * 本位货币，主币(结算单位)
 	 */
-	public static final String STANDARD_CURRENCY = "USD";
+//	public static final String STANDARD_CURRENCY = "USD";
+	public static final String STANDARD_CURRENCY = CURRENCY_OF_GOLDPAY;
 	// 短信验证码功能
 	/**
 	 * 短信验证码功能——注册
@@ -277,5 +278,14 @@ public class ServerConsts {
 	public static final byte WITHDRAW_RESULT_APPLY_FAIL = 2;
 	public static final byte WITHDRAW_RESULT_FINISHT = 3;
 	public static final byte WITHDRAW_RESULT_CANCEL = 4;
+	/*需要验证码验证*/
+	public static final String CODE_VERIFICATION_YES = "0";
+	/*不需要验证码验证*/
+	public static final String CODE_VERIFICATION_NO = "1";
+	
+	/*需要验证码验证*/
+	public static final String MAKE_FRIENDS_YES = "0";
+	/*不需要验证码验证*/
+	public static final String MAKE_FRIENDS_NO = "1";
 	
 }

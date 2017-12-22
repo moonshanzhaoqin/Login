@@ -76,10 +76,10 @@
 								</c:if>
 						</select></li>
 						<li><input type="text" value="${model.lowerLimit }"
-							class="form-control" placeholder="总资产>=(USD)" id="lowerLimit"
+							class="form-control" placeholder="总资产>=(GDQ)" id="lowerLimit"
 							name="lowerLimit" size="12"></li>
 						<li><input type="text" value="${model.upperLimit }"
-							class="form-control" placeholder="总资产<=(USD)" id="upperLimit"
+							class="form-control" placeholder="总资产<=(GDQ)" id="upperLimit"
 							name="upperLimit" size="12"></li>
 
 						<li>
@@ -124,7 +124,7 @@
 						<th>账户冻结</th>
 						<th>登录冻结</th>
 						<th>支付冻结</th>
-						<th>总资产（USD）</th>
+						<th>总资产（GDQ）</th>
 						<th>更新时间（GMT+8）</th>
 						<th>操作</th>
 					</tr>

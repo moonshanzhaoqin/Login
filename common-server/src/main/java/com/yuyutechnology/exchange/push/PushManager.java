@@ -253,7 +253,7 @@ public class PushManager {
 		ext.put("userId", userTo.getUserId().toString());
 		pushToCustom(userTo.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 
-		// 新请求转账标记
+		// 转账标记
 		commonManager.addMsgFlag(userTo.getUserId(), 1);
 	}
 
@@ -287,7 +287,8 @@ public class PushManager {
 	 * @param amount
 	 */
 	@Async
-	public void push4Refund(User userFrom, String areaCode, String phone, String currency, BigDecimal amount) {
+	public void push4Refund(User userFrom, String areaCode, String phone, String currency, BigDecimal amount,
+			String transferId) {
 		String title = titleChoose("refund", userFrom.getPushTag());
 		String refundBody = templateChoose("refund", userFrom.getPushTag());
 		logger.info("refund,{}=={}", userFrom.getPushTag(), refundBody);
@@ -299,8 +300,12 @@ public class PushManager {
 				.replace(PUSH_REPLACE_DAY, configManager.getConfigStringValue(ConfigKeyEnum.REFUNTIME, "7"));
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "refund");
-
+		ext.put("transferId", transferId);
+		ext.put("userId", userFrom.getUserId().toString());
 		pushToCustom(userFrom.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
+
+		// 转账标记
+		commonManager.addMsgFlag(userFrom.getUserId(), 1);
 	}
 
 	/**
@@ -346,7 +351,7 @@ public class PushManager {
 	 */
 
 	@Async
-	public void push4WithdrawRefund(User user, BigDecimal amount, String currency,String transferId) {
+	public void push4WithdrawRefund(User user, BigDecimal amount, String currency, String transferId) {
 		String title = titleChoose("withdraw_refund", user.getPushTag());
 		String body = templateChoose("withdraw_refund", user.getPushTag())
 				.replace(PUSH_REPLACE_AMOUNT,
@@ -358,6 +363,9 @@ public class PushManager {
 		ext.put("transferId", transferId);
 		ext.put("userId", user.getUserId().toString());
 		pushToCustom(user.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
+
+		// 转账标记
+		commonManager.addMsgFlag(user.getUserId(), 1);
 	}
 
 	/**
@@ -369,17 +377,21 @@ public class PushManager {
 	 */
 
 	@Async
-	public void push4WithdrawRefundFee(User user, BigDecimal amount, String currency,String transferId) {
+	public void push4WithdrawRefundFee(User user, BigDecimal amount, String currency, String transferId) {
 		String title = titleChoose("withdraw_refund_fee", user.getPushTag());
-		String body = templateChoose("withdraw_refund_fee", user.getPushTag()).replace(PUSH_REPLACE_AMOUNT,
-				currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? GDQ.format(amount)
-						: CURRENCY.format(amount))
-		.replace(PUSH_REPLACE_CURRENCY, commonManager.getCurreny(currency).getCurrencyUnit());
+		String body = templateChoose("withdraw_refund_fee", user.getPushTag())
+				.replace(PUSH_REPLACE_AMOUNT,
+						currency.equals(ServerConsts.CURRENCY_OF_GOLDPAY) ? GDQ.format(amount)
+								: CURRENCY.format(amount))
+				.replace(PUSH_REPLACE_CURRENCY, commonManager.getCurreny(currency).getCurrencyUnit());
 		Map<String, String> ext = new HashMap<>();
 		ext.put("type", "withdraw_refund_fee");
 		ext.put("transferId", transferId);
 		ext.put("userId", user.getUserId().toString());
 		pushToCustom(user.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
+
+		// 转账标记
+		commonManager.addMsgFlag(user.getUserId(), 1);
 	}
 
 	/**
@@ -402,32 +414,52 @@ public class PushManager {
 	}
 
 	/**
-	 * 绑定Tag
+	 * 切换Tag
 	 * 
 	 * @param user
 	 */
 	@Async
-	public void bindPushTag(String pushId, Language pushTag) {
-		switch (pushTag) {
-		case en_US:
-			tag(Func.unbindTag, pushId, Language.zh_CN);
-			tag(Func.unbindTag, pushId, Language.zh_TW);
-			tag(Func.bindTag, pushId, Language.en_US);
-			return;
-		case zh_CN:
-			tag(Func.unbindTag, pushId, Language.en_US);
-			tag(Func.unbindTag, pushId, Language.zh_TW);
-			tag(Func.bindTag, pushId, Language.zh_CN);
-			return;
-		case zh_TW:
-			tag(Func.unbindTag, pushId, Language.zh_CN);
-			tag(Func.unbindTag, pushId, Language.en_US);
-			tag(Func.bindTag, pushId, Language.zh_TW);
-			return;
-		default:
+	public void switchTag(String pushId, Language pushTag) {
+		if (StringUtils.isBlank(pushId)) {
 			return;
 		}
+		TagRequest tagRequest = new TagRequest();
+		tagRequest.setAppName(ResourceUtils.getBundleValue4String("appName"));
+		tagRequest.setDeviceIds(pushId);
+		tagRequest.setTagName(pushTag.toString());
+		String param = JsonBinder.getInstance().toJson(tagRequest);
+		logger.info("switchTag -> TagRequest : {}", param);
+		HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("push.url") + "switchTag.do", param);
+		return;
 	}
+
+	/**
+	 * 绑定Tag
+	 * 
+	 * @param user
+	 */
+	// @Async
+	// public void bindPushTag(String pushId, Language pushTag) {
+	// switch (pushTag) {
+	// case en_US:
+	// tag(Func.unbindTag, pushId, Language.zh_CN);
+	// tag(Func.unbindTag, pushId, Language.zh_TW);
+	// tag(Func.bindTag, pushId, Language.en_US);
+	// return;
+	// case zh_CN:
+	// tag(Func.unbindTag, pushId, Language.en_US);
+	// tag(Func.unbindTag, pushId, Language.zh_TW);
+	// tag(Func.bindTag, pushId, Language.zh_CN);
+	// return;
+	// case zh_TW:
+	// tag(Func.unbindTag, pushId, Language.zh_CN);
+	// tag(Func.unbindTag, pushId, Language.en_US);
+	// tag(Func.bindTag, pushId, Language.zh_TW);
+	// return;
+	// default:
+	// return;
+	// }
+	// }
 
 	/**
 	 * 解绑 Tag
@@ -714,7 +746,7 @@ public class PushManager {
 
 	private void pushToCustom(String deviceID, String title, String body, String extParameters) {
 		if (StringUtils.isBlank(deviceID) || StringUtils.isBlank(body)) {
-			logger.warn("deviceID is {} OR body is {}",deviceID,body);
+			logger.warn("deviceID is {} OR body is {}", deviceID, body);
 			return;
 		}
 		PushToCustom pushToCustom = new PushToCustom();
@@ -728,26 +760,26 @@ public class PushManager {
 		HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("push.url") + "push_custom.do", param);
 	}
 
-	private void tag(Func func, String deviceID, Language pushTag) {
-		if (StringUtils.isBlank(deviceID)) {
-			return;
-		}
-		TagRequest tagRequest = new TagRequest();
-		tagRequest.setAppName(ResourceUtils.getBundleValue4String("appName"));
-		tagRequest.setDeviceIds(deviceID);
-		tagRequest.setTagName(pushTag.toString());
-		String param = JsonBinder.getInstance().toJson(tagRequest);
-		logger.info("{} -> TagRequest : {}", func, param);
-		switch (func) {
-		case bindTag:
-			HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("push.url") + "bindTag.do", param);
-			return;
-		case unbindTag:
-			HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("push.url") + "unBindTag.do", param);
-			return;
-		default:
-			return;
-		}
-	}
+//	private void tag(Func func, String deviceID, Language pushTag) {
+//		if (StringUtils.isBlank(deviceID)) {
+//			return;
+//		}
+//		TagRequest tagRequest = new TagRequest();
+//		tagRequest.setAppName(ResourceUtils.getBundleValue4String("appName"));
+//		tagRequest.setDeviceIds(deviceID);
+//		tagRequest.setTagName(pushTag.toString());
+//		String param = JsonBinder.getInstance().toJson(tagRequest);
+//		logger.info("{} -> TagRequest : {}", func, param);
+//		switch (func) {
+//		case bindTag:
+//			HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("push.url") + "bindTag.do", param);
+//			return;
+//		case unbindTag:
+//			HttpClientUtils.sendPost(ResourceUtils.getBundleValue4String("push.url") + "unBindTag.do", param);
+//			return;
+//		default:
+//			return;
+//		}
+//	}
 
 }

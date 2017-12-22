@@ -26,6 +26,7 @@ import com.yuyutechnology.exchange.dao.TransDetailsDAO;
 import com.yuyutechnology.exchange.dao.TransferDAO;
 import com.yuyutechnology.exchange.dao.UnregisteredDAO;
 import com.yuyutechnology.exchange.dao.UserDAO;
+import com.yuyutechnology.exchange.dto.CheckPwdResult;
 import com.yuyutechnology.exchange.dto.TransDetailsDTO;
 import com.yuyutechnology.exchange.dto.TransferDTO;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
@@ -37,6 +38,7 @@ import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
 import com.yuyutechnology.exchange.manager.TransDetailsManager;
 import com.yuyutechnology.exchange.manager.TransferManager;
+import com.yuyutechnology.exchange.manager.UserManager;
 import com.yuyutechnology.exchange.pojo.CrmAlarm;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.Friend;
@@ -70,6 +72,9 @@ public class TransferManagerImpl implements TransferManager {
 	@Autowired
 	SmsManager smsManager;
 	@Autowired
+	UserManager userManager;
+	
+	@Autowired
 	PushManager pushManager;
 	@Autowired
 	CheckManager checkManager;
@@ -87,7 +92,53 @@ public class TransferManagerImpl implements TransferManager {
 	GoldpayTrans4MergeManager goldpayTrans4MergeManager;
 	
 	public static Logger logger = LogManager.getLogger(TransferManagerImpl.class);
+	
+	@Override
+	public HashMap<String, String> transactionPreview(Integer userId, 
+			String areaCode, String userPhone, String currency,BigDecimal amount){
+		HashMap<String, String> map = new HashMap<>();
+		
+		if (!commonManager.verifyCurrency(currency)) {
+			logger.info("This currency is not a tradable currency");
+			map.put("retCode", RetCodeConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
+			map.put("msg", "This currency is not a tradable currency");
+			return map;
+		}
+		
+		User payer = userDAO.getUser(userId);
+		if (payer == null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
+			logger.info("The user does not exist or the account is blocked");
+			map.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
+			map.put("msg", "The user does not exist or the account is blocked");
+			return map;
+		}
+		
+		if(checkManager.isInsufficientBalance(userId, currency, amount)){
+			map.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+			map.put("msg", "Current balance is insufficient");
+			return map;
+		}
+		
+		//判断 每次支付金额限制、 每天累计金额限制、每天累计给付次数限制
+		map = checkManager.checkTransferLimit(currency, amount, userId);
+		if (!map.isEmpty()) {
+			return map;
+		}
 
+		User receiver = userDAO.getUserByUserPhone(areaCode, userPhone);
+		// 不用给自己转账
+		if (receiver != null && userId == receiver.getUserId()) {
+			logger.info("Prohibit transfers to yourself");
+			map.put("retCode", RetCodeConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
+			map.put("msg", "Prohibit transfers to yourself");
+			return map;
+		}
+				
+		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
+		map.put("msg", "ok");
+		return map;
+	}
+	
 	@Override
 	public HashMap<String, String> transferInitiate(Integer userId, String areaCode, String userPhone, String currency,
 			BigDecimal amount, String transferComment, int noticeId) {
@@ -180,6 +231,16 @@ public class TransferManagerImpl implements TransferManager {
 		transfer.setNoticeId(noticeId);
 		// 保存
 		transferDAO.addTransfer(transfer);
+		
+		//判断是否需要验证码
+		boolean need = checkManager.isPaymentVerification(userId, currency,amount );
+		if(need){
+			userManager.getPinCode(transferId, payer.getAreaCode(), payer.getUserPhone());
+			map.put("codeVerification", ServerConsts.CODE_VERIFICATION_YES);
+		}else{
+			map.put("codeVerification", ServerConsts.CODE_VERIFICATION_NO);
+		}
+		
 
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");
@@ -187,13 +248,14 @@ public class TransferManagerImpl implements TransferManager {
 
 		return map;
 	}
-
+	
 	@Override
-	public HashMap<String, String> whenPayPwdConfirmed(Integer userId, String transferId, String userPayPwd) {
+	public HashMap<String, String> transferConfirm(Integer userId, String transferId,String userPayPwd,String pinCode,String addFriends){
+		
 		HashMap<String, String> result = new HashMap<>();
 		
-		User user = userDAO.getUser(userId);
-		if (user == null || user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
+		User payer = userDAO.getUser(userId);
+		if (payer == null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
 			logger.info("The user does not exist or the account is blocked");
 			result.put("msg", "The user does not exist or the account is blocked");
 			result.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
@@ -208,67 +270,60 @@ public class TransferManagerImpl implements TransferManager {
 			result.put("retCode", RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST);
 			return result;
 		}
-
-		// 总账大于设置安全基数，弹出需要短信验证框===============================================
-		BigDecimal totalBalance = oandaRatesManager.getTotalBalance(userId);
-		BigDecimal totalBalanceMax = BigDecimal
-				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TOTALBALANCETHRESHOLD, 100000d));
-		// 当天累计转出总金额大于设置安全基数，弹出需要短信验证框
-		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount("transfer_" + userId);
-		BigDecimal accumulatedAmountMax = BigDecimal
-				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.DAILYTRANSFERTHRESHOLD, 100000d));
-		// 单笔转出金额大于设置安全基数，弹出需要短信验证框
-		BigDecimal singleTransferAmount = oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(),
-				transfer.getTransferAmount());
-		BigDecimal singleTransferAmountMax = BigDecimal
-				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.EACHTRANSFERTHRESHOLD, 100000d));
-
-		logger.info("totalBalance : {},totalBalanceMax: {} ", totalBalance, totalBalanceMax);
-		logger.info("accumulatedAmount : {},accumulatedAmountMax: {} ", accumulatedAmount, accumulatedAmountMax);
-		logger.info("singleTransferAmount : {},singleTransferAmountMax: {} ", singleTransferAmount,
-				singleTransferAmountMax);
-
-		if (totalBalance.compareTo(totalBalanceMax) == 1 || (accumulatedAmount.compareTo(accumulatedAmountMax) == 1
-				|| singleTransferAmount.compareTo(singleTransferAmountMax) == 1)) {
-			logger.info("The transaction amount exceeds the limit");
-			result.put("msg", "The transaction amount exceeds the limit");
-			result.put("retCode", RetCodeConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION);
-			return result;
-		} else {
-			String retCode = transferConfirm(userId, transferId);
-			result.put("msg", retCode);
-			result.put("retCode", retCode);
-			return result;
-		}
-	}
-
-	@Override
-	public String transferConfirm(Integer userId, String transferId) {
-		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,
-				ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
-		if (transfer == null) {
-			logger.info("The transaction order does not exist");
-			return RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST;
-		}
-
-		User payer = userDAO.getUser(userId);
-		if (payer == null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
-			logger.info("The user does not exist or the account is blocked");
-			return RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED;
-		}
-
+		
 		if (userId != transfer.getUserFrom()) {
 			logger.info("userId is different from UserFromId");
-			return RetCodeConsts.RET_CODE_FAILUE;
+			result.put("msg", "userId is different from UserFromId");
+			result.put("retCode", RetCodeConsts.TRANSFER_PAYPALTRANS_ORDER_STATUS_EXCEPTION);
+			return result;
 		}
 
 		//判断 每次支付金额限制、 每天累计金额限制、每天累计给付次数限制
-		HashMap<String, String> map = checkManager.checkTransferLimit(transfer.getCurrency(), 
+		result = checkManager.checkTransferLimit(transfer.getCurrency(), 
 				transfer.getTransferAmount(), userId);
-		if (!map.isEmpty()) {
-			return map.get("retCode");
+		if (!result.isEmpty()) {
+			return result;
 		}
 		
+		//判断是否需要验证码
+		boolean need = checkManager.isPaymentVerification(userId, transfer.getCurrency(),transfer.getTransferAmount() );
+		
+		if(need){
+			if(StringUtils.isNotBlank(userPayPwd) && StringUtils.isNotBlank(pinCode)){
+				// 判断PinCode是否正确
+				Boolean resultBool = userManager.testPinCode(transferId, payer.getAreaCode(), payer.getUserPhone(),pinCode);
+				if(resultBool == null || !resultBool.booleanValue()){
+					logger.info("The pin code is incorrect");
+					result.put("msg", "The pin code is incorrect");
+					result.put("retCode", RetCodeConsts.PIN_CODE_INCORRECT);
+					return result;
+				}
+				
+			}else{
+				//需要验证码，此时验证码或者交易密码为空
+				logger.info("userPayPwd or pinCode is empty! ");
+				result.put("msg", "userPayPwd or pinCode is empty!");
+				result.put("retCode", RetCodeConsts.PARAMETER_IS_EMPTY);
+				return result;
+			}
+		}
+		
+		//交易密码验证
+		CheckPwdResult checkPwdResult = userManager.checkPayPassword(userId, userPayPwd);
+		switch (checkPwdResult.getStatus()) {
+			case FREEZE:
+				result.put("msg", String.valueOf(checkPwdResult.getInfo()));
+				result.put("retCode", RetCodeConsts.PAY_FREEZE);
+				return result;
+			case INCORRECT:
+				logger.info("payPwd is wrong !");
+				result.put("msg", String.valueOf(checkPwdResult.getInfo()));
+				result.put("retCode", RetCodeConsts.PAY_PWD_NOT_MATCH);
+				return result;
+			default:
+				break;
+		}
+
 		// 获取系统账号
 		User systemUser = userDAO.getSystemUser();
 
@@ -317,8 +372,19 @@ public class TransferManagerImpl implements TransferManager {
 
 		// 预警
 		largeTransWarn(payer, transfer);
+		
+		//判断是否是好友
+		if(ServerConsts.MAKE_FRIENDS_YES.equals(addFriends)){
+			userManager.addfriend(userId, transfer.getAreaCode(), transfer.getPhone());
+			logger.info("Add good friends to success");
+		}
 
-		return RetCodeConsts.RET_CODE_SUCCESS;
+		
+		result.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
+		result.put("msg", ServerConsts.GOLDPAY_RETURN_SUCCESS+"");
+		
+		return result;
+
 	}
 
 	@Override
@@ -499,6 +565,16 @@ public class TransferManagerImpl implements TransferManager {
 		transDetailsManager.addTransDetails(transferId, userId, notification.getSponsorId(),
 				Sponsor.getUserName(),areaCode, userPhone, currency, 
 				amount,BigDecimal.ZERO,null, transferComment, ServerConsts.TRANSFER_TYPE_TRANSACTION);
+		
+		
+		//判断是否需要验证码
+		boolean need = checkManager.isPaymentVerification(userId, currency,amount );
+		if(need){
+			userManager.getPinCode(transferId, payer.getAreaCode(), payer.getUserPhone());
+			map.put("codeVerification", ServerConsts.CODE_VERIFICATION_YES);
+		}else{
+			map.put("codeVerification", ServerConsts.CODE_VERIFICATION_NO);
+		}
 
 		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
 		map.put("msg", "ok");
@@ -938,27 +1014,12 @@ public class TransferManagerImpl implements TransferManager {
 		// 发送推送
 		User payee = userDAO.getUser(transfer.getUserFrom());
 		pushManager.push4Refund(payee, transfer.getAreaCode(), transfer.getPhone(), transfer.getCurrency(),
-				amountFormatByCurrency(transfer.getCurrency(), transfer.getTransferAmount()));
+				amountFormatByCurrency(transfer.getCurrency(), transfer.getTransferAmount()),transfer.getTransferId());
 
 	}
 	
-//	@Override
-//	public String createTransId(int transferType){
-//		return transferDAO.createTransId(transferType);
-//	}
-//	
-//	@Override
-//	public void addTransfer(Transfer transfer){
-//		transferDAO.addTransfer(transfer);
-//	}
-//	
-//	@Override
-//	public Transfer getTransferById(String transferId) {
-//		return transferDAO.getTransferById(transferId);
-//	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
 	
 	private BigDecimal amountFormatByCurrency(String currency, BigDecimal amoumt) {
 		DecimalFormat df1;
@@ -1097,5 +1158,240 @@ public class TransferManagerImpl implements TransferManager {
 		commonManager.readMsgFlag(userId, 1);
 		return map;
 	}
+	
+	
+
+//	@Override
+//	public HashMap<String, String> transferInitiate(Integer userId, String areaCode, String userPhone, String currency,
+//			BigDecimal amount, String transferComment, int noticeId) {
+//		
+//		HashMap<String, String> map = new HashMap<>();
+//		
+//		if (!commonManager.verifyCurrency(currency)) {
+//			logger.warn("This currency is not a tradable currency");
+//			map.put("retCode", RetCodeConsts.TRANSFER_CURRENCY_IS_NOT_A_TRADABLE_CURRENCY);
+//			map.put("msg", "This currency is not a tradable currency");
+//			return map;
+//		}
+//		
+//		User payer = userDAO.getUser(userId);
+//		if (payer == null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
+//			logger.warn("The user does not exist or the account is blocked");
+//			map.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
+//			map.put("msg", "The user does not exist or the account is blocked");
+//			return map;
+//		}
+//		
+//		if(checkManager.isInsufficientBalance(userId, currency, amount)){
+//			map.put("retCode", RetCodeConsts.TRANSFER_CURRENT_BALANCE_INSUFFICIENT);
+//			map.put("msg", "Current balance is insufficient");
+//			return map;
+//		}
+//		
+//		//判断 每次支付金额限制、 每天累计金额限制、每天累计给付次数限制
+//		map = checkManager.checkTransferLimit(currency, amount, userId);
+//		if (!map.isEmpty()) {
+//			return map;
+//		}
+//
+//		User receiver = userDAO.getUserByUserPhone(areaCode, userPhone);
+//		// 不用给自己转账
+//		if (receiver != null && userId == receiver.getUserId()) {
+//			logger.info("Prohibit transfers to yourself");
+//			map.put("retCode", RetCodeConsts.TRANSFER_PROHIBIT_TRANSFERS_TO_YOURSELF);
+//			map.put("msg", "Prohibit transfers to yourself");
+//			return map;
+//		}
+//
+//		String goldpayOrderId = null;
+//
+//		if (ServerConsts.CURRENCY_OF_GOLDPAY.equals(currency)) {
+//			goldpayOrderId = goldpayTrans4MergeManager.getGoldpayOrderId();
+//			if (!StringUtils.isNotBlank(goldpayOrderId)) {
+//				map.put("retCode", RetCodeConsts.RET_CODE_FAILUE);
+//				map.put("msg", "Failed to create goldpay order");
+//				return map;
+//			}
+//		}
+//
+//		// 生成TransId
+//		String transferId = transferDAO.createTransId(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+//
+//		Transfer transfer = new Transfer();
+//		transfer.setTransferId(transferId);
+//		transfer.setCreateTime(new Date());
+//		transfer.setCurrency(currency);
+//		transfer.setTransferAmount(amount);
+//		transfer.setTransferComment(transferComment);
+//		transfer.setTransferStatus(ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
+//		transfer.setUserFrom(userId);
+//		transfer.setAreaCode(areaCode);
+//		transfer.setPhone(userPhone);
+//		transfer.setGoldpayOrderId(goldpayOrderId);
+//
+//		// 判断接收人是否是已注册账号
+//		if (receiver != null) {
+//			transfer.setUserTo(receiver.getUserId());
+//			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_TRANSACTION);
+//			// 判断对方是否有该种货币
+//			commonManager.checkAndUpdateWallet(receiver.getUserId(), currency);
+//
+//			transDetailsManager.addTransDetails(transferId, userId, receiver.getUserId(),
+//					receiver.getUserName(),areaCode, userPhone, currency, 
+//					amount,BigDecimal.ZERO,null,transferComment, ServerConsts.TRANSFER_TYPE_TRANSACTION);
+//
+//		} else {
+//			User systemUser = userDAO.getSystemUser();
+//			transfer.setUserTo(systemUser.getUserId());
+//			transfer.setTransferType(ServerConsts.TRANSFER_TYPE_OUT_INVITE);
+//
+//			transDetailsManager.addTransDetails(transferId, userId, null, null, 
+//					areaCode, userPhone, currency, amount,BigDecimal.ZERO,null,
+//					transferComment, ServerConsts.TRANSFER_TYPE_OUT_INVITE);
+//
+//		}
+//		transfer.setNoticeId(noticeId);
+//		// 保存
+//		transferDAO.addTransfer(transfer);
+//
+//		map.put("retCode", RetCodeConsts.RET_CODE_SUCCESS);
+//		map.put("msg", "ok");
+//		map.put("transferId", transferId);
+//
+//		return map;
+//	}
+//
+//	@Override
+//	public HashMap<String, String> whenPayPwdConfirmed(Integer userId, String transferId, String userPayPwd) {
+//		HashMap<String, String> result = new HashMap<>();
+//		
+//		User user = userDAO.getUser(userId);
+//		if (user == null || user.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
+//			logger.info("The user does not exist or the account is blocked");
+//			result.put("msg", "The user does not exist or the account is blocked");
+//			result.put("retCode", RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED);
+//			return result;
+//		}
+//
+//		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,
+//				ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
+//		if (transfer == null) {
+//			logger.info("The transaction order does not exist");
+//			result.put("msg", "The transaction order does not exist");
+//			result.put("retCode", RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST);
+//			return result;
+//		}
+//
+//		// 总账大于设置安全基数，弹出需要短信验证框===============================================
+//		BigDecimal totalBalance = oandaRatesManager.getTotalBalance(userId);
+//		BigDecimal totalBalanceMax = BigDecimal
+//				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TOTALBALANCETHRESHOLD, 100000d));
+//		// 当天累计转出总金额大于设置安全基数，弹出需要短信验证框
+//		BigDecimal accumulatedAmount = transferDAO.getAccumulatedAmount("transfer_" + userId);
+//		BigDecimal accumulatedAmountMax = BigDecimal
+//				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.DAILYTRANSFERTHRESHOLD, 100000d));
+//		// 单笔转出金额大于设置安全基数，弹出需要短信验证框
+//		BigDecimal singleTransferAmount = oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(),
+//				transfer.getTransferAmount());
+//		BigDecimal singleTransferAmountMax = BigDecimal
+//				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.EACHTRANSFERTHRESHOLD, 100000d));
+//
+//		logger.info("totalBalance : {},totalBalanceMax: {} ", totalBalance, totalBalanceMax);
+//		logger.info("accumulatedAmount : {},accumulatedAmountMax: {} ", accumulatedAmount, accumulatedAmountMax);
+//		logger.info("singleTransferAmount : {},singleTransferAmountMax: {} ", singleTransferAmount,
+//				singleTransferAmountMax);
+//
+//		if (totalBalance.compareTo(totalBalanceMax) == 1 || (accumulatedAmount.compareTo(accumulatedAmountMax) == 1
+//				|| singleTransferAmount.compareTo(singleTransferAmountMax) == 1)) {
+//			logger.info("The transaction amount exceeds the limit");
+//			result.put("msg", "The transaction amount exceeds the limit");
+//			result.put("retCode", RetCodeConsts.TRANSFER_REQUIRES_PHONE_VERIFICATION);
+//			return result;
+//		} else {
+//			String retCode = transferConfirm(userId, transferId);
+//			result.put("msg", retCode);
+//			result.put("retCode", retCode);
+//			return result;
+//		}
+//	}
+//
+//	@Override
+//	public String transferConfirm(Integer userId, String transferId) {
+//		Transfer transfer = transferDAO.getTranByIdAndStatus(transferId,
+//				ServerConsts.TRANSFER_STATUS_OF_INITIALIZATION);
+//		if (transfer == null) {
+//			logger.info("The transaction order does not exist");
+//			return RetCodeConsts.TRANSFER_TRANS_ORDERID_NOT_EXIST;
+//		}
+//
+//		User payer = userDAO.getUser(userId);
+//		if (payer == null || payer.getUserAvailable() == ServerConsts.USER_AVAILABLE_OF_UNAVAILABLE) {
+//			logger.info("The user does not exist or the account is blocked");
+//			return RetCodeConsts.TRANSFER_USER_DOES_NOT_EXIST_OR_THE_ACCOUNT_IS_BLOCKED;
+//		}
+//
+//		if (userId != transfer.getUserFrom()) {
+//			logger.info("userId is different from UserFromId");
+//			return RetCodeConsts.RET_CODE_FAILUE;
+//		}
+//
+//		//判断 每次支付金额限制、 每天累计金额限制、每天累计给付次数限制
+//		HashMap<String, String> map = checkManager.checkTransferLimit(transfer.getCurrency(), 
+//				transfer.getTransferAmount(), userId);
+//		if (!map.isEmpty()) {
+//			return map.get("retCode");
+//		}
+//		
+//		// 获取系统账号
+//		User systemUser = userDAO.getSystemUser();
+//
+//		if (transfer.getUserTo() == systemUser.getUserId()) { // 交易对象没有注册账号
+//			goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId);
+//			// 添加gift记录
+//			Unregistered unregistered = unregisteredDAO.getUnregisteredByTransId(transfer.getTransferId());
+//			if (unregistered == null) {
+//				unregistered = new Unregistered();
+//				unregistered.setCreateTime(new Date());
+//				unregistered.setUnregisteredStatus(ServerConsts.UNREGISTERED_STATUS_OF_PENDING);
+//				unregistered.setTransferId(transfer.getTransferId());
+//				unregistered.setAreaCode(transfer.getAreaCode());
+//				unregistered.setUserPhone(transfer.getPhone());
+//				unregistered.setCurrency(transfer.getCurrency());
+//				unregistered.setAmount(transfer.getTransferAmount());
+//				unregisteredDAO.addUnregistered(unregistered);
+//			}
+//			// 向未注册用户发送短信
+//			smsManager.sendSMS4Transfer(transfer.getAreaCode(), transfer.getPhone(), payer, transfer.getCurrency(),
+//					amountFormatByCurrency(transfer.getCurrency(), transfer.getTransferAmount()));
+//
+//		} else { // 交易对象注册账号,交易正常进行，无需经过系统账户
+//			goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId);
+//			// 如果是请求转账还需要更改消息通知中的状态
+//			if (transfer.getNoticeId() != 0) {
+//				TransactionNotification notification = notificationDAO.getNotificationById(transfer.getNoticeId());
+//				notification.setTradingStatus(ServerConsts.NOTIFICATION_STATUS_OF_ALREADY_PAID);
+//				notificationDAO.updateNotification(notification);
+//			}
+//			// 推送到账通知
+//			User payee = userDAO.getUser(transfer.getUserTo());
+//			pushManager.push4Transfer(transfer.getTransferId(), payer, payee, transfer.getCurrency(),
+//					amountFormatByCurrency(transfer.getCurrency(), transfer.getTransferAmount()));
+//		}
+//		// 更改Transfer状态
+//		transferDAO.updateTransferStatus(transferId, ServerConsts.TRANSFER_STATUS_OF_COMPLETED);
+//
+//		// 转换金额
+//		BigDecimal exchangeResult = oandaRatesManager.getDefaultCurrencyAmount(transfer.getCurrency(),
+//				transfer.getTransferAmount());
+//		transferDAO.updateAccumulatedAmount("transfer_" + transfer.getUserFrom(),
+//				exchangeResult.setScale(2, BigDecimal.ROUND_FLOOR));
+//		// 更改累计次数
+//		transferDAO.updateCumulativeNumofTimes("transfer_" + transfer.getUserFrom(), new BigDecimal("1"));
+//
+//		// 预警
+//		largeTransWarn(payer, transfer);
+//
+//		return RetCodeConsts.RET_CODE_SUCCESS;
+//	}
 
 }

@@ -2,16 +2,18 @@ package com.yuyutechnology.exchange.server.controller.response;
 
 import java.util.List;
 
-import com.yuyutechnology.exchange.server.controller.dto.FriendDTO;
+import com.yuyutechnology.exchange.dto.FriendInitial;
+
 
 public class FriendsListResponse extends BaseResponse {
-	private List<FriendDTO> friends;
+	private List<FriendInitial> initials;
 
-	public List<FriendDTO> getFriends() {
-		return friends;
+	public List<FriendInitial> getInitials() {
+		return initials;
 	}
 
-	public void setFriends(List<FriendDTO> friends) {
-		this.friends = friends;
+	public void setInitials(List<FriendInitial> initials) {
+		this.initials = initials;
 	}
+
 }
