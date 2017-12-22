@@ -22,6 +22,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.yuyutechnology.exchange.MessageConsts;
@@ -310,8 +312,6 @@ public class LoggedInUserController {
 		return rep;
 	}
 
-	// TODO 设置修改头像 portrait
-
 	@ResponseEncryptBody
 	@ApiOperation(value = "设置修改头像 ", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/uploadPortrait", method = RequestMethod.POST, produces = "application/json; charset=utf-8",consumes = "multipart/form-data")
@@ -328,7 +328,6 @@ public class LoggedInUserController {
 				logger.info(request.toString());
 				inputStream = request.getInputStream();
 				File file = File.createTempFile(String.valueOf(new Date().getTime()), ".jpg");
-
 				outputStream = new FileOutputStream(file);
 				byte[] temp = new byte[1024];
 				int size = 0;
@@ -361,6 +360,45 @@ public class LoggedInUserController {
 				}
 			}
 		}
+		return rep;
+	}
+	
+	
+	@ResponseEncryptBody
+	@ApiOperation(value = "设置修改头像2 ", httpMethod = "POST", notes = "")
+	@RequestMapping(value = "/token/{token}/user/uploadPortrait2", method = RequestMethod.POST, produces = "application/json; charset=utf-8",consumes = "multipart/form-data")
+	public ModifyUserPortraitResponse uploadPortrait2(@PathVariable String token,@RequestParam("file") MultipartFile multipartFile) throws HttpException {
+		logger.info("========uploadPortrait : {}============", token);
+		ModifyUserPortraitResponse rep = new ModifyUserPortraitResponse();
+		SessionData sessionData = SessionDataHolder.getSessionData();
+//		if (request.getContentLength() > 0) {
+			try {
+//				logger.info(request.toString());
+//				inputStream = request.getInputStream();
+				
+				if(multipartFile.getOriginalFilename().contains(".jpg")) {
+					File file = File.createTempFile(String.valueOf(new Date().getTime()), ".jpg");
+					multipartFile.transferTo(file);
+					file.deleteOnExit();
+//				outputStream = new FileOutputStream(file);
+//				byte[] temp = new byte[1024];
+//				int size = 0;
+//				while ((size = inputStream.read(temp)) != -1) { // 每次读取1KB，直至读完
+//					outputStream.write(temp, 0, size);
+//				}
+					logger.info("File load success.");
+					String imgUrl = userManager.updateUserPortrait(sessionData.getUserId(), file);
+					rep.setPortrait(imgUrl);
+					logger.info("********Operation succeeded********");
+					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+				}
+			} catch (IOException e) {
+				logger.warn("File load fail.{}", e.getMessage(), e);
+				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+			}
+//		}
 		return rep;
 	}
 	

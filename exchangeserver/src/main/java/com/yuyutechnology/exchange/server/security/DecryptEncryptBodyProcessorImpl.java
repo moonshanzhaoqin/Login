@@ -30,7 +30,7 @@ public class DecryptEncryptBodyProcessorImpl extends DecryptEncryptBodyProcessor
 	
     @Override
     protected String doDecryptRequestBody(String input, HttpHeaders httpHeaders) {
-        logger.info("==========doDecryptRequestBody input, {}", input);
+//        logger.info("==========doDecryptRequestBody input, {}", input);
         String key = ResourceUtils.getBundleValue4String("aes.key");
         if (StringUtils.isNotBlank(key)) {
         	try {
@@ -42,13 +42,13 @@ public class DecryptEncryptBodyProcessorImpl extends DecryptEncryptBodyProcessor
 				input = "";
 			}
         }
-        logger.info("==========doDecryptRequestBody input(decryptAES), {}", input);
+//        logger.info("==========doDecryptRequestBody input(decryptAES), {}", input);
         return input;
     }
 
     @Override
     protected String doEncryptResponseBody(String input, HttpHeaders httpHeaders) {
-    	logger.info("==========doEncryptResponseBody input, {}", input);
+//    	logger.info("==========doEncryptResponseBody input, {}", input);
         String key = ResourceUtils.getBundleValue4String("aes.key");
         if (StringUtils.isNotBlank(key)) {
         	try {
@@ -62,7 +62,7 @@ public class DecryptEncryptBodyProcessorImpl extends DecryptEncryptBodyProcessor
 				input = "";
 			}
         }
-        logger.info("==========doEncryptResponseBody input(encryptAES), {}", input);
+//        logger.info("==========doEncryptResponseBody input(encryptAES), {}", input);
         return input;
     }
 
