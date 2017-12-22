@@ -370,35 +370,24 @@ public class LoggedInUserController {
 	public ModifyUserPortraitResponse uploadPortrait2(@PathVariable String token,@RequestParam("file") MultipartFile multipartFile) throws HttpException {
 		logger.info("========uploadPortrait : {}============", token);
 		ModifyUserPortraitResponse rep = new ModifyUserPortraitResponse();
+		rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+		rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 		SessionData sessionData = SessionDataHolder.getSessionData();
-//		if (request.getContentLength() > 0) {
-			try {
-//				logger.info(request.toString());
-//				inputStream = request.getInputStream();
-				
-				if(multipartFile.getOriginalFilename().contains(".jpg")) {
-					File file = File.createTempFile(String.valueOf(new Date().getTime()), ".jpg");
-					multipartFile.transferTo(file);
-					file.deleteOnExit();
-//				outputStream = new FileOutputStream(file);
-//				byte[] temp = new byte[1024];
-//				int size = 0;
-//				while ((size = inputStream.read(temp)) != -1) { // 每次读取1KB，直至读完
-//					outputStream.write(temp, 0, size);
-//				}
-					logger.info("File load success.");
-					String imgUrl = userManager.updateUserPortrait(sessionData.getUserId(), file);
-					rep.setPortrait(imgUrl);
-					logger.info("********Operation succeeded********");
-					rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-					rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-				}
-			} catch (IOException e) {
-				logger.warn("File load fail.{}", e.getMessage(), e);
-				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+		try {
+			if(multipartFile.getOriginalFilename().contains(".jpg")) {
+				File file = File.createTempFile(String.valueOf(new Date().getTime()), ".jpg");
+				multipartFile.transferTo(file);
+				file.deleteOnExit();
+				logger.info("File load success.");
+				String imgUrl = userManager.updateUserPortrait(sessionData.getUserId(), file);
+				rep.setPortrait(imgUrl);
+				logger.info("********Operation succeeded********");
+				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 			}
-//		}
+		} catch (IOException e) {
+			logger.warn("File load fail.{}", e.getMessage(), e);
+		}
 		return rep;
 	}
 	
