@@ -124,7 +124,7 @@
 						<th>账户冻结</th>
 						<th>登录冻结</th>
 						<th>支付冻结</th>
-						<th>总资产（GDQ）</th>
+						<th>总资产（USD）</th>
 						<th>更新时间（GMT+8）</th>
 						<th>操作</th>
 					</tr>
