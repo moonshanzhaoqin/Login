@@ -49,8 +49,8 @@ public class FriendDAOImpl implements FriendDAO {
 	@Override
 	public List<Friend> getFriendByUserIdAndKeyWords(Integer userId, String keyWords) {
 		List<?> list = hibernateTemplate.find(
-				"from Friend where id.userId = ? and (user.userName like ? or user.namePinyin = ? or user.userPhone = ?) order by user.namePinyin",
-				userId, '%' + keyWords + '%', '_' + '%' + keyWords + '%', '%' + keyWords + '%');
+				"from Friend where id.userId = ? and (user.userName like ? or SUBSTRING(user.namePinyin, 2, LENGTH(user.namePinyin)) like ? or user.userPhone like ?) order by user.namePinyin",
+				userId, '%' + keyWords + '%', '%' + keyWords + '%', '%' + keyWords + '%');
 		return (List<Friend>) list;
 	}
 }
