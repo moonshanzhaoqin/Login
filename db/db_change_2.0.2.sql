@@ -2,13 +2,14 @@
 ALTER TABLE `e_user`
   ADD COLUMN `name_pinyin` varchar(255) NULL DEFAULT NULL COMMENT '用户名拼音' AFTER `user_name`;
 
-  --2017/12/13 请开启MySQL的FEDERATED引擎, 并自行修改CONNECTION的链接指向Goldpay的数据库 
+--2017/12/25
+DROP TABLE IF EXISTS `g_account` 
 CREATE TABLE `g_account` (
   `balance` BIGINT(20) UNSIGNED DEFAULT NULL,
-  `user_id` BIGINT(20) DEFAULT NULL,
+  `user_id` BIGINT(20) NOT NULL DEFAULT '0',
   `account_id` VARCHAR(12) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE =FEDERATED CONNECTION='mysql://root:@127.0.0.1:3306/goldq/goldq_account';
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='Goldpay冗余表';
 
 
 --2017/12/14 suzan
