@@ -169,8 +169,8 @@ public class ServerConsts {
 	/**
 	 * 本位货币，主币(结算单位)
 	 */
-//	public static final String STANDARD_CURRENCY = "USD";
-	public static final String STANDARD_CURRENCY = CURRENCY_OF_GOLDPAY;
+	public static final String STANDARD_CURRENCY = "USD";
+//	public static final String STANDARD_CURRENCY = CURRENCY_OF_GOLDPAY;
 	// 短信验证码功能
 	/**
 	 * 短信验证码功能——注册

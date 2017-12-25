@@ -11,4 +11,6 @@ public interface BindDAO {
 	public void updateBind(Bind bind);
 	
 	public void clearHappyLivesId(String happyLivesId);
+
+	void updateGoldpayAccount(GoldpayAccount account);
 }

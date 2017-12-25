@@ -50,4 +50,9 @@ public class BindDAOImpl implements BindDAO {
 		}
 		return null;
 	}
+	
+	@Override
+	public void updateGoldpayAccount(GoldpayAccount account){
+		hibernateTemplate.saveOrUpdate(account);
+	}
 }
