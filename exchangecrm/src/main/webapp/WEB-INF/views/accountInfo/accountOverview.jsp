@@ -76,10 +76,10 @@
 								</c:if>
 						</select></li>
 						<li><input type="text" value="${model.lowerLimit }"
-							class="form-control" placeholder="总资产>=(GDQ)" id="lowerLimit"
+							class="form-control" placeholder="总资产>=(USD)" id="lowerLimit"
 							name="lowerLimit" size="12"></li>
 						<li><input type="text" value="${model.upperLimit }"
-							class="form-control" placeholder="总资产<=(GDQ)" id="upperLimit"
+							class="form-control" placeholder="总资产<=(USD)" id="upperLimit"
 							name="upperLimit" size="12"></li>
 
 						<li>

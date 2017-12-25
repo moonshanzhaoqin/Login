@@ -162,7 +162,6 @@ public class FriendController {
 		return rep;
 	}
 	
-	//TODO 搜索好友
 	@ResponseEncryptBody
 	@ApiOperation(value = "搜索好友", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/searchFriend", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
