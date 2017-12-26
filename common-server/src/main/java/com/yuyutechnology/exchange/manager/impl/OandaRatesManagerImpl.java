@@ -250,10 +250,10 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 					bindDAO.updateGoldpayAccount(account);
 					
 				}else{
-					if (wallet.getCurrency().getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
-						GoldpayUserDTO goldpayAccount = goldpayTrans4MergeManager.getGoldpayUserAccount(userId);
-						wallet.setBalance(new BigDecimal(goldpayAccount.getBalance()));
-					}
+//					if (wallet.getCurrency().getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
+//						GoldpayUserDTO goldpayAccount = goldpayTrans4MergeManager.getGoldpayUserAccount(userId);
+//						wallet.setBalance(new BigDecimal(goldpayAccount.getBalance()));
+//					}
 					totalBalance = totalBalance
 							.add(getDefaultCurrencyAmount(wallet.getCurrency().getCurrency(), wallet.getBalance()));
 				}
