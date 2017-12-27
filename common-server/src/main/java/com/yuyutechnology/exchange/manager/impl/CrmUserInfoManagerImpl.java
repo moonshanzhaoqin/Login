@@ -47,7 +47,7 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 	@Override
 	public void updateUserInfo(User user) {
 		CrmUserInfo crmUserInfo = new CrmUserInfo(user);
-		BigDecimal totalBalance = oandaRatesManager.getTotalBalance(user.getUserId());
+		BigDecimal totalBalance = oandaRatesManager.getTotalBalance(user.getUserId(), false);
 		logger.info("current time : {} , user Id : {} ,totalBalance : {}",
 				new Object[] { new Date(), user.getUserId(), totalBalance });
 		crmUserInfo.setUserTotalAssets(totalBalance);

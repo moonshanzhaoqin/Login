@@ -18,7 +18,7 @@ public interface OandaRatesManager {
 
 	public Date getExchangeRateUpdateDate();
 
-	public BigDecimal getTotalBalance(int userId);
+	public BigDecimal getTotalBalance(int userId, boolean realTime);
 
 	public LinkedHashMap<String, Double> getExchangeRate(String base);
 

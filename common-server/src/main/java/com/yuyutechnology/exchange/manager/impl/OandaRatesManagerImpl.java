@@ -201,7 +201,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 
 	@Override
 	public BigDecimal getDefaultCurrencyAmount(String transCurrency, BigDecimal transAmount) {
-		if (transCurrency.equals(ServerConsts.STANDARD_CURRENCY)) {
+		if (transCurrency.equals(ServerConsts.STANDARD_CURRENCY) || transAmount.compareTo(BigDecimal.ZERO) == 0) {
 			return transAmount;
 		}
 		return getExchangedAmount(transCurrency, transAmount, ServerConsts.STANDARD_CURRENCY);
@@ -219,7 +219,7 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 	}
 
 	@Override
-	public BigDecimal getTotalBalance(int userId) {
+	public BigDecimal getTotalBalance(int userId, boolean realTime) {
 		logger.info("The current default currency : {}", ServerConsts.STANDARD_CURRENCY);
 		List<Wallet> list = walletDAO.getWalletsByUserId(userId);
 		BigDecimal totalBalance = BigDecimal.ZERO;
@@ -227,18 +227,24 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 			for (Wallet wallet : list) {
 				if (wallet.getCurrency().getCurrency().equals(ServerConsts.STANDARD_CURRENCY)) {
 					totalBalance = totalBalance.add(wallet.getBalance());
-				} else if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(wallet.getCurrency().getCurrency())){					
-//					GoldpayUserDTO dto = goldpayTrans4MergeManager.getGoldpayUserAccount(userId);
-					GoldpayAccount goldpayAccount = bindDAO.getGoldpayAccount(userId);
-					if(goldpayAccount == null){
-						totalBalance = totalBalance.add(BigDecimal.ZERO);
+				} else if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(wallet.getCurrency().getCurrency())){		
+					BigDecimal balance = BigDecimal.ZERO;
+					if (realTime) {
+						GoldpayUserDTO dto = goldpayTrans4MergeManager.getGoldpayUserAccount(userId);
+						if (dto != null) {
+							balance = new BigDecimal(dto.getBalance()+"");
+						}
 					}else{
-						BigDecimal num = oandaRatesManager
-								.getDefaultCurrencyAmount(ServerConsts.CURRENCY_OF_GOLDPAY, new BigDecimal(goldpayAccount.getBalance()+""))
-								.setScale(4, BigDecimal.ROUND_DOWN);
-						totalBalance = totalBalance.add(num);
-						logger.info("{} {} to {} USD", goldpayAccount.getBalance(), ServerConsts.CURRENCY_OF_GOLDPAY, num);
+						GoldpayAccount goldpayAccount = bindDAO.getGoldpayAccount(userId);
+						if (goldpayAccount != null) {
+							balance = new BigDecimal(goldpayAccount.getBalance()+"");
+						}
 					}
+					BigDecimal num = oandaRatesManager
+							.getDefaultCurrencyAmount(ServerConsts.CURRENCY_OF_GOLDPAY, balance)
+							.setScale(4, BigDecimal.ROUND_DOWN);
+					totalBalance = totalBalance.add(num);
+					logger.info("{} {} to {} USD", balance, ServerConsts.CURRENCY_OF_GOLDPAY, num);
 				}else{
 					totalBalance = totalBalance
 							.add(getDefaultCurrencyAmount(wallet.getCurrency().getCurrency(), wallet.getBalance()));

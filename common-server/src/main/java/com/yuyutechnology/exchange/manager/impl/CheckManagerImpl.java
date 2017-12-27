@@ -73,7 +73,7 @@ public class CheckManagerImpl implements CheckManager {
 	@Override
 	public boolean isPaymentVerification(Integer userId,String currency,BigDecimal transAmount){
 		// 总账大于设置安全基数，弹出需要短信验证框===============================================
-		BigDecimal totalBalance = oandaRatesManager.getTotalBalance(userId);
+		BigDecimal totalBalance = oandaRatesManager.getTotalBalance(userId, true);
 		BigDecimal totalBalanceMax = BigDecimal
 				.valueOf(configManager.getConfigDoubleValue(ConfigKeyEnum.TOTALBALANCETHRESHOLD, 100000d));
 		// 当天累计转出总金额大于设置安全基数，弹出需要短信验证框
