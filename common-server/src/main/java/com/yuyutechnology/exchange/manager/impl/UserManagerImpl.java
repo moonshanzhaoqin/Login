@@ -331,8 +331,9 @@ public class UserManagerImpl implements UserManager {
 
 	@Override
 	public List<FriendInitial> getFriends(Integer userId) {
-		List<FriendDTO> friendDTOs = new ArrayList<>();
-		List<FriendInitial> friendInitials = new ArrayList<>();
+		List<FriendDTO> friendDTOs = new ArrayList<FriendDTO>();
+		List<FriendInitial> friendInitials = new ArrayList<FriendInitial>();
+		FriendInitial friendInitialFirst = new FriendInitial();
 		List<Friend> friends = friendDAO.getFriendsByUserId(userId);
 		char index = 'A';
 		for (Friend friend : friends) {
@@ -347,10 +348,15 @@ public class UserManagerImpl implements UserManager {
 			} else {
 				/* 将上一个字母存入List<FriendInitial> */
 				if (friendDTOs.size() > 0) {
-					FriendInitial friendInitial = new FriendInitial();
-					friendInitial.setInitial(index);
-					friendInitial.setFriends(friendDTOs);
-					friendInitials.add(friendInitial);
+					if (index == '#') {
+						friendInitialFirst.setInitial(index);
+						friendInitialFirst.setFriends(friendDTOs);
+					}else{
+						FriendInitial friendInitial = new FriendInitial();
+						friendInitial.setInitial(index);
+						friendInitial.setFriends(friendDTOs);
+						friendInitials.add(friendInitial);
+					}
 					/* 清空 List<FriendDTO> */
 					friendDTOs = new ArrayList<>();
 				}
@@ -370,6 +376,9 @@ public class UserManagerImpl implements UserManager {
 		friendInitial.setInitial(index);
 		friendInitial.setFriends(friendDTOs);
 		friendInitials.add(friendInitial);
+		if (friendInitialFirst.getFriends() != null) {
+			friendInitials.add(friendInitialFirst);
+		}
 		return friendInitials;
 	}
 

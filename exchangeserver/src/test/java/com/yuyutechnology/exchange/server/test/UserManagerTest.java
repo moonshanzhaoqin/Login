@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.yuyutechnology.exchange.dao.RedisDAO;
 import com.yuyutechnology.exchange.dto.FriendDTO;
+import com.yuyutechnology.exchange.dto.FriendInitial;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.UserManager;
 
@@ -23,10 +24,14 @@ public class UserManagerTest extends BaseSpringJunit4 {
 	@Test
 	public void testUpdate(){
 		
-		List<FriendDTO> fs = userManager.searchFriend(4, "1");
-		for (FriendDTO friendDTO : fs) {
-			System.out.println(friendDTO.getName());
-		}
+		
+		List<FriendInitial> fs = userManager.getFriends(4);
+		System.out.println(fs.size());
+		
+//		List<FriendDTO> fs = userManager.searchFriend(4, "1");
+//		for (FriendDTO friendDTO : fs) {
+//			System.out.println(friendDTO.getName());
+//		}
 //		userManager.updateUser(2, "", "1", "");
 //		userManager.updateHappyLivesVIP("123", 5);
 //		System.out.println(userManager.isHappyLivesVIP(5));
