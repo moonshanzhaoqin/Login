@@ -30,12 +30,12 @@ public class GoldpayDAOImpl implements GoldpayDAO {
 	
 	@Override
 	public int getGoldpayAccountTotalCount() {
-		return goldpayJdbcTemplate.queryForObject("SELECT COUNT(0) FROM `goldq_account`", Integer.class);
+		return goldpayJdbcTemplate.queryForObject("SELECT COUNT(0) FROM `goldq_account` WHERE `balance` > 0", Integer.class);
 	}
 
 	@Override
 	public List<Map<String, Object>> getGoldpayAccountList(int start, int size) {
-		return goldpayJdbcTemplate.queryForList("SELECT `balance`,`user_id`,`account_id`  FROM `goldq_account` LIMIT "+start+", "+size);
+		return goldpayJdbcTemplate.queryForList("SELECT `balance`,`user_id`,`account_id` FROM `goldq_account` WHERE `balance` > 0 LIMIT "+start+", "+size);
 	}
 	
 	@Override
