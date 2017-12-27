@@ -23,7 +23,6 @@ import com.yuyutechnology.exchange.goldpay.msg.GoldpayUserDTO;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.GoldpayTrans4MergeManager;
 import com.yuyutechnology.exchange.manager.OandaRatesManager;
-import com.yuyutechnology.exchange.pojo.Bind;
 import com.yuyutechnology.exchange.pojo.Currency;
 import com.yuyutechnology.exchange.pojo.GoldpayAccount;
 import com.yuyutechnology.exchange.pojo.Wallet;
@@ -226,34 +225,20 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 		BigDecimal totalBalance = BigDecimal.ZERO;
 		if (!list.isEmpty()) {
 			for (Wallet wallet : list) {
-
 				if (wallet.getCurrency().getCurrency().equals(ServerConsts.STANDARD_CURRENCY)) {
 					totalBalance = totalBalance.add(wallet.getBalance());
 				} else if(ServerConsts.CURRENCY_OF_GOLDPAY.equals(wallet.getCurrency().getCurrency())){					
-					GoldpayUserDTO dto = goldpayTrans4MergeManager.getGoldpayUserAccount(userId);
-					if(dto == null){
+//					GoldpayUserDTO dto = goldpayTrans4MergeManager.getGoldpayUserAccount(userId);
+					GoldpayAccount goldpayAccount = bindDAO.getGoldpayAccount(userId);
+					if(goldpayAccount == null){
 						totalBalance = totalBalance.add(BigDecimal.ZERO);
 					}
 					BigDecimal num = oandaRatesManager
-							.getDefaultCurrencyAmount(ServerConsts.CURRENCY_OF_GOLDPAY, new BigDecimal(dto.getBalance()+""))
+							.getDefaultCurrencyAmount(ServerConsts.CURRENCY_OF_GOLDPAY, new BigDecimal(goldpayAccount.getBalance()+""))
 							.setScale(4, BigDecimal.ROUND_DOWN);
-
-					logger.info("{} {} to {} USD", dto.getBalance(), ServerConsts.CURRENCY_OF_GOLDPAY, num);
+					logger.info("{} {} to {} USD", goldpayAccount.getBalance(), ServerConsts.CURRENCY_OF_GOLDPAY, num);
 					totalBalance = totalBalance.add(num);
-					
-					//update g_account
-					GoldpayAccount account = new GoldpayAccount();
-					Bind bind = bindDAO.getBind(userId);
-					account.setAccountNum(bind.getGoldpayAcount());
-					account.setBalance(num.longValue());
-					account.setGoldpayUserId(userId);
-					bindDAO.updateGoldpayAccount(account);
-					
 				}else{
-//					if (wallet.getCurrency().getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
-//						GoldpayUserDTO goldpayAccount = goldpayTrans4MergeManager.getGoldpayUserAccount(userId);
-//						wallet.setBalance(new BigDecimal(goldpayAccount.getBalance()));
-//					}
 					totalBalance = totalBalance
 							.add(getDefaultCurrencyAmount(wallet.getCurrency().getCurrency(), wallet.getBalance()));
 				}

@@ -41,7 +41,7 @@ public class BindDAOImpl implements BindDAO {
 			}
 		});
 	}
-
+	
 	@Override
 	public GoldpayAccount getGoldpayAccount(Integer userId) {
 		List<?> accounts = hibernateTemplate.find("from Bind b, GoldpayAccount g where b.goldpayId = g.goldpayUserId and b.userId = ?", userId);
@@ -49,25 +49,5 @@ public class BindDAOImpl implements BindDAO {
 			return (GoldpayAccount) ((Object[])accounts.get(0))[1];
 		}
 		return null;
-	}
-	
-	@Override
-	public void updateGoldpayAccount(final GoldpayAccount account){
-		hibernateTemplate.saveOrUpdate(account);
-		
-//		hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
-//
-//			@Override
-//			public Integer doInHibernate(Session session) throws HibernateException {
-//				Query query = session.createSQLQuery(
-//						"replace into g_account (user_id,account_id,balance) values (?,?,?)");
-//				query.setLong(0, account.getGoldpayUserId());
-//				query.setString(1, account.getAccountNum());
-//				query.setLong(2, account.getBalance());
-//				
-//				return query.executeUpdate();
-//			}
-//		
-//		});
 	}
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.yuyutechnology.exchange.dao.UserDAO;
 import com.yuyutechnology.exchange.manager.CrmUserInfoManager;
+import com.yuyutechnology.exchange.manager.GoldpayManager;
 import com.yuyutechnology.exchange.pojo.User;
 
 @Component
@@ -19,11 +20,14 @@ public class AutoCalculateUserAssetsTask {
 	UserDAO userDAO;
 	@Autowired
 	CrmUserInfoManager crmUserInfoManager;
+	@Autowired
+	GoldpayManager goldpayManager;
 	
 	public static Logger logger = LogManager.getLogger(AutoCalculateUserAssetsTask.class);
 	
 	public void autoCalculateUserAssetsTask(){
 		logger.info("=============autoCalculateUserAssetsTask Start==================");
+		goldpayManager.startCopyGoldpayAccount();
 		List<User> list = userDAO.listAllUser();
 		if(list.isEmpty()){
 			return ;

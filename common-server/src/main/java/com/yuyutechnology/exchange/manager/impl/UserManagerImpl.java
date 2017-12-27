@@ -364,7 +364,6 @@ public class UserManagerImpl implements UserManager {
 				friendDTOs.add(friendDTO);
 				index = friend.getUser().getNamePinyin().charAt(0);
 			}
-
 		}
 		/* 处理最后一个字母 */
 		FriendInitial friendInitial = new FriendInitial();
