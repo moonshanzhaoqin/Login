@@ -25,7 +25,7 @@ import com.yuyutechnology.exchange.manager.GoldpayManager;
 public class GoldpayManagerImpl implements GoldpayManager {
 	
 	public static Logger logger = LogManager.getLogger(GoldpayManager.class);
-	public final int copySize = 500;
+	public final int copySize = 50;
 	
 	@Autowired
 	GoldpayDAO goldpayDAO;
