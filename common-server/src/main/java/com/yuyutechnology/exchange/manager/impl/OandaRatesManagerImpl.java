@@ -232,12 +232,13 @@ public class OandaRatesManagerImpl implements OandaRatesManager {
 					GoldpayAccount goldpayAccount = bindDAO.getGoldpayAccount(userId);
 					if(goldpayAccount == null){
 						totalBalance = totalBalance.add(BigDecimal.ZERO);
+					}else{
+						BigDecimal num = oandaRatesManager
+								.getDefaultCurrencyAmount(ServerConsts.CURRENCY_OF_GOLDPAY, new BigDecimal(goldpayAccount.getBalance()+""))
+								.setScale(4, BigDecimal.ROUND_DOWN);
+						totalBalance = totalBalance.add(num);
+						logger.info("{} {} to {} USD", goldpayAccount.getBalance(), ServerConsts.CURRENCY_OF_GOLDPAY, num);
 					}
-					BigDecimal num = oandaRatesManager
-							.getDefaultCurrencyAmount(ServerConsts.CURRENCY_OF_GOLDPAY, new BigDecimal(goldpayAccount.getBalance()+""))
-							.setScale(4, BigDecimal.ROUND_DOWN);
-					logger.info("{} {} to {} USD", goldpayAccount.getBalance(), ServerConsts.CURRENCY_OF_GOLDPAY, num);
-					totalBalance = totalBalance.add(num);
 				}else{
 					totalBalance = totalBalance
 							.add(getDefaultCurrencyAmount(wallet.getCurrency().getCurrency(), wallet.getBalance()));
