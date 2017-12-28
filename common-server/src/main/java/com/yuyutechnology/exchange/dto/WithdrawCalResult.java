@@ -3,7 +3,7 @@ package com.yuyutechnology.exchange.dto;
 import java.math.BigDecimal;
 
 public class WithdrawCalResult {
-private  String  retCode;
+private String retCode;
 private BigDecimal goldpay;
 private BigDecimal fee;
 	private String formula;
