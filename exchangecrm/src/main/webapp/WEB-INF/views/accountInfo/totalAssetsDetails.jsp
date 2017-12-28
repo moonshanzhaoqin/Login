@@ -59,9 +59,24 @@
 						<th>${goldpayAssets.total}</th>
 						<th>${goldpayAssets.system+systemAmount}</th>
 						<th>${goldpayAssets.customer+usermAmount}</th>
-						<th>${goldpayAssets.fee}</th>
-						<th>${goldpayAssets.recovery}</th>
-						<th>${goldpayAssets.frozen}</th>
+						<c:if test="${empty goldpayAssets.fee}">
+						 	<th>0</th>
+						</c:if>
+						<c:else>
+							<th>${goldpayAssets.fee}</th>
+						</c:else>
+						<c:if test="${empty goldpayAssets.recovery}">
+						 	<th>0</th>
+						</c:if>
+						<c:else>
+							<th>${goldpayAssets.recovery}</th>
+						</c:else>
+						<c:if test="${empty goldpayAssets.frozen}">
+						 	<th>0</th>
+						</c:if>
+						<c:else>
+							<th>${goldpayAssets.frozen}</th>
+						</c:else>
 					</tr>
 				</tbody>
 			</table>
