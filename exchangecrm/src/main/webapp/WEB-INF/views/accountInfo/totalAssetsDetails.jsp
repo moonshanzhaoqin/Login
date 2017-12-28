@@ -30,7 +30,7 @@
 					</c:if>
 
 					<tr style="font-weight: bold;">
-						<td>总金额（USD）</td>
+						<td>总金额（GDQ）</td>
 						<c:if test="${not empty systemAmount }">
 							<td>${systemAmount}</td>
 						</c:if>

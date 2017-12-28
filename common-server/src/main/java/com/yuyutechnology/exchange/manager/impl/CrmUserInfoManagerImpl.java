@@ -79,14 +79,21 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 		// 计算系统账户总资产
 		BigDecimal totalAssets = BigDecimal.ZERO;
 		for (Entry<String, BigDecimal> entry : map.entrySet()) {
-			if (entry.getKey().equals(ServerConsts.STANDARD_CURRENCY)) {
-				totalAssets = totalAssets.add(entry.getValue());
-				logger.info("SystemAccountTotalAssets : {}", totalAssets);
-			} else {
+			//统一转成GDQ Silent 2017-12-28
+			if (!entry.getKey().equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
 				totalAssets = totalAssets
-						.add(oandaRatesManager.getDefaultCurrencyAmount(entry.getKey(), entry.getValue()));
-				logger.info("SystemAccountTotalAssets : {}", totalAssets);
+						.add(oandaRatesManager.getExchangedAmount(entry.getKey(),  entry.getValue(), ServerConsts.CURRENCY_OF_GOLDPAY));
+				logger.info("UserAccountTotalAssets : {}", totalAssets);
 			}
+//			if (entry.getKey().equals(ServerConsts.STANDARD_CURRENCY)) {
+//				totalAssets = totalAssets.add(entry.getValue());
+//				logger.info("SystemAccountTotalAssets : {}", totalAssets);
+//			} else {
+//				
+//				totalAssets = totalAssets
+//						.add(oandaRatesManager.getExchangedAmount(entry.getKey(),  entry.getValue(), ServerConsts.CURRENCY_OF_GOLDPAY));
+//				logger.info("SystemAccountTotalAssets : {}", totalAssets);
+//			}
 		}
 		map.put("totalAssets", totalAssets.setScale(0, RoundingMode.DOWN));
 
@@ -115,14 +122,17 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 		} else {
 			for (Entry<String, BigDecimal> entry : map.entrySet()) {
 				if (!entry.getKey().equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
-					if (entry.getKey().equals(ServerConsts.STANDARD_CURRENCY)) {
-						totalAssets = totalAssets.add(entry.getValue());
-						logger.info("UserAccountTotalAssets : {}", totalAssets);
-					} else {
-						totalAssets = totalAssets
-								.add(oandaRatesManager.getDefaultCurrencyAmount(entry.getKey(), entry.getValue()));
-						logger.info("UserAccountTotalAssets : {}", totalAssets);
-					}
+					//统一转成GDQ Silent 2017-12-28
+					totalAssets = totalAssets
+							.add(oandaRatesManager.getExchangedAmount(entry.getKey(),  entry.getValue(), ServerConsts.CURRENCY_OF_GOLDPAY));
+					logger.info("UserAccountTotalAssets : {}", totalAssets);
+//					if (entry.getKey().equals(ServerConsts.STANDARD_CURRENCY)) {
+//						totalAssets = totalAssets.add(entry.getValue());
+//						logger.info("UserAccountTotalAssets : {}", totalAssets);
+//					} else {
+//						totalAssets = totalAssets
+//								.add(oandaRatesManager.getDefaultCurrencyAmount(entry.getKey(), entry.getValue()));
+//					}
 				}
 			}
 		}
