@@ -112,11 +112,13 @@ public class TransferController {
 		if(RetCodeConsts.RET_CODE_SUCCESS.equals(map.get("retCode"))){
 			rep.setCurrency(reqMsg.getCurrency());
 			rep.setTransAmount(reqMsg.getTransAmount()+"");
-			UserInfo4Transfer userInfo = userManager.findFriend(sessionData.getUserId(), reqMsg.getAreaCode(), reqMsg.getUserPhone());
 			rep.setUserAccount(reqMsg.getAreaCode().concat(reqMsg.getUserPhone()));
-			rep.setUserName(userInfo.getUserName());
-			rep.setPortrait(userInfo.getPortrait());
-			rep.setFriend(userInfo.isFriend());
+			UserInfo4Transfer userInfo = userManager.findFriend(sessionData.getUserId(), reqMsg.getAreaCode(), reqMsg.getUserPhone());
+			if(userInfo != null){
+				rep.setUserName(userInfo.getUserName());
+				rep.setPortrait(userInfo.getPortrait());
+				rep.setFriend(userInfo.isFriend());
+			}
 		}
 		rep.setRetCode(map.get("retCode"));
 		rep.setMessage(map.get("msg"));
