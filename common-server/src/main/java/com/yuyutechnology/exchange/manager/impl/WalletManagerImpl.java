@@ -106,23 +106,22 @@ public class WalletManagerImpl implements WalletManager {
 		for (Wallet wallet : wallets) {
 			if (wallet.getCurrency().getCurrencyStatus() == ServerConsts.CURRENCY_AVAILABLE
 					|| wallet.getBalance().compareTo(BigDecimal.ZERO) != 0) {
-				list.add(new WalletInfo(wallet.getCurrency().getCurrency(), wallet.getCurrency().getNameEn(),
-						wallet.getCurrency().getNameCn(), wallet.getCurrency().getNameHk(),
-						wallet.getCurrency().getCurrencyStatus(), wallet.getCurrency().getCurrencyUnit(),
-						wallet.getBalance()));
-			}
-		}
-		
-		//add by Niklaus.chi at 2017-10-13
-		for (WalletInfo walletInfo : list) {
-			if(walletInfo.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)){
-				GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.getGoldpayUserAccount(userId);
-				if(goldpayUser!=null){
-					walletInfo.setBalance(new BigDecimal(goldpayUser.getBalance()+""));
+				if (wallet.getCurrency().getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY)) {
+					GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.getGoldpayUserAccount(userId);
+					if(goldpayUser!=null){
+						list.add(new WalletInfo(wallet.getCurrency().getCurrency(), wallet.getCurrency().getNameEn(),
+								wallet.getCurrency().getNameCn(), wallet.getCurrency().getNameHk(),
+								wallet.getCurrency().getCurrencyStatus(), wallet.getCurrency().getCurrencyUnit(),
+								new BigDecimal(goldpayUser.getBalance()+"")));
+					}
+				}else{
+					list.add(new WalletInfo(wallet.getCurrency().getCurrency(), wallet.getCurrency().getNameEn(),
+							wallet.getCurrency().getNameCn(), wallet.getCurrency().getNameHk(),
+							wallet.getCurrency().getCurrencyStatus(), wallet.getCurrency().getCurrencyUnit(),
+							wallet.getBalance()));
 				}
 			}
 		}
-		
 		return list;
 	}
 
