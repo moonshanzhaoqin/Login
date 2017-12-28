@@ -22,6 +22,7 @@ import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dto.TransDetailsDTO;
 import com.yuyutechnology.exchange.dto.TransferDTO;
 import com.yuyutechnology.exchange.dto.UserInfo;
+import com.yuyutechnology.exchange.dto.UserInfo4Transfer;
 import com.yuyutechnology.exchange.enums.ConfigKeyEnum;
 import com.yuyutechnology.exchange.manager.CommonManager;
 import com.yuyutechnology.exchange.manager.ConfigManager;
@@ -109,16 +110,16 @@ public class TransferController {
 				reqMsg.getAreaCode(), reqMsg.getUserPhone(), reqMsg.getCurrency(), BigDecimal.valueOf(reqMsg.getTransAmount()));
 		
 		if(RetCodeConsts.RET_CODE_SUCCESS.equals(map.get("retCode"))){
-			rep.setUserAccount(reqMsg.getAreaCode().concat(reqMsg.getUserPhone()));
 			rep.setCurrency(reqMsg.getCurrency());
 			rep.setTransAmount(reqMsg.getTransAmount()+"");
-			rep.setUserInfo(userManager.findFriend(sessionData.getUserId(), reqMsg.getAreaCode(), reqMsg.getUserPhone()));
-
+			UserInfo4Transfer userInfo = userManager.findFriend(sessionData.getUserId(), reqMsg.getAreaCode(), reqMsg.getUserPhone());
+			rep.setUserAccount(reqMsg.getAreaCode().concat(reqMsg.getUserPhone()));
+			rep.setUserName(userInfo.getUserName());
+			rep.setPortrait(userInfo.getPortrait());
+			rep.setFriend(userInfo.isFriend());
 		}
-		
 		rep.setRetCode(map.get("retCode"));
 		rep.setMessage(map.get("msg"));
-		
 		return rep;
 	}
 

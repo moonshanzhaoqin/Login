@@ -869,10 +869,10 @@ public class UserManagerImpl implements UserManager {
 		User user = userDAO.getUserByUserPhone(areaCode, userPhone);
 		UserInfo4Transfer userInfo4Transfer = null;
 		if (user != null) {
-			Friend friend = friendDAO.getFriendByUserIdAndFrindId(userId, user.getUserId());
 			userInfo4Transfer = new UserInfo4Transfer();
-			userInfo4Transfer.setName(user.getUserName());
+			userInfo4Transfer.setUserName(user.getUserName());
 			userInfo4Transfer.setPortrait(user.getUserPortrait());
+			Friend friend = friendDAO.getFriendByUserIdAndFrindId(userId, user.getUserId());
 			userInfo4Transfer.setFriend(friend != null);
 		}
 		return userInfo4Transfer;
