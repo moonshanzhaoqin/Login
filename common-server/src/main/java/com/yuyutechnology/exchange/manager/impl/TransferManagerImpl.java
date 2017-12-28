@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.amazonaws.services.kms.model.transform.RetireGrantRequestMarshaller;
 import com.yuyutechnology.exchange.MessageConsts;
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
@@ -292,7 +293,12 @@ public class TransferManagerImpl implements TransferManager {
 			if(StringUtils.isNotBlank(userPayPwd) && StringUtils.isNotBlank(pinCode)){
 				// 判断PinCode是否正确
 				Boolean resultBool = userManager.testPinCode(transferId, payer.getAreaCode(), payer.getUserPhone(),pinCode);
-				if(resultBool == null || !resultBool.booleanValue()){
+				if(resultBool == null){
+					logger.info(MessageConsts.NOT_GET_CODE);
+					result.put("msg", MessageConsts.NOT_GET_CODE);
+					result.put("retCode", RetCodeConsts.NOT_GET_CODE);
+					return result;
+				}else if(!resultBool.booleanValue()){
 					logger.info("The pin code is incorrect");
 					result.put("msg", "The pin code is incorrect");
 					result.put("retCode", RetCodeConsts.PIN_CODE_INCORRECT);
