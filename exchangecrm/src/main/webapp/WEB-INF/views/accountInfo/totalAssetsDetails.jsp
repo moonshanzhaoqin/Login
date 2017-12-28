@@ -59,24 +59,30 @@
 						<th>${goldpayAssets.total}</th>
 						<th>${goldpayAssets.system+systemAmount}</th>
 						<th>${goldpayAssets.customer+usermAmount}</th>
-						<c:if test="${empty goldpayAssets.fee}">
-						 	<th>0</th>
-						</c:if>
-						<c:else>
-							<th>${goldpayAssets.fee}</th>
-						</c:else>
-						<c:if test="${empty goldpayAssets.recovery}">
-						 	<th>0</th>
-						</c:if>
-						<c:else>
-							<th>${goldpayAssets.recovery}</th>
-						</c:else>
-						<c:if test="${empty goldpayAssets.frozen}">
-						 	<th>0</th>
-						</c:if>
-						<c:else>
-							<th>${goldpayAssets.frozen}</th>
-						</c:else>
+						<c:choose>
+							<c:when test="${empty goldpayAssets.fee}">
+							 	<th>0</th>
+							</c:when>
+							<c:otherwise>
+								<th>${goldpayAssets.fee}</th>
+							</c:otherwise>
+						</c:choose>
+						<c:choose>
+							<c:when test="${empty goldpayAssets.recovery}">
+							 	<th>0</th>
+							</c:when>
+							<c:otherwise>
+								<th>${goldpayAssets.recovery}</th>
+							</c:otherwise>
+						</c:choose>
+						<c:choose>
+							<c:when test="${empty goldpayAssets.frozen}">
+							 	<th>0</th>
+							</c:when>
+							<c:otherwise>
+								<th>${goldpayAssets.frozen}</th>
+							</c:otherwise>
+						</c:choose>
 					</tr>
 				</tbody>
 			</table>
