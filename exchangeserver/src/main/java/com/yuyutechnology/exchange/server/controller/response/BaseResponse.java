@@ -16,7 +16,7 @@ public class BaseResponse {
 		name = name.substring(0, name.indexOf("Response"));
 		name = name.substring(0, 1).toLowerCase() + name.substring(1);
 		apiName = name;
-		this.opts = new String[] {};
+//		this.opts = new String[] {};
 	}
 
 	public String getRetCode() {
@@ -63,4 +63,5 @@ public class BaseResponse {
 	public void setOpts(String[] opts) {
 		this.opts = opts;
 	}
+
 }
