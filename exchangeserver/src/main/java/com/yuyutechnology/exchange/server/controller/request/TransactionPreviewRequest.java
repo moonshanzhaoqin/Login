@@ -26,7 +26,6 @@ public class TransactionPreviewRequest {
 	public void setCurrency(String currency) {
 		this.currency = currency;
 	}
-	
 	public double getTransAmount() {
 		return transAmount;
 	}
