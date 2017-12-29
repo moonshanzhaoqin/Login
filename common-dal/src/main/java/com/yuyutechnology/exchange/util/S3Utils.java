@@ -4,6 +4,7 @@ import java.io.File;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -54,6 +55,9 @@ public class S3Utils {
 	}
 
 	public static String getImgUrl(String keyName) {
+		if (StringUtils.isBlank(keyName)) {
+			return "";
+		}
 		String imgUrl = "https://s3-[s3region].amazonaws.com/[s3bucketName]/[keyName]"
 				.replace("[s3bucketName]", s3bucketName).replace("[s3region]", s3region).replace("[keyName]", keyName);
 		return imgUrl;
