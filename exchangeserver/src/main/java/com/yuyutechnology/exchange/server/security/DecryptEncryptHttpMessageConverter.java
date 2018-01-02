@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.yuyutechnology.exchange.cfg.CustomSerializerProvider;
+import com.yuyutechnology.exchange.cfg.ExJsonSerializerProvider;
 
 /**
  * @author silent.sun
@@ -64,7 +64,7 @@ public class DecryptEncryptHttpMessageConverter extends MappingJackson2HttpMessa
 				gen.writeStringField(gen.getOutputContext().getCurrentName()+currentNameSuffix,value.toString());
 			}
         });
-        objectMapper.setSerializerProvider(new CustomSerializerProvider());
+        objectMapper.setSerializerProvider(new ExJsonSerializerProvider());
         objectMapper.registerModule(s);
 	}
 	

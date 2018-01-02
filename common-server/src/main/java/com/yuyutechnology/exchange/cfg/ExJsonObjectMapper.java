@@ -17,14 +17,14 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
  * @author silent.sun
  *
  */
-public class JsonObjectMapper extends ObjectMapper {
+public class ExJsonObjectMapper extends ObjectMapper {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3659875234079482330L;
 
-	public JsonObjectMapper() {
+	public ExJsonObjectMapper() {
 		super();
 //		this.setSerializationInclusion(Include.NON_EMPTY);
 		 // 空值处理为空串
@@ -55,7 +55,7 @@ public class JsonObjectMapper extends ObjectMapper {
 				gen.writeStringField(gen.getOutputContext().getCurrentName()+"4String",value.toString());
 			}
         });
-        this.setSerializerProvider(new CustomSerializerProvider());
+        this.setSerializerProvider(new ExJsonSerializerProvider());
         this.registerModule(s);
 	}
 }
