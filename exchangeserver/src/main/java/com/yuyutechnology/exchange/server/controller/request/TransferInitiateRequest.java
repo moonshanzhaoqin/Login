@@ -9,8 +9,7 @@ public class TransferInitiateRequest {
 	private String areaCode;
 	private String userPhone;
 	private String currency;
-//	private double amount;
-	private String amount;
+	private Double amount;
 	private String transferComment;
 
 	@ApiModelProperty(required=true,value="手机区号")
@@ -37,23 +36,14 @@ public class TransferInitiateRequest {
 	public void setCurrency(String currency) {
 		this.currency = currency;
 	}
-	
-	public String getAmount(){
+	@ApiModelProperty(required=true,value="金额")
+	public Double getAmount() {
 		return amount;
 	}
-	
-	public void setAmount(String amount) {
+
+	public void setAmount(Double amount) {
 		this.amount = amount;
 	}
-
-//	@ApiModelProperty(required=true,value="金额")
-//	public double getAmount() {
-//		return amount;
-//	}
-//
-//	public void setAmount(double amount) {
-//		this.amount = amount;
-//	}
 	@ApiModelProperty(required=true,value="备注")
 	public String getTransferComment() {
 		return transferComment;
