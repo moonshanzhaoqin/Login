@@ -140,18 +140,18 @@ public class TransferController {
 			return rep;
 		}
 		// 装张金额上限
-		if (!reqMsg.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY) && reqMsg.getAmount() < 0.0001) {
+		if (!reqMsg.getCurrency().equals(ServerConsts.CURRENCY_OF_GOLDPAY) && new Double(reqMsg.getAmount()) < 0.0001) {
 			logger.info("The input amount is less than the minimum amount");
 			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The input amount is less than the minimum amount");
 			return rep;
 		} else if ((reqMsg.getCurrency()).equals(ServerConsts.CURRENCY_OF_GOLDPAY)
-				&& (reqMsg.getAmount() % 1 > 0 || reqMsg.getAmount() == 0)) {
+				&& ((new Double(reqMsg.getAmount()) % 1) > 0 || new Double(reqMsg.getAmount()) == 0)) {
 			logger.info("The GDQ must be an integer value");
 			rep.setRetCode(RetCodeConsts.TRANSFER_LESS_THAN_MINIMUM_AMOUNT);
 			rep.setMessage("The GDQ must be an integer value");
 			return rep;
-		} else if (reqMsg.getAmount() > configManager.getConfigLongValue(ConfigKeyEnum.ENTERMAXIMUMAMOUNT,
+		} else if (new Double(reqMsg.getAmount()) > configManager.getConfigLongValue(ConfigKeyEnum.ENTERMAXIMUMAMOUNT,
 				1000000000L)) {
 			logger.info("Fill out the allowable amount");
 			rep.setRetCode(RetCodeConsts.TRANSFER_FILL_OUT_THE_ALLOWABLE_AMOUNT);
@@ -160,7 +160,7 @@ public class TransferController {
 		}
 
 		HashMap<String, String> map = transferManager.transferInitiate(sessionData.getUserId(), reqMsg.getAreaCode(),
-				reqMsg.getUserPhone(), reqMsg.getCurrency(), new BigDecimal(Double.toString(reqMsg.getAmount())),
+				reqMsg.getUserPhone(), reqMsg.getCurrency(), new BigDecimal(reqMsg.getAmount()),
 				reqMsg.getTransferComment(), 0);
 
 		if (map.get("retCode").equals(RetCodeConsts.RET_CODE_SUCCESS)) {
