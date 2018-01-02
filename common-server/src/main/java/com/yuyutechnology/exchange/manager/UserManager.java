@@ -1,6 +1,6 @@
 package com.yuyutechnology.exchange.manager;
 
-import java.io.File;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.util.List;
 
@@ -261,8 +261,9 @@ public interface UserManager {
 	List<FriendDTO> searchFriend(Integer userId, String keyWords);
 
 
-	String updateUserPortrait(Integer userId, File uploadFile);
 
 	UserInfo4Transfer findFriend(Integer userId, String areaCode, String userPhone);
+
+	String updateUserPortrait(Integer userId, InputStream input, long contentLength, String contentType);
 
 }

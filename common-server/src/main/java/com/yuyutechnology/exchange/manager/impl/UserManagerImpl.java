@@ -1,6 +1,6 @@
 package com.yuyutechnology.exchange.manager.impl;
 
-import java.io.File;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -17,7 +17,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.yuyutechnology.exchange.RetCodeConsts;
 import com.yuyutechnology.exchange.ServerConsts;
 import com.yuyutechnology.exchange.dao.BindDAO;
@@ -129,10 +128,10 @@ public class UserManagerImpl implements UserManager {
 	private void bindGoldpay(String areaCode, String userPhone, String userName, Integer userId) {
 		/* 创建Goldpay账号 */
 		GoldpayUserDTO goldpayUser = goldpayTrans4MergeManager.createGoldpay(areaCode, userPhone, userName, true);
-		if (goldpayUser!=null) {
+		if (goldpayUser != null) {
 			bindDAO.updateBind(
 					new Bind(userId, goldpayUser.getId() + "", goldpayUser.getUsername(), goldpayUser.getAccountNum()));
-		}else {
+		} else {
 			throw new RuntimeException("goldpay user wrong!");
 		}
 
@@ -146,7 +145,10 @@ public class UserManagerImpl implements UserManager {
 		user.setUserPhone(userPhone);
 		userDAO.updateUser(user);
 		redisDAO.saveData("changephonetime" + userId, new Date().getTime());
-//		redisDAO.expireAtData("changephonetime" + userId, DateFormatUtils.getIntervalDay(new Date(), configManager.getConfigLongValue(ConfigKeyEnum.CHANGEPHONETIME, 10l).intValue()));
+		// redisDAO.expireAtData("changephonetime" + userId,
+		// DateFormatUtils.getIntervalDay(new Date(),
+		// configManager.getConfigLongValue(ConfigKeyEnum.CHANGEPHONETIME,
+		// 10l).intValue()));
 		/* 根据Unregistered表 更新新用户钱包 将资金从系统帐户划给新用户 */
 		updateWalletsFromUnregistered(userId, areaCode, userPhone, user.getUserName());
 	}
@@ -335,7 +337,7 @@ public class UserManagerImpl implements UserManager {
 		List<FriendInitial> friendInitials = new ArrayList<FriendInitial>();
 		FriendInitial friendInitialFirst = new FriendInitial();
 		List<Friend> friends = friendDAO.getFriendsByUserId(userId);
-		char index = 'A';
+		char index = '#';
 		for (Friend friend : friends) {
 			if (friend.getUser().getNamePinyin().charAt(0) == index) {
 				FriendDTO friendDTO = new FriendDTO();
@@ -350,7 +352,7 @@ public class UserManagerImpl implements UserManager {
 					if (index == '#') {
 						friendInitialFirst.setInitial(index);
 						friendInitialFirst.setFriends(friendDTOs);
-					}else{
+					} else {
 						FriendInitial friendInitial = new FriendInitial();
 						friendInitial.setInitial(index);
 						friendInitial.setFriends(friendDTOs);
@@ -364,17 +366,19 @@ public class UserManagerImpl implements UserManager {
 				friendDTO.setAreaCode(friend.getUser().getAreaCode());
 				friendDTO.setPhone(friend.getUser().getUserPhone());
 				friendDTO.setName(friend.getUser().getUserName());
-				friendDTO.setPortrait(friend.getUser().getUserPortrait() == null ? ""
-						: S3Utils.getImgUrl(friend.getUser().getUserPortrait()));
+				friendDTO.setPortrait(S3Utils.getImgUrl(friend.getUser().getUserPortrait()));
 				friendDTOs.add(friendDTO);
 				index = friend.getUser().getNamePinyin().charAt(0);
 			}
 		}
 		/* 处理最后一个字母 */
-		FriendInitial friendInitial = new FriendInitial();
-		friendInitial.setInitial(index);
-		friendInitial.setFriends(friendDTOs);
-		friendInitials.add(friendInitial);
+		if (friendDTOs.size() > 0) {
+			FriendInitial friendInitial = new FriendInitial();
+			friendInitial.setInitial(index);
+			friendInitial.setFriends(friendDTOs);
+			friendInitials.add(friendInitial);
+		}
+		/* 处理 # */
 		if (friendInitialFirst.getFriends() != null) {
 			friendInitials.add(friendInitialFirst);
 		}
@@ -437,8 +441,7 @@ public class UserManagerImpl implements UserManager {
 		UserInfo userInfo = null;
 		if (user != null) {
 			userInfo = new UserInfo(user.getUserId(), user.getAreaCode(), user.getUserPhone(), user.getUserName(),
-					S3Utils.getImgUrl(user.getUserPortrait()),
-					StringUtils.isNotBlank(user.getUserPayPwd()));
+					S3Utils.getImgUrl(user.getUserPortrait()), StringUtils.isNotBlank(user.getUserPayPwd()));
 			logger.info("*** {}", userInfo.toString());
 		} else {
 			logger.info("Can not find the user!!!");
@@ -851,10 +854,10 @@ public class UserManagerImpl implements UserManager {
 	}
 
 	@Override
-	public String updateUserPortrait(Integer userId, File uploadFile) {
+	public String updateUserPortrait(Integer userId, InputStream input, long contentLength, String contentType) {
 		User user = userDAO.getUser(userId);
-		String portrait = userId + "/" + UidUtils.genUid()+".jpg";
-		String imgUrl = S3Utils.uploadFile(portrait, uploadFile);
+		String portrait = userId + "/" + UidUtils.genUid() + ".jpg";
+		String imgUrl = S3Utils.uploadFile(portrait, input, contentLength, contentType);
 		if (imgUrl != null) {
 			user.setUserPortrait(portrait);
 			userDAO.updateUser(user);

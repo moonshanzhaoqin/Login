@@ -3,16 +3,9 @@
  */
 package com.yuyutechnology.exchange.server.controller;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpException;
 import org.apache.logging.log4j.LogManager;
@@ -312,85 +305,83 @@ public class LoggedInUserController {
 		return rep;
 	}
 
-	@ResponseEncryptBody
-	@ApiOperation(value = "设置修改头像 ", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/user/uploadPortrait", method = RequestMethod.POST, produces = "application/json; charset=utf-8",consumes = "multipart/form-data")
-	public ModifyUserPortraitResponse uploadPortrait(@PathVariable String token,HttpServletRequest request) throws HttpException {
-		logger.info("========uploadPortrait : {}============", token);
-		ModifyUserPortraitResponse rep = new ModifyUserPortraitResponse();
+//	@ResponseEncryptBody
+//	@ApiOperation(value = "设置修改头像 ", httpMethod = "POST", notes = "")
+//	@RequestMapping(value = "/token/{token}/user/uploadPortrait", method = RequestMethod.POST, produces = "application/json; charset=utf-8", consumes = "multipart/form-data")
+//	public ModifyUserPortraitResponse uploadPortrait(@PathVariable String token, HttpServletRequest request)
+//			throws HttpException {
+//		logger.info("========uploadPortrait : {}============", token);
+//		ModifyUserPortraitResponse rep = new ModifyUserPortraitResponse();
+//
+//		SessionData sessionData = SessionDataHolder.getSessionData();
+//
+//		if (request.getContentLength() > 0) {
+//			InputStream inputStream = null;
+//			OutputStream outputStream = null;
+//			try {
+//				logger.info(request.toString());
+//				inputStream = request.getInputStream();
+//				File file = File.createTempFile(String.valueOf(new Date().getTime()), ".jpg");
+//				outputStream = new FileOutputStream(file);
+//				byte[] temp = new byte[1024];
+//				int size = 0;
+//				while ((size = inputStream.read(temp)) != -1) { // 每次读取1KB，直至读完
+//					outputStream.write(temp, 0, size);
+//				}
+//				logger.info("File load success.");
+//
+//				String imgUrl = userManager.updateUserPortrait(sessionData.getUserId(), file);
+//				rep.setPortrait(imgUrl);
+//
+//				logger.info("********Operation succeeded********");
+//				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+//				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+//
+//			} catch (IOException e) {
+//				logger.warn("File load fail.{}", e.getMessage(), e);
+//				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+//				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+//			} finally {
+//				try {
+//					outputStream.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//				try {
+//					inputStream.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//		return rep;
+//	}
 
-		SessionData sessionData = SessionDataHolder.getSessionData();
-
-		if (request.getContentLength() > 0) {
-			InputStream inputStream = null;
-			OutputStream outputStream = null;
-			try {
-				logger.info(request.toString());
-				inputStream = request.getInputStream();
-				File file = File.createTempFile(String.valueOf(new Date().getTime()), ".jpg");
-				outputStream = new FileOutputStream(file);
-				byte[] temp = new byte[1024];
-				int size = 0;
-				while ((size = inputStream.read(temp)) != -1) { // 每次读取1KB，直至读完
-					outputStream.write(temp, 0, size);
-				}
-				logger.info("File load success.");
-
-				String imgUrl = userManager.updateUserPortrait(sessionData.getUserId(), file);
-				rep.setPortrait(imgUrl);
-
-				logger.info("********Operation succeeded********");
-				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-
-			} catch (IOException e) {
-				logger.warn("File load fail.{}", e.getMessage(), e);
-				rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-				rep.setMessage(MessageConsts.RET_CODE_FAILUE);
-			} finally {
-				try {
-					outputStream.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				try {
-					inputStream.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return rep;
-	}
-	
-	
 	@ResponseEncryptBody
 	@ApiOperation(value = "设置修改头像2 ", httpMethod = "POST", notes = "")
-	@RequestMapping(value = "/token/{token}/user/uploadPortrait2", method = RequestMethod.POST, produces = "application/json; charset=utf-8",consumes = "multipart/form-data")
-	public ModifyUserPortraitResponse uploadPortrait2(@PathVariable String token,@RequestParam("file") MultipartFile multipartFile) throws HttpException {
+	@RequestMapping(value = "/token/{token}/user/uploadPortrait2", method = RequestMethod.POST, produces = "application/json; charset=utf-8", consumes = "multipart/form-data")
+	public ModifyUserPortraitResponse uploadPortrait2(@PathVariable String token,
+			@RequestParam("file") MultipartFile multipartFile) throws HttpException, IOException {
 		logger.info("========uploadPortrait : {}============", token);
 		ModifyUserPortraitResponse rep = new ModifyUserPortraitResponse();
 		rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
 		rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		try {
-			if(multipartFile.getOriginalFilename().contains(".jpg")) {
-				File file = File.createTempFile(String.valueOf(new Date().getTime()), ".jpg");
-				multipartFile.transferTo(file);
-				file.deleteOnExit();
-				logger.info("File load success.");
-				String imgUrl = userManager.updateUserPortrait(sessionData.getUserId(), file);
-				rep.setPortrait(imgUrl);
-				logger.info("********Operation succeeded********");
-				rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-				rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
-			}
-		} catch (IOException e) {
-			logger.warn("File load fail.{}", e.getMessage(), e);
+		if (multipartFile.getOriginalFilename().contains(".jpg")) {
+			// File file = File.createTempFile(String.valueOf(new Date().getTime()),
+			// ".jpg");
+			// multipartFile.transferTo(file);
+			// file.deleteOnExit();
+			logger.info("File load success.");
+			String imgUrl = userManager.updateUserPortrait(sessionData.getUserId(),  multipartFile.getInputStream(), multipartFile.getSize(),multipartFile.getContentType());
+			rep.setPortrait(imgUrl);
+			logger.info("********Operation succeeded********");
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
 		}
 		return rep;
 	}
-	
+
 	/**
 	 * 设置支付密码
 	 * 
