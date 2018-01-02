@@ -19,23 +19,23 @@ import com.fasterxml.jackson.databind.ser.SerializerFactory;
  * @author silent.sun
  *
  */
-public class CustomSerializerProvider extends DefaultSerializerProvider{
+public class ExJsonSerializerProvider extends DefaultSerializerProvider{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 5351085044443512403L;
 
-	public CustomSerializerProvider(){
+	public ExJsonSerializerProvider(){
 		super();
 	}
 
-	public CustomSerializerProvider(SerializerProvider src,SerializationConfig config,SerializerFactory f){
+	public ExJsonSerializerProvider(SerializerProvider src,SerializationConfig config,SerializerFactory f){
 		super(src,config,f);
 	}
 
 	@Override
 	public DefaultSerializerProvider createInstance(SerializationConfig config, SerializerFactory jsf) {
-		return new CustomSerializerProvider(this,config,jsf);
+		return new ExJsonSerializerProvider(this,config,jsf);
 	}
 
 	@Override
