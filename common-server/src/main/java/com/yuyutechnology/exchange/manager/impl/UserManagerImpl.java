@@ -342,8 +342,7 @@ public class UserManagerImpl implements UserManager {
 				friendDTO.setAreaCode(friend.getUser().getAreaCode());
 				friendDTO.setPhone(friend.getUser().getUserPhone());
 				friendDTO.setName(friend.getUser().getUserName());
-				friendDTO.setPortrait(friend.getUser().getUserPortrait() == null ? ""
-						: S3Utils.getImgUrl(friend.getUser().getUserPortrait()));
+				friendDTO.setPortrait(S3Utils.getImgUrl(friend.getUser().getUserPortrait()));
 				friendDTOs.add(friendDTO);
 			} else {
 				/* 将上一个字母存入List<FriendInitial> */
@@ -391,8 +390,7 @@ public class UserManagerImpl implements UserManager {
 			friendDTO.setAreaCode(friend.getUser().getAreaCode());
 			friendDTO.setPhone(friend.getUser().getUserPhone());
 			friendDTO.setName(friend.getUser().getUserName());
-			friendDTO.setPortrait(friend.getUser().getUserPortrait() == null ? ""
-					: S3Utils.getImgUrl(friend.getUser().getUserPortrait()));
+			friendDTO.setPortrait(S3Utils.getImgUrl(friend.getUser().getUserPortrait()));
 			friendDTOs.add(friendDTO);
 		}
 		return friendDTOs;
@@ -439,7 +437,7 @@ public class UserManagerImpl implements UserManager {
 		UserInfo userInfo = null;
 		if (user != null) {
 			userInfo = new UserInfo(user.getUserId(), user.getAreaCode(), user.getUserPhone(), user.getUserName(),
-					user.getUserPortrait() == null ? "" : S3Utils.getImgUrl(user.getUserPortrait()),
+					S3Utils.getImgUrl(user.getUserPortrait()),
 					StringUtils.isNotBlank(user.getUserPayPwd()));
 			logger.info("*** {}", userInfo.toString());
 		} else {
