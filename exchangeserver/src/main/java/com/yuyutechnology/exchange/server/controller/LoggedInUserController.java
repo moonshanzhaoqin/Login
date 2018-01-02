@@ -358,7 +358,7 @@ public class LoggedInUserController {
 //	}
 
 	@ResponseEncryptBody
-	@ApiOperation(value = "设置修改头像2 ", httpMethod = "POST", notes = "")
+	@ApiOperation(value = "设置修改头像 ", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/uploadPortrait", method = RequestMethod.POST, produces = "application/json; charset=utf-8", consumes = "multipart/form-data")
 	public ModifyUserPortraitResponse uploadPortrait(@PathVariable String token,
 			@RequestParam("file") MultipartFile multipartFile) throws HttpException, IOException {
