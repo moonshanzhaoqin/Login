@@ -1,20 +1,19 @@
 package com.yuyutechnology.exchange.util;
 
-import java.io.File;
-
+import java.io.InputStream;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
-
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 
 @Component
@@ -41,11 +40,17 @@ public class S3Utils {
 				.withCredentials(new AWSStaticCredentialsProvider(awsCreds)).build();
 	}
 
-	public static String uploadFile(String keyName, File file) {
+	public static String uploadFile(String keyName, InputStream input, long contentLength, String contentType) {
 		String imgUrl = null;
 		logger.info("Uploading a new object to S3 from a file");
-		s3Client.putObject(
-				new PutObjectRequest(s3bucketName, keyName, file).withCannedAcl(CannedAccessControlList.PublicRead));
+		// s3Client.putObject(
+		// new PutObjectRequest(s3bucketName, keyName,
+		// file).withCannedAcl(CannedAccessControlList.PublicRead));
+		ObjectMetadata metadata = new ObjectMetadata();
+		metadata.setContentLength(contentLength);
+		metadata.setContentType(contentType);
+		s3Client.putObject(new PutObjectRequest(s3bucketName, keyName, input, metadata)
+				.withCannedAcl(CannedAccessControlList.PublicRead));
 		imgUrl = "https://s3-[s3region].amazonaws.com/[s3bucketName]/[keyName]".replace("[s3bucketName]", s3bucketName)
 				.replace("[s3region]", s3region).replace("[keyName]", keyName);
 		logger.info("Upload successfully,the image url : {}", imgUrl);
