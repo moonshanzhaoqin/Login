@@ -49,6 +49,7 @@ public class S3Utils {
 		ObjectMetadata metadata = new ObjectMetadata();
 		metadata.setContentLength(contentLength);
 		metadata.setContentType(contentType);
+		metadata.setCacheControl("no-cache");
 		s3Client.putObject(new PutObjectRequest(s3bucketName, keyName, input, metadata)
 				.withCannedAcl(CannedAccessControlList.PublicRead));
 		imgUrl = "https://s3-[s3region].amazonaws.com/[s3bucketName]/[keyName]".replace("[s3bucketName]", s3bucketName)
