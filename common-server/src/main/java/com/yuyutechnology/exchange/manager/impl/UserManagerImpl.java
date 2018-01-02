@@ -372,10 +372,12 @@ public class UserManagerImpl implements UserManager {
 			}
 		}
 		/* 处理最后一个字母 */
-		FriendInitial friendInitial = new FriendInitial();
-		friendInitial.setInitial(index);
-		friendInitial.setFriends(friendDTOs);
-		friendInitials.add(friendInitial);
+		if (friendDTOs.size() > 0) {
+			FriendInitial friendInitial = new FriendInitial();
+			friendInitial.setInitial(index);
+			friendInitial.setFriends(friendDTOs);
+			friendInitials.add(friendInitial);
+		}
 		/* 处理 # */
 		if (friendInitialFirst.getFriends() != null) {
 			friendInitials.add(friendInitialFirst);
@@ -855,7 +857,7 @@ public class UserManagerImpl implements UserManager {
 	public String updateUserPortrait(Integer userId, InputStream input, long contentLength, String contentType) {
 		User user = userDAO.getUser(userId);
 		String portrait = userId + "/" + UidUtils.genUid() + ".jpg";
-		String imgUrl = S3Utils.uploadFile(portrait, input, contentLength,contentType);
+		String imgUrl = S3Utils.uploadFile(portrait, input, contentLength, contentType);
 		if (imgUrl != null) {
 			user.setUserPortrait(portrait);
 			userDAO.updateUser(user);
