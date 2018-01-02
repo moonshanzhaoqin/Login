@@ -364,8 +364,7 @@ public class UserManagerImpl implements UserManager {
 				friendDTO.setAreaCode(friend.getUser().getAreaCode());
 				friendDTO.setPhone(friend.getUser().getUserPhone());
 				friendDTO.setName(friend.getUser().getUserName());
-				friendDTO.setPortrait(friend.getUser().getUserPortrait() == null ? ""
-						: S3Utils.getImgUrl(friend.getUser().getUserPortrait()));
+				friendDTO.setPortrait(S3Utils.getImgUrl(friend.getUser().getUserPortrait()));
 				friendDTOs.add(friendDTO);
 				index = friend.getUser().getNamePinyin().charAt(0);
 			}
