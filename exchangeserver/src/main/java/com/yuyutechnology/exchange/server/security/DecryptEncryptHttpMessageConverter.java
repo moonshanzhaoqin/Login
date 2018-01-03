@@ -17,11 +17,15 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.yuyutechnology.exchange.cfg.ExJsonObjectMapper;
 import com.yuyutechnology.exchange.cfg.ExJsonSerializerProvider;
 
 /**
@@ -34,18 +38,23 @@ public class DecryptEncryptHttpMessageConverter extends MappingJackson2HttpMessa
 	@Autowired
     private DecryptEncryptBodyProcessor decryptEncryptBodyProcessor;
 	
-	private final String currentNameSuffix = "4String";
-	
 	@PostConstruct
 	public void init () {
 //		objectMapper.setSerializationInclusion(Include.ALWAYS);
         SimpleModule s = new SimpleModule();
+        s.addDeserializer(String.class, new JsonDeserializer<String>(){
+			@Override
+			public String deserialize(JsonParser p, DeserializationContext ctxt)
+					throws IOException, JsonProcessingException {
+				 return p.getCurrentToken().asString().trim();
+			}
+        });
         s.addSerializer(double.class, new JsonSerializer<Double>(){
 			@Override
 			public void serialize(Double value, JsonGenerator gen, SerializerProvider serializers)
 					throws IOException, JsonProcessingException {
 				gen.writeNumber(value);
-				gen.writeStringField(gen.getOutputContext().getCurrentName()+currentNameSuffix,Double.toString(value));
+				gen.writeStringField(gen.getOutputContext().getCurrentName()+ExJsonObjectMapper.CURRENT_NAME_SUFFIX,Double.toString(value));
 			}
         });
         s.addSerializer(Double.class, new JsonSerializer<Double>(){
@@ -53,7 +62,7 @@ public class DecryptEncryptHttpMessageConverter extends MappingJackson2HttpMessa
 			public void serialize(Double value, JsonGenerator gen, SerializerProvider serializers)
 					throws IOException, JsonProcessingException {
 				gen.writeNumber(value);
-				gen.writeStringField(gen.getOutputContext().getCurrentName()+currentNameSuffix,Double.toString(value));
+				gen.writeStringField(gen.getOutputContext().getCurrentName()+ExJsonObjectMapper.CURRENT_NAME_SUFFIX,Double.toString(value));
 			}
         });
         s.addSerializer(BigDecimal.class, new JsonSerializer<BigDecimal>(){
@@ -61,7 +70,7 @@ public class DecryptEncryptHttpMessageConverter extends MappingJackson2HttpMessa
 			public void serialize(BigDecimal value, JsonGenerator gen, SerializerProvider serializers)
 					throws IOException, JsonProcessingException {
 				gen.writeNumber(value);
-				gen.writeStringField(gen.getOutputContext().getCurrentName()+currentNameSuffix,value.toString());
+				gen.writeStringField(gen.getOutputContext().getCurrentName()+ExJsonObjectMapper.CURRENT_NAME_SUFFIX,value.toString());
 			}
         });
         objectMapper.setSerializerProvider(new ExJsonSerializerProvider());
