@@ -5,6 +5,10 @@ import org.apache.commons.lang.StringUtils;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 public class ChangePhoneRequest extends BaseRequest{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8382431430711397971L;
 	@ApiModelProperty(value="检验返回的密钥",required=true)
 	private String checkToken;
 	@ApiModelProperty(value="国家码",required=true)

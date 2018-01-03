@@ -6,6 +6,10 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 @ApiModel
 public class ExchangeCalculationRequest extends BaseRequest{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5898706822891099392L;
 	private String currencyOut;
 	private String currencyIn;
 	private double amountOut;

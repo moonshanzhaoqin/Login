@@ -4,6 +4,10 @@ import java.math.BigDecimal;
 
 public class TransInitRequest extends BaseRequest{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3273517205150627398L;
 	private Integer payerId;
 	private Integer payeeId;
 	private String currency;

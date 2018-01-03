@@ -3,6 +3,10 @@ package com.yuyutechnology.exchange.server.controller.request;
 import org.apache.commons.lang.StringUtils;
 
 public class DeleteFriendRequest extends BaseRequest{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2072926246755232763L;
 	private String areaCode;
 	private String phone;
 

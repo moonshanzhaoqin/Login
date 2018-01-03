@@ -2,6 +2,10 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 public class GetNotificationRecordsRequest extends BaseRequest{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3324843166568488728L;
 	private int currentPage;
 	private int pageSize;
 

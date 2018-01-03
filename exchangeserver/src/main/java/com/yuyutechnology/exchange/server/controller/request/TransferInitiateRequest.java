@@ -6,6 +6,10 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 @ApiModel
 public class TransferInitiateRequest extends BaseRequest{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3755087769368350809L;
 	private String areaCode;
 	private String userPhone;
 	private String currency;

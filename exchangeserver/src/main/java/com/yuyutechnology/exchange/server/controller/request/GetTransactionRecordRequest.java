@@ -6,6 +6,10 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 @ApiModel("")
 public class GetTransactionRecordRequest extends BaseRequest{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2023485627273865551L;
 	private String period;
 	private String type;
 	private int currentPage;

@@ -3,6 +3,10 @@ package com.yuyutechnology.exchange.server.controller.request;
 import org.apache.commons.lang.StringUtils;
 
 public class ContactUsRequest extends BaseRequest {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4613163763445977572L;
 	private String name;
 	private String email;
 	private String category;

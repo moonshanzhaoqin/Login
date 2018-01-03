@@ -3,6 +3,10 @@ package com.yuyutechnology.exchange.server.controller.request;
 import org.apache.commons.lang.StringUtils;
 
 public class RegisterRequest extends BaseRequest{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7766740890910767037L;
 	private String areaCode;
 	private String userPhone;
 	private String registrationCode;

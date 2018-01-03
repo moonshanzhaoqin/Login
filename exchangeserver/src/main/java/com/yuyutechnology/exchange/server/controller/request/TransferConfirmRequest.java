@@ -4,6 +4,10 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 
 public class TransferConfirmRequest extends BaseRequest{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -815568183577252349L;
 	private String transferId;
 	private String userPayPwd;
 	private String pinCode;

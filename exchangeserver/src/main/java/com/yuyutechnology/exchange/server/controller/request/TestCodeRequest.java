@@ -6,6 +6,10 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 import com.yuyutechnology.exchange.ServerConsts;
 
 public class TestCodeRequest extends BaseRequest{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4964883866759232440L;
 	private String purpose;
 	private String areaCode;
 	private String userPhone;

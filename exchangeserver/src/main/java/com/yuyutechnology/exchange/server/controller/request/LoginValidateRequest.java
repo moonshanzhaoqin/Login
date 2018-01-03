@@ -3,6 +3,10 @@ package com.yuyutechnology.exchange.server.controller.request;
 import org.apache.commons.lang.StringUtils;
 
 public class LoginValidateRequest extends BaseRequest{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5082970225899609990L;
 	private String areaCode;
 	private String userPhone;
 	private String userPassword;

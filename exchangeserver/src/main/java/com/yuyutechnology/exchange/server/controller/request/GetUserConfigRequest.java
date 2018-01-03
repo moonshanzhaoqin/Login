@@ -4,6 +4,10 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 
 public class GetUserConfigRequest extends BaseRequest{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2058040003187457215L;
 	private String key;
 	private String value;
 

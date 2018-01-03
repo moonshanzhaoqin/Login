@@ -4,6 +4,10 @@ import org.apache.commons.lang.StringUtils;
 
 public class LoginRequest extends BaseRequest{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6735459745997442999L;
 	private String areaCode;
 	private String userPhone;
 	private String userPassword;

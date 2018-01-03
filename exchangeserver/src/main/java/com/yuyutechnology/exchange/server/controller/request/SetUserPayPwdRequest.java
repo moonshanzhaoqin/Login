@@ -3,6 +3,10 @@ package com.yuyutechnology.exchange.server.controller.request;
 import org.apache.commons.lang.StringUtils;
 
 public class SetUserPayPwdRequest extends BaseRequest{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3553381155388734052L;
 	private String userPayPwd;
 
 	public String getUserPayPwd() {

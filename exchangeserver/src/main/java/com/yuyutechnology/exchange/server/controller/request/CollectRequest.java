@@ -10,6 +10,10 @@ import org.apache.commons.lang.StringUtils;
  *
  */
 public class CollectRequest extends BaseRequest {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6489383585240013681L;
 	private String areaCode;
 	private String userPhone;
 	private String inviterCode;
