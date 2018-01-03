@@ -220,19 +220,20 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 
 	@Override
 	public void updateImmediately() {
-
 		redisDAO.saveData("updateImmediately", 1);
-
-		List<User> list = userDAO.listAllUser();
-		if (list.isEmpty()) {
-			return;
+		try {
+			List<User> list = userDAO.listAllUser();
+			if (list.isEmpty()) {
+				return;
+			}
+			for (User user : list) {
+				updateUserInfo(user);
+			}
+		} catch (Exception e){
+			throw e;
+		} finally {
+			redisDAO.saveData("updateImmediately", 0);
 		}
-
-		for (User user : list) {
-			updateUserInfo(user);
-		}
-
-		redisDAO.saveData("updateImmediately", 0);
 	}
 
 	@Override
