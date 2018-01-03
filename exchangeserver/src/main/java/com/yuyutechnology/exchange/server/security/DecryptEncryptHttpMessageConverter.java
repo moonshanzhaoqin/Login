@@ -41,40 +41,41 @@ public class DecryptEncryptHttpMessageConverter extends MappingJackson2HttpMessa
 	@PostConstruct
 	public void init () {
 //		objectMapper.setSerializationInclusion(Include.ALWAYS);
-        SimpleModule s = new SimpleModule();
-        s.addDeserializer(String.class, new JsonDeserializer<String>(){
-			@Override
-			public String deserialize(JsonParser p, DeserializationContext ctxt)
-					throws IOException, JsonProcessingException {
-				 return p.getText().trim();
-			}
-        });
-        s.addSerializer(double.class, new JsonSerializer<Double>(){
-			@Override
-			public void serialize(Double value, JsonGenerator gen, SerializerProvider serializers)
-					throws IOException, JsonProcessingException {
-				gen.writeNumber(value);
-				gen.writeStringField(gen.getOutputContext().getCurrentName()+ExJsonObjectMapper.CURRENT_NAME_SUFFIX,Double.toString(value));
-			}
-        });
-        s.addSerializer(Double.class, new JsonSerializer<Double>(){
-			@Override
-			public void serialize(Double value, JsonGenerator gen, SerializerProvider serializers)
-					throws IOException, JsonProcessingException {
-				gen.writeNumber(value);
-				gen.writeStringField(gen.getOutputContext().getCurrentName()+ExJsonObjectMapper.CURRENT_NAME_SUFFIX,Double.toString(value));
-			}
-        });
-        s.addSerializer(BigDecimal.class, new JsonSerializer<BigDecimal>(){
-			@Override
-			public void serialize(BigDecimal value, JsonGenerator gen, SerializerProvider serializers)
-					throws IOException, JsonProcessingException {
-				gen.writeNumber(value);
-				gen.writeStringField(gen.getOutputContext().getCurrentName()+ExJsonObjectMapper.CURRENT_NAME_SUFFIX,value.toString());
-			}
-        });
-        objectMapper.setSerializerProvider(new ExJsonSerializerProvider());
-        objectMapper.registerModule(s);
+//        SimpleModule s = new SimpleModule();
+//        s.addDeserializer(String.class, new JsonDeserializer<String>(){
+//			@Override
+//			public String deserialize(JsonParser p, DeserializationContext ctxt)
+//					throws IOException, JsonProcessingException {
+//				 return p.getText().trim();
+//			}
+//        });
+//        s.addSerializer(double.class, new JsonSerializer<Double>(){
+//			@Override
+//			public void serialize(Double value, JsonGenerator gen, SerializerProvider serializers)
+//					throws IOException, JsonProcessingException {
+//				gen.writeNumber(value);
+//				gen.writeStringField(gen.getOutputContext().getCurrentName()+ExJsonObjectMapper.CURRENT_NAME_SUFFIX,Double.toString(value));
+//			}
+//        });
+//        s.addSerializer(Double.class, new JsonSerializer<Double>(){
+//			@Override
+//			public void serialize(Double value, JsonGenerator gen, SerializerProvider serializers)
+//					throws IOException, JsonProcessingException {
+//				gen.writeNumber(value);
+//				gen.writeStringField(gen.getOutputContext().getCurrentName()+ExJsonObjectMapper.CURRENT_NAME_SUFFIX,Double.toString(value));
+//			}
+//        });
+//        s.addSerializer(BigDecimal.class, new JsonSerializer<BigDecimal>(){
+//			@Override
+//			public void serialize(BigDecimal value, JsonGenerator gen, SerializerProvider serializers)
+//					throws IOException, JsonProcessingException {
+//				gen.writeNumber(value);
+//				gen.writeStringField(gen.getOutputContext().getCurrentName()+ExJsonObjectMapper.CURRENT_NAME_SUFFIX,value.toString());
+//			}
+//        });
+        setObjectMapper(new ExJsonObjectMapper());
+//        objectMapper.setSerializerProvider(new ExJsonSerializerProvider());
+//        objectMapper.registerModule(s);
 	}
 	
 	@Override
