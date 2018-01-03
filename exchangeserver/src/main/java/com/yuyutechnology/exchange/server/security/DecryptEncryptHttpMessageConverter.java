@@ -46,7 +46,7 @@ public class DecryptEncryptHttpMessageConverter extends MappingJackson2HttpMessa
 			@Override
 			public String deserialize(JsonParser p, DeserializationContext ctxt)
 					throws IOException, JsonProcessingException {
-				 return p.getCurrentToken().asString().trim();
+				 return p.getText().trim();
 			}
         });
         s.addSerializer(double.class, new JsonSerializer<Double>(){
