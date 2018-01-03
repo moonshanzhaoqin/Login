@@ -4,7 +4,7 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel("")
-public class GetTransactionRecordRequest {
+public class GetTransactionRecordRequest extends BaseRequest{
 
 	private String period;
 	private String type;

@@ -5,7 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import com.yuyutechnology.exchange.ServerConsts;
 
-public class TestCodeRequest {
+public class TestCodeRequest extends BaseRequest{
 	private String purpose;
 	private String areaCode;
 	private String userPhone;

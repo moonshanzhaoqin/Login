@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-public class CheckPasswordRequest {
+public class CheckPasswordRequest extends BaseRequest {
 	@ApiModelProperty(value="登录密码",required=true)
 	private String userPassword;
 

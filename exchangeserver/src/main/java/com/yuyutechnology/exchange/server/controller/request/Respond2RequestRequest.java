@@ -4,7 +4,7 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel
-public class Respond2RequestRequest {
+public class Respond2RequestRequest extends BaseRequest{
 
 	private String areaCode;
 	private String userPhone;

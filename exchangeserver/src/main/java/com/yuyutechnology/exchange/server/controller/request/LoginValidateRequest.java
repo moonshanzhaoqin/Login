@@ -2,7 +2,7 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 import org.apache.commons.lang.StringUtils;
 
-public class LoginValidateRequest {
+public class LoginValidateRequest extends BaseRequest{
 	private String areaCode;
 	private String userPhone;
 	private String userPassword;

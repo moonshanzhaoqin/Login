@@ -4,7 +4,7 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel
-public class TransPwdConfirmRequest {
+public class TransPwdConfirmRequest extends BaseRequest{
 
 	private String transferId;
 	private String userPayPwd;

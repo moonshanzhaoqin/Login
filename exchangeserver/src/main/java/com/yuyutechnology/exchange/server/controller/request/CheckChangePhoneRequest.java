@@ -1,5 +1,5 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-public class CheckChangePhoneRequest {
+public class CheckChangePhoneRequest extends BaseRequest {
 
 }

@@ -1,6 +1,6 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-public class TransactionPreviewRequest {
+public class TransactionPreviewRequest extends BaseRequest{
 	
 	private String areaCode;
 	private String userPhone;

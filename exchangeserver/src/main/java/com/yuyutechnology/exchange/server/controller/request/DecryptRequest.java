@@ -7,7 +7,7 @@ package com.yuyutechnology.exchange.server.controller.request;
  * @author silent.sun
  *
  */
-public class DecryptRequest {
+public class DecryptRequest extends BaseRequest{
 
 	private String content;
 

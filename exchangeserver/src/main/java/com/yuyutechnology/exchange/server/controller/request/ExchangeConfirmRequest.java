@@ -4,7 +4,7 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel
-public class ExchangeConfirmRequest {
+public class ExchangeConfirmRequest extends BaseRequest{
 
 	private String currencyOut;
 	private String currencyIn;

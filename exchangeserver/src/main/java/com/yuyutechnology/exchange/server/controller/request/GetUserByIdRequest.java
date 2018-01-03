@@ -7,7 +7,7 @@ package com.yuyutechnology.exchange.server.controller.request;
  * @author suzan.wu
  *
  */
-public class GetUserByIdRequest {
+public class GetUserByIdRequest extends BaseRequest{
 	
 	private Long userId;
 

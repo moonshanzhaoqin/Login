@@ -4,7 +4,7 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel("")
-public class GetExchangeHistoryRequest {
+public class GetExchangeHistoryRequest extends BaseRequest{
 
 	private String period;
 	private int currentPage;

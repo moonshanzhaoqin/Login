@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-public class SearchFriendRequest {
+public class SearchFriendRequest extends BaseRequest{
 	@ApiModelProperty(value = "关键词")
 	private String keyWords;
 

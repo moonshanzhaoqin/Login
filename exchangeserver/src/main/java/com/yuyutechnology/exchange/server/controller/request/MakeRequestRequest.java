@@ -4,7 +4,7 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel()
-public class MakeRequestRequest {
+public class MakeRequestRequest extends BaseRequest{
 
 	private String areaCode;
 	private String phone;

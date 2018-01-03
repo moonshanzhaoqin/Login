@@ -2,7 +2,7 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 import org.apache.commons.lang.StringUtils;
 
-public class GetWithdrawDetailRequset {
+public class GetWithdrawDetailRequset extends BaseRequest{
 	private String withdrawId;
 
 	public String getWithdrawId() {

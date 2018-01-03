@@ -1,6 +1,6 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-public class PaypalTransConfirmRequest {
+public class PaypalTransConfirmRequest extends BaseRequest{
 
 	private String transId;
 	private String paymentMethodNonce;

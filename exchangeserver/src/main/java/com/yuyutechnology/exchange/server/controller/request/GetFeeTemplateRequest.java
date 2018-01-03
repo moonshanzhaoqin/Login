@@ -2,7 +2,7 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 import com.yuyutechnology.exchange.enums.FeePurpose;
 
-public class GetFeeTemplateRequest {
+public class GetFeeTemplateRequest extends BaseRequest{
 	private FeePurpose feePurpose;
 
 	public FeePurpose getFeePurpose() {

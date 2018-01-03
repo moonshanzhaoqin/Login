@@ -6,7 +6,7 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel
-public class RegenerateQRCodeRequest {
+public class RegenerateQRCodeRequest extends BaseRequest{
 
 	private String currency;
 	private BigDecimal amount;

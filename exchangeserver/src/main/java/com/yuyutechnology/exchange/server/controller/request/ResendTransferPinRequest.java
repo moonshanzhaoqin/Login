@@ -2,7 +2,7 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-public class ResendTransferPinRequest {
+public class ResendTransferPinRequest extends BaseRequest{
 
 	private String transferId;
 

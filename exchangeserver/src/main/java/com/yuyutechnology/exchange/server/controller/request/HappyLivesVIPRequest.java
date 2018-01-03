@@ -1,6 +1,6 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-public class HappyLivesVIPRequest {
+public class HappyLivesVIPRequest extends BaseRequest{
 	
 	private Integer userId;
 	private String happyLivesId;

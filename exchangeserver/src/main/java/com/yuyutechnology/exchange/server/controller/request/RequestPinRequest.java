@@ -1,6 +1,6 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-public class RequestPinRequest {
+public class RequestPinRequest extends BaseRequest{
 
 	private String transferId;
 

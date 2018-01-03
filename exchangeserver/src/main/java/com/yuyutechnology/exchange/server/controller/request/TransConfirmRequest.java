@@ -1,6 +1,6 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-public class TransConfirmRequest {
+public class TransConfirmRequest extends BaseRequest{
 	
 	private Integer userId;
 	private String transferId;

@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-public class ForgetPasswordRequest {
+public class ForgetPasswordRequest extends BaseRequest{
 	@ApiModelProperty(value="国家码",required=true)
 	private String areaCode;
 	@ApiModelProperty(value="手机号",required=true)

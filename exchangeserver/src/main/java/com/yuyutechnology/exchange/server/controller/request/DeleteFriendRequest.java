@@ -2,7 +2,7 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 import org.apache.commons.lang.StringUtils;
 
-public class DeleteFriendRequest {
+public class DeleteFriendRequest extends BaseRequest{
 	private String areaCode;
 	private String phone;
 

@@ -2,7 +2,7 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 import java.math.BigDecimal;
 
-public class TransInitRequest {
+public class TransInitRequest extends BaseRequest{
 	
 	private Integer payerId;
 	private Integer payeeId;

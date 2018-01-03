@@ -1,6 +1,6 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-public class WithdrawCalculateRequset {
+public class WithdrawCalculateRequset extends BaseRequest{
 	private int goldBullion;
 
 	public int getGoldBullion() {

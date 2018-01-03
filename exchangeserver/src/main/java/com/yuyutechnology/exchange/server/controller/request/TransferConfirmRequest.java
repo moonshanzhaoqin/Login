@@ -2,7 +2,7 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-public class TransferConfirmRequest {
+public class TransferConfirmRequest extends BaseRequest{
 
 	private String transferId;
 	private String userPayPwd;

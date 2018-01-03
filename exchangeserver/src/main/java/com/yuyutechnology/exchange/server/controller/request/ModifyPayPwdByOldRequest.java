@@ -2,7 +2,7 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 import org.apache.commons.lang.StringUtils;
 
-public class ModifyPayPwdByOldRequest {
+public class ModifyPayPwdByOldRequest extends BaseRequest{
 	private String checkToken;
 	private String newUserPayPwd;
 

@@ -1,6 +1,6 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-public class GetExchangeDetailsRequest {
+public class GetExchangeDetailsRequest extends BaseRequest{
 
 	private String exchangeId;
 

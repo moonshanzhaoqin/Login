@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-public class GetUserInfo4TransferRequest {
+public class GetUserInfo4TransferRequest extends BaseRequest{
 	@ApiModelProperty(value = "国家码")
 	private String areaCode;
 	@ApiModelProperty(value = "手机号")

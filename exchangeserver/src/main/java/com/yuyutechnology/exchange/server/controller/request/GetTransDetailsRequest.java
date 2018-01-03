@@ -4,7 +4,7 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel
-public class GetTransDetailsRequest {
+public class GetTransDetailsRequest extends BaseRequest{
 
 	private String transferId;
 

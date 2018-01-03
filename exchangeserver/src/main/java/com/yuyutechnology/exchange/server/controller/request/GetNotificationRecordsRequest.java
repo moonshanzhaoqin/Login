@@ -1,6 +1,6 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-public class GetNotificationRecordsRequest {
+public class GetNotificationRecordsRequest extends BaseRequest{
 
 	private int currentPage;
 	private int pageSize;
