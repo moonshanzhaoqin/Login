@@ -6,7 +6,7 @@ public class TransConfirmRequest {
 	private String transferId;
 	private String userPayPwd;
 	
-	private Boolean restricted;
+	private boolean restricted;
 
 	public Integer getUserId() {
 		return userId;
@@ -32,11 +32,11 @@ public class TransConfirmRequest {
 		this.userPayPwd = userPayPwd;
 	}
 
-	public Boolean getRestricted() {
+	public boolean getRestricted() {
 		return restricted;
 	}
 
-	public void setRestricted(Boolean restricted) {
+	public void setRestricted(boolean restricted) {
 		this.restricted = restricted;
 	}
 

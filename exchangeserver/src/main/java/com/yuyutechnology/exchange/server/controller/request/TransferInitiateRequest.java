@@ -9,7 +9,7 @@ public class TransferInitiateRequest {
 	private String areaCode;
 	private String userPhone;
 	private String currency;
-	private Double amount;
+	private double amount;
 	private String transferComment;
 
 	@ApiModelProperty(required=true,value="手机区号")
@@ -37,11 +37,11 @@ public class TransferInitiateRequest {
 		this.currency = currency;
 	}
 	@ApiModelProperty(required=true,value="金额")
-	public Double getAmount() {
+	public double getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Double amount) {
+	public void setAmount(double amount) {
 		this.amount = amount;
 	}
 	@ApiModelProperty(required=true,value="备注")
