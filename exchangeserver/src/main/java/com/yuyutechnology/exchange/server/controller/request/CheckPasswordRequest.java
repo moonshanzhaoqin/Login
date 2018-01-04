@@ -4,7 +4,11 @@ import org.apache.commons.lang.StringUtils;
 
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-public class CheckPasswordRequest {
+public class CheckPasswordRequest extends BaseRequest {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8112296544870370156L;
 	@ApiModelProperty(value="登录密码",required=true)
 	private String userPassword;
 

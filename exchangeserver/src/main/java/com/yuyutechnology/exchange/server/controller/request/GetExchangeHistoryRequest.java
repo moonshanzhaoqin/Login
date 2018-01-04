@@ -4,8 +4,12 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel("")
-public class GetExchangeHistoryRequest {
+public class GetExchangeHistoryRequest extends BaseRequest{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7025277074018485851L;
 	private String period;
 	private int currentPage;
 	private int pageSize;

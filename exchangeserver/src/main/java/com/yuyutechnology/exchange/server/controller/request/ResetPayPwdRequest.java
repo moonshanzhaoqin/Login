@@ -2,7 +2,11 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 import org.apache.commons.lang.StringUtils;
 
-public class ResetPayPwdRequest {
+public class ResetPayPwdRequest extends BaseRequest{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2795988603230331694L;
 	private String checkToken;
 	private String newUserPayPwd;
 

@@ -3,14 +3,14 @@
  */
 package com.yuyutechnology.exchange.server.controller.request;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * @author silent.sun
  *
  */
-// @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder(alphabetic = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonPropertyOrder(alphabetic = true)
 public class BaseRequest implements java.io.Serializable {
 
 	/**
@@ -18,13 +18,5 @@ public class BaseRequest implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private String sign;
 
-	public String getSign() {
-		return sign;
-	}
-
-	public void setSign(String sign) {
-		this.sign = sign;
-	}
 }

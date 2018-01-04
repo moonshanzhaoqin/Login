@@ -4,7 +4,12 @@ import org.apache.commons.lang.StringUtils;
 
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-public class AddFriendRequest {
+public class AddFriendRequest extends BaseRequest{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1065024506493814041L;
+	
 	@ApiModelProperty(value="国家码",required=true)
 	private String areaCode;
 	@ApiModelProperty(value="手机号",required=true)

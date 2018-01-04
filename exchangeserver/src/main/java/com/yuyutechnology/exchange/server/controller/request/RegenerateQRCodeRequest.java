@@ -6,8 +6,12 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel
-public class RegenerateQRCodeRequest {
+public class RegenerateQRCodeRequest extends BaseRequest{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1092071222273506504L;
 	private String currency;
 	private BigDecimal amount;
 

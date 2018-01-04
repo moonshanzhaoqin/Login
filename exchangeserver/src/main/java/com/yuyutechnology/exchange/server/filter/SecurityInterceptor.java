@@ -13,7 +13,7 @@ public class SecurityInterceptor implements MethodInterceptor {
 		System.out.println("SecurityInterceptor=================="+invocation.getMethod().getName());
 		for (Object arg : invocation.getArguments()) {
 			if (arg instanceof BaseRequest) {
-				System.out.println("sign ========"+((BaseRequest)arg).getSign() + " /n "+JsonBinder.getInstance().toJson(arg));
+//				System.out.println("sign ========"+((BaseRequest)arg).getSign() + " /n "+JsonBinder.getInstance().toJson(arg));
 //				if (StringUtils.isBlank(((BaseRequest)arg).getSign())) {
 //					throw new ServerException("sign valid !!!!!!!!!!!!!!!!!!!!");
 //				}

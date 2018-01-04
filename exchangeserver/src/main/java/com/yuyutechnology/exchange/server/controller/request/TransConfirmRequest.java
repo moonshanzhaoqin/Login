@@ -1,7 +1,11 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-public class TransConfirmRequest {
+public class TransConfirmRequest extends BaseRequest{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8676251073398389713L;
 	private Integer userId;
 	private String transferId;
 	private String userPayPwd;

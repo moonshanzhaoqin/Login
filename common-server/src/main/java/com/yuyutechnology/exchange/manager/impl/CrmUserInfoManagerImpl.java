@@ -12,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.yuyutechnology.exchange.ServerConsts;
@@ -219,20 +220,22 @@ public class CrmUserInfoManagerImpl implements CrmUserInfoManager {
 	}
 
 	@Override
+	@Async
 	public void updateImmediately() {
-
 		redisDAO.saveData("updateImmediately", 1);
-
-		List<User> list = userDAO.listAllUser();
-		if (list.isEmpty()) {
-			return;
+		try {
+			List<User> list = userDAO.listAllUser();
+			if (list.isEmpty()) {
+				return;
+			}
+			for (User user : list) {
+				updateUserInfo(user);
+			}
+		} catch (Exception e){
+			throw e;
+		} finally {
+			redisDAO.saveData("updateImmediately", 0);
 		}
-
-		for (User user : list) {
-			updateUserInfo(user);
-		}
-
-		redisDAO.saveData("updateImmediately", 0);
 	}
 
 	@Override

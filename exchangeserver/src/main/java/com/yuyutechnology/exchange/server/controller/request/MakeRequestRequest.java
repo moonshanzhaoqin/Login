@@ -4,8 +4,12 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel()
-public class MakeRequestRequest {
+public class MakeRequestRequest extends BaseRequest{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6307999896579754668L;
 	private String areaCode;
 	private String phone;
 	private String currency;

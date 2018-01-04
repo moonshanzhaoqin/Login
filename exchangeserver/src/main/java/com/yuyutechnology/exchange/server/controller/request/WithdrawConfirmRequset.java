@@ -2,7 +2,11 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 import org.apache.commons.lang.StringUtils;
 
-public class WithdrawConfirmRequset {
+public class WithdrawConfirmRequset extends BaseRequest{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4507279796728569583L;
 	private int goldBullion;
 	private String userEmail;
 	private String checkToken;

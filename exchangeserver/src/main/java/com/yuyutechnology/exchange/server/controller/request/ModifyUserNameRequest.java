@@ -2,7 +2,11 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 import org.apache.commons.lang.StringUtils;
 
-public class ModifyUserNameRequest {
+public class ModifyUserNameRequest extends BaseRequest{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3224874534070106002L;
 	private String newUserName;
 
 	public String getNewUserName() {

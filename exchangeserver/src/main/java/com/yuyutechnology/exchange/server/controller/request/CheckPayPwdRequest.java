@@ -5,7 +5,11 @@ import org.apache.commons.lang.StringUtils;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import com.yuyutechnology.exchange.ServerConsts;
 
-public class CheckPayPwdRequest {
+public class CheckPayPwdRequest extends BaseRequest {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9059842256129206580L;
 	@ApiModelProperty(value="目的",allowableValues = ServerConsts.PAYPWD_CHANGEPHONE + "," + ServerConsts.PAYPWD_MODIFYPAYPWD + ","
 			+ ServerConsts.PAYPWD_WITHDRAW)
 	private String purpose;

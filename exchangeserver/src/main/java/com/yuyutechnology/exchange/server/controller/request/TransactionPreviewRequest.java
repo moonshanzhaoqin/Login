@@ -1,7 +1,11 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-public class TransactionPreviewRequest {
+public class TransactionPreviewRequest extends BaseRequest{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4792317219259723672L;
 	private String areaCode;
 	private String userPhone;
 	private String currency;

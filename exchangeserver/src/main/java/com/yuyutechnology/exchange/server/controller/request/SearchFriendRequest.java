@@ -4,7 +4,11 @@ import org.apache.commons.lang.StringUtils;
 
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-public class SearchFriendRequest {
+public class SearchFriendRequest extends BaseRequest{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -703862967645471603L;
 	@ApiModelProperty(value = "关键词")
 	private String keyWords;
 

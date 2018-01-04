@@ -2,8 +2,12 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-public class ResendTransferPinRequest {
+public class ResendTransferPinRequest extends BaseRequest{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5341520748133104396L;
 	private String transferId;
 
 	@ApiModelProperty(required=true,value="订单Id")

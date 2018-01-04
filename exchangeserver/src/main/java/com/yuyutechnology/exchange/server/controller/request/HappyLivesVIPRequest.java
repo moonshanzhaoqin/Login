@@ -1,7 +1,11 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-public class HappyLivesVIPRequest {
+public class HappyLivesVIPRequest extends BaseRequest{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7344256361211606704L;
 	private Integer userId;
 	private String happyLivesId;
 	

@@ -4,7 +4,11 @@ import org.apache.commons.lang.StringUtils;
 
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-public class ForgetPasswordRequest {
+public class ForgetPasswordRequest extends BaseRequest{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 984681562204893156L;
 	@ApiModelProperty(value="国家码",required=true)
 	private String areaCode;
 	@ApiModelProperty(value="手机号",required=true)

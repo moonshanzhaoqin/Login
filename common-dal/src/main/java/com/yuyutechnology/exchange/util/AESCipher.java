@@ -65,9 +65,11 @@ public class AESCipher {
 	}
 	
 	public static void main(String[] args) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-		String string = AESCipher.encryptAES("{\"name\": \"Silent\",\"age\": 30}", "anytime_exchange");
-		System.out.println(string);
+//		String string = AESCipher.encryptAES("{\"name\": \"Silent\",\"age\": 30}", "anytime_exchange");
+//		System.out.println(string);
+//		System.out.println(AESCipher.decryptAES(string, "anytime_exchange"));
+		String string = AESCipher.encryptAES("123456789012345123456789012345", "anytime_exchange");
+		System.out.println(string.length());
 		System.out.println(AESCipher.decryptAES(string, "anytime_exchange"));
 	}
-	
 }
