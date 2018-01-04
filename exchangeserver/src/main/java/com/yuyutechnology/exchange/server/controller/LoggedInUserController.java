@@ -361,23 +361,28 @@ public class LoggedInUserController {
 	@ApiOperation(value = "设置修改头像 ", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/uploadPortrait2", method = RequestMethod.POST, produces = "application/json; charset=utf-8", consumes = "multipart/form-data")
 	public ModifyUserPortraitResponse uploadPortrait(@PathVariable String token,
-			@RequestParam("file") MultipartFile multipartFile) throws HttpException, IOException {
+			@RequestParam("file") MultipartFile file) throws HttpException, IOException {
 		logger.info("========uploadPortrait : {}============", token);
 		ModifyUserPortraitResponse rep = new ModifyUserPortraitResponse();
-		rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
-		rep.setMessage(MessageConsts.RET_CODE_FAILUE);
+//		rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+//		rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 		SessionData sessionData = SessionDataHolder.getSessionData();
-		if (multipartFile.getOriginalFilename().contains(".jpg")) {
+//		logger.info(file.getOriginalFilename());
+		if (file.getOriginalFilename().contains(".jpg")) {
 			// File file = File.createTempFile(String.valueOf(new Date().getTime()),
 			// ".jpg");
 			// multipartFile.transferTo(file);
 			// file.deleteOnExit();
 			logger.info("File load success.");
-			String imgUrl = userManager.updateUserPortrait(sessionData.getUserId(),  multipartFile.getInputStream(), multipartFile.getSize(),multipartFile.getContentType());
+			String imgUrl = userManager.updateUserPortrait(sessionData.getUserId(),  file.getInputStream(), file.getSize(),file.getContentType());
 			rep.setPortrait(imgUrl);
 			logger.info("********Operation succeeded********");
 			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
 			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		}else {
+			logger.info("file is not .jpg");
+			rep.setRetCode(RetCodeConsts.RET_CODE_FAILUE);
+			rep.setMessage(MessageConsts.RET_CODE_FAILUE);
 		}
 		return rep;
 	}
