@@ -20,7 +20,7 @@ function initFeeTemplate() {
 	$
 			.ajax({
 				type : "post",
-				url : "/crm/listFeeTemplate",
+				url : "listFeeTemplate",
 				dataType : 'json',
 				contentType : "application/json; charset=utf-8",
 				data : {},
@@ -81,7 +81,7 @@ function updateFeeTemplate() {
 	}
 	$.ajax({
 		type : "post",
-		url : "/crm/updateFeeTemplate",
+		url : "updateFeeTemplate",
 		contentType : "application/json; charset=utf-8",
 		dataType : 'json',
 		data : JSON.stringify(data),

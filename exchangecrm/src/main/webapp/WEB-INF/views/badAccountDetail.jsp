@@ -143,7 +143,7 @@
 			$
 					.ajax({
 						type : "post",
-						url : "/crm/getTransfer",
+						url : "getTransfer",
 						dataType : 'json',
 						contentType : "application/json; charset=utf-8",
 						data : JSON.stringify(data),
@@ -209,7 +209,7 @@
 			};
 			$.ajax({
 				type : "post",
-				url : "/crm/getExchange",
+				url : "getExchange",
 				dataType : 'json',
 				contentType : "application/json; charset=utf-8",
 				data : JSON.stringify(data),

@@ -73,7 +73,7 @@ function initCampaign(currentPage) {
 	$
 			.ajax({
 				type : "post",
-				url : "/crm/getCampaignList",
+				url : "getCampaignList",
 				contentType : "application/json; charset=utf-8",
 				dataType : 'json',
 				data : JSON.stringify(data),
@@ -155,7 +155,7 @@ function addCampaign() {
 		};
 		$.ajax({
 			type : "post",
-			url : "/crm/addCampaign",
+			url : "addCampaign",
 			contentType : "application/json; charset=utf-8",
 			dataType : 'json',
 			data : JSON.stringify(data),
@@ -199,7 +199,7 @@ function changeBonus() {
 		}
 		$.ajax({
 			type : "post",
-			url : "/crm/changeBonus",
+			url : "changeBonus",
 			contentType : "application/json; charset=utf-8",
 			dataType : 'json',
 			data : JSON.stringify(data),
@@ -239,7 +239,7 @@ function addBudget() {
 		}
 		$.ajax({
 			type : "post",
-			url : "/crm/addBudget",
+			url : "addBudget",
 			contentType : "application/json; charset=utf-8",
 			dataType : 'json',
 			data : JSON.stringify(data),
@@ -275,7 +275,7 @@ function openCampaign(campaignId) {
 	}
 	$.ajax({
 		type : "post",
-		url : "/crm/openCampaign",
+		url : "openCampaign",
 		contentType : "application/json; charset=utf-8",
 		dataType : 'json',
 		data : JSON.stringify(data),
@@ -307,7 +307,7 @@ function closeCampaign(campaignId) {
 	}
 	$.ajax({
 		type : "post",
-		url : "/crm/closeCampaign",
+		url : "closeCampaign",
 		contentType : "application/json; charset=utf-8",
 		dataType : 'json',
 		data : JSON.stringify(data),
