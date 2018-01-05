@@ -15,3 +15,6 @@ CREATE TABLE `g_account` (
 --2017/12/14 suzan
 ALTER TABLE `e_user`
   ADD COLUMN `user_portrait` varchar(255) NULL DEFAULT NULL COMMENT '头像' AFTER `name_pinyin`;
+  
+--2018/01/04 silent
+DELETE FROM `e_bind` WHERE `user_id` = '999999';
