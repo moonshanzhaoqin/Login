@@ -22,7 +22,7 @@ $(function() {
 		}
 		$.ajax({
 			type : "POST",
-			url : "/crm/getExUser",
+			url : "getExUser",
 			dataType : 'json',
 			contentType : "application/json; charset=utf-8",
 			data : JSON.stringify(data),
@@ -87,7 +87,7 @@ function getGoldqPayClientByPage(currentPage) {
 	$
 			.ajax({
 				type : "POST",
-				url : "/crm/getGoldqPayClientByPage",
+				url : "getGoldqPayClientByPage",
 				dataType : 'json',
 				contentType : "application/json; charset=utf-8",
 				data : JSON.stringify(data),
@@ -147,7 +147,7 @@ function enableGoldPayClient(clientId) {
 	}
 	$.ajax({
 		type : "post",
-		url : "/crm/changeGoldqPayClientAble",
+		url : "changeGoldqPayClientAble",
 		contentType : "application/json; charset=utf-8",
 		dataType : 'json',
 		data : JSON.stringify(data),
@@ -179,7 +179,7 @@ function disableGoldPayClient(clientId) {
 	}
 	$.ajax({
 		type : "post",
-		url : "/crm/changeGoldqPayClientAble",
+		url : "changeGoldqPayClientAble",
 		contentType : "application/json; charset=utf-8",
 		dataType : 'json',
 		data : JSON.stringify(data),
@@ -227,7 +227,7 @@ function updateGoldqPayClient() {
 	}
 	$.ajax({
 		type : "post",
-		url : "/crm/updateGoldqPayClient",
+		url : "updateGoldqPayClient",
 		contentType : "application/json; charset=utf-8",
 		dataType : 'json',
 		data : JSON.stringify(data),
@@ -264,7 +264,7 @@ function getGoldqPayFee(clientId) {
 	$
 			.ajax({
 				type : "post",
-				url : "/crm/getGoldqPayFee",
+				url : "getGoldqPayFee",
 				dataType : 'json',
 				contentType : "application/json; charset=utf-8",
 				data : JSON.stringify(data),
@@ -335,7 +335,7 @@ function updateGoldqPayFee() {
 	}
 	$.ajax({
 		type : "post",
-		url : "/crm/updateGoldqPayFee",
+		url : "updateGoldqPayFee",
 		contentType : "application/json; charset=utf-8",
 		dataType : 'json',
 		data : JSON.stringify(data),
@@ -382,7 +382,7 @@ function addGoldqPayClient() {
 	}
 	$.ajax({
 		type : "post",
-		url : "/crm/addGoldqPayClient",
+		url : "addGoldqPayClient",
 		contentType : "application/json; charset=utf-8",
 		dataType : 'json',
 		data : JSON.stringify(data),

@@ -200,7 +200,7 @@
 			$
 					.ajax({
 						type : "post",
-						url : "/crm/getCurrencyList",
+						url : "getCurrencyList",
 						dataType : 'json',
 						contentType : "application/json; charset=utf-8",
 						data : {},
@@ -247,7 +247,7 @@
 					});
 			$.ajax({
 				type : "post",
-				url : "/crm/getAddingCurrencyList",
+				url : "getAddingCurrencyList",
 				dataType : 'json',
 				contentType : "application/json; charset=utf-8",
 				data : {},
@@ -285,7 +285,7 @@
 				}
 				$.ajax({
 					type : "post",
-					url : "/crm/updateCurrency",
+					url : "updateCurrency",
 					contentType : "application/json; charset=utf-8",
 					dataType : 'json',
 					data : JSON.stringify(data),
@@ -337,7 +337,7 @@
 
 			$.ajax({
 				type : "post",
-				url : "/crm/changeCurrencyStatus",
+				url : "changeCurrencyStatus",
 				contentType : "application/json; charset=utf-8",
 				dataType : 'json',
 				data : JSON.stringify(data),
@@ -366,7 +366,7 @@
 			}
 			$.ajax({
 				type : "post",
-				url : "/crm/addCurrency",
+				url : "addCurrency",
 				contentType : "application/json; charset=utf-8",
 				dataType : 'json',
 				data : JSON.stringify(data),

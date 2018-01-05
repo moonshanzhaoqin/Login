@@ -59,7 +59,7 @@ function getUserInfoByPage(currentPage, userPhone, userName) {
 
 	$.ajax({
 		type : "POST",
-		url : "/crm/getUserInfoByPage",
+		url : "getUserInfoByPage",
 		dataType : 'json',
 		contentType : "application/json; charset=utf-8",
 		data : JSON.stringify(data),
@@ -98,7 +98,7 @@ function updateUserInfo() {
 	$("#updateImmediately").text("更新中...");
 	$.ajax({
 		type : "GET",
-		url : "/crm/updateUserInfo",
+		url : "updateUserInfo",
 		contentType : "application/json; charset=utf-8",
 		success : function(data) {
 			$("#updateImmediately").attr("disabled", false);

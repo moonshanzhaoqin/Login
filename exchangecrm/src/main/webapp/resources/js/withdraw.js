@@ -156,7 +156,7 @@ function getWithdrawByPage(currentPage, userPhone, userName, startTime,
 	$
 			.ajax({
 				type : "POST",
-				url : "/crm/getWithdrawByPage",
+				url : "getWithdrawByPage",
 				dataType : 'json',
 				contentType : "application/json; charset=utf-8",
 				data : JSON.stringify(data),
@@ -274,7 +274,7 @@ function finishWithdraw(withdrawId) {
 	};
 	$.ajax({
 		type : "POST",
-		url : "/crm/finishWithdraw",
+		url : "finishWithdraw",
 		dataType : 'json',
 		contentType : "application/json; charset=utf-8",
 		data : JSON.stringify(data),
@@ -304,7 +304,7 @@ function cancelWithdraw(withdrawId) {
 	};
 	$.ajax({
 		type : "POST",
-		url : "/crm/cancelWithdraw",
+		url : "cancelWithdraw",
 		dataType : 'json',
 		contentType : "application/json; charset=utf-8",
 		data : JSON.stringify(data),

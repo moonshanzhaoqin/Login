@@ -11,7 +11,7 @@ $(function() {
 // $
 // .ajax({
 // type : "post",
-// url : "/crm/getGoldpayRemitTaskStatus",
+// url : "getGoldpayRemitTaskStatus",
 // dataType : 'json',
 // contentType : "application/json; charset=utf-8",
 // data : {},
@@ -49,7 +49,7 @@ $(function() {
 // };
 // $.ajax({
 // type : "post",
-// url : "/crm/setGoldpayRemitTaskStatus",
+// url : "setGoldpayRemitTaskStatus",
 // dataType : 'json',
 // contentType : "application/json; charset=utf-8",
 // data : JSON.stringify(data),
@@ -77,7 +77,7 @@ function getBadAccountByPage(currentPage) {
 	$
 			.ajax({
 				type : "post",
-				url : "/crm/getBadAccountByPage",
+				url : "getBadAccountByPage",
 				dataType : 'json',
 				contentType : "application/json; charset=utf-8",
 				data : JSON.stringify(data),
@@ -148,7 +148,7 @@ function getDetailSeq(badAccountId) {
 	$
 			.ajax({
 				type : "post",
-				url : "/crm/getDetailSeq",
+				url : "getDetailSeq",
 				dataType : 'json',
 				contentType : "application/json; charset=utf-8",
 				data : JSON.stringify(data),
