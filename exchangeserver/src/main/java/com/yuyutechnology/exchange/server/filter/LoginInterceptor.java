@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -91,6 +92,13 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			return true;
 		} else {
 			logger.info("request URI:" + requestURI + " session : " + sessionId + " " + MessageConsts.SESSION_TIMEOUT);
+		    if (request.getHeader(HttpHeaders.ORIGIN) != null) {
+		        response.addHeader("Access-Control-Allow-Origin", "*");
+		        response.addHeader("Access-Control-Allow-Credentials", "true");
+		        response.addHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
+		        response.addHeader("Access-Control-Allow-Headers", "Content-Type");
+		        response.addHeader("Access-Control-Max-Age", "3600");
+		    }
 			BaseResponse re = new BaseResponse();
 			re.setRetCode(RetCodeConsts.SESSION_TIMEOUT);
 			re.setMessage(MessageConsts.SESSION_TIMEOUT);
@@ -127,5 +135,4 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 		// logger.info("interceptor excute
 		// order:3.afterCompletion================");
 	}
-
 }
