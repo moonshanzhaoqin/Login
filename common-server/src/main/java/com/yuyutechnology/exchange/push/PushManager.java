@@ -407,9 +407,9 @@ public class PushManager {
 		String offlineBody = templateChoose("invite", user.getPushTag());
 		String body = offlineBody.replace(PUSH_REPLACE_AMOUNT, GDQ.format(amount));
 		Map<String, String> ext = new HashMap<>();
-		ext.put("type", "transfer");
-		ext.put("transferId", transferId);
-		ext.put("userId", user.getUserId().toString());
+		ext.put("type", "invite");
+//		ext.put("transferId", transferId);
+//		ext.put("userId", user.getUserId().toString());
 		pushToCustom(user.getPushId(), title, body, JsonBinder.getInstance().toJson(ext));
 	}
 
