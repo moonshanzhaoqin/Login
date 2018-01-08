@@ -105,7 +105,7 @@ $(function() {
 			$
 					.ajax({
 						type : "post",
-						url : "/crm/getRechargeList",
+						url : "getRechargeList",
 						dataType : 'json',
 						contentType : "application/json; charset=utf-8",
 						data : JSON.stringify(data),

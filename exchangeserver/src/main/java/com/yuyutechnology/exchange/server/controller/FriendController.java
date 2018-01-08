@@ -101,7 +101,7 @@ public class FriendController {
 		logger.info("========friendsList : {}============", token);
 		FriendsListResponse rep = new FriendsListResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
-	
+
 		rep.setInitials(userManager.getFriends(sessionData.getUserId()));
 		logger.info("********Operation succeeded********");
 		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
@@ -161,11 +161,12 @@ public class FriendController {
 		}
 		return rep;
 	}
-	
+
 	@ResponseEncryptBody
 	@ApiOperation(value = "搜索好友", httpMethod = "POST", notes = "")
 	@RequestMapping(value = "/token/{token}/user/searchFriend", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-	public SearchFriendResponse searchFriend(@PathVariable String token,@RequestDecryptBody SearchFriendRequest searchFriendRequest) {
+	public SearchFriendResponse searchFriend(@PathVariable String token,
+			@RequestDecryptBody SearchFriendRequest searchFriendRequest) {
 		logger.info("========friendsList : {}============", token);
 		SearchFriendResponse rep = new SearchFriendResponse();
 		SessionData sessionData = SessionDataHolder.getSessionData();
@@ -174,10 +175,11 @@ public class FriendController {
 			rep.setRetCode(RetCodeConsts.PARAMETER_IS_EMPTY);
 			rep.setMessage(MessageConsts.PARAMETER_IS_EMPTY);
 		} else {
-		rep.setFriends(userManager.searchFriend(sessionData.getUserId(),searchFriendRequest.getKeyWords()));
-		logger.info("********Operation succeeded********");
-		rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
-		rep.setMessage(MessageConsts.RET_CODE_SUCCESS);}
+			rep.setFriends(userManager.searchFriend(sessionData.getUserId(), searchFriendRequest.getKeyWords()));
+			logger.info("********Operation succeeded********");
+			rep.setRetCode(RetCodeConsts.RET_CODE_SUCCESS);
+			rep.setMessage(MessageConsts.RET_CODE_SUCCESS);
+		}
 		return rep;
 	}
 }

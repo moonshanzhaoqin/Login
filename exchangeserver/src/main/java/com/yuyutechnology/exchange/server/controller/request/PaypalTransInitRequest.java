@@ -6,8 +6,12 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel
-public class PaypalTransInitRequest {
+public class PaypalTransInitRequest extends BaseRequest{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8854191402507300487L;
 	private String currency;
 	private BigDecimal amount;
 

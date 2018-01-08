@@ -2,7 +2,6 @@ package com.yuyutechnology.exchange.server.security;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 
 import javax.annotation.PostConstruct;
 
@@ -16,13 +15,9 @@ import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonEncoding;
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.yuyutechnology.exchange.cfg.ExJsonSerializerProvider;
+import com.yuyutechnology.exchange.cfg.ExJsonObjectMapper;
 
 /**
  * @author silent.sun
@@ -34,38 +29,9 @@ public class DecryptEncryptHttpMessageConverter extends MappingJackson2HttpMessa
 	@Autowired
     private DecryptEncryptBodyProcessor decryptEncryptBodyProcessor;
 	
-	private final String currentNameSuffix = "4String";
-	
 	@PostConstruct
 	public void init () {
-//		objectMapper.setSerializationInclusion(Include.ALWAYS);
-        SimpleModule s = new SimpleModule();
-        s.addSerializer(double.class, new JsonSerializer<Double>(){
-			@Override
-			public void serialize(Double value, JsonGenerator gen, SerializerProvider serializers)
-					throws IOException, JsonProcessingException {
-				gen.writeNumber(value);
-				gen.writeStringField(gen.getOutputContext().getCurrentName()+currentNameSuffix,Double.toString(value));
-			}
-        });
-        s.addSerializer(Double.class, new JsonSerializer<Double>(){
-			@Override
-			public void serialize(Double value, JsonGenerator gen, SerializerProvider serializers)
-					throws IOException, JsonProcessingException {
-				gen.writeNumber(value);
-				gen.writeStringField(gen.getOutputContext().getCurrentName()+currentNameSuffix,Double.toString(value));
-			}
-        });
-        s.addSerializer(BigDecimal.class, new JsonSerializer<BigDecimal>(){
-			@Override
-			public void serialize(BigDecimal value, JsonGenerator gen, SerializerProvider serializers)
-					throws IOException, JsonProcessingException {
-				gen.writeNumber(value);
-				gen.writeStringField(gen.getOutputContext().getCurrentName()+currentNameSuffix,value.toString());
-			}
-        });
-        objectMapper.setSerializerProvider(new ExJsonSerializerProvider());
-        objectMapper.registerModule(s);
+		setObjectMapper(new ExJsonObjectMapper());
 	}
 	
 	@Override

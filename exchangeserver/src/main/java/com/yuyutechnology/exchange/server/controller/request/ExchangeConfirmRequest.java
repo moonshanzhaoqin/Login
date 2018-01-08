@@ -4,8 +4,12 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel
-public class ExchangeConfirmRequest {
+public class ExchangeConfirmRequest extends BaseRequest{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4362449476224944418L;
 	private String currencyOut;
 	private String currencyIn;
 	private double amountOut;

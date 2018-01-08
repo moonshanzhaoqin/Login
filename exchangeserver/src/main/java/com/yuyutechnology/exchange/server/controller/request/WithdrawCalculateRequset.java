@@ -1,6 +1,10 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-public class WithdrawCalculateRequset {
+public class WithdrawCalculateRequset extends BaseRequest{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2047414341591399721L;
 	private int goldBullion;
 
 	public int getGoldBullion() {

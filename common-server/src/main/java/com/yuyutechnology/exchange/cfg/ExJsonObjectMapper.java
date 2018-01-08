@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -23,6 +26,8 @@ public class ExJsonObjectMapper extends ObjectMapper {
 	 * 
 	 */
 	private static final long serialVersionUID = -3659875234079482330L;
+	
+	public static final String CURRENT_NAME_SUFFIX = "4String";
 
 	public ExJsonObjectMapper() {
 		super();
@@ -39,12 +44,28 @@ public class ExJsonObjectMapper extends ObjectMapper {
 //			}
 //		});
         SimpleModule s = new SimpleModule();
+        
+        s.addDeserializer(String.class, new JsonDeserializer<String>(){
+			@Override
+			public String deserialize(JsonParser p, DeserializationContext ctxt)
+					throws IOException, JsonProcessingException {
+				 return p.getText().trim();
+			}
+        });
+        s.addSerializer(double.class, new JsonSerializer<Double>(){
+			@Override
+			public void serialize(Double value, JsonGenerator gen, SerializerProvider serializers)
+					throws IOException, JsonProcessingException {
+				gen.writeNumber(value);
+				gen.writeStringField(gen.getOutputContext().getCurrentName()+CURRENT_NAME_SUFFIX,Double.toString(value));
+			}
+        });
         s.addSerializer(Double.class, new JsonSerializer<Double>(){
 			@Override
 			public void serialize(Double value, JsonGenerator gen, SerializerProvider serializers)
 					throws IOException, JsonProcessingException {
 				gen.writeNumber(value);
-				gen.writeStringField(gen.getOutputContext().getCurrentName()+"4String",Double.toString(value));
+				gen.writeStringField(gen.getOutputContext().getCurrentName()+CURRENT_NAME_SUFFIX,Double.toString(value));
 			}
         });
         s.addSerializer(BigDecimal.class, new JsonSerializer<BigDecimal>(){
@@ -52,7 +73,7 @@ public class ExJsonObjectMapper extends ObjectMapper {
 			public void serialize(BigDecimal value, JsonGenerator gen, SerializerProvider serializers)
 					throws IOException, JsonProcessingException {
 				gen.writeNumber(value);
-				gen.writeStringField(gen.getOutputContext().getCurrentName()+"4String",value.toString());
+				gen.writeStringField(gen.getOutputContext().getCurrentName()+CURRENT_NAME_SUFFIX,value.toString());
 			}
         });
         this.setSerializerProvider(new ExJsonSerializerProvider());

@@ -4,7 +4,11 @@ import org.apache.commons.lang.StringUtils;
 
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
-public class GetUserInfo4TransferRequest {
+public class GetUserInfo4TransferRequest extends BaseRequest{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3753794287048934435L;
 	@ApiModelProperty(value = "国家码")
 	private String areaCode;
 	@ApiModelProperty(value = "手机号")

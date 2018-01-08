@@ -118,6 +118,7 @@ class ExchangeController {
 		return rep;
 	}
 
+	//Paypal充值调用
 	@ApiOperation(value = "获取Goldpay汇率")
 	@RequestMapping(method = RequestMethod.POST, value = "/token/{token}/exchange/getGoldRate")
 	public @ResponseBody GetExchangeRateResponse getExchangeRate(@PathVariable String token) {
@@ -139,6 +140,7 @@ class ExchangeController {
 
 	}
 	
+	//Goldpay网站调用
 	@ApiOperation(value = "获取Goldpay汇率")
 	@RequestMapping(method = RequestMethod.POST, value = "/exchange/getGoldRate4Page")
 	public @ResponseBody GetExchangeRateResponse getGoldRate4Page() {

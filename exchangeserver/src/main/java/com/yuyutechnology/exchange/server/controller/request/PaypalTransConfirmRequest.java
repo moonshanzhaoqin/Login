@@ -1,7 +1,11 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-public class PaypalTransConfirmRequest {
+public class PaypalTransConfirmRequest extends BaseRequest{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1193297752222995585L;
 	private String transId;
 	private String paymentMethodNonce;
 

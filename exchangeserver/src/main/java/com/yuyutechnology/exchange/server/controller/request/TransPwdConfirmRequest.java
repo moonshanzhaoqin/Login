@@ -4,8 +4,12 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel
-public class TransPwdConfirmRequest {
+public class TransPwdConfirmRequest extends BaseRequest{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -790213679644418475L;
 	private String transferId;
 	private String userPayPwd;
 

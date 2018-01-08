@@ -59,7 +59,7 @@
 				}
 				$.ajax({
 					type : "post",
-					url : "/crm/modifyPassword",
+					url : "modifyPassword",
 					contentType : "application/json; charset=utf-8",
 					dataType : 'json',
 					data : JSON.stringify(data),

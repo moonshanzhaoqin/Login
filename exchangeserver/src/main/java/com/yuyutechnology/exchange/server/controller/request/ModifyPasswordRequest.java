@@ -2,8 +2,12 @@ package com.yuyutechnology.exchange.server.controller.request;
 
 import org.apache.commons.lang.StringUtils;
 
-public class ModifyPasswordRequest {
+public class ModifyPasswordRequest extends BaseRequest{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6187016957414593767L;
 	private String oldPassword;
 	private String newPassword;
 

@@ -113,6 +113,7 @@ public class TransferController {
 			rep.setCurrency(reqMsg.getCurrency());
 			rep.setTransAmount(reqMsg.getTransAmount()+"");
 			rep.setUserAccount(reqMsg.getAreaCode().concat(reqMsg.getUserPhone()));
+			rep.setFriend(true);
 			UserInfo4Transfer userInfo = userManager.findFriend(sessionData.getUserId(), reqMsg.getAreaCode(), reqMsg.getUserPhone());
 			if(userInfo != null){
 				rep.setUserName(userInfo.getUserName());

@@ -9,7 +9,11 @@ import org.apache.commons.lang.StringUtils;
  * @author suzan.wu
  *
  */
-public class GetUserRequest {
+public class GetUserRequest extends BaseRequest{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -523026898033454633L;
 	private String areaCode;
 	private String userPhone;
 

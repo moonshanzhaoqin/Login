@@ -5,7 +5,12 @@ import org.apache.commons.lang.StringUtils;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import com.yuyutechnology.exchange.ServerConsts;
 
-public class GetVerificationCodeRequest {
+public class GetVerificationCodeRequest extends BaseRequest{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6884094502301573638L;
+
 	@Override
 	public String toString() {
 		return "[purpose=" + purpose + ", areaCode=" + areaCode + ", userPhone=" + userPhone + "]";

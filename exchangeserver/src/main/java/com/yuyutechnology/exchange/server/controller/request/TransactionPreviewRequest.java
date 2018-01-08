@@ -1,11 +1,15 @@
 package com.yuyutechnology.exchange.server.controller.request;
 
-public class TransactionPreviewRequest {
+public class TransactionPreviewRequest extends BaseRequest{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4792317219259723672L;
 	private String areaCode;
 	private String userPhone;
 	private String currency;
-	private Double transAmount;
+	private double transAmount;
 	
 	public String getAreaCode() {
 		return areaCode;
@@ -25,10 +29,10 @@ public class TransactionPreviewRequest {
 	public void setCurrency(String currency) {
 		this.currency = currency;
 	}
-	public Double getTransAmount() {
+	public double getTransAmount() {
 		return transAmount;
 	}
-	public void setTransAmount(Double transAmount) {
+	public void setTransAmount(double transAmount) {
 		this.transAmount = transAmount;
 	}
 
