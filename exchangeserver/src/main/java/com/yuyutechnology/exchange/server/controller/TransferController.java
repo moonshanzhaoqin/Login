@@ -119,6 +119,12 @@ public class TransferController {
 				rep.setPortrait(userInfo.getPortrait());
 				rep.setFriend(userInfo.isFriend());
 			}
+		}else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_DAILY_PAY)) {
+			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit"), map.get("thawTime") });
+		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_EACH_TIME)) {
+			rep.setOpts(new String[] { map.get("msg") + " " + map.get("unit") });
+		} else if (map.get("retCode").equals(RetCodeConsts.TRANSFER_LIMIT_NUM_OF_PAY_PER_DAY)) {
+			rep.setOpts(new String[] { map.get("msg"), map.get("thawTime") });
 		}
 		rep.setRetCode(map.get("retCode"));
 		rep.setMessage(map.get("msg"));
