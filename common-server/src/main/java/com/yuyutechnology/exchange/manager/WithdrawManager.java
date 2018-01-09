@@ -22,11 +22,11 @@ public interface WithdrawManager {
 
 	String cancelWithdraw(String withdrawId);
 
-	String goldpayTrans4cancel(String withdrawId, String adminName);
+	String goldpayTrans4Cancel(String withdrawId, String adminName);
 
 	String finishWithdraw(String withdrawId);
 
-	String goldpayTrans4finish(String withdrawId, String adminName);
+	String goldpayTrans4Finish(String withdrawId, String adminName);
 
 	PageBean getWithdrawByPage(int currentPage, String userPhone, String userName, String startTime, String endTime,String handleResult);
 

@@ -187,7 +187,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 	}
 
 	@Override
-	public String goldpayTrans4cancel(String withdrawId, String adminName) {
+	public String goldpayTrans4Cancel(String withdrawId, String adminName) {
 		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
 		HashMap<String, String> result = goldpayTrans4MergeManager.updateWallet4FeeTrans(withdraw.getGoldTransferB(),
 				withdraw.getFeeTransferB());
@@ -241,7 +241,7 @@ public class WithdrawManagerImpl implements WithdrawManager {
 	}
 
 	@Override
-	public String goldpayTrans4finish(String withdrawId, String adminName) {
+	public String goldpayTrans4Finish(String withdrawId, String adminName) {
 		Withdraw withdraw = withdrawDAO.getWithdraw(withdrawId);
 		HashMap<String, String> result = goldpayTrans4MergeManager.updateWallet4FeeTrans(withdraw.getGoldTransferB(),
 				withdraw.getFeeTransferB());
