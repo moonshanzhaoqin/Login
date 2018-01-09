@@ -481,6 +481,10 @@ public class UserManagerImpl implements UserManager {
 		// accountingManager.snapshotToBefore(userId);
 		/* 根据Unregistered表 更新新用户钱包 将资金从系统帐户划给新用户 */
 		updateWalletsFromUnregistered(userId, areaCode, userPhone, userName);
+		
+		//更新TransDetails
+		
+		
 		return userId;
 	}
 
@@ -643,14 +647,6 @@ public class UserManagerImpl implements UserManager {
 				}
 			}
 
-			// walletDAO.updateWalletByUserIdAndCurrency(systemUserId,
-			// unregistered.getCurrency(),
-			// unregistered.getAmount(), "-", ServerConsts.TRANSFER_TYPE_TRANSACTION,
-			// transferId);
-			// walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(),
-			// unregistered.getAmount(), "+",
-			// ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
-
 			/* 生成TransId */
 			Transfer transfer = new Transfer();
 			transfer.setTransferId(transferId);
@@ -671,13 +667,6 @@ public class UserManagerImpl implements UserManager {
 
 			goldpayTrans4MergeManager.updateWallet4GoldpayTrans(transferId);
 
-			// walletDAO.updateWalletByUserIdAndCurrency(systemUserId,
-			// unregistered.getCurrency(),
-			// unregistered.getAmount(), "-", ServerConsts.TRANSFER_TYPE_TRANSACTION,
-			// transferId);
-			// walletDAO.updateWalletByUserIdAndCurrency(userId, unregistered.getCurrency(),
-			// unregistered.getAmount(), "+",
-			// ServerConsts.TRANSFER_TYPE_TRANSACTION, transferId);
 
 			transDetailsManager.addTransDetails(transferId, userId, payer.getUserId(), payer.getUserName(),
 					payer.getAreaCode(), payer.getUserPhone(), unregistered.getCurrency(), unregistered.getAmount(),
