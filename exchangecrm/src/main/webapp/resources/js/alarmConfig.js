@@ -11,7 +11,7 @@ function delAlarmConfig(obj) {
 	}
 	var tds = $(obj).parent().parent().find('td');
 	var alarmId = tds.eq(0).text();
-	var delAlarmConfigUrl = "alarm/delAlarmConfig";
+	var delAlarmConfigUrl = "delAlarmConfig";
 	location.href = delAlarmConfigUrl + '?alarmId=' + alarmId;
 }
 
@@ -21,7 +21,7 @@ function updateAlarmConfig(obj) {
 
 	$
 			.ajax({
-				url : "alarm/updateAlarmConfig",
+				url : "updateAlarmConfig",
 				type : "post",
 				async : false,
 				dataType : "JSON",
@@ -115,7 +115,7 @@ function updateAlarmAvailable(obj, alarmAvailable) {
 	var tds = $(obj).parent().parent().find('td');
 	var alarmId = tds.eq(0).text();
 
-	var updateAlarmAvailableUrl = "alarm/updateAlarmAvailable";
+	var updateAlarmAvailableUrl = "updateAlarmAvailable";
 	location.href = updateAlarmAvailableUrl + '?alarmId=' + alarmId
 			+ '&alarmAvailable=' + alarmAvailable;
 }

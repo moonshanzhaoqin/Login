@@ -94,12 +94,12 @@ public class TransDetailsDAOImpl implements TransDetailsDAO {
 		//UPDATE e_trans_details t2 SET t2.trader_name = '测试用例_test' 
 		//WHERE t2.transfer_id IN (SELECT t1.transfer_id FROM e_unregistered t1 WHERE t1.area_code = '+86' AND t1.user_phone = '123456789')
 
-		StringBuffer sb = new StringBuffer("UPDATE e_trans_details t2 ");
-		sb.append("SET t2.trader_name = ? ");
-		sb.append("WHERE t2.transfer_id IN ");
-		sb.append("(SELECT t1.transfer_id FROM e_unregistered t1 WHERE t1.area_code = ? AND t1.user_phone = ? )");
-		
-		final String sql = sb.toString();
+//		StringBuffer sb = new StringBuffer("UPDATE e_trans_details t2 ");
+//		sb.append("SET t2.trader_name = ? ");
+//		sb.append("WHERE t2.transfer_id IN ");
+//		sb.append("(SELECT t1.transfer_id FROM e_unregistered t1 WHERE t1.area_code = ? AND t1.user_phone = ? )");
+
+		final String sql = "UPDATE e_trans_details SET trader_name = ? WHERE trader_area_code = ? AND trader_phone = ?";
 		
 		return hibernateTemplate.executeWithNativeSession(new HibernateCallback<Integer>() {
 			@Override
